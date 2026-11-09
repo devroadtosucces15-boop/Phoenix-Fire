@@ -53,3 +53,24 @@ new_sqlite_classes = ["HubRoom"]
 [[migrations]]
 tag = "v3"
 new_sqlite_classes = ["ClubRoom"]
+
+[[kv_namespaces]]
+binding = "NOREX_KV"
+id = "9a3cb9d021a441b1994aee02dcb425e9"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "phoenix"
+database_id = "38a6a5ff-20f3-4ef2-8868-ad12eafa33c5"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "phoenix-media"
+
+[[queues.producers]]
+binding = "JOBS"
+queue = "phoenix-jobs"
+
+[[queues.consumers]]
+queue = "phoenix-jobs"
