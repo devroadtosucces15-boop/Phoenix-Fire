@@ -40,6 +40,13 @@ try {
     let s = fs.readFileSync(f, 'utf8'); const o = s; for (const [re, to] of names) s = s.replace(re, to);
     if (s !== o) fs.writeFileSync(f, s);
   }
+  // Phoenix uses the preview build pipeline for live data, but the PREVIEW ribbon is not part of the product UI.
+  // Remove only the ribbon from the staged Phoenix shell; keep preview/noindex and live API behaviour intact.
+  const uiShell = path.join(stage, 'next/lib/ui.mjs');
+  let ui = fs.readFileSync(uiShell, 'utf8');
+  const previewRibbon = /\$\{PREVIEW \? '<div class="prevrib" role="note">PREVIEW · new design · live club data<\\/div>' : ''\}/;
+  if (previewRibbon.test(ui)) fs.writeFileSync(uiShell, ui.replace(previewRibbon, ''));
+  else warn('Preview ribbon markup changed upstream – inspect the Phoenix shell');
   // 4. overlay: badge crest, icons, 3D crest, theme layer
   for (const f of fs.readdirSync(path.join(here, 'overlay'))) fs.copyFileSync(path.join(here, 'overlay', f), path.join(stage, 'next', f === 'crest.png' ? f : path.join('static', f)));
   const appjs = path.join(stage, 'next/static/app.js'), as = fs.readFileSync(appjs, 'utf8');
