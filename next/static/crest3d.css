@@ -1,0 +1,9 @@
+/* Opt-in 3D crest (Three.js). The static crest shows until the visitor switches 3D on. */
+.c3{position:relative;display:grid;place-items:center;min-height:320px;padding:22px;overflow:hidden;text-align:center}
+.c3 .c3-img,.c3 canvas{width:min(220px,60vw);aspect-ratio:892/1289;display:block}
+.c3 .c3-img{object-fit:contain;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+.c3 canvas{position:absolute;inset:0;margin:auto;width:100%;height:100%;touch-action:pan-y}
+.c3.on .c3-img{opacity:0}
+.c3-bar{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:10px;align-items:center;font-size:12px;color:var(--mute)}
+.c3-btn{cursor:pointer;border:1px solid rgba(239,207,122,.45);background:rgba(13,17,25,.85);color:#efcf7a;border-radius:999px;padding:7px 14px;font:600 12px Inter,sans-serif}
+.c3-btn[aria-pressed=true]{background:#efcf7a;color:#0d1119}

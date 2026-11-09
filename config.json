@@ -1,0 +1,130 @@
+{
+  "siteTitle": "PHOENIX FIRE",
+  "siteUrl": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
+  "discord": {
+    "applyLink": "#",
+    "note": ""
+  },
+  "brand": {
+    "red": "#e8651a",
+    "ink": "#0a0705",
+    "founded": "",
+    "motto": "Rise. Burn. Repeat."
+  },
+  "platform": "common-gen5",
+  "homeClubId": 1111,
+  "extraClubIds": [],
+  "discovery": {
+    "enabled": false,
+    "maxTrackedClubs": 400,
+    "discoveredPerRun": 12,
+    "followOpponentsOf": "all"
+  },
+  "hiddenPlayers": [],
+  "requestDelayMs": 400,
+  "recruitment": {
+    "open": true,
+    "headline": "Trials are by application only",
+    "requirements": [
+      "Active on PS5 / Xbox Series / PC (new gen)",
+      "Available for regular league nights",
+      "Mic and Discord for match comms",
+      "Competitive attitude \u2013 we play to win"
+    ],
+    "positions": [
+      "GK",
+      "CB",
+      "CDM",
+      "CM",
+      "CAM",
+      "ST"
+    ]
+  },
+  "members": {
+    "api": "https://phoenix-bot.norexunited.workers.dev"
+  },
+  "streams": {
+    "youtube": "",
+    "twitch": ""
+  },
+  "hype": {
+    "channel": ""
+  },
+  "voiceRecap": {
+    "channel": ""
+  },
+  "features": {
+    "rushLog": "members",
+    "gameRules": "public",
+    "liveBanner": "public",
+    "trials": "public",
+    "scouting": "members",
+    "managerNotes": "managers",
+    "leaders": "members",
+    "hallOfFame": "public",
+    "profiles": "members",
+    "builder": "public",
+    "notifications": "members",
+    "requests": "public",
+    "proBuilds": "public",
+    "discordMatch": "members",
+    "roleSync": "managers",
+    "badges": "members",
+    "myStats": "members",
+    "playStyle": "members",
+    "docs": "members",
+    "suggestions": "members",
+    "events": "public",
+    "matchNight": "members",
+    "platformLink": "members",
+    "discordRsvp": "members",
+    "awards": "public",
+    "rushSquads": "members",
+    "starRatings": "members",
+    "feedback": "members",
+    "predictions": "members",
+    "recommendations": "members",
+    "scoutReport": "public",
+    "ask": "members",
+    "aiInsights": "members",
+    "lineupRec": "managers",
+    "insights": "managers",
+    "burners": "members",
+    "issueTool": "owner",
+    "editGear": "owner",
+    "staffNav": "owner",
+    "compareView": "owner",
+    "feed": "members",
+    "hotw": "members",
+    "presence": "members",
+    "mentions": "members",
+    "messages": "members",
+    "points": "members",
+    "avatarCard": "members",
+    "cardStudio": "owner",
+    "locker": "members",
+    "lockerRoom": "members",
+    "dugout": "managers",
+    "boardroom": "owner",
+    "tactics": "members",
+    "nxStudio": "owner",
+    "statInsights": "members",
+    "insightWidget": "members",
+    "hub": "members",
+    "hubLive": "members",
+    "hubGold": "members",
+    "push": "members",
+    "serverTools": "members",
+    "fun": "owner",
+    "discoveries": "owner",
+    "watchlist": "owner",
+    "memberLive": "owner",
+    "facesSite": "owner",
+    "ownerFab": "owner",
+    "music": "owner",
+    "homeWatch": "owner",
+    "liveAnnounce": "owner",
+    "reminders": "owner",
+    "feedbackRoom": "members"
+  }
+}

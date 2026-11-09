@@ -1,0 +1,30 @@
+/* Music page shell (music.js). Club look: ink panels, gold, Oswald + Inter, 22px gaps, 44px touch targets, inputs at 16px. */
+.mu-note{display:flex;gap:14px;align-items:center;margin:0 0 22px;color:var(--soft);font-size:14px}.mu-note .sample{flex:none}
+.mu-grid{display:grid;grid-template-columns:minmax(240px,320px) minmax(0,1fr);gap:22px;align-items:start}
+.mu-rooms{display:grid;gap:22px}
+.mu-r{display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left;width:100%;min-height:64px;padding:14px 16px;color:inherit;font:inherit;cursor:pointer;transition:border-color .2s,transform .25s var(--ease)}
+.mu-r:hover{transform:translateY(-2px);border-color:rgba(239,207,122,.5)}.mu-r:focus-visible{outline:2px solid var(--g2);outline-offset:2px}
+.mu-r.on{border-color:var(--g3);box-shadow:0 0 0 1px var(--g3) inset}
+.mu-t{display:grid;gap:3px;min-width:0}.mu-t b{font:600 17px Oswald;letter-spacing:.04em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mu-t small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mu-l{display:inline-flex;gap:6px;align-items:center;flex:none;font-size:13px}
+.mu-room{display:grid;gap:22px}.mu-room>.panel+.panel,.mu-rooms>.panel+.panel{margin-top:0}
+.mu-np{display:flex;gap:22px;align-items:center;padding:20px 22px}
+.mu-art{flex:none;width:120px;height:120px;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,var(--p3),var(--p1));border:1px solid var(--line2);display:grid;place-items:center}
+.mu-art img{width:100%;height:100%;object-fit:cover;display:block}.mu-ph{font-size:44px;color:var(--g2)}
+.mu-info{display:grid;gap:8px;min-width:0;flex:1}.mu-info h3{font:600 clamp(20px,3vw,26px)/1.2 Oswald;letter-spacing:.02em;margin:0;overflow-wrap:anywhere}.mu-info p{margin:0}
+.mu-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}.mu-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--g3),var(--g1));border-radius:999px;transition:width 1s linear}
+.mu-time{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
+.mu-ctl{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;padding:16px 20px}
+.mu-ctl .btn,.mu-search .btn{min-height:44px}.mu-ctl [disabled]{opacity:.5;cursor:not-allowed}.mu-volv,.mu-vol .num{min-width:3ch;font-size:13px;color:var(--mute)}
+.mu-vol{display:inline-flex;gap:10px;align-items:center}.mu-vol input{width:140px;min-height:44px}
+.mu-search{display:grid;gap:14px;padding:18px 20px}.mu-q{width:100%;min-height:44px;font-size:16px;padding:0 14px;border-radius:12px;border:1px solid var(--line2);background:rgba(255,255,255,.04);color:inherit}.mu-q:focus-visible{outline:2px solid var(--g2);outline-offset:2px}
+.mu-res:empty{display:none}.mu-res p{margin:0}.mu-res ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}.mu-res li{display:flex;gap:14px;align-items:center;min-height:44px}
+.mu-rm{flex:none;min-width:44px;min-height:44px;padding:0}
+.mu-queue{padding:18px 20px}.mu-queue h3{margin:0 0 14px}
+.mu-queue ol{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.mu-queue li{display:flex;gap:14px;align-items:center;min-height:44px}
+.mu-n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.06);font-size:12px}
+.mu-qt{display:grid;gap:2px;min-width:0;flex:1}.mu-qt b{font:600 15px/1.3 Inter;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:860px){.mu-grid{grid-template-columns:minmax(0,1fr)}.mu-rooms{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 8px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}.mu-r{flex:0 0 min(78%,300px);scroll-snap-align:start}}
+@media(max-width:520px){.mu-vol{min-height:44px}.mu-q{min-width:0}.mu-np{flex-direction:column;align-items:flex-start;padding:16px}.mu-art{width:100%;height:112px}.mu-vol input{width:100%;flex:1}.mu-vol{flex:1 1 100%}}
+@media(prefers-reduced-motion:reduce){.mu-bar i,.mu-r{transition:none}}

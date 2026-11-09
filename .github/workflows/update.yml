@@ -1,0 +1,124 @@
+name: Update site
+
+on:
+  schedule:
+    - cron: "*/15 * * * *" # GitHub may delay scheduled runs by a few minutes
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: ["data/**", "README.md"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: update-site
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main # latest data, not the commit from when the run was queued
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Fetch from EA
+        run: node scripts/fetch.mjs
+        env:
+          NOREX_DEFER_RESULTS: "1" # results are posted by the step after the cards, so they carry their pictures
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }} # reads approved club requests (P5.6)
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }} # posts results with the "Show my match" menu (P7.2)
+
+      - name: Check EA's FC updates (patch notes log, every 6 h)
+        continue-on-error: true
+        run: node scripts/updates.mjs
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: Latest videos for the Watch previews (hourly)
+        continue-on-error: true
+        run: node scripts/media.mjs
+
+      - name: Commit new data
+        id: commit
+        run: |
+          git config user.name "phoenix-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "data: update $(date -u +%Y-%m-%dT%H:%MZ)"
+            # Another run may have pushed data meanwhile: our fetch is newer, so our files win (-X theirs).
+            for i in 1 2 3; do
+              if git pull --rebase -X theirs --autostash && git push; then break; fi
+              git rebase --abort 2>/dev/null || true
+              [ "$i" = 3 ] && exit 1
+              sleep $((i * 5))
+            done
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Phoenix Fire site (live club data and Discord login)
+        if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: node phoenix/build.mjs --live --out site
+
+      # Discord cards (bot design system): the score cards, field views, player cards and tables the bot attaches to stat and
+      # match messages, drawn from the fresh data with the runner's Chrome. A failure never blocks the site – the bot then
+      # answers with the same layout minus the picture.
+      - name: Draw Discord cards
+        if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+        continue-on-error: true
+        run: node scripts/cards.mjs
+
+      # New results go to Discord once their cards exist. Runs even if the build or the cards failed (then without pictures).
+      - name: Post new results to Discord
+        if: always() && hashFiles('.outbox/results.json') != ''
+        continue-on-error: true
+        run: node scripts/post-results.mjs
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+
+      - uses: actions/configure-pages@v5
+        if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+        if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+
+      - name: DM the owner on failure
+        if: failure()
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          OWNER_ID: "1322770005535756290"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          [ -z "$DISCORD_BOT_TOKEN" ] && exit 0
+          node -e '
+            const h = { Authorization: "Bot " + process.env.DISCORD_BOT_TOKEN, "Content-Type": "application/json" };
+            const api = (p, b) => fetch("https://discord.com/api/v10" + p, { method: "POST", headers: h, body: JSON.stringify(b) }).then((r) => r.json());
+            (async () => {
+              const dm = await api("/users/@me/channels", { recipient_id: process.env.OWNER_ID });
+              if (!dm.id) return console.warn("DM failed", dm);
+              await api("/channels/" + dm.id + "/messages", { content: "⚠️ Site update failed: <" + process.env.RUN_URL + ">" });
+            })();
+          ' || true
