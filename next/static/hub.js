@@ -45,9 +45,8 @@
     const mode = ls.get('norex.entrance', 'skip');                                  // full | short | skip (default: the locker page transition)
     const reduced = window.NorexMotion?.reduced();
     const last = +ls.get('norex.hubSeen', 0), recent = Date.now() - last < 12 * 3600e3;
-    // Touch browsers (especially iOS Safari/PWA) can terminate or freeze during this multi-stage WAAPI scene.
-    // Keep the cinematic entrance on pointer/keyboard desktops; mobile follows the link directly.
-    if (window.PHOENIX_SAFE_HUB || mode === 'skip' || me.as === 'guest' || !me.player || innerWidth < 300 || !Element.prototype.animate) return;   // plain navigation, hub shows the sign-in state
+    // Run the same guarded cinematic sequence on desktop, web app, and touch devices.
+    if (mode === 'skip' || me.as === 'guest' || !me.player || innerWidth < 300 || !Element.prototype.animate) return;   // plain navigation, hub shows the sign-in state
     e.preventDefault?.(); running = true; btnEl = btn; btn.classList.add('pressing');
     d.documentElement.classList.add('hubfx-on');
     const short = mode === 'short' || (mode === 'auto' && recent);
@@ -58,7 +57,7 @@
     let finished = false;
     done = () => { if (finished) return; finished = true; ls.set('norex.hubSeen', Date.now()); const k = $('.fx-flycard .fx-card', o); if (k) k.style.viewTransitionName = 'hubcard'; location.assign(target); };
     $('.fx-skip', o).addEventListener('click', () => done()); o.addEventListener('click', (ev) => { if (ev.target.classList.contains('fx-veil')) done(); });
-    const guard = setTimeout(done, (short ? 4500 : 11000)); timers.push(guard);       // never leave the user on an overlay
+    const guard = setTimeout(done, (short ? 8000 : 14000)); timers.push(guard);       // never leave the user on an overlay
     try {
       await Promise.race([prep, wait(900)]);
       if (reduced) { await play($('.fx-light', o), [{ opacity: 0, clipPath: 'circle(0% at 50% 50%)' }, { opacity: 1, clipPath: 'circle(140% at 50% 50%)' }], { duration: 320, easing: EASE.out }); return done(); }
