@@ -46,7 +46,7 @@
     const reduced = window.NorexMotion?.reduced();
     const last = +ls.get('norex.hubSeen', 0), recent = Date.now() - last < 12 * 3600e3;
     // Run the same guarded cinematic sequence on desktop, web app, and touch devices.
-    if (mode === 'skip' || me.as === 'guest' || !me.player || innerWidth < 300 || !Element.prototype.animate) return;   // plain navigation, hub shows the sign-in state
+    if (window.PHOENIX_SAFE_HUB || mode === 'skip' || me.as === 'guest' || !me.player || innerWidth < 300 || !Element.prototype.animate) return;   // plain navigation, hub shows the sign-in state
     e.preventDefault?.(); running = true; btnEl = btn; btn.classList.add('pressing');
     d.documentElement.classList.add('hubfx-on');
     const short = mode === 'short' || (mode === 'auto' && recent);
