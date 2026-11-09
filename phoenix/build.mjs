@@ -91,9 +91,9 @@ try {
     fs.cpSync(legacyAssets, path.join(out, 'assets'), { recursive: true });
     fs.copyFileSync(legacyMembers, path.join(out, 'squad.html'));
   } else warn('classic member hub was not generated; squad.html will not be published');
-  const claimTemplate = path.join(stage, 'phoenix', 'claim.html');
+  const claimTemplate = path.join(here, 'claim.html');
   if (fs.existsSync(claimTemplate)) {
-    let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', config.members.api);
+    let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', API);
     if (MOCK) claim = claim.replace('<head>', '<head><script src="phoenix-mock.js"></script>');
     fs.writeFileSync(path.join(out, 'members.html'), claim);
   } else warn('Phoenix claim page template missing; members.html will not be published');
