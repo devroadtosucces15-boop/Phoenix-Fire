@@ -47,7 +47,7 @@
     const last = +ls.get('norex.hubSeen', 0), recent = Date.now() - last < 12 * 3600e3;
     // Touch browsers (especially iOS Safari/PWA) can terminate or freeze during this multi-stage WAAPI scene.
     // Keep the cinematic entrance on pointer/keyboard desktops; mobile follows the link directly.
-    if (mode === 'skip' || me.as === 'guest' || !me.player || innerWidth < 300 || matchMedia('(pointer: coarse)').matches || !Element.prototype.animate) return;   // plain navigation, hub shows the sign-in state
+    if (window.PHOENIX_SAFE_HUB || mode === 'skip' || me.as === 'guest' || !me.player || innerWidth < 300 || !Element.prototype.animate) return;   // plain navigation, hub shows the sign-in state
     e.preventDefault?.(); running = true; btnEl = btn; btn.classList.add('pressing');
     d.documentElement.classList.add('hubfx-on');
     const short = mode === 'short' || (mode === 'auto' && recent);
