@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-09T20:49:45.944Z",
+ "fetchedAt": "2026-11-09T20:57:19.056Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2177,12 +2177,12 @@
   {
    "name": "Alias2604",
    "proPos": "25",
-   "gamesPlayed": "343",
-   "goals": "406",
-   "assists": "226",
+   "gamesPlayed": "344",
+   "goals": "410",
+   "assists": "229",
    "manOfTheMatch": "35",
    "ratingAve": "7.6",
-   "prevGoals": "1",
+   "prevGoals": "4",
    "favoritePosition": "forward"
   },
   {
@@ -2265,9 +2265,9 @@
   {
    "name": "Usman4518",
    "proPos": "14",
-   "gamesPlayed": "275",
+   "gamesPlayed": "276",
    "goals": "212",
-   "assists": "232",
+   "assists": "233",
    "manOfTheMatch": "45",
    "ratingAve": "7.5",
    "prevGoals": "0",
