@@ -82,6 +82,14 @@ try {
     if (!/name="robots"/.test(h)) h = h.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>');
     fs.writeFileSync(p, h); pages++;
   }
+  // The Phoenix locker links to the legacy live member-linking hub. Publish that page and its
+  // classic assets alongside the redesigned site so the route exists under /Phoenix-Fire/.
+  const legacyMembers = path.join(classic, 'members.html');
+  const legacyAssets = path.join(classic, 'assets');
+  if (fs.existsSync(legacyMembers) && fs.existsSync(legacyAssets)) {
+    fs.cpSync(legacyAssets, path.join(out, 'assets'), { recursive: true });
+    fs.copyFileSync(legacyMembers, path.join(out, 'members.html'));
+  } else warn('classic member hub was not generated; members.html will not be published');
   fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
   console.log(`phoenix: ${pages} pages -> ${path.relative(repo, out)}`);
 } finally { fs.rmSync(stage, { recursive: true, force: true }); }
