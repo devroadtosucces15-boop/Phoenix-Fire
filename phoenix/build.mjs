@@ -82,14 +82,21 @@ try {
     if (!/name="robots"/.test(h)) h = h.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>');
     fs.writeFileSync(p, h); pages++;
   }
-  // The Phoenix locker links to the legacy live member-linking hub. Publish that page and its
-  // classic assets alongside the redesigned site so the route exists under /Phoenix-Fire/.
+  // Keep the complete legacy member portal available at squad.html, but make members.html
+  // a Phoenix-native player-claim experience. The claim page talks to the same Phoenix Worker;
+  // no authentication, claim, or manager-approval endpoints are reimplemented here.
   const legacyMembers = path.join(classic, 'members.html');
   const legacyAssets = path.join(classic, 'assets');
   if (fs.existsSync(legacyMembers) && fs.existsSync(legacyAssets)) {
     fs.cpSync(legacyAssets, path.join(out, 'assets'), { recursive: true });
-    fs.copyFileSync(legacyMembers, path.join(out, 'members.html'));
-  } else warn('classic member hub was not generated; members.html will not be published');
+    fs.copyFileSync(legacyMembers, path.join(out, 'squad.html'));
+  } else warn('classic member hub was not generated; squad.html will not be published');
+  const claimTemplate = path.join(stage, 'phoenix', 'claim.html');
+  if (fs.existsSync(claimTemplate)) {
+    let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', config.members.api);
+    if (MOCK) claim = claim.replace('<head>', '<head><script src="phoenix-mock.js"></script>');
+    fs.writeFileSync(path.join(out, 'members.html'), claim);
+  } else warn('Phoenix claim page template missing; members.html will not be published');
   fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
   console.log(`phoenix: ${pages} pages -> ${path.relative(repo, out)}`);
 } finally { fs.rmSync(stage, { recursive: true, force: true }); }
