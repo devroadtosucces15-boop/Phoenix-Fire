@@ -1105,12 +1105,7 @@ if (MAPI) (() => {
   if (session) { applyFlags(baseRole); viewerRole = baseRole; if (flagOn('hubGold', baseRole) && baseRole !== 'owner') document.documentElement.classList.add('nx-no-notify-settings'); } // hubGold: only the owner edits notification settings; everyone else uses their device / Discord's own
   const previewUrl = (role) => { const u = new URL(location.href); u.searchParams.set('previewAs', role || 'off'); return u.pathname + u.search + u.hash; };
   const exitPreviewUrl = () => previewUrl(null);
-  if (previewAs) {
-    const bar = document.createElement('div');
-    bar.className = 'preview-bar';
-    bar.innerHTML = `👁️ Previewing as <b>${esc(ROLE[previewAs]?.[0] || previewAs)}</b> on every page <a href="${esc(exitPreviewUrl())}">Exit preview</a>`;
-    document.body.prepend(bar);
-  }
+  // Preview mode stays active without the persistent top-of-page banner.
   if (err) toast(err === 'not_member' ? 'Members only – you need to be in the NOREX Discord server.' : err === 'cancelled' ? 'Login cancelled.' : 'Discord login failed – try again.', true);
 
   // ---------- Member profiles: hover cards everywhere + member.html (P2.1 / P2.2) ----------
