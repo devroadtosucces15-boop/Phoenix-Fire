@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0705"><meta name="robots" content="noindex,nofollow">
+<title>Claim your player · Phoenix Fire</title>
+<link rel="icon" href="crest-sm.png"><link rel="stylesheet" href="phoenix.css">
+<style>
+:root{color-scheme:dark}body{min-height:100vh}.claim-shell{width:min(760px,calc(100% - 32px));margin:clamp(28px,7vh,72px) auto 64px}.claim-top{display:flex;align-items:center;gap:14px;margin-bottom:28px}.claim-top img{width:58px;height:58px;object-fit:contain}.claim-top small{display:block;color:#d9a06b;letter-spacing:.2em;font-size:10px;font-weight:800}.claim-top b{font-size:18px;letter-spacing:.1em}.claim-panel{padding:clamp(22px,5vw,42px);border:1px solid rgba(243,201,92,.2);border-radius:22px;background:linear-gradient(145deg,rgba(39,24,13,.96),rgba(10,7,5,.98));box-shadow:0 24px 90px #0009}.claim-kicker{color:#ffb36b;font-size:11px;letter-spacing:.2em;font-weight:800}.claim-panel h1{font-size:clamp(32px,7vw,54px);line-height:1.02;margin:12px 0}.claim-lead{color:#c9b9a8;line-height:1.65;max-width:58ch}.claim-status{margin:22px 0;padding:13px 15px;border:1px solid rgba(243,201,92,.2);border-radius:12px;color:#e9d5bc;background:#ffffff08}.claim-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.claim-row select{flex:1 1 240px;min-width:0;padding:14px;border-radius:10px;background:#17100b;color:#fff;border:1px solid #76512b;font:inherit}.claim-action{border:0;border-radius:10px;padding:13px 20px;font:800 13px inherit;letter-spacing:.06em;cursor:pointer;background:var(--ember);color:#1a0d02}.claim-action.secondary{background:#ffffff0a;color:#f3d8b8;border:1px solid #76512b}.claim-action:disabled{opacity:.5;cursor:not-allowed}.claim-links{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:26px;font-size:13px}.claim-links a{color:#f0bc7e}.claim-foot{color:#958271;font-size:12px;margin-top:20px;line-height:1.6}.claim-player{font-size:20px;font-weight:800;color:#ffe0ad}.claim-error{color:#ff9a83}.claim-success{color:#a8e6b8}@media(max-width:520px){.claim-row .claim-action{width:100%}.claim-links{flex-direction:column}}
+</style>
+<script>window.PHOENIX_API='__PHOENIX_API__';</script>
+</head>
+<body>
+<main class="claim-shell">
+  <a class="claim-top" href="index.html" style="color:inherit;text-decoration:none"><img src="crest-sm.png" alt="Phoenix Fire crest"><span><small>PHOENIX FIRE</small><b>PLAYER IDENTITY</b></span></a>
+  <section class="claim-panel">
+    <div class="claim-kicker">THE SQUAD STARTS WITH YOU</div>
+    <h1>Claim your <em>player.</em></h1>
+    <p class="claim-lead">Connect your Discord account to your in-game player. Once a Phoenix manager verifies your claim, your player identity will be linked to your profile.</p>
+    <div id="claim-status" class="claim-status" role="status" aria-live="polite">Checking your Discord session…</div>
+    <div id="claim-content"></div>
+    <div class="claim-links"><a href="index.html">← Back to Phoenix Fire</a><a href="squad.html">Open full Squad Hub ↗</a></div>
+    <p class="claim-foot">Only claim a player that belongs to you. Claims are reviewed by Phoenix staff. If the wrong player is already linked, contact a manager rather than submitting another person's identity.</p>
+  </section>
+</main>
+<script>
+(() => {
+ const API=window.PHOENIX_API, KEY='norex_session', status=document.getElementById('claim-status'), content=document.getElementById('claim-content');
+ const getToken=()=>{try{return localStorage.getItem(KEY)}catch{return null}};
+ const decode=t=>JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0))));
+ const hash=new URLSearchParams(location.hash.slice(1));
+ if(hash.get(KEY)){try{localStorage.setItem(KEY,hash.get(KEY))}catch{}}
+ if(hash.has(KEY)||hash.has('norex_error'))history.replaceState(null,'',location.pathname+location.search);
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const session=()=>{try{const token=getToken(),p=decode(token);return p.exp>Date.now()/1000?{...p,token}:null}catch{return null}};
+ const call=async(path,body)=>{const s=session();const r=await fetch(API+path,{method:body?'POST':'GET',cache:'no-store',headers:{...(s?{Authorization:'Bearer '+s.token}:{}),...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Request failed ('+r.status+')');return d};
+ const login=()=>location.href=API+'/auth/login?return='+encodeURIComponent(location.href.split('#')[0]);
+ const button=(label,fn,secondary=false)=>{const b=document.createElement('button');b.className='claim-action'+(secondary?' secondary':'');b.textContent=label;b.type='button';b.onclick=fn;return b};
+ const fail=e=>{status.className='claim-status claim-error';status.textContent=e.message||'Something went wrong. Please try again.'};
+ async function start(){
+  const s=session();
+  if(!s){status.textContent='Sign in with the Discord account that belongs to your Phoenix membership.';content.replaceChildren(button('SIGN IN WITH DISCORD',login));return}
+  status.textContent='Signed in as '+(s.n||'Discord member')+'. Loading your Phoenix player list…';
+  try{
+   const [me,players,pub]=await Promise.all([call('/api/me'),fetch('api/players.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Phoenix player list is unavailable.');return r.json()}),call('/api/public').catch(()=>({claims:{}}))]);
+   const claim=me.claim, squad=(players||[]).filter(p=>p.home).sort((a,b)=>(a.n||'').localeCompare(b.n||''));
+   const taken=pub.claims||{};
+   content.replaceChildren();
+   if(claim?.status==='approved'){
+    status.className='claim-status claim-success';status.textContent='Your Phoenix identity is verified.';
+    const p=document.createElement('div');p.className='claim-player';p.textContent=claim.playerName||claim.player||'Player linked';content.append(p);
+    const note=document.createElement('p');note.className='claim-lead';note.textContent='Your Discord account is linked to this player. If this is incorrect, contact a Phoenix manager.';content.append(note);
+   }else if(claim?.status==='pending'){
+    status.textContent='Your claim is waiting for a Phoenix manager to review it.';
+    const p=document.createElement('p');p.className='claim-player';p.textContent=claim.playerName||claim.player||'Selected player';content.append(p);
+    content.append(button('CANCEL CLAIM',async()=>{try{await call('/api/claim',{cancel:true});location.reload()}catch(e){fail(e)}},true));
+   }else{
+    if(claim&&['rejected','unlinked'].includes(claim.status)){status.textContent='Your previous claim was '+claim.status+'. You can submit a new claim below.'}
+    else status.textContent='Choose your in-game name from the Phoenix squad list.';
+    const row=document.createElement('div');row.className='claim-row';
+    const select=document.createElement('select');select.id='phoenix-player';select.setAttribute('aria-label','Choose your in-game player');
+    const first=document.createElement('option');first.value='';first.textContent='Select your player…';select.append(first);
+    for(const p of squad){const o=document.createElement('option');o.value=p.k;o.textContent=p.n+(taken[p.k]?' · already claimed':'');o.disabled=!!taken[p.k];select.append(o)}
+    row.append(select,button('SUBMIT CLAIM',async()=>{if(!select.value){status.textContent='Choose your player first.';return}try{await call('/api/claim',{player:select.value});status.className='claim-status claim-success';status.textContent='Claim submitted. A Phoenix manager will review it.';content.replaceChildren()}catch(e){fail(e)}}));content.append(row);
+   }
+   const signout=button('SIGN OUT',()=>{try{localStorage.removeItem(KEY)}catch{}location.reload()},true);signout.style.marginTop='18px';content.append(signout);
+  }catch(e){fail(e)}
+ }
+ start();
+})();
+</script>
+</body></html>
