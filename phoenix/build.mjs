@@ -44,8 +44,8 @@ try {
   // Remove only the ribbon from the staged Phoenix shell; keep preview/noindex and live API behaviour intact.
   const uiShell = path.join(stage, 'next/lib/ui.mjs');
   let ui = fs.readFileSync(uiShell, 'utf8');
-  const previewRibbon = /\$\{PREVIEW \? '<div class="prevrib" role="note">PREVIEW · new design · live club data<\\/div>' : ''\}/;
-  if (previewRibbon.test(ui)) fs.writeFileSync(uiShell, ui.replace(previewRibbon, ''));
+  const previewRibbon = "${PREVIEW ? '<div class=\"prevrib\" role=\"note\">PREVIEW · new design · live club data</div>' : ''}";
+  if (ui.includes(previewRibbon)) fs.writeFileSync(uiShell, ui.replace(previewRibbon, ''));
   else warn('Preview ribbon markup changed upstream – inspect the Phoenix shell');
   // 4. overlay: badge crest, icons, 3D crest, theme layer
   for (const f of fs.readdirSync(path.join(here, 'overlay'))) fs.copyFileSync(path.join(here, 'overlay', f), path.join(stage, 'next', f === 'crest.png' ? f : path.join('static', f)));
