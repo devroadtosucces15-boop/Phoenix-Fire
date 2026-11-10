@@ -9,6 +9,7 @@ export const MAX_ATTEMPTS = 3;
 const RETRY_AFTER = 2 * 60e3; // a failed try waits this long before the next one
 const DAY = 86400e3;
 const quotaHit = (e) => /\b4006\b|daily free allocation|neurons/i.test(String(e?.message || e)); // Workers AI free tier used up until 00:00 UTC
+const flagged = (e) => /\b3030\b|flagged/i.test(String(e?.message || e)); // Workers AI safety filter rejected the picture
 const STALE_AFTER = 10 * 60e3; // a "generating" row older than this was abandoned by a dead Worker run
 const REF_MAX = 500; // FLUX.2 wants reference images under 512×512
 
@@ -369,9 +370,11 @@ async function reference(env, bytes, type) {
 // model as an extra reference; without one, the written description below is used on its own.
 export const KIT_KEY = 'cardkit/reference';
 export const KIT_TEXT = 'a white football shirt with broken red vertical stripes, a red collar, a small gold club crest on the chest and a small swoosh-style mark, red shorts with a small crest, white tape on the wrists';
-export const portraitPrompt = (hasKit) =>
-  'Image 0 is the person: preserve their face, hairstyle and hair colour, beard, skin tone, tattoos and expression. '
-  + (hasKit ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${KIT_TEXT}. `)
+// level 0 = full prompt + kit picture; later tries (after the AI's safety filter, error 3030, flagged the result) send fewer
+// and plainer inputs: level 1 drops the kit picture and body details, level 2 is the bare minimum.
+export const portraitPrompt = (hasKit, level = 0) =>
+  (level >= 2 ? 'Image 0 is the person: keep their face, hairstyle and beard. ' : 'Image 0 is the person: preserve their face, hairstyle and hair colour, beard, skin tone and expression. ')
+  + (hasKit && level === 0 ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${KIT_TEXT}. `)
   + 'Draw it as a flat 2D cartoon illustration: clean cel shading, bold uniform black outlines, simple solid colour fills with a few soft shadow shapes, realistic proportions, detailed expressive face with eyebrows, eyes, nose and beard drawn crisply, no gradients, no painterly texture, no 3D render look. '
   + 'Bust portrait: head, neck, shoulders, chest and upper arms, straight-on camera, neutral confident expression, centred with generous margins. '
   + 'No text, no frame, no scenery. The whole background must be one flat, uniform, pure bright green (#00FF00) with no shadow, gradient or floor, so it can be cut out automatically.';
@@ -417,10 +420,11 @@ export async function cutPortrait(env, picture) {
   return { ...picture, cut: false };
 }
 
-async function render(env, bg, pose, photo, portrait = false, kit = null) {
+async function render(env, bg, pose, photo, portrait = false, kit = null, level = 0) {
   if (!env.AI) throw new Error('The AI binding is not connected.');
+  if (level > 0) kit = null; // a second picture of a person is the likeliest thing for the safety filter to trip on
   const form = new FormData();
-  form.append('prompt', portrait ? portraitPrompt(!!kit) : cardPrompt(pose.prompt));
+  form.append('prompt', portrait ? portraitPrompt(!!kit, level) : cardPrompt(pose.prompt));
   form.append('width', String(CARD_SIZE));
   form.append('height', String(CARD_SIZE));
   if (!portrait) form.append('input_image_0', await reference(env, bg.bytes, bg.type), 'background.png');
@@ -458,16 +462,25 @@ async function generateOne(env, r, now) {
     const [bg, photo] = await Promise.all([readAsset(env, bgT?.asset_key), readAsset(env, r.photo_key)]);
     if (r.avatar_enabled !== 0 && (!bg || !poseT)) throw new Error('The chosen background or pose is gone.');
     if (!photo) throw new Error('The photo is gone.');
-    if (r.avatar_enabled !== 0) {
-      const card = await render(env, bg, poseT, photo);
-      resultKey = `cardresult/${hex(16)}.${card.type[1]}`;
-      await env.MEDIA.put(resultKey, card.bytes, { httpMetadata: { contentType: card.type[0] } });
-    }
+    // The portrait is what every card shows, so it is made first. If the AI's safety filter flags it, the same run
+    // retries straight away with plainer inputs (no kit picture, then a minimal prompt) instead of repeating the same request.
     if (r.portrait_enabled === 1) {
       const kit = await readAsset(env, KIT_KEY);
-      const portrait = await cutPortrait(env, await render(env, bg, poseT, photo, true, kit));
+      let picture = null, lastErr = null;
+      for (let level = 0; level <= 2 && !picture; level++) {
+        try { picture = await render(env, bg, poseT, photo, true, kit, level); } catch (e) { lastErr = e; if (!flagged(e)) throw e; console.log('card flagged, trying a plainer prompt', r.id, level); }
+      }
+      if (!picture) throw lastErr;
+      const portrait = await cutPortrait(env, picture);
       portraitKey = `cardresult/${hex(16)}.${portrait.type[1]}`;
       await env.MEDIA.put(portraitKey, portrait.bytes, { httpMetadata: { contentType: portrait.type[0] } });
+    }
+    if (r.avatar_enabled !== 0) {
+      try {
+        const card = await render(env, bg, poseT, photo);
+        resultKey = `cardresult/${hex(16)}.${card.type[1]}`;
+        await env.MEDIA.put(resultKey, card.bytes, { httpMetadata: { contentType: card.type[0] } });
+      } catch (e) { if (!(portraitKey && flagged(e))) throw e; console.log('background card flagged, keeping the portrait only', r.id); } // the portrait alone is enough for every card on the site
     }
     const res = await run(env, "UPDATE card_requests SET status = 'done', published = 0, result_key = ?, portrait_key = ?, started_at = NULL WHERE id = ? AND status = 'generating'", resultKey, portraitKey, r.id);
     if (!res.meta?.changes) { await dropPhoto(env, resultKey); await dropPhoto(env, portraitKey); return 'skipped'; }
@@ -484,6 +497,7 @@ async function generateOne(env, r, now) {
       return 'waiting';
     }
     const final = attempt >= MAX_ATTEMPTS;
+    if (!final) await safely(notifyManagers(env, { icon: '🔁', title: 'A card try failed, retrying', body: `Request #${r.id}, try ${attempt} of ${MAX_ATTEMPTS}: ${clean(e.message, 120)}`, link: 'members.html#cards', ref: `cardtry:${r.id}:${attempt}` }));
     await run(env, "UPDATE card_requests SET status = ?, started_at = ? WHERE id = ? AND status = 'generating'", final ? 'failed' : 'approved', now, r.id);
     if (final) {
       await safely(notify(env, [r.user_id], { type: 'card', icon: '⚠️', title: 'Your card could not be made', body: 'It did not work after 3 tries. A manager has been told and will retry.', link: 'members.html#cards', ref: `card:${r.user_id}:${r.month}` }));

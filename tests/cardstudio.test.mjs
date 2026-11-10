@@ -237,6 +237,27 @@ t('an abandoned claim is retried', (await generateCards(env, { now: T0 + 11 * 60
 await env.DB.prepare("UPDATE card_requests SET status = 'generating', attempts = 3, started_at = ? WHERE id = ?").bind(T0, two.id).run();
 await generateCards(env, { now: T0 + 11 * 60e3 });
 t('a claim that died on the last try is failed, not stuck', (await row(two.id)).status === 'failed');
+
+// the AI safety filter (error 3030) flags the output: the same run retries with plainer inputs instead of repeating itself
+const realRun = env.AI.run;
+let flags = 0, flagAvatar = false;
+env.AI.run = async (model, input) => {
+  const form = await new Response(input.multipart.body, { headers: { 'content-type': input.multipart.contentType } }).formData();
+  const isPortrait = /#00FF00/.test(form.get('prompt'));
+  if (isPortrait ? flags > 0 : flagAvatar) { if (isPortrait) flags--; calls.push({ form, flagged: true }); throw new Error('3030: Your output has been flagged. Please choose another prompt / input image combination'); }
+  calls.push({ form });
+  return { image: outPng.toString('base64') };
+};
+const rearm = () => env.DB.prepare("UPDATE card_requests SET status = 'approved', attempts = 0, started_at = NULL, result_key = NULL, portrait_key = NULL, portrait_enabled = 1 WHERE id = ?").bind(two.id).run();
+await rearm(); calls.length = 0; flags = 2;
+t('flagged output is retried within the same run and succeeds', (await generateCards(env, { now: 5e12 }))[0] === 'done' && (await row(two.id)).status === 'done' && (await row(two.id)).attempts === 1 && !!(await row(two.id)).portrait_key);
+const portraitCalls = calls.filter((c) => /#00FF00/.test(c.form.get('prompt')));
+t('retries are plainer: three portrait tries, no kit picture after the first', portraitCalls.length === 3 && !portraitCalls[1].form.get('input_image_1') && !portraitCalls[2].form.get('input_image_1'));
+await rearm(); flags = 99;
+t('a picture flagged at every level still fails the try', (await generateCards(env, { now: 6e12 }))[0] === 'retry' && (await row(two.id)).status === 'approved');
+await rearm(); flags = 0; flagAvatar = true;
+t('a flagged background card keeps the portrait only', (await generateCards(env, { now: 7e12 }))[0] === 'done' && !!(await row(two.id)).portrait_key && (await row(two.id)).result_key === null);
+env.AI.run = realRun; flagAvatar = false;
 env.AI = realAI;
 
 setFlags({ cardStudio: 'owner' });
