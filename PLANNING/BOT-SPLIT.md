@@ -43,7 +43,7 @@ Tests: clash of 3 strikers for 1 slot; preference vs higher-rated non-asker; no-
 
 ## Rush bot, later
 
-- **Queue manager**: needs the owner's earlier version (code, export or command list) dropped into the repo.
+- **Queue manager**: designed with the owner on 2026-11-10, see `PLANNING/RUSH-QUEUE.md`.
 - **LFG / availability marker**: "available for Rush" posts to the Rush channel tagging the Rush role (never `@everyone`), buttons "I'm in" / "later", auto-expires (default 60 min), per-player cooldown, honours muted alerts, goes through the notification registry. Flags `rushQueue`, `rushLfg`, default owner.
 
 ## Waves
@@ -57,6 +57,6 @@ Tests: clash of 3 strikers for 1 slot; preference vs higher-rated non-asker; no-
 | **MB2** | Preferred position: migration, Discord select, site picker | Claude | Sonnet |
 | **MB4** | Rush goes live: move `rush` and rush files | Claude | Sonnet |
 | **MB5** | Rush LFG | Claude | Sonnet |
-| **MB6** | Queue manager (needs owner's code) | Claude | Opus |
+| **MB6** | Queue manager, spec in `PLANNING/RUSH-QUEUE.md` (owner's design, 2026-11-10) | Claude | Opus |
 
 Branding check for every wave: all replies, embeds, buttons, DMs, cron posts and icons of the new apps use the Phoenix theme (`#e8651a`, Phoenix crest, `phoenix-matchday*` / `phoenix-rush*` icons); add a test that fails on any NOREX name, colour or crest.

@@ -20,7 +20,7 @@ Motto: **Rise. Burn. Repeat.** Phoenix is its own project; NOREX data and compat
 
 - **DJ bots on separate hosting.** The music bots cannot run on the Worker; they need their own host.
 - **Worker URL.** `phoenix-bot.norexunited.workers.dev` answers (2026-11-10: root 200, `/api/rush`, `/api/feed/public` and `/api/live` return empty-but-valid JSON, CORS allows only the Pages origin). Rush, News and Watch render their Phoenix empty states against those real responses. Still decide before the public launch whether it keeps the `norexunited` account host. From any origin other than the Pages site, the browser blocks its API calls (CORS), so the Rush log, news feed and live banner stay in their fallback state when previewed on localhost.
-- **Matchday and Rush apps.** Create them in the Developer Portal (checklist in `bot/README.md`), then waves MB3, MB1, MB2, MB4, MB5, MB6 in `PLANNING/BOT-SPLIT.md`. MB6 (queue manager) needs the owner's earlier code.
+- **Matchday and Rush apps.** Create them in the Developer Portal (checklist in `bot/README.md`), then waves MB3, MB1, MB2, MB4, MB5, MB6 in `PLANNING/BOT-SPLIT.md`. MB6 (queue manager) is specified in `PLANNING/RUSH-QUEUE.md`.
 
 ## What the owner must provide
 
