@@ -67,8 +67,11 @@
       pal.addEventListener('click', (e) => { if (e.target === pal || e.target.closest('.pclose')) closePal(); const a = e.target.closest('a[data-act]'); if (a) { e.preventDefault(); go(results.find((r) => r.act === a.dataset.act)); } });
       pal.querySelector('input').addEventListener('input', drawPal);
     }
-    closeMenu(); pal.hidden = false; pal.querySelector('input').value = ''; drawPal(); pal.querySelector('input').focus({ preventScroll: true });
+    closeMenu(); pal.hidden = false; const input = pal.querySelector('input'); input.value = ''; drawPal();
+    // On touch devices, do not summon the iOS keyboard automatically: let the user tap the field.
+    // This avoids viewport/compositing stalls on long, animated pages while still opening search instantly.
     d.documentElement.classList.add('hdr-lock');
+    if (!matchMedia('(pointer: coarse)').matches) input.focus({ preventScroll: true });
   };
   const closePal = () => { if (pal) pal.hidden = true; d.documentElement.classList.remove('hdr-lock'); };
   d.addEventListener('keydown', (e) => {
