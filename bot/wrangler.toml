@@ -14,12 +14,12 @@ DISCORD_PUBLIC_KEY = "997cfab5315bb5bf6941860ea81b3e80b70c74d2649397f28bf7680540
 # The two lines above are the core app. Extra Discord apps (bot/apps.js, list in bot/README.md) each add their public
 # values here, uncommented, once created in the Developer Portal; their bot tokens are secrets (DISCORD_BOT_TOKEN_<APP>).
 # Interactions Endpoint URL for each: <PUBLIC_URL>/interactions/<app>.
-# DISCORD_APP_ID_STATS = ""
-# DISCORD_PUBLIC_KEY_STATS = ""
-# DISCORD_APP_ID_TOOLS = ""
-# DISCORD_PUBLIC_KEY_TOOLS = ""
-# DISCORD_APP_ID_FUN = ""
-# DISCORD_PUBLIC_KEY_FUN = ""
+DISCORD_APP_ID_STATS = "1569608077748080720"
+DISCORD_PUBLIC_KEY_STATS = "116456e0f11f872ac6dee8c69a1413c0373f5342fd75a09bf89620753dda2ac3"
+DISCORD_APP_ID_TOOLS = "1569608448507650048"
+DISCORD_PUBLIC_KEY_TOOLS = "cb15761d8ecfd62313458aadc9648f5c4f50b612650cb48724b1ffe59f3a5848"
+DISCORD_APP_ID_FUN = "1569608868533637121"
+DISCORD_PUBLIC_KEY_FUN = "68601b9fa1452c857bb903fbfd6a32e91a3c67c754388f39d545ea2e62330d56"
 # Discord server, owner/manager roles and every channel are no longer hardcoded here: they live in the Organization config
 # (Boardroom → Organization, D1 tables discord_servers / discord_roles / discord_channels) and are read by bot/orgconfig.js (withOrgEnv).
 # DISCORD_GUILD_ID, OWNER_ROLE_ID, ADMIN_ROLE_ID and MEMBER_ROLE_ID may still be set as vars/secrets to override the config.
