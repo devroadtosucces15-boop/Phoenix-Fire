@@ -34,7 +34,7 @@
 .hdr-menu .pv button{min-height:36px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line2);color:#fff;font:600 13px Inter;cursor:pointer}.hdr-menu .pv button.on{background:var(--red);border-color:var(--red)}
 .hdr-menu .pout{color:#ff9a92!important}
 /* palette */
-.hdr-pal{position:fixed;inset:0;z-index:9995;background:rgba(4,6,10,.72);backdrop-filter:blur(6px);display:flex;justify-content:center;align-items:flex-start;padding:calc(env(safe-area-inset-top) + 10vh) 12px 12px}
+.hdr-pal{position:fixed;inset:0;z-index:9995;background:rgba(4,6,10,.94);display:flex;justify-content:center;align-items:flex-start;padding:calc(env(safe-area-inset-top) + 10vh) 12px 12px;contain:layout paint;overscroll-behavior:contain;touch-action:pan-y}
 .hdr-pal .pbox{width:min(560px,100%);max-height:min(70dvh,560px);display:flex;flex-direction:column;background:linear-gradient(180deg,#151c2a,#0f151f);border:1px solid var(--line2);border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.7);overflow:hidden}
 .hdr-pal .pin{display:flex;align-items:center;gap:10px;padding:0 8px 0 16px;border-bottom:1px solid var(--line)}
 .hdr-pal input{flex:1;min-width:0;height:54px;background:none;border:0;outline:0;color:#fff;font:500 16px Inter}
