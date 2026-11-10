@@ -56,7 +56,7 @@ Tests: clash of 3 strikers for 1 slot; preference vs higher-rated non-asker; no-
 |---|---|---|---|
 | **MB0** | Plumbing for two more apps | **Done** | – |
 | **MB-own** | Create both applications in the portal, set tokens | Owner (checklist, `bash bot/set-tokens.sh MATCHDAY RUSH`) | – |
-| **MB3** | Layered lineup recommender in `bot/lineuprec.js` (can ship before the split) | Claude | Opus |
+| **MB3** | Layered lineup recommender in `bot/lineuprec.js` (can ship before the split) | **Done 2026-11-10** | Opus |
 | **MB1** | Matchday goes live: move the command set, transition replies, `/matchday create` | Claude | Sonnet |
 | **MB2** | Preferred position: migration, Discord select, site picker | Claude | Sonnet |
 | **MB4** | Rush goes live: move `rush` and rush files | Claude | Sonnet |
