@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-10T20:06:15.336Z",
+ "fetchedAt": "2026-11-10T20:15:42.643Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1902,12 +1902,12 @@
   {
    "name": "rubNiyo",
    "proPos": "25",
-   "gamesPlayed": "93",
-   "goals": "76",
-   "assists": "31",
-   "manOfTheMatch": "9",
-   "ratingAve": "7.7",
-   "prevGoals": "0",
+   "gamesPlayed": "94",
+   "goals": "79",
+   "assists": "32",
+   "manOfTheMatch": "10",
+   "ratingAve": "7.8",
+   "prevGoals": "3",
    "favoritePosition": "forward"
   },
   {
@@ -2122,7 +2122,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "48",
+   "gamesPlayed": "49",
    "goals": "8",
    "assists": "2",
    "manOfTheMatch": "2",
@@ -2243,9 +2243,9 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "89",
+   "gamesPlayed": "90",
    "goals": "35",
-   "assists": "42",
+   "assists": "44",
    "manOfTheMatch": "5",
    "ratingAve": "7.5",
    "prevGoals": "0",
