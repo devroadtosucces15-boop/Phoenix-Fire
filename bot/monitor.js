@@ -2,6 +2,7 @@
 // member database, DMs the owner only when something changes (goes down, or comes back) – never every 10
 // minutes. State lives in KV, not D1, so a D1 outage doesn't also break the monitor's own memory.
 
+import { kvOf } from './kv.js';
 import { message, header, text, footer } from './ui.js';
 import { orgName } from './orgconfig.js';
 
@@ -75,12 +76,12 @@ async function dmOwner(env, content) {
 
 // Cron step: check, and only write/alert when the state actually changed (KV free tier = 1,000 writes/day).
 export async function checkUptime(env) {
-  if (!env.NOREX_KV) return null;
+  if (!kvOf(env)) return null;
   const problems = (await Promise.all([siteCheck(env), dbCheck(env)])).filter(Boolean);
-  const prev = await env.NOREX_KV.get(KEY, 'json');
+  const prev = await kvOf(env).get(KEY, 'json');
   const result = diff(prev, problems, orgName(env));
   if (!result) return prev;
-  await env.NOREX_KV.put(KEY, JSON.stringify(result.state));
+  await kvOf(env).put(KEY, JSON.stringify(result.state));
   await dmOwner(env, result.alert);
   return result.state;
 }

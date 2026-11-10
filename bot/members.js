@@ -10,6 +10,7 @@
 // Data saved by the first (KV-only) version is copied into D1 once, on the first request after the switch.
 // Who may do what: bot/roles.js (can(user, action)).
 
+import { kvOf } from './kv.js';
 import { facesOf } from './faces.js';
 import { panelCounts } from './panel.js';
 import { getLive } from './live.js';
@@ -240,7 +241,7 @@ async function doMigrateKV(env) {
   const got = await run(env, "INSERT OR IGNORE INTO meta (key, value) VALUES ('kv_migrated', 'running')");
   if (!got.meta?.changes) return;
   try {
-    const kv = env.NOREX_KV;
+    const kv = kvOf(env);
     const doc = async (k, fb) => { try { return (kv ? await kv.get(k, 'json') : null) ?? fb; } catch { return fb; } };
     const stmts = [];
     const add = (sql, ...args) => stmts.push(env.DB.prepare(sql).bind(...args));
@@ -1010,13 +1011,13 @@ async function rushMatches(env, where, ...args) {
 }
 // Confirmed matches, cached as one KV document (read by the Matches, player and Stats pages).
 async function getRushPublic(env) {
-  const cached = env.NOREX_KV && (await env.NOREX_KV.get('rush', 'json'));
+  const cached = kvOf(env) && (await kvOf(env).get('rush', 'json'));
   return cached ?? rebuildRush(env);
 }
 async function rebuildRush(env) {
   const matches = (await rushMatches(env, "status = 'confirmed'")).map(({ status, by, at, decidedBy, decidedAt, ...m }) => m);
   const doc = { matches, updated: Date.now() };
-  if (env.NOREX_KV) await env.NOREX_KV.put('rush', JSON.stringify(doc));
+  if (kvOf(env)) await kvOf(env).put('rush', JSON.stringify(doc));
   return doc;
 }
 async function rushQueue(env, me) {
@@ -1130,7 +1131,7 @@ async function rushRoute(p, method, body, me, env, loadSite) {
 // ---------- public data (verified badges on player pages) ----------
 // Cached as one KV document (read on every player page); rebuilt from D1 when a claim or claimed profile changes.
 async function getPublic(env) {
-  const cached = env.NOREX_KV && (await env.NOREX_KV.get('public', 'json'));
+  const cached = kvOf(env) && (await kvOf(env).get('public', 'json'));
   return cached ?? rebuildPublic(env);
 }
 async function rebuildPublic(env) {
@@ -1141,6 +1142,6 @@ async function rebuildPublic(env) {
     country: r.country || undefined,
   }]));
   const doc = { claims, updated: Date.now() };
-  if (env.NOREX_KV) await env.NOREX_KV.put('public', JSON.stringify(doc));
+  if (kvOf(env)) await kvOf(env).put('public', JSON.stringify(doc));
   return doc;
 }

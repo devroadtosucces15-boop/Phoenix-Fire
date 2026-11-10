@@ -95,4 +95,18 @@ const leftovers = [...fs.readdirSync(ROOT + 'next/static').map((f) => 'next/stat
   .filter((f) => /\.(m?js|html)$/.test(f)).filter((f) => /['"`]norex[._](?!session\b|error\b)/.test(src(f).split(MIG).join('')));
 t(`storage: pages write and read only phoenix.* / phoenix_* keys${leftovers.length ? ' – old keys in ' + leftovers.join(', ') : ''}`, leftovers.length === 0);
 
+// ---------- 4. KV binding alias ----------
+const { kvOf } = await import('../bot/kv.js');
+const a = { n: 'new' }, b = { n: 'old' };
+t('kv: PHOENIX_KV is used when bound', kvOf({ PHOENIX_KV: a }) === a && kvOf({ PHOENIX_KV: a, NOREX_KV: b }) === a);
+t('kv: a Worker with only NOREX_KV keeps working', kvOf({ NOREX_KV: b }) === b && kvOf({}) === null);
+const toml = src('bot/wrangler.toml'), bind = (n) => (toml.match(new RegExp(`binding = "${n}"\\nid = "([0-9a-f]+)"`)) || [])[1];
+t('kv: wrangler.toml binds PHOENIX_KV and NOREX_KV to the same namespace', bind('PHOENIX_KV') && bind('PHOENIX_KV') === bind('NOREX_KV'));
+t('kv: no Worker module reads env.NOREX_KV directly', bots.filter((f) => f !== 'kv.js').every((f) => !src('bot/' + f).includes('env.NOREX_KV')));
+await tt('kv: a route writes through PHOENIX_KV when that is the only binding', async () => {
+  const m = new Map(), kvNew = { get: async (k, type) => (m.has(k) ? (type === 'json' ? JSON.parse(m.get(k)) : m.get(k)) : null), put: async (k, v) => m.set(k, v), delete: async (k) => m.delete(k) };
+  const keep = env.NOREX_KV; delete env.NOREX_KV; env.PHOENIX_KV = kvNew;
+  try { const r = await W('/api/public'); return r.status === 200 && m.has('public'); } finally { delete env.PHOENIX_KV; env.NOREX_KV = keep; }
+});
+
 done();

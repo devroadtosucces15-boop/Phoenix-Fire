@@ -5,6 +5,7 @@
 //
 // Env: STREAMS – JSON { twitch: url, youtube: url } copied from config.json → streams by bot.yml.
 
+import { kvOf } from './kv.js';
 import { flagOn } from './roles.js';
 import { message, header, text, sep, footer, buttons } from './ui.js';
 import { orgName } from './orgconfig.js';
@@ -73,11 +74,11 @@ export async function checkLive(env) {
 
 // Cron step: check, and write to KV only when something changed (KV free tier = 1,000 writes/day).
 export async function updateLive(env) {
-  if (!env.NOREX_KV) return null;
+  if (!kvOf(env)) return null;
   const now = await checkLive(env);
-  const prev = await env.NOREX_KV.get('live', 'json');
+  const prev = await kvOf(env).get('live', 'json');
   const same = prev && prev.live === now.live && prev.platform === now.platform && prev.videoId === now.videoId && prev.title === now.title;
-  if (!same) await env.NOREX_KV.put('live', JSON.stringify({ ...now, since: now.live ? (prev?.live && prev.platform === now.platform ? prev.since : Date.now()) : null, at: Date.now() }));
+  if (!same) await kvOf(env).put('live', JSON.stringify({ ...now, since: now.live ? (prev?.live && prev.platform === now.platform ? prev.since : Date.now()) : null, at: Date.now() }));
   if (now.live && !prev?.live) await announceLive(env, now).catch((e) => console.log('live announce failed', e.message)); // E2 – only on off → on
   return now;
 }
@@ -93,21 +94,21 @@ export const livePost = (v, site, env) => message({ accent: 'win', mentions: { p
   buttons([{ label: 'Watch on the site', url: `${site}watch.html` }, { label: v.platform === 'twitch' ? 'Open Twitch' : 'Open YouTube', url: v.url }]),
 ] });
 export async function announceLive(env, v, now = Date.now()) {
-  if (!env.DB || !env.NOREX_KV || !env.DISCORD_BOT_TOKEN || !flagOn(env, { role: 'owner' }, 'liveAnnounce')) return false;
-  const last = await env.NOREX_KV.get('live_announced', 'json');
+  if (!env.DB || !kvOf(env) || !env.DISCORD_BOT_TOKEN || !flagOn(env, { role: 'owner' }, 'liveAnnounce')) return false;
+  const last = await kvOf(env).get('live_announced', 'json');
   if (last && now - last.at < ANNOUNCE_GAP) return false;
   const channel = (await env.DB.prepare("SELECT value FROM meta WHERE key = 'announce_channel'").first())?.value;
   if (!channel) return false;
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
   const r = await postEmbed(env, channel, '', livePost(v, site, env));
   if (!r?.ok) return false;
-  await env.NOREX_KV.put('live_announced', JSON.stringify({ at: now, platform: v.platform }), { expirationTtl: 86400 });
+  await kvOf(env).put('live_announced', JSON.stringify({ at: now, platform: v.platform }), { expirationTtl: 86400 });
   await notifyMembers(env, { type: 'live', title: `🔴 ${orgName(env)} is live`, body: v.title || 'Come and watch', link: 'watch.html', ref: 'live' }).catch(() => {}); // bell + banner; pop-up for members who set Live to "DM + site"
   return true;
 }
 
 export async function getLive(env) {
   const S = streams(env);
-  const cur = (await env.NOREX_KV?.get('live', 'json')) ?? { live: false };
+  const cur = (await kvOf(env)?.get('live', 'json')) ?? { live: false };
   return { ...cur, channels: { twitch: S.twitchUrl, youtube: S.youtubeUrl } };
 }

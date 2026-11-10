@@ -12,6 +12,7 @@
 // account) – check that a real dropped clip transcribes correctly before relying on this; see P11.13 in
 // PLANNING/ROADMAP.md. The model id/input shape follows Cloudflare's documented Workers AI Whisper contract
 // (`{ audio: number[] }` → `{ text }`), same as every other `@cf/...` call in this codebase.
+import { kvOf } from './kv.js';
 import { safely } from './notify.js';
 import { orgName } from './orgconfig.js';
 import { message, header, text, cards } from './ui.js';
@@ -86,7 +87,7 @@ async function postCard(env, channel, msg, art) {
 
 export async function checkVoiceRecap(env, loadSite) {
   const channel = voiceChannel(env);
-  if (!channel || !env.AI || !env.DISCORD_BOT_TOKEN || !env.NOREX_KV) return { posted: false };
+  if (!channel || !env.AI || !env.DISCORD_BOT_TOKEN || !kvOf(env)) return { posted: false };
   let messages;
   try {
     messages = await dget(env, `/channels/${channel}/messages?limit=20`);
@@ -96,9 +97,9 @@ export async function checkVoiceRecap(env, loadSite) {
   }
   const newest = messages.find((m) => (m.attachments ?? []).some(isAudio)); // Discord returns newest-first
   if (!newest) return { posted: false };
-  const last = await env.NOREX_KV.get('voice_last_id');
+  const last = await kvOf(env).get('voice_last_id');
   if (String(newest.id) === last) return { posted: false };
-  await env.NOREX_KV.put('voice_last_id', String(newest.id));
+  await kvOf(env).put('voice_last_id', String(newest.id));
   if (last == null) return { posted: false }; // first run after deploy: remember where to start, don't process history
 
   const clip = newest.attachments.find(isAudio);

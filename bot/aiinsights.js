@@ -8,6 +8,7 @@
 // (mock server has no AI binding), or replies with junk, this falls back to NXScout's own narrative/suggestion
 // text – the feature never renders empty. Cached in KV keyed by game count, so a page view never triggers a
 // fresh AI call – only the next data refresh (more games logged) regenerates it.
+import { kvOf } from './kv.js';
 import { TEXT_MODEL } from './aispike.js';
 import '../web/scout.js';
 
@@ -97,11 +98,11 @@ export async function playerInsights(env, k, { squad, players, mode = 'league' }
   const R = report(k, fromSquad(squad), { tracked: players ?? [], names, mode });
   if (!R.enough) return { enough: false, games: R.games, need: R.need };
   const key = `${KV_PREFIX}${mode}:${k}:${R.games}`; // regenerates only once the game count changes
-  if (env.NOREX_KV) {
-    const cached = await env.NOREX_KV.get(key, 'json').catch(() => null);
+  if (kvOf(env)) {
+    const cached = await kvOf(env).get(key, 'json').catch(() => null);
     if (cached) return { enough: true, name: names[k] ?? k, grp: R.grp, games: R.games, ...cached };
   }
   const out = await generate(env, R);
-  if (env.NOREX_KV) await env.NOREX_KV.put(key, JSON.stringify(out), { expirationTtl: KV_TTL }).catch(() => {});
+  if (kvOf(env)) await kvOf(env).put(key, JSON.stringify(out), { expirationTtl: KV_TTL }).catch(() => {});
   return { enough: true, name: names[k] ?? k, grp: R.grp, games: R.games, ...out };
 }

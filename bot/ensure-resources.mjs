@@ -21,7 +21,8 @@ if (!ns) {
 }
 const file = new URL('./wrangler.toml', import.meta.url);
 const toml = fs.readFileSync(file, 'utf8');
-if (!toml.includes('NOREX_KV')) fs.appendFileSync(file, `\n[[kv_namespaces]]\nbinding = "NOREX_KV"\nid = "${ns.id}"\n`);
+for (const binding of ['PHOENIX_KV', 'NOREX_KV']) // A2: same namespace under the new name and the old one
+  if (!new RegExp(`binding = "${binding}"`).test(fs.readFileSync(file, 'utf8'))) fs.appendFileSync(file, `\n[[kv_namespaces]]\nbinding = "${binding}"\nid = "${ns.id}"\n`);
 console.log('KV ready:', ns.id);
 
 // D1 database for member data. Migrations are applied by the workflow (`wrangler d1 migrations apply`).

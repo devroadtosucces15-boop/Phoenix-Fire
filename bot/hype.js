@@ -11,6 +11,7 @@
 // this never duplicates the existing GitHub Actions result webhook (scripts/fetch.mjs → postToDiscord()).
 // P11.10 site-side placement is a follow-up (see P11.3's note on the same fetch.mjs↔D1 gap) – the recap only
 // posts to Discord for now, same scope cut as match-performance points.
+import { kvOf } from './kv.js';
 import { safely } from './notify.js';
 import { message, header, text, cards, facts, buttons, resultAccent } from './ui.js';
 import { it } from './icons.js';
@@ -62,13 +63,13 @@ async function postHype(env, channel, msg, art) {
 
 export async function checkHype(env, loadSite) {
   const channel = hypeChannel(env);
-  if (!channel || !env.AI || !env.DISCORD_BOT_TOKEN || !env.NOREX_KV) return { posted: false };
+  if (!channel || !env.AI || !env.DISCORD_BOT_TOKEN || !kvOf(env)) return { posted: false };
   const club = await loadSite('club').catch(() => null);
   const m = club?.matches?.[0];
   if (!m) return { posted: false };
-  const last = await env.NOREX_KV.get('hype_last_id');
+  const last = await kvOf(env).get('hype_last_id');
   if (String(m.id) === last) return { posted: false };
-  await env.NOREX_KV.put('hype_last_id', String(m.id));
+  await kvOf(env).put('hype_last_id', String(m.id));
   if (last == null) return { posted: false }; // first run after this ships: remember the current match, don't blast old history
   const [art, recap] = await Promise.all([
     generateArt(env, m.res).catch((e) => { console.log('hype art failed', e.message); return null; }),

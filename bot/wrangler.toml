@@ -65,6 +65,12 @@ new_sqlite_classes = ["HubRoom"]
 tag = "v3"
 new_sqlite_classes = ["ClubRoom"]
 
+# A2: one namespace, two names. PHOENIX_KV is what the code reads first; NOREX_KV stays bound until a deploy
+# with only PHOENIX_KV has been verified (then this second block can go).
+[[kv_namespaces]]
+binding = "PHOENIX_KV"
+id = "9a3cb9d021a441b1994aee02dcb425e9"
+
 [[kv_namespaces]]
 binding = "NOREX_KV"
 id = "9a3cb9d021a441b1994aee02dcb425e9"
