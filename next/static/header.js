@@ -17,26 +17,48 @@
     ['Direct messages & chat', 'Clubhouse · chat room and DMs', '💬', { href: 'hub-clubhouse.html#ch-chat' }, 'chat messages dm direct inbox'],
     ['Ideas & suggestions', 'Clubhouse · suggest something', '💡', { href: 'hub-clubhouse.html#ch-ideas' }, 'ideas suggestions feedback']];
   const items = () => {
+    // Treat the embedded site index as untrusted input: one incomplete player/nav record must
+    // never break the whole header (or the page behind the search dialog).
+    const groups = Array.isArray(N.nav) ? N.nav : [];
+    const roster = Array.isArray(N.players) ? N.players : [];
     const seen = new Set();
-    const menus = (N.nav || []).map((g) => ({ sec: 'Menus', label: g.l, sub: 'Menu · ' + (g.subs || []).slice(0, 3).map((x) => x[1]).join(', '), href: g.href || (g.subs?.[0]?.[0]) || 'index.html', emo: '🧭', score: 1 }));
-    const pages = (N.nav || []).flatMap((g) => (g.subs || []).map(([h, l, ds]) => ({ sec: 'Pages', label: l, sub: `${g.l} · ${ds || ''}`, href: h, emo: '📄', score: 1 }))).filter((i) => !seen.has(i.href) && seen.add(i.href));
-    const people = (N.players || []).map((p) => ({ sec: 'Players', label: p.n, sub: `${p.line || ''} · ${p.ovr ? 'OVR ' + p.ovr : 'unrated'}`, href: `player-${slug(p.k)}.html`, emo: '👤', score: 2 }));
-    const sets = SETTINGS.filter((x) => A?.session || !/alert|chat|feed|messages|ideas/i.test(x[0] + x[1])).map(([label, sub, emo, t, kw]) => ({ sec: 'Settings', label, sub, emo, href: t.href || '#', act: t.act, kw, score: 1 }));
-    return [...people, ...pages, ...menus, ...sets];
+    const menus = groups.filter((g) => g && g.l && g.href).map((g) => ({
+      sec: 'Menus', label: String(g.l), sub: 'Menu · ' + (Array.isArray(g.subs) ? g.subs.slice(0, 3).map((x) => x?.[1]).filter(Boolean).join(', ') : ''),
+      href: String(g.href), emo: '🧭', score: 1
+    }));
+    const pages = groups.flatMap((g) => (Array.isArray(g?.subs) ? g.subs : []).filter((x) => Array.isArray(x) && x[0] && x[1]).map(([h, l, ds]) => ({
+      sec: 'Pages', label: String(l), sub: `${g.l || 'Section'} · ${ds || ''}`, href: String(h), emo: '📄', score: 1
+    }))).filter((i) => !seen.has(i.href) && seen.add(i.href));
+    const people = roster.filter((p) => p && p.n && p.k).map((p) => ({
+      sec: 'Players', label: String(p.n), sub: `${p.line || ''} · ${p.ovr ? 'OVR ' + p.ovr : 'unrated'}`,
+      href: `player-${slug(p.k)}.html`, emo: '👤', score: 2
+    }));
+    const sets = SETTINGS.filter((x) => A?.session || !/alert|chat|feed|messages|ideas/i.test(x[0] + x[1])).map(([label, sub, emo, t, kw]) => ({
+      sec: 'Settings', label, sub, emo, href: t.href || '#', act: t.act, kw, score: 1
+    }));
+    // Each top-level menu keeps its own landing page; child pages keep their own hrefs.
+    return [...people, ...pages, ...menus, ...sets].filter((i) => i.href === '#' ? !!i.act : true);
   };
   const ORDER = ['Players', 'Pages', 'Menus', 'Settings'];
   let sel = 0, results = [];
   const drawPal = () => {
-    const q = pal.querySelector('input').value.trim().toLowerCase();
+    if (!pal) return;
+    const input = pal.querySelector('input'), listEl = pal.querySelector('ul');
+    if (!input || !listEl) return;
+    const q = input.value.trim().toLowerCase();
     const hit = (i) => (i.label + ' ' + i.sub + ' ' + (i.kw || '')).toLowerCase().includes(q);
     const all = items();
-    const list = q ? all.filter(hit).sort((a, b) => (b.label.toLowerCase().startsWith(q) - a.label.toLowerCase().startsWith(q)) || b.score - a.score).slice(0, 40) : [...all.filter((i) => i.sec === 'Pages').slice(0, 6), ...all.filter((i) => i.sec === 'Settings').slice(0, 3)];
+    const list = q ? all.filter(hit).sort((a, b) => (Number(b.label.toLowerCase().startsWith(q)) - Number(a.label.toLowerCase().startsWith(q))) || b.score - a.score).slice(0, 40) : [...all.filter((i) => i.sec === 'Pages').slice(0, 6), ...all.filter((i) => i.sec === 'Settings').slice(0, 3)];
     results = ORDER.flatMap((sec) => list.filter((i) => i.sec === sec).slice(0, q ? 8 : 9));
     sel = 0;
     let n = 0, last = '';
-    pal.querySelector('ul').innerHTML = results.map((r) => { const h = r.sec !== last ? `<li class="phd" aria-hidden="true">${esc(r.sec)}</li>` : ''; last = r.sec; return `${h}<li><a href="${esc(r.href)}"${r.act ? ` data-act="${r.act}"` : ''} class="${n++ ? '' : 'sel'}"><span class="pe" aria-hidden="true">${r.emo}</span><span><b>${esc(r.label)}</b><small>${esc(r.sub)}</small></span></a></li>`; }).join('') || '<li class="pnone">No matches – try a player, page or setting.</li>';
+    listEl.innerHTML = results.map((r) => { const h = r.sec !== last ? `<li class="phd" aria-hidden="true">${esc(r.sec)}</li>` : ''; last = r.sec; return `${h}<li><a href="${esc(r.href)}"${r.act ? ` data-act="${r.act}"` : ''} class="${n++ ? '' : 'sel'}"><span class="pe" aria-hidden="true">${r.emo}</span><span><b>${esc(r.label)}</b><small>${esc(r.sub)}</small></span></a></li>`; }).join('') || '<li class="pnone">No matches – try a player, page or setting.</li>';
   };
-  const go = (r) => { if (r.act === 'motion') { closePal(); window.NorexMotion?.settings?.(); } else location.href = r.href; };
+  const go = (r) => {
+    if (!r) return;
+    if (r.act === 'motion') { closePal(); window.NorexMotion?.settings?.(); return; }
+    if (typeof r.href === 'string' && r.href && r.href !== '#') location.assign(r.href);
+  };
   const openPal = () => {
     if (!pal) {
       pal = d.createElement('div'); pal.className = 'hdr-pal'; pal.hidden = true; pal.setAttribute('role', 'dialog'); pal.setAttribute('aria-label', 'Search');
