@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-10T20:50:39.252Z",
+ "fetchedAt": "2026-11-10T21:00:41.310Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1979,10 +1979,10 @@
   {
    "name": "zouz94230",
    "proPos": "5",
-   "gamesPlayed": "161",
+   "gamesPlayed": "162",
    "goals": "75",
    "assists": "53",
-   "manOfTheMatch": "20",
+   "manOfTheMatch": "21",
    "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "defender"
@@ -2055,14 +2055,14 @@
   },
   {
    "name": "xEthxnH-_-",
-   "proPos": "14",
-   "gamesPlayed": "37",
+   "proPos": "0",
+   "gamesPlayed": "38",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "0",
    "ratingAve": "7.2",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "Dimantu_",
@@ -2121,14 +2121,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "14",
-   "gamesPlayed": "49",
+   "proPos": "25",
+   "gamesPlayed": "50",
    "goals": "8",
-   "assists": "2",
+   "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.2",
+   "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "Fez-_-Fez",
@@ -2199,7 +2199,7 @@
   {
    "name": "Zorg7",
    "proPos": "5",
-   "gamesPlayed": "239",
+   "gamesPlayed": "240",
    "goals": "64",
    "assists": "68",
    "manOfTheMatch": "26",
@@ -2220,14 +2220,14 @@
   },
   {
    "name": "leo77romano",
-   "proPos": "14",
-   "gamesPlayed": "139",
+   "proPos": "25",
+   "gamesPlayed": "140",
    "goals": "26",
    "assists": "18",
    "manOfTheMatch": "6",
    "ratingAve": "7.3",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "SkattyGB",
