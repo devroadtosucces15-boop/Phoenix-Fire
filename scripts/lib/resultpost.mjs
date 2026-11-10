@@ -15,9 +15,17 @@ import { it } from '../../bot/icons.js';
 // matches: raw EA matches (newest last). drawn: { dir, manifest } of site/cards + site/api/cards.json, or null.
 export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute }) {
   const hook = process.env.DISCORD_WEBHOOK;
-  if (!hook || !matches.length) return;
+  const token = process.env.DISCORD_BOT_TOKEN;
+  if (!matches.length) return;
   const settings = await loadBotSettings(config); // P7.5 – result channel override, ping role, emoji, on/off
   if (!settings.autoPosts.results) return;
+  // The bot path needs only the token + the per-club match_results channel; the webhook secret is just the fallback.
+  const interactive = token && ['members', 'public'].includes(settings.flags?.discordMatch ?? config.features?.discordMatch); // live Boardroom switch first, committed config as the fallback
+  if (!hook && !interactive) {
+    const why = 'no way to post: DISCORD_WEBHOOK is empty and the bot-token path is off (no DISCORD_BOT_TOKEN, or the discordMatch flag is not members/public)';
+    console.warn(`Results NOT posted: ${why}`);
+    return { posted: 0, missing: [{ club: 'all', purpose: 'match_results', why }] };
+  }
   const site = config.siteUrl?.replace(/\/?$/, '/') ?? '';
   const crestCdn = 'https://eafc24.content.easports.com/fifa/fltOnlineAssets/24B23FDE-7835-41C2-87A2-F453DFDB2E82/2024/fcweb/crests/256x256/l';
   const hide = new Set([...(config.hiddenPlayers || []), ...hidden].map((h) => String(h).toLowerCase()));
@@ -81,14 +89,12 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         footer: { text: `${kind} match` },
       } };
     });
-  const token = process.env.DISCORD_BOT_TOKEN;
   // A "role" equal to the server's own ID is @everyone: <@&id> renders as "@@everyone" and pings nobody, so say it the way Discord expects.
   const everyone = !!settings.pingRole && settings.pingRole === settings.guildId;
   const pingContent = everyone ? '@everyone' : settings.pingRole ? `<@&${settings.pingRole}>` : undefined;
   const allowedMentions = everyone ? { parse: ['everyone'] } : settings.pingRole ? { roles: [settings.pingRole] } : { parse: [] };
   const missing = []; // destinations that did not resolve – reported, never replaced by another channel
   const report = (src, why) => { missing.push({ club: src, purpose: 'match_results', why }); console.warn(`Result post skipped for club ${src}: ${why}`); };
-  const interactive = token && ['members', 'public'].includes(settings.flags?.discordMatch ?? config.features?.discordMatch); // live Boardroom switch first, committed config as the fallback
   if (interactive) {
     // Destination per source club: Organization config (club → division → org scope) via the Worker. A club with no match_results destination is reported.
     const cache = new Map();
@@ -105,6 +111,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         item.files.forEach((f, k) => body.set(`files[${k}]`, new Blob([fs.readFileSync(f.path)], { type: 'image/png' }), f.name));
       } else { body = JSON.stringify(payload); headers['Content-Type'] = 'application/json'; }
       const r = await fetch(`https://discord.com/api/v10/channels/${dest.channelId}/messages`, { method: 'POST', headers, body }).catch((e) => ({ ok: false, status: e.message }));
+      console.log(`Result ${item.matchId} (club ${item.src}) → channel ${dest.channelId} [scope ${dest.scope ?? '?'}, guild ${dest.guildId ?? '?'}] → Discord ${r.status}`);
       if (!r.ok) report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`);
     }
   } else {

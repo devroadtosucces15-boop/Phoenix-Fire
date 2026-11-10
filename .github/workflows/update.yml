@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "*/15 * * * *" # GitHub may delay scheduled runs by a few minutes
   workflow_dispatch:
+    inputs:
+      repost:
+        description: "Match IDs to (re)post to Discord, comma-separated (optional)"
+        required: false
+        default: ""
   push:
     branches: [main]
     paths-ignore: ["data/**", "README.md"]
@@ -86,10 +91,11 @@ jobs:
 
       # New results go to Discord once their cards exist. Runs even if the build or the cards failed (then without pictures).
       - name: Post new results to Discord
-        if: always() && hashFiles('.outbox/results.json') != ''
+        if: always() && (hashFiles('.outbox/results.json') != '' || inputs.repost != '')
         continue-on-error: true
         run: node scripts/post-results.mjs
         env:
+          REPOST_MATCH_IDS: ${{ inputs.repost }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
