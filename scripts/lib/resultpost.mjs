@@ -28,6 +28,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       // Source club: the organization club the match was fetched from (derbies: the first of ours in it). Its ID routes the post.
       const src = [m.fetchedFrom, ...orgIds, homeId].find((id) => id && m.clubs[id]);
       const us = m.clubs[src];
+      const kind = m.matchType === 'playoffMatch' ? 'Playoff' : m.matchType === 'friendlyMatch' ? 'Friendly' : 'League';
       const oppId = Object.keys(m.clubs).find((k) => k !== src);
       const opp = m.clubs[oppId];
       const res = us.wins === '1' ? 'W' : us.losses === '1' ? 'L' : 'D';
@@ -52,7 +53,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const fieldImg = pic('field', 'Our players on the pitch with their match ratings');
       const panel = (ping, mentions) => message({ accent: resultAccent(res), ping, mentions, blocks: [
         header({
-          eyebrow: `${clubName} · Match centre · ${m.matchType === 'playoffMatch' ? 'Playoff' : 'League'}`,
+          eyebrow: `${clubName} · Match centre · ${kind}`,
           title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`,
           sub: `<t:${m.timestamp}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[res]}`,
           thumb: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : site ? `${site}assets/crest.png` : undefined,
@@ -77,7 +78,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
           best && { name: '📈 Our top rated', value: `${best.playername} (${num(best.rating).toFixed(1)})`, inline: true },
         ].filter(Boolean),
         timestamp: new Date(m.timestamp * 1000).toISOString(),
-        footer: { text: m.matchType === 'playoffMatch' ? 'Playoff match' : 'League match' },
+        footer: { text: `${kind} match` },
       } };
     });
   const token = process.env.DISCORD_BOT_TOKEN;

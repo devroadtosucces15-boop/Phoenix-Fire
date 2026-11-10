@@ -1352,10 +1352,11 @@ write('api/club.json', JSON.stringify({
   name: clubName(homeId), url: SITE, crest: `${SITE}assets/crest.png`, color: RED, division: ho.currentDivision, skill: ho.skillRating,
   gp: num(ho.gamesPlayed), w: num(ho.wins), d: num(ho.ties), l: num(ho.losses), gf: num(ho.goals), ga: num(ho.goalsAgainst), streak: num(ho.wstreak),
   form: homeMatches.slice(0, 10).map((m) => result(m.clubs[homeId])),
-  matches: homeMatches.slice(0, 25).map((m) => {
+  // Newest first across every mode, friendlies included, so "last result" commands and auto messages see a friendly too; `type` lets league-only readers filter.
+  matches: [...homeMatches.slice(0, 25), ...friendlies.slice(0, 10)].sort((a, b) => b.timestamp - a.timestamp).slice(0, 25).map((m) => {
     const o = oppOf(m, homeId);
     const l = Object.values(m.players?.[homeId] || {});
-    return { id: m.matchId, ts: m.timestamp, opp: clubName(o), oppCrest: crestSrc(o, SITE), gf: num(m.clubs[homeId].goals), ga: num(m.clubs[o].goals), res: result(m.clubs[homeId]),
+    return { id: m.matchId, ts: m.timestamp, type: m.matchType === 'friendlyMatch' ? 'friendly' : m.matchType === 'playoffMatch' ? 'playoff' : 'league', opp: clubName(o), oppCrest: crestSrc(o, SITE), gf: num(m.clubs[homeId].goals), ga: num(m.clubs[o].goals), res: result(m.clubs[homeId]),
       scorers: l.filter((p) => num(p.goals)).map((p) => ({ n: p.playername, g: num(p.goals) })), motm: l.find((p) => p.mom === '1')?.playername ?? null, url: `${SITE}matches/${m.matchId}.html`,
       ps: Object.entries(m.players?.[homeId] || {}).filter(([pid]) => !players.get(pid)?.hidden)
       // ps: per-player line for the bot's "Show my match" card (P7.2) – rating, goals, assists, passes, tackles, shots, saves.

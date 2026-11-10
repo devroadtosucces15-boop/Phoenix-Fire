@@ -47,7 +47,7 @@ async function clubFacts(loadSite) {
     facts: {
       gamesPlayed: games, wins: c.w ?? 0, draws: c.d ?? 0, losses: c.l ?? 0, winRatePct,
       goalsFor: c.gf ?? 0, goalsAgainst: c.ga ?? 0, goalDiff: (c.gf ?? 0) - (c.ga ?? 0),
-      streak: c.streak ?? null, last5Results: (c.matches ?? []).slice(0, 5).map((m) => m.res).join(''),
+      streak: c.streak ?? null, last5Results: (c.matches ?? []).filter((m) => m.type !== 'friendly').slice(0, 5).map((m) => m.res).join(''),
     },
   };
 }
@@ -100,7 +100,7 @@ async function noteFacts(env, loadSite, k) {
 }
 // BE9 last-5: the five most recent league results as a run – record, goals, clean sheets, who scored, newest first.
 async function last5Facts(loadSite) {
-  const ms = ((await loadSite('club')).matches ?? []).slice(0, 5);
+  const ms = ((await loadSite('club')).matches ?? []).filter((m) => m.type !== 'friendly').slice(0, 5);
   if (!ms.length) return null;
   const count = (r) => ms.filter((m) => m.res === r).length;
   const scorers = new Map();

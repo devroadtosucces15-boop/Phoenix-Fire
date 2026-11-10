@@ -155,8 +155,8 @@ async function fetchClub(id) {
         const file = path.join(DATA, 'matches', `${m.matchId}.json`);
         if (fs.existsSync(file)) continue;
         writeJson(file, slimMatch(m, matchType, id)); // the file check above also makes a derby between two of our clubs land once
-        if (matchType === 'friendlyMatch') continue; // no Discord post, no link/discovery from friendlies
-        if (isOrg) newHomeMatches.push({ ...m, fetchedFrom: id });
+        if (matchType === 'friendlyMatch') { if (isOrg) newHomeMatches.push({ ...m, matchType, fetchedFrom: id }); continue; } // friendlies get the auto post, but no link/discovery
+        if (isOrg) newHomeMatches.push({ ...m, matchType, fetchedFrom: id });
         if (isOrg) Object.keys(m.players?.[id] || {}).forEach((pid) => homePlayerIds.add(pid));
         // A home player appearing for another club in an archived match links that club.
         for (const [clubId, list] of Object.entries(m.players || {})) {

@@ -40,7 +40,7 @@ t('leaders.goals is public and top-ranks by goals, highest first', leadersGoals.
 t('unknown leaders stat → null', (await factPackFor('leaders.nope', loadSite)) === null);
 
 // ---------- last-5 + head-to-head fact packs ----------
-const recent = siteJson('club').matches.slice(0, 5);
+const recent = siteJson('club').matches.filter((m) => m.type !== 'friendly').slice(0, 5); // last5 is league + playoff only; friendlies are in club.json for "latest result" readers
 const last5 = await factPackFor('matches.last5', loadSite);
 t('matches.last5 is public and counts the five newest results', last5.tier === 'public' && last5.facts.matches === recent.length
   && last5.facts.wins + last5.facts.draws + last5.facts.losses === recent.length && last5.facts.results === recent.map((m) => m.res).join(''));

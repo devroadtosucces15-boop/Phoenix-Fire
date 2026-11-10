@@ -76,8 +76,11 @@ const results = page('results.html'), matchesIdx = page('matches/index.html'), l
 t('friendly gets its own match page, labelled', /Club friendly – not counted/.test(page(`matches/${fr.matchId}.html`)));
 t('results + matches pages get a Friendly tab with the friendly', [results, matchesIdx].every((h) => /data-key="friendly"/.test(h) && /data-mode="friendly"[^>]*>[\s\S]*9<i>–<\/i>0/.test(h)));
 const leaguePart = (h) => h.split('data-mode="friendly"')[0];
-t('friendly never lands in League lists or totals', !leaguePart(results).includes(fr.matchId) && !leaguePart(matchesIdx).includes(fr.matchId)
-  && !JSON.parse(page('api/club.json')).matches.some((m) => m.id === fr.matchId));
+t('friendly never lands in League lists or totals', !leaguePart(results).includes(fr.matchId) && !leaguePart(matchesIdx).includes(fr.matchId));
+// club.json feeds the bot's /last, results and auto messages: the friendly is there (newest-first, so "latest" sees it) but tagged, and League form stays friendly-free.
+const clubApi = JSON.parse(page('api/club.json'));
+t('friendly is in club.json tagged type "friendly" so the bot sees the newest result', clubApi.matches.find((m) => m.id === fr.matchId)?.type === 'friendly');
+t('club.json form (League) excludes the friendly', clubApi.form.length === clubApi.matches.filter((m) => m.type !== 'friendly').slice(0, 10).length);
 // results.html counts every club of the organization (data/org.json), friendlies excluded.
 const orgIds = new Set([home, ...(JSON.parse(fs.readFileSync(path.join(DATA, 'org.json'), 'utf8')).clubs || []).map((c) => String(c.ea_club_id))]);
 const leagueAll = fs.readdirSync(path.join(DATA, 'matches')).filter((f) => f.endsWith('.json') && f !== `${fr.matchId}.json`).map(read).filter((m) => m.matchType !== 'friendlyMatch' && [...orgIds].some((id) => m.clubs[id]));
