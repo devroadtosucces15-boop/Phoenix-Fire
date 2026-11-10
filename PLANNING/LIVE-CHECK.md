@@ -1,5 +1,22 @@
 # Live check (2026-11-10)
 
+## Re-check, 2026-11-10 evening (Claude, unsandboxed fetch)
+
+| Check | Result |
+|---|---|
+| **L1 manifest colours** | **Fixed.** Live `manifest.webmanifest`: name `PHOENIX FIRE`, `background_color` and `theme_color` both `#0a0705`. Home `theme-color` `#0a0705`. |
+| Home, crest, icons 192/512, apple-touch-icon, `share.png`, `news`, `rush`, `watch`, `player-Bantu%20Vikng`, `robots.txt` | all 200 |
+| Visible NOREX text on home (scripts and styles excluded) | 0 |
+| `noindex` on home | present (closed, as intended) |
+| Worker `GET /` | 200 `Phoenix Fire bot is running` |
+| `/api/rush`, `/api/live` | 200, valid JSON, CORS echoes the Pages origin only |
+| `/api/feed/public` | **404 `{"error":"Not available yet."}`** (earlier today it was 200 with an empty feed). The News page must show its empty state on a 404 as well as on an empty list; owner-side the feed flag/route is simply not serving yet. |
+| `/api/health` without a login | 401 (auth-gated by design) |
+| `POST /interactions/{core,stats,tools,fun,matchday,rush}` unsigned | all six answer 401 `Bad signature`, so the Matchday and Rush apps are live on the Worker |
+| Not checkable from here | that each app's bot token secret is set; authenticated `/api/*` payloads; Discord-side command lists |
+
+The section below is the first pass from earlier today; L1 is closed by the table above.
+
 Fetched with curl, unsandboxed. Site: `https://devroadtosucces15-boop.github.io/Phoenix-Fire/`. Worker: `https://phoenix-bot.norexunited.workers.dev`.
 
 ## Site: passes
