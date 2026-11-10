@@ -28,9 +28,11 @@
     get mode() { return mode; }, get preset() { return pref.p; }, get value() { return ser(pref); }, FX, on,
     // a style ('full' | 'calm' | 'custom') or one effect (set('tilt', false) → Custom). Applies now, for this visit; remember() keeps it.
     set(k, val) { if (FX.includes(k)) { const off = new Set(pref.off); val ? off.delete(k) : off.add(k); pref = { p: 'custom', off }; } else pref = k === 'custom' ? { p: 'custom', off: new Set(pref.off) } : parse(k);
-      ss.set('phoenix.mx', ser(pref)); changed(); },
-    remember() { const v = ser(pref); ls.set('phoenix.mx', v); ls.set('phoenix.motion', null); ls.set('phoenix.insights', null); const A = window.NorexAuth;
-      return A?.token ? A.call('/api/me/prefs', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ motion: v }) }).then(() => true, () => false) : Promise.resolve(false); },
+      ss.set('phoenix.mx', ser(pref)); M.remember(true); changed(); },
+    // every change is saved on this device at once (a phone drops sessionStorage when the app closes); the profile copy follows after a short pause
+    remember(soon) { ls.set('phoenix.mx', ser(pref)); ls.set('phoenix.motion', null); ls.set('phoenix.insights', null);
+      const push = () => { const A = window.NorexAuth; return A?.token ? A.call('/api/me/prefs', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ motion: ser(pref) }) }).then(() => true, () => false) : Promise.resolve(false); };
+      clearTimeout(M._t); if (!soon) return push(); M._t = setTimeout(push, 700); return Promise.resolve(false); },
     setMode(m) { M.set(m === 'off' ? 'custom:' + FX.join(',') : m); M.remember(); },   // old API (dev panel)
     reduced: () => mode !== 'full', get lite() { return mode !== 'full'; }, off: () => mode === 'off',
   };
@@ -142,26 +144,23 @@
     const sh = d.createElement('div'); sh.className = 'mx-sheet'; sh.setAttribute('role', 'dialog'); sh.setAttribute('aria-modal', 'true'); sh.setAttribute('aria-label', 'Motion and effects');
     sh.innerHTML = `<div class="mx-sheet-body"><h3 style="font:700 20px Oswald;letter-spacing:.04em;margin:0">🎬 Motion &amp; effects</h3><p class="muted small" style="margin:6px 0 0">Pick a style, or switch single effects on and off.</p>
 <div class="mx-pre" role="radiogroup" aria-label="Motion style">${PRESETS.map(([v, e, t, s]) => `<button type="button" class="mx-pb" role="radio" data-p="${v}" aria-label="${t}: ${s}"><span class="e" aria-hidden="true">${e}</span><b>${t}</b><small>${s}</small></button>`).join('')}</div>
-<div class="mx-fx" role="group" aria-label="Effects">${fx.map(([k, e, t, s]) => `<button type="button" class="mx-opt mx-sw" role="switch" data-fx="${k}" aria-label="${t}"><span class="e" aria-hidden="true">${e}</span><span><b>${t}</b><small data-s="${s}">${s}</small></span><i class="mx-tg" aria-hidden="true"></i></button>`).join('')}</div>
-<div class="mx-ask" role="group" aria-label="Remember this choice?" hidden><span>Remember this choice?</span><button type="button" class="btn" data-rem="1">Yes</button><button type="button" class="btn ghost" data-rem="0">This visit only</button></div>
+<div class="mx-fxlist" role="group" aria-label="Effects">${fx.map(([k, e, t, s]) => `<button type="button" class="mx-opt mx-sw" role="switch" data-fx="${k}" aria-label="${t}"><span class="e" aria-hidden="true">${e}</span><span><b>${t}</b><small data-s="${s}">${s}</small></span><i class="mx-tg" aria-hidden="true"></i></button>`).join('')}</div>
+<div class="mx-ask done" role="status" aria-live="polite" hidden><span>✅ Saved automatically</span></div>
 <div id="mx-extra"></div><button type="button" class="btn ghost" data-close style="margin-top:16px;width:100%">Done</button></div>`;
     const ask = sh.querySelector('.mx-ask');
     const sync = () => { $$('.mx-pb', sh).forEach((x) => x.setAttribute('aria-checked', x.dataset.p === pref.p));
       $$('.mx-sw', sh).forEach((x) => { const k = x.dataset.fx, sm = x.querySelector('small'); x.setAttribute('aria-checked', on(k));
         sm.textContent = k === 'gyro' && on(k) && G?.needsAsk ? 'Tap to allow motion access on this phone' : sm.dataset.s; }); };
-    const touched = () => { sync(); ask.hidden = false; ask.classList.remove('done'); ask.firstChild.textContent = 'Remember this choice?'; $$('button', ask).forEach((x) => (x.hidden = false)); };
+    const touched = () => { sync(); ask.hidden = false; };
     // iOS only asks for motion access from a tap, so the tap that turns phone tilt on (or picks Full) also asks
     const gyroUp = async () => { if (!G || !on('gyro')) return; if (!(await G.enable())) { M.set('gyro', false); } sync(); };
     sync(); sync.t = setInterval(sync, 1000);   // phone tilt can start/stop behind the sheet (permission, tab switch)
     const close = () => { clearInterval(sync.t); sh.classList.add('out'); setTimeout(() => sh.remove(), 260); d.removeEventListener('keydown', esc); last?.focus?.(); };
     const esc = (e) => { if (e.key === 'Escape') close(); else if (e.key === 'Tab') { const f = $$('button,a[href],input,select,textarea,[tabindex="0"]', sh).filter((x) => !x.disabled && x.offsetParent !== null); if (!f.length) return; const a = f[0], z = f[f.length - 1]; if (!sh.contains(d.activeElement)) { e.preventDefault(); a.focus(); } else if (e.shiftKey && d.activeElement === a) { e.preventDefault(); z.focus(); } else if (!e.shiftKey && d.activeElement === z) { e.preventDefault(); a.focus(); } } }; const last = d.activeElement;
     sh.addEventListener('click', (e) => { if (e.target === sh || e.target.closest('[data-close]')) return close();
-      const p = e.target.closest('.mx-pb'), w = e.target.closest('.mx-sw'), r = e.target.closest('[data-rem]');
+      const p = e.target.closest('.mx-pb'), w = e.target.closest('.mx-sw');
       if (p) { M.set(p.dataset.p); touched(); gyroUp(); }
-      else if (w) { const k = w.dataset.fx; if (k === 'gyro' && on(k) && G?.needsAsk) return gyroUp(); M.set(k, !on(k)); touched(); if (k === 'gyro') gyroUp(); M.haptic(); }
-      else if (r) { const keep = r.dataset.rem === '1'; $$('button', ask).forEach((x) => (x.hidden = true)); ask.classList.add('done');
-        if (keep) { ask.firstChild.textContent = '✅ Saved on this device'; M.remember().then((ok) => { if (ok) ask.firstChild.textContent = '✅ Saved on this device and your profile'; }); }
-        else ask.firstChild.textContent = '👍 Just for this visit'; } });
+      else if (w) { const k = w.dataset.fx; if (k === 'gyro' && on(k) && G?.needsAsk) return gyroUp(); M.set(k, !on(k)); touched(); if (k === 'gyro') gyroUp(); M.haptic(); } });
     d.addEventListener('keydown', esc); b.appendChild(sh); sh.querySelector('.mx-pb[aria-checked=true]')?.focus();
     dispatchEvent(new CustomEvent('norex:settings', { detail: sh.querySelector('#mx-extra') }));
   };
