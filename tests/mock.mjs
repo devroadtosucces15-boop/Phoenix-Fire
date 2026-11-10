@@ -138,7 +138,7 @@ export async function login(id, roles = [], name = 'User ' + id) {
   const st = new URL(r.headers.get('location')).searchParams.get('state');
   const cb = await W(`/auth/callback?code=x&state=${encodeURIComponent(st)}`);
   const hash = new URLSearchParams(cb.headers.get('location').split('#')[1]);
-  return hash.get('norex_session') ?? { error: hash.get('norex_error') };
+  return hash.get('phoenix_session') ?? { error: hash.get('phoenix_error') };
 }
 
 // Hand-made session (skips Discord) – signed with the mock secret.

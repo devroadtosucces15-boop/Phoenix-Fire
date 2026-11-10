@@ -71,7 +71,7 @@
   // ---------- trophy cabinet ----------
   async function cabinet(el, k, call) {
     try {
-      const t = call ? await call(`/api/awards/player?k=${encodeURIComponent(k)}`) : await (await fetch(`${MAPI}/api/awards/player?k=${encodeURIComponent(k)}`, { cache: 'no-store', headers: (() => { const s = ls.get('norex_session'); return s ? { Authorization: `Bearer ${s}` } : {}; })() })).json();
+      const t = call ? await call(`/api/awards/player?k=${encodeURIComponent(k)}`) : await (await fetch(`${MAPI}/api/awards/player?k=${encodeURIComponent(k)}`, { cache: 'no-store', headers: (() => { const s = (ls.get('phoenix_session') || ls.get('norex_session')); return s ? { Authorization: `Bearer ${s}` } : {}; })() })).json();
       if (!t.total) return;
       el.insertAdjacentHTML('beforeend', `<div class="aw-cabinet"><b>🏆 Trophy cabinet <em>${t.total}</em></b><div>${t.counts.map((c) => `<span class="aw-trophy" data-tip="${esc(c.name)}"><i>${esc(c.icon)}</i>${esc(c.name)}${c.n > 1 ? ` <em>×${c.n}</em>` : ''}</span>`).join('')}</div></div>`);
     } catch {}

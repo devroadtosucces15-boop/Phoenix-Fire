@@ -25,12 +25,12 @@
 </main>
 <script>
 (() => {
- const API=window.PHOENIX_API, KEY='norex_session', status=document.getElementById('claim-status'), content=document.getElementById('claim-content');
- const getToken=()=>{try{return localStorage.getItem(KEY)}catch{return null}};
+ const API=window.PHOENIX_API, KEY='phoenix_session',OLD='norex_session', status=document.getElementById('claim-status'), content=document.getElementById('claim-content');
+ const getToken=()=>{try{return localStorage.getItem(KEY)||localStorage.getItem(OLD)}catch{return null}};
  const decode=t=>JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0))));
  const hash=new URLSearchParams(location.hash.slice(1));
- if(hash.get(KEY)){try{localStorage.setItem(KEY,hash.get(KEY))}catch{}}
- if(hash.has(KEY)||hash.has('norex_error'))history.replaceState(null,'',location.pathname+location.search);
+ if(hash.get(KEY)||hash.get(OLD)){try{localStorage.setItem(KEY,hash.get(KEY)||hash.get(OLD))}catch{}}
+ if(hash.has(KEY)||hash.has(OLD)||hash.has('phoenix_error')||hash.has('norex_error'))history.replaceState(null,'',location.pathname+location.search);
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const session=()=>{try{const token=getToken(),p=decode(token);return p.exp>Date.now()/1000?{...p,token}:null}catch{return null}};
  const call=async(path,body)=>{const s=session();const r=await fetch(API+path,{method:body?'POST':'GET',cache:'no-store',headers:{...(s?{Authorization:'Bearer '+s.token}:{}),...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Request failed ('+r.status+')');return d};
@@ -63,7 +63,7 @@
     for(const p of squad){const o=document.createElement('option');o.value=p.k;o.textContent=p.n+(taken[p.k]?' · already claimed':'');o.disabled=!!taken[p.k];select.append(o)}
     row.append(select,button('SUBMIT CLAIM',async()=>{if(!select.value){status.textContent='Choose your player first.';return}try{await call('/api/claim',{player:select.value});status.className='claim-status claim-success';status.textContent='Claim submitted. A Phoenix manager will review it.';content.replaceChildren()}catch(e){fail(e)}}));content.append(row);
    }
-   const signout=button('SIGN OUT',()=>{try{localStorage.removeItem(KEY)}catch{}location.reload()},true);signout.style.marginTop='18px';content.append(signout);
+   const signout=button('SIGN OUT',()=>{try{localStorage.removeItem(KEY);localStorage.removeItem(OLD)}catch{}location.reload()},true);signout.style.marginTop='18px';content.append(signout);
   }catch(e){fail(e)}
  }
  start();

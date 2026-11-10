@@ -62,7 +62,7 @@
   // BE3 live Dugout: the line-up builder listens on room 'lineup:<id>' (bot/clubroom.js via /api/events/<id>/lineup/ws).
   // A nudge says only *what* changed, so the builder re-reads the schedule. Managers only; no session = no socket.
   function openLineupLive(id, onNudge) {
-    const tok = (() => { try { return localStorage.getItem('norex_session'); } catch { return null; } })();
+    const tok = (() => { try { return (localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session')); } catch { return null; } })();
     if (!tok || !MAPI || !window.WebSocket) return () => {};
     let sock = null, ping = null, retry = null, closed = false, opened = false;
     const connect = () => {
@@ -409,7 +409,7 @@ ${S.canManage ? `<div class="rp-share"><b>📣 Share it</b> <small class="muted"
               const blob = await reportPosterBlob(e, r);
               status.textContent = 'Uploading…';
               const res = await fetch(`${MAPI}/api/events/report/poster?id=${e.id}`, {
-                method: 'POST', headers: { Authorization: `Bearer ${localStorage.getItem('norex_session') || ''}`, 'Content-Type': 'image/png' }, body: blob,
+                method: 'POST', headers: { Authorization: `Bearer ${(localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session')) || ''}`, 'Content-Type': 'image/png' }, body: blob,
               });
               const d2 = await res.json().catch(() => ({}));
               if (!res.ok) throw new Error(d2.error || 'Upload failed');
@@ -477,7 +477,7 @@ ${S.canManage ? `<div class="rp-share"><b>📣 Share it</b> <small class="muted"
   // ================= home page strip =================
   async function next(el) {
     try {
-      const s = (() => { try { return localStorage.getItem('norex_session'); } catch { return null; } })();
+      const s = (() => { try { return (localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session')); } catch { return null; } })();
       const r = await fetch(`${MAPI}/api/events/public`, { cache: 'no-store', headers: s ? { Authorization: `Bearer ${s}` } : {} });
       if (!r.ok) return;
       const e = (await r.json()).events?.[0];

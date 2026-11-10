@@ -19,7 +19,7 @@
 
   async function home(el) {
     try {
-      const s = (() => { try { return localStorage.getItem('norex_session'); } catch { return null; } })();
+      const s = (() => { try { return (localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session')); } catch { return null; } })();
       const r = await fetch(`${MAPI}/api/hotw/public`, { cache: 'no-store', headers: s ? { Authorization: `Bearer ${s}` } : {} });
       if (!r.ok) return;
       const w = (await r.json()).last;

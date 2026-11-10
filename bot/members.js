@@ -510,21 +510,23 @@ async function callback(url, env) {
   const state = await unseal(env, url.searchParams.get('state'));
   if (!state) return new Response('Login expired – please try again.', { status: 400 });
   const back = (hash) => Response.redirect(`${state.r.split('#')[0]}#${hash}`, 302);
+  // A2 dual-write: phoenix_* is the key, the old name rides along until every cached page has the new reader
+  const err = (code) => back(`phoenix_error=${code}&norex_error=${code}`);
   const code = url.searchParams.get('code');
-  if (!code) return back('norex_error=cancelled');
+  if (!code) return err('cancelled');
 
   const tok = await fetch('https://discord.com/api/v10/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: env.DISCORD_APP_ID, client_secret: env.DISCORD_CLIENT_SECRET, grant_type: 'authorization_code', code, redirect_uri: `${url.origin}/auth/callback` }),
   }).then((r) => r.json());
-  if (!tok.access_token) return back('norex_error=discord');
+  if (!tok.access_token) return err('discord');
   const auth = { Authorization: `Bearer ${tok.access_token}` };
   const user = await fetch('https://discord.com/api/v10/users/@me', { headers: auth }).then((r) => r.json());
   const memberRes = await fetch(`https://discord.com/api/v10/users/@me/guilds/${env.DISCORD_GUILD_ID}/member`, { headers: auth });
-  if (!memberRes.ok) return back('norex_error=not_member');
+  if (!memberRes.ok) return err('not_member');
   const member = await memberRes.json();
-  if (env.MEMBER_ROLE_ID && !member.roles?.includes(env.MEMBER_ROLE_ID)) return back('norex_error=not_member');
+  if (env.MEMBER_ROLE_ID && !member.roles?.includes(env.MEMBER_ROLE_ID)) return err('not_member');
 
   const avatar = member.avatar
     ? `https://cdn.discordapp.com/guilds/${env.DISCORD_GUILD_ID}/users/${user.id}/avatars/${member.avatar}.png?size=128`
@@ -547,7 +549,7 @@ async function callback(url, env) {
   await log(env, me, 'login', admin ? `as ${role}` : '');
   await safely(saveConnections(env, user.id, auth).then(() => flagOn(env, { role }, 'platformLink') && autoApprove(env, user.id, loadSiteFor(env)))); // P2.4
   const session = await seal(env, { ...me, role, adm: admin, exp: Math.floor(Date.now() / 1000) + (admin ? 7 : 30) * DAY });
-  return back(`norex_session=${session}`);
+  return back(`phoenix_session=${session}&norex_session=${session}`);
 }
 
 // Role from the session (Discord roles at login) + `claimed` if the member's claim is approved right now.

@@ -1061,17 +1061,19 @@ ${shape(a, 'var(--red)')}${shape(b, '#94a3b8')}</svg>`;
 // ================= Members: Discord login, Squad Hub, manager portal, verified badges =================
 const MAPI = document.body.dataset.api;
 if (MAPI) (() => {
-  const KEY = 'norex_session';
+  const KEY = 'phoenix_session', OLD = 'norex_session'; // A2: the old key is still read
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const hash = new URLSearchParams(location.hash.slice(1));
-  if (hash.get('norex_session')) ls.set(KEY, hash.get('norex_session'));
-  const err = hash.get('norex_error');
-  if (hash.has('norex_session') || err) history.replaceState(null, '', location.pathname + location.search);
+  const fresh = hash.get(KEY) || hash.get(OLD);
+  if (fresh) ls.set(KEY, fresh);
+  else if (!ls.get(KEY) && ls.get(OLD)) ls.set(KEY, ls.get(OLD)); // a sign-in from before the rename carries over once
+  const err = hash.get('phoenix_error') || hash.get('norex_error');
+  if (hash.has(KEY) || hash.has(OLD) || err) history.replaceState(null, '', location.pathname + location.search);
   // Session payload is base64url UTF-8 JSON – decode bytes properly so names with any characters show correctly.
   const decode = (t) => JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))));
   const session = (() => { try { const t = ls.get(KEY); const p = decode(t); return p.exp > Date.now() / 1000 ? { token: t, ...p } : null; } catch { return null; } })();
-  if (!session) ls.set(KEY, null);
-  const logout = () => { ls.set(KEY, null); ls.set('norex_me', null); ls.set('norex_preview_as', null); location.href = `${BASE}index.html`; };
+  if (!session) { ls.set(KEY, null); ls.set(OLD, null); }
+  const logout = () => { ls.set(KEY, null); ls.set(OLD, null); ls.set('norex_me', null); ls.set('norex_preview_as', null); location.href = `${BASE}index.html`; };
   const loginUrl = () => `${MAPI}/auth/login?return=${encodeURIComponent(location.href.split('#')[0])}`;
   // BE5 – Boardroom "preview as": a manager/owner can add ?previewAs=member (…claimed / guest) to any URL
   // to see the site (and the member API) as that lower role. Never lets them escalate. The Worker
@@ -2099,7 +2101,7 @@ for (const bar of $$('[data-cal]')) {
 // stream on the home page. Guarded by the `liveBanner` flag (the Worker answers 404 when it's off for the viewer).
 const liveBar = $('.live-bar');
 if (MAPI && liveBar && flagOn('liveBanner', viewerRole)) (() => {
-  const token = (() => { try { return localStorage.getItem('norex_session'); } catch { return null; } })();
+  const token = (() => { try { return (localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session')); } catch { return null; } })();
   const embed = $('.live-embed');
   let shown = '';
   const draw = (d) => {

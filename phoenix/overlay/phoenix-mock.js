@@ -7,8 +7,9 @@
   const role = ['guest', 'member', 'owner'].includes(L.get('norex.as')) ? L.get('norex.as') : 'owner';
   const b64u = (o) => btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   const exp = Math.floor(Date.now() / 1000) + 30 * 86400;
-  if (role === 'guest') L.set('norex_session', null);
-  else L.set('norex_session', b64u(role === 'owner' ? { u: '111', n: 'Phoenix Owner', a: '', role: 'owner', adm: 1, exp } : { u: '222', n: 'Skye Calder', a: '', role: 'member', exp }) + '.mock');
+  L.set('norex_session', null); // A2: the mock signs in under the new key only
+  if (role === 'guest') L.set('phoenix_session', null);
+  else L.set('phoenix_session', b64u(role === 'owner' ? { u: '111', n: 'Phoenix Owner', a: '', role: 'owner', adm: 1, exp } : { u: '222', n: 'Skye Calder', a: '', role: 'member', exp }) + '.mock');
   L.set('norex.viewas', null);
   const real = window.fetch.bind(window); let fix = null;
   const load = () => fix || (fix = real(new URL('phoenix-api.json', document.currentScript?.src || location.href).href).then((r) => r.json()).catch(() => ({})));

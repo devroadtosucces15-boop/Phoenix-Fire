@@ -10,7 +10,7 @@
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const BASE = document.body.dataset.base || '';
   if (!$('link[href$="social.css"]')) document.head.append(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: `${BASE}assets/social.css` }));
-  const myName = () => { try { const t = localStorage.getItem('norex_session'); return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0)))).n; } catch { return 'You'; } };
+  const myName = () => { try { const t = (localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session')); return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0)))).n; } catch { return 'You'; } };
 
   // ---------- reactions ----------
   const tip = (s, e) => { const w = s.who?.[e] ?? []; return w.join(', ') + (s.reacts[e] > w.length ? ` +${s.reacts[e] - w.length}` : ''); };

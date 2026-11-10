@@ -329,7 +329,7 @@ ${e ? `<div class="dg-top"><section class="card dg-sec dg-av">${available(e, who
   function listen(e) {
     if (live?.id === e?.id) return;
     live?.close(); live = null; D.live = false;
-    const api = document.body.dataset.api, tok = (() => { try { return localStorage.getItem('norex_session'); } catch { return null; } })();
+    const api = document.body.dataset.api, tok = (() => { try { return (localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session')); } catch { return null; } })();
     if (!e || !api || !tok || !window.WebSocket) return;
     let sock = null, ping = null, retry = null, closed = false, wait = null, opened = false;
     const close = () => { closed = true; clearInterval(ping); clearTimeout(retry); clearTimeout(wait); try { sock?.close(); } catch { /* already closed */ } };

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const RANK = { guest: 0, member: 1, claimed: 2, manager: 3, owner: 4 };
   const session = (() => {
     try {
-      const t = localStorage.getItem('norex_session');
+      const t = (localStorage.getItem('phoenix_session') || localStorage.getItem('norex_session'));
       const p = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))));
       return p.exp > Date.now() / 1000 ? { token: t, ...p } : null;
     } catch { return null; }

@@ -25,7 +25,7 @@ try {
 
   // ---- fill the Worker's database with plausible club life (best effort: a refused call is just skipped) ----
   const loc = (await fetch(`${BASE}/auth/login?return=${encodeURIComponent(BASE + '/index.html')}`, { redirect: 'manual' })).headers.get('location');
-  const tok = new URLSearchParams(loc.split('#')[1]).get('norex_session');
+  const tok = new URLSearchParams(loc.split('#')[1]).get('phoenix_session');
   const post = (p, b, t = tok, ip = '9.9.9.9') => fetch(BASE + p, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t, 'CF-Connecting-IP': ip }, body: JSON.stringify(b) }).then((r) => r.status).catch(() => 0);
   const day = (n) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10), pl = (players.players || players), ok = [];
   const S = async (label, p, b, t, ip) => { const s = await post(p, b, t, ip); ok.push(`${label}:${s}`); };
