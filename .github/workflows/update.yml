@@ -12,6 +12,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  deployments: read # lets pages-unstick.sh find an unfinished Pages deployment
 
 concurrency:
   group: update-site
@@ -20,10 +21,10 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30 # room for one deploy retry
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.deploy.outputs.page_url || steps.deploy_retry.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -102,9 +103,31 @@ jobs:
           path: site
           name: github-pages-${{ github.run_attempt }}
 
+      # GitHub sometimes leaves a Pages deployment stuck ("syncing_files") and then refuses every later deploy until it is
+      # cancelled. Clear any leftover first; if the deploy still fails, clear again, wait for GitHub, and retry once.
+      - name: Clear a stuck Pages deployment
+        if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: bash .github/scripts/pages-unstick.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - id: deploy
         uses: actions/deploy-pages@v4
         if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+        continue-on-error: true
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
+          timeout: 360000 # a stuck deploy fails here after 6 min and gets the retry below
+
+      - name: Clear the queue again before retrying
+        if: steps.deploy.outcome == 'failure'
+        run: bash .github/scripts/pages-unstick.sh --wait
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - id: deploy_retry
+        uses: actions/deploy-pages@v4
+        if: steps.deploy.outcome == 'failure'
         with:
           artifact_name: github-pages-${{ github.run_attempt }}
 
