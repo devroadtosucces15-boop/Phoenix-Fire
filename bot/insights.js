@@ -413,7 +413,7 @@ async function dmOwners(env, report) {
     const ch = await post('/users/@me/channels', { recipient_id: id }).then((r) => r.json()).catch(() => null);
     if (!ch?.id) continue;
     const [first, ...rest] = reportMessages(report, site, env);
-    const intro = { type: 10, content: '📬 **Your weekly Club Intelligence report** – run **/insights** in the server any time for a fresh one.' };
+    const intro = { type: 10, content: '📬 **Your weekly Club Intelligence report** – run **/intel** in the server any time for a fresh one.' };
     for (const m of [{ ...first, components: [intro, ...first.components] }, ...rest]) {
       await post(`/channels/${ch.id}/messages`, m).catch((e) => console.log('insights DM failed', e.message));
     }

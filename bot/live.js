@@ -12,6 +12,7 @@ import { orgName, channelFor } from './orgconfig.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
 import { notifyMembers } from './notify.js';
+import { streamAlertsOn } from './streamalerts.js';
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const OFF = { live: false };
@@ -94,7 +95,7 @@ export const livePost = (v, site, env) => message({ accent: 'win', mentions: { p
   buttons([{ label: 'Watch on the site', url: `${site}watch.html` }, { label: v.platform === 'twitch' ? 'Open Twitch' : 'Open YouTube', url: v.url }]),
 ] });
 export async function announceLive(env, v, now = Date.now()) {
-  if (!env.DB || !kvOf(env) || !env.DISCORD_BOT_TOKEN || !flagOn(env, { role: 'owner' }, 'liveAnnounce')) return false;
+  if (!env.DB || !kvOf(env) || !env.DISCORD_BOT_TOKEN || !flagOn(env, { role: 'owner' }, 'liveAnnounce') || streamAlertsOn(env)) return false; // /streamalerts replaces this channel post when on
   const last = await kvOf(env).get('live_announced', 'json');
   if (last && now - last.at < ANNOUNCE_GAP) return false;
   const channel = await channelFor(env, 'live_alerts');

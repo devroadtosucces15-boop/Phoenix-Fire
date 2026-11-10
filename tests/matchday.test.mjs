@@ -13,24 +13,24 @@ import { answerEvents } from '../bot/events.js';
 
 const DAY = 864e5;
 // ---------- the command map ----------
-const MOVED = ['host', 'schedule', 'nextevent', 'availability', 'lineup', 'remind', 'reminders', 'trial'];
-t('matchday owns the match-day commands, rush owns /rush, /lfg, /queue and /board', MOVED.every((n) => APP_COMMANDS.matchday.includes(n)) && APP_COMMANDS.matchday.includes('matchday') && APP_COMMANDS.rush.join() === 'rush,lfg,queue,board');
+const MOVED = ['host', 'lineup', 'matchday']; // schedule, nextevent and availability are now /matchday schedule | next | who
+t('matchday owns the match-day commands, rush owns /rush, /lfg and /queue', MOVED.every((n) => APP_COMMANDS.matchday.includes(n)) && APP_COMMANDS.rush.join() === 'rush,lfg,queue,rushhelp');
 t('moved commands are off their old apps in the map', !APP_COMMANDS.tools.some((n) => MOVED.includes(n)) && !APP_COMMANDS.stats.includes('rush'));
 t('every moved command remembers where it came from', MOVED.every((n) => MOVED_FROM[n] === 'tools') && MOVED_FROM.rush === 'stats');
-t('new commands are held until their app exists', HELD.has('matchday') && HELD.has('lfg') && !MOVED_FROM.matchday && !MOVED_FROM.lfg);
-t('/matchday has create, checkin and status; /lfg has now, cancel and list', COMMANDS.find((c) => c.name === 'matchday').options.map((o) => o.name).join() === 'create,checkin,status' && COMMANDS.find((c) => c.name === 'lfg').options.map((o) => o.name).join() === 'now,cancel,list');
+t('new commands are held until their app exists', HELD.has('lfg') && HELD.has('queue') && HELD.has('rushladder') && !MOVED_FROM.lfg && !MOVED_FROM.queue);
+t('/matchday has create, checkin and status; /lfg has now, cancel and list', COMMANDS.find((c) => c.name === 'matchday').options.map((o) => o.name).join() === 'create,checkin,status,schedule,next,who' && COMMANDS.find((c) => c.name === 'lfg').options.map((o) => o.name).join() === 'now,cancel,list');
 
 // ---------- nothing changes for members until the apps exist ----------
 const base = { DISCORD_APP_ID: '1', DISCORD_PUBLIC_KEY: 'aa', DISCORD_BOT_TOKEN: 't' };
 const old = { ...base, DISCORD_APP_ID_TOOLS: '3', DISCORD_PUBLIC_KEY_TOOLS: 'cc', DISCORD_APP_ID_STATS: '2', DISCORD_PUBLIC_KEY_STATS: 'bb' }; // today: core + stats + tools
 t('before the apps: moved commands stay on tools / stats', MOVED.every((n) => homeOf(old, n) === 'tools') && homeOf(old, 'rush') === 'stats' && answeringApp(old, 'host') === 'tools');
 t('before the apps: with no tools app they fall back to core', MOVED.every((n) => homeOf(base, n) === 'core') && homeOf(base, 'rush') === 'core');
-t('before the apps: /matchday and /lfg are nowhere', homeOf(old, 'matchday') === null && homeOf(old, 'lfg') === null && !servedBy(old, 'core').has('matchday') && !servedBy(old, 'tools').has('lfg') && answeringApp(old, 'lfg') === 'core');
+t('before the apps: /lfg and /queue are nowhere', homeOf(old, 'queue') === null && homeOf(old, 'lfg') === null && !servedBy(old, 'core').has('lfg') && !servedBy(old, 'tools').has('lfg') && answeringApp(old, 'lfg') === 'core');
 t('before the apps: nothing is on a transition list', movedOnly(old, 'tools').size === 0 && !movedNote(old, 'tools', 'host'));
 
 // ---------- the apps go live ----------
 const live = { ...old, DISCORD_APP_ID_MATCHDAY: '4', DISCORD_PUBLIC_KEY_MATCHDAY: 'dd', DISCORD_APP_ID_RUSH: '5', DISCORD_PUBLIC_KEY_RUSH: 'ee' };
-t('live: moved commands belong to the new apps and new ones switch on', MOVED.every((n) => homeOf(live, n) === 'matchday') && homeOf(live, 'rush') === 'rush' && homeOf(live, 'matchday') === 'matchday' && homeOf(live, 'lfg') === 'rush');
+t('live: moved commands belong to the new apps and new ones switch on', MOVED.every((n) => homeOf(live, n) === 'matchday') && homeOf(live, 'rush') === 'rush' && homeOf(live, 'lfg') === 'rush');
 t('live: the old apps no longer serve them', !servedBy(live, 'tools').has('host') && !servedBy(live, 'stats').has('rush'));
 t('live without a date: no transition window, old apps drop the commands at once', registeredBy(live, 'tools').size === servedBy(live, 'tools').size && !inGrace(live, 'matchday'));
 const since = Date.parse('2026-11-20T00:00:00Z');
@@ -51,7 +51,7 @@ async function send(payload) {
   return (await worker.fetch(new Request('https://bot.example/', { method: 'POST', body, headers: { 'X-Signature-Ed25519': sig, 'X-Signature-Timestamp': ts } }), env, { waitUntil() {} })).json();
 }
 const as = (id, roles = []) => ({ member: { user: { id, username: `u${id}` }, roles }, channel_id: '700100', token: 'tok' });
-t('Worker: /matchday on today\'s core answers "not on this bot"', /not on this bot/.test(plainText((await send({ type: 2, data: { name: 'matchday', options: [{ name: 'status', type: 1 }] }, ...as('900', ['mgr']) })).data)));
+t('Worker: /lfg on today\'s core answers "not on this bot"', /not on this bot/.test(plainText((await send({ type: 2, data: { name: 'lfg', options: [{ name: 'list', type: 1 }] }, ...as('900', ['mgr']) })).data)));
 t('Worker: /host still answers on core when tools is not configured', !/not on this bot/.test(plainText((await send({ type: 2, data: { name: 'host', options: [] }, ...as('801') })).data)));
 
 // ---------- /matchday create ----------

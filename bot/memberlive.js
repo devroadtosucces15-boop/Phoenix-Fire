@@ -11,6 +11,7 @@ import { message, header, text, sep, footer, buttons } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
+import { streamAlertsOn } from './streamalerts.js';
 
 const PER_RUN = 8, UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
@@ -23,9 +24,29 @@ async function page(fetcher, url) {
   return r.ok ? r.text() : '';
 }
 // One member: the first platform that is on air wins (Twitch, then YouTube, then Kick).
+// Twitch's own public GraphQL endpoint (what twitch.tv itself calls): title, viewers, game and preview picture, no credentials.
+// The channel page alone is unreliable from a Worker (Twitch serves it differently there), so this is asked first.
+// → { title, viewers, game, preview } when live, null when offline, undefined when the answer can't be trusted (fall back to the page).
+const TWITCH_WEB_ID = 'kimne78kx3ncx6brgo4mv6wki5h1ko';
+export async function twitchGql(fetcher, login) {
+  try {
+    const r = await fetcher('https://gql.twitch.tv/gql', { method: 'POST', headers: { 'Client-ID': TWITCH_WEB_ID, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: `query{user(login:${JSON.stringify(String(login))}){stream{type title viewersCount game{name} previewImageURL(width:1280,height:720)}}}` }) });
+    if (!r.ok) return undefined;
+    const d = await r.json();
+    if (!d?.data) return undefined;
+    const s = d.data.user?.stream;
+    return s?.type === 'live' ? { title: String(s.title ?? '').slice(0, 140), viewers: Number(s.viewersCount) || 0, game: String(s.game?.name ?? '').slice(0, 60), preview: s.previewImageURL || null } : null;
+  } catch { return undefined; }
+}
 export async function liveOf(profile, fetcher = fetch) {
   const tries = [];
-  if (profile.twitch) tries.push(page(fetcher, `https://www.twitch.tv/${profile.twitch}`).then(parseTwitch).then((r) => r.live && { platform: 'twitch', url: `https://www.twitch.tv/${profile.twitch}`, title: r.title }));
+  if (profile.twitch) {
+    const url = `https://www.twitch.tv/${profile.twitch}`;
+    tries.push(twitchGql(fetcher, profile.twitch).then((g) => (g === undefined
+      ? page(fetcher, url).then(parseTwitch).then((r) => r.live && { platform: 'twitch', url, title: r.title })
+      : g && { platform: 'twitch', url, ...g })));
+  }
   if (profile.youtube) {
     const base = `https://www.youtube.com/${profile.youtube}`;
     tries.push(page(fetcher, `${base}/live`).then(parseYouTube).then((r) => r.live && { platform: 'youtube', url: `https://www.youtube.com/watch?v=${r.videoId}`, title: r.title }));
@@ -67,7 +88,7 @@ export async function memberLiveCron(env, now = Date.now(), fetcher = fetch) {
     await env.DB.prepare(`INSERT INTO member_live (user_id, platform, url, title, since, at, announced_at) VALUES (?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT (user_id) DO UPDATE SET platform = excluded.platform, url = excluded.url, title = excluded.title, at = excluded.at, since = ?, announced_at = ?`)
       .bind(m.user_id, found.platform, found.url, found.title ?? '', now, now, null, sameStream ? cur.since : now, sameStream ? cur.announced_at : null).run();
-    if (!(sameStream && cur.announced_at) && channel && env.DISCORD_BOT_TOKEN) {
+    if (!streamAlertsOn(env) && !(sameStream && cur.announced_at) && channel && env.DISCORD_BOT_TOKEN) {
       const r = await postEmbed(env, channel, '', livePanel({ ...found, user_id: m.user_id, name: m.name }, env)).catch(() => null);
       if (r?.ok) { await env.DB.prepare('UPDATE member_live SET announced_at = ? WHERE user_id = ?').bind(now, m.user_id).run(); posted++; }
     }

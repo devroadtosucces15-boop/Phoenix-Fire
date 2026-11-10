@@ -30,7 +30,8 @@ import { scoreDue } from './predict.js';
 import { eventButton, playButton, memberCommand, memberOf, MEMBER_COMMANDS } from './botcmds.js';
 import { lfgCommand, lfgButton, lfgExpire, LFG_ID } from './lfg.js';
 import { queueCommand, queueInteraction, queueTick, RQ_ID } from './rushqueue.js';
-import { boardCommand } from './rushscan.js';
+import { unalias } from './merged.js';
+import { boardCommand, seasonCardCommand, seasonCardButton, SEASON_BUTTON } from './rushscan.js';
 import { prefPosSelect, PREF_ID } from './prefpos.js';
 import { panelInteraction, PANEL_ID } from './panel.js';
 import { insightsCron, insightsNow, reportMessages } from './insights.js';
@@ -56,6 +57,8 @@ import { message, notice, header, cards, facts, text, sep, side, thumb, label, f
 import { it } from './icons.js';
 import { playerFaces } from './faces.js';
 import { zoneChoices } from './host.js';
+import { HELP_COMMANDS, HELP_BUTTON, helpCommand, helpButton } from './help.js';
+import { STREAM_COMMANDS, streamCommand, streamAlertsCron } from './streamalerts.js';
 import { WATCH_COMMANDS, WATCH_BUTTON, watchCommand, watchButton, watchlistCron } from './watchlist.js';
 import { DISCOVERY_COMMANDS, DISCOVERY_BUTTON, discoveryCommand, discoveryButton } from './discoveries.js';
 import { FUN_COMMANDS, FUN_BUTTON, funCommand, funButton, birthdayCheck } from './fun.js';
@@ -90,6 +93,7 @@ export default {
     if (flagOn(env, { role: 'owner' }, 'reminders')) ctx.waitUntil(remindersCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('reminders failed', e.message))); // E3 gentle nudges
     if (flagOn(env, { role: 'owner' }, 'rushLfg')) ctx.waitUntil(lfgExpire(env).catch((e) => console.log('rush lfg expiry failed', e.message))); // MB5 calls past their time stop taking answers
     if (flagOn(env, { role: 'owner' }, 'memberLive')) ctx.waitUntil(memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
+    ctx.waitUntil(streamAlertsCron(env).catch((e) => console.log('stream alerts failed', e.message))); // /streamalerts sources (flag streamAlerts checked inside)
     if (flagOn(env, { role: 'owner' }, 'watchlist')) ctx.waitUntil(watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
     if (flagOn(env, { role: 'owner' }, 'fun')) ctx.waitUntil(birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
     if (flagOn(env, { role: 'owner' }, 'serverTools')) ctx.waitUntil(memberWatch(env).catch((e) => console.log('member watch failed', e.message))); // leave/join alerts + welcome posts
@@ -150,6 +154,7 @@ export default {
       const msg = await commandBlocked(env, cmdName, who, i.channel_id, cmdSettings);
       if (msg) return json(privateNote(msg));
     }
+    if (i.type === 2 && i.data) i.data = unalias(i.data); // merged commands (bot/merged.js) → the shape their handlers know
     const respond = async () => {
     if (i.type === 3 && /^norex:box:/.test(i.data?.custom_id ?? '')) { // "Box score" under /last and the result posts: the drawn table, privately
       const id = String(i.data.custom_id).split(':')[2];
@@ -177,6 +182,9 @@ export default {
       if (!env.DB) return json({ type: 4, data: notice('The member database isn’t connected') });
       return json(await panelInteraction(i, env, await memberOf(i, who, env), site, (f) => load(site, f, ctx)));
     }
+    if (i.type === 2 && HELP_COMMANDS[i.data.name]) return json(helpCommand(i.data.name)); // /corehelp … /rushhelp: private, button-driven menus (bot/help.js)
+    if (i.type === 3 && HELP_BUTTON.test(i.data?.custom_id ?? '')) return json(helpButton(i));
+    if (i.type === 2 && STREAM_COMMANDS.has(i.data.name)) return json(await streamCommand(i, env, ctx, who)); // /streamalerts (owner)
     if (i.type === 2 && WATCH_COMMANDS.has(i.data.name)) return json(await watchCommand(i, env, ctx, who)); // /watch /watchlist
     if (i.type === 3 && WATCH_BUTTON.test(i.data?.custom_id ?? '')) return json(await watchButton(i, env, who)); // 👍 Useful
     if (i.type === 2 && DISCOVERY_COMMANDS.has(i.data.name)) return json(await discoveryCommand(i, env, ctx, who)); // /share /discoveries
@@ -196,6 +204,15 @@ export default {
     if (i.type === 3 && /^norex:bn:/.test(i.data?.custom_id ?? '')) return burnerPick(i, env, ctx, who, (f) => load(site, f, ctx)); // …its pickers
     if (i.type === 3 && PREF_ID.test(i.data?.custom_id ?? '')) { // MB2: preferred position select under an answer
       try { return json(await prefPosSelect(i, env, await memberOf(i, who, env))); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
+    if (i.type === 3 && SEASON_BUTTON.test(i.data?.custom_id ?? '')) { try { return json(await seasonCardButton(i, env, ctx, who)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); } } // Save / Discard under a season card reading
+    if (i.type === 2 && i.data.name === 'seasoncard') { // members: end-of-season Rush stats screenshot
+      try {
+        return json(await seasonCardCommand(i, env, ctx, who, {
+          defer: () => DEFER_PANEL(true),
+          edit: (m) => fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(m)) }).catch((e) => console.log('seasoncard reply failed', e.message)),
+        }));
+      } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
     if (i.type === 2 && i.data.name === 'board') { // Rush leaderboard photos (managers)
       try {

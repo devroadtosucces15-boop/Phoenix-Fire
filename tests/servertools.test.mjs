@@ -134,18 +134,18 @@ await flush();
 t('/purge answers privately and patches the result in', r.type === 5 && r.data.flags === 64 && /Deleted/.test(lastPatch()));
 
 // ---------- /tag + /tags ----------
-t('/tags set is managers only', /Only managers/.test(txt((await sub(MEMBER, 'tags', 'set', opt({ name: 'rules', text: 'x' }))).data)));
-r = await sub(MGR, 'tags', 'set', opt({ name: 'Trial Info', text: 'Line one\\nLine two' }));
+t('/tags set is managers only', /Only managers/.test(txt((await sub(MEMBER, 'tag', 'set', opt({ name: 'rules', text: 'x' }))).data)));
+r = await sub(MGR, 'tag', 'set', opt({ name: 'Trial Info', text: 'Line one\\nLine two' }));
 t('/tags set saves (name tidied, \\n → new line)', /Saved trial-info/.test(txt(r.data)) && sqlite.prepare("SELECT body FROM tags WHERE name = 'trial-info'").get().body === 'Line one\nLine two');
-t('bad tag names are refused', /letters, numbers or dashes/.test(txt((await sub(MGR, 'tags', 'set', opt({ name: '!!', text: 'x' }))).data)));
-r = await slash(MEMBER, 'tag', opt({ name: 'trial-info', member: '1004' }));
+t('bad tag names are refused', /letters, numbers or dashes/.test(txt((await sub(MGR, 'tag', 'set', opt({ name: '!!', text: 'x' }))).data)));
+r = await sub(MEMBER, 'tag', 'post', opt({ name: 'trial-info', member: '1004' }));
 t('/tag posts it publicly and pings only the chosen member', r.type === 4 && !(r.data.flags & 64) && txt(r.data).includes('Line one\nLine two') && r.data.components[0].content === '<@1004>' && r.data.allowed_mentions.users[0] === '1004');
 t('/tag counts uses', sqlite.prepare("SELECT uses FROM tags WHERE name = 'trial-info'").get().uses === 1);
-t('/tag unknown → friendly miss', /No tag called/.test(txt((await slash(MEMBER, 'tag', opt({ name: 'nope' }))).data)));
-r = await send({ type: 4, data: { name: 'tag', options: [{ name: 'name', value: 'tri', focused: true }] }, ...MEMBER });
+t('/tag unknown → friendly miss', /No tag called/.test(txt((await sub(MEMBER, 'tag', 'post', opt({ name: 'nope' }))).data)));
+r = await send({ type: 4, data: { name: 'tag', options: [{ type: 1, name: 'post', options: [{ name: 'name', value: 'tri', focused: true }] }] }, ...MEMBER });
 t('/tag autocomplete suggests saved tags', r.type === 8 && r.data.choices[0]?.value === 'trial-info');
-t('/tags list shows them', /trial-info/.test(txt((await sub(MEMBER, 'tags', 'list')).data)));
-t('/tags delete', /Deleted/.test(txt((await sub(MGR, 'tags', 'delete', opt({ name: 'trial-info' }))).data)));
+t('/tags list shows them', /trial-info/.test(txt((await sub(MEMBER, 'tag', 'list')).data)));
+t('/tags delete', /Deleted/.test(txt((await sub(MGR, 'tag', 'delete', opt({ name: 'trial-info' }))).data)));
 
 // ---------- /remind + /reminders ----------
 t('/remind rejects a clock time with examples', /Try `10m`/.test(txt((await slash(MEMBER, 'remind', opt({ in: '9pm', text: 'league' }))).data)));
@@ -163,7 +163,7 @@ calls.length = 0;
 await worker.scheduled({ cron: '* * * * *' }, env, { waitUntil: (p) => pending.push(p) });
 await flush();
 t('the 1-minute timer only sends reminders (no member check, no site update)', !calls.some((c) => c.path.includes('/members?')));
-r = await slash(MGR, 'reminders');
+r = await sub(MGR, 'remind', 'list');
 const cancelId = ids(r.data).find((x) => x.startsWith('norex:rm:x:'));
 t('/reminders lists yours with cancel buttons', /Match night!/.test(txt(r.data)) && /^norex:rm:x:\d+$/.test(cancelId));
 t('someone else can’t cancel it', /Already sent or cancelled/.test(txt((await send({ type: 3, data: { custom_id: cancelId }, ...MEMBER })).data)));
@@ -189,7 +189,7 @@ t('tap again → role removed', /pings are off/.test(txt(r.data)) && calls.some(
 // ---------- flag ----------
 const savedFeatures = env.FEATURES;
 env.FEATURES = JSON.stringify({ ...JSON.parse(savedFeatures), serverTools: 'off' });
-t('flag off → commands say so', /isn’t switched on/.test(txt((await slash(MEMBER, 'tag', opt({ name: 'x' }))).data)));
+t('flag off → commands say so', /isn’t switched on/.test(txt((await sub(MEMBER, 'tag', 'post', opt({ name: 'x' }))).data)));
 env.FEATURES = savedFeatures;
 
 globalThis.fetch = realFetch;

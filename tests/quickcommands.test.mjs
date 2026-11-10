@@ -27,10 +27,10 @@ sqlite.exec(`INSERT INTO users (id, name, first_at, last_at) VALUES ('600', 'Sen
 sqlite.exec(`INSERT INTO claims (user_id, player, player_name, status, at) VALUES ('601', 'p601', 'x_Receiver_x', 'approved', ${now}), ('600', 'p600', 'x_Sender_x', 'approved', ${now})`);
 
 // ---------- /nextevent ----------
-t('/nextevent with nothing scheduled → friendly message', /Nothing scheduled/.test((await slash('nextevent')).data.text ?? ''));
+t('/nextevent with nothing scheduled → friendly message', /Nothing scheduled/.test((await slash('matchday', [{ type: 1, name: 'next', options: [] }])).data.text ?? ''));
 sqlite.exec(`INSERT INTO events (type, title, start, duration, status, by_id, by_name, at) VALUES ('friendly', 'Friendly', ${now + 36e5}, 60, 'scheduled', '111', 'Boss', ${now})`);
 await tt('/nextevent shows just the one event (no "after that" section)', async () => {
-  const d = (await slash('nextevent')).data;
+  const d = (await slash('matchday', [{ type: 1, name: 'next', options: [] }])).data;
   return d.text.includes('Friendly') && !/AFTER THAT/.test(d.text) && d.components.filter((c) => c.type === 17).length === 1;
 });
 

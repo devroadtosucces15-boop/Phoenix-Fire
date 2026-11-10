@@ -33,7 +33,7 @@ const sample = {
   syncroles: null, // deferred reply – tested in discord.test.mjs (P2.5)
   schedule: null, availability: null, lineup: null, rush: null, me: null, leaderboard: null, profile: null, awards: null, // P7.4/P7.5 – need the member DB: tests/wave8.test.mjs / tests/wave13.test.mjs
   points: null, // P11.3 – needs the member DB: tests/points.test.mjs
-  insights: null, // deferred reply – tested in insights.test.mjs (Club Intelligence)
+  intel: null, // deferred reply – tested in insights.test.mjs (Club Intelligence)
   exportcontent: null, // deferred reply, owner only – DMs guide/rule/playstyle/announcement channels
   aispike: null, // deferred reply, owner only – needs the real Workers AI binding (P11.1)
   profanitysetup: null, // deferred reply, owner only – calls the real Discord AutoMod API (P11.4)
@@ -41,15 +41,17 @@ const sample = {
   insight: null, // BE9 stored insight, flag-gated (owner) – embed + tier gate tested in tests/statinsights.test.mjs
   ask: null, // deferred reply, flag-gated + needs the real Workers AI binding – tests/ask.test.mjs (P11.11)
   burner: null, // managers only, deferred EA search + pick menus – tests/burners.test.mjs
-  nextevent: null, feedback: null, suggest: null, announce: null, trial: null, motm: null, history: null, // P11.16 – need the member DB: tests/quickcommands.test.mjs
-  setup: null, purge: null, tag: null, tags: null, remind: null, reminders: null, // server tools – need the member DB + Discord: tests/servertools.test.mjs
+  feedback: null, suggest: null, announce: null, trial: null, motm: null, history: null, // P11.16 – need the member DB: tests/quickcommands.test.mjs
+  setup: null, purge: null, tag: null, remind: null, // server tools – need the member DB + Discord: tests/servertools.test.mjs
   host: null, // managers, member DB + Discord – tests/host.test.mjs
   matchday: null, // Phoenix Matchday app, dark until configured – tests/matchday.test.mjs
   lfg: null, // Phoenix Rush app, dark until configured – tests/lfg.test.mjs
   queue: null, // Phoenix Rush app, member DB – tests/rushqueue.test.mjs
-  board: null, // Phoenix Rush app, dark until configured – tests/rushscan.test.mjs
+  corehelp: null, statshelp: null, toolshelp: null, matchdayhelp: null, rushhelp: null, // per-bot help menus – tests/help.test.mjs
+  seasoncard: null, // Phoenix Stats app, members, member DB – tests/rushscan.test.mjs
+  rushladder: null, // Phoenix Stats app, dark until configured – tests/rushscan.test.mjs
   panel: null, // managers, member DB – tests/panel.test.mjs
-  jail: null, wheel: null, trivia: null, share: null, discoveries: null, watch: null, watchlist: null, // tests/discoveries.test.mjs
+  jail: null, wheel: null, trivia: null, share: null, discoveries: null, watch: null, streamalerts: null, // tests/discoveries.test.mjs
   // fun for members, member DB – tests/fun.test.mjs
 };
 for (const name of Object.keys(sample)) {

@@ -15,7 +15,7 @@ t('apps are core, stats, tools, fun, matchday, rush', APPS.join() === 'core,stat
 t('matchday and rush own their commands (tests/matchday.test.mjs covers the moves)', APP_COMMANDS.matchday.includes('host') && APP_COMMANDS.rush.includes('rush'));
 t('every command belongs to exactly one app', names.every((n) => owned.filter((x) => x === n).length === 1));
 t('the app map names no unknown command', owned.every((n) => names.includes(n)) && owned.length === names.length);
-t('sample owners', appOf('club') === 'stats' && appOf('purge') === 'tools' && appOf('jail') === 'fun' && appOf('syncroles') === 'core' && appOf('nope') === null);
+t('sample owners', appOf('club') === 'stats' && appOf('purge') === 'core' && appOf('jail') === 'tools' && appOf('syncroles') === 'core' && appOf('nope') === null);
 t('every staff command is hidden from non-staff when registered', buildRegistration(COMMANDS).filter((c) => STAFF_COMMANDS.includes(c.name)).every((c) => c.default_member_permissions === String(1 << 28)));
 t('staff commands all exist', STAFF_COMMANDS.every((n) => names.includes(n)));
 
@@ -36,7 +36,7 @@ t('appFromPath', appFromPath('/') === 'core' && appFromPath('/interactions') ===
 const plan = registrationPlan(split);
 t('registration: one entry per configured app with a token', plan.map((p) => p.app).join() === 'core,stats');
 t('registration: each app gets only its own commands', plan.find((p) => p.app === 'stats').commands.every((c) => homeOf(split, c.name) === 'stats') && !plan.find((p) => p.app === 'core').commands.some((c) => homeOf(split, c.name) === 'stats'));
-t('registration: nothing lost or doubled', plan.reduce((n, p) => n + p.commands.length, 0) === names.length - HELD.size);
+t('registration: nothing lost or doubled', plan.reduce((n, p) => n + p.commands.length, 0) === names.length - [...HELD].filter((n) => homeOf(split, n) === null).length);
 t('registration: uses each app\'s own id + token', plan.find((p) => p.app === 'stats').appId === '200' && plan.find((p) => p.app === 'stats').token === 'tok2' && plan.find((p) => p.app === 'core').token === 'tok');
 t('registration: owner settings still apply per app', !registrationPlan(split, { club: { enabled: false } }).find((p) => p.app === 'stats').commands.some((c) => c.name === 'club'));
 t('registration: `only` limits the apps', registrationPlan(split, {}, ['stats']).map((p) => p.app).join() === 'stats');

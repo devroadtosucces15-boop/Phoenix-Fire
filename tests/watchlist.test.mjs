@@ -49,16 +49,16 @@ const UC1 = 'UC' + 'a'.repeat(22), UC2 = 'UC' + 'b'.repeat(22);
 // ---------- commands ----------
 setFlags({ watchlist: 'owner' });
 const MEMBER = as('500', 'Jez'), MGR = as('900', 'Kruger', ['mgr']);
-t('flag owner: a member is told it isn’t on yet', /switched on/.test(plainText((await cmd(MEMBER, 'watch')).d.data)));
+t('flag owner: a member is told it isn’t on yet', /switched on/.test(plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'latest', options: [] }])).d.data)));
 setFlags({ watchlist: 'members' });
-await tt('/watchlist: members can’t change it', async () => /Only managers/.test(plainText((await cmd(MEMBER, 'watchlist', [{ type: 1, name: 'list' }])).d.data)));
-await tt('/watchlist add: a bad id is explained', async () => /isn’t a channel ID/.test(plainText((await cmd(MGR, 'watchlist', [{ type: 1, name: 'add', options: [{ name: 'channel', value: 'nope' }] }])).d.data)));
+await tt('/watchlist: members can’t change it', async () => /Only managers/.test(plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'list' }])).d.data)));
+await tt('/watchlist add: a bad id is explained', async () => /isn’t a channel ID/.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'channel', value: 'nope' }] }])).d.data)));
 await tt('/watchlist add: a channel link works, name kept', async () => {
-  const r = await cmd(MGR, 'watchlist', [{ type: 1, name: 'add', options: [{ name: 'channel', value: `https://www.youtube.com/channel/${UC1}?x=1` }, { name: 'name', value: 'Pitch Co' }] }]);
+  const r = await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'channel', value: `https://www.youtube.com/channel/${UC1}?x=1` }, { name: 'name', value: 'Pitch Co' }] }]);
   return /Following Pitch Co/.test(plainText(r.d.data)) && sqlite.prepare('SELECT * FROM watch_creators').get().channel_id === UC1;
 });
-await tt('/watchlist list shows who we follow', async () => /Pitch Co/.test(plainText((await cmd(MGR, 'watchlist', [{ type: 1, name: 'list' }])).d.data)));
-await tt('/watch with nothing yet', async () => /No videos yet/.test(plainText((await cmd(MEMBER, 'watch')).d.data)));
+await tt('/watchlist list shows who we follow', async () => /Pitch Co/.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'list' }])).d.data)));
+await tt('/watch with nothing yet', async () => /No videos yet/.test(plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'latest', options: [] }])).d.data)));
 
 // ---------- the hourly check ----------
 sqlite.prepare("INSERT INTO meta (key, value) VALUES ('announce_channel', '42420') ON CONFLICT (key) DO UPDATE SET value = excluded.value").run();
@@ -82,8 +82,8 @@ t('cron: a broken feed (404) is skipped quietly', ((await watchlistCron(env, NOW
 
 // ---------- /watch + Useful ----------
 await tt('/watch: newest first, linked, topic filter works', async () => {
-  const all = plainText((await cmd(MEMBER, 'watch')).d.data);
-  const tips = plainText((await cmd(MEMBER, 'watch', [{ name: 'topic', value: 'builds' }])).d.data);
+  const all = plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'latest', options: [] }])).d.data);
+  const tips = plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'latest', options: [{ name: 'topic', value: 'builds' }] }])).d.data);
   return all.indexOf('Defending tips') < all.indexOf('Best CAM build') && all.includes('youtube.com/watch?v=new00000001') && /Builds/.test(tips) && !/Defending tips/.test(tips);
 });
 await tt('useful: toggles with the count in the button, in place', async () => {

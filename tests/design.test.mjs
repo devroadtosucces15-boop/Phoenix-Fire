@@ -86,12 +86,12 @@ const last = await slash('last');
 t('/last: score card on top, field view at the bottom', images(last)[0] === `${base}score-x.png` && images(last).at(-1) === `${base}field-x.png` && /FIELD VIEW/.test(plainText(last)));
 t('/last: stripe follows the result', last.components[0].accent_color === ACCENT[resultAccent(club.matches[0].res)]);
 t('/player: the drawn player card', images(await slash('player', [{ name: 'gamertag', value: p.n }])).includes(`${base}player-x.png`));
-const top = await slash('top', [{ name: 'stat', value: 'goals' }]);
+const top = await slash('leaderboard', [{ name: 'stat', value: 'goals' }]);
 t('/top: the drawn table replaces the text list', images(top).includes(`${base}top-goals-x.png`) && !/🥇/.test(plainText(top)));
 t('/club + /results show their cards', images(await slash('club')).includes(`${base}club-x.png`) && images(await slash('results')).includes(`${base}results-x.png`));
 
 deck = null; // no cards drawn yet (or the card step failed) → the same layout, with the numbers as text
-const bare = await slash('top', [{ name: 'stat', value: 'assists' }]);
+const bare = await slash('leaderboard', [{ name: 'stat', value: 'assists' }]);
 t('no card for it → text fallback in the same panel', isV2(bare) && /🥇/.test(plainText(bare)) && !images(bare).some((u) => u.includes('/cards/')));
 
 // ---------- the Boardroom "post to channel" setting keeps the V2 flag ----------

@@ -157,7 +157,7 @@ export async function discordTargets(env) {
 }
 // Sends one message to a channel, pinging `role` (the guild id = @everyone) and nobody else. Never throws.
 // Shared with P3.1 events. Returns { ok, id } or { ok: false, error } with a human explanation.
-export async function postEmbed(env, channel, role, message) {
+export async function postEmbed(env, channel, role, message, { remember = true } = {}) { // remember:false = a source-specific post (stream alerts) that must not become the shared announce channel
   if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_GUILD_ID) return { ok: false, error: DISCORD_HELP.setup };
   channel = String(channel ?? ''); role = String(role ?? '');
   if (!/^\d{5,25}$/.test(channel)) return { ok: false, error: 'Pick a channel.' };
@@ -177,8 +177,10 @@ export async function postEmbed(env, channel, role, message) {
   try { r = await discord(env, `/channels/${channel}/messages`, { method: 'POST', body: JSON.stringify(msg) }); } catch (e) { return { ok: false, error: e.message }; }
   const res = await r.json().catch(() => ({}));
   if (!r.ok) return { ok: false, error: DISCORD_HELP[res.code] ?? `Discord refused the post (${r.status}${res.message ? `: ${res.message}` : ''}).` };
-  await run(env, "INSERT INTO meta (key, value) VALUES ('announce_channel', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value", channel);
-  await mirrorChannel(env, 'announcements', channel); // dual-write (fills the purpose only when no config row exists)
+  if (remember) {
+    await run(env, "INSERT INTO meta (key, value) VALUES ('announce_channel', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value", channel);
+    await mirrorChannel(env, 'announcements', channel); // dual-write (fills the purpose only when no config row exists)
+  }
   return { ok: true, id: res.id };
 }
 // The rich embed for one docs item – shared by the real post and BE6's dry-run preview, so what a manager

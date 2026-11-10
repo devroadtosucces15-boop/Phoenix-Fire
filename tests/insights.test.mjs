@@ -18,7 +18,7 @@ async function send(payload) {
   return { s: res.status, d: await res.json().catch(() => null) };
 }
 const settle = async () => { await Promise.all(pending); pending = []; };
-const slash = (id, roles = []) => ({ type: 2, token: 'tok', member: { user: { id }, roles }, data: { name: 'insights' } });
+const slash = (id, roles = []) => ({ type: 2, token: 'tok', member: { user: { id }, roles }, data: { name: 'intel' } });
 
 // ---------- fake Discord server ----------
 const DAY = 864e5, NOW = Date.now();

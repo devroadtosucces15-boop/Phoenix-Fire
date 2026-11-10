@@ -9,10 +9,6 @@ export const COMMANDS = [
   { name: 'results', description: 'Recent results', options: [{ type: INTEGER, name: 'count', description: 'How many (max 10)', min_value: 1, max_value: 10 }] },
   { name: 'player', description: "A player's stats card", options: [player('gamertag', 'Start typing a gamertag')] },
   { name: 'compare', description: 'Compare two players', options: [player('player1', 'First player'), player('player2', 'Second player')] },
-  {
-    name: 'top', description: 'Club leaderboards',
-    options: [{ type: STRING, name: 'stat', description: 'Which leaderboard', choices: ['goals', 'assists', 'ga', 'rating', 'motm', 'games'].map((v) => ({ name: v === 'ga' ? 'goals + assists' : v, value: v })) }],
-  },
   { name: 'site', description: 'Link to the club website' },
   {
     name: 'ask', description: 'Ask the club chatbot a question about our stats (P11.11)',
@@ -26,8 +22,6 @@ export const COMMANDS = [
     ] }, { type: STRING, name: 'opponent', description: 'Head to head vs a club we have played', autocomplete: true }],
   },
   // P7.4 – commands that read the member database (bot/botcmds.js)
-  { name: 'schedule', description: 'Upcoming match nights – answer ✅ ❔ ❌ right here' },
-  { name: 'availability', description: "Who's in for the next event and which positions are missing" },
   { name: 'lineup', description: 'The lineup for the next event' },
   {
     name: 'rush', description: 'Rush results',
@@ -57,7 +51,7 @@ export const COMMANDS = [
   },
   // P2.5 – only shown to people with Discord's Manage Roles permission (server owner can widen it in Server Settings → Integrations).
   // Club Intelligence – same visibility as /syncroles; the Worker still checks the manager role + `insights` flag.
-  { name: 'insights', description: 'Managers: Club Intelligence – server + club analysis with recommendations', default_member_permissions: String(1 << 28), contexts: [0] },
+  { name: 'intel', description: 'Managers: Club Intelligence – server + club analysis with recommendations', default_member_permissions: String(1 << 28), contexts: [0] },
   {
     name: 'burner', description: 'Managers: track burner clubs – search EA, pick one, get stats after every game',
     default_member_permissions: String(1 << 28), contexts: [0],
@@ -89,7 +83,6 @@ export const COMMANDS = [
     options: [{ type: CHANNEL, name: 'channel', description: 'Where AutoMod should send violation alerts', required: true }],
   },
   // P11.16 – quick wrappers around features that already exist in the Squad Hub
-  { name: 'nextevent', description: 'The single next match night – answer ✅ ❔ ❌ right here' },
   {
     name: 'feedback', description: 'Send praise, a tip or a concern to a verified teammate (they never see who sent it)',
     options: [
@@ -149,18 +142,32 @@ export const COMMANDS = [
   },
   { name: 'discoveries', description: 'Managers: shared tips waiting for approval', default_member_permissions: String(1 << 28), contexts: [0] },
   {
-    name: 'watch', description: 'The latest Pro Clubs videos the squad follows',
-    options: [{ type: STRING, name: 'topic', description: 'Only one topic', choices: ['builds', 'tactics', 'tips', 'meta', 'news'].map((v) => ({ name: v, value: v })) }],
-  },
-  {
-    name: 'watchlist', description: 'Managers: the YouTube creators the watch list follows', default_member_permissions: String(1 << 28), contexts: [0],
+    name: 'watch', description: 'The watch list: latest Pro Clubs videos, and (managers) which creators it follows',
     options: [
-      { type: SUB, name: 'add', description: 'Follow a creator', options: [
+      { type: SUB, name: 'latest', description: 'The latest videos the squad follows', options: [{ type: STRING, name: 'topic', description: 'Only one topic', choices: ['builds', 'tactics', 'tips', 'meta', 'news'].map((v) => ({ name: v, value: v })) }] },
+      { type: SUB, name: 'add', description: 'Managers: follow a creator', options: [
         { type: STRING, name: 'channel', description: 'Their channel ID (starts with UC…) or channel link', required: true, max_length: 120 },
         { type: STRING, name: 'name', description: 'How to show their name', max_length: 60 },
       ] },
-      { type: SUB, name: 'remove', description: 'Stop following a creator', options: [{ type: STRING, name: 'channel', description: 'Channel ID or the name shown in /watchlist list', required: true, max_length: 120 }] },
-      { type: SUB, name: 'list', description: 'Who we follow' },
+      { type: SUB, name: 'remove', description: 'Managers: stop following a creator', options: [{ type: STRING, name: 'channel', description: 'Channel ID or the name shown in /watch list', required: true, max_length: 120 }] },
+      { type: SUB, name: 'list', description: 'Managers: who we follow' },
+    ],
+  },
+  {
+    name: 'streamalerts', description: 'Owner: stream and post alerts for the club channel or contributors', default_member_permissions: String(1 << 5), contexts: [0],
+    options: [
+      { type: SUB, name: 'add', description: 'Watch a channel – I post once when it goes live or uploads', options: [
+        { type: STRING, name: 'source', description: 'Whose channel', required: true, choices: [{ name: 'Main club channel', value: 'main' }, { name: 'Contributor (member channel)', value: 'contributor' }] },
+        { type: STRING, name: 'link', description: 'Paste the Twitch, YouTube or Kick channel link', required: true, max_length: 200 },
+        { type: CHANNEL, name: 'channel', description: 'Where to post (default: the Alerts channel in Staff Tools)', channel_types: [0, 5] },
+        { type: USER, name: 'member', description: 'The contributor (shown as credit, never pinged)' },
+        { type: STRING, name: 'name', description: 'How to show the name', max_length: 40 },
+        { type: STRING, name: 'what', description: 'What to announce (default: both)', choices: [{ name: 'Live streams and new posts', value: 'both' }, { name: 'Live streams only', value: 'live' }, { name: 'New videos and Shorts only (YouTube)', value: 'posts' }] },
+      ] },
+      { type: SUB, name: 'list', description: 'Everything being watched' },
+      { type: SUB, name: 'remove', description: 'Stop watching a source', options: [{ type: INTEGER, name: 'id', description: 'The number from /streamalerts list', required: true, min_value: 1 }] },
+      { type: SUB, name: 'push', description: 'Post the card now – the live card if they are on air, else the channel card', options: [{ type: INTEGER, name: 'id', description: 'The number from /streamalerts list', required: true, min_value: 1 }] },
+      { type: SUB, name: 'test', description: 'Show me the alert card (only I see it)', options: [{ type: INTEGER, name: 'id', description: 'The number from /streamalerts list', required: true, min_value: 1 }] },
     ],
   },
   { name: 'trivia', description: 'A football trivia question – points for right answers', options: [{ type: SUB, name: 'play', description: 'Ask a question' }, { type: SUB, name: 'board', description: 'The trivia table' }] },
@@ -195,15 +202,12 @@ export const COMMANDS = [
     ],
   },
   {
-    name: 'tag', description: 'Post a saved answer (rules, trial info…)', contexts: [0],
+    name: 'tag', description: 'Saved answers (rules, trial info…): post one, or managers keep the list', contexts: [0],
     options: [
-      { type: STRING, name: 'name', description: 'Which tag', required: true, autocomplete: true, max_length: 32 },
-      { type: USER, name: 'member', description: 'Ping someone with it' },
-    ],
-  },
-  {
-    name: 'tags', description: 'List saved answers – managers add and delete them here', contexts: [0],
-    options: [
+      { type: SUB, name: 'post', description: 'Post a saved answer', options: [
+        { type: STRING, name: 'name', description: 'Which tag', required: true, autocomplete: true, max_length: 32 },
+        { type: USER, name: 'member', description: 'Ping someone with it' },
+      ] },
       { type: SUB, name: 'list', description: 'Every saved tag' },
       { type: SUB, name: 'set', description: 'Managers: add or replace a tag', options: [
         { type: STRING, name: 'name', description: 'Short name, e.g. rules or trial-info', required: true, max_length: 32 },
@@ -213,15 +217,17 @@ export const COMMANDS = [
     ],
   },
   {
-    name: 'remind', description: 'Set a reminder – e.g. in: 2h, text: join league', contexts: [0],
+    name: 'remind', description: 'Reminders: set one, or see and cancel the ones waiting', contexts: [0],
     options: [
-      { type: STRING, name: 'in', description: 'When – 10m, 2h, 1h30m, 1d', required: true, max_length: 40 },
-      { type: STRING, name: 'text', description: 'What to remind about', required: true, max_length: 1000 },
-      { type: CHANNEL, name: 'channel', description: 'Managers: post it in another channel', channel_types: [0, 5] },
-      { type: ROLE, name: 'role', description: 'Managers: ping a role with it' },
+      { type: SUB, name: 'add', description: 'Set a reminder – e.g. in: 2h, text: join league', options: [
+        { type: STRING, name: 'in', description: 'When – 10m, 2h, 1h30m, 1d', required: true, max_length: 40 },
+        { type: STRING, name: 'text', description: 'What to remind about', required: true, max_length: 1000 },
+        { type: CHANNEL, name: 'channel', description: 'Managers: post it in another channel', channel_types: [0, 5] },
+        { type: ROLE, name: 'role', description: 'Managers: ping a role with it' },
+      ] },
+      { type: SUB, name: 'list', description: 'Your waiting reminders – cancel any of them' },
     ],
   },
-  { name: 'reminders', description: 'Your waiting reminders – cancel any of them', contexts: [0] },
   // /panel – the manager panel: everything waiting for a decision, approve / reject in place (bot/panel.js)
   { name: 'panel', description: 'Managers: everything waiting for a decision – approve or reject right here', default_member_permissions: String(1 << 28), contexts: [0] },
   // /host – schedule + post a session or friendly in one go (bot/host.js); times show in everyone's own zone
@@ -245,7 +251,7 @@ export const COMMANDS = [
   },
   // /matchday – the Phoenix Matchday app (bot/matchday.js). Dark until that app is configured (HELD below).
   {
-    name: 'matchday', description: 'Run a match day: create one, check in, see who is in', contexts: [0],
+    name: 'matchday', description: 'Match days: create one, check in, and see the schedule or who is in', contexts: [0],
     options: [
       { type: SUB, name: 'create', description: 'Managers: schedule a league night, playoffs, friendly, tournament or VPG match', options: [
         { type: STRING, name: 'kind', description: 'What kind of match day', required: true, choices: [{ value: 'league', name: '🏆 League' }, { value: 'playoffs', name: '🥇 Playoffs' }, { value: 'friendly', name: '🤝 Friendly' }, { value: 'tournament', name: '🏟️ Tournament' }, { value: 'vpg', name: '🎮 VPG' }] },
@@ -262,6 +268,9 @@ export const COMMANDS = [
       ] },
       { type: SUB, name: 'checkin', description: 'Say you are on for tonight (opens an hour before the start)' },
       { type: SUB, name: 'status', description: 'Who is in for the next match day and which positions are missing' },
+      { type: SUB, name: 'schedule', description: 'Upcoming match nights – answer ✅ ❔ ❌ right here' },
+      { type: SUB, name: 'next', description: 'The single next match night – answer ✅ ❔ ❌ right here' },
+      { type: SUB, name: 'who', description: "Who's in for the next event and which positions are missing" },
     ],
   },
   // /lfg – the Phoenix Rush app (bot/lfg.js). Dark until that app is configured (HELD below).
@@ -293,7 +302,7 @@ export const COMMANDS = [
   },
   // /board – Rush leaderboard photos for managers (bot/rushscan.js). Dark until the Phoenix Rush app is configured (HELD below).
   {
-    name: 'board', description: 'Rush leaderboard: scan a photo, or show the latest', contexts: [0],
+    name: 'rushladder', description: 'Club Rush ladder: scan a photo, or show the latest', contexts: [0],
     options: [
       { type: SUB, name: 'scan', description: 'Read a photo of the Rush leaderboard, save it and post the insights', options: [
         { type: ATTACHMENT, name: 'image', description: 'Photo or screenshot of the whole leaderboard table', required: true },
@@ -301,27 +310,48 @@ export const COMMANDS = [
       { type: SUB, name: 'latest', description: 'Show the last leaderboard post again' },
     ],
   },
+  // /seasoncard – the member's end-of-season Rush stats screenshot (bot/rushscan.js). Same flag as the site page: seasonCards.
+  {
+    name: 'seasoncard', description: 'Your end-of-season Rush stats card: scan a screenshot, or see yours', contexts: [0],
+    options: [
+      { type: SUB, name: 'scan', description: 'Read your end-of-season Rush stats screenshot – you check it before it is saved', options: [
+        { type: ATTACHMENT, name: 'image', description: 'Screenshot of your whole season stats screen', required: true },
+      ] },
+      { type: SUB, name: 'mine', description: 'Your saved season card and where you rank' },
+    ],
+  },
+  // One help menu per bot (bot/help.js). Discord will not take five commands called /help, so each carries its bot's name.
+  { name: 'corehelp', description: 'Help for the Core bot: setup, approvals, announcements, stream alerts', contexts: [0] },
+  { name: 'statshelp', description: 'Help for the Stats bot: results, players, leaderboards, season cards', contexts: [0] },
+  { name: 'toolshelp', description: 'Help for the Tools bot: feedback, tips, tags, reminders, watch list', contexts: [0] },
+  { name: 'matchdayhelp', description: 'Help for the Matchday bot: schedule, sign-ups, check-in, lineup', contexts: [0] },
+  { name: 'rushhelp', description: 'Help for the Rush bot: log results, find a game, the queue', contexts: [0] },
 ];
 
 // ---------- which Discord app owns which command (bot/apps.js) ----------
 // Every command in COMMANDS belongs to exactly one app (tests/apps.test.mjs checks). An app that is not configured yet
 // lends its commands to core, so a command can sit in its target app before that app exists.
 export const APP_COMMANDS = {
-  core: ['syncroles', 'aispike', 'site'],
-  stats: ['club', 'last', 'results', 'player', 'compare', 'top', 'leaderboard', 'history', 'motm', 'me', 'profile', 'insight', 'ask', 'burner'],
-  tools: ['setup', 'purge', 'announce', 'panel', 'insights', 'watchlist', 'exportcontent', 'profanitysetup', 'tag', 'tags', 'suggest', 'feedback'],
-  fun: ['jail', 'wheel', 'trivia', 'share', 'discoveries', 'watch', 'awards', 'points', 'avatarcard'],
-  // Matchday and Rush (PLANNING/BOT-SPLIT.md, waves MB1/MB4). Until the Discord application exists the commands stay where
-  // they were (MOVED_FROM) and the new ones stay dark (HELD), so nothing changes for members; see bot/apps.js.
-  matchday: ['host', 'schedule', 'nextevent', 'availability', 'lineup', 'remind', 'reminders', 'trial', 'matchday'],
-  rush: ['rush', 'lfg', 'queue', 'board'],
+  // The five bots (PLANNING/BOT-SPLIT.md): Core = server, site and manager controls · Tools = helpers for members and managers ·
+  // Stats = anything that reads numbers · Matchday = running a match night · Rush = 5v5. `fun` is only the old Fun app, kept empty
+  // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
+  core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'corehelp'],
+  stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
+  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'toolshelp'],
+  fun: [],
+  matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
+  rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).
-export const MOVED_FROM = { host: 'tools', schedule: 'tools', nextevent: 'tools', availability: 'tools', lineup: 'tools', remind: 'tools', reminders: 'tools', trial: 'tools', rush: 'stats' };
+export const MOVED_FROM = {
+  host: 'tools', lineup: 'tools', remind: 'tools', rush: 'stats', matchday: 'tools',
+  panel: 'tools', announce: 'tools', trial: 'tools', setup: 'tools', purge: 'tools', exportcontent: 'tools', profanitysetup: 'tools',
+  site: 'core', awards: 'fun', points: 'fun', jail: 'fun', wheel: 'fun', trivia: 'fun', share: 'fun', discoveries: 'fun', watch: 'fun', avatarcard: 'fun',
+};
 // New commands that exist only once their app is configured (never lent to core).
-export const HELD = new Set(['matchday', 'lfg', 'queue', 'board']);
+export const HELD = new Set(['lfg', 'queue', 'rushladder']);
 // Management commands: hidden from non-staff in Discord (Manage Roles bit) on top of the Worker's can() check.
-export const STAFF_COMMANDS = ['insights', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'watchlist', 'setup', 'purge', 'panel', 'host', 'board'];
+export const STAFF_COMMANDS = ['intel', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'setup', 'purge', 'panel', 'host', 'rushladder'];
 
 // ---------- per-command settings → what Discord is told ----------
 // Who may use a command, as the owner sets it in Boardroom → Bot: guest (anyone in the server) · member · claimed (approved player

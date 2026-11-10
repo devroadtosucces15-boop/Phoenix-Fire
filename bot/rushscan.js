@@ -11,7 +11,7 @@
 //   POST /api/seasoncard/scan           members: { image } → what the photo says + quality checks (nothing saved)
 //   POST /api/seasoncard/save           members: { stats } → checked again, stored (replaces my earlier card), posted with @here + me
 //   POST /api/seasoncard/remove         managers: { id } take a card down
-// Discord: /board scan image:<photo> (managers) does scan + save + post in one go; /board latest shows the last post again.
+// Discord: /rushladder scan image:<photo> (managers) does scan + save + post in one go; /rushladder latest shows the last post again.
 // Posts go to the channels set for the purposes `rush_board` and `season_stats` (Boardroom → Organization). No channel, no post.
 import { can, flagOn } from './roles.js';
 import { kvOf } from './kv.js';
@@ -299,7 +299,7 @@ export async function boardCommand(i, env, ctx, who, { defer, edit }) {
   const top = i.data.options?.[0], sub = top?.name ?? 'latest';
   if (sub === 'latest') {
     const v = await boardView(env, who);
-    if (!v.latest) return say('No leaderboard photo yet', 'Use /board scan with a photo of the Rush leaderboard.');
+    if (!v.latest) return say('No leaderboard photo yet', 'Use /rushladder scan with a photo of the Rush leaderboard.');
     const cur = { ...v.latest };
     return reply(boardMessage(env, cur, v.insights, v.ladder, v.series, { season: v.season, by: v.latest.by }));
   }
@@ -324,4 +324,71 @@ export async function boardCommand(i, env, ctx, who, { defer, edit }) {
     await edit(msg);
   })());
   return defer();
+}
+
+// ---------- /seasoncard (Phoenix Stats app, members) ----------
+// scan: read my end-of-season Rush screenshot, show what it says and ask before saving (the photo is never stored).
+// mine: my saved card and where I rank. The Save / Discard buttons keep the reading in KV for 15 minutes.
+export const SEASON_BUTTON = /^norex:sc:(save|no)$/;
+const PENDING_TTL = 900;
+const pendingKey = (uid) => `seasonscan:${uid}`;
+const meOf = (i, who) => {
+  const u = i.member?.user ?? i.user ?? {};
+  return { ...who, n: u.global_name || u.username || 'Member', a: u.avatar ? `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png` : null };
+};
+function reviewMessage(env, stats, qc) {
+  const wr = stats.matches ? Math.round((stats.wins / stats.matches) * 100) : 0;
+  return message({ accent: 'steel', ephemeral: true, blocks: [
+    header({ eyebrow: `${orgName(env)} · Season card`, title: 'Is this right?', sub: [stats.tier, stats.club].filter(Boolean).join(' · ') || 'Check the numbers against your screenshot', size: 3 }),
+    facts([['🎮 Matches', fmt(stats.matches)], ['🏆 Wins', `${fmt(stats.wins)} (${wr}%)`], ['⚽ Goals', fmt(stats.goals)], ['⭐ Your VP', fmt(stats.myVp)]]),
+    qc.warnings.length ? text(`**Heads up**\n${qc.warnings.slice(0, 3).join('\n')}`) : null,
+    sep(),
+    footer('Save posts your card in the season channel · wrong numbers? Discard and fix them on the site'),
+    buttons([{ label: 'Save my card', id: 'norex:sc:save', style: 'ok' }, { label: 'Discard', id: 'norex:sc:no' }, { label: 'Edit on the site', url: `${site(env)}seasoncards.html` }]),
+  ] });
+}
+export async function seasonCardCommand(i, env, ctx, who, { defer, edit }) {
+  if (!flagOn(env, who, 'seasonCards')) return say('Not switched on for you yet', 'Ask the owner.');
+  if (!can(who, 'season.submit')) return say('Members only', 'Link your Discord account on the site first.');
+  if (!env.DB) return say('The member database isn’t connected');
+  const top = i.data.options?.[0], sub = top?.name ?? 'mine', me = meOf(i, who);
+  if (sub === 'mine') {
+    const v = await cardsView(env, who);
+    if (!v.mine) return say('No season card yet', 'Use /seasoncard scan with the screenshot of your end-of-season Rush stats.');
+    const rank = v.people.find((p) => p.user_id === me.u)?.rank ?? null;
+    const m = seasonCardMessage(env, { ...v.mine, season: v.season.name }, rank ? { ...rank, of: v.people.length } : null);
+    return reply({ ...m, flags: m.flags | 64, components: m.components.filter((c) => c.type !== 10), allowed_mentions: { parse: [] } });
+  }
+  const opt = top.options?.find((o) => o.name === 'image')?.value;
+  const att = i.data.resolved?.attachments?.[opt];
+  if (!att) return say('Attach the screenshot', 'Add your end-of-season Rush stats image to the command.');
+  ctx.waitUntil((async () => {
+    let msg;
+    try {
+      const img = await attachmentToDataUrl(att);
+      if (img.error) throw new Error(img.error);
+      if (!(await spendScan(env, who))) throw new Error('That is the hourly limit for photo reads. Try again in a bit.');
+      const d = await scanSeason(env, img.url, { ours: orgName(env) });
+      if (d.qc.errors.length) msg = notice('The screenshot needs a quick fix', `${d.qc.errors.slice(0, 3).join('\n')}\nCheck it on the site and save from there: ${site(env)}seasoncards.html`);
+      else {
+        await kvOf(env).put(pendingKey(me.u), JSON.stringify({ stats: d.stats, at: Date.now() }), { expirationTtl: PENDING_TTL });
+        msg = reviewMessage(env, d.stats, d.qc);
+      }
+    } catch (e) { msg = notice('Could not read that screenshot', e.message); }
+    await edit(msg);
+  })());
+  return defer();
+}
+export async function seasonCardButton(i, env, ctx, who) {
+  const kind = SEASON_BUTTON.exec(i.data?.custom_id ?? '')?.[1];
+  const me = meOf(i, who);
+  const done = (title, body) => ({ type: 7, data: { ...notice(title, body), allowed_mentions: { parse: [] } } });
+  if (!flagOn(env, who, 'seasonCards') || !can(who, 'season.submit')) return done('Not available', 'Members only.');
+  if (kind === 'no') { await kvOf(env).delete(pendingKey(me.u)); return done('Discarded', 'Nothing was saved.'); }
+  const pending = await kvOf(env).get(pendingKey(me.u), 'json');
+  if (!pending?.stats) return done('That reading timed out', 'Run /seasoncard scan again.');
+  const r = await saveCard(env, me, { stats: pending.stats });
+  await kvOf(env).delete(pendingKey(me.u));
+  if (r.error) return done('Not saved', r.error);
+  return done('Season card saved', `You are #${r.rank.vp} by VP of ${r.of}. ${r.posted.ok ? `Posted in <#${r.posted.channel}>.` : (r.posted.error ?? '')}`.trim());
 }
