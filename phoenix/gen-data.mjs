@@ -11,7 +11,7 @@ const W = (f, o) => { fs.mkdirSync(path.dirname(path.join(here, f)), { recursive
 // ---------- config (copy of the real shape, club-specific bits swapped) ----------
 const rc = JSON.parse(fs.readFileSync(path.join(real, 'config.json'), 'utf8'));
 const cfg = { ...rc, siteTitle: 'PHOENIX FIRE', siteUrl: 'https://example.invalid/phoenix-fire/', homeClubId: CLUB,
-  discord: { applyLink: '#', note: 'Mock invite' }, brand: { red: '#e8651a', ink: '#0a0705', founded: '2019', motto: 'Rise. Burn. Repeat.' },
+  discord: { applyLink: '#', note: 'Mock invite' }, brand: { red: '#e8651a', ink: '#0a0705', motto: 'Rise. Burn. Repeat.' },
   members: { api: process.env.PF_API || null }, streams: { youtube: '', twitch: '' } };
 W('config.json', cfg);
 

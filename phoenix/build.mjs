@@ -82,6 +82,8 @@ try {
   // first visit defaults for the preview toolbar: Owner, full entrance, gold orb menu, transitions on, full motion (tilt, parallax…). Later changes stick.
   const init = '<script>window.PHOENIX_SAFE_HUB=true;try{var L=localStorage;if(!L.getItem("pf.init")){L.setItem("pf.init","1");L.setItem("phoenix.as","owner");L.setItem("phoenix.entrance","full");L.setItem("phoenix.nav","orb");L.setItem("phoenix.fx","on");L.setItem("phoenix.mx","full");L.removeItem("phoenix.motion");L.removeItem("phoenix.viewas")}}catch(e){}</script>';
   let pages = 0;
+  const SITE_URL = String(JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).siteUrl || '').replace(/\/?$/, '/');
+  const DESC = 'PHOENIX FIRE: Pro Clubs stats, results, squad and rankings. Rise. Burn. Repeat.';
   for (const f of htmls) {
     const p = path.join(out, f); let h = fs.readFileSync(p, 'utf8');
     h = h.replace("window.NOREX_ROOT='../'", "window.NOREX_ROOT=''").replace("window.NOREX_SW='../sw.js'", "window.NOREX_SW='sw.js'");
@@ -97,6 +99,16 @@ try {
       else if (!/name="robots"/.test(h)) h = h.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>');
     }
     else if (!/name="robots"/.test(h)) h = h.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>');
+    if (swap.indexable(f) && !/property="og:title"/.test(h)) { // link previews (Discord, X, WhatsApp) and search snippets; URLs come from the repo config, never the staged mock
+      const title = (h.match(/<title>([^<]*)<\/title>/) || [, 'PHOENIX FIRE'])[1].trim().replace(/"/g, '&quot;');
+      const url = SITE_URL + (f === 'index.html' ? '' : f), img = SITE_URL + 'share.png';
+      h = h.replace('</head>', [
+        `<meta name="description" content="${DESC}">`, `<link rel="canonical" href="${url}">`,
+        '<meta property="og:type" content="website">', '<meta property="og:site_name" content="PHOENIX FIRE">', `<meta property="og:title" content="${title}">`, `<meta property="og:description" content="${DESC}">`,
+        `<meta property="og:url" content="${url}">`, `<meta property="og:image" content="${img}">`, '<meta property="og:image:width" content="1200">', '<meta property="og:image:height" content="630">', '<meta property="og:image:alt" content="PHOENIX FIRE crest on a dark ember background">',
+        '<meta name="twitter:card" content="summary_large_image">', `<meta name="twitter:title" content="${title}">`, `<meta name="twitter:description" content="${DESC}">`, `<meta name="twitter:image" content="${img}">`,
+      ].join('') + '</head>');
+    }
     fs.writeFileSync(p, h); pages++;
   }
   // Keep the complete legacy member portal available at squad.html, but make members.html
