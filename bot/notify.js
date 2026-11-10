@@ -23,7 +23,7 @@ const DAY = 86400e3;
 const KEEP = 200; // notifications kept per member
 const REMIND_MAX = 3; // DM reminders for an unacknowledged announcement (one per day)
 const REQ_DAILY = 5; // requests per member per day
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 
 // Notification types → settings rows. mode: dm = site + Discord DM · site = site only · off = muted.
 // Later roadmap items add their own row here (messages, reactions, events, awards, feedback …).

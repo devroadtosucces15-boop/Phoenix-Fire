@@ -14,7 +14,7 @@ import { message, header, text, footer, buttons } from './ui.js';
 import { orgName } from './orgconfig.js';
 
 const DAY = 86400e3, WEEK = 7 * DAY;
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 const SHOW_DAYS = 14; // the home page strip shows a winner for two weeks
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);

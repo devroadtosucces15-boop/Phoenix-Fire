@@ -25,7 +25,7 @@ const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, 
 const reply = (content, extra = {}) => (Object.keys(extra).length ? json({ type: 4, data: { content, flags: 64, allowed_mentions: { parse: [] }, ...extra } }) : json(privateNote(content)));
 const all = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).all().then((r) => r.results);
 const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 // Everything the deferred burner replies edit in is a design-system panel (the layout is declared when the reply is deferred,
 // and an edit carries only the components). Private, staff-only → steel.
 const IS_V2 = 1 << 15;

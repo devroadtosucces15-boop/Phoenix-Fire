@@ -99,6 +99,8 @@ try {
   const legacyAssets = path.join(classic, 'assets');
   if (fs.existsSync(legacyMembers) && fs.existsSync(legacyAssets)) {
     fs.cpSync(legacyAssets, path.join(out, 'assets'), { recursive: true });
+    // the classic assets carry another club's crest and favicon: replace them with Phoenix art (bot embeds read assets/crest.png)
+    fs.cpSync(path.join(here, 'legacy-assets'), path.join(out, 'assets'), { recursive: true });
     fs.copyFileSync(legacyMembers, path.join(out, 'squad.html'));
   } else warn('classic member hub was not generated; squad.html will not be published');
   const claimTemplate = path.join(here, 'claim.html');

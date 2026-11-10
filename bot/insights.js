@@ -22,7 +22,7 @@ import { message, header, text, sep, footer, buttons } from './ui.js';
 
 const API = 'https://discord.com/api/v10';
 const DAY = 86400e3;
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 const HIST_KEEP = 26; // weeks of trend history
 const CMD_CHANNELS = 30; // channel reads in one /insights (free Workers: 50 outgoing calls per request)
 const CRON_CHANNELS = 6; // channel reads per cron run (the cron also checks streams, sends DMs, …)

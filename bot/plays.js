@@ -50,7 +50,7 @@ const WIDTHS = [3, 6, 10];
 const MAX_DRAWINGS = 150;
 
 const inPitch = (p) => Number.isFinite(p?.x) && Number.isFinite(p?.y) && p.x >= 0 && p.x <= PITCH.x && p.y >= 0 && p.y <= PITCH.y;
-const okColor = (c) => (/^#[0-9a-f]{6}$/i.test(c ?? '') ? c : '#c8352c');
+const okColor = (c) => (/^#[0-9a-f]{6}$/i.test(c ?? '') ? c : '#e8651a');
 // One chalk item → a safe shape, or null. Old documents (no `kind`) are freehand strokes.
 function cleanDrawing(d) {
   const kind = SHAPES[d?.kind] ? d.kind : 'free';

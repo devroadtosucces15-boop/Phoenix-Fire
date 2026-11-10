@@ -27,7 +27,7 @@ const MAX_DOCS = 400;
 const MAX_BODY = 8000;
 const SUG_DAILY = 5;
 const SUG_STATUS = ['open', 'planned', 'done', 'declined'];
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);

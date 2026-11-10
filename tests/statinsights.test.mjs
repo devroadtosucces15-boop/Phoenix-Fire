@@ -177,7 +177,7 @@ await DB.prepare('INSERT INTO stat_insights (key, hash, headline, body, watch, s
 await DB.prepare('INSERT INTO stat_insights (key, hash, headline, body, watch, sources, tier, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
   .bind('leaders.goals', 'h', 'Goals race', 'Close at the top.', 'Watch the striker.', '{}', 'member', Date.now()).run();
 const ok = await discordInsightEmbed(env, 'club', 'guest');
-t('/insight club → embed in club red with the stored headline', plainText(ok.embed).includes('✨ Unbeaten at home') && ok.embed.components[0].accent_color === 0xc8352c);
+t('/insight club → embed in club red with the stored headline', plainText(ok.embed).includes('✨ Unbeaten at home') && ok.embed.components[0].accent_color === 0xe8651a);
 t('/insight member-tier row → gated for a guest', /members only/.test((await discordInsightEmbed(env, 'goals', 'guest')).error ?? ''));
 t('/insight member-tier row → shown to a member', plainText((await discordInsightEmbed(env, 'goals', 'member')).embed).includes('✨ Goals race'));
 t('/insight with no stored row → friendly error', /No insight/.test((await discordInsightEmbed(env, 'match', 'owner')).error ?? ''));

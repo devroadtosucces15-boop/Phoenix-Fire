@@ -10,7 +10,7 @@ export const EPHEMERAL = 1 << 6;
 
 // Stripe colours – what kind of message it is, before anyone reads a word.
 export const ACCENT = {
-  red: 0xc8352c, // default: club, stats, commands, music
+  red: 0xe8651a, // default: club, stats, commands, music (Phoenix orange = config.json brand.red; the key name is historical)
   gold: 0xefcf7a, // honours: awards, MOTM, approved discoveries, birthdays
   win: 0x4be08a, // wins, went live, approved, done
   loss: 0xff7d72, // losses, jail, warnings

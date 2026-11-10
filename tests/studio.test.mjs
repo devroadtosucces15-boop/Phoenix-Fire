@@ -68,7 +68,7 @@ t('refused: an oversize op is 413 and not relayed', (await op(mgr, { op: { k: 's
 
 // Chalk: a stroke with a bad colour falls back to the crest red; points are clipped to the pitch.
 await op(mgr, { op: { k: 'stroke', sid: 's1', color: 'javascript:1', points: [[10, 10], [2000, 5], [20, 20]] } });
-t('chalk: stroke colour is sanitised and off-pitch points are dropped', last().op.k === 'stroke' && last().op.d.color === '#c8352c' && last().op.d.points.length === 2);
+t('chalk: stroke colour is sanitised and off-pitch points are dropped', last().op.k === 'stroke' && last().op.d.color === '#e8651a' && last().op.d.points.length === 2);
 await op(mgr, { op: { k: 'stroke', sid: 's2', d: { kind: 'arrow', points: [[100, 100], [400, 300]], color: '#3aa0ff', w: 10 } } });
 t('chalk: a shape (arrow) is relayed whole, with its width', last().op.k === 'stroke' && last().op.d.kind === 'arrow' && last().op.d.w === 10 && last().op.d.points.length === 2);
 await op(mgr, { op: { k: 'strokeDel', sid: 's1' } });

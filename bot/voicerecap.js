@@ -21,7 +21,7 @@ const WHISPER_MODEL = '@cf/openai/whisper';
 const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 const IMAGE_MODEL = '@cf/black-forest-labs/flux-1-schnell';
 const MAX_BYTES = 8e6; // 8 MB – generous for a short voice clip, keeps a huge file from stalling the cron
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 const ART_PROMPT = 'football locker room after a big match, energetic crowd chants, dramatic spotlight, bold graphic sports poster style, ink black and crimson red, no text, no people';
 
 function voiceChannel(env) {

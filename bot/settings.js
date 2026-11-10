@@ -15,7 +15,7 @@ const CH = /^\d{5,25}$/; // a Discord channel/role snowflake
 const clean = (s, max) => String(s ?? '').replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 
 export const DEFAULT_SETTINGS = {
-  resultChannel: '', reminderChannel: '', pingRole: '', color: 'c8352c', emoji: '⚽',
+  resultChannel: '', reminderChannel: '', pingRole: '', color: 'e8651a', emoji: '⚽',
   autoPosts: { results: true, reminders: true, awards: true },
 };
 

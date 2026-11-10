@@ -14,7 +14,7 @@ import { orgName } from './orgconfig.js';
 
 const G = globalThis.NXSquadGen;
 const MAX_PREFS = 10, SIZE = 5;
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
 const clean = (s, max) => String(s ?? '').replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);

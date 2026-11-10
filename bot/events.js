@@ -38,11 +38,11 @@ const REMIND = ['dm', 'mention', 'off'];
 const MIN = 60e3, HOUR = 3600e3, DAY = 86400e3;
 // 3rd element (BE11) is a per-type calendar colour, on-theme with the crest red.
 export const EVENT_TYPES = {
-  league: ['🏆', 'League night', '#c8352c'], rush: ['⚡', 'Rush session', '#e08a1e'], playoffs: ['🥇', 'Playoffs', '#caa63b'],
+  league: ['🏆', 'League night', '#e8651a'], rush: ['⚡', 'Rush session', '#e08a1e'], playoffs: ['🥇', 'Playoffs', '#caa63b'],
   friendly: ['🤝', 'Friendly', '#3f8f5f'], trial: ['🧭', 'Trial session', '#3a7bd5'], training: ['🎯', 'Training', '#7a5fc9'],
 };
 const STATUSES = ['yes', 'maybe', 'no'];
-const RED = 0xc8352c;
+const RED = 0xe8651a;
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);

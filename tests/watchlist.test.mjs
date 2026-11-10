@@ -71,7 +71,7 @@ await tt('cron: stores both, posts only the fresh one (the old backlog is silent
   const rows = sqlite.prepare('SELECT id, topic, tags, posted_at FROM watch_videos ORDER BY id').all();
   const panel = posts.at(-1)?.components?.find((c) => c.type === 17);
   return c1.stored === 2 && c1.posted === 1 && rows.length === 2 && rows.find((r) => r.id === 'new00000001').topic === 'builds' && rows.find((r) => r.id === 'new00000001').tags === '["CAM"]'
-    && rows.every((r) => r.posted_at) && posts.length === 1 && posts[0].channel === '42420' && panel.accent_color === 0xc8352c
+    && rows.every((r) => r.posted_at) && posts.length === 1 && posts[0].channel === '42420' && panel.accent_color === 0xe8651a
     && /Best CAM build/.test(plainText(posts[0])) && images(posts[0]).some((u) => /hq\.jpg/.test(u)) && ids(posts[0]).join() === 'norex:wl:useful:new00000001';
 });
 t('cron: not again within the hour', (await watchlistCron(env, NOW + 600e3)).stored === 0 && posts.length === 1);

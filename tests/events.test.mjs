@@ -87,7 +87,7 @@ const monthStr = new Date(evs[0].start).toISOString().slice(0, 7);
 const cal = await call(member, `/api/events/calendar?month=${monthStr}`);
 t('calendar: one call gets the month\'s events + my answer + type colours', cal.s === 200
   && cal.d.events.some((e) => e.id === e1 && e.mine === 'yes') && cal.d.events.some((e) => e.id === e2 && e.mine === null)
-  && cal.d.types.league.colour === '#c8352c' && cal.d.types.league.emoji === '🏆');
+  && cal.d.types.league.colour === '#e8651a' && cal.d.types.league.emoji === '🏆');
 t('calendar: bad month refused', (await call(member, '/api/events/calendar?month=2026-13')).s === 400
   && (await call(member, '/api/events/calendar')).s === 400);
 t('calendar: guests/logged-out kept out', (await call(null, `/api/events/calendar?month=${monthStr}`)).s === 401);

@@ -15,7 +15,7 @@ import { safely } from './notify.js';
 import { message, header, text, cards, facts, buttons, resultAccent } from './ui.js';
 import { it } from './icons.js';
 
-const RED = 0xc8352c, GREEN = 0x22c55e, GREY = 0x6b7280;
+const RED = 0xe8651a, GREEN = 0x22c55e, GREY = 0x6b7280;
 const IMAGE_MODEL = '@cf/black-forest-labs/flux-1-schnell';
 const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 
