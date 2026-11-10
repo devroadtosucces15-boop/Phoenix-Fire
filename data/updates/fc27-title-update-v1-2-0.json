@@ -1,0 +1,88 @@
+{
+ "slug": "fc27-title-update-v1-2-0",
+ "title": "EA SPORTS FC™ 27 | Title Update v1.2.0",
+ "url": "https://www.ea.com/games/ea-sports-fc/fc-27/news/fc27-title-update-v1-2-0",
+ "published": "2026-11-10T10:00:00.000Z",
+ "summary": "Find out the latest EA SPORTS FC™ 27 Update details in the Title Update v1.2.0 Notes. ",
+ "clubs": true,
+ "sections": [
+  {
+   "id": "s0",
+   "title": "Overview",
+   "cat": "general",
+   "subs": [],
+   "summary": "EA SPORTS FC 27 version 1.2.0 is now live and includes the updates below.",
+   "keys": []
+  },
+  {
+   "id": "s1",
+   "title": "Gameplay",
+   "cat": "gameplay",
+   "subs": [],
+   "summary": "Made the following changes: Adjusted how defenders position themselves with extreme defensive line heights. Defenders will now drop off sooner while still maintaining a higher line than other tactics.",
+   "keys": []
+  },
+  {
+   "id": "s2",
+   "title": "Ultimate Team",
+   "cat": "fut",
+   "subs": [],
+   "summary": "Made the following changes: Players were not always able to advance through the Evolution preview flow when attempting to re-preview an Evolution chain after backing out of an Evolution preview chain. Updated some player bios.",
+   "keys": []
+  },
+  {
+   "id": "s3",
+   "title": "The Grounds",
+   "cat": "clubs",
+   "subs": [],
+   "summary": "Made the following changes: [PC Only] Added two new Settings: The Grounds Camera Mouse Sensitivity Y and The Grounds Camera Mouse Sensitivity X. Addressed the following issues: The Edit Emote option in the Emote Wheel brought players to the outfit tab of the…",
+   "keys": [
+    "axp",
+    "archetype",
+    "amps",
+    "rush"
+   ]
+  },
+  {
+   "id": "s4",
+   "title": "Career Mode",
+   "cat": "career",
+   "subs": [
+    "General, Audio, and Visual"
+   ],
+   "summary": "Made the following changes: Removed Season Pass level up screen after playing Career Mode matches. Added the Energy Recovery setting for Manager Career.",
+   "keys": []
+  }
+ ],
+ "hits": [
+  {
+   "id": "fc27-title-update-v1-2-0#3-axp",
+   "kind": "axp",
+   "label": "AXP",
+   "section": "The Grounds",
+   "quote": "Updated Clubs Friendlies end of match AXP generation to be in-line with Clubs League Match."
+  },
+  {
+   "id": "fc27-title-update-v1-2-0#3-archetype",
+   "kind": "archetype",
+   "label": "Archetypes",
+   "section": "The Grounds",
+   "quote": "After swapping Archetypes, the wrong Archetype level and background could be displayed in match intros. [PC Only] When loading the match intros for a Kickabouts or Street Football match, a loading animation would not be displayed."
+  },
+  {
+   "id": "fc27-title-update-v1-2-0#3-amps",
+   "kind": "amps",
+   "label": "Amps",
+   "section": "The Grounds",
+   "quote": "Amps details were still displayed for a short time after being unequipped."
+  },
+  {
+   "id": "fc27-title-update-v1-2-0#3-rush",
+   "kind": "rush",
+   "label": "Rush",
+   "section": "The Grounds",
+   "quote": "In rare cases, Player Avatars could have invisible arms when returning from In-World Rush matches."
+  }
+ ],
+ "fetched": "2026-11-10T15:02:10.468Z"
+}
