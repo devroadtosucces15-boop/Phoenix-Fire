@@ -110,7 +110,7 @@
     "messages": "members",
     "points": "members",
     "avatarCard": "members",
-    "cardStudio": "owner",
+    "cardStudio": "members",
     "locker": "members",
     "lockerRoom": "members",
     "dugout": "managers",
