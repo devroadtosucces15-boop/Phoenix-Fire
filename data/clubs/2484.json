@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-10T22:40:39.699Z",
+ "fetchedAt": "2026-11-10T22:50:38.149Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1278,9 +1278,9 @@
   {
    "name": "CapoGroot",
    "proPos": "14",
-   "gamesPlayed": "17",
+   "gamesPlayed": "18",
    "goals": "1",
-   "assists": "0",
+   "assists": "1",
    "manOfTheMatch": "1",
    "ratingAve": "6.5",
    "prevGoals": "0",
