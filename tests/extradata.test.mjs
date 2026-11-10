@@ -78,7 +78,10 @@ t('results + matches pages get a Friendly tab with the friendly', [results, matc
 const leaguePart = (h) => h.split('data-mode="friendly"')[0];
 t('friendly never lands in League lists or totals', !leaguePart(results).includes(fr.matchId) && !leaguePart(matchesIdx).includes(fr.matchId)
   && !JSON.parse(page('api/club.json')).matches.some((m) => m.id === fr.matchId));
-t('League record on results.html unchanged by the friendly', new RegExp(`<span>Archived</span><b class="count" data-to="${league.length}"`).test(results));
+// results.html counts every club of the organization (data/org.json), friendlies excluded.
+const orgIds = new Set([home, ...(JSON.parse(fs.readFileSync(path.join(DATA, 'org.json'), 'utf8')).clubs || []).map((c) => String(c.ea_club_id))]);
+const leagueAll = fs.readdirSync(path.join(DATA, 'matches')).filter((f) => f.endsWith('.json') && f !== `${fr.matchId}.json`).map(read).filter((m) => m.matchType !== 'friendlyMatch' && [...orgIds].some((id) => m.clubs[id]));
+t('League record on results.html unchanged by the friendly', new RegExp(`<span>Archived</span><b class="count" data-to="${leagueAll.length}"`).test(results));
 const frPlayer = Object.keys(fr.players[home])[0];
 t('player page has a Friendly log for a friendly player', /data-mode="friendly"/.test(page(`players/${frPlayer}.html`)));
 
