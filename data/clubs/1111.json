@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-10T22:10:38.421Z",
+ "fetchedAt": "2026-11-10T22:20:39.664Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1521,42 +1521,6 @@
    "prevGoals10": "0"
   },
   {
-   "name": "Fez-_-Fez",
-   "gamesPlayed": "0",
-   "favoritePosition": "",
-   "winRate": "0",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "0",
-   "passSuccessRate": "0",
-   "ratingAve": "0.0",
-   "tacklesMade": "0",
-   "tackleSuccessRate": "0",
-   "proName": "",
-   "proPos": "",
-   "proStyle": "",
-   "proHeight": "",
-   "proNationality": "",
-   "proOverall": "0",
-   "proOverallStr": "",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0"
-  },
-  {
    "name": "GoldenFrize",
    "gamesPlayed": "0",
    "favoritePosition": "",
@@ -2122,24 +2086,13 @@
   {
    "name": "KOEN WIE",
    "proPos": "25",
-   "gamesPlayed": "53",
+   "gamesPlayed": "54",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
-   "prevGoals": "1",
-   "favoritePosition": "forward"
-  },
-  {
-   "name": "Fez-_-Fez",
-   "proPos": "14",
-   "gamesPlayed": "134",
-   "goals": "204",
-   "assists": "119",
-   "manOfTheMatch": "53",
-   "ratingAve": "8.5",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "GoldenFrize",
@@ -2166,9 +2119,9 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "37",
+   "gamesPlayed": "38",
    "goals": "5",
-   "assists": "15",
+   "assists": "16",
    "manOfTheMatch": "1",
    "ratingAve": "7.2",
    "prevGoals": "0",
@@ -2188,12 +2141,12 @@
   {
    "name": "Alias2604",
    "proPos": "25",
-   "gamesPlayed": "354",
-   "goals": "423",
+   "gamesPlayed": "355",
+   "goals": "425",
    "assists": "239",
-   "manOfTheMatch": "36",
-   "ratingAve": "7.6",
-   "prevGoals": "1",
+   "manOfTheMatch": "37",
+   "ratingAve": "7.7",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2221,12 +2174,12 @@
   {
    "name": "leo77romano",
    "proPos": "25",
-   "gamesPlayed": "143",
-   "goals": "27",
+   "gamesPlayed": "144",
+   "goals": "29",
    "assists": "19",
-   "manOfTheMatch": "6",
+   "manOfTheMatch": "7",
    "ratingAve": "7.2",
-   "prevGoals": "1",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {

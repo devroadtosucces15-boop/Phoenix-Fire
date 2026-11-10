@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-10T22:10:38.421Z",
+ "fetchedAt": "2026-11-10T22:20:39.664Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -439,42 +439,6 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "forward"
-  },
-  {
-   "name": "Twilight Xy OX8",
-   "gamesPlayed": "16",
-   "winRate": "87",
-   "goals": "9",
-   "assists": "13",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "2",
-   "shotSuccessRate": "60",
-   "passesMade": "199",
-   "passSuccessRate": "71",
-   "ratingAve": "7.7",
-   "tacklesMade": "12",
-   "tackleSuccessRate": "22",
-   "proName": "Lüna",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "95",
-   "proOverall": "83",
-   "proOverallStr": "83",
-   "manOfTheMatch": "3",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "2",
-   "prevGoals6": "0",
-   "prevGoals7": "1",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
   },
   {
    "name": "MS-05-05",
@@ -1810,7 +1774,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 3,
+  "midfielder": 2,
   "goalkeeper": 3,
   "forward": 4,
   "defender": 5
@@ -1995,12 +1959,12 @@
   {
    "name": "KOEN WIE",
    "proPos": "25",
-   "gamesPlayed": "53",
+   "gamesPlayed": "54",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2017,9 +1981,9 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "37",
+   "gamesPlayed": "38",
    "goals": "5",
-   "assists": "15",
+   "assists": "16",
    "manOfTheMatch": "1",
    "ratingAve": "7.2",
    "prevGoals": "0",
@@ -2180,17 +2144,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Twilight Xy OX8",
-   "proPos": "14",
-   "gamesPlayed": "137",
-   "goals": "95",
-   "assists": "51",
-   "manOfTheMatch": "28",
-   "ratingAve": "7.4",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
    "name": "Jakeyboy65466",
    "proPos": "14",
    "gamesPlayed": "154",
@@ -2248,7 +2201,7 @@
   {
    "name": "ManiManolo88",
    "proPos": "25",
-   "gamesPlayed": "7",
+   "gamesPlayed": "8",
    "goals": "3",
    "assists": "0",
    "manOfTheMatch": "3",
