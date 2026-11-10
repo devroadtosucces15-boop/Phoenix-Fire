@@ -287,4 +287,13 @@ await env.DB.prepare("UPDATE claims SET status = 'approved' WHERE user_id = '501
 await env.DB.prepare("INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, target_player, published) VALUES ('501', '2025-01', 0, 0, '', 'done', 1, 'different-player', 1)").run();
 t('owner revokes claimed-player artwork', (await call(owner, '/api/cards/owner/revoke', {id:two.id})).s === 200);
 t('revocation preserves explicit artwork assigned to a different player', (await env.DB.prepare("SELECT published FROM card_requests WHERE target_player = 'different-player'").first('published')) === 1);
+
+// Club kit reference: managers set the uniform every portrait is dressed in.
+const kitReq = (tok, method, body) => W('/api/cards/kit', { method, headers: { ...(tok ? { Authorization: 'Bearer ' + tok } : {}), 'Content-Type': 'image/png' }, ...(body ? { body } : {}) });
+t('kit reference: members refused', (await kitReq(m1, 'POST', PNG(64, 64))).status === 403);
+t('kit reference: non-image refused', (await kitReq(mgr, 'POST', new Uint8Array(40))).status === 400);
+t('kit reference: none stored yet', (await kitReq(mgr, 'GET')).status === 404);
+t('kit reference: manager can set it', (await kitReq(mgr, 'POST', PNG(64, 64))).status === 200);
+t('kit reference: stored privately', r2objects.has('cardkit/reference') && (await kitReq(mgr, 'GET')).status === 200 && (await kitReq(m1, 'GET')).status === 403);
+t('kit reference: manager can remove it', (await kitReq(mgr, 'DELETE')).status === 200 && (await kitReq(mgr, 'GET')).status === 404);
 done();

@@ -32,6 +32,9 @@ export const PERMS = {
   // Upcoming items
   'rush.submit': 'member', // P0.4 – members submit, managers confirm
   'rush.confirm': 'manager', // P0.4
+  'board.scan': 'manager', // Rush leaderboard photos: read, save, post (bot/rushscan.js)
+  'season.submit': 'member', // end-of-season Rush card from the member's own screenshot
+  'season.manage': 'manager', // season clock, take a card down, see flags and who is missing
   'feedback.send': 'claimed', // P4.4 – claimed → claimed players
   'feedback.authors': 'manager', // P4.4 – who wrote anonymous feedback, hide messages, see reports
   'ratings.give': 'member', // P4.2 – weekly 1–5★ for teammates (not yourself)

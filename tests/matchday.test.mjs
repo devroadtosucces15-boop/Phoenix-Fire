@@ -14,7 +14,7 @@ import { answerEvents } from '../bot/events.js';
 const DAY = 864e5;
 // ---------- the command map ----------
 const MOVED = ['host', 'schedule', 'nextevent', 'availability', 'lineup', 'remind', 'reminders', 'trial'];
-t('matchday owns the match-day commands, rush owns /rush, /lfg and /queue', MOVED.every((n) => APP_COMMANDS.matchday.includes(n)) && APP_COMMANDS.matchday.includes('matchday') && APP_COMMANDS.rush.join() === 'rush,lfg,queue');
+t('matchday owns the match-day commands, rush owns /rush, /lfg, /queue and /board', MOVED.every((n) => APP_COMMANDS.matchday.includes(n)) && APP_COMMANDS.matchday.includes('matchday') && APP_COMMANDS.rush.join() === 'rush,lfg,queue,board');
 t('moved commands are off their old apps in the map', !APP_COMMANDS.tools.some((n) => MOVED.includes(n)) && !APP_COMMANDS.stats.includes('rush'));
 t('every moved command remembers where it came from', MOVED.every((n) => MOVED_FROM[n] === 'tools') && MOVED_FROM.rush === 'stats');
 t('new commands are held until their app exists', HELD.has('matchday') && HELD.has('lfg') && !MOVED_FROM.matchday && !MOVED_FROM.lfg);

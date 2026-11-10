@@ -1,0 +1,3225 @@
+{
+ "items": [
+  {
+   "id": "dm:notify:announce",
+   "name": "DM · Announcements & rules",
+   "category": "DM",
+   "trigger": "notify type \"announce\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 📣 Sample Announcements & rules"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it.\n\n**Please open the site and tap “Got it” to acknowledge.**"
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:claim",
+   "name": "DM · Player claim decisions",
+   "category": "DM",
+   "trigger": "notify type \"claim\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🪪 Sample Player claim decisions"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:trial",
+   "name": "DM · My scouting tips",
+   "category": "DM",
+   "trigger": "notify type \"trial\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🔭 Sample My scouting tips"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:trialstage",
+   "name": "DM · Trial stage changes – my trial and the Dugout board",
+   "category": "DM",
+   "trigger": "notify type \"trialstage\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "off",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🏟️ Sample Trial stage changes – my trial and the Dugout board"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:rush",
+   "name": "DM · My Rush results",
+   "category": "DM",
+   "trigger": "notify type \"rush\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### ⚡ Sample My Rush results"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:lfg",
+   "name": "DM · Rush calls – someone is available to play",
+   "category": "DM",
+   "trigger": "notify type \"lfg\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🙋 Sample Rush calls – someone is available to play"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:badge",
+   "name": "DM · Badges & achievements I get",
+   "category": "DM",
+   "trigger": "notify type \"badge\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🎖️ Sample Badges & achievements I get"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:request",
+   "name": "DM · My club & privacy requests",
+   "category": "DM",
+   "trigger": "notify type \"request\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 📨 Sample My club & privacy requests"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:idea",
+   "name": "DM · Replies to my suggestions",
+   "category": "DM",
+   "trigger": "notify type \"idea\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 💡 Sample Replies to my suggestions"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:event",
+   "name": "DM · New events, changes and session reports",
+   "category": "DM",
+   "trigger": "notify type \"event\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 📅 Sample New events, changes and session reports"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:award",
+   "name": "DM · Weekly awards – results and my wins",
+   "category": "DM",
+   "trigger": "notify type \"award\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🏆 Sample Weekly awards – results and my wins"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:feedback",
+   "name": "DM · Anonymous feedback from teammates",
+   "category": "DM",
+   "trigger": "notify type \"feedback\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 💌 Sample Anonymous feedback from teammates"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:predict",
+   "name": "DM · My prediction points",
+   "category": "DM",
+   "trigger": "notify type \"predict\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🔮 Sample My prediction points"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:game",
+   "name": "DM · Game updates – new max level & rules",
+   "category": "DM",
+   "trigger": "notify type \"game\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🎮 Sample Game updates – new max level & rules"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:mention",
+   "name": "DM · When someone @mentions me",
+   "category": "DM",
+   "trigger": "notify type \"mention\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 📣 Sample When someone @mentions me"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:message",
+   "name": "DM · New DMs and group chat messages",
+   "category": "DM",
+   "trigger": "notify type \"message\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 💬 Sample New DMs and group chat messages"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:feed",
+   "name": "DM · Comments, replies and reactions on my feed posts",
+   "category": "DM",
+   "trigger": "notify type \"feed\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 💬 Sample Comments, replies and reactions on my feed posts"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:storage",
+   "name": "DM · Media storage clean-ups (feed photos & clips)",
+   "category": "DM",
+   "trigger": "notify type \"storage\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 💾 Sample Media storage clean-ups (feed photos & clips)"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:queue",
+   "name": "DM · Manager to-dos (new claims, trials, Rush results, requests)",
+   "category": "DM",
+   "trigger": "notify type \"queue\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🛡️ Sample Manager to-dos (new claims, trials, Rush results, requests)"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:moderation",
+   "name": "DM · Warnings and mutes from the managers",
+   "category": "DM",
+   "trigger": "notify type \"moderation\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 16743794,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🛡️ Sample Warnings and mutes from the managers"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:play",
+   "name": "DM · New plays assigned to me",
+   "category": "DM",
+   "trigger": "notify type \"play\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 📋 Sample New plays assigned to me"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:card",
+   "name": "DM · Card Studio – decisions on my card request",
+   "category": "DM",
+   "trigger": "notify type \"card\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🪪 Sample Card Studio – decisions on my card request"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:wave",
+   "name": "DM · Waves from teammates in the Hub",
+   "category": "DM",
+   "trigger": "notify type \"wave\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 👋 Sample Waves from teammates in the Hub"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:remind",
+   "name": "DM · Reminders – feedback waiting for you, and the odd nudge to use it",
+   "category": "DM",
+   "trigger": "notify type \"remind\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### ⏰ Sample Reminders – feedback waiting for you, and the odd nudge to use it"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:caution",
+   "name": "DM · Caution – a player disagrees with or is confused by feedback",
+   "category": "DM",
+   "trigger": "notify type \"caution\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### ⚠️ Sample Caution – a player disagrees with or is confused by feedback"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:live",
+   "name": "DM · The club goes live on Twitch or YouTube",
+   "category": "DM",
+   "trigger": "notify type \"live\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "site",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🔴 Sample The club goes live on Twitch or YouTube"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "dm:notify:test",
+   "name": "DM · Test notifications",
+   "category": "DM",
+   "trigger": "notify type \"test\"",
+   "schedule": "queued, sent by the 10-minute cron (or right after the request)",
+   "destination": [
+    "DM"
+   ],
+   "flag": "notifications",
+   "level": "members",
+   "source": "bot/notify.js deliverDMs()",
+   "dmDefault": "dm",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🔔 Sample Test notifications"
+        },
+        {
+         "type": 10,
+         "content": "Sample notification text, as a member would receive it."
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#alerts",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ],
+   "how": "real"
+  },
+  {
+   "id": "auto:live",
+   "name": "Club goes live (Twitch / YouTube)",
+   "category": "automated",
+   "trigger": "cron: live check finds the club on air",
+   "schedule": "every 10 min",
+   "destination": [
+    "announcements"
+   ],
+   "flag": "liveAnnounce",
+   "level": "owner",
+   "source": "bot/live.js livePost()",
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · LIVE · TWITCH\n### 🔴 Phoenix Fire is live\n-# Sample · Pro Clubs night"
+        },
+        {
+         "type": 10,
+         "content": "We just went on air – drop in, watch along and say hello in the chat."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# Watch from the club site or straight on the platform"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/watch.html",
+           "label": "Watch on the site"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://twitch.tv/sample",
+           "label": "Open Twitch"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:memberlive",
+   "name": "Member goes live",
+   "category": "automated",
+   "trigger": "cron: member stream check",
+   "schedule": "every 10 min",
+   "destination": [
+    "announcements"
+   ],
+   "flag": "memberLive",
+   "level": "owner",
+   "source": "bot/memberlive.js livePanel()",
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · LIVE · TWITCH\n### 🔴 Mike is live\n-# Sample · Ranked grind"
+        },
+        {
+         "type": 10,
+         "content": "<@222> just went on air – drop in and say hello."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# Streaming from their profile on the site"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://twitch.tv/sample",
+           "label": "Watch live"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:uptime-down",
+   "name": "Uptime alert: down",
+   "category": "automated",
+   "trigger": "cron: 24/7 monitor sees a problem",
+   "schedule": "every 10 min, only on change",
+   "destination": [
+    "DM owner"
+   ],
+   "flag": "always on",
+   "level": "owner",
+   "source": "bot/monitor.js alertPanel()",
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 16743794,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# STAFF · UPTIME MONITOR\n### Phoenix bot: something's down"
+        },
+        {
+         "type": 10,
+         "content": "• Worker: EA relay timed out"
+        },
+        {
+         "type": 10,
+         "content": "-# Checked every 10 minutes · you only hear about changes"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:uptime-up",
+   "name": "Uptime alert: back to normal",
+   "category": "automated",
+   "trigger": "cron: monitor recovers",
+   "schedule": "every 10 min, only on change",
+   "destination": [
+    "DM owner"
+   ],
+   "flag": "always on",
+   "level": "owner",
+   "source": "bot/monitor.js alertPanel()",
+   "related": [
+    "auto:uptime-down"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# STAFF · UPTIME MONITOR\n### Phoenix bot: back to normal (was down since 2026-11-10 12:32 UTC)"
+        },
+        {
+         "type": 10,
+         "content": "-# Checked every 10 minutes · you only hear about changes"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:burner-report",
+   "name": "Burner club match report",
+   "category": "automated",
+   "trigger": "GitHub Action fetch: tracked burner club plays",
+   "schedule": "every update run",
+   "destination": [
+    "match_results"
+   ],
+   "flag": "burners",
+   "level": "members",
+   "source": "bot/burnerstats.js reportMessage()",
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# BURNER TRACKER · LEAGUE\n## 🔥 Burner FC 3–1 Sample FC\n-# ✅ Win · <t:1794317548:f> · burner club report"
+        },
+        {
+         "type": 10,
+         "content": "**⚽ Goals** Niko-the-Great ×2, kingmitch93\n**🎯 Assists** kingmitch93, Sample Three\n**⭐ Man of the match** Niko-the-Great (8.4)"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# **LINEUP (3)**"
+        },
+        {
+         "type": 10,
+         "content": "`8.4` Niko-the-Great ⚽2\n`7.6` kingmitch93 ⚽ 🎯\n`6.9` Sample Three 🎯"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**📊 Season so far** 5W 1D 2L · 18–9 · 63% wins · 3W streak"
+        },
+        {
+         "type": 10,
+         "content": "-# Burner tracker · club 42"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/burners.html#c42",
+           "label": "Burner card"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:watchlist-video",
+   "name": "New video from a watched creator",
+   "category": "automated",
+   "trigger": "cron: watch list finds a new video",
+   "schedule": "about hourly",
+   "destination": [
+    "announcements"
+   ],
+   "flag": "watchlist",
+   "level": "owner",
+   "source": "bot/watchlist.js videoPanel()",
+   "related": [
+    "slash:/watch"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · NEW VIDEO · 🛠️ BUILDS\n### Sample · Best CAM build for FC 27 Pro Clubs\n-# SAMPLE Channel"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": ""
+           },
+           "description": "Sample · Best CAM build for FC 27 Pro Clubs"
+          }
+         ]
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "norex:wl:useful:sampleVid001",
+           "label": "👍 Useful · 3"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://www.youtube.com/watch?v=sampleVid001",
+           "label": "Watch"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:discovery",
+   "name": "Approved discovery post",
+   "category": "automated",
+   "trigger": "manager approves a /share tip",
+   "schedule": "on approval",
+   "destination": [
+    "announcements"
+   ],
+   "flag": "discoveries",
+   "level": "owner",
+   "source": "bot/discoveries.js discoveryPanel()",
+   "related": [
+    "slash:/share"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-discovery.png?v=4"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · DISCOVERY\n### Sample · Jockey without fouling\n-# Shared by <@333> · approved by <@111>"
+        },
+        {
+         "type": 10,
+         "content": "Hold L1 and a direction."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "norex:dc:useful:1",
+           "label": "👍 Useful · 2"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://example.com",
+           "label": "Open link"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#discoveries",
+           "label": "On the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:birthday",
+   "name": "Birthday post",
+   "category": "automated",
+   "trigger": "cron: a member birthday",
+   "schedule": "once a day",
+   "destination": [
+    "announcements"
+   ],
+   "flag": "fun",
+   "level": "owner",
+   "source": "bot/fun.js birthdayPanel()",
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · BIRTHDAYS\n## 🎂 Happy birthday!"
+        },
+        {
+         "type": 10,
+         "content": "🎉 <@222>"
+        },
+        {
+         "type": 10,
+         "content": "-# From everyone at the club – have a good one"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:welcome",
+   "name": "Welcome post",
+   "category": "automated",
+   "trigger": "member joins the server",
+   "schedule": "cron: member watch",
+   "destination": [
+    "welcome"
+   ],
+   "flag": "serverTools",
+   "level": "members",
+   "source": "bot/servertools.js welcomeMessage()",
+   "related": [
+    "slash:/setup welcome"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 10,
+       "content": "Welcome to the crew, <@222>! 👋"
+      },
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# WELCOME\n## Welcome to Phoenix Fire\n-# Glad you’re here, Mike"
+        },
+        {
+         "type": 10,
+         "content": "**Start here**\n📜 Read the rules and say hi in the chat\n🏠 Log in to the **Squad Hub** with Discord and claim your player\n📊 Results, stats and the squad are on the **club site**"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html",
+           "label": "Squad Hub"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/",
+           "label": "Club site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "users": [
+       "222"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:pingroles",
+   "name": "Ping-roles panel",
+   "category": "automated",
+   "trigger": "/setup pingroles",
+   "schedule": "on command",
+   "destination": [
+    "configured channel"
+   ],
+   "flag": "serverTools",
+   "level": "managers",
+   "source": "bot/servertools.js pingPanel()",
+   "related": [
+    "slash:/setup pingroles"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · PINGS\n## 🔔 Pick your pings\n-# Tap to turn one on, tap again to turn it off. Only you see the answer."
+        },
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "⚽ **Match night**\n-# League and match-night call-ups"
+          }
+         ],
+         "accessory": {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:pr:match",
+          "label": "On / off"
+         }
+        },
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "🎮 **Rush LFG**\n-# Someone is looking for a Rush squad"
+          }
+         ],
+         "accessory": {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:pr:rush",
+          "label": "On / off"
+         }
+        },
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "🔴 **Stream alerts**\n-# A member or the club goes live"
+          }
+         ],
+         "accessory": {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:pr:streams",
+          "label": "On / off"
+         }
+        },
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "🎬 **New videos**\n-# New FC Clubs videos worth watching"
+          }
+         ],
+         "accessory": {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:pr:videos",
+          "label": "On / off"
+         }
+        },
+        {
+         "type": 10,
+         "content": "-# Only people who switch a ping on get notified"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:lfg-open",
+   "name": "Rush LFG call (open)",
+   "category": "automated",
+   "trigger": "/lfg now",
+   "schedule": "on command, expires in 60 min",
+   "destination": [
+    "Rush channel + Rush role ping"
+   ],
+   "flag": "rushLfg",
+   "level": "owner",
+   "source": "bot/lfg.js lfgMessage()",
+   "status": "owner testing",
+   "related": [
+    "slash:/lfg now"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 10,
+       "content": "<@&R1>"
+      },
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Mike is available for Rush\n-# Until <t:1794321148:t> · <t:1794321148:R>"
+        },
+        {
+         "type": 10,
+         "content": "📝 Rush 5v5 anyone?"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**✅ In** Jez\n**⏰ Later** Kruger"
+        },
+        {
+         "type": 10,
+         "content": "-# Tap a button to answer"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "pf:lfg:7:in",
+           "label": "I’m in",
+           "emoji": {
+            "name": "✅"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:lfg:7:later",
+           "label": "Later",
+           "emoji": {
+            "name": "⏰"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": [],
+      "roles": [
+       "R1"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:lfg-expired",
+   "name": "Rush LFG call (expired)",
+   "category": "automated",
+   "trigger": "cron: call passes its time",
+   "schedule": "every 10 min",
+   "destination": [
+    "edits the original post"
+   ],
+   "flag": "rushLfg",
+   "level": "owner",
+   "source": "bot/lfg.js lfgMessage()",
+   "status": "owner testing",
+   "related": [
+    "auto:lfg-open"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Mike is available for Rush\n-# This call is over"
+        },
+        {
+         "type": 10,
+         "content": "📝 Rush 5v5 anyone?"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**✅ In** –\n**⏰ Later** –"
+        },
+        {
+         "type": 10,
+         "content": "-# Expired or taken down"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:event-league",
+   "name": "Event post: league night",
+   "category": "automated",
+   "trigger": "manager creates an event (site or /host)",
+   "schedule": "on create, refreshed after every answer",
+   "destination": [
+    "match_notifications",
+    "announcements"
+   ],
+   "flag": "events",
+   "level": "public",
+   "source": "bot/events.js eventMessage()",
+   "related": [
+    "slash:/schedule",
+    "slash:/host"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=4"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1794403948:F> · <t:1794403948:R> · 1 h 30 min"
+        },
+        {
+         "type": 10,
+         "content": "📝 Be on 10 minutes early."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+        },
+        {
+         "type": 10,
+         "content": "**In** Mike"
+        },
+        {
+         "type": 10,
+         "content": "**❔ Maybe (1)** Jez\n**❌ Out (1)** Kruger"
+        },
+        {
+         "type": 10,
+         "content": "**🧩 Still needed** 10 more players · 1 GK · 1 ST"
+        },
+        {
+         "type": 10,
+         "content": "-# Tap a button to answer · only you see the confirmation"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "norex:ev:1:yes",
+           "label": "I’m in",
+           "emoji": {
+            "name": "✅"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "norex:ev:1:maybe",
+           "label": "Maybe",
+           "emoji": {
+            "name": "❔"
+           }
+          },
+          {
+           "type": 2,
+           "style": 4,
+           "custom_id": "norex:ev:1:no",
+           "label": "Can’t make it",
+           "emoji": {
+            "name": "❌"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-1",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:event-rush",
+   "name": "Event post: Rush session",
+   "category": "automated",
+   "trigger": "manager creates a Rush event",
+   "schedule": "on create, refreshed after every answer",
+   "destination": [
+    "match_notifications",
+    "announcements"
+   ],
+   "flag": "events",
+   "level": "public",
+   "source": "bot/events.js eventMessage()",
+   "related": [
+    "slash:/schedule",
+    "slash:/host"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=4"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · RUSH SESSION\n## ⚡ Rush night\n-# <t:1794403948:F> · <t:1794403948:R> · 1 h 30 min"
+        },
+        {
+         "type": 10,
+         "content": "📝 Be on 10 minutes early."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+        },
+        {
+         "type": 10,
+         "content": "**In** Mike"
+        },
+        {
+         "type": 10,
+         "content": "**🧩 Still needed** 10 more players · 1 GK · 2 ST"
+        },
+        {
+         "type": 10,
+         "content": "-# Tap a button to answer · only you see the confirmation"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "norex:ev:2:yes",
+           "label": "I’m in",
+           "emoji": {
+            "name": "✅"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "norex:ev:2:maybe",
+           "label": "Maybe",
+           "emoji": {
+            "name": "❔"
+           }
+          },
+          {
+           "type": 2,
+           "style": 4,
+           "custom_id": "norex:ev:2:no",
+           "label": "Can’t make it",
+           "emoji": {
+            "name": "❌"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-2",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:event-cancelled",
+   "name": "Event post: cancelled",
+   "category": "automated",
+   "trigger": "manager cancels an event",
+   "schedule": "on create, refreshed after every answer",
+   "destination": [
+    "match_notifications",
+    "announcements"
+   ],
+   "flag": "events",
+   "level": "public",
+   "source": "bot/events.js eventMessage()",
+   "related": [
+    "auto:event-league"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 🚫 Cancelled · League night\n-# <t:1794403948:F> · <t:1794403948:R> · 1 h 30 min"
+        },
+        {
+         "type": 10,
+         "content": "📝 Be on 10 minutes early."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+        },
+        {
+         "type": 10,
+         "content": "**In** Mike"
+        },
+        {
+         "type": 10,
+         "content": "**🧩 Still needed** 10 more players · 1 GK · 1 ST"
+        },
+        {
+         "type": 10,
+         "content": "-# This event is closed"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-3",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:result-panel",
+   "name": "Match result post (score + field cards)",
+   "category": "automated",
+   "trigger": "GitHub Action: a new home match is fetched",
+   "schedule": "every update run (post-results.mjs)",
+   "destination": [
+    "match_results"
+   ],
+   "flag": "discordMatch",
+   "level": "members",
+   "source": "scripts/lib/resultpost.mjs",
+   "related": [
+    "auto:result-webhook"
+   ],
+   "how": "real",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 16743794,
+       "components": [
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## ⚽ Phoenix Fire 0–2 842844\n-# <t:1793575163:f> · Defeat"
+          }
+         ],
+         "accessory": {
+          "type": 11,
+          "media": {
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+          }
+         }
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "attachment://score-159660491030161.png"
+           },
+           "description": "Phoenix Fire 0–2 842844"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**⭐ Man of the match** Brunsfield (9.2)\n**📈 Top rated** Superdaddysi (7.8)"
+        },
+        {
+         "type": 10,
+         "content": "-# **FIELD VIEW · RATINGS**"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "attachment://field-159660491030161.png"
+           },
+           "description": "Our players on the pitch with their match ratings"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 3,
+           "custom_id": "norex:mm:159660491030161",
+           "placeholder": "📊 Show my match – pick your player",
+           "min_values": 1,
+           "max_values": 1,
+           "options": [
+            {
+             "label": "Superdaddysi",
+             "value": "1009204943808",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.8"
+            },
+            {
+             "label": "leo77romano",
+             "value": "1005706168629",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.4"
+            },
+            {
+             "label": "Bantu Vikng",
+             "value": "1205881367",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.3"
+            },
+            {
+             "label": "khytEN_Prodige",
+             "value": "1005819534824",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.3"
+            },
+            {
+             "label": "Niko-the-Great",
+             "value": "179113036",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.9"
+            },
+            {
+             "label": "OH-912",
+             "value": "282474465",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.6"
+            },
+            {
+             "label": "kingmitch93",
+             "value": "182169169",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.1"
+            },
+            {
+             "label": "HristoNL",
+             "value": "1006208965101",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.1"
+            },
+            {
+             "label": "xEthxnH-_-",
+             "value": "1812822388",
+             "emoji": {
+              "name": "🔴"
+             },
+             "description": "Rating 5.7"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 1,
+           "custom_id": "norex:mme:159660491030161",
+           "label": "My match",
+           "emoji": {
+            "name": "🙋"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159660491030161.html",
+           "label": "Match page",
+           "emoji": {
+            "name": "📋"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     },
+     "files": [
+      {
+       "name": "score-159660491030161.png",
+       "size": 224262
+      },
+      {
+       "name": "field-159660491030161.png",
+       "size": 276530
+      }
+     ]
+    },
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## ⚽ Phoenix Fire 1–1 842844\n-# <t:1793576510:f> · Draw"
+          }
+         ],
+         "accessory": {
+          "type": 11,
+          "media": {
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+          }
+         }
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "attachment://score-159502910480217.png"
+           },
+           "description": "Phoenix Fire 1–1 842844"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**⚽ Goals** OH-912\n**⭐ Man of the match** PConvictions (8.0)\n**📈 Top rated** HristoNL (7.7)"
+        },
+        {
+         "type": 10,
+         "content": "-# **FIELD VIEW · RATINGS**"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "attachment://field-159502910480217.png"
+           },
+           "description": "Our players on the pitch with their match ratings"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 3,
+           "custom_id": "norex:mm:159502910480217",
+           "placeholder": "📊 Show my match – pick your player",
+           "min_values": 1,
+           "max_values": 1,
+           "options": [
+            {
+             "label": "HristoNL",
+             "value": "1006208965101",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.7"
+            },
+            {
+             "label": "OH-912",
+             "value": "282474465",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.6 · ⚽ 1"
+            },
+            {
+             "label": "Niko-the-Great",
+             "value": "179113036",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.3"
+            },
+            {
+             "label": "Bantu Vikng",
+             "value": "1205881367",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.2"
+            },
+            {
+             "label": "kingmitch93",
+             "value": "182169169",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.7"
+            },
+            {
+             "label": "leo77romano",
+             "value": "1005706168629",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.6"
+            },
+            {
+             "label": "xEthxnH-_-",
+             "value": "1812822388",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.3"
+            },
+            {
+             "label": "khytEN_Prodige",
+             "value": "1005819534824",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.0"
+            },
+            {
+             "label": "Superdaddysi",
+             "value": "1009204943808",
+             "emoji": {
+              "name": "🔴"
+             },
+             "description": "Rating 5.9"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 1,
+           "custom_id": "norex:mme:159502910480217",
+           "label": "My match",
+           "emoji": {
+            "name": "🙋"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159502910480217.html",
+           "label": "Match page",
+           "emoji": {
+            "name": "📋"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     },
+     "files": [
+      {
+       "name": "score-159502910480217.png",
+       "size": 216687
+      },
+      {
+       "name": "field-159502910480217.png",
+       "size": 275721
+      }
+     ]
+    },
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## ⚽ Phoenix Fire 1–1 666618\n-# <t:1793577928:f> · Draw"
+          }
+         ],
+         "accessory": {
+          "type": 11,
+          "media": {
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+          }
+         }
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "attachment://score-159890081220288.png"
+           },
+           "description": "Phoenix Fire 1–1 666618"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**⚽ Goals** OH-912\n**🎯 Assists** xEthxnH-_-\n**⭐ Man of the match** OH-912 (7.7)\n**📈 Top rated** kingmitch93 (7.7)"
+        },
+        {
+         "type": 10,
+         "content": "-# **FIELD VIEW · RATINGS**"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "attachment://field-159890081220288.png"
+           },
+           "description": "Our players on the pitch with their match ratings"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 3,
+           "custom_id": "norex:mm:159890081220288",
+           "placeholder": "📊 Show my match – pick your player",
+           "min_values": 1,
+           "max_values": 1,
+           "options": [
+            {
+             "label": "kingmitch93",
+             "value": "182169169",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.7"
+            },
+            {
+             "label": "OH-912",
+             "value": "282474465",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.7 · ⚽ 1"
+            },
+            {
+             "label": "Bantu Vikng",
+             "value": "1205881367",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.6"
+            },
+            {
+             "label": "leo77romano",
+             "value": "1005706168629",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.4"
+            },
+            {
+             "label": "HristoNL",
+             "value": "1006208965101",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.2"
+            },
+            {
+             "label": "xEthxnH-_-",
+             "value": "1812822388",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.1 · 🎯 1"
+            },
+            {
+             "label": "khytEN_Prodige",
+             "value": "1005819534824",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.9"
+            },
+            {
+             "label": "Niko-the-Great",
+             "value": "179113036",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.4"
+            },
+            {
+             "label": "Superdaddysi",
+             "value": "1009204943808",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.2"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 1,
+           "custom_id": "norex:mme:159890081220288",
+           "label": "My match",
+           "emoji": {
+            "name": "🙋"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159890081220288.html",
+           "label": "Match page",
+           "emoji": {
+            "name": "📋"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     },
+     "files": [
+      {
+       "name": "score-159890081220288.png",
+       "size": 219664
+      },
+      {
+       "name": "field-159890081220288.png",
+       "size": 275502
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "auto:result-webhook",
+   "name": "Match result post: webhook fallback (classic embed)",
+   "category": "automated",
+   "trigger": "result post when the bot token or discordMatch flag is off",
+   "schedule": "every update run",
+   "destination": [
+    "DISCORD_WEBHOOK channel"
+   ],
+   "flag": "discordMatch off",
+   "level": "n/a",
+   "status": "fallback only",
+   "source": "scripts/lib/resultpost.mjs",
+   "related": [
+    "auto:result-panel"
+   ],
+   "how": "real",
+   "bodies": [
+    {
+     "username": "PHOENIX FIRE",
+     "avatar_url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png",
+     "embeds": [
+      {
+       "title": "⚽ Phoenix Fire 0–2 842844",
+       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159660491030161.html",
+       "color": 15680580,
+       "description": "❌ **Defeat**",
+       "thumbnail": {
+        "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+       },
+       "fields": [
+        {
+         "name": "⭐ Man of the match",
+         "value": "Brunsfield (9.2)",
+         "inline": true
+        },
+        {
+         "name": "📈 Our top rated",
+         "value": "Superdaddysi (7.8)",
+         "inline": true
+        }
+       ],
+       "timestamp": "2026-11-01T23:19:23.000Z",
+       "footer": {
+        "text": "League match"
+       }
+      },
+      {
+       "title": "⚽ Phoenix Fire 1–1 842844",
+       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159502910480217.html",
+       "color": 15381256,
+       "description": "➖ **Draw**",
+       "thumbnail": {
+        "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+       },
+       "fields": [
+        {
+         "name": "⚽ Goals",
+         "value": "OH-912",
+         "inline": true
+        },
+        {
+         "name": "⭐ Man of the match",
+         "value": "PConvictions (8.0)",
+         "inline": true
+        },
+        {
+         "name": "📈 Our top rated",
+         "value": "HristoNL (7.7)",
+         "inline": true
+        }
+       ],
+       "timestamp": "2026-11-01T23:41:50.000Z",
+       "footer": {
+        "text": "League match"
+       }
+      },
+      {
+       "title": "⚽ Phoenix Fire 1–1 666618",
+       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159890081220288.html",
+       "color": 15381256,
+       "description": "➖ **Draw**",
+       "thumbnail": {
+        "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+       },
+       "fields": [
+        {
+         "name": "⚽ Goals",
+         "value": "OH-912",
+         "inline": true
+        },
+        {
+         "name": "🎯 Assists",
+         "value": "xEthxnH-_-",
+         "inline": true
+        },
+        {
+         "name": "⭐ Man of the match",
+         "value": "OH-912 (7.7)",
+         "inline": true
+        },
+        {
+         "name": "📈 Our top rated",
+         "value": "kingmitch93 (7.7)",
+         "inline": true
+        }
+       ],
+       "timestamp": "2026-11-02T00:05:28.000Z",
+       "footer": {
+        "text": "League match"
+       }
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  }
+ ],
+ "failures": []
+}

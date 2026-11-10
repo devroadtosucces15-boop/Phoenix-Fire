@@ -2,6 +2,7 @@ import { can, flagOn } from './roles.js';
 import { orgName } from './orgconfig.js';
 import { hex } from './media.js';
 import { notify, notifyManagers, safely } from './notify.js';
+import { cutoutGreen } from './cutout.js';
 
 export const CARD_MODEL = '@cf/black-forest-labs/flux-2-klein-9b';
 export const MAX_ATTEMPTS = 3;
@@ -364,14 +365,67 @@ async function reference(env, bytes, type) {
   return new Blob([await out.response().arrayBuffer()], { type: 'image/png' });
 }
 
-async function render(env, bg, pose, photo, portrait = false) {
+// The club kit every player wears. A manager can upload a photo/render of it (POST /api/cards/kit) and it is sent to the
+// model as an extra reference; without one, the written description below is used on its own.
+export const KIT_KEY = 'cardkit/reference';
+export const KIT_TEXT = 'a white football shirt with broken red vertical stripes, a red collar, a small gold club crest on the chest and a small swoosh-style mark, red shorts with a small crest, white tape on the wrists';
+export const portraitPrompt = (hasKit) =>
+  'Image 0 is the person: preserve their face, hairstyle and hair colour, beard, skin tone, tattoos and expression. '
+  + (hasKit ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${KIT_TEXT}. `)
+  + 'Draw it as a flat 2D cartoon illustration: clean cel shading, bold uniform black outlines, simple solid colour fills with a few soft shadow shapes, realistic proportions, detailed expressive face with eyebrows, eyes, nose and beard drawn crisply, no gradients, no painterly texture, no 3D render look. '
+  + 'Bust portrait: head, neck, shoulders, chest and upper arms, straight-on camera, neutral confident expression, centred with generous margins. '
+  + 'No text, no frame, no scenery. The whole background must be one flat, uniform, pure bright green (#00FF00) with no shadow, gradient or floor, so it can be cut out automatically.';
+
+export async function cardKit(request, me, env, log) {
+  const blocked = gate(me, env);
+  if (blocked) return blocked;
+  if (!can(me, 'cards.templates')) return fail('Managers only.', 403);
+  if (!env.MEDIA) return fail('Media storage is not connected.', 503);
+  if (request.method === 'GET') {
+    const obj = await env.MEDIA.get(KIT_KEY);
+    if (!obj) return new Response('Not found', { status: 404 });
+    const h = new Headers(); obj.writeHttpMetadata(h);
+    h.set('X-Content-Type-Options', 'nosniff'); h.set('Content-Security-Policy', "default-src 'none'; sandbox"); h.set('Cache-Control', 'private, no-store');
+    return new Response(obj.body, { headers: h });
+  }
+  if (request.method === 'DELETE') { await env.MEDIA.delete(KIT_KEY); await log(env, me, 'card-kit-remove', 'kit reference'); return json({ ok: true }); }
+  const bytes = new Uint8Array(await request.arrayBuffer());
+  if (!bytes.length) return fail('That file is empty.');
+  if (bytes.length > PHOTO_MAX) return fail('That image is too big – 8 MB max.');
+  const type = photoType(bytes);
+  if (!type) return fail('Upload a PNG, JPG or WEBP image.');
+  await env.MEDIA.put(KIT_KEY, bytes, { httpMetadata: { contentType: type[0] } });
+  await log(env, me, 'card-kit-set', 'kit reference');
+  return json({ ok: true });
+}
+
+// The model may answer in JPEG/WEBP; a cut-out needs PNG pixels, so convert with the Images binding when there is one.
+async function asPng(env, bytes, type) {
+  if (type[1] === 'png') return bytes;
+  if (!env.IMAGES?.input) return null;
+  try { const out = await env.IMAGES.input(new Blob([bytes]).stream()).output({ format: 'image/png' }); return new Uint8Array(await out.response().arrayBuffer()); } catch { return null; }
+}
+
+// Turns the green-backdrop portrait into a transparent PNG. Falls back to the picture as made (the website's own
+// light-background cleaner still handles those) when it cannot be done cleanly.
+export async function cutPortrait(env, picture) {
+  try {
+    const png = await asPng(env, picture.bytes, picture.type);
+    const cut = png && await cutoutGreen(png);
+    if (cut) return { bytes: cut.png, type: ['image/png', 'png'], cut: true };
+  } catch (e) { console.log('portrait cutout failed', e.message); }
+  return { ...picture, cut: false };
+}
+
+async function render(env, bg, pose, photo, portrait = false, kit = null) {
   if (!env.AI) throw new Error('The AI binding is not connected.');
   const form = new FormData();
-  form.append('prompt', portrait ? 'Image 0 is the person. Preserve their facial identity, hairstyle, skin tone and expression. Create a consistent clean semi-cartoon football player bust portrait, head and chest only, straight-on camera, neutral relaxed pose, centered with generous margins, wearing a generic black red and white football jersey, no text, no numbers, no logos, no badges, no frame, no scenery. Solid contrasting light background suitable for automated cutout. Match a repeatable professional game-card illustration style.' : cardPrompt(pose.prompt));
+  form.append('prompt', portrait ? portraitPrompt(!!kit) : cardPrompt(pose.prompt));
   form.append('width', String(CARD_SIZE));
   form.append('height', String(CARD_SIZE));
   if (!portrait) form.append('input_image_0', await reference(env, bg.bytes, bg.type), 'background.png');
   form.append(portrait ? 'input_image_0' : 'input_image_1', await reference(env, photo.bytes, photo.type), 'player.png');
+  if (portrait && kit) form.append('input_image_1', await reference(env, kit.bytes, kit.type), 'kit.png');
   const packed = new Response(form);
   const out = await env.AI.run(CARD_MODEL, { multipart: { body: packed.body, contentType: packed.headers.get('content-type') } });
   if (typeof out?.image !== 'string') throw new Error('The image model returned no picture.');
@@ -410,7 +464,8 @@ async function generateOne(env, r, now) {
       await env.MEDIA.put(resultKey, card.bytes, { httpMetadata: { contentType: card.type[0] } });
     }
     if (r.portrait_enabled === 1) {
-      const portrait = await render(env, bg, poseT, photo, true);
+      const kit = await readAsset(env, KIT_KEY);
+      const portrait = await cutPortrait(env, await render(env, bg, poseT, photo, true, kit));
       portraitKey = `cardresult/${hex(16)}.${portrait.type[1]}`;
       await env.MEDIA.put(portraitKey, portrait.bytes, { httpMetadata: { contentType: portrait.type[0] } });
     }

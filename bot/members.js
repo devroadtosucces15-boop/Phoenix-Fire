@@ -22,11 +22,12 @@ import { deliverDMs, notify, notifyManagers, notifyRouteAll, publicRequestRoute,
 import { safeEndpoint } from './webpush.js';
 import { probuildsPublic, probuildsRoute } from './probuilds.js';
 import { badgesRoute } from './badges.js';
+import { rushScanRoute } from './rushscan.js';
 import { docsList, knowledgeRoute } from './docs.js';
 import { eventsRoute, localDate, publicEvents, weekEvents, reportPosterRoute } from './events.js';
 import { lockerRoute, motmClosed } from './locker.js';
 import { hubRoute, hubSocket } from './hub.js';
-import { cardsRoute, cardTemplateUpload, cardRequestUpload, cardPhoto, cardResult, generateCards, takeCardKick, publicPortraits } from './cardstudio.js';
+import { cardsRoute, cardKit, cardTemplateUpload, cardRequestUpload, cardPhoto, cardResult, generateCards, takeCardKick, publicPortraits } from './cardstudio.js';
 import { lineupSocket } from './events.js';
 import { lockerSocket } from './locker.js';
 import { intelRoute } from './insights.js';
@@ -439,6 +440,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
     if (url.pathname === '/api/cards/request' && request.method === 'POST') return cors(env, await cardRequestUpload(request, me, env, url, log, loadSite)); // Card Studio – member photo, raw body
     if (url.pathname.startsWith('/api/cards/photo/') && request.method === 'GET') return cors(env, await cardPhoto(request, me, env, url.pathname.split('/').pop())); // requester or manager only
     if (url.pathname.startsWith('/api/cards/result/') && request.method === 'GET') return cors(env, await cardResult(request, me, env, url.pathname.split('/').pop())); // the finished card: requester or manager only
+    if (url.pathname === '/api/cards/kit' && ['GET', 'POST', 'DELETE'].includes(request.method)) return cors(env, await cardKit(request, me, env, log)); // the club kit reference every portrait is dressed in
     if (url.pathname === '/api/cards/templates/upload' && request.method === 'POST') return cors(env, await cardTemplateUpload(request, me, env, url, log)); // Card Studio – raw image body
     const pmu = /^\/api\/plays\/(\d+)\/media$/.exec(url.pathname);
     if (pmu && request.method === 'POST') return cors(env, await playMediaUpload(request, me, env, url, Number(pmu[1]), log)); // BE1 – Tactics Studio recording, raw body
@@ -765,6 +767,8 @@ async function route(p, method, body, me, env, loadSite, url) {
   }
   const pro = await probuildsRoute(p, method, body, me, env, log); // PB.3 Pro Builds board · PB.4 my build
   if (pro) return pro;
+  const scn = await rushScanRoute(p, method, body, me, env, log); // Rush leaderboard photos · end-of-season cards
+  if (scn) return scn;
   const bdg = await badgesRoute(p, method, body, me, env, loadSite, log, url); // P2.3 badges · P2.3/P4.3 achievements
   if (bdg) return bdg;
   const kno = await knowledgeRoute(p, method, body, me, env, log, url); // P5.1 play style · P5.2/P5.3 docs · P5.4 suggestions

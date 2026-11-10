@@ -30,6 +30,7 @@ import { scoreDue } from './predict.js';
 import { eventButton, playButton, memberCommand, memberOf, MEMBER_COMMANDS } from './botcmds.js';
 import { lfgCommand, lfgButton, lfgExpire, LFG_ID } from './lfg.js';
 import { queueCommand, queueInteraction, queueTick, RQ_ID } from './rushqueue.js';
+import { boardCommand } from './rushscan.js';
 import { prefPosSelect, PREF_ID } from './prefpos.js';
 import { panelInteraction, PANEL_ID } from './panel.js';
 import { insightsCron, insightsNow, reportMessages } from './insights.js';
@@ -195,6 +196,14 @@ export default {
     if (i.type === 3 && /^norex:bn:/.test(i.data?.custom_id ?? '')) return burnerPick(i, env, ctx, who, (f) => load(site, f, ctx)); // …its pickers
     if (i.type === 3 && PREF_ID.test(i.data?.custom_id ?? '')) { // MB2: preferred position select under an answer
       try { return json(await prefPosSelect(i, env, await memberOf(i, who, env))); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
+    if (i.type === 2 && i.data.name === 'board') { // Rush leaderboard photos (managers)
+      try {
+        return json(await boardCommand(i, env, ctx, who, {
+          defer: () => DEFER_PANEL(true),
+          edit: (m) => fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(m)) }).catch((e) => console.log('board reply failed', e.message)),
+        }));
+      } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
     if (i.type === 2 && i.data.name === 'lfg') { // MB5: Rush LFG
       try {

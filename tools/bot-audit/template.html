@@ -1,0 +1,94 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phoenix bot audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0705;--panel:#15100c;--line:#2a211a;--acc:#e8651a;--gold:#efcf7a;--ok:#4be08a;--bad:#ff7d72;--mute:#8d8579;--txt:#efe8df;--dc:#313338;--dc2:#2b2d31}
+*{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--txt);font:14px/1.5 Inter,system-ui,sans-serif}
+header{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;gap:16px;align-items:center}
+header img{width:54px;height:54px;object-fit:contain}h1{font:700 28px 'Barlow Condensed',sans-serif;letter-spacing:.06em;margin:0;color:var(--acc)}
+header small{color:var(--mute)}
+.wrap{display:grid;grid-template-columns:270px 1fr;gap:0}
+aside{position:sticky;top:0;height:100vh;overflow:auto;padding:16px;border-right:1px solid var(--line)}
+aside h3{font:600 12px Inter;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin:18px 0 6px}
+aside input[type=search]{width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--txt)}
+.f{display:flex;justify-content:space-between;padding:4px 8px;border-radius:6px;cursor:pointer;color:var(--txt)}.f:hover{background:var(--panel)}.f.on{background:var(--acc);color:#1a0d04;font-weight:600}.f span:last-child{opacity:.7}
+main{padding:20px 24px;min-width:0}
+.entry{background:var(--panel);border:1px solid var(--line);border-radius:12px;margin:0 0 22px;overflow:hidden}
+.eh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.eh h2{font:700 19px 'Barlow Condensed';letter-spacing:.04em;margin:0 8px 0 0}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+.tag.active{color:var(--ok);border-color:var(--ok)}.tag.owner{color:var(--gold);border-color:var(--gold)}.tag.staff{color:#9ec5ff;border-color:#9ec5ff}.tag.nc,.tag.fb{color:var(--bad);border-color:var(--bad)}.tag.dup{color:var(--gold)}
+.body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}@media(max-width:1100px){.wrap{grid-template-columns:1fr}aside{position:static;height:auto}.body{grid-template-columns:1fr}}
+.meta{padding:14px 16px;font-size:13px}.meta dt{color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-top:9px}.meta dd{margin:2px 0 0}
+.meta code{background:#000;padding:1px 5px;border-radius:4px;font-size:12px}
+.leak{background:#3a1410;border:1px solid var(--bad);color:#ffb3aa;padding:6px 10px;border-radius:8px;margin-top:8px;font-size:12px}
+.note{color:var(--gold);font-size:12px}
+.shots{padding:14px 16px;background:var(--dc);display:flex;flex-direction:column;gap:14px}
+.ml{font-size:11px;color:#9aa0a8;display:flex;gap:8px;align-items:center}.ml b{color:#d4d7dc}
+.msg{display:flex;gap:10px}.av{width:38px;height:38px;border-radius:50%;background:#0a0705 center/80% no-repeat;border:1px solid #333;flex:none}
+.mb{min-width:0;flex:1;max-width:560px}.nm{font-weight:600;color:#fff}.bt{background:#5865f2;color:#fff;font-size:10px;padding:1px 4px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.priv{font-size:12px;color:#b5bac1;margin-top:4px}.dmframe{border:1px dashed #5b5f66;border-radius:8px;padding:8px}
+.dmh{font-size:11px;color:#b5bac1;margin-bottom:6px}
+.cont{background:var(--dc2);border-radius:8px;border-left:4px solid var(--acc);padding:12px;margin-top:4px;display:flex;flex-direction:column;gap:8px}
+.t{color:#dbdee1;font-size:14px;white-space:pre-wrap;word-break:break-word}.t h1,.t h2,.t h3{margin:2px 0;color:#fff}.sm{font-size:12px;color:#b5bac1}
+.sep{height:1px;background:#3f4147}.sec{display:flex;gap:10px;justify-content:space-between}.sec img{width:64px;height:64px;border-radius:6px;object-fit:cover}
+.gal img,.emb img.big{max-width:100%;border-radius:6px;display:block}.ph{background:#1e1f22;border:1px dashed #555;color:#999;padding:24px;text-align:center;border-radius:6px;font-size:12px}
+.row{display:flex;flex-wrap:wrap;gap:6px}.btn{background:#4e5058;color:#fff;font-size:13px;padding:5px 12px;border-radius:4px}.btn.p{background:#5865f2}.btn.s{background:#248046}.btn.d{background:#da373c}.btn.l{background:transparent;border:1px solid #4e5058;color:#b5bac1}
+.sel{background:#1e1f22;border:1px solid #3f4147;color:#b5bac1;border-radius:4px;padding:7px 10px;font-size:13px;width:100%}
+.emb{background:var(--dc2);border-left:4px solid #888;border-radius:4px;padding:8px 12px;margin-top:4px}.et{font-weight:600;color:#fff}
+.mn{background:#5865f233;color:#c9cdfb;border-radius:3px;padding:0 2px}.emo{display:inline-block;width:1.2em;height:1.2em;border-radius:3px;background:#e8651a55;vertical-align:-3px}
+.modal{background:#313338;border:1px solid #4a4d55;border-radius:8px;padding:14px}.modal .in{background:#1e1f22;border-radius:4px;padding:8px;margin:4px 0 10px;color:#888;font-size:13px}
+.na{padding:14px 16px;color:var(--mute);background:var(--dc);font-style:italic}
+.sum{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 14px}.sum .tag{font-size:12px}
+details.leaks{background:#220f0c;border:1px solid var(--bad);border-radius:10px;padding:10px 14px;margin-bottom:18px}
+</style></head><body>
+<header><img id="crest" alt=""><div><h1>PHOENIX FIRE · bot output audit</h1><small id="gen"></small> · <small>Rise. Burn. Repeat.</small></div></header>
+<div class="wrap"><aside><input type="search" id="q" placeholder="Search name, trigger, text…"><div id="filters"></div></aside>
+<main><div class="sum" id="sum"></div><details class="leaks" id="leaksum" open></details><div id="list"></div></main></div>
+<script>
+const D=/*DATA*/null;
+const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+$('#crest').src=D.crest;$('#gen').textContent='generated '+D.generated;
+const CAT={slash:'Slash commands',component:'Buttons & selects',modal:'Modals',automated:'Automated posts',DM:'Direct messages',result:'Result posts',fallback:'Fallback / legacy'};
+function status(e){const s=e.status||'';return s}
+function stcls(s){return /not config|uncapt|not captured/.test(s)?'nc':/fallback/.test(s)?'fb':/owner/.test(s)?'owner':/staff/.test(s)?'staff':/active/.test(s)?'active':''}
+function md(s){s=esc(s);
+ s=s.replace(/&lt;@&amp;?!?(\d+|[A-Za-z0-9_]+)&gt;/g,(m)=>'<span class="mn">@'+(m.includes('&amp;')?'role':'user')+'</span>').replace(/&lt;#(\w+)&gt;/g,'<span class="mn">#channel</span>').replace(/&lt;t:(\d+)(?::\w)?&gt;/g,(m,t)=>'<span class="mn">'+new Date(t*1000).toISOString().slice(0,16).replace('T',' ')+'</span>').replace(/&lt;a?:(\w+):\d+&gt;/g,'<span class="emo" title="$1"></span>');
+ s=s.replace(/^### (.*)$/gm,'<h3>$1</h3>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^# (.*)$/gm,'<h1>$1</h1>').replace(/^-# (.*)$/gm,'<span class="sm">$1</span>');
+ s=s.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<u>$1</u>');
+ return s}
+function img(u){if(!u)return'';const m=String(u).match(/(?:attachment:\/\/|\/cards\/)([^/?#]+\.png)/);const k=m&&m[1];if(k&&D.files[k])return'<img class="big" src="'+D.files[k]+'">';return'<div class="ph">picture placeholder'+(k?' ('+esc(k)+' not rendered)':'')+' — '+esc(String(u).slice(0,60))+'</div>'}
+function comp(c){if(!c)return'';switch(c.type){
+ case 17:{const col=c.accent_color!=null?'#'+c.accent_color.toString(16).padStart(6,'0'):'#888';return'<div class="cont" style="border-left-color:'+col+'">'+(c.components||[]).map(comp).join('')+'</div>'}
+ case 10:return'<div class="t">'+md(c.content)+'</div>';
+ case 9:return'<div class="sec"><div style="flex:1">'+(c.components||[]).map(comp).join('')+'</div>'+(c.accessory?comp(c.accessory):'')+'</div>';
+ case 11:return c.media?.url?(img(c.media.url).replace('class="big"','style="width:64px;height:64px;border-radius:6px;object-fit:cover"')):'';
+ case 12:return'<div class="gal">'+(c.items||[]).map(i=>img(i.media?.url)).join('')+'</div>';
+ case 14:return'<div class="sep"></div>';
+ case 1:return'<div class="row">'+(c.components||[]).map(comp).join('')+'</div>';
+ case 2:{const s={1:'p',2:'',3:'s',4:'d',5:'l'}[c.style]??'';return'<span class="btn '+s+'">'+(c.emoji?.name?esc(c.emoji.name)+' ':'')+esc(c.label||(c.url?'link':'button'))+(c.style===5?' ↗':'')+'</span>'}
+ case 3:case 5:case 6:case 7:case 8:return'<div class="sel">'+esc(c.placeholder||'Select…')+' ▾</div>';
+ case 4:return'<div class="in">'+esc(c.placeholder||c.label||'')+'</div>';
+ default:return'<div class="sm">[component type '+c.type+']</div>'}}
+function embed(e){const col=e.color!=null?'#'+e.color.toString(16).padStart(6,'0'):'#888';return'<div class="emb" style="border-left-color:'+col+'">'+(e.author?'<div class="sm">'+esc(e.author.name)+'</div>':'')+(e.title?'<div class="et">'+md(e.title)+'</div>':'')+(e.description?'<div class="t">'+md(e.description)+'</div>':'')+(e.fields||[]).map(f=>'<div class="t"><b>'+esc(f.name)+'</b><br>'+md(f.value)+'</div>').join('')+(e.image?img(e.image.url):'')+(e.thumbnail?'<div class="sm">[thumbnail]</div>':'')+(e.footer?'<div class="sm">'+esc(e.footer.text)+'</div>':'')+'</div>'}
+function render(m){const b=m.body;if(m.kind==='modal'){return'<div class="modal"><b>'+esc(b.title)+'</b>'+(b.components||[]).flatMap(r=>r.components||[]).map(c=>'<div class="sm" style="margin-top:8px">'+esc(c.label||c.custom_id)+'</div><div class="in">'+esc(c.placeholder||c.value||'')+'</div>').join('')+'</div>'}
+ const inner=(b.content?'<div class="t">'+md(b.content)+'</div>':'')+(b.embeds||[]).map(embed).join('')+(b.components||[]).map(comp).join('');
+ const priv=m.kind==='private';const head='<div><span class="nm">PHOENIX FIRE</span><span class="bt">APP</span></div>';
+ const msg='<div class="msg"><div class="av" style="background-image:url('+D.crest+')"></div><div class="mb">'+head+inner+(priv?'<div class="priv">👁 Only you can see this</div>':'')+'</div></div>';
+ return m.kind==='dm'?'<div class="dmframe"><div class="dmh">Direct message</div>'+msg+'</div>':msg}
+function entryHtml(e){const st=e.status||'';const msgs=e.messages.length?e.messages.map(m=>'<div><div class="ml"><b>'+esc(m.via||'')+'</b>'+(m.label?'· '+esc(m.label):'')+'</div>'+render(m)+'</div>').join(''):'<div class="na">Not captured: '+esc(e.why||'needs live data')+'</div>';
+ const rel=[...(e.related||[]),...(e.dupOf?[e.dupOf]:[])];
+ return '<section class="entry" data-id="'+esc(e.id)+'"><div class="eh"><h2>'+esc(e.name)+'</h2><span class="tag">'+esc(CAT[e.category]||e.category)+'</span><span class="tag">'+esc(D.appNames[e.app]||e.app)+'</span><span class="tag '+stcls(st)+'">'+esc(st)+'</span>'+(e.dup==='duplicate'?'<span class="tag dup">duplicate / related</span>':'<span class="tag">unique</span>')+(e.how==='rebuilt'?'<span class="tag">rebuilt from code</span>':e.how==='real'?'<span class="tag">real capture</span>':'')+(e.leaks.length?'<span class="tag nc">branding leak</span>':'')+'</div><div class="body"><div class="shots">'+msgs+'</div><dl class="meta"><dt>Trigger</dt><dd>'+esc(e.trigger)+'</dd><dt>When it fires</dt><dd>'+esc(e.schedule)+'</dd><dt>Goes to</dt><dd>'+esc((e.destinations||[]).join(' · ')||'n/a')+'</dd><dt>Gate</dt><dd><code>'+esc(e.flag)+'</code> · level '+esc(e.level)+' · '+esc(e.who||'')+'</dd><dt>Duplicate?</dt><dd>'+(rel.length?esc(rel.join(', ')):'unique')+'</dd><dt>Source</dt><dd><code>'+esc(e.source)+'</code></dd>'+(e.movedFrom?'<dt>App</dt><dd>'+esc(e.movedFrom)+'</dd>':'')+(e.notes.length?'<dt>Notes</dt><dd>'+e.notes.map(n=>'<div class="note">• '+esc(n)+'</div>').join('')+'</dd>':'')+(e.leaks.map(l=>'<div class="leak">Branding leak: '+esc(l)+'</div>').join(''))+'</dl></div></section>'}
+const state={cat:null,app:null,st:null,dup:null,q:''};
+function vis(e){return(!state.cat||e.category===state.cat)&&(!state.app||e.app===state.app)&&(!state.st||(e.status||'')===state.st)&&(!state.dup||e.dup===state.dup)&&(!state.q||(JSON.stringify([e.name,e.trigger,e.source,e.id,e.messages.map(m=>m.body)]).toLowerCase().includes(state.q)))}
+function counts(key,fn){const m={};for(const e of D.entries)if(vis2(e,key))m[fn(e)]=(m[fn(e)]||0)+1;return m}
+function vis2(e,skip){const s={...state};s[skip]=null;return(!s.cat||e.category===s.cat)&&(!s.app||e.app===s.app)&&(!s.st||(e.status||'')===s.st)&&(!s.dup||e.dup===s.dup)&&(!s.q||JSON.stringify([e.name,e.trigger,e.source,e.id,e.messages.map(m=>m.body)]).toLowerCase().includes(s.q))}
+function group(title,key,fn,label){const c=counts(key,fn);return'<h3>'+title+'</h3>'+Object.entries(c).sort((a,b)=>b[1]-a[1]).map(([k,n])=>'<div class="f'+(state[key]===k?' on':'')+'" data-k="'+key+'" data-v="'+esc(k)+'"><span>'+esc(label?label(k):k)+'</span><span>'+n+'</span></div>').join('')}
+function draw(){const list=D.entries.filter(vis);$('#list').innerHTML=list.map(entryHtml).join('')||'<p>No matches.</p>';
+ $('#filters').innerHTML=group('Category','cat',e=>e.category,k=>CAT[k]||k)+group('App','app',e=>e.app,k=>D.appNames[k]||k)+group('Status','st',e=>e.status||'',k=>k)+group('Duplicates','dup',e=>e.dup);
+ $('#sum').innerHTML='<span class="tag">'+list.length+' of '+D.entries.length+' shown</span>';
+ const lk=D.entries.filter(e=>e.leaks.length);const bytype={};for(const e of lk)for(const l of e.leaks){bytype[l]=(bytype[l]||0)+1}
+ $('#leaksum').innerHTML='<summary><b>Branding leaks · '+lk.length+' entries</b></summary>'+Object.entries(bytype).map(([l,n])=>'<div class="note" style="color:#ffb3aa">'+n+' × '+esc(l)+'</div>').join('')+'<div class="sm" style="margin-top:6px">Static findings also in the report: palette in scripts/cards.mjs, loadBotSettings default colour, webhook fallback embed colours, internal custom_id prefix “norex:”.</div>'}
+document.addEventListener('click',ev=>{const f=ev.target.closest('.f');if(!f)return;const k=f.dataset.k,v=f.dataset.v;state[k]=state[k]===v?null:v;draw()});
+$('#q').addEventListener('input',e=>{state.q=e.target.value.toLowerCase();draw()});draw();
+</script></body></html>

@@ -291,6 +291,16 @@ export const COMMANDS = [
       ] },
     ],
   },
+  // /board – Rush leaderboard photos for managers (bot/rushscan.js). Dark until the Phoenix Rush app is configured (HELD below).
+  {
+    name: 'board', description: 'Rush leaderboard: scan a photo, or show the latest', contexts: [0],
+    options: [
+      { type: SUB, name: 'scan', description: 'Read a photo of the Rush leaderboard, save it and post the insights', options: [
+        { type: ATTACHMENT, name: 'image', description: 'Photo or screenshot of the whole leaderboard table', required: true },
+      ] },
+      { type: SUB, name: 'latest', description: 'Show the last leaderboard post again' },
+    ],
+  },
 ];
 
 // ---------- which Discord app owns which command (bot/apps.js) ----------
@@ -304,14 +314,14 @@ export const APP_COMMANDS = {
   // Matchday and Rush (PLANNING/BOT-SPLIT.md, waves MB1/MB4). Until the Discord application exists the commands stay where
   // they were (MOVED_FROM) and the new ones stay dark (HELD), so nothing changes for members; see bot/apps.js.
   matchday: ['host', 'schedule', 'nextevent', 'availability', 'lineup', 'remind', 'reminders', 'trial', 'matchday'],
-  rush: ['rush', 'lfg', 'queue'],
+  rush: ['rush', 'lfg', 'queue', 'board'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).
 export const MOVED_FROM = { host: 'tools', schedule: 'tools', nextevent: 'tools', availability: 'tools', lineup: 'tools', remind: 'tools', reminders: 'tools', trial: 'tools', rush: 'stats' };
 // New commands that exist only once their app is configured (never lent to core).
-export const HELD = new Set(['matchday', 'lfg', 'queue']);
+export const HELD = new Set(['matchday', 'lfg', 'queue', 'board']);
 // Management commands: hidden from non-staff in Discord (Manage Roles bit) on top of the Worker's can() check.
-export const STAFF_COMMANDS = ['insights', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'watchlist', 'setup', 'purge', 'panel', 'host'];
+export const STAFF_COMMANDS = ['insights', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'watchlist', 'setup', 'purge', 'panel', 'host', 'board'];
 
 // ---------- per-command settings → what Discord is told ----------
 // Who may use a command, as the owner sets it in Boardroom → Bot: guest (anyone in the server) · member · claimed (approved player

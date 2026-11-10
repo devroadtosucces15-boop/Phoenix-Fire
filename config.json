@@ -62,6 +62,8 @@
     "rushLog": "members",
     "rushLfg": "owner",
     "rushQueue": "owner",
+    "rushBoard": "owner",
+    "seasonCards": "owner",
     "gameRules": "public",
     "liveBanner": "public",
     "trials": "public",

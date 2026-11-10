@@ -36,6 +36,8 @@ BOTS = [
     ("stats",         "STATS",      "#3d8bff", "#8fd3ff", "stats", "CLUB & PLAYER RECORDS"),
     ("toolbot",       "TOOLBOT",    "#1fc8a8", "#9ff3df", "tools", "SETUP · EVENTS · TRIALS"),
     ("fun",           "FUN",        "#ffc21f", "#ff5fa2", "fun",   "JAIL · WHEEL · TRIVIA"),
+    ("matchday",      "MATCHDAY",   "#1fa85a", "#8dffb8", "match", "EVENTS · LINEUPS · REMINDERS"),
+    ("rush",          "RUSH",       "#ff2d2d", "#ffc15a", "rush",  "5V5 · LFG · QUEUE"),
     ("dj-controller", "DJ CONTROL", "#9b5cff", "#d6bbff", "dj",    "QUEUE · PLAY · ROOMS"),
     ("dj-1",          "DJ 1",       "#ff3b5c", "#ffa3b1", "vinyl", "VOICE ROOM 1"),
     ("dj-2",          "DJ 2",       "#2fd6ff", "#b0f1ff", "vinyl", "VOICE ROOM 2"),
@@ -243,6 +245,34 @@ def shapes_icon(scope, acc, acc2, slug):
             x = 30 + i * 7.9
             pts.append((x, 708 + 54 * abs(math.sin(i / 7.0)) * math.sin(i * 1.9) * (0.5 + 0.5 * math.sin(i / 19.0 + 1))))
         p.line(pts, A(acc2, 175), 7)
+    elif scope == "match":
+        for i in range(8):
+            if i % 2 == 0:
+                p.poly([(60 + i * 113, 120), (60 + (i + 1) * 113, 120), (60 + (i + 1) * 113, 860), (60 + i * 113, 860)], A(acc, 26))
+        L = A(mix(acc2, WHITE, 0.2), 95)
+        p.rrect(70, 150, 954, 840, 6, outline=L, w=5)
+        p.line([(70, 495), (954, 495)], L, 5)
+        p.ell(512, 495, 150, outline=L, w=5)
+        p.rrect(300, 150, 724, 290, 4, outline=L, w=5)
+        p.rrect(300, 700, 724, 840, 4, outline=L, w=5)
+        for cxx, cyy, a0 in ((70, 150, 0), (954, 150, 90), (954, 840, 180), (70, 840, 270)):
+            p.arc([cxx - 46, cyy - 46, cxx + 46, cyy + 46], a0, a0 + 90, L, 5)
+        for x, y in ((150, 250), (150, 400), (150, 590), (150, 740), (874, 250), (874, 400), (874, 590), (874, 740)):
+            p.ell(x, y, 22, fill=A(acc2, 200), outline=A(WHITE, 220), w=4)
+    elif scope == "rush":
+        for i in range(14):
+            y = 80 + i * 56
+            x0 = rnd.randint(-80, 120)
+            ln = rnd.randint(260, 560)
+            p.poly([(x0, y), (x0 + ln, y), (x0 + ln + 36, y + 14), (x0 + 36, y + 14)], A(acc if i % 3 else acc2, 78 if i % 2 else 52))
+            x1 = 1024 - x0 - ln - 40
+            p.poly([(x1, y + 28), (x1 + ln, y + 28), (x1 + ln + 36, y + 42), (x1 + 36, y + 42)], A(acc if i % 3 else acc2, 62))
+        for k, (x, y) in enumerate(((118, 800), (240, 880), (800, 880), (910, 800), (512, 940))):
+            p.ell(x, y, 26, fill=A(acc2, 215), outline=A(WHITE, 235), w=4)
+        for dx in (0, 54, 108):
+            for sgn, base in ((-1, 150), (1, 874)):
+                x = base + sgn * dx * 0.0
+                p.poly([(x - 40 + dx * sgn, 220), (x + 6 + dx * sgn, 260), (x - 40 + dx * sgn, 300), (x - 20 + dx * sgn, 260)], A(acc2, 170 - dx))
     elif scope == "vinyl":
         for r in range(150, 500, 24):
             p.ell(512, 512, r, outline=A(WHITE, 22), w=2)
@@ -324,6 +354,30 @@ def shapes_banner(scope, acc, acc2, slug):
                 h = rnd.randint(60, 200)
                 p.rrect(x, 410 - h, x + 18, 410, 4, fill=A(acc, 125))
                 p.rrect(x, 410 - h, x + 18, 410 - h + 8, 4, fill=A(acc2, 230))
+    elif scope == "match":
+        for i in range(12):
+            if i % 2 == 0:
+                p.poly([(i * 113, 0), ((i + 1) * 113, 0), ((i + 1) * 113, BH), (i * 113, BH)], A(acc, 24))
+        L = A(mix(acc2, WHITE, 0.2), 90)
+        p.rrect(26, 26, BW - 26, BH - 26, 6, outline=L, w=5)
+        p.line([(cx, 26), (cx, BH - 26)], L, 5)
+        p.ell(cx, cy, 150, outline=L, w=5)
+        p.rrect(26, 120, 200, 360, 4, outline=L, w=5)
+        p.rrect(BW - 200, 120, BW - 26, 360, 4, outline=L, w=5)
+        for x, y in ((330, 120), (330, 360), (480, 240), (1030, 120), (1030, 360), (880, 240), (250, 240), (1110, 240)):
+            p.ell(x, y, 17, fill=A(acc2, 200), outline=A(WHITE, 215), w=3)
+    elif scope == "rush":
+        for i in range(10):
+            y = 24 + i * 48
+            x0 = rnd.randint(-60, 160)
+            ln = rnd.randint(260, 520)
+            p.poly([(x0, y), (x0 + ln, y), (x0 + ln + 30, y + 12), (x0 + 30, y + 12)], A(acc if i % 3 else acc2, 78 if i % 2 else 50))
+            x1 = BW - x0 - ln - 30
+            p.poly([(x1, y + 24), (x1 + ln, y + 24), (x1 + ln + 30, y + 36), (x1 + 30, y + 36)], A(acc if i % 3 else acc2, 62))
+        for k in range(3):
+            for base, sg in ((330, -1), (BW - 330, 1)):
+                x = base + sg * k * 60
+                p.poly([(x - 22, 190), (x + 14, 240), (x - 22, 290), (x - 8, 240)], A(acc2, 190 - k * 50))
     elif scope == "vinyl":
         for r in range(150, 900, 30):
             p.ell(cx, cy, r, outline=A(WHITE, 18), w=2)

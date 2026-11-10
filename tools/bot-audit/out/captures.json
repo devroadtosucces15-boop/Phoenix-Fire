@@ -1,0 +1,5073 @@
+[
+ {
+  "kind": "slash",
+  "command": "club",
+  "trigger": "/club",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · CLUB\n## Phoenix Fire\n-# Division 6 · Skill rating 2153 · 🔥 2 win streak"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/club-71bc1cbec8.png"
+          },
+          "description": "37 wins, 4 draws, 2 losses"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min · newest result on the right"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
+          "label": "Club site"
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
+          "label": "Trials"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "last",
+  "trigger": "/last",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## Phoenix Fire 2–1 HADDINI BIL\n-# <t:1794020312:f> · Win"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/score-173104099300069-1e38459062.png"
+          },
+          "description": "Phoenix Fire 2–1 HADDINI BIL"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**⚽ Goals** Dimantu_ ×2\n**📊 Team rating** 7.1"
+       },
+       {
+        "type": 10,
+        "content": "**⭐ Man of the match** Dimantu_"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "-# **FIELD VIEW · RATINGS**"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/field-173104099300069-bb367799d1.png"
+          },
+          "description": "Our players on the pitch with their match ratings"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 3,
+          "custom_id": "norex:mm:173104099300069",
+          "placeholder": "📊 Show my match – pick your player",
+          "min_values": 1,
+          "max_values": 1,
+          "options": [
+           {
+            "label": "GUYR-1999",
+            "value": "1006319381640",
+            "emoji": {
+             "name": "🟢"
+            },
+            "description": "Rating 8.5"
+           },
+           {
+            "label": "Dimantu_",
+            "value": "1827145830",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.9 · ⚽ 2"
+           },
+           {
+            "label": "MV33xChris",
+            "value": "1640851384",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.4"
+           },
+           {
+            "label": "Bantu Vikng",
+            "value": "1205881367",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.3"
+           },
+           {
+            "label": "Usman4518",
+            "value": "1006163006283",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.3"
+           },
+           {
+            "label": "KOEN WIE",
+            "value": "1952070240",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.1"
+           },
+           {
+            "label": "kingmitch93",
+            "value": "182169169",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.0"
+           },
+           {
+            "label": "Traperosky",
+            "value": "1007082785406",
+            "emoji": {
+             "name": "🟠"
+            },
+            "description": "Rating 6.9"
+           },
+           {
+            "label": "HristoNL",
+            "value": "1006208965101",
+            "emoji": {
+             "name": "🟠"
+            },
+            "description": "Rating 6.4 · 🎯 2"
+           },
+           {
+            "label": "leo77romano",
+            "value": "1005706168629",
+            "emoji": {
+             "name": "🟠"
+            },
+            "description": "Rating 6.1"
+           },
+           {
+            "label": "Jaliens45",
+            "value": "1007377835934",
+            "emoji": {
+             "name": "🔴"
+            },
+            "description": "Rating 5.9"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mme:173104099300069",
+          "label": "My match",
+          "emoji": {
+           "name": "🙋"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:box:173104099300069",
+          "label": "Box score",
+          "emoji": {
+           "name": "📊"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/173104099300069.html",
+          "label": "Match report"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "select norex:mm:173104099300069",
+  "parent": "/last",
+  "label": null,
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · PLAYER MATCH\n## GUYR-1999 · 2–1 HADDINI BIL\n-# ✅ Win · Midfielder · <t:1794020312:R>"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://eafc24.content.easports.com/fifa/fltOnlineAssets/24B23FDE-7835-41C2-87A2-F453DFDB2E82/2024/fcweb/crests/256x256/l99160118.png"
+         }
+        }
+       },
+       {
+        "type": 10,
+        "content": "**🟢 Rating**\n**8.5** · avg 7.4 ▲\n\n**⚽ Goals · 🎯 Assists**\n**0** · **0**\navg 0.18 · 0.00 per game\n\n**🅿️ Passes**\n**0/0**\n\n**🛡️ Tackles**\n**0/0**\n\n**📈 Last 2 ratings (oldest → newest)**\n🟠🟢\n6.8 · 8.5\nBest **8.5** · season avg **7.4**"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "-# 🟢 8+  🟡 7+  🟠 6+  🔴 under 6 · only you can see this"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/173104099300069.html",
+          "label": "Match page"
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/players/1006319381640.html",
+          "label": "Player page"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mme:173104099300069",
+  "parent": "/last",
+  "label": "My match",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**You haven't linked your player yet. Claim it in the Squad Hub (http://localhost:4321/members.html#me) – until then, pick your name in the 📊 Show my match menu.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:box:173104099300069",
+  "parent": "/last",
+  "label": "Box score",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · BOX SCORE\n## Phoenix Fire 2–1 HADDINI BIL\n-# <t:1794020312:f>"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/box-173104099300069-3802b16e39.png"
+          },
+          "description": "Every player: rating, goals, assists, passes, tackles and shots"
+         }
+        ]
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/173104099300069.html",
+          "label": "Match report"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "results",
+  "trigger": "/results",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · RESULTS\n## Last 5 results\n-# 2W 2D 1L"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/results-a8a58d150c.png"
+          },
+          "description": "Recent results"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/results.html",
+          "label": "All results"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "player",
+  "trigger": "/player gamertag=Niko-the-Great",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · PLAYER CARD\n## Niko-the-Great\n-# FWD · Phoenix Fire"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+         }
+        }
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/player-179113036-cbb36e89b3.png"
+          },
+          "description": "Niko-the-Great: season stats and match ratings"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**📈 Last 5** 🟠 6.9  🟡 7.3  🟠 6.4  → newest"
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min · career covers every club"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/players/179113036.html",
+          "label": "Full profile"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "compare",
+  "trigger": "/compare player1=Niko-the-Great player2=kingmitch93",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · COMPARE\n## Niko-the-Great vs kingmitch93\n-# FWD vs CB · club stats this season"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/player-179113036-cbb36e89b3.png"
+          }
+         },
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/player-182169169-f7daaa9818.png"
+          }
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "```\nSTAT        Niko-the-Great     kingmitch93\nOVR                    0              79 ◀\nGames                  3              35 ◀\nGoals                  0               8 ◀\nAssists                0               9 ◀\nRating               6.9             7.9 ◀\nMOTM                   0              11 ◀\nPass %                82 ◀            72  \nTackle %              60 ◀            39  \nWin %                  0              85 ◀\n```"
+       },
+       {
+        "type": 10,
+        "content": "-# ◀ marks the better number · the site has the radar chart"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/compare.html?a=179113036&b=182169169",
+          "label": "Compare on the site"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "top",
+  "trigger": "/top stat=goals",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# MV33xChris leads with 25"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/top-goals-5c16e40c63.png"
+          },
+          "description": "Top scorers"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "top",
+  "trigger": "/top stat=assists",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Most assists\n-# HristoNL leads with 17"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/top-assists-31dcb60f7e.png"
+          },
+          "description": "Most assists"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "top",
+  "trigger": "/top stat=ga",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Goals + assists\n-# MV33xChris leads with 40"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/top-ga-489f5fbbce.png"
+          },
+          "description": "Goals + assists"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "top",
+  "trigger": "/top stat=rating",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Best average rating (3+ games)\n-# ed44ed leads with 9.0"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/top-rating-3ec96cedc5.png"
+          },
+          "description": "Best average rating (3+ games)"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "top",
+  "trigger": "/top stat=motm",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Most MOTM awards\n-# kingmitch93 leads with 11"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/top-motm-97409d08d0.png"
+          },
+          "description": "Most MOTM awards"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "top",
+  "trigger": "/top stat=games",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Most appearances\n-# HristoNL leads with 39"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/top-games-cd9b5fb02d.png"
+          },
+          "description": "Most appearances"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "site",
+  "trigger": "/site",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · LINKS\n## The club site\n-# Results, stats, the squad, the Squad Hub and trials"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+         }
+        }
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
+          "label": "Website"
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/members.html",
+          "label": "Squad Hub"
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
+          "label": "Trials"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "ask",
+  "trigger": "/ask question=who has the most assists this season?",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokzvq5chb98tb/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "insight",
+  "trigger": "/insight stat=club",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No insight for that yet – it appears after the next data refresh.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "insight",
+  "trigger": "/insight stat=match",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No insight for that yet – it appears after the next data refresh.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "insight",
+  "trigger": "/insight stat=last5",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No insight for that yet – it appears after the next data refresh.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "insight",
+  "trigger": "/insight stat=goals",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No insight for that yet – it appears after the next data refresh.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "insight",
+  "trigger": "/insight stat=assists",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No insight for that yet – it appears after the next data refresh.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "insight",
+  "trigger": "/insight stat=rating",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No insight for that yet – it appears after the next data refresh.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "insight",
+  "trigger": "/insight stat=motm",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No insight for that yet – it appears after the next data refresh.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "schedule",
+  "trigger": "/schedule",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🗓️ Nothing scheduled yet – managers add match nights in the Squad Hub."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "availability",
+  "trigger": "/availability",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🗓️ Nothing scheduled yet."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "lineup",
+  "trigger": "/lineup",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🗓️ Nothing scheduled yet."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "rush",
+  "trigger": "/rush log opponent=1 for=1 against=1",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🪪 Claim your player in the Squad Hub first (http://localhost:4321/members.html) – then /rush log fills you in automatically."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "me",
+  "trigger": "/me",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🪪 You haven’t got a verified player yet – claim yours in the Squad Hub: http://localhost:4321/members.html"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "leaderboard",
+  "trigger": "/leaderboard mode=league stat=goals",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# MV33xChris leads with 25"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/top-goals-5c16e40c63.png"
+          },
+          "description": "Top scorers"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "leaderboard",
+  "trigger": "/leaderboard mode=rush stat=goals",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · RUSH LEADERBOARD\n## ⚡ Top scorers\n-# No confirmed Rush results yet"
+       },
+       {
+        "type": 10,
+        "content": "-# From Rush results logged by members and confirmed by a manager"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/stats.html",
+          "label": "All leaderboards"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "profile",
+  "trigger": "/profile",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · MEMBER PROFILE\n## Zub (owner)\n-# No verified player yet"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+         }
+        }
+       },
+       {
+        "type": 10,
+        "content": "-# Full profile on the site"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/member.html?u=111",
+          "label": "Full profile"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "awards",
+  "trigger": "/awards",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · WEEKLY AWARDS\n## 🏆 Weekly awards · 2026-W46\n-# Voting closes <t:1794787200:F> · <t:1794787200:R>"
+       },
+       {
+        "type": 10,
+        "content": "-# **VOTE NOW**"
+       },
+       {
+        "type": 10,
+        "content": "⚽ **Best Striker**\n🎯 **Best Midfielder**\n🛡️ **Best Defender**\n🧤 **Best Keeper**"
+       },
+       {
+        "type": 10,
+        "content": "-# **DECIDED AUTOMATICALLY**"
+       },
+       {
+        "type": 10,
+        "content": "👟 **Golden Boot** – most goals\n🎩 **Playmaker** – most assists + second assists\n🦾 **Iron Man** – most appearances\n🌱 **Rising Star** – best rating among newer players (2+ games)"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "-# **LAST WEEK’S WINNERS · 2026-W45**"
+       },
+       {
+        "type": 10,
+        "content": "👟 **Golden Boot** — [Dimantu_](http://localhost:4321/players/1827145830.html)\n🦾 **Iron Man** — [leo77romano](http://localhost:4321/players/1005706168629.html)\n🦾 **Iron Man** — [HristoNL](http://localhost:4321/players/1006208965101.html)\n🦾 **Iron Man** — [Bantu Vikng](http://localhost:4321/players/1205881367.html)\n🦾 **Iron Man** — [kingmitch93](http://localhost:4321/players/182169169.html)\n🎩 **Playmaker** — [HristoNL](http://localhost:4321/players/1006208965101.html)\n🌱 **Rising Star** — [Dimantu_](http://localhost:4321/players/1827145830.html)"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#awards",
+          "label": "Vote in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "points",
+  "trigger": "/points",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · MY POINTS\n## ⭐ 0 points\n-# #1 on the club leaderboard"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+         }
+        }
+       },
+       {
+        "type": 10,
+        "content": "**🎮 Match performance** 0\n**🗓️ Attendance** 0\n**💬 Community** 0\n**🤝 Behaviour** 0"
+       },
+       {
+        "type": 10,
+        "content": "-# Only you can see this"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#points",
+          "label": "Full breakdown"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "avatarcard",
+  "trigger": "/avatarcard image=sample",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**Attach an image.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "insights",
+  "trigger": "/insights",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokyf9rcsuqv29/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "**Could not build the report**\nchannels.map is not a function"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "burner",
+  "trigger": "/burner recent ",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tok333mj424yid/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 4 clubs Phoenix Fire played lately"
+        },
+        {
+         "type": 10,
+         "content": "🔥 **HADDINI BIL** · `1559694` · we won 2–1 · League · 3d ago\n🔥 **Xiclibics FC** · `421393` · we won 4–0 · League · 3d ago\n🔥 **NG4 Boys** · `666618` · we drew 1–1 · League · 9d ago\n🔥 **Tomatoes** · `842844` · we drew 1–1 · League · 9d ago"
+        },
+        {
+         "type": 10,
+         "content": "-# Pick the burner below – ✅ = already tracked"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 3,
+           "custom_id": "norex:bn:pick",
+           "placeholder": "🔥 Pick the burner to track",
+           "min_values": 1,
+           "max_values": 1,
+           "options": [
+            {
+             "label": "HADDINI BIL",
+             "value": "1559694",
+             "description": "1559694 · we won 2–1 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Xiclibics FC",
+             "value": "421393",
+             "description": "421393 · we won 4–0 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "NG4 Boys",
+             "value": "666618",
+             "description": "666618 · we drew 1–1 · League · 9d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Tomatoes",
+             "value": "842844",
+             "description": "842844 · we drew 1–1 · League · 9d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "component",
+  "trigger": "select norex:bn:pick",
+  "parent": "/burner recent ",
+  "label": null,
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🔥 Now tracking **HADDINI BIL** (club 1559694).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c1559694"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "burner",
+  "trigger": "/burner search ",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tok3h1eofeg0ri/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 4 clubs Phoenix Fire played lately"
+        },
+        {
+         "type": 10,
+         "content": "✅ **HADDINI BIL** · `1559694` · we won 2–1 · League · 3d ago\n🔥 **Xiclibics FC** · `421393` · we won 4–0 · League · 3d ago\n🔥 **NG4 Boys** · `666618` · we drew 1–1 · League · 9d ago\n🔥 **Tomatoes** · `842844` · we drew 1–1 · League · 9d ago"
+        },
+        {
+         "type": 10,
+         "content": "-# Pick the burner below – ✅ = already tracked"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 3,
+           "custom_id": "norex:bn:pick",
+           "placeholder": "🔥 Pick the burner to track",
+           "min_values": 1,
+           "max_values": 1,
+           "options": [
+            {
+             "label": "HADDINI BIL",
+             "value": "1559694",
+             "description": "1559694 · we won 2–1 · League · 3d ago",
+             "emoji": {
+              "name": "✅"
+             }
+            },
+            {
+             "label": "Xiclibics FC",
+             "value": "421393",
+             "description": "421393 · we won 4–0 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "NG4 Boys",
+             "value": "666618",
+             "description": "666618 · we drew 1–1 · League · 9d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Tomatoes",
+             "value": "842844",
+             "description": "842844 · we drew 1–1 · League · 9d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "burner",
+  "trigger": "/burner track club=sample",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tok4ociryb9oox/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "🔥 Now tracking **Sample** (club 872273).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c872273"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "burner",
+  "trigger": "/burner list ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · BURNER CLUBS\n### 🔥 Burner clubs (2/20)"
+       },
+       {
+        "type": 10,
+        "content": "🔥 **HADDINI BIL** · `1559694` · ⏳ first collection pending\n🔥 **Sample** · `872273` · ⏳ first collection pending"
+       },
+       {
+        "type": 10,
+        "content": "-# Full stats on the Burner clubs page · /burner remove to stop tracking"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/burners.html",
+          "label": "Burner clubs page"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "burner",
+  "trigger": "/burner remove ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "Which club should I stop tracking? (Its history stays on file.)"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 3,
+          "custom_id": "norex:bn:rm",
+          "placeholder": "🗑️ Stop tracking…",
+          "min_values": 1,
+          "max_values": 1,
+          "options": [
+           {
+            "label": "HADDINI BIL",
+            "value": "1559694",
+            "description": "club 1559694",
+            "emoji": {
+             "name": "🗑️"
+            }
+           },
+           {
+            "label": "Sample",
+            "value": "872273",
+            "description": "club 872273",
+            "emoji": {
+             "name": "🗑️"
+            }
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "select norex:bn:rm",
+  "parent": "/burner remove ",
+  "label": null,
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🗑️ Stopped tracking **HADDINI BIL**. Its history stays on the page until the next cleanup – /burner search brings it back."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "syncroles",
+  "trigger": "/syncroles",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokxzc0swyxjc/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "Role sync failed.\nroles.map is not a function"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "exportcontent",
+  "trigger": "/exportcontent mode=next type=all",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokyoqitk9jwbi/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "Invalid channel."
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "exportcontent",
+  "trigger": "/exportcontent mode=reset type=all",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokv41k9a55yab/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "Invalid channel."
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "aispike",
+  "trigger": "/aispike",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/toki8uc94ac59/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 0 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "profanitysetup",
+  "trigger": "/profanitysetup channel=C1",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokrb31npawd1/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "rules.find is not a function"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "nextevent",
+  "trigger": "/nextevent",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🗓️ Nothing scheduled yet."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "feedback",
+  "trigger": "/feedback to=222 kind=praise text=Sample text",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "⚠️ Only verified players can send feedback – claim your player first."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "feedback",
+  "trigger": "/feedback to=222 kind=tip text=Sample text",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "⚠️ Only verified players can send feedback – claim your player first."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "feedback",
+  "trigger": "/feedback to=222 kind=concern text=Sample text",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "⚠️ Only verified players can send feedback – claim your player first."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "suggest",
+  "trigger": "/suggest title=Sample title",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 10,
+        "content": "**💡 Added to the board: Sample title**\nVote it up in the Squad Hub: http://localhost:4321/members.html#suggestions"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "announce",
+  "trigger": "/announce title=Sample title audience=all",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 10,
+        "content": "**📣 Sent: Sample title**\nDelivered to 4 members (Squad Hub bell + Discord DM)."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "announce",
+  "trigger": "/announce title=Sample title audience=managers",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 10,
+        "content": "**📣 Sent: Sample title**\nDelivered to 1 member (Squad Hub bell + Discord DM)."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "trial",
+  "trigger": "/trial gamertag=Niko-the-Great",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🤷 No trial cards match \"Niko-the-Great\"."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "motm",
+  "trigger": "/motm",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · MAN OF THE MATCH VOTE\n## 🌟 MOTM · vs HADDINI BIL\n-# 2–1 · 2 votes so far"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://eafc24.content.easports.com/fifa/fltOnlineAssets/24B23FDE-7835-41C2-87A2-F453DFDB2E82/2024/fcweb/crests/256x256/l99160118.png"
+         }
+        }
+       },
+       {
+        "type": 10,
+        "content": "🥇 **kingmitch93** — 1 vote\n🥈 **Bantu Vikng** — 1 vote"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#vote",
+          "label": "Vote in the Squad Hub"
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/173104099300069.html",
+          "label": "Match report"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "history",
+  "trigger": "/history opponent=1",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "🤷 No matches found against \"1\"."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "jail",
+  "trigger": "/jail member=222",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 16743794,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-jail.png?v=4"
+          }
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · JAIL\n## ⛓️ a member\n-# Phoenix Fire County Jail · PHX-0004"
+       },
+       {
+        "type": 10,
+        "content": "Charged with rage-quitting at 1–0 up."
+       },
+       {
+        "type": 10,
+        "content": "**Sentence** 30 min · out <t:1794319309:R>"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "-# Locked up by <@111> · 4th offence this month · just for fun"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:fun:bail:4",
+          "label": "Post bail",
+          "emoji": {
+           "name": "💸"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:fun:sheet:222",
+          "label": "Rap sheet",
+          "emoji": {
+           "name": "📜"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:fun:bail:4",
+  "parent": "/jail member=222",
+  "label": "Post bail",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-jail.png?v=4"
+          }
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · JAIL\n## ⛓️ a member\n-# Phoenix Fire County Jail · PHX-0004"
+       },
+       {
+        "type": 10,
+        "content": "Charged with rage-quitting at 1–0 up."
+       },
+       {
+        "type": 10,
+        "content": "**Released** on bail from Zub (owner) <t:1794317509:R>"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "-# Locked up by <@111> · 4th offence this month · just for fun"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:fun:sheet:222",
+          "label": "Rap sheet",
+          "emoji": {
+           "name": "📜"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:fun:sheet:222",
+  "parent": "button norex:fun:bail:4",
+  "label": "Rap sheet",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · JAIL\n### 📜 Rap sheet · a member\n-# 4 offences on file"
+       },
+       {
+        "type": 10,
+        "content": "`PHX-0004` <t:1794317509:d> · 30 min · rage-quitting at 1–0 up · 💸 bailed\n`PHX-0003` <t:1794316509:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794312509:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794308509:d> · 5 min · SAMPLE · own goal"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "wheel",
+  "trigger": "/wheel options=sample",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**The wheel needs at least two options**\nSeparate them with commas: /wheel options:Jez, Kruger, Davey"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "share",
+  "trigger": "/share title=Sample title tip=sample",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**Add a bit more**\nA short title and a tip of at least a sentence."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "discoveries",
+  "trigger": "/discoveries",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**Nothing waiting**\nEvery discovery has been looked at."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watch",
+  "trigger": "/watch topic=builds",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · WATCH LIST\n### 🛠️ Builds\n-# Pro Clubs creators the squad follows"
+       },
+       {
+        "type": 10,
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794306709:R>"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watch",
+  "trigger": "/watch topic=tactics",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · WATCH LIST\n### 📐 Tactics\n-# Pro Clubs creators the squad follows"
+       },
+       {
+        "type": 10,
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794223909:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793237509:R>"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watch",
+  "trigger": "/watch topic=tips",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · WATCH LIST\n### 💡 Tips\n-# Pro Clubs creators the squad follows"
+       },
+       {
+        "type": 10,
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794065509:R>"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watch",
+  "trigger": "/watch topic=meta",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · WATCH LIST\n### 🔥 Meta\n-# Pro Clubs creators the squad follows"
+       },
+       {
+        "type": 10,
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1793849509:R>"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watch",
+  "trigger": "/watch topic=news",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · WATCH LIST\n### 📰 News\n-# Pro Clubs creators the squad follows"
+       },
+       {
+        "type": 10,
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1793597509:R>"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watchlist",
+  "trigger": "/watchlist add channel=C1",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**That isn’t a channel ID**\nIt starts with UC and is 24 characters – on the channel page: About → Share channel → Copy channel ID."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watchlist",
+  "trigger": "/watchlist remove channel=C1",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**Not found**\nUse the channel ID or the name shown in /watchlist list."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "watchlist",
+  "trigger": "/watchlist list ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · WATCH LIST\n### 🎬 0 creators"
+       },
+       {
+        "type": 10,
+        "content": "None yet – /watchlist add"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "trivia",
+  "trigger": "/trivia play ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which country hosted the 2018 World Cup?"
+       },
+       {
+        "type": 10,
+        "content": "**A** · Germany\n**B** · Qatar\n**C** · Brazil\n**D** · Russia"
+       },
+       {
+        "type": 10,
+        "content": "-# Answer privately with a button · 10 points for a right answer · one go each"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:fun:tq:1:0",
+          "label": "A"
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:fun:tq:1:1",
+          "label": "B"
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:fun:tq:1:2",
+          "label": "C"
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:fun:tq:1:3",
+          "label": "D"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:fun:tq:1:0",
+  "parent": "/trivia play ",
+  "label": "A",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 16743794,
+      "components": [
+       {
+        "type": 10,
+        "content": "**❌ Not this time – it was D · Russia**\nFrance won it in Moscow. You have 0 points."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:fun:tq:1:1",
+  "parent": "/trivia play ",
+  "label": "B",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**You’ve already answered**\nOne go each per question."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:fun:tq:1:2",
+  "parent": "/trivia play ",
+  "label": "C",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**You’ve already answered**\nOne go each per question."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:fun:tq:1:3",
+  "parent": "/trivia play ",
+  "label": "D",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**You’ve already answered**\nOne go each per question."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "trivia",
+  "trigger": "/trivia board ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 1 player on the board"
+       },
+       {
+        "type": 10,
+        "content": "🥇 **Mike** · 120 pts · 9/12 right"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup leavelog channel=C1",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 64
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokb05m7vto3r9/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "**Something went wrong**\nSpread syntax requires ...iterable[Symbol.iterator] to be a function"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     },
+     "flags": 32768
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup welcome channel=C1",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 64
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/toklnadi64lhh8/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "**Something went wrong**\nSpread syntax requires ...iterable[Symbol.iterator] to be a function"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     },
+     "flags": 32768
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup pingroles channel=C1",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 64
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tokzfoybufewi/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "**Something went wrong**\nroles.map is not a function"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     },
+     "flags": 32768
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup off feature=leavelog",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**🔕 Leave/join alerts are off**\nTurn them back on with `/setup`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup off feature=welcome",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**🔕 Welcome posts are off**\nTurn them back on with `/setup`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "purge",
+  "trigger": "/purge count=3",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 64
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/1/tok8o4ub24o5j7/messages/@original",
+    "body": {
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "**🧹 Deleted 0 messages**"
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     },
+     "flags": 32768
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "tag",
+  "trigger": "/tag name=Sample",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No tag called sample**\n`/tags list` shows every saved answer."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "tags",
+  "trigger": "/tags list ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No saved answers yet**\nManagers add them with `/tags set`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "tags",
+  "trigger": "/tags set name=Sample text=Sample text",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 10,
+        "content": "**✅ Saved sample**\nAnyone can post it with `/tag name:sample`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "tags",
+  "trigger": "/tags delete name=Sample",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**🗑️ Deleted sample**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "remind",
+  "trigger": "/remind in=sample text=Sample text",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**I couldn’t read that time**\nTry `10m`, `2h`, `1h30m` or `1d`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "reminders",
+  "trigger": "/reminders",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**No reminders waiting**\nSet one with `/remind`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "panel",
+  "trigger": "/panel",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 🗂️ Manager panel\n-# 2 waiting for a decision"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "🪪 **Player claims**\n-# 1 waiting"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:claims",
+         "label": "Open · 1"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "🎨 **Card Studio**\n-# All clear"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:cards",
+         "label": "Open"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "⚡ **Rush results**\n-# All clear"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:rush",
+         "label": "Open"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "📨 **Requests**\n-# All clear"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:requests",
+         "label": "Open"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "💡 **New ideas**\n-# 1 waiting"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:ideas",
+         "label": "Open · 1"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "🚩 **Reported content**\n-# Nothing reported"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 5,
+         "url": "http://localhost:4321/members.html#portal-reports",
+         "label": "Review in the portal"
+        }
+       },
+       {
+        "type": 10,
+        "content": "-# Updated <t:1794317509:R> · only you can see this"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Manager portal"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:q:claims",
+  "parent": "/panel",
+  "label": "Open · 1",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 🪪 Player claims\n-# 1 waiting"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794316909:R>"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+         }
+        }
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 3,
+          "custom_id": "norex:mp:a:claims:222:approve",
+          "label": "Approve"
+         },
+         {
+          "type": 2,
+          "style": 4,
+          "custom_id": "norex:mp:a:claims:222:reject",
+          "label": "Reject"
+         }
+        ]
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:claims",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:a:claims:222:approve",
+  "parent": "button norex:mp:q:claims",
+  "label": "Approve",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 🪪 Player claims\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "✅ Claim approved – they get the Verified role and a notification"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:claims",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:home",
+  "parent": "button norex:mp:a:claims:222:approve",
+  "label": "Back",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 🗂️ Manager panel\n-# 1 waiting for a decision"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "🪪 **Player claims**\n-# All clear"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:claims",
+         "label": "Open"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "🎨 **Card Studio**\n-# All clear"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:cards",
+         "label": "Open"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "⚡ **Rush results**\n-# All clear"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:rush",
+         "label": "Open"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "📨 **Requests**\n-# All clear"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:requests",
+         "label": "Open"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "💡 **New ideas**\n-# 1 waiting"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 2,
+         "custom_id": "norex:mp:q:ideas",
+         "label": "Open · 1"
+        }
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "🚩 **Reported content**\n-# Nothing reported"
+         }
+        ],
+        "accessory": {
+         "type": 2,
+         "style": 5,
+         "url": "http://localhost:4321/members.html#portal-reports",
+         "label": "Review in the portal"
+        }
+       },
+       {
+        "type": 10,
+        "content": "-# Updated <t:1794317509:R> · only you can see this"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Manager portal"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:a:claims:222:reject",
+  "parent": "button norex:mp:q:claims",
+  "label": "Reject",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 🪪 Player claims\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "❌ Claim rejected – they’ve been told"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:claims",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:q:cards",
+  "parent": "/panel",
+  "label": "Open",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 🎨 Card Studio\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:cards",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:q:rush",
+  "parent": "/panel",
+  "label": "Open",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## ⚡ Rush results\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:rush",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:q:requests",
+  "parent": "/panel",
+  "label": "Open",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 📨 Requests\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:requests",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:q:ideas",
+  "parent": "/panel",
+  "label": "Open · 1",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 💡 New ideas\n-# 1 waiting"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794317509:R>"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://cdn.discordapp.com/embed/avatars/0.png"
+         }
+        }
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 3,
+          "custom_id": "norex:mp:a:ideas:1:planned",
+          "label": "Planned"
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:a:ideas:1:done",
+          "label": "Done"
+         },
+         {
+          "type": 2,
+          "style": 4,
+          "custom_id": "norex:mp:r:ideas:1:declined",
+          "label": "Not for now…"
+         }
+        ]
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:ideas",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:a:ideas:1:planned",
+  "parent": "button norex:mp:q:ideas",
+  "label": "Planned",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 💡 New ideas\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "🗓️ Marked planned – they’ve been told"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:ideas",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:a:ideas:1:done",
+  "parent": "button norex:mp:q:ideas",
+  "label": "Done",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 💡 New ideas\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "✅ Marked done"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:ideas",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "button norex:mp:r:ideas:1:declined",
+  "parent": "button norex:mp:q:ideas",
+  "label": "Not for now…",
+  "status": 200,
+  "response": {
+   "type": 9,
+   "data": {
+    "custom_id": "norex:mp:r:ideas:1:declined",
+    "title": "New ideas: not for now",
+    "components": [
+     {
+      "type": 1,
+      "components": [
+       {
+        "type": 4,
+        "custom_id": "why",
+        "style": 2,
+        "label": "A short reply (optional – they’ll see it)",
+        "required": false,
+        "min_length": 0,
+        "max_length": 200
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "modal-submit",
+  "trigger": "modal norex:mp:r:ideas:1:declined",
+  "parent": "button norex:mp:r:ideas:1:declined",
+  "status": 200,
+  "response": {
+   "type": 7,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# STAFF · MANAGER PANEL\n## 💡 New ideas\n-# All clear"
+       },
+       {
+        "type": 10,
+        "content": "🚫 Marked not for now"
+       },
+       {
+        "type": 10,
+        "content": "Nothing waiting here. 🎉"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:home",
+          "label": "Back",
+          "emoji": {
+           "name": "⬅️"
+          }
+         },
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mp:q:ideas",
+          "label": "Refresh",
+          "emoji": {
+           "name": "🔄"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/members.html#portal",
+          "label": "Open in the Squad Hub"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "host",
+  "trigger": "/host mode=league kind=session when=in 2 hours",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**Which time zone are you in?**\nAdd `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "host",
+  "trigger": "/host mode=rush kind=session when=in 2 hours",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**Which time zone are you in?**\nAdd `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "matchday",
+  "trigger": "/matchday create kind=league when=in 2 hours",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/matchday is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "matchday",
+  "trigger": "/matchday create kind=playoffs when=in 2 hours",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/matchday is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "matchday",
+  "trigger": "/matchday create kind=friendly when=in 2 hours",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/matchday is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "matchday",
+  "trigger": "/matchday create kind=tournament when=in 2 hours",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/matchday is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "matchday",
+  "trigger": "/matchday create kind=vpg when=in 2 hours",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/matchday is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "matchday",
+  "trigger": "/matchday checkin ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/matchday is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "matchday",
+  "trigger": "/matchday status ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/matchday is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "lfg",
+  "trigger": "/lfg now ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/lfg is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "lfg",
+  "trigger": "/lfg cancel ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/lfg is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "lfg",
+  "trigger": "/lfg list ",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**/lfg is not on this bot.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ }
+]

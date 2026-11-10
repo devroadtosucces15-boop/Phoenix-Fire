@@ -1,0 +1,26 @@
+/* Rush leaderboard + season cards (shared). Phoenix accent comes from the site's own tokens; nothing here hard-codes another club's colours. */
+.lb-clock{display:flex;align-items:center;gap:10px;font:600 13px Inter;color:var(--soft)}.lb-clock b{font:600 18px Oswald;color:var(--g2)}
+.lb-bar{display:inline-block;width:140px;height:8px;border-radius:99px;background:var(--p3);border:1px solid var(--line2);overflow:hidden;vertical-align:middle}.lb-bar i{display:block;height:100%;background:linear-gradient(90deg,#e8651a,#efcf7a);border-radius:99px}
+.lb-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+.lb-kpi .sbt b{font:600 30px Oswald;color:var(--g2);display:block;line-height:1.05}.lb-kpi .sbt span{font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}.lb-kpi .sbt small{display:block;margin-top:4px;font:500 12px Inter;color:var(--soft)}
+.up{color:#4be08a!important}.dn{color:#ff7d72!important}.eq{color:var(--soft)}
+.lb-adv{display:grid;gap:10px}.lb-tip{padding:14px 16px;border-radius:14px;background:linear-gradient(90deg,rgba(232,101,26,.12),transparent);border:1px solid var(--line2);line-height:1.45}.lb-tip b{color:var(--g2)}.lb-fc{border-style:dashed}
+.lb-chart{margin-top:12px;padding:14px}.lb-svg{width:100%;height:auto;display:block}.lb-gl{stroke:var(--line2);stroke-width:1;stroke-dasharray:3 4}.lb-ax{fill:var(--soft);font:500 11px Inter}
+.lb-key{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font:500 12px Inter;color:var(--soft)}.lb-key i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.lb-tb tr.us td,.tb tr.us td{background:rgba(232,101,26,.13)}.lb-tb td small{font-size:11px}
+.lb-hist{display:grid;gap:8px}.lb-h{display:grid;grid-template-columns:150px minmax(0,1fr) 50px auto auto;gap:12px;align-items:center;padding:10px 16px;border-radius:14px;background:var(--p3);border:1px solid var(--line2);font-size:13px}
+.lb-h3{font:600 18px Oswald;margin:18px 0 8px}.lb-qc{margin:0 0 10px;padding-left:20px;line-height:1.5}.lb-qc .bad{color:#ff7d72}.lb-ok{color:#4be08a;font-weight:600}
+.lb-edit input,.lb-form input{width:100%;min-width:64px;padding:8px 10px;border-radius:10px;border:1px solid var(--line2);background:var(--p3);color:inherit;font:500 14px Inter}.lb-edit td:nth-child(3) input{min-width:160px}
+.lb-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;align-items:end}.lb-form label{display:grid;gap:4px;font:600 12px Inter;color:var(--soft)}
+.lb-act{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.su-btns{display:flex;gap:10px;flex-wrap:wrap}.su-b{cursor:pointer}.su-pv{display:flex;gap:14px;align-items:center;margin-top:12px}.su-pv img{max-height:110px;border-radius:10px;border:1px solid var(--line2)}.su-st{font:500 13px Inter;color:var(--soft)}
+.sc-who{display:inline-flex;align-items:center;gap:8px}.sc-who img{border-radius:50%}.sc-flag{cursor:help}
+.sc-share{display:grid;gap:8px;padding:14px 16px}.sc-sh{display:grid;grid-template-columns:minmax(90px,170px) minmax(0,1fr) 52px 84px;gap:12px;align-items:center;font-size:13px}.sc-sh .lb-bar{width:100%}.sc-sh small{color:var(--soft)}
+.sc-miss{columns:2;padding:10px 16px 16px 34px;line-height:1.7}
+#sc-fl,#lb-tabs,#sc-by,#sc-view{margin-bottom:10px}
+.lb-kpi:has(.sbt:nth-child(8):last-child){grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}@media(min-width:900px){.lb-kpi:has(.sbt:nth-child(8):last-child){grid-template-columns:repeat(4,1fr)}}
+.tbx{overflow-x:auto;-webkit-overflow-scrolling:touch}.tbx.fade{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
+.tbx .tb th,.tbx .tb td{white-space:nowrap}.tbx .tb td.small{white-space:normal;min-width:200px;max-width:280px}
+@media(max-width:620px){.lb-h{grid-template-columns:minmax(0,1fr) auto auto;row-gap:4px}.lb-h>span:nth-child(2){grid-column:1;grid-row:2;color:var(--soft)}.lb-h>b{grid-column:2;grid-row:1}.lb-h>.num{grid-column:3;grid-row:1}.lb-h>.btn{grid-column:2/-1;grid-row:2;justify-self:end}
+.tbx .tb th,.tbx .tb td{padding-left:10px;padding-right:10px}.chips .chip,.btn.sm{min-height:40px}.lb-tb td:nth-child(2){max-width:46vw;overflow:hidden;text-overflow:ellipsis}
+.sc-sh{grid-template-columns:minmax(0,1fr) auto;row-gap:4px}.sc-sh>span:first-child{grid-row:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sc-sh>b{grid-row:1;grid-column:2}.sc-sh .lb-bar{grid-row:2;grid-column:1/-1}.sc-sh small{display:none}.sc-miss{columns:1}}
