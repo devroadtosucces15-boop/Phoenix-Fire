@@ -244,7 +244,7 @@ addEventListener('DOMContentLoaded', () => {
           : `<div class="txf-kpi"><div><b data-count="${M.length}">${M.length}</b><span>confirmed Rush games</span></div><div><b class="num">${w}-${dr}-${l}</b><span>won · drawn · lost</span></div><div><b data-count="${Math.round(w / M.length * 100)}" data-suffix="%">${Math.round(w / M.length * 100)}%</b><span>win rate</span></div>${Object.entries(pos).sort((a, b) => b[1].g - a[1].g).slice(0, 1).map(([k, o]) => `<div><b class="num">${o.g}</b><span>goals from ${esc(k)} (most of any role)</span></div>`).join('')}</div>`
             + M.slice(0, 5).map((m) => `<div class="rush-row"><span class="pill ${m.res.toLowerCase()}">${m.res}</span><span>${esc(m.opp || 'Opponent')} <small class="muted">${esc(m.date)}</small></span><b class="num">${m.gf}–${m.ga}</b></div>`).join('');
         NorexMotion.land(body, html);
-      }).catch(() => { body.innerHTML = '<p class="muted small">Could not reach the club server just now. The Rush log will be back on the next visit.</p>'; });
+      }).catch(() => { body.innerHTML = '<p class="muted small">The forge is quiet for a moment. The Rush log will be back on the next visit.</p>'; });
     };
     const rush = () => { if (mounted.r) return; mounted.r = 1; ['r31', 'r22'].forEach((id) => NorexPitch.mount($('#' + id), { mode: 'rush', orient: 'v', slots: NorexPitch.RUSH[$('#' + id).dataset.shape] })); };
     tabs('#mode', 'mode', (m) => { $('#league').hidden = m !== 'league'; $('#rush').hidden = m !== 'rush'; $('#eb').textContent = m === 'rush' ? "Rush · 4 players + AI goalkeeper · the club's own formations" : 'The usual XI · from the club archive'; if (m === 'rush') { rush(); rushLog(); } });

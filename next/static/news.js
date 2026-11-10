@@ -25,7 +25,7 @@
       }).join('')}</div><p class="muted small" style="margin-top:12px">${A?.token ? 'The full feed is in the <a href="hub-clubhouse.html">Clubhouse</a>.' : 'Want the whole feed? Sign in or join the club.'}</p>`;
       M?.reveal?.(feed);
     })
-    .catch((code) => { feed.innerHTML = code === 404 ? empty('🔒', 'The club feed is for members for now', A?.role === 'owner' ? 'Posts members mark public show here once the Club feed switch in the Boardroom is set to Public.' : 'Members see every post in the Clubhouse. Join the club or sign in to take part.', A?.token ? '<a class="btn ghost" href="hub-clubhouse.html" style="margin-top:10px">Open the Clubhouse</a>' : login + ' ' + join) : empty('📡', 'Could not reach the club server', 'Try again in a minute.'); });
+    .catch((code) => { feed.innerHTML = code === 404 ? empty('🔒', 'The club feed is for members for now', A?.role === 'owner' ? 'Posts members mark public show here once the Club feed switch in the Boardroom is set to Public.' : 'Members see every post in the Clubhouse. Join the club or sign in to take part.', A?.token ? '<a class="btn ghost" href="hub-clubhouse.html" style="margin-top:10px">Open the Clubhouse</a>' : login + ' ' + join) : empty('🔥', 'The feed is warming up', 'Posts the club shares publicly will rise here. Check back soon.'); });
 
   // signed-in members: their pinned club docs, straight from /api/docs (the server decides who may read)
   if (API && A?.token && docs) fetch(API + '/api/docs', { cache: 'no-store', headers: { Authorization: 'Bearer ' + A.token } }).then((r) => (r.ok ? r.json() : Promise.reject())).then((r) => {

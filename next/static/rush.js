@@ -47,5 +47,5 @@
   $('#rs-f').addEventListener('click', (e) => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; d.querySelectorAll('#rs-f .chip').forEach((x) => x.classList.toggle('on', x === b)); draw(); });
   if (!API) { $('#rs-kpi').innerHTML = '<div class="panel muted rs-empty">Rush results load from the club server on the live preview.</div>'; return; }
   fetch(API + '/api/rush', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : Promise.reject(r.status))).then((R) => { M = (R.matches || []).slice().sort((a, b) => (a.date < b.date ? 1 : -1)); draw(); })
-    .catch(() => { $('#rs-kpi').innerHTML = '<div class="panel muted rs-empty">Could not reach the club server just now. Try again in a minute.</div>'; });
+    .catch(() => { $('#rs-kpi').innerHTML = '<div class="panel muted rs-empty">The forge is quiet for a moment. Rush nights show up here once the club has logged them. Check back soon.</div>'; });
 })();
