@@ -40,6 +40,23 @@ from the build timestamps that already differed between any two builds (`api/ran
 | 9 | **Recruitment and links.** `discord.applyLink` (`https://discord.gg/aN2J2Vktxu`) valid and not expiring; Twitch link correct; `recruitment.open` is what the owner wants public. | Confirm | **owner** |
 | 10 | **Privacy of member pages.** `hub*`, `staff*` and the portal stay noindex and, where flagged members/owner, still gated in `config.json` `features`. Review the `features` map for anything that is `public` by accident. | Review | Claude and **owner** |
 
+## Readiness walk, 2026-11-10 evening (`launch.public` is still `false`)
+
+| # | Item | Verdict |
+|---|---|---|
+| 1 | Founded date | **Owner only.** Nothing shows "Est." while `brand.founded` is blank (tested). |
+| 2 | Share image and meta | **Built; owner approves** `phoenix/overlay/share.png`, then paste the home URL in a private Discord channel. |
+| 3 | Worker host (B1) | **Owner only.** |
+| 4 | Club docs release (B6) | **Owner only.** |
+| 5 | Discord apps | **Done** (Matchday and Rush live since `3134c06`; the old apps point to them until 2026-11-24). |
+| 6 | Clean pages | **Done** (live build checked). Re-run `grep -c example.invalid site/*.html` after the next live build. |
+| 7 | Branding leak check | **Done and extended**: `tests/brand.test.mjs` now also covers every app label, the stripe colours, the LFG and queue messages and the Phoenix-only bot modules. |
+| 8 | Crest, favicon, manifest | **Done** (manifest `background_color` and `theme_color` are `#0a0705`). |
+| 9 | Recruitment and apply link | **Owner confirms** `discord.applyLink` still works and `recruitment.open` is what should be public. |
+| 10 | Privacy of member pages | **Reviewed, owner confirms.** Public today: `gameRules`, `liveBanner`, `trials`, `hallOfFame`, `builder`, `requests`, `proBuilds`, `events`, `awards`, `scoutReport`. Everything else is members, managers or owner. `rushQueue`, `rushLfg` stay `owner`. |
+
+Claude has nothing left on this table. The go-live switch is B8 (owner).
+
 ## Search Console (after the flip)
 
 1. Add the property in Google Search Console. The site lives on `devroadtosucces15-boop.github.io/Phoenix-Fire/`, a **path** on a
