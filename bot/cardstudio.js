@@ -361,7 +361,7 @@ export const cardPrompt = (poseFragment, level = 0) => level >= 2
     ? `Image 0 is the background. Image 1 is the player. Place the player in the centre of the background, ${poseFragment}.`
     : 'Image 0 is the card background: keep its colours, framing and empty centre exactly. '
       + `Image 1 is the player: keep their real face, hair and skin tone. Place the player from image 1 in the centre of image 0, ${poseFragment}. `
-      + 'Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
+      + 'Show the player chest up only (head, neck, shoulders, chest), large in the frame with a clear margin from every card edge, and the shirt number big and clear on the chest. Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
 
 // FLUX.2 rejects references of 512×512 or more; shrink with the Images binding when it is bound.
 async function reference(env, bytes, type) {
@@ -380,7 +380,7 @@ export const portraitPrompt = (hasKit, level = 0) =>
   (level >= 2 ? 'Image 0 is the person: keep their face, hairstyle and beard. ' : 'Image 0 is the person: preserve their face, hairstyle and hair colour, beard, skin tone and expression. ')
   + (hasKit && level === 0 ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${KIT_TEXT}. `)
   + 'Draw it as a flat 2D cartoon illustration: clean cel shading, bold uniform black outlines, simple solid colour fills with a few soft shadow shapes, realistic proportions, detailed expressive face with eyebrows, eyes, nose and beard drawn crisply, no gradients, no painterly texture, no 3D render look. '
-  + 'Bust portrait: head, neck, shoulders, chest and upper arms, straight-on camera, neutral confident expression, centred with generous margins. '
+  + 'Chest-up portrait: crop at mid-chest, so only head, neck, shoulders, chest and upper arms show, with no waist, shorts or legs. The figure fills most of the frame width but never touches the edges, with a clear margin on both sides, straight-on camera, neutral confident expression, centred. '
   + 'No text, no frame, no scenery. The whole background must be one flat, uniform, pure bright green (#00FF00) with no shadow, gradient or floor, so it can be cut out automatically.';
 
 export async function cardKit(request, me, env, log) {

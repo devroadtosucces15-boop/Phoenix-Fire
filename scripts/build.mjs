@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, DATA, readJson, loadConfig, loadOverrides, num } from './lib.mjs';
 import { orgClubsFromDisk, combineOrg, orgOverview } from './lib/org.mjs';
+import { clubTag } from './lib/clubtag.mjs';
 import { lineChart, goalBars, donut, radar, spark, pitchMap } from './charts.mjs';
 import { buildUpdates } from './updates-page.mjs';
 import { buildBuilder } from './builder-page.mjs';
@@ -1356,7 +1357,8 @@ write('api/club.json', JSON.stringify({
   matches: [...homeMatches.slice(0, 25), ...friendlies.slice(0, 10)].sort((a, b) => b.timestamp - a.timestamp).slice(0, 25).map((m) => {
     const o = oppOf(m, homeId);
     const l = Object.values(m.players?.[homeId] || {});
-    return { id: m.matchId, ts: m.timestamp, type: m.matchType === 'friendlyMatch' ? 'friendly' : m.matchType === 'playoffMatch' ? 'playoff' : 'league', opp: clubName(o), oppCrest: crestSrc(o, SITE), gf: num(m.clubs[homeId].goals), ga: num(m.clubs[o].goals), res: result(m.clubs[homeId]),
+    const type = m.matchType === 'friendlyMatch' ? 'friendly' : m.matchType === 'playoffMatch' ? 'playoff' : 'league';
+    return { id: m.matchId, ts: m.timestamp, type, src: m.src, tag: clubTag({ src: m.src, type, org, config }), opp: clubName(o), oppCrest: crestSrc(o, SITE), gf: num(m.clubs[homeId].goals), ga: num(m.clubs[o].goals), res: result(m.clubs[homeId]),
       scorers: l.filter((p) => num(p.goals)).map((p) => ({ n: p.playername, g: num(p.goals) })), motm: l.find((p) => p.mom === '1')?.playername ?? null, url: `${SITE}matches/${m.matchId}.html`,
       ps: Object.entries(m.players?.[homeId] || {}).filter(([pid]) => !players.get(pid)?.hidden)
       // ps: per-player line for the bot's "Show my match" card (P7.2) – rating, goals, assists, passes, tackles, shots, saves.

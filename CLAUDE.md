@@ -25,6 +25,13 @@ Phoenix identity (single source: `config.json` brand, `phoenix/live.json`, `phoe
 - Crest and logo: the Phoenix crest from `phoenix/overlay/crest*.png`. Never the NOREX crest.
 - Worker: `phoenix-bot`. Site: the Phoenix Pages URL in `config.json`.
 
+### Player image rule (all generated images)
+
+Every player image, whatever makes it (portrait prompt, full-card prompt, compositor crop, avatar card, share graphic), is **chest up**:
+head, neck, shoulders, chest, no waist or legs. The figure is large but keeps a clear margin from every card border (never overlaps
+an edge or the crest), and the shirt number is big and bold on the chest. The prompts live in `bot/cardstudio.js`, the crop and number
+in `web/cardcomposer.js` (`CHEST_ASPECT`, `FIT_PAD`); `tests/cardstudio.test.mjs` guards the prompts. New image generators follow it.
+
 ### Rules
 
 1. A change is not finished until every dependent output is in the Phoenix theme. Check the dependents, not just the file you edited.

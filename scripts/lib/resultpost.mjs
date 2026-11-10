@@ -6,14 +6,15 @@ import path from 'node:path';
 import { loadBotSettings, num } from '../lib.mjs';
 import { resolveRoute } from './org.mjs';
 import { matchComponents } from '../../bot/matchcard.js';
-import { message, header, facts, footer, resultAccent, cards, label } from '../../bot/ui.js';
+import { message, header, facts, footer, resultAccent, cards, label, tagBlock } from '../../bot/ui.js';
+import { clubTag } from './clubtag.mjs';
 import { it } from '../../bot/icons.js';
 
 // New home results → Discord. With the bot token and the discordMatch flag on for members/public, each result is
 // posted by the bot into the webhook's channel with the P7.2 "Show my match" menu (plain webhooks can't carry
 // interactive components); if that fails, or otherwise, it goes through the webhook as before.
 // matches: raw EA matches (newest last). drawn: { dir, manifest } of site/cards + site/api/cards.json, or null.
-export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute }) {
+export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute, org = null }) {
   const hook = process.env.DISCORD_WEBHOOK;
   const token = process.env.DISCORD_BOT_TOKEN;
   if (!matches.length) return;
@@ -37,8 +38,10 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const src = [m.fetchedFrom, ...orgIds, homeId].find((id) => id && m.clubs[id]);
       const us = m.clubs[src];
       const kind = m.matchType === 'playoffMatch' ? 'Playoff' : m.matchType === 'friendlyMatch' ? 'Friendly' : 'League';
+      const tag = clubTag({ src, type: kind.toLowerCase(), org, config }); // which of our clubs this is – the pill on every output
       const oppId = Object.keys(m.clubs).find((k) => k !== src);
       const opp = m.clubs[oppId];
+      const oppName = opp.details?.name ?? opp.name ?? oppId; // EA sometimes omits details – never show the bare club ID if a name exists
       const res = us.wins === '1' ? 'W' : us.losses === '1' ? 'L' : 'D';
       const ourIds = Object.entries(m.players?.[src] || {}).filter(([pid, p]) => !hide.has(pid.toLowerCase()) && !hide.has(String(p.playername).toLowerCase()));
       const ours = ourIds.map(([, p]) => p);
@@ -57,12 +60,13 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         files.push({ name: `${kind}-${m.matchId}.png`, path: path.join(drawn.dir, file) });
         return { url: `attachment://${kind}-${m.matchId}.png`, alt };
       };
-      const scoreImg = pic('score', `${clubName} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`);
+      const scoreImg = pic('score', `${clubName} ${us.goals}–${opp.goals} ${oppName}`);
       const fieldImg = pic('field', 'Our players on the pitch with their match ratings');
       const panel = (ping, mentions) => message({ accent: resultAccent(res), ping, mentions, blocks: [
+        tagBlock(tag, kind),
         header({
           eyebrow: `${clubName} · Match centre · ${kind}`,
-          title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`,
+          title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
           sub: `<t:${m.timestamp}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[res]}`,
           thumb: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : site ? `${site}assets/crest.png` : undefined,
         }),
@@ -74,7 +78,8 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         ...components,
       ] });
       return { src, matchId: m.matchId, components, files, panel, embed: {
-        title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`,
+        author: { name: `${tag.important ? '🚨 ' : ''}${tag.label} · ${kind.toUpperCase()}` },
+        title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
         url,
         color: { W: 0x22c55e, D: 0xeab308, L: 0xef4444 }[res],
         description: res === 'W' ? '✅ **Victory**' : res === 'L' ? '❌ **Defeat**' : '➖ **Draw**',
@@ -86,7 +91,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
           best && { name: '📈 Our top rated', value: `${best.playername} (${num(best.rating).toFixed(1)})`, inline: true },
         ].filter(Boolean),
         timestamp: new Date(m.timestamp * 1000).toISOString(),
-        footer: { text: `${kind} match` },
+        footer: { text: `${tag.label} · ${kind} match` },
       } };
     });
   // A "role" equal to the server's own ID is @everyone: <@&id> renders as "@@everyone" and pings nobody, so say it the way Discord expects.

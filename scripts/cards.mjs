@@ -36,6 +36,7 @@ body:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gr
 .eyebrow{font:700 20px Inter;letter-spacing:.3em;text-transform:uppercase;color:#f08f87}
 .gold{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent}
 .brand{position:absolute;right:34px;bottom:24px;font:600 17px Inter;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.32)}
+.tag{display:inline-block;font:800 21px Inter;letter-spacing:.2em;padding:5px 18px;margin-right:14px;border-radius:999px;border:2px solid var(--red2);color:#fff;background:rgba(255,255,255,.06);vertical-align:1px}.tag.hot{background:var(--gold);color:#2d1f06;border-color:var(--g1);box-shadow:0 0 28px rgba(239,207,122,.6)}
 .pill{display:inline-block;font:800 24px Inter;letter-spacing:.12em;padding:6px 18px;border-radius:999px;border:2px solid}
 .pill.W{background:var(--winbg);border-color:#1d6b3d;color:var(--win)}.pill.D{background:var(--drawbg);border-color:#6d5a1f;color:var(--draw)}.pill.L{background:var(--lossbg);border-color:#7a2a24;color:var(--loss)}
 .chip{display:inline-block;font:600 20px Oswald;letter-spacing:.08em;color:var(--g2);background:var(--p3);border:1px solid var(--line2);border-radius:8px;padding:2px 10px;vertical-align:4px}
@@ -71,7 +72,7 @@ body{height:500px}
 .score{text-align:center}.score b{display:block;font:700 190px/1 Oswald;letter-spacing:.01em;text-shadow:0 10px 50px rgba(200,53,44,.55)}
 .foot{position:absolute;left:60px;right:60px;bottom:40px;display:flex;justify-content:center;gap:36px;font-size:24px;color:#cfd8e8;white-space:nowrap;overflow:hidden}
 .foot i{font-style:normal;color:var(--soft);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:18px;margin-right:10px}`,
-  `<div class="top eyebrow">${esc(club.name)} · ${m.mode === 'rush' ? 'Rush' : 'League'} · ${esc(when(m.ts))}</div>
+  `<div class="top eyebrow">${m.tag?.label ? `<span class="tag${m.tag.important ? ' hot' : ''}">${esc(m.tag.label)}</span>` : `${esc(club.name)} · `}${m.mode === 'rush' ? 'Rush' : { friendly: 'Friendly', playoff: 'Playoff' }[m.type] ?? 'League'} · ${esc(when(m.ts))}</div>
 <div class="row">
   <div class="side">${crest(club.crest, club.name, 170, true)}<b>${esc(club.name.replace(/\s+FC$/i, ''))}</b></div>
   <div class="score"><b>${m.gf}–${m.ga}</b><span class="pill ${m.res}">${RESULT[m.res] ?? ''}</span></div>

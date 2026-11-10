@@ -19,6 +19,9 @@
   "platform": "common-gen5",
   "homeClubId": 1111,
   "extraClubIds": [],
+  "clubTags": {
+    "2484": { "label": "PHOENIX XI", "friendlyLabel": "PHOENIX XI VPG" }
+  },
   "discovery": {
     "enabled": false,
     "maxTrackedClubs": 400,

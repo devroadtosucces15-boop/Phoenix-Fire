@@ -251,7 +251,7 @@ async function postToDiscord() {
     fs.writeFileSync(path.join('.outbox', 'results.json'), JSON.stringify({ matches: newHomeMatches, hidden }));
     return;
   }
-  await postResults(newHomeMatches, { config, homeId, orgIds: [...orgIds], hidden });
+  await postResults(newHomeMatches, { config, homeId, orgIds: [...orgIds], org, hidden });
 }
 // P5.6: clubs approved in the manager portal. Approved by name only → look the ID up once via EA's club search and
 // report it back. Clubs no longer requested (undone) drop back to 'discovered' – only when the list loaded.

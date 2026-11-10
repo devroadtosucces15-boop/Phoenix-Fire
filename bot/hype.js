@@ -14,7 +14,7 @@
 import { kvOf } from './kv.js';
 import { channelFor } from './orgconfig.js';
 import { safely } from './notify.js';
-import { message, header, text, cards, facts, buttons, resultAccent } from './ui.js';
+import { message, header, text, cards, facts, buttons, resultAccent, tagBlock } from './ui.js';
 import { it } from './icons.js';
 
 const RED = 0xe8651a, GREEN = 0x22c55e, GREY = 0x6b7280;
@@ -76,6 +76,7 @@ export async function checkHype(env, loadSite) {
   ]);
   const fallback = m.res === 'W' ? '🎉 **Victory!**' : m.res === 'L' ? '😤 **Defeat**' : '➖ **Draw**';
   const msg = message({ accent: resultAccent(m.res), blocks: [
+    tagBlock(m.tag, { friendly: 'Friendly', playoff: 'Playoff' }[m.type] ?? 'League'),
     header({ eyebrow: `${club.name} · Match centre`, title: `${club.name} ${m.gf}–${m.ga} ${m.opp}`, sub: { W: 'Win', D: 'Draw', L: 'Defeat' }[m.res] }),
     text(recap ?? fallback),
     art ? cards('attachment://hype.png') : null,

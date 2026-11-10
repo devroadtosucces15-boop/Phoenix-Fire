@@ -1,6 +1,6 @@
 // Deterministic NOREX player-card compositor. Data is read fresh at render time.
 (() => {
-  const WIDTH = 600, HEIGHT = 840;
+  const WIDTH = 600, HEIGHT = 840, CHEST_ASPECT = 1.02, FIT_PAD = 22;   // chest-up crop: height <= 1.02 x shoulder width; FIT_PAD keeps art off the card borders
   const safe = (value, fallback = '—') => value == null || value === '' ? fallback : String(value);
   const getPlayer = (ctx) => {
     const claim = ctx.claim?.();
@@ -35,19 +35,24 @@
     for (let y=0; y<cv.height; y++) for (let x=0; x<cv.width; x++) if (a[(y*cv.width+x)*4+3]>24) {
       left=Math.min(left,x); top=Math.min(top,y); right=Math.max(right,x); bottom=Math.max(bottom,y);
     }
+    // House rule for every player image: chest up. A full or waist-up figure is cropped (anchored at the top, so the head
+    // stays put) to a head-neck-shoulders-chest frame; art that is already chest-up is left alone.
+    const bw = Math.max(1,right-left+1), bh = Math.max(1,bottom-top+1), chestH = Math.min(bh, Math.round(bw*CHEST_ASPECT));
     const out = document.createElement('canvas');
-    out.width = Math.max(1,right-left+1); out.height = Math.max(1,bottom-top+1);
-    const c = out.getContext('2d'); c.drawImage(cv,left,top,out.width,out.height,0,0,out.width,out.height);
+    out.width = bw; out.height = chestH;
+    const c = out.getContext('2d'); c.drawImage(cv,left,top,bw,chestH,0,0,bw,chestH);
     if (kitNumber != null && kitNumber !== '' && Number.isInteger(Number(kitNumber)) && Number(kitNumber)>=0 && Number(kitNumber)<=99) {
-      c.textAlign='center'; c.textBaseline='middle'; c.font=`700 ${Math.round(out.height*.085)}px Oswald, Impact, sans-serif`;
-      c.lineWidth=Math.max(2,out.height*.005); c.strokeStyle='#16191d'; c.fillStyle='#fff';
-      c.strokeText(String(Number(kitNumber)),out.width*.5,out.height*.82);
-      c.fillText(String(Number(kitNumber)),out.width*.5,out.height*.82);
+      // Big, bold shirt number low on the chest: sized from the figure width so it stays inside the shirt.
+      const txt = String(Number(kitNumber)), px = Math.round(Math.min(out.height*.3, out.width*(txt.length>1?.34:.3)));
+      c.textAlign='center'; c.textBaseline='middle'; c.font=`700 ${px}px Oswald, Impact, sans-serif`;
+      c.lineJoin='round'; c.lineWidth=Math.max(4,px*.09); c.strokeStyle='#0c0e11'; c.fillStyle='#fff';
+      c.strokeText(txt,out.width*.5,out.height*.78);
+      c.fillText(txt,out.width*.5,out.height*.78);
     }
     return out;
   }
   function fit(ctx, img, x, y, w, h) {
-    const ratio = Math.min(w / img.width, h / img.height);
+    const ratio = Math.min((w - 2*FIT_PAD) / img.width, h / img.height);
     const iw = img.width * ratio, ih = img.height * ratio;
     ctx.drawImage(img, x + (w-iw)/2, y+h-ih, iw, ih);
   }
@@ -73,7 +78,7 @@
     try { const crest = await image(crestUrl); const h=75; c.drawImage(crest,WIDTH-48-h*crest.width/crest.height,65,h*crest.width/crest.height,h); } catch {}
     c.save(); c.beginPath(); c.rect(48,186,504,362); c.clip();
     const portrait = options.prepared ? await image(portraitUrl) : await prepare(portraitUrl,options.kitNumber);
-    fit(c,portrait,48,186,504,362); c.restore();
+    fit(c,portrait,48,180,504,368); c.restore();
     c.fillStyle = tx; c.textAlign = 'center'; c.font = '700 43px Oswald, Impact, sans-serif';
     const name = safe(player?.n,'' + (document.body.dataset.club || 'the club') + ' PLAYER').toUpperCase().slice(0,24);
     let size = 43; while (c.measureText(name).width > 475 && size > 19) { c.font = 'bold ' + (--size) + 'px Oswald, Impact, sans-serif'; }

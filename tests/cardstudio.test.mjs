@@ -1,6 +1,6 @@
 import { call, env, login, r2objects, W } from './mock.mjs';
 import { t, done } from './lib.mjs';
-import { canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, CARD_MODEL } from '../bot/cardstudio.js';
+import { canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, portraitPrompt, CARD_MODEL } from '../bot/cardstudio.js';
 
 const setFlags = (o) => { env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), ...o }); };
 const owner = await login('111', [], 'Boss');
@@ -335,4 +335,12 @@ t('kit reference: none stored yet', (await kitReq(mgr, 'GET')).status === 404);
 t('kit reference: manager can set it', (await kitReq(mgr, 'POST', PNG(64, 64))).status === 200);
 t('kit reference: stored privately', r2objects.has('cardkit/reference') && (await kitReq(mgr, 'GET')).status === 200 && (await kitReq(m1, 'GET')).status === 403);
 t('kit reference: manager can remove it', (await kitReq(mgr, 'DELETE')).status === 200 && (await kitReq(mgr, 'GET')).status === 404);
+t('image prompts: chest up, margin from the edges', () => {
+  for (const lvl of [0]) {
+    if (!/chest[- ]up/i.test(portraitPrompt(true, lvl))) throw new Error('portrait prompt must say chest up');
+    if (!/chest up/i.test(cardPrompt('standing', lvl))) throw new Error('card prompt must say chest up');
+  }
+  if (!/no waist, shorts or legs/.test(portraitPrompt(false, 0))) throw new Error('portrait prompt must exclude legs');
+});
+
 done();

@@ -26,6 +26,13 @@ export const text = (content) => (content ? { type: 10, content: clip(content, 3
 export const sep = ({ big = false, line = true } = {}) => ({ type: 14, divider: line, spacing: big ? 2 : 1 });
 export const footer = (s) => (s ? text(`-# ${s}`) : null);
 export const label = (s) => text(`-# **${String(s).toUpperCase()}**`);
+// Which-club pill for a result (tag = { label, important } from scripts/lib/clubtag.mjs, carried on each match in club.json).
+// Inline code reads as a badge; important ones (e.g. a PHOENIX XI VPG friendly) get sirens and a bold kind.
+export const tagBlock = (tag, kind) => {
+  if (!tag?.label) return null;
+  const k = kind ? ` · ${tag.important ? `**${String(kind).toUpperCase()}**` : String(kind).toUpperCase()}` : '';
+  return text(`${tag.important ? '🚨 ' : ''}**\`${tag.label}\`**${k}${tag.important ? ' 🚨' : ''}`);
+};
 // Header: small grey label · bold title · grey detail line, with an optional picture on the right (crest, avatar, card).
 export function header({ eyebrow = null, title, sub, thumb, size = 2 }) {
   const t = text([eyebrow && `-# ${String(eyebrow).toUpperCase()}`, `${'#'.repeat(size)} ${title}`, sub && `-# ${sub}`].filter(Boolean).join('\n'));

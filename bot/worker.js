@@ -52,7 +52,7 @@ import { refreshStatInsights, handleStatInsightJob, statInsightWeekly, discordIn
 import { handleHubWaveJob } from './hub.js';
 import { burnerCommand, burnerPick } from './burners.js';
 import { generateCards } from './cardstudio.js';
-import { message, notice, header, cards, facts, text, sep, side, thumb, label, footer, buttons, cardUrl, privateNote, resultAccent, RESULT_ICON } from './ui.js';
+import { message, notice, header, cards, facts, text, sep, side, thumb, label, footer, buttons, cardUrl, privateNote, resultAccent, RESULT_ICON, tagBlock } from './ui.js';
 import { it } from './icons.js';
 import { playerFaces } from './faces.js';
 import { zoneChoices } from './host.js';
@@ -560,8 +560,10 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
       if (!m) return notice('No matches yet', 'The first result shows up here a few minutes after it’s played.');
       const score = cardUrl(deck, 'match', m.id, 'score'), field = cardUrl(deck, 'match', m.id, 'field');
       const avg = m.ps?.length ? m.ps.reduce((t, p) => t + (+p.r || 0), 0) / m.ps.length : null;
+      const kind = { friendly: 'Friendly', playoff: 'Playoff' }[m.type] ?? 'League';
       return message({ accent: resultAccent(m.res), blocks: [
-        header({ eyebrow: brand('Match centre · League'), title: `${club.name} ${m.gf}–${m.ga} ${m.opp}`, sub: `<t:${m.ts}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[m.res]}`, thumb: score ? null : m.oppCrest || club.crest }),
+        tagBlock(m.tag, kind),
+        header({ eyebrow: brand(`Match centre · ${kind}`), title: `${club.name} ${m.gf}–${m.ga} ${m.opp}`, sub: `<t:${m.ts}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[m.res]}`, thumb: score ? null : m.oppCrest || club.crest }),
         cards(score && { url: score, alt: `${club.name} ${m.gf}–${m.ga} ${m.opp}` }),
         facts([[`${it('goal')} Goals`, goalsLine(m) || 'none'], ['📊 Team rating', avg != null ? r1(avg) : null]]),
         m.motm ? await (async () => { // man of the match gets a row with their face (card if shipped, else Discord picture)
