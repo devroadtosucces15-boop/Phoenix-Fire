@@ -23,9 +23,9 @@ Core OAuth redirect: `https://phoenix-bot.norexunited.workers.dev/auth/callback`
 | `DISCORD_BOT_TOKEN_TOOLS` | toolbot app | Dev Portal, Toolbot app, Bot, Reset Token | set 2026-11-10 | set 2026-11-10 |
 | `DISCORD_BOT_TOKEN_FUN` | fun app | Dev Portal, Fun app, Bot, Reset Token | set 2026-11-10 | set 2026-11-10 |
 | `DISCORD_CLIENT_SECRET` | website login (core) | Dev Portal, core app, OAuth2, Reset Secret | present | no |
-| `GH_DISPATCH_TOKEN` | cron triggers site update | GitHub fine-grained token, Actions write on this repo | MISSING | no |
-| `VAPID_PRIVATE_KEY` | web push | keypair generated once | MISSING | no |
-| `CLOUDFLARE_ANALYTICS_TOKEN` | health page | Cloudflare token, Account Analytics read | MISSING | no |
+| `GH_DISPATCH_TOKEN` | cron triggers site update | GitHub fine-grained token, Actions write on this repo | set 2026-11-10 | set 2026-11-10 |
+| `VAPID_PRIVATE_KEY` | web push | keypair generated once | set 2026-11-10 | set 2026-11-10 |
+| `CLOUDFLARE_ANALYTICS_TOKEN` | health page | Cloudflare token, Account Analytics read | set 2026-11-10 | set 2026-11-10 |
 | `CLOUDFLARE_ACCOUNT_ID` | health page and CI | c84cd49d2e12a5dca30af9abbb35ce9e (not secret) | set 2026-11-10 | set 2026-11-10 |
 | `CLOUDFLARE_API_TOKEN` | CI deploy | Cloudflare, API tokens, "phoenix-bot CI deploy v2" | n/a | set 2026-11-10 |
 
