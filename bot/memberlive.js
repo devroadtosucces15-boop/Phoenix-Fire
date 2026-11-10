@@ -8,7 +8,7 @@
 import { flagOn } from './roles.js';
 import { parseTwitch, parseYouTube } from './live.js';
 import { message, header, text, sep, footer, buttons } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
 
@@ -56,7 +56,7 @@ export async function memberLiveCron(env, now = Date.now(), fetcher = fetch) {
   const start = cursor % members.length;
   const batch = [...members.slice(start), ...members.slice(0, start)].slice(0, PER_RUN);
   await env.DB.prepare("INSERT INTO meta (key, value) VALUES ('memberlive_cursor', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(String(start + batch.length)).run();
-  const channel = (await one(env, "SELECT value FROM meta WHERE key = 'announce_channel'"))?.value;
+  const channel = await channelFor(env, 'live_alerts');
   let live = 0, posted = 0;
   for (const m of batch) {
     const found = await liveOf(m, fetcher).catch(() => null);

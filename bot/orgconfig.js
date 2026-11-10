@@ -22,7 +22,25 @@ const clean = (s, max) => String(s ?? '').replace(/[\u0000-\u001f<>]/g, ' ').rep
 const flag = (v, dflt) => (v === undefined ? dflt : v ? 1 : 0);
 
 export const SCOPES = ['org', 'division', 'club'];
-export const CHANNEL_PURPOSES = ['announcements', 'match_results', 'match_notifications', 'recruitment', 'claims', 'manager_alerts', 'logs', 'welcome', 'config_audit', 'system_alerts'];
+// A9: every place the bot posts to, reads from or restricts to a channel is a purpose here – never a name or an ID in code.
+// Several channels per purpose are allowed. Purposes after `system_alerts` were added when the last hardcoded/legacy channel
+// settings (meta keys, Worker vars) moved into this table; channelFor() still reads those legacy values when no row exists.
+export const CHANNEL_PURPOSES = ['announcements', 'match_results', 'match_notifications', 'recruitment', 'claims', 'manager_alerts', 'logs', 'welcome', 'config_audit', 'system_alerts',
+  'awards', 'reminders', 'member_log', 'hype', 'voice_recap', 'live_alerts', 'fun_posts', 'automod_alerts', 'rush_queue', 'rush_queue_reports'];
+// What each purpose is for, in the words managers see (site Organization section and /setup channel).
+export const CHANNEL_PURPOSE_INFO = {
+  announcements: 'General club announcements and the default for posts that have no channel of their own',
+  match_results: 'Match result posts', match_notifications: 'Match and event notifications', recruitment: 'Recruitment posts and applications',
+  claims: 'Player claim requests', manager_alerts: 'Alerts for managers', logs: 'Bot activity log', welcome: 'Welcome posts for new members',
+  config_audit: 'Who changed the Organization config', system_alerts: 'Bot health alerts',
+  awards: 'Weekly awards and Highlight of the week', reminders: 'Event reminders (falls back to announcements)', member_log: 'Leave and join alerts',
+  hype: 'Hype art posts', voice_recap: 'Voice chat recaps', live_alerts: 'Go-live alerts (falls back to announcements)',
+  fun_posts: 'Birthdays and other fun posts (falls back to announcements)', automod_alerts: 'AutoMod alerts',
+  rush_queue: 'The Rush queue board (the bot keeps one always-latest board here)', rush_queue_reports: 'Anonymous Rush queue reports for staff',
+};
+// A purpose with no row of its own may fall back to another purpose before giving up (the old behaviour of the posts that used
+// the shared announce channel). Anything not listed has no fallback: if nothing is configured the feature says so.
+const FALLBACK = { reminders: ['announcements'], live_alerts: ['announcements'], fun_posts: ['announcements'] };
 export const PERMISSION_GROUPS = ['owner', 'administrator', 'manager', 'division_manager', 'club_manager', 'player'];
 
 // Each entity: table, the columns a client may write (cleaned by `clean`), and what the audit log records.
@@ -172,11 +190,20 @@ export async function orgConfigRoute(p, method, body, me, env) {
     return json({ ok: true });
   }
 
+  const res = await saveConfigRow(env, me, m[1], body ?? {});
+  return res.error ? fail(res.error, res.status ?? 400) : json(res.row);
+}
+
+// The one write path for a config row: the website's POST /api/org/config/<entity> and the /setup channel / /setup role
+// commands both go through here, so the same input always produces the same row (and the same audit entry).
+export async function saveConfigRow(env, me, entity, body) {
+  const ent = ENTITIES[entity];
+  if (!ent) return { error: 'Unknown config type.', status: 404 };
   const id = body?.id ? Number(body.id) : null;
   const cur = id ? await one(env, `SELECT * FROM ${ent.table} WHERE id = ?`, id) : null;
-  if (id && !cur) return fail('Not found', 404);
+  if (id && !cur) return { error: 'Not found', status: 404 };
   const res = await ent.clean(body ?? {}, env, cur);
-  if (res.error) return fail(res.error);
+  if (res.error) return { error: res.error };
   const row = { ...res.values };
   let savedId = id;
   if (cur) {
@@ -189,9 +216,55 @@ export async function orgConfigRoute(p, method, body, me, env) {
     savedId = r.meta?.last_row_id ?? null;
   }
   const after = await one(env, `SELECT * FROM ${ent.table} WHERE id = ?`, savedId);
-  await audit(env, me, m[1], savedId, cur ? 'update' : 'create', cur, after);
-  return json(after);
+  await audit(env, me, entity, savedId, cur ? 'update' : 'create', cur, after);
+  return { row: after, created: !cur };
 }
+
+// /setup channel purpose:<p> [channel] and /setup role group:<g> role:<r>: org-wide rows for the server the command ran in.
+// Re-running with the same channel + purpose (or role + group) re-activates that row instead of adding a duplicate.
+export async function setupMapping(env, me, kind, { guildId, targetId, purpose, group, label }) {
+  const server = await one(env, 'SELECT id FROM discord_servers WHERE guild_id = ? AND active = 1', String(guildId ?? ''));
+  if (!server) return { error: 'This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.' };
+  const channel = kind === 'channel';
+  const table = channel ? 'discord_channels' : 'discord_roles', idCol = channel ? 'channel_id' : 'role_id', keyCol = channel ? 'purpose' : 'permission_group', key = channel ? purpose : group;
+  const dup = await one(env, `SELECT id FROM ${table} WHERE server_id = ? AND ${idCol} = ? AND ${keyCol} = ? AND scope_type = 'org'`, server.id, String(targetId), key);
+  return saveConfigRow(env, me, channel ? 'channels' : 'roles', { id: dup?.id, server_id: server.id, [idCol]: String(targetId), [keyCol]: key, scope_type: 'org', label: label ?? '', active: 1 });
+}
+
+// ---------- channels as the rest of the bot reads them ----------
+
+// Pre-A9 homes of a channel setting, read only when the config has no row for the purpose (so nothing breaks while a server moves
+// over). New code never writes these; it goes through saveConfigRow / the website.
+const metaVal = async (env, key) => (await one(env, 'SELECT value FROM meta WHERE key = ?', key).catch(() => null))?.value || null;
+const metaJson = async (env, key) => { try { return JSON.parse(await metaVal(env, key) || '{}'); } catch { return {}; } };
+const envJson = (v) => { try { return JSON.parse(v || '{}'); } catch { return {}; } };
+const LEGACY = {
+  announcements: (env) => metaVal(env, 'announce_channel'),
+  awards: (env) => metaVal(env, 'awards_channel'),
+  reminders: async (env) => (await metaJson(env, 'bot_settings')).reminderChannel,
+  match_results: async (env) => (await metaJson(env, 'bot_settings')).resultChannel,
+  member_log: async (env) => (await metaJson(env, 'server_tools')).leaveChannel,
+  welcome: async (env) => (await metaJson(env, 'server_tools')).welcomeChannel,
+  automod_alerts: async (env) => (await metaJson(env, 'profanity_config')).channelId,
+  hype: (env) => envJson(env.HYPE_CHANNEL).channel,
+  voice_recap: (env) => envJson(env.VOICE_CHANNEL).channel,
+};
+// Every active channel configured for a purpose (several are allowed), most specific scope first. Falls back like channelFor.
+export async function channelsFor(env, purpose, { clubId = null, divisionId = null } = {}) {
+  for (const p of [purpose, ...(FALLBACK[purpose] ?? [])]) {
+    const rows = await all(env,
+      `SELECT c.channel_id, c.scope_type FROM discord_channels c JOIN discord_servers s ON s.id = c.server_id
+       WHERE c.purpose = ? AND c.active = 1 AND s.active = 1
+         AND (c.scope_type = 'org' OR (c.scope_type = 'club' AND c.scope_id = ?) OR (c.scope_type = 'division' AND c.scope_id = ?))
+       ORDER BY CASE c.scope_type WHEN 'club' THEN 0 WHEN 'division' THEN 1 ELSE 2 END, c.id`, p, clubId, divisionId).catch(() => []);
+    if (rows.length) return [...new Set(rows.map((r) => String(r.channel_id)))];
+    const legacy = await LEGACY[p]?.(env);
+    if (legacy) return [String(legacy)];
+  }
+  return [];
+}
+// The channel a feature posts to for a purpose, or null: callers say "no channel is set" and never substitute another one.
+export const channelFor = async (env, purpose, scope) => (await channelsFor(env, purpose, scope))[0] ?? null;
 
 // ---------- readers for the rest of the system ----------
 

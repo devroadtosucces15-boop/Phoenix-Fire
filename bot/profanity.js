@@ -10,6 +10,7 @@
 // needs checking against one real triggered violation before the escalation is trusted – see P11.4 in
 // PLANNING/ROADMAP.md.
 import { can } from './roles.js';
+import { channelFor } from './orgconfig.js';
 import { notify, safely } from './notify.js';
 import { awardPoints } from './points.js';
 
@@ -89,9 +90,10 @@ async function strike(env, uid, keyword, ref) {
 export async function checkProfanity(env) {
   if (!env.DB || !env.DISCORD_BOT_TOKEN) return { checked: 0 };
   const cfg = await getMeta(env, 'profanity_config');
-  if (!cfg?.channelId) return { checked: 0 }; // not set up yet (/profanitysetup)
-  const q = cfg.lastMessageId ? `?limit=50&after=${cfg.lastMessageId}` : '?limit=50';
-  const msgs = await dget(env, `/channels/${cfg.channelId}/messages${q}`).catch(() => []);
+  const alertChannel = (await channelFor(env, 'automod_alerts')) || cfg?.channelId; // A9: config first, the /profanitysetup channel as fallback
+  if (!alertChannel) return { checked: 0 }; // not set up yet (/profanitysetup)
+  const q = cfg?.lastMessageId ? `?limit=50&after=${cfg.lastMessageId}` : '?limit=50';
+  const msgs = await dget(env, `/channels/${alertChannel}/messages${q}`).catch(() => []);
   if (!msgs.length) return { checked: 0 };
   let checked = 0;
   for (const m of [...msgs].reverse()) {

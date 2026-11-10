@@ -12,6 +12,7 @@
 // P11.10 site-side placement is a follow-up (see P11.3's note on the same fetch.mjs↔D1 gap) – the recap only
 // posts to Discord for now, same scope cut as match-performance points.
 import { kvOf } from './kv.js';
+import { channelFor } from './orgconfig.js';
 import { safely } from './notify.js';
 import { message, header, text, cards, facts, buttons, resultAccent } from './ui.js';
 import { it } from './icons.js';
@@ -26,9 +27,7 @@ function artPrompt(res) {
   return 'floodlit football stadium at dusk, tense atmosphere, bold graphic sports poster style, black and red';
 }
 
-function hypeChannel(env) {
-  try { return JSON.parse(env.HYPE_CHANNEL || '{}').channel || null; } catch { return null; }
-}
+const hypeChannel = (env) => channelFor(env, 'hype');
 
 async function generateArt(env, res) {
   const out = await env.AI.run(IMAGE_MODEL, { prompt: artPrompt(res) });
@@ -62,7 +61,7 @@ async function postHype(env, channel, msg, art) {
 }
 
 export async function checkHype(env, loadSite) {
-  const channel = hypeChannel(env);
+  const channel = await hypeChannel(env);
   if (!channel || !env.AI || !env.DISCORD_BOT_TOKEN || !kvOf(env)) return { posted: false };
   const club = await loadSite('club').catch(() => null);
   const m = club?.matches?.[0];

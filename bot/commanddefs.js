@@ -1,6 +1,7 @@
 // The bot's slash command definitions – one list shared by bot/register.mjs (deploy-time registration, a plain Node script)
 // and the Worker (the Boardroom's "Sync to Discord" button, bot/botcommands.js). Keep them here, not in either of those.
 const SUB = 1, STRING = 3, INTEGER = 4, BOOLEAN = 5, USER = 6, CHANNEL = 7, ROLE = 8, ATTACHMENT = 11;
+import { CHANNEL_PURPOSES, PERMISSION_GROUPS } from './orgconfig.js';
 const player = (name, description) => ({ type: STRING, name, description, required: true, autocomplete: true });
 export const COMMANDS = [
   { name: 'club', description: 'Club record, division and form' },
@@ -165,7 +166,7 @@ export const COMMANDS = [
   { name: 'trivia', description: 'A football trivia question – points for right answers', options: [{ type: SUB, name: 'play', description: 'Ask a question' }, { type: SUB, name: 'board', description: 'The trivia table' }] },
   // Server tools – the Miona / Carl-bot replacements (bot/servertools.js)
   {
-    name: 'setup', description: 'Managers: leave/join alerts, welcome posts and the ping-role panel',
+    name: 'setup', description: 'Managers: channels, roles, leave/join alerts, welcome posts and the ping-role panel',
     default_member_permissions: String(1 << 28), contexts: [0],
     options: [
       { type: SUB, name: 'leavelog', description: 'Post leave and join alerts in a channel', options: [{ type: CHANNEL, name: 'channel', description: 'Managers-only channel for the alerts', required: true, channel_types: [0, 5] }] },
@@ -174,6 +175,14 @@ export const COMMANDS = [
         { type: STRING, name: 'message', description: 'First line – {user} pings them, {name} is their name. Default: "Welcome to the crew, {user}! 👋"', max_length: 300 },
       ] },
       { type: SUB, name: 'pingroles', description: 'Post the 🔔 ping-role buttons (creates the roles if needed)', options: [{ type: CHANNEL, name: 'channel', description: 'Where to post the panel', required: true, channel_types: [0, 5] }] },
+      { type: SUB, name: 'channel', description: 'Set which channel a feature posts in (same setting as Boardroom → Organization)', options: [
+        { type: STRING, name: 'purpose', description: 'What the channel is for', required: true, choices: CHANNEL_PURPOSES.map((p) => ({ name: p.replaceAll('_', ' '), value: p })) },
+        { type: CHANNEL, name: 'channel', description: 'The channel (default: this one)', channel_types: [0, 5] },
+      ] },
+      { type: SUB, name: 'role', description: 'Map a Discord role to a permission group (same setting as Boardroom → Organization)', options: [
+        { type: STRING, name: 'group', description: 'Permission group', required: true, choices: PERMISSION_GROUPS.map((g) => ({ name: g.replaceAll('_', ' '), value: g })) },
+        { type: ROLE, name: 'role', description: 'The Discord role', required: true },
+      ] },
       { type: SUB, name: 'off', description: 'Switch leave/join alerts or welcome posts off', options: [{ type: STRING, name: 'feature', description: 'Which one', required: true, choices: [{ name: 'Leave/join alerts', value: 'leavelog' }, { name: 'Welcome posts', value: 'welcome' }] }] },
     ],
   },

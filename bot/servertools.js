@@ -10,7 +10,7 @@
 // Reading the member list needs "Server Members Intent" switched on (Discord developer portal → Bot).
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2 } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor, setupMapping, CHANNEL_PURPOSE_INFO } from './orgconfig.js';
 import { facesOf } from './faces.js';
 
 const API = 'https://discord.com/api/v10';
@@ -119,7 +119,8 @@ const upsert = (env, r) => env.DB.prepare('INSERT INTO guild_members (user_id, n
 export async function memberWatch(env, now = Date.now()) {
   if (!env.DB || !env.DISCORD_BOT_TOKEN || !env.DISCORD_GUILD_ID) return null;
   const st = await getToolSettings(env);
-  if (!st.leaveChannel && !st.welcomeChannel) return null;
+  const [leaveChannel, welcomeChannel] = [await channelFor(env, 'member_log'), await channelFor(env, 'welcome')]; // A9: Organization config first, the old /setup values as fallback
+  if (!leaveChannel && !welcomeChannel) return null;
   const list = (await listMembers(env)).filter((m) => m.user && !m.user.bot).map(row);
   const { results: known } = await env.DB.prepare('SELECT * FROM guild_members').all();
   if (!known.length) {
@@ -170,8 +171,9 @@ async function postMemberChanges(env, st, joined, left, now) {
       ] }));
     }
   }
-  if (st.leaveChannel) for (const m of posts) await post(env, st.leaveChannel, m).catch((e) => console.log('leave log post failed', e.message));
-  if (st.welcomeChannel) for (const r of joined.slice(0, POST_CAP)) await post(env, st.welcomeChannel, welcomeMessage(env, st, r)).catch((e) => console.log('welcome post failed', e.message));
+  const [leaveChannel, welcomeChannel] = [await channelFor(env, 'member_log'), await channelFor(env, 'welcome')];
+  if (leaveChannel) for (const m of posts) await post(env, leaveChannel, m).catch((e) => console.log('leave log post failed', e.message));
+  if (welcomeChannel) for (const r of joined.slice(0, POST_CAP)) await post(env, welcomeChannel, welcomeMessage(env, st, r)).catch((e) => console.log('welcome post failed', e.message));
 }
 
 export function welcomeMessage(env, st, r) {
@@ -333,6 +335,13 @@ async function setupCommand(i, env, ctx, who, sub, o) {
       const preview = welcomeMessage(env, st, { user_id: who.u, name: 'you', avatar: i.member?.user ? avatarUrl(i.member.user) : null });
       return notice(`✅ New members get welcomed in <#${o.channel}>`, `First line: ${preview.components[0].content}`, { accent: 'win' });
     });
+  }
+  if (sub === 'channel' || sub === 'role') { // A9: writes the same discord_channels / discord_roles rows the website edits
+    const isChan = sub === 'channel';
+    const res = await setupMapping(env, who, sub, { guildId: i.guild_id, targetId: isChan ? (o.channel || i.channel_id) : o.role, purpose: o.purpose, group: o.group });
+    if (res.error) return say(res.error);
+    return notice(isChan ? `✅ ${o.purpose.replaceAll('_', ' ')} posts go to <#${res.row.channel_id}>` : `✅ <@&${res.row.role_id}> is now ${o.group.replaceAll('_', ' ')}`,
+      isChan ? CHANNEL_PURPOSE_INFO[o.purpose] ?? '' : 'Same setting as Boardroom → Organization.', { accent: 'win' });
   }
   if (sub === 'pingroles') {
     return later(env, i, ctx, async () => {

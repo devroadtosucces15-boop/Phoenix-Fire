@@ -7,7 +7,7 @@
 // Everything is in the design system (bot/ui.js). Rejected shares are kept but never shown.
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, sep, footer, buttons, cards, bannerUrl } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 import { notify, notifyManagers, safely } from './notify.js';
 import { postEmbed } from './docs.js';
 
@@ -81,7 +81,7 @@ async function decide(i, env, who, id, approve, now) {
   const me = i.member?.user?.id ?? i.user?.id;
   await env.DB.prepare('UPDATE discoveries SET status = ?, approved_by = ?, decided_at = ? WHERE id = ?').bind(approve ? 'approved' : 'rejected', me, now, id).run();
   if (approve) {
-    const channel = (await one(env, "SELECT value FROM meta WHERE key = 'announce_channel'"))?.value;
+    const channel = await channelFor(env, 'announcements');
     const posted = channel ? await postEmbed(env, channel, '', discoveryPanel({ ...row, approved_by: me }, 0, env)).catch(() => null) : null;
     if (posted?.ok) await env.DB.prepare('UPDATE discoveries SET discord_at = ? WHERE id = ?').bind(now, id).run();
   }

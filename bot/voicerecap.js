@@ -14,7 +14,7 @@
 // (`{ audio: number[] }` → `{ text }`), same as every other `@cf/...` call in this codebase.
 import { kvOf } from './kv.js';
 import { safely } from './notify.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 import { message, header, text, cards } from './ui.js';
 
 const API = 'https://discord.com/api/v10';
@@ -25,9 +25,7 @@ const MAX_BYTES = 8e6; // 8 MB – generous for a short voice clip, keeps a huge
 const RED = 0xe8651a;
 const ART_PROMPT = 'football locker room after a big match, energetic crowd chants, dramatic spotlight, bold graphic sports poster style, ink black and crimson red, no text, no people';
 
-function voiceChannel(env) {
-  try { return JSON.parse(env.VOICE_CHANNEL || '{}').channel || null; } catch { return null; }
-}
+const voiceChannel = (env) => channelFor(env, 'voice_recap');
 // Discord voice messages and plain audio uploads both show up as a normal attachment.
 const isAudio = (a) => /^audio\//.test(a.content_type || '') || /\.(ogg|oga|mp3|wav|m4a|flac|webm)$/i.test(a.filename || '');
 
@@ -86,7 +84,7 @@ async function postCard(env, channel, msg, art) {
 }
 
 export async function checkVoiceRecap(env, loadSite) {
-  const channel = voiceChannel(env);
+  const channel = await voiceChannel(env);
   if (!channel || !env.AI || !env.DISCORD_BOT_TOKEN || !kvOf(env)) return { posted: false };
   let messages;
   try {

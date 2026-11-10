@@ -11,7 +11,7 @@ import { notify, safely } from './notify.js';
 import { weekOf } from './awards.js';
 import { postEmbed } from './docs.js';
 import { message, header, text, footer, buttons } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 
 const DAY = 86400e3, WEEK = 7 * DAY;
 const RED = 0xe8651a;
@@ -92,7 +92,7 @@ async function announce(env, w) {
   await safely(notify(env, [w.user_id], { type: 'award', icon: '🎬', title: `Your clip is the Highlight of week ${weekNo(w.week)}! 🏆`, body: `${w.votes} vote${w.votes === 1 ? '' : 's'} from the squad.`, link: `feed.html#p${w.post_id}` }));
   // Discord only once members can see it – while the flag is owner/managers the club shouldn't be told about it.
   const level = flags(env).hotw;
-  const channel = (await one(env, "SELECT value FROM meta WHERE key = 'awards_channel'"))?.value;
+  const channel = await channelFor(env, 'awards');
   if (!['members', 'public'].includes(level) || !channel || !env.DISCORD_BOT_TOKEN) return;
   const r = await postEmbed(env, channel, '', message({ accent: 'gold', blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Highlight of the week`, title: `🎬 ${w.name}`, sub: `Week ${weekNo(w.week)}` }),

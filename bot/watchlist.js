@@ -8,7 +8,7 @@
 // which `related=<position>` uses (a build page can ask for "CAM" videos). Flag `watchlist` (owner first).
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, sep, footer, buttons, cards } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 import { postEmbed } from './docs.js';
 
 export const WATCH_COMMANDS = new Set(['watchlist', 'watch']);
@@ -92,7 +92,7 @@ export async function watchlistCron(env, now = Date.now(), fetcher = fetch) {
     await env.DB.prepare('UPDATE watch_creators SET seen_at = ? WHERE channel_id = ?').bind(now, c.channel_id).run();
   }
   let posted = 0;
-  const channel = (await one(env, "SELECT value FROM meta WHERE key = 'announce_channel'"))?.value;
+  const channel = await channelFor(env, 'announcements');
   if (channel && env.DISCORD_BOT_TOKEN) {
     const fresh = await all(env, 'SELECT * FROM watch_videos WHERE posted_at IS NULL AND published > ? ORDER BY published LIMIT ?', now - POST_MAX_AGE, POST_CAP);
     for (const v of fresh) {

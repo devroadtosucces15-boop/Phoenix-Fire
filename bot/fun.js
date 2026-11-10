@@ -8,7 +8,7 @@
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, facts, footer, sep, buttons, cards, bannerUrl } from './ui.js';
 import { it } from './icons.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 
 export const FUN_COMMANDS = new Set(['jail', 'wheel', 'trivia']);
 export const FUN_BUTTON = /^norex:fun:/;
@@ -283,7 +283,7 @@ export async function birthdayCheck(env, post, now = Date.now()) {
   if ((await env.DB.prepare("SELECT value FROM meta WHERE key = 'fun_birthday_day'").first('value')) === day) return { posted: false };
   const keys = birthdaysOn(now);
   const rows = (await env.DB.prepare(`SELECT p.user_id FROM profiles p JOIN users u ON u.id = p.user_id WHERE p.birthday IN (${keys.map(() => '?').join(',')})`).bind(...keys).all()).results ?? [];
-  const channel = (await env.DB.prepare("SELECT value FROM meta WHERE key = 'announce_channel'").first('value')) || '';
+  const channel = (await channelFor(env, 'fun_posts')) || '';
   // Mark the day first: a failed post is not retried every 10 minutes all day.
   await env.DB.prepare("INSERT INTO meta (key, value) VALUES ('fun_birthday_day', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(day).run();
   if (!rows.length || !channel) return { posted: false };

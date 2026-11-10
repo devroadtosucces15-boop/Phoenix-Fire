@@ -14,7 +14,7 @@
 //   GET/POST /api/suggestions (+ /vote /decide /remove)   suggestion box (flag `suggestions`)
 // Text is "markdown-lite" (headings, bold, italics, lists, links, image + video lines) rendered by web/docs-md.js.
 import { IS_V2 } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 import { can, flagOn } from './roles.js';
 import { notify, notifyManagers, notifyMembers, safely } from './notify.js';
 import { message, header, text, cards, footer, buttons } from './ui.js';
@@ -152,7 +152,7 @@ export async function discordTargets(env) {
     ready: true,
     channels: channels.filter((x) => x.type === 0 || x.type === 5).sort((a, b) => (a.position ?? 0) - (b.position ?? 0)).map((x) => ({ id: x.id, name: x.name, news: x.type === 5 })),
     roles: roles.filter((x) => !x.managed).sort((a, b) => (b.position ?? 0) - (a.position ?? 0)).map((x) => ({ id: x.id, name: x.id === env.DISCORD_GUILD_ID ? '@everyone' : x.name })),
-    last: opt((await one(env, "SELECT value FROM meta WHERE key = 'announce_channel'"))?.value),
+    last: opt(await channelFor(env, 'announcements')),
   };
 }
 // Sends one message to a channel, pinging `role` (the guild id = @everyone) and nobody else. Never throws.

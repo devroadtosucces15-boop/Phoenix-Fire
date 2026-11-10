@@ -24,7 +24,7 @@
 import { atLeast, can } from './roles.js';
 import { TEXT_MODEL } from './aispike.js';
 import { message, header, text, sep, facts, footer, buttons } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 
 const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
 const WRITER_MODEL = (env) => env.STAT_INSIGHTS_MODEL || TEXT_MODEL; // Workers AI text model (free allowance on the account) – fact-bounded copy, the number checker catches anything it invents
@@ -416,7 +416,7 @@ export async function statInsightWeekly(env, postEmbed, now = Date.now()) {
   const wk = weekKey(now);
   if ((await one(env, "SELECT value FROM meta WHERE key = 'stat_insight_week'"))?.value === wk) return;
   const row = await one(env, "SELECT * FROM stat_insights WHERE key = 'club'");
-  const channel = (await one(env, "SELECT value FROM meta WHERE key = 'announce_channel'"))?.value;
+  const channel = await channelFor(env, 'announcements');
   if (row && channel) {
     await postEmbed(env, channel, '', insightPanel(row, 'Insight of the week', env));
   }

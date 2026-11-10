@@ -14,7 +14,7 @@ import { broadcastRoom } from './clubroom.js';
 import { postEmbed } from './docs.js';
 import { getBotSettings } from './settings.js';
 import { message, header, text, sep, facts, footer, buttons } from './ui.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 
 const DAY = 86400e3, WEEK = 7 * DAY;
 export const STAT_AWARDS = {
@@ -73,7 +73,7 @@ export async function state(env, me, loadSite) {
     categories: cats.map(catOut), stats: Object.entries(STAT_AWARDS).filter(([k]) => k !== 'potm').map(([k, [icon, name, how]]) => ({ k, icon, name, how })),
     nominees: await nominees(env, loadSite, week), my: Object.fromEntries(mine.map((v) => [v.category_id, v.player])), voters: voters.n,
     last: lastWeek ? { week: lastWeek.week, closedAt: lastWeek.closed_at, winners: last } : null,
-    canManage: can(me, 'awards.manage'), channel: opt((await one(env, "SELECT value FROM meta WHERE key = 'awards_channel'"))?.value),
+    canManage: can(me, 'awards.manage'), channel: opt(await channelFor(env, 'awards')),
   };
 }
 
@@ -155,7 +155,7 @@ async function announce(env, loadSite) {
       await safely(notify(env, [c.user_id], { type: 'award', icon: '🏆', title: `You won ${mine.join(', ')} – week ${wk.week.split('-W')[1]}`, link: 'members.html#awards' }));
     }
     await safely(notifyMembers(env, { type: 'award', title: `🏆 The week ${wk.week.split('-W')[1]} awards are in – watch the reveal`, link: 'members.html#awards' }));
-    const channel = (await one(env, "SELECT value FROM meta WHERE key = 'awards_channel'"))?.value;
+    const channel = await channelFor(env, 'awards');
     const settings = await getBotSettings(env); // P7.5 – "which auto-posts are on" + embed colour
     if (channel && env.DISCORD_BOT_TOKEN && settings.autoPosts.awards) {
       const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
