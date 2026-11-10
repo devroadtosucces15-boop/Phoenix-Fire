@@ -1,9 +1,16 @@
 {
-  "fetchedAt": "2026-11-10T14:40:41.123Z",
+  "fetchedAt": "2026-11-10T14:50:38.304Z",
   "clubs": [
     {
       "ea_club_id": "1111",
       "display_name": "Phoenix Fire (confirm name)",
+      "division_id": null,
+      "sync_members": true,
+      "sync_matches": true
+    },
+    {
+      "ea_club_id": "2484",
+      "display_name": "Phoenix Fire XI",
       "division_id": null,
       "sync_members": true,
       "sync_matches": true
