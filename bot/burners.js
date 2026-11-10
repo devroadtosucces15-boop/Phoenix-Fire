@@ -34,9 +34,9 @@ const DEFER = () => json({ type: 5, data: { flags: IS_V2 | 64 } });
 const panel = (blocks) => message({ ephemeral: true, accent: 'steel', blocks });
 const plain = (content) => panel([text(content)]);
 // A deferred reply that never gets edited leaves Discord on "thinking…" forever, so every lookup is capped and always answers.
-const within = (p, ms = 20000) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(`timed out after ${ms / 1000}s – try again in a moment`)), ms))]);
-const PATCH_TIMEOUT = 10000;
-const edit = (m) => ({ components: m.components, allowed_mentions: { parse: [] } });
+const within = (p, ms = 8000) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error(`timed out after ${ms / 1000}s – try again in a moment`)), ms))]);
+const PATCH_TIMEOUT = 6000;
+const edit = (m) => ({ flags: IS_V2, components: m.components, allowed_mentions: { parse: [] } });
 const BEAR = (eyebrow, title, lines, foot, menu) => panel([header({ eyebrow: `Staff · ${eyebrow}`, title, size: 3 }), text(lines), footer(foot), menu]);
 
 export async function burnersKey(secret) {
@@ -321,7 +321,7 @@ export function burnerCommand(i, env, ctx, user, site, loadSite) {
       })()).catch((e) => plain(`⚠️ Could not load the club list: ${e.message}`));
       await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
         method: 'PATCH', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(PATCH_TIMEOUT), body: JSON.stringify(edit(body)),
-      }).catch((e) => console.log('burner reply failed', e.message));
+      }).then(async (r) => { if (!r.ok) console.log('burner reply rejected', r.status, (await r.text()).slice(0, 400)); }).catch((e) => console.log('burner reply failed', e.message));
     })());
     return DEFER();
   }
@@ -351,7 +351,7 @@ export function burnerCommand(i, env, ctx, user, site, loadSite) {
     }
     await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(PATCH_TIMEOUT), body: JSON.stringify(edit(body)),
-    }).catch((e) => console.log('burner reply failed', e.message));
+    }).then(async (r) => { if (!r.ok) console.log('burner reply rejected', r.status, (await r.text()).slice(0, 400)); }).catch((e) => console.log('burner reply failed', e.message));
   })());
   return DEFER();
 }
