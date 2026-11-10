@@ -49,6 +49,9 @@ try {
   else warn('Preview ribbon markup changed upstream – inspect the Phoenix shell');
   // 4. overlay: badge crest, icons, 3D crest, theme layer
   for (const f of fs.readdirSync(path.join(here, 'overlay'))) fs.copyFileSync(path.join(here, 'overlay', f), path.join(stage, 'next', f === 'crest.png' ? f : path.join('static', f)));
+  // The recorded API answers (phoenix-api.json) come from the Norex worker; give their text the same club names.
+  const mock = path.join(stage, 'next/static/phoenix-api.json');
+  if (fs.existsSync(mock)) { let s = fs.readFileSync(mock, 'utf8'); const o = s; for (const [re, to] of names) s = s.replace(re, to); if (s !== o) fs.writeFileSync(mock, s); }
   const appjs = path.join(stage, 'next/static/app.js'), as = fs.readFileSync(appjs, 'utf8');
   if (as.includes('if (!window.NOREX_API) {')) fs.writeFileSync(appjs, as.replace('if (!window.NOREX_API) {', 'if (!window.NOREX_API || window.PF_MOCK) {'));
   else warn('app.js preview toolbar condition changed upstream – toolbar may be missing');
