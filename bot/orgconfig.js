@@ -132,7 +132,7 @@ export async function diagnostics(env) {
   const activeServers = cfg.servers.filter((s) => s.active);
   if (!activeServers.length) issues.push({ level: 'error', msg: 'No active Discord server.' });
   const covered = new Set(cfg.channels.filter((c) => c.active && c.scope_type === 'org').map((c) => c.purpose));
-  for (const p of ['match_results', 'announcements', 'claims', 'manager_alerts']) if (!covered.has(p)) issues.push({ level: 'warn', msg: `No organization-wide channel for "${p}". Those messages will not be sent until one is set.` });
+  for (const p of ['match_results', 'announcements', 'claims', 'manager_alerts']) if (!covered.has(p)) issues.push({ level: 'warn', missing: p, msg: `No organization-wide channel for "${p}". Those messages will not be sent until one is set.` });
   if (!cfg.roles.some((r) => r.active && r.permission_group === 'owner')) issues.push({ level: 'warn', msg: 'No Discord role mapped to the owner group.' });
   const live = new Set(cfg.servers.filter((s) => s.active).map((s) => s.id));
   for (const c of cfg.channels) if (c.active && !live.has(c.server_id)) issues.push({ level: 'warn', msg: `Channel ${c.channel_id} (${c.purpose}) belongs to an inactive server.` });
@@ -231,12 +231,14 @@ export async function withOrgEnv(env) {
     try {
       const [server] = await all(env, 'SELECT guild_id FROM discord_servers WHERE active = 1 ORDER BY id LIMIT 1');
       const [owner, manager] = await Promise.all([rolesFor(env, 'owner'), Promise.all(['administrator', 'manager', 'division_manager', 'club_manager'].map((g) => rolesFor(env, g))).then((x) => x.flat())]);
-      hydrated = { at: Date.now(), db: env.DB, values: { guildId: server?.guild_id ?? '', owner: owner.map((r) => r.role_id), manager: manager.map((r) => r.role_id) } };
+      const [org] = await all(env, 'SELECT name FROM orgs ORDER BY id LIMIT 1').catch(() => []);
+      hydrated = { at: Date.now(), db: env.DB, values: { guildId: server?.guild_id ?? '', orgName: org?.name ?? '', owner: owner.map((r) => r.role_id), manager: manager.map((r) => r.role_id) } };
     } catch { return env; }
   }
   const v = hydrated.values;
   return {
     ...env,
+    ORG_NAME: env.ORG_NAME || v.orgName,
     DISCORD_GUILD_ID: env.DISCORD_GUILD_ID || v.guildId,
     OWNER_ROLE_ID: env.OWNER_ROLE_ID || v.owner[0] || '',
     ADMIN_ROLE_ID: env.ADMIN_ROLE_ID || v.manager[0] || '',
@@ -244,6 +246,10 @@ export async function withOrgEnv(env) {
   };
 }
 export const resetOrgEnvCache = () => { hydrated = null; };
+
+// The organization's display name for text people read (embed eyebrows, error messages). It is the `orgs.name` row that withOrgEnv
+// copies into env.ORG_NAME; an env without it (no D1, or a test) gets the generic fallback, never a previous club's name.
+export const orgName = (env) => String(env?.ORG_NAME || 'Phoenix Fire').trim();
 
 // Keyed like /api/org/clubs/public: result posts run in GitHub Actions (no D1), so they ask the Worker where a purpose goes for a source club.
 // Answers { channelId, guildId, scope } or { channelId: null } when nothing is configured – the caller must report that, never substitute.

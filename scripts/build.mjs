@@ -22,6 +22,10 @@ const config = loadConfig();
 const org = orgClubsFromDisk(config, DATA);
 const homeId = org.primary;
 const brand = config.brand ?? {};
+// The club's name as visitors read it, always from config.siteTitle (never a hardcoded club). The header lockup splits it into a bold first
+// word and a small remainder ("PHOENIX" / "FIRE"); a one-word title just shows the word.
+const [BRAND_MAIN, ...BRAND_REST] = String(config.siteTitle || 'Club').trim().split(/\s+/);
+const BRAND_SUB = BRAND_REST.join(' ');
 const state = readJson(path.join(DATA, 'state.json'), { clubs: {} });
 const overrides = await loadOverrides(config); // P5.6 – "hide me" requests approved by managers
 const hidden = new Set([...(config.hiddenPlayers || []), ...overrides.hiddenPlayers].map((h) => String(h).toLowerCase()));
@@ -493,7 +497,7 @@ function megaCol(g, base, active) {
   return `<div class="col" data-group="${g.id}"><h4><span>${g.icon}</span>${esc(g.label)}</h4>${g.links.map((l) => `<a class="lk${l.id === active ? ' hov' : ''}" href="${base}${l.href}"${l.id === active ? ' aria-current="page"' : ''}${l.flag ? ` data-flag="${esc(l.flag)}" hidden` : ''}${l.moved ? ' data-hubmove' : ''}><div class="ic">${l.icon}</div><div><b>${esc(l.label)}</b><small>${esc(l.desc)}</small></div></a>`).join('')}</div>`;
 }
 function grpNav(base, active, activeGroup) {
-  const watch = CHANNELS.length ? `<div class="osw small feat-label">Watch NOREX</div><div class="watch">${CHANNELS.map(([k, label, svg]) => `<a class="${k}" href="${esc(STREAMS[k])}" target="_blank" rel="noopener">${svg} ${label}</a>`).join('')}</div>` : '';
+  const watch = CHANNELS.length ? `<div class="osw small feat-label">Watch ${esc(config.siteTitle)}</div><div class="watch">${CHANNELS.map(([k, label, svg]) => `<a class="${k}" href="${esc(STREAMS[k])}" target="_blank" rel="noopener">${svg} ${label}</a>`).join('')}</div>` : '';
   const feat = `<div class="feat"><div class="osw small feat-label">Right now</div><div class="nm"><div class="t">${RECRUIT.open ? '👑' : '🛡️'}</div><div><b class="osw">${RECRUIT.open ? 'Applications open' : 'Squad set'}</b><small class="muted">${esc(config.siteTitle)}</small></div></div>${watch}${RECRUIT.open ? `<a class="btn small feat-apply" href="${base}apply.html">👑 Apply for a trial</a>` : ''}</div>`;
   return `<nav class="grpnav" aria-label="Main"><div class="grpbtns">${NAV_GROUPS.map((g) => `<button type="button" class="grp${g.id === activeGroup ? ' on' : ''}" data-group="${g.id}" aria-haspopup="true" aria-expanded="false"><span class="e">${g.icon}</span>${esc(g.label)}</button>`).join('')}</div>
 <div class="mega" hidden>${NAV_GROUPS.map((g) => megaCol(g, base, active)).join('')}${feat}</div>
@@ -516,7 +520,7 @@ function tabBar(base, activeGroup) {
 // Gold Hub bar (redesign board 10): replaces the normal club nav on /hub/ pages so members always know
 // they've walked into the separate members-only world, not just another tab of the public site.
 const hubBar = (base) => `<header class="hubw-bar"><div class="wrap hubw-bar-in">
-<a class="hubw-brand" href="index.html"><img src="${base}assets/crest.png" height="38" alt=""><span><b>NOREX HUB</b><small>MEMBERS</small></span></a>
+<a class="hubw-brand" href="index.html"><img src="${base}assets/crest.png" height="38" alt=""><span><b>${esc(config.siteTitle)} HUB</b><small>MEMBERS</small></span></a>
 <div class="hubw-right"><span class="hubw-online" data-hubw-online hidden>🟢 <b>0</b> in the clubhouse</span><a class="hubw-back" href="${base}index.html">← Back to the site</a></div>
 </div></header>`;
 
@@ -530,14 +534,14 @@ function page({ title, base, active, body, description, image, hub }) {
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${base}assets/style.css"><style>:root{--red:${RED};--ink:${INK};--accent:${RED}}</style>
 <link rel="icon" href="${base}assets/favicon.png"><link rel="manifest" href="${base}manifest.webmanifest"><link rel="apple-touch-icon" href="${base}assets/icons/apple-touch-icon.png">
-<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="NOREX"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="${esc(BRAND_MAIN)}"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>try{if(sessionStorage.getItem('nxnav'))document.documentElement.classList.add('nx-covered');if(sessionStorage.getItem('nxhub')){sessionStorage.removeItem('nxhub');document.documentElement.classList.add('nx-hubin')}}catch(e){}</script>
 </head><body data-base="${base}"${MEMBER_API ? ` data-api="${esc(MEMBER_API)}"` : ''} data-features="${esc(FEATURES)}" data-group="${activeGroup}" data-active="${esc(active ?? '')}"${hub ? ' class="hubw-body"' : ''}>
 <div class="bg" aria-hidden="true"></div>
 <div class="pxwipe" aria-hidden="true"><span class="pxwipe-ribbon"></span><img class="pxwipe-crest" src="${base}assets/crest.png" alt=""></div>
 <script type="application/json" id="nav-data">${JSON.stringify(NAV_GROUPS.map((g) => ({ id: g.id, icon: g.icon, label: g.label, links: g.links.map((l) => ({ id: l.id, href: l.href, icon: l.icon, label: l.label, desc: l.desc, flag: l.flag, moved: l.moved })) })))}</script>
 ${hub ? hubBar(base) : `<header class="top"><div class="wrap bar">
-<a class="brand" href="${base}index.html"><img src="${base}assets/crest.png" height="44" alt=""><span><b>NOREX</b><small>UNITED</small></span></a>
+<a class="brand" href="${base}index.html"><img src="${base}assets/crest.png" height="44" alt=""><span><b>${esc(BRAND_MAIN)}</b>${BRAND_SUB ? `<small>${esc(BRAND_SUB)}</small>` : ''}</span></a>
 ${grpNav(base, active, activeGroup)}<button type="button" class="me-top" aria-label="Me: profile and login">👤</button></div></header>
 ${activeGroup ? subTabs(base, active, activeGroup) : ''}`}
 ${CHANNELS.length && MEMBER_API && !hub ? '<div class="live-bar" hidden></div>' : ''}<main class="wrap">${body}</main>
@@ -617,7 +621,7 @@ ${MEMBER_API ? '<div data-hotw hidden></div><div data-feed-public hidden></div><
 ${section('This week', `<div class="grid3">
 ${MEMBER_API ? '<div data-next-event hidden></div>' : ''}
 ${card('Latest result', ms.length ? poster(ms[0], base) + `<button class="btn dl-poster" type="button" data-for="poster-${ms[0].matchId}">⬇ Download result graphic</button>` : emptyState('🗂️', 'No matches yet', 'Results land here once the first match is archived.'), 'flush')}
-${CHANNELS.length ? `<div id="watch">${card('📺 Watch NOREX', `<div class="live-embed" hidden></div><div class="watch-grid">${CHANNELS.map(([k, label, svg, sub]) => `<a class="watch-card ${k}" href="${esc(STREAMS[k])}" target="_blank" rel="noopener"><span class="wc-ic">${svg}</span><span><b>${label}</b><small>${sub}</small></span><span class="wc-go">Follow →</span></a>`).join('')}</div>`)}</div>` : ''}
+${CHANNELS.length ? `<div id="watch">${card(`📺 Watch ${esc(config.siteTitle)}`, `<div class="live-embed" hidden></div><div class="watch-grid">${CHANNELS.map(([k, label, svg, sub]) => `<a class="watch-card ${k}" href="${esc(STREAMS[k])}" target="_blank" rel="noopener"><span class="wc-ic">${svg}</span><span><b>${label}</b><small>${sub}</small></span><span class="wc-go">Follow →</span></a>`).join('')}</div>`)}</div>` : ''}
 </div>`, { sub: 'next up, last time out, and where to watch' })}
 ${section('Season at a glance', `<div class="stats stats-8" data-ins-tile="club">${[['Played', gp, 'played'], ['Won', o.wins, 'won'], ['Drawn', o.ties, 'drawn'], ['Lost', o.losses, 'lost'], ['Win rate', pct(num(o.wins), gp), 'winrate', '%'], ['Goals', o.goals, 'goals'], ['Conceded', o.goalsAgainst, 'conceded'], ['Goal diff', num(o.goals) - num(o.goalsAgainst), 'played']]
     .map(([label, v, f, suffix = '']) => counter(label, v, { suffix, href: ms.length ? drillHref(id, base, f) : undefined })).join('')}</div>${ms.length ? `<p class="small muted drill-hint">👆 Tap a number to see the matches behind it.</p>` : ''}`)}
@@ -626,7 +630,7 @@ ${tacticsTeaser(members, base)}
 ${squadCarousel(members, base)}
 ${matchReel(ms, sessions, id, base)}
 ${leadersPodium(members, id, base)}
-${section('How we play', `<div class="grid2">${card('Team DNA', `<ul class="dna">${dna.map(([k, v, tip]) => `<li data-tip="${esc(tip)}"><span>${k}</span><div class="meter"><i style="--w:${Math.round(v)}%"></i></div><b>${Math.round(v)}</b></li>`).join('')}</ul>`)}${card('Goals per match', !recent.length ? emptyState('⚽', 'No goals to chart yet', 'Fills in after the first archived match.') : goalBars(recent.map((m) => ({ for: num(m.clubs[id].goals), against: num(m.clubs[oppOf(m, id)].goals), res: result(m.clubs[id]), tip: `${dateStr(m.timestamp)} · ${m.clubs[id].goals}–${m.clubs[oppOf(m, id)].goals} vs ${clubName(oppOf(m, id))}` }))))}</div>${MEMBER_API ? `<p><a class="btn ghost" href="${base}playstyle.html">🧭 Full Play Style →</a></p>` : ''}`, { sub: 'how NOREX plays, in the numbers' })}
+${section('How we play', `<div class="grid2">${card('Team DNA', `<ul class="dna">${dna.map(([k, v, tip]) => `<li data-tip="${esc(tip)}"><span>${k}</span><div class="meter"><i style="--w:${Math.round(v)}%"></i></div><b>${Math.round(v)}</b></li>`).join('')}</ul>`)}${card('Goals per match', !recent.length ? emptyState('⚽', 'No goals to chart yet', 'Fills in after the first archived match.') : goalBars(recent.map((m) => ({ for: num(m.clubs[id].goals), against: num(m.clubs[oppOf(m, id)].goals), res: result(m.clubs[id]), tip: `${dateStr(m.timestamp)} · ${m.clubs[id].goals}–${m.clubs[oppOf(m, id)].goals} vs ${clubName(oppOf(m, id))}` }))))}</div>${MEMBER_API ? `<p><a class="btn ghost" href="${base}playstyle.html">🧭 Full Play Style →</a></p>` : ''}`, { sub: `how ${config.siteTitle} plays, in the numbers` })}
 ${MEMBER_API ? '<div data-flag="hallOfFame" hidden><div class="block" data-hof-teaser hidden></div></div>' : ''}
 <section class="block reveal ending-cta" id="join"><img class="ending-crest" src="${base}assets/crest.png" height="120" alt="">
 <h2 class="banner-h ending-h">${esc(brand.motto || 'One club. One crown.')}</h2>
@@ -823,7 +827,7 @@ ${logTable('flog', f, base)}<p class="muted small">🤝 Club friendlies – neve
   function league() {
     return `${car ? section('Career', `<section class="stats"${pl.isHome ? ` data-ins-tile="player.${esc(pl.key)}"` : ''}>${counter('Games', car.gamesPlayed)}${counter('Goals', car.goals)}${counter('Assists', car.assists)}${counter('Avg rating', car.ratingAve, { dec: 1 })}${counter('MOTM', car.manOfTheMatch)}${counter('G+A per game', num(car.gamesPlayed) ? (num(car.goals) + num(car.assists)) / num(car.gamesPlayed) : 0, { dec: 2 })}</section>`, { sub: 'every club, from EA' }) : ''}
 <div class="grid2 reveal">
-${pl.radar ? card('Player profile', `${radar(RADAR.map((ax, i) => ({ label: ax.label, raw: [pl.radarRaw[i]] })), [{ values: pl.radar, color: 'var(--red)', name: pl.name }])}<p class="muted small">Percentile vs ${pool.length} tracked players with 3+ games${pl.isHome ? ' (NOREX stats)' : ''}. Hover a point for the real number.</p>`) : ''}
+${pl.radar ? card('Player profile', `${radar(RADAR.map((ax, i) => ({ label: ax.label, raw: [pl.radarRaw[i]] })), [{ values: pl.radar, color: 'var(--red)', name: pl.name }])}<p class="muted small">Percentile vs ${pool.length} tracked players with 3+ games${pl.isHome ? ` (${esc(config.siteTitle)} stats)` : ''}. Hover a point for the real number.</p>`) : ''}
 ${card('Match ratings', trend.length ? lineChart(trend, { min: 4, max: 10, ref: 7, id: 'pt' }) + (best ? `<p class="small">Best: ${ratingPill(best.rating)} vs ${esc(clubName(best.oppId))} (${dateStr(best.ts)})</p>` : '') : emptyState('📈', 'No match ratings yet', 'Ratings appear here once this player features in an archived match.'))}
 ${a.length ? card('Position map', `${pitchMap(pitchGroups(a))}<p class="muted small">🗺️ Estimated – EA's match data has no pitch coordinates. Bubble size = share of games in that role, shade = involvement while playing it.</p>`) : ''}
 </div>
@@ -1045,7 +1049,7 @@ fs.cpSync(path.join(ROOT, 'web'), path.join(OUT, 'assets'), { recursive: true })
 fs.copyFileSync(path.join(ROOT, 'web', 'sw.js'), path.join(OUT, 'sw.js')); // push receiver + offline cache: must sit at the site root
 // PWA: installable manifest (relative URLs, so it works under /Norex-United-FC/ and on a custom domain alike) + offline fallback page
 fs.writeFileSync(path.join(OUT, 'manifest.webmanifest'), JSON.stringify({
-  name: config.siteTitle, short_name: 'NOREX', description: `${config.siteTitle} – Pro Clubs stats, results and the members hub.`,
+  name: config.siteTitle, short_name: BRAND_MAIN, description: `${config.siteTitle} – Pro Clubs stats, results and the members hub.`,
   id: './', start_url: './index.html?source=pwa', scope: './', display: 'standalone', orientation: 'portrait-primary',
   background_color: INK, theme_color: INK, categories: ['sports', 'games'],
   icons: [
@@ -1067,7 +1071,7 @@ write('index.html', page({ title: `${config.siteTitle} – Official Pro Clubs hu
 
 const homeSquad = visiblePlayers.filter((p) => p.isHome).sort((a, b) => num(b.main.gamesPlayed) - num(a.main.gamesPlayed));
 write('squad.html', page({ title: `Squad – ${config.siteTitle}`, base: '', active: 'squad', body: `
-${pageHead('The Squad', `${homeSquad.length} players · card stats are NOREX totals, OVR from EA`, '')}
+${pageHead('The Squad', `${homeSquad.length} players · card stats are ${config.siteTitle} totals, OVR from EA`, '')}
 ${tacticsTable(homeSquad, '')}
 <div class="toolbar"><div class="chipset" data-posfilter>${['All', 'GK', 'DEF', 'MID', 'FWD'].map((p, i) => `<button class="chip${i ? '' : ' on'}" type="button" data-pos="${p}">${p}</button>`).join('')}</div>
 <div class="chipset" data-view><button class="chip on" type="button" data-v="cards">Cards</button><button class="chip" type="button" data-v="table">Table</button></div></div>
@@ -1193,7 +1197,7 @@ ${advancedSection(LH, lm)}
 <p class="muted small">🏆 Monthly tables, Player of the Month and Best XI: <a href="leaders.html">Leaderboards</a> · 🏛️ <a href="halloffame.html">Hall of Fame</a></p>` }));
 
 write('compare.html', page({ title: `Compare – ${config.siteTitle}`, base: '', active: 'compare', body: `
-${pageHead('Head to head', "Pick any two players, from NOREX or anyone we've faced. Radar values are percentiles against every tracked player with 3+ games.", '')}
+${pageHead('Head to head', `Pick any two players, from ${config.siteTitle} or anyone we've faced. Radar values are percentiles against every tracked player with 3+ games.`, '')}
 <div class="cmp-pick card"><label>Player A<input list="cmp-list" id="cmp-a" placeholder="Type a gamertag…" autocomplete="off"></label><span class="vs">VS</span><label>Player B<input list="cmp-list" id="cmp-b" placeholder="Type a gamertag…" autocomplete="off"></label><datalist id="cmp-list"></datalist></div>
 <div id="cmp-out" class="cmp-out"><p class="muted">Loading players…</p></div>
 <div class="nx-insight-slot" data-nx-cmp-insight hidden></div>` }));
@@ -1206,17 +1210,17 @@ for (const pl of visiblePlayers) {
 }
 const pRows = [...visiblePlayers]
   .sort((a, b) => (b.isHome - a.isHome) || num(b.career?.gamesPlayed) - num(a.career?.gamesPlayed))
-  .map((pl) => `<tr>${td(`${pl.mainClub ? crest(pl.mainClub, 20, '../') : ''} <a href="${pl.key}.html">${esc(pl.name)}</a>${pl.isHome ? ' <span class="tag home">NOREX</span>' : ''}`, false, pl.name.toLowerCase())}${td(pl.clubIds.map((c) => esc(clubName(c))).join(', '))}${td(esc(pl.pos || '—'))}${td(pl.ovr || '–', true, pl.ovr)}${td(esc(pl.career?.gamesPlayed ?? '–'), true, num(pl.career?.gamesPlayed))}${td(esc(pl.career?.goals ?? '–'), true, num(pl.career?.goals))}${td(esc(pl.career?.assists ?? '–'), true, num(pl.career?.assists))}${td(pl.career ? ratingPill(num(pl.career.ratingAve)) : '–', true, num(pl.career?.ratingAve))}${td(spark([...pl.apps].reverse().slice(-10).map((x) => x.rating), { color: 'var(--red)' }))}</tr>`);
+  .map((pl) => `<tr>${td(`${pl.mainClub ? crest(pl.mainClub, 20, '../') : ''} <a href="${pl.key}.html">${esc(pl.name)}</a>${pl.isHome ? ` <span class="tag home">${esc(BRAND_MAIN)}</span>` : ''}`, false, pl.name.toLowerCase())}${td(pl.clubIds.map((c) => esc(clubName(c))).join(', '))}${td(esc(pl.pos || '—'))}${td(pl.ovr || '–', true, pl.ovr)}${td(esc(pl.career?.gamesPlayed ?? '–'), true, num(pl.career?.gamesPlayed))}${td(esc(pl.career?.goals ?? '–'), true, num(pl.career?.goals))}${td(esc(pl.career?.assists ?? '–'), true, num(pl.career?.assists))}${td(pl.career ? ratingPill(num(pl.career.ratingAve)) : '–', true, num(pl.career?.ratingAve))}${td(spark([...pl.apps].reverse().slice(-10).map((x) => x.rating), { color: 'var(--red)' }))}</tr>`);
 write('players/index.html', page({ title: `Players – ${config.siteTitle}`, base: '../', active: 'players', body: `
 ${pageHead(`Players <small>${visiblePlayers.length}</small>`, "Everyone in a tracked club or seen in an archived match. Career numbers are EA's totals across every club.", '../', false)}
 ${table('players', ['Player', 'Clubs', 'Pos', '#OVR', '#Career GP', '#Goals', '#Assists', '#Rating', 'Form'], pRows, { filter: 'Search players or clubs…' })}` }));
 
 // Squad Hub (members only – rendered by app.js after Discord login)
 if (MEMBER_API) write('members.html', page({ title: `Squad Hub – ${config.siteTitle}`, base: '', active: '', body: `
-${pageHead('Squad Hub', 'Members only. Log in with Discord – you must be in the NOREX server.', '')}
+${pageHead('Squad Hub', `Members only. Log in with Discord – you must be in the ${config.siteTitle} server.`, '')}
 <div id="hub" class="hub"><p class="muted">Loading…</p></div>` }));
 // Member profile page (P2.1) – member.html?u=<discord id>, drawn by assets/profile.js
-if (MEMBER_API) write('member.html', page({ title: `Member – ${config.siteTitle}`, base: '', active: '', description: `A NOREX UNITED squad member's profile.`, body: `
+if (MEMBER_API) write('member.html', page({ title: `Member – ${config.siteTitle}`, base: '', active: '', description: `A ${config.siteTitle} squad member's profile.`, body: `
 <div id="member-page" class="member-page"><p class="muted">Loading…</p></div>` }));
 
 // Trials / application page

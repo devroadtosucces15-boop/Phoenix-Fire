@@ -8,6 +8,7 @@
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, facts, footer, sep, buttons, cards, bannerUrl } from './ui.js';
 import { it } from './icons.js';
+import { orgName } from './orgconfig.js';
 
 export const FUN_COMMANDS = new Set(['jail', 'wheel', 'trivia']);
 export const FUN_BUTTON = /^norex:fun:/;
@@ -57,7 +58,7 @@ function jailPanel(row, count, { bail = null, env } = {}) {
   const out = row.at + row.minutes * MIN;
   return message({ accent: bail ? 'win' : 'loss', blocks: [
     cards(bannerUrl(env, 'jail')),
-    header({ eyebrow: 'NOREX UNITED · Jail', title: `⛓️ ${row.name}`, sub: `Norex County Jail · ${num}`, size: 2 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Jail`, title: `⛓️ ${row.name}`, sub: `${orgName(env)} County Jail · ${num}`, size: 2 }),
     text(`Charged with ${row.reason}.`),
     facts([bail ? ['Released', `on bail from ${bail} ${ts(row.bail_at ?? Date.now())}`] : ['Sentence', `${row.minutes} min · out ${ts(out)}`]]),
     sep(),
@@ -101,7 +102,7 @@ async function rapSheet(env, userId) {
   if (!rows.length) return reply(notice('Clean record', 'Not a single offence. Suspicious.'));
   const total = (await env.DB.prepare('SELECT COUNT(*) AS n FROM fun_jail WHERE user_id = ?').bind(userId).first())?.n ?? rows.length;
   return reply(message({ ephemeral: true, accent: 'steel', blocks: [
-    header({ eyebrow: 'NOREX UNITED · Jail', title: `📜 Rap sheet · ${rows[0].name}`, sub: `${total} offence${total === 1 ? '' : 's'} on file`, size: 3 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Jail`, title: `📜 Rap sheet · ${rows[0].name}`, sub: `${total} offence${total === 1 ? '' : 's'} on file`, size: 3 }),
     text(rows.map((r) => `\`NRX-${String(r.id).padStart(4, '0')}\` ${ts(r.at, 'd')} · ${r.minutes} min · ${r.reason}${r.bail_at ? ' · 💸 bailed' : ''}`).join('\n')),
   ] }));
 }
@@ -113,7 +114,7 @@ function wheelPanel(row, options, winnerIdx, env) {
   const win = options[winnerIdx];
   return message({ accent: 'gold', blocks: [
     cards(bannerUrl(env, 'wheel')),
-    header({ eyebrow: 'NOREX UNITED · Spin the wheel', title: row.question ? `🎡 ${row.question}` : '🎡 The wheel has spoken', size: 3 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Spin the wheel`, title: row.question ? `🎡 ${row.question}` : '🎡 The wheel has spoken', size: 3 }),
     text(`## ${win}`),
     sep(),
     text(options.map((o, k) => (k === winnerIdx ? `▸ **${o}**` : `▫ ${o}`)).join('\n')),
@@ -213,10 +214,10 @@ export const TRIVIA = [
 const TRIVIA_POINTS = 10, TRIVIA_OPEN = 15 * MIN, LETTERS = ['A', 'B', 'C', 'D'];
 const shuffled = () => { const a = [0, 1, 2, 3]; for (let k = 3; k > 0; k--) { const j = rng.pick(k + 1); [a[k], a[j]] = [a[j], a[k]]; } return a; }; // answer slots → position
 
-function triviaPanel(q, id, order, { result = null } = {}) {
+function triviaPanel(q, id, order, { result = null, env } = {}) {
   const options = order.map((slot) => (slot === 0 ? q[1] : q[2][slot - 1])); // slot 0 = the right answer
   return message({ accent: result ? 'gold' : 'red', blocks: [
-    header({ eyebrow: 'NOREX UNITED · Trivia', title: `🧠 ${q[0]}`, size: 3 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Trivia`, title: `🧠 ${q[0]}`, size: 3 }),
     text(options.map((o, k) => `**${LETTERS[k]}** · ${o}${result && order[k] === 0 ? ' ✅' : ''}`).join('\n')),
     footer(result ?? `Answer privately with a button · ${TRIVIA_POINTS} points for a right answer · one go each`),
     result ? null : buttons(options.map((_, k) => ({ label: LETTERS[k], id: `norex:fun:tq:${id}:${k}` }))),
@@ -230,14 +231,14 @@ async function trivia(i, env, now) {
     if (!rows.length) return say('No scores yet', 'Be the first: /trivia');
     const medal = [it('first'), it('second'), it('third')];
     return reply({ ...message({ accent: 'gold', blocks: [
-      header({ eyebrow: 'NOREX UNITED · Trivia', title: '🏆 Trivia table', sub: `${rows.length} player${rows.length === 1 ? '' : 's'} on the board`, size: 3 }),
+      header({ eyebrow: `${orgName(env).toUpperCase()} · Trivia`, title: '🏆 Trivia table', sub: `${rows.length} player${rows.length === 1 ? '' : 's'} on the board`, size: 3 }),
       text(rows.map((r, k) => `${medal[k] ?? `\`${k + 1}.\``} **${r.name ?? 'A member'}** · ${r.points} pts · ${r.correct}/${r.played} right`).join('\n')),
     ] }), allowed_mentions: { parse: [] } });
   }
   const me = i.member?.user?.id ?? i.user?.id;
   const qIdx = rng.pick(TRIVIA.length), order = shuffled();
   const res = await env.DB.prepare('INSERT INTO fun_trivia_q (q_idx, order_json, by_id, at) VALUES (?, ?, ?, ?)').bind(qIdx, JSON.stringify(order), me, now).run();
-  return reply(triviaPanel(TRIVIA[qIdx], res.meta?.last_row_id, order));
+  return reply(triviaPanel(TRIVIA[qIdx], res.meta?.last_row_id, order, { env }));
 }
 
 async function triviaAnswer(i, env, qId, k, now) {
@@ -267,9 +268,9 @@ export function birthdaysOn(now) {
   const key = (m, dd) => `${String(m).padStart(2, '0')}-${String(dd).padStart(2, '0')}`;
   return [key(mo, day), ...(mo === 3 && day === 1 && !leap ? ['02-29'] : [])];
 }
-export function birthdayPanel(rows) {
+export function birthdayPanel(rows, env) {
   return message({ accent: 'gold', blocks: [
-    header({ eyebrow: 'NOREX UNITED · Birthdays', title: rows.length === 1 ? '🎂 Happy birthday!' : `🎂 ${rows.length} birthdays today`, size: 2 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Birthdays`, title: rows.length === 1 ? '🎂 Happy birthday!' : `🎂 ${rows.length} birthdays today`, size: 2 }),
     text(rows.map((r) => `🎉 <@${r.user_id}>`).join('\n')),
     footer('From everyone at the club – have a good one'),
   ] });
@@ -286,6 +287,6 @@ export async function birthdayCheck(env, post, now = Date.now()) {
   // Mark the day first: a failed post is not retried every 10 minutes all day.
   await env.DB.prepare("INSERT INTO meta (key, value) VALUES ('fun_birthday_day', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(day).run();
   if (!rows.length || !channel) return { posted: false };
-  const r = await post(env, channel, '', birthdayPanel(rows));
+  const r = await post(env, channel, '', birthdayPanel(rows, env));
   return { posted: !!r?.ok, count: rows.length };
 }

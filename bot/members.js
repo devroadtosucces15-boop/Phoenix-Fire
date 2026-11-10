@@ -1,4 +1,4 @@
-// Member area: "Log in with Discord" for people in the NOREX Discord server, plus a small API
+// Member area: "Log in with Discord" for people in the club's Discord server, plus a small API
 // the static site calls for member features. Data lives in Cloudflare KV (free tier).
 //
 // Env: DISCORD_APP_ID, DISCORD_CLIENT_SECRET (secret), DISCORD_GUILD_ID, ADMIN_IDS (comma list – owners),
@@ -48,7 +48,7 @@ import { memberCard, profileOut, profileSummary, saveProfile } from './profiles.
 import { syncMember } from './discordroles.js';
 import { botSettingsPublicRoute, botSettingsRoute } from './settings.js';
 import { routingRoute } from './routing.js';
-import { orgConfigRoute, orgClubsPublicRoute, orgRoutePublicRoute } from './orgconfig.js';
+import { orgConfigRoute, orgClubsPublicRoute, orgRoutePublicRoute, orgName } from './orgconfig.js';
 import { botCommandsRoute } from './botcommands.js';
 import { crawlRoute } from './crawl.js';
 import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
@@ -639,7 +639,7 @@ async function route(p, method, body, me, env, loadSite, url) {
     }
     const players = await loadSite('players');
     const pl = players.find((x) => x.k === body.player && x.home);
-    if (!pl) return fail('Pick a player from the NOREX squad.');
+    if (!pl) return fail(`Pick a player from the ${orgName(env)} squad.`);
     const owner = await one(env, "SELECT user_id FROM claims WHERE player = ? AND status = 'approved' AND user_id != ?", pl.k, me.u);
     if (owner) return fail('That player has already been claimed. Ask a manager if this is wrong.', 409);
     if (!(mine?.status === 'approved' && mine.player === pl.k)) {
@@ -1028,7 +1028,7 @@ async function rushQueue(env, me) {
 const int = (v, min, max) => { const n = Number(v); return Number.isInteger(n) && n >= min && n <= max ? n : null; };
 
 // Validates a submitted match → { m, ps } or { error }.
-async function readRush(body, loadSite) {
+async function readRush(body, loadSite, env) {
   const today = new Date(Date.now() + 14 * 3600e3).toISOString().slice(0, 10); // allow any timezone's "today"
   const oldest = new Date(Date.now() - 365 * DAY * 1000).toISOString().slice(0, 10);
   const date = String(body.date ?? '');
@@ -1045,7 +1045,7 @@ async function readRush(body, loadSite) {
   const ps = [];
   for (const x of list) {
     const pl = x?.k ? squad.get(String(x.k)) : null;
-    if (x?.k && !pl) return { error: 'One of the players is not in the NOREX squad.' };
+    if (x?.k && !pl) return { error: `One of the players is not in the ${orgName(env)} squad.` };
     const name = pl ? pl.n : clean(x?.n, 40);
     if (!name) continue;
     if (pl && ps.some((y) => y.player === pl.k)) return { error: `${pl.n} is listed twice.` };
@@ -1058,7 +1058,7 @@ async function readRush(body, loadSite) {
     }
     ps.push({ player: pl?.k ?? '', name, pos: RUSH_POS.includes(x.pos) ? x.pos : '', goals, assists, rating, motm: x.motm ? 1 : 0 });
   }
-  if (!ps.length) return { error: 'Add at least one NOREX player.' };
+  if (!ps.length) return { error: `Add at least one ${orgName(env)} player.` };
   if (ps.filter((x) => x.motm).length > 1) return { error: 'Only one man of the match.' };
   if (ps.reduce((s, x) => s + x.goals, 0) > gf) return { error: `Player goals add up to more than our ${gf}.` };
   if (ps.reduce((s, x) => s + x.assists, 0) > gf) return { error: `Assists add up to more than our ${gf} goals.` };
@@ -1075,7 +1075,7 @@ async function rushRoute(p, method, body, me, env, loadSite) {
     if (!can(me, 'rush.submit')) return fail('Members only.', 403);
     const today = (await one(env, 'SELECT COUNT(*) AS n FROM rush_matches WHERE by_id = ? AND at > ?', me.u, Date.now() - DAY * 1000)).n;
     if (today >= RUSH_DAILY) return fail(`That's ${RUSH_DAILY} Rush results today – try again tomorrow.`, 429);
-    const { m, ps, error } = await readRush(body, loadSite);
+    const { m, ps, error } = await readRush(body, loadSite, env);
     if (error) return fail(error);
     const dupe = await one(env, "SELECT id FROM rush_matches WHERE date = ? AND lower(opponent) = lower(?) AND gf = ? AND ga = ? AND status IN ('pending', 'confirmed')", m.date, m.opponent, m.gf, m.ga);
     if (dupe && !body.force) return fail('This result is already logged (same day, opponent and score). Log it again only if it was a separate match.', 409);

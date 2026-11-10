@@ -15,6 +15,7 @@
 // tracked from. Gated by the `burners` flag + the `burners.manage` permission (managers).
 import { can, flagOn } from './roles.js';
 import { eaGet } from './clublookup.js';
+import { orgName } from './orgconfig.js';
 import { MAX_BURNERS, TYPE_LABEL } from './burnerstats.js';
 import { message, header, text, footer, buttons, privateNote } from './ui.js';
 
@@ -187,31 +188,31 @@ const trackedMsg = (club, site, already) => `${already ? '✅ Already tracking' 
   + `📋 ${site}burners.html#c${club.id}`;
 
 const who = (i) => { const u = i.member?.user ?? i.user ?? {}; return { id: String(u.id ?? ''), name: String(i.member?.nick || u.global_name || u.username || 'Manager').slice(0, 40) }; };
-const record = (c) => (c.gp ? `${c.w}W ${c.d}D ${c.l}L · ${c.gf}–${c.ga}${c.div ? ` · best div ${c.div}` : ''}` : c.unverified ? 'ID not seen yet – tracked by ID' : c.fromSite ? 'a club NOREX has played' : 'no games yet');
+const record = (c, env) => (c.gp ? `${c.w}W ${c.d}D ${c.l}L · ${c.gf}–${c.ga}${c.div ? ` · best div ${c.div}` : ''}` : c.unverified ? 'ID not seen yet – tracked by ID' : c.fromSite ? `a club ${orgName(env)} has played` : 'no games yet');
 
-const noMatch = (q) => `🔍 EA has no club matching **${q}** yet. Names only match clubs NOREX has played – for any other club paste its **club ID** (\`/burner track 1234567\`), or try again after their first game.`;
+const noMatch = (q, env) => `🔍 EA has no club matching **${q}** yet. Names only match clubs ${orgName(env)} has played – for any other club paste its **club ID** (\`/burner track 1234567\`), or try again after their first game.`;
 
 // Search results → an embed + a pick menu (clubs already tracked are ticked).
 async function pickerBody(env, results, q) {
   const have = new Set((await all(env, 'SELECT club_id FROM burner_clubs WHERE active = 1')).map((r) => r.club_id));
-  if (!results.length) return plain(noMatch(q));
+  if (!results.length) return plain(noMatch(q, env));
   return BEAR('Burner clubs', `🔍 ${results.length} club${results.length === 1 ? '' : 's'} matching “${q}”`,
-    results.map((c) => `${have.has(c.id) ? '✅' : '🔥'} **${c.name}** · \`${c.id}\` · ${record(c)}`).join('\n'),
+    results.map((c) => `${have.has(c.id) ? '✅' : '🔥'} **${c.name}** · \`${c.id}\` · ${record(c, env)}`).join('\n'),
     'Pick the right one below – ✅ = already tracked',
     { type: 1, components: [{
       type: 3, custom_id: 'norex:bn:pick', placeholder: '🔥 Pick the club to track', min_values: 1, max_values: 1,
-      options: results.map((c) => ({ label: c.name.slice(0, 100), value: c.id, description: `${c.id} · ${record(c)}`.slice(0, 100), emoji: { name: have.has(c.id) ? '✅' : '🔥' } })),
+      options: results.map((c) => ({ label: c.name.slice(0, 100), value: c.id, description: `${c.id} · ${record(c, env)}`.slice(0, 100), emoji: { name: have.has(c.id) ? '✅' : '🔥' } })),
     }] });
 }
 
 // Recent opponents → an embed + the same pick menu (norex:bn:pick), already-tracked clubs ticked.
 async function recentBody(env, opps) {
-  if (!opps.length) return plain('🔍 EA returned no recent NOREX games right now – try again in a minute, or look a club up with `/burner search <name>`.');
+  if (!opps.length) return plain(`🔍 EA returned no recent ${orgName(env)} games right now – try again in a minute, or look a club up with \`/burner search <name>\`.`);
   const have = new Set((await all(env, 'SELECT club_id FROM burner_clubs WHERE active = 1')).map((r) => r.club_id));
   const ago = (ts) => { const h = Math.max(0, Math.round((Date.now() / 1000 - ts) / 3600)); return h < 1 ? 'just now' : h < 48 ? `${h}h ago` : `${Math.round(h / 24)}d ago`; };
   const WORD = { W: 'won', D: 'drew', L: 'lost' };
   const line = (c) => `${WORD[c.res]} ${c.gf}–${c.ga} · ${TYPE_LABEL[c.type] ?? 'League'} · ${ago(c.ts)}`;
-  return BEAR('Burner clubs', `🕘 ${opps.length} club${opps.length === 1 ? '' : 's'} NOREX played lately`,
+  return BEAR('Burner clubs', `🕘 ${opps.length} club${opps.length === 1 ? '' : 's'} ${orgName(env)} played lately`,
     opps.map((c) => `${have.has(c.id) ? '✅' : '🔥'} **${c.name}** · \`${c.id}\` · we ${line(c)}`).join('\n').slice(0, 3500),
     'Pick the burner below – ✅ = already tracked',
     { type: 1, components: [{
@@ -260,7 +261,7 @@ export async function burnersAdminRoute(p, method, body, me, env, loadSite, log,
   if (p === '/api/burners/search' && method === 'GET') {
     const q = String(url?.searchParams?.get('q') ?? '').trim().slice(0, 40);
     const have = new Set((await all(env, 'SELECT club_id FROM burner_clubs WHERE active = 1')).map((r) => r.club_id));
-    const mark = (c) => ({ id: c.id, name: c.name, crest: c.crest ?? null, note: c.note ?? record(c), tracked: have.has(c.id) });
+    const mark = (c) => ({ id: c.id, name: c.name, crest: c.crest ?? null, note: c.note ?? record(c, env), tracked: have.has(c.id) });
     if (!q) {
       const linked = (await linkedClubs(loadSite)).map((c) => mark({ ...c, note: `also played by ${c.players.slice(0, 3).join(', ')}${c.players.length > 3 ? ` +${c.players.length - 3}` : ''}` }));
       const recent = (await recentOpponents(env.HOME_CLUB_ID || HOME_CLUB, loadSite).catch(() => [])).map((c) => mark({ ...c, note: `we ${({ W: 'won', D: 'drew', L: 'lost' })[c.res] ?? 'played'} ${c.gf}–${c.ga}` }));
