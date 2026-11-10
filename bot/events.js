@@ -437,7 +437,7 @@ export async function sessionReport(env, id, loadSite) {
     return {
       k: p.k.startsWith('guest:') ? undefined : p.k, n: p.n, games: p.games, g: p.g, a: p.a, motm: p.motm, avg, grade: playerGrade(avg),
       ...(u ? { user: { id: u.id, n: u.n, a: u.a } } : {}),
-      ...(trial ? { trial: { pos: trial, season: base ? round1(base) : null, diff: base && avg != null ? round1(avg - base) : null } } : {}),
+      ...(trial ? { trial: { pos: trial, season: base ? round1(base) : null, diff: base && avg != null ? round1(avg - round1(base)) : null } } : {}),
     };
   }).sort((a, b) => (b.avg ?? 0) - (a.avg ?? 0) || b.g + b.a - (a.g + a.a));
   const w = results.filter((r) => r.res === 'W').length, d = results.filter((r) => r.res === 'D').length, l = results.length - w - d;
