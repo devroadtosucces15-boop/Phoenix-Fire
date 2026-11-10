@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-10T16:20:42.633Z",
+ "fetchedAt": "2026-11-10T16:30:41.179Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2012,12 +2012,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "86",
-   "goals": "35",
-   "assists": "33",
-   "manOfTheMatch": "10",
+   "gamesPlayed": "87",
+   "goals": "40",
+   "assists": "35",
+   "manOfTheMatch": "11",
    "ratingAve": "7.4",
-   "prevGoals": "3",
+   "prevGoals": "5",
    "favoritePosition": "forward"
   },
   {
