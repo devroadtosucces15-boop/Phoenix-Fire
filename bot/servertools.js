@@ -10,6 +10,7 @@
 // Reading the member list needs "Server Members Intent" switched on (Discord developer portal → Bot).
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2 } from './ui.js';
+import { orgName } from './orgconfig.js';
 import { facesOf } from './faces.js';
 
 const API = 'https://discord.com/api/v10';
@@ -32,7 +33,7 @@ export const PING_ROLES = [
 
 const HELP = {
   'no-access': ['Discord said no', 'I’m missing a permission here: Manage Messages, Manage Roles, Send Messages or Read Message History.'],
-  'no-members': ['I can’t read the member list', 'Switch on **Server Members Intent**: discord.com/developers → NOREX app → Bot → Privileged Gateway Intents, then run this again.'],
+  'no-members': ['I can’t read the member list', 'Switch on **Server Members Intent**: discord.com/developers → your bot’s app → Bot → Privileged Gateway Intents, then run this again.'],
   'member-list-short': ['Check skipped', 'Discord sent back a half-empty member list, so nobody was reported as gone.'],
 };
 const failed = (e) => notice(...(HELP[e.message] ?? ['Something went wrong', e.message]));
@@ -177,7 +178,7 @@ export function welcomeMessage(env, st, r) {
   const site = (env.SITE_URL || '').replace(/\/?$/, '/');
   const ping = (st.welcomeText || DEFAULT_WELCOME).replaceAll('{user}', `<@${r.user_id}>`).replaceAll('{name}', r.name);
   return message({ ping, mentions: { users: [r.user_id] }, blocks: [
-    header({ eyebrow: 'Welcome', title: 'Welcome to NOREX UNITED', sub: `Glad you’re here, ${r.name}`, thumb: r.avatar }),
+    header({ eyebrow: 'Welcome', title: `Welcome to ${orgName(env)}`, sub: `Glad you’re here, ${r.name}`, thumb: r.avatar }),
     text(['**Start here**', '📜 Read the rules and say hi in the chat', env.SITE_URL && '🏠 Log in to the **Squad Hub** with Discord and claim your player', env.SITE_URL && '📊 Results, stats and the squad are on the **club site**'].filter(Boolean).join('\n')),
     env.SITE_URL && buttons([{ label: 'Squad Hub', url: `${site}members.html` }, { label: 'Club site', url: site }]),
   ] });
@@ -207,7 +208,7 @@ async function tagCommand(i, env, o) {
   await env.DB.prepare('UPDATE tags SET uses = uses + 1 WHERE name = ?').bind(name).run();
   return reply(message({
     ping: o.member ? `<@${o.member}>` : null, mentions: { users: o.member ? [o.member] : [] },
-    blocks: [header({ eyebrow: 'NOREX UNITED · Saved answer', title: `🏷️ ${t.name}`, size: 3 }), text(t.body), footer(`/tag ${t.name} · posted ${t.uses + 1} time${t.uses ? 's' : ''}`)],
+    blocks: [header({ eyebrow: `${orgName(env).toUpperCase()} · Saved answer`, title: `🏷️ ${t.name}`, size: 3 }), text(t.body), footer(`/tag ${t.name} · posted ${t.uses + 1} time${t.uses ? 's' : ''}`)],
   }));
 }
 async function tagsCommand(i, env, who, sub, o) {
@@ -278,7 +279,7 @@ export async function sendDueReminders(env, now = Date.now()) {
     const msg = message({
       ping: r.role_id ? `<@&${r.role_id}>` : `<@${r.user_id}>`,
       mentions: { users: r.role_id ? [] : [r.user_id], roles: r.role_id ? [r.role_id] : [] },
-      blocks: [header({ eyebrow: 'NOREX UNITED · Reminder', title: `⏰ ${r.body.length > 200 ? `${r.body.slice(0, 199)}…` : r.body}`, size: 3 }), r.body.length > 200 ? text(r.body) : null, footer(`Set by <@${r.user_id}> <t:${unix(r.at)}:R>`)],
+      blocks: [header({ eyebrow: `${orgName(env).toUpperCase()} · Reminder`, title: `⏰ ${r.body.length > 200 ? `${r.body.slice(0, 199)}…` : r.body}`, size: 3 }), r.body.length > 200 ? text(r.body) : null, footer(`Set by <@${r.user_id}> <t:${unix(r.at)}:R>`)],
     });
     try {
       await post(env, r.channel_id, msg);
@@ -302,8 +303,8 @@ async function ensurePingRoles(env, st) {
   return pingRoles;
 }
 // One row per ping: what it's for on the left, its toggle button on the right.
-export const pingPanel = () => message({ blocks: [
-  header({ eyebrow: 'NOREX UNITED · Pings', title: '🔔 Pick your pings', sub: 'Tap to turn one on, tap again to turn it off. Only you see the answer.' }),
+export const pingPanel = (env) => message({ blocks: [
+  header({ eyebrow: `${orgName(env).toUpperCase()} · Pings`, title: '🔔 Pick your pings', sub: 'Tap to turn one on, tap again to turn it off. Only you see the answer.' }),
   ...PING_ROLES.map((p) => side(`${p.emoji} **${p.name}**\n-# ${p.blurb}`, button({ label: 'On / off', id: `norex:pr:${p.key}` }))),
   footer('Only people who switch a ping on get notified'),
 ] });
@@ -337,7 +338,7 @@ async function setupCommand(i, env, ctx, who, sub, o) {
     return later(env, i, ctx, async () => {
       st.pingRoles = await ensurePingRoles(env, st);
       await saveToolSettings(env, st);
-      await post(env, o.channel, pingPanel());
+      await post(env, o.channel, pingPanel(env));
       return notice(`✅ Ping panel posted in <#${o.channel}>`, `Roles: ${PING_ROLES.map((p) => `<@&${st.pingRoles[p.key]}>`).join(' ')}\nPing them in posts (or set one as the result ping in Bot settings) – only people who opted in get notified.`, { accent: 'win' });
     });
   }

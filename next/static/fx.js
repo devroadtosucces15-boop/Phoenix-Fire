@@ -15,7 +15,7 @@
     const w = d.createElement('div'); w.id = 'fxnav';
     const cur = NAV.find((g) => g.k === N.group);
     w.innerHTML = `<div class="fx-orb"><button class="ob" type="button" aria-label="Menu" aria-expanded="false"><img src="crest-sm.png" alt="" width="40" height="58"></button><div class="fan">${NAV.map((g, k) => `<a href="${g.href}" style="--k:${k}" class="${g.k === N.group ? 'on' : ''}">${g.l}</a>`).join('')}<a href="hub.html" data-hub class="hubk" style="--k:${NAV.length}">Hub</a></div></div>
-<div class="fx-isl"><button class="ib" type="button" aria-expanded="false"><span class="cur">${cur ? cur.l : 'NOREX'} · ${N.title || ''}</span><i class="bar"><u></u></i></button><div class="il"><div class="r1">${NAV.map((g) => `<a href="${g.href}" class="${g.k === N.group ? 'on' : ''}">${g.l}</a>`).join('')}<a href="hub.html" data-hub class="hubk">Hub</a></div>${cur ? `<div class="r2">${cur.subs.map(([h, l]) => `<a href="${h}">${l}</a>`).join('')}</div>` : ''}</div></div>
+<div class="fx-isl"><button class="ib" type="button" aria-expanded="false"><span class="cur">${cur ? cur.l : (window.NOREX?.brand || 'the club')} · ${N.title || ''}</span><i class="bar"><u></u></i></button><div class="il"><div class="r1">${NAV.map((g) => `<a href="${g.href}" class="${g.k === N.group ? 'on' : ''}">${g.l}</a>`).join('')}<a href="hub.html" data-hub class="hubk">Hub</a></div>${cur ? `<div class="r2">${cur.subs.map(([h, l]) => `<a href="${h}">${l}</a>`).join('')}</div>` : ''}</div></div>
 <div class="fx-rail"></div>`;
     d.body.appendChild(w);
     const orb = $('.fx-orb', w), isl = $('.fx-isl', w), rail = $('.fx-rail', w);

@@ -14,6 +14,7 @@
 //   GET/POST /api/suggestions (+ /vote /decide /remove)   suggestion box (flag `suggestions`)
 // Text is "markdown-lite" (headings, bold, italics, lists, links, image + video lines) rendered by web/docs-md.js.
 import { IS_V2 } from './ui.js';
+import { orgName } from './orgconfig.js';
 import { can, flagOn } from './roles.js';
 import { notify, notifyManagers, notifyMembers, safely } from './notify.js';
 import { message, header, text, cards, footer, buttons } from './ui.js';
@@ -190,7 +191,7 @@ function docEmbed(env, me, d) {
       description: plain(d.body, true).slice(0, 3900) || undefined,
       url: `${site}docs.html#d-${d.id}`, color: RED, timestamp: new Date(d.edited_at ?? d.at).toISOString(),
       ...(img ? { image: { url: img } } : {}),
-      author: { name: me.n }, footer: { text: 'NOREX UNITED · club announcements' },
+      author: { name: me.n }, footer: { text: `${orgName(env)} · club announcements` },
     }],
     components: [{ type: 1, components: [{ type: 2, style: 5, label: 'Open on the site', url: `${site}docs.html#d-${d.id}` }] }],
   };
@@ -201,7 +202,7 @@ function docMessage(env, me, d) {
   const img = d.body.split('\n').map((l) => l.trim()).find((l) => IMG_LINE.test(l));
   const icon = { announce: '📣', rules: '📜', requirements: '✅', faq: '❓', glossary: '📖', playstyle: '🧠' }[d.area] ?? '📣';
   return message({ blocks: [
-    header({ eyebrow: 'NOREX UNITED · Club announcements', title: `${icon} ${d.title}`.slice(0, 250), sub: `Posted by ${me.n}` }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Club announcements`, title: `${icon} ${d.title}`.slice(0, 250), sub: `Posted by ${me.n}` }),
     text(plain(d.body, true)),
     img ? cards(img) : null,
     footer(`Updated <t:${Math.floor((d.edited_at ?? d.at) / 1000)}:R>`),

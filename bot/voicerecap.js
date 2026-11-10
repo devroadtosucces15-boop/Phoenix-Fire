@@ -13,6 +13,7 @@
 // PLANNING/ROADMAP.md. The model id/input shape follows Cloudflare's documented Workers AI Whisper contract
 // (`{ audio: number[] }` → `{ text }`), same as every other `@cf/...` call in this codebase.
 import { safely } from './notify.js';
+import { orgName } from './orgconfig.js';
 import { message, header, text, cards } from './ui.js';
 
 const API = 'https://discord.com/api/v10';
@@ -108,7 +109,7 @@ export async function checkVoiceRecap(env, loadSite) {
   const [quote, art] = await Promise.all([bestLine(env, transcript), generateArt(env)]);
   const club = await loadSite('club').catch(() => null);
   const msg = message({ accent: 'gold', blocks: [
-    header({ eyebrow: `${club?.name ?? 'NOREX UNITED'} · Voice chat`, title: '🎤 Quote of the match', thumb: club?.crest }),
+    header({ eyebrow: `${club?.name ?? orgName(env)} · Voice chat`, title: '🎤 Quote of the match', thumb: club?.crest }),
     text(`*"${quote}"*\n— ${newest.author?.username ?? 'a member'}`),
     art ? cards('attachment://quote.png') : null,
   ] });

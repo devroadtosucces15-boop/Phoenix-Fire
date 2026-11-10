@@ -17,6 +17,7 @@ import { can, flagOn } from './roles.js';
 import { broadcastRoom } from './clubroom.js';
 import { encryptPayload, safeEndpoint, sendPush } from './webpush.js';
 import { message, header, text, footer, buttons } from './ui.js';
+import { orgName } from './orgconfig.js';
 
 const DAY = 86400e3;
 const KEEP = 200; // notifications kept per member
@@ -51,7 +52,7 @@ export const TYPES = {
   wave: { icon: '👋', label: 'Waves from teammates in the Hub', def: 'site' }, // BE8
   remind: { icon: '⏰', label: 'Reminders – feedback waiting for you, and the odd nudge to use it', def: 'dm' }, // E3 (flag reminders)
   caution: { icon: '⚠️', label: 'Caution – a player disagrees with or is confused by feedback', def: 'dm', role: 'manager' },
-  live: { icon: '🔴', label: 'NOREX goes live on Twitch or YouTube', def: 'site' }, // E2 (flag liveAnnounce)
+  live: { icon: '🔴', label: 'The club goes live on Twitch or YouTube', def: 'site' }, // E2 (flag liveAnnounce)
   test: { icon: '🔔', label: 'Test notifications', def: 'dm', hidden: true },
 };
 const MODES = ['dm', 'site', 'off'];
@@ -179,7 +180,7 @@ export async function deliverDMs(env, limit = 25) {
     const url = siteUrl(env, n.link);
     const r = await discord(env, `/channels/${ch}/messages`, {
       ...message({ accent: DM_ACCENT[n.type] ?? 'red', blocks: [
-        header({ eyebrow: 'NOREX UNITED · Alert', title: `${n.icon ?? '🔔'} ${n.reminders ? 'Reminder: ' : ''}${n.title}`.slice(0, 250), size: 3 }),
+        header({ eyebrow: `${orgName(env).toUpperCase()} · Alert`, title: `${n.icon ?? '🔔'} ${n.reminders ? 'Reminder: ' : ''}${n.title}`.slice(0, 250), size: 3 }),
         text([n.body, n.ack ? '**Please open the site and tap “Got it” to acknowledge.**' : ''].filter(Boolean).join('\n\n')),
         footer(`Sent <t:${Math.floor(n.at / 1000)}:R> · change DM settings: Squad Hub → 🔔 Alerts`),
         buttons([{ label: 'Open on the site', url }]),
@@ -275,7 +276,7 @@ async function notifyRoute(p, method, body, me, env, log) {
     const recent = await one(env, "SELECT COUNT(*) AS n FROM notifications WHERE user_id = ? AND type = 'test' AND at > ?", me.u, Date.now() - 3600e3);
     if (recent.n >= 3) return fail('That’s 3 tests this hour – try again later.', 429);
     await run(env, 'UPDATE notify_prefs SET dm_failed_at = NULL WHERE user_id = ?', me.u);
-    await notify(env, [me.u], { type: 'test', title: 'Test notification', body: 'If you can read this in Discord, DMs from the NOREX bot work. ⚽', link: 'members.html#alerts' });
+    await notify(env, [me.u], { type: 'test', title: 'Test notification', body: `If you can read this in Discord, DMs from the ${orgName(env)} bot work. ⚽`, link: 'members.html#alerts' });
     const res = await deliverDMs(env, 5);
     return json({ ...await state(env, me), test: res });
   }

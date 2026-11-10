@@ -11,8 +11,10 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 4; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 5; // bump to redraw every card after a template change
 const W = 1200;
+// The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
+const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
 const COMPARE_PAIRS = 12; // busiest players whose every pairing gets a /compare picture (12 → 66 cards)
 
 // ---------- shared look ----------
@@ -108,7 +110,7 @@ export function fieldCard(m) {
 <g fill="none" stroke="#ffffffb0" stroke-width=".3"><rect x="1" y="1" width="103" height="66"/><line x1="52.5" y1="1" x2="52.5" y2="67"/><circle cx="52.5" cy="34" r="9.15"/>
 <rect x="1" y="13.84" width="16.5" height="40.32"/><rect x="1" y="24.84" width="5.5" height="18.32"/><rect x="87.5" y="13.84" width="16.5" height="40.32"/><rect x="98.5" y="24.84" width="5.5" height="18.32"/></g>
 <rect width="105" height="68" fill="url(#vig)"/>
-<text x="3" y="4.4" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">NOREX RATINGS · ${esc(m.opp).toUpperCase()}</text>
+<text x="3" y="4.4" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">${esc(SITE).toUpperCase()} RATINGS · ${esc(m.opp).toUpperCase()}</text>
 <text x="102" y="4.4" text-anchor="end" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">TEAM AVG ${r1(avg)}  ·  ATTACKING →</text>
 ${markers}</svg>`);
 }
@@ -140,11 +142,11 @@ export function playerCard(p) {
 .tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:30px}
 .g-h{margin:34px 0 6px;font:700 19px Inter;letter-spacing:.26em;text-transform:uppercase;color:var(--soft)}`,
   `<div class="wrap">
-<div class="eyebrow">${esc(p.sc ?? 'NOREX UNITED')} · Player card</div>
+<div class="eyebrow">${esc(p.sc ?? SITE)} · Player card</div>
 <div class="head"><h1>${esc(p.n)} <span class="chip">${esc(p.pos ?? '')}</span></h1>${p.ovr ? `<div class="ovr"><b class="gold">${p.ovr}</b><span>OVR</span></div>` : ''}</div>
 <div class="tiles">${tiles.map(([k, v, c]) => `<div class="tile ${c ?? ''}"><b>${esc(v)}</b><span>${k}</span></div>`).join('')}</div>
 ${graph ? `<div class="g-h">Match rating · last ${Math.min(10, (p.tr ?? []).length)}</div>${graph}` : ''}
-</div><div class="brand">norex united</div>`);
+</div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- box score (the "Box score" button on a match message) ----------
@@ -177,7 +179,7 @@ export function boxScoreCard(m, club) {
 <div class="h"><span>Player</span><span>RTG</span><span>G</span><span>A</span><span>Pass</span><span>Tackles</span><span>Shots</span></div>
 ${rows}
 <div class="tot"><span>Team</span><span>${r1((m.ps ?? []).length ? sum('r') / m.ps.length : 0)}</span><span>${sum('g')}</span><span>${sum('a')}</span><span>${pc(sum('pm'), sum('pa'))}</span><span>${sum('tm')}/${sum('ta')}</span><span>${sum('sh')}</span></div>
-</div><div class="brand">norex united</div>`);
+</div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- compare (bar chart for /compare) ----------
@@ -202,7 +204,7 @@ export function compareCard(a, b) {
   `<div class="wrap"><div class="eyebrow">Compare</div>
 <div class="top"><div><h1>${esc(a.n)}</h1><small>${esc(a.pos ?? '')}</small></div><div><h1>${esc(b.n)}</h1><small>${esc(b.pos ?? '')}</small></div></div>
 ${rows || '<div class="row"><span style="grid-column:1/-1">No stats to compare yet</span></div>'}
-</div><div class="brand">norex united</div>`);
+</div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- leaderboard table ----------
@@ -237,7 +239,7 @@ h1{font:700 56px/1.05 Oswald;text-transform:uppercase;margin:8px 0 24px}
   `<div class="wrap"><div class="eyebrow">${esc(club.name)} · Leaderboard</div><h1>${esc(title)}</h1>
 <div class="r hd"><span></span><span style="padding-left:8px">Player</span>${COLS.map(([k, , id]) => `<span class="n" style="font:inherit;color:${hot.includes(id) ? '#f08f87' : 'inherit'}">${k}</span>`).join('')}<span class="n" style="font:inherit">${stat === 'ga' ? 'G+A' : 'Total'}</span></div>
 ${rows.length ? rows.map(([p, v], i) => `<div class="r row ${i ? '' : 'first'}"><span class="rk ${i < 3 ? `k${i + 1}` : ''}">${i + 1}</span><span class="nm">${esc(p.n)} <span class="chip">${esc(p.pos ?? '')}</span></span>${COLS.map(([, f, id]) => `<span class="n ${hot.includes(id) ? 'hot' : ''}">${esc(f(p))}</span>`).join('')}<span class="val ${i ? '' : 'gold'}">${(+v).toFixed(dec)}</span><span class="meter" style="width:${Math.max(4, Math.round(900 * v / max))}px"></span></div>`).join('') : '<div class="empty">No games logged yet this season.</div>'}
-</div><div class="brand">norex united</div>`);
+</div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- club card ----------
@@ -259,7 +261,7 @@ export function clubCard(club) {
 <div class="tiles"><div class="tile"><b>${club.gp ?? 0}</b><span>Played</span></div><div class="tile w"><b>${club.w ?? 0}</b><span>Won</span></div><div class="tile d"><b>${club.d ?? 0}</b><span>Drawn</span></div><div class="tile l"><b>${club.l ?? 0}</b><span>Lost</span></div>
 <div class="tile"><b>${club.gf ?? 0}</b><span>Scored</span></div><div class="tile g"><b>${gd >= 0 ? '+' : ''}${gd}</b><span>Goal diff</span></div></div>
 ${form.length ? `<div class="form"><span>FORM</span>${form.map((r) => `<i class="${r}">${r}</i>`).join('')}<span style="margin-left:10px">→ NEWEST</span></div>` : ''}
-</div><div class="brand">norex united</div>`);
+</div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- recent results ----------
@@ -275,7 +277,7 @@ h1{font:700 56px/1.05 Oswald;text-transform:uppercase;margin:8px 0 22px}
   `<div class="wrap"><div class="eyebrow">${esc(club.name)} · Results</div><h1>Last ${ms.length} matches</h1>
 ${ms.map((m) => `<div class="row"><span class="pill ${m.res}" style="text-align:center">${RESULT[m.res]?.toUpperCase() ?? ''}</span><span class="sc">${m.gf}–${m.ga}</span>${crest(m.oppCrest, m.opp, 58, false)}
 <span class="opp"><b>${esc(m.opp)}</b><small>${(m.scorers ?? []).length ? (m.scorers ?? []).map((s) => `${esc(s.n)}${s.g > 1 ? ` ×${s.g}` : ''}`).join(', ') : 'no scorers'}</small></span><span class="dt">${esc(when(m.ts))}</span></div>`).join('')}
-</div><div class="brand">norex united</div>`);
+</div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- what gets drawn, and the manifest the bot reads ----------
@@ -288,13 +290,13 @@ const BANNER_CSS = 'body{height:300px}.bn{position:absolute;inset:0;display:flex
 export const BANNERS = {
   jail: () => page(`${BANNER_CSS}.bars{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 78px,rgba(255,255,255,.07) 78px 90px)}`,
     `<div class="bars"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><rect x="4" y="3" width="32" height="34" rx="3" fill="#0b0f16" stroke="#efcf7a" stroke-width="1.6"/><g stroke="#efcf7a" stroke-width="1.6"><path d="M12 3v34M20 3v34M28 3v34"/></g><circle cx="20" cy="20" r="3.2" fill="#c8352c" stroke="#0b0f16" stroke-width="1"/></svg>
-<div><div class="eyebrow">Norex United</div><h1 class="gold">County Jail</h1><p>Just for fun · bail is one tap</p></div></div><div class="brand">NOREX UNITED</div>`),
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">County Jail</h1><p>Just for fun · bail is one tap</p></div></div><div class="brand">${esc(SITE)}</div>`),
   wheel: () => page(`${BANNER_CSS}`, `<div class="bn"><svg class="art" width="210" height="210" viewBox="-50 -50 100 100"><g transform="rotate(-20)"><circle r="44" fill="#c9993a"/><path d="M0 0L0-40A40 40 0 0 1 40 0Z" fill="#c8352c"/><path d="M0 0L40 0A40 40 0 0 1 0 40Z" fill="#1f2a3c"/><path d="M0 0L0 40A40 40 0 0 1-40 0Z" fill="#a82820"/><path d="M0 0L-40 0A40 40 0 0 1 0-40Z" fill="#2a3446"/><circle r="12" fill="#efcf7a"/></g><path d="M0-52L7-42H-7Z" fill="#fff1c2"/></svg>
-<div><div class="eyebrow">Norex United</div><h1 class="gold">Spin the wheel</h1><p>Let fate pick</p></div></div><div class="brand">NOREX UNITED</div>`),
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Spin the wheel</h1><p>Let fate pick</p></div></div><div class="brand">${esc(SITE)}</div>`),
   discovery: () => page(BANNER_CSS, `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><circle cx="17" cy="17" r="10.5" fill="none" stroke="#efcf7a" stroke-width="2.6"/><path d="M25 25l10 10" stroke="#efcf7a" stroke-width="3.4" stroke-linecap="round"/><path d="M17 11.5l1.6 3.4 3.7.4-2.8 2.5.8 3.7-3.3-1.9-3.3 1.9.8-3.7-2.8-2.5 3.7-.4z" fill="#c8352c"/></svg>
-<div><div class="eyebrow">Norex United</div><h1 class="gold">Discovery</h1><p>Worth knowing · shared by a teammate</p></div></div><div class="brand">NOREX UNITED</div>`),
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Discovery</h1><p>Worth knowing · shared by a teammate</p></div></div><div class="brand">${esc(SITE)}</div>`),
   matchnight: () => page(`${BANNER_CSS}.ln{position:absolute;inset:34px 60px;border:3px solid rgba(255,255,255,.14);border-radius:10px}.ln:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:3px solid rgba(255,255,255,.14)}.ln:after{content:"";position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px;border:3px solid rgba(255,255,255,.14);border-radius:50%}`,
-    `<div class="ln"></div><div class="bn" style="justify-content:center;text-align:center"><div><div class="eyebrow">Norex United</div><h1 class="gold">Match night</h1><p>Be there · tell us if you can play</p></div></div><div class="brand">NOREX UNITED</div>`),
+    `<div class="ln"></div><div class="bn" style="justify-content:center;text-align:center"><div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Match night</h1><p>Be there · tell us if you can play</p></div></div><div class="brand">${esc(SITE)}</div>`),
 };
 
 export function cardJobs(club, players, { matches = 10 } = {}) {

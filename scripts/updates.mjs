@@ -134,10 +134,10 @@ async function get(url) {
 }
 
 // EA's FC updates as design-system panels (bot/ui.js) – one per update, posted through the webhook (V2 needs ?with_components=true).
-export function updatePanel(e, site) {
+export function updatePanel(e, site, name = 'Club') {
   const cap = e.hits.find((h) => h.kind === 'levelCap');
   return message({ accent: e.clubs ? 'red' : 'steel', blocks: [
-    header({ eyebrow: 'NOREX UNITED · New FC update', title: `📢 ${e.title}`.slice(0, 250), sub: `<t:${Math.floor(Date.parse(e.published) / 1000)}:D> · ${e.clubs ? 'Clubs changes inside' : 'No Clubs section in this one'}`, size: 3 }),
+    header({ eyebrow: `${name} · New FC update`, title: `📢 ${e.title}`.slice(0, 250), sub: `<t:${Math.floor(Date.parse(e.published) / 1000)}:D> · ${e.clubs ? 'Clubs changes inside' : 'No Clubs section in this one'}`, size: 3 }),
     block(e.summary ? clip(e.summary, 400) : ''),
     cap ? block(`**Level cap mentioned**\n${clip(cap.quote, 600)}\n-# A manager can confirm it in the portal.`) : null,
     footer('Source: EA SPORTS FC pitch notes'),
@@ -153,7 +153,7 @@ async function postToDiscord(entries) {
     await fetch(`${hook}${hook.includes('?') ? '&' : '?'}with_components=true`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: 'NOREX UNITED', avatar_url: site ? `${site}assets/crest.png` : undefined, ...updatePanel(e, site) }),
+      body: JSON.stringify({ username: loadConfig().siteTitle ?? 'Club', avatar_url: site ? `${site}assets/crest.png` : undefined, ...updatePanel(e, site, loadConfig().siteTitle ?? 'Club') }),
     }).catch((err) => console.warn('Discord post failed:', err.message));
   }
 }

@@ -25,7 +25,7 @@
   ready.then(() => {
     if (!(A.features || []).includes('ownerFab') || d.querySelector('.ofab')) return;
     const root = d.createElement('div'); root.className = 'ofab';
-    const ring = 'OWNER · NOREX UNITED · OWNER · NOREX UNITED · ';
+    const ring = 'OWNER · ' + (window.NOREX?.brand || 'the club').toUpperCase() + ' · OWNER · ' + (window.NOREX?.brand || 'the club').toUpperCase() + ' · ';
     root.innerHTML = `<div class="ofab-panel" id="ofabPanel" role="dialog" aria-label="Owner tools" hidden></div>
 <button type="button" class="ofab-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="ofabPanel" aria-label="Owner tools"><svg class="ofab-ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="ofabC" d="M50 50 m-39 0 a39 39 0 1 1 78 0 a39 39 0 1 1 -78 0"/></defs><text><textPath href="#ofabC" textLength="241">${ring}</textPath></text></svg><img src="crest-sm.png" alt="" width="22" height="32" decoding="async"><b class="ofab-n" hidden></b><i class="ofab-sheen" aria-hidden="true"></i></button>`;
     d.body.appendChild(root);

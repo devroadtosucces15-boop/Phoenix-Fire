@@ -18,7 +18,6 @@ export const ACCENT = {
 };
 export const resultAccent = (res) => ({ W: 'win', D: 'gold', L: 'loss' }[res] ?? 'red');
 export const RESULT_ICON = { get W() { return it('win'); }, get D() { return it('draw'); }, get L() { return it('loss'); } };
-export const BRAND = 'NOREX UNITED';
 
 const clip = (s, n) => (String(s).length > n ? `${String(s).slice(0, n - 1)}…` : String(s));
 
@@ -28,8 +27,8 @@ export const sep = ({ big = false, line = true } = {}) => ({ type: 14, divider: 
 export const footer = (s) => (s ? text(`-# ${s}`) : null);
 export const label = (s) => text(`-# **${String(s).toUpperCase()}**`);
 // Header: small grey label · bold title · grey detail line, with an optional picture on the right (crest, avatar, card).
-export function header({ eyebrow = BRAND, title, sub, thumb, size = 2 }) {
-  const t = text([`-# ${String(eyebrow).toUpperCase()}`, `${'#'.repeat(size)} ${title}`, sub && `-# ${sub}`].filter(Boolean).join('\n'));
+export function header({ eyebrow = null, title, sub, thumb, size = 2 }) {
+  const t = text([eyebrow && `-# ${String(eyebrow).toUpperCase()}`, `${'#'.repeat(size)} ${title}`, sub && `-# ${sub}`].filter(Boolean).join('\n'));
   return thumb ? { type: 9, components: [t], accessory: { type: 11, media: { url: thumb } } } : t;
 }
 // A section with a button (or picture) on the right of the text.

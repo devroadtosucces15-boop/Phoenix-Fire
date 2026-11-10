@@ -8,6 +8,7 @@
 import { flagOn } from './roles.js';
 import { parseTwitch, parseYouTube } from './live.js';
 import { message, header, text, sep, footer, buttons } from './ui.js';
+import { orgName } from './orgconfig.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
 
@@ -38,8 +39,8 @@ export async function liveOf(profile, fetcher = fetch) {
   return found.sort((a, b) => order[a.platform] - order[b.platform])[0] ?? null;
 }
 
-export const livePanel = (row) => message({ accent: 'win', mentions: { parse: [] }, blocks: [
-  header({ eyebrow: `NOREX UNITED · Live · ${row.platform}`, title: `${it('live')} ${row.name ?? 'A member'} is live`, sub: row.title || undefined, size: 3 }),
+export const livePanel = (row, env) => message({ accent: 'win', mentions: { parse: [] }, blocks: [
+  header({ eyebrow: `${orgName(env).toUpperCase()} · Live · ${row.platform}`, title: `${it('live')} ${row.name ?? 'A member'} is live`, sub: row.title || undefined, size: 3 }),
   text(`<@${row.user_id}> just went on air – drop in and say hello.`),
   sep(),
   footer('Streaming from their profile on the site'),
@@ -67,7 +68,7 @@ export async function memberLiveCron(env, now = Date.now(), fetcher = fetch) {
       ON CONFLICT (user_id) DO UPDATE SET platform = excluded.platform, url = excluded.url, title = excluded.title, at = excluded.at, since = ?, announced_at = ?`)
       .bind(m.user_id, found.platform, found.url, found.title ?? '', now, now, null, sameStream ? cur.since : now, sameStream ? cur.announced_at : null).run();
     if (!(sameStream && cur.announced_at) && channel && env.DISCORD_BOT_TOKEN) {
-      const r = await postEmbed(env, channel, '', livePanel({ ...found, user_id: m.user_id, name: m.name })).catch(() => null);
+      const r = await postEmbed(env, channel, '', livePanel({ ...found, user_id: m.user_id, name: m.name }, env)).catch(() => null);
       if (r?.ok) { await env.DB.prepare('UPDATE member_live SET announced_at = ? WHERE user_id = ?').bind(now, m.user_id).run(); posted++; }
     }
   }

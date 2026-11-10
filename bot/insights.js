@@ -16,6 +16,7 @@
 //   POST /api/intel/remind   managers: { id } DM the other managers the recommendation's text as a nudge
 
 import { can, flagOn } from './roles.js';
+import { orgName } from './orgconfig.js';
 import { notifyManagers, safely } from './notify.js';
 import { message, header, text, sep, footer, buttons } from './ui.js';
 
@@ -286,9 +287,9 @@ const cut = (s, n = 1024) => (s.length > n ? s.slice(0, n - 1) + '…' : s);
 const fld = (name, value, inline = false) => ({ name, value: cut(value || '–'), inline });
 const FORM = { W: '🟩', D: '🟨', L: '🟥' };
 
-export function reportMessages(r, site) {
+export function reportMessages(r, site, env) {
   const p = r.prev, s = r.server, si = r.site, a = r.admin, t = r.team;
-  const footerText = `${r.guild ?? 'NOREX UNITED'} · Club Intelligence${p ? ` · ▲▼ vs ${new Date(p.at).toISOString().slice(0, 10)}` : ''}`;
+  const footerText = `${r.guild ?? orgName(env)} · Club Intelligence${p ? ` · ▲▼ vs ${new Date(p.at).toISOString().slice(0, 10)}` : ''}`;
   const line = (icon, label, k) => `${grade(r.scores[k])} ${icon} **${label}** \`${bar(r.scores[k])}\` **${r.scores[k]}**${delta(r.scores[k], p?.scores?.[k])}`;
   const pad = (v, n) => String(v).padStart(n);
   const hist = ['Month   Joins Site Done  Resp Rush Trial', ...r.history.map((h) => `${h.m} ${pad(h.joins ?? '–', 5)} ${pad(h.site, 4)} ${pad(h.decided, 4)} ${pad(h.resp == null ? '–' : h.resp + 'h', 5)} ${pad(h.rush, 4)} ${pad(h.trials, 5)}`)].join('\n');
@@ -411,7 +412,7 @@ async function dmOwners(env, report) {
   for (const id of [...owners].slice(0, 3)) {
     const ch = await post('/users/@me/channels', { recipient_id: id }).then((r) => r.json()).catch(() => null);
     if (!ch?.id) continue;
-    const [first, ...rest] = reportMessages(report, site);
+    const [first, ...rest] = reportMessages(report, site, env);
     const intro = { type: 10, content: '📬 **Your weekly Club Intelligence report** – run **/insights** in the server any time for a fresh one.' };
     for (const m of [{ ...first, components: [intro, ...first.components] }, ...rest]) {
       await post(`/channels/${ch.id}/messages`, m).catch((e) => console.log('insights DM failed', e.message));

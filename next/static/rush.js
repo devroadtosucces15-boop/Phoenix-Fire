@@ -35,10 +35,10 @@
     g.fillStyle = '#2a3344'; g.beginPath(); g.arc(W - 230, 380, 110, 0, 7); g.fill(); g.fillStyle = '#fff'; g.font = '700 100px Oswald'; g.fillText((m.opp || '?').replace(/[^A-Za-z0-9]/g, '').slice(0, 2).toUpperCase(), W - 230, 415);
     g.fillStyle = '#fff'; g.font = '700 230px Oswald'; g.fillText(String(m.gf), W / 2 - 95, 465); g.fillText(String(m.ga), W / 2 + 95, 465); g.fillStyle = rc; g.font = '700 150px Oswald'; g.fillText(':', W / 2, 445);
     const fit = (t, max, size) => { let s = size; do { g.font = `700 ${s}px Oswald`; s -= 2; } while (g.measureText(t).width > max && s > 16); }; g.fillStyle = '#fff';
-    fit('NOREX UNITED FC', 320, 40); g.fillText('NOREX UNITED FC', 230, 550); const on = (m.opp || 'Opponent').toUpperCase(); fit(on, 320, 40); g.fillText(on, W - 230, 550);
+    fit((window.NOREX?.brand || 'the club').toUpperCase(), 320, 40); g.fillText((window.NOREX?.brand || 'the club').toUpperCase(), 230, 550); const on = (m.opp || 'Opponent').toUpperCase(); fit(on, 320, 40); g.fillText(on, W - 230, 550);
     const sc = (m.players || []).filter((p) => p.g); g.font = '500 30px Inter'; g.fillStyle = '#d6dce6'; sc.slice(0, 6).forEach((p, i) => g.fillText(`⚽ ${p.n}${p.g > 1 ? ' ×' + p.g : ''}`, W / 2, 640 + i * 46));
     const mo = (m.players || []).find((p) => p.motm); if (mo) { g.fillStyle = 'rgba(239,207,122,.12)'; g.beginPath(); g.roundRect(140, 960, W - 280, 120, 26); g.fill(); g.strokeStyle = 'rgba(239,207,122,.6)'; g.lineWidth = 2; g.stroke(); g.fillStyle = '#efcf7a'; g.font = '600 26px Oswald'; g.fillText('MAN OF THE MATCH', W / 2, 1010); g.fillStyle = '#fff'; g.font = '700 44px Oswald'; g.fillText(mo.n, W / 2, 1060); }
-    g.fillStyle = '#6f7a8c'; g.font = '500 24px Inter'; g.fillText('NOREX UNITED FC · EA FC Pro Clubs · Rush', W / 2, H - 60);
+    g.fillStyle = '#6f7a8c'; g.font = '500 24px Inter'; g.fillText((window.NOREX?.brand || 'the club').toUpperCase() + ' · EA FC Pro Clubs · Rush', W / 2, H - 60);
     const blob = await new Promise((ok, no) => { try { c.toBlob((b) => (b ? ok(b) : no(new Error('blob'))), 'image/png'); } catch (e) { no(e); } });
     const a = d.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `norex-rush-${m.gf}-${m.ga}-${(m.opp || 'opponent').replace(/\W+/g, '-').toLowerCase()}.png`; d.body.appendChild(a); a.click(); setTimeout(() => { a.remove(); URL.revokeObjectURL(a.href); }, 500);
   }

@@ -106,7 +106,7 @@ ${W.last?.winners?.length ? `<h3 class="sq-sub kd-sub">👏 Last week’s kudos 
   const stepper = (n) => {
     const v = draft[n.id] ??= { gf: n.mine?.gf ?? 0, ga: n.mine?.ga ?? 0 }, same = n.mine && n.mine.gf === v.gf && n.mine.ga === v.ga;
     const side = (k, l) => `<div class="sq-st"><small class="muted">${l}</small><div><button type="button" data-st="${n.id}:${k}:-1" aria-label="${l} minus one"${v[k] <= 0 ? ' disabled' : ''}>−</button><b class="num" data-sv="${n.id}:${k}">${v[k]}</b><button type="button" data-st="${n.id}:${k}:1" aria-label="${l} plus one"${v[k] >= 20 ? ' disabled' : ''}>+</button></div></div>`;
-    return `<div class="sq-stepw" data-sw="${n.id}"><div class="sq-step">${side('gf', 'NOREX')}<span class="sq-dash">–</span>${side('ga', 'Them')}</div><div class="sq-acts"><button type="button" class="btn sm" data-psave="${n.id}"${same ? ' disabled' : ''}>${n.mine ? '💾 Update pick' : '🔮 Save pick'}</button>${n.mine ? `<button type="button" class="btn ghost sm" data-pdel="${n.id}">↩ Take back</button>` : ''}</div></div>`;
+    return `<div class="sq-stepw" data-sw="${n.id}"><div class="sq-step">${side('gf', (window.NOREX?.brand || 'the club'))}<span class="sq-dash">–</span>${side('ga', 'Them')}</div><div class="sq-acts"><button type="button" class="btn sm" data-psave="${n.id}"${same ? ' disabled' : ''}>${n.mine ? '💾 Update pick' : '🔮 Save pick'}</button>${n.mine ? `<button type="button" class="btn ghost sm" data-pdel="${n.id}">↩ Take back</button>` : ''}</div></div>`;
   };
   const predictHtml = () => {
     const rows = P.boards[board] ?? [];
@@ -130,7 +130,7 @@ ${rows.length ? `<ol class="sq-table">${rows.slice(0, 8).map((r, i) => `<li${r.i
     try {
       P = await busy(sv, () => post('/api/predict', del ? { event: id, gf: null } : { event: id, gf: v.gf, ga: v.ga }));
       if (del) delete draft[id];
-      repaint(); M?.toast(del ? 'Prediction taken back' : `Pick saved: NOREX ${v.gf}–${v.ga}`, { kind: 'ok' });
+      repaint(); M?.toast(del ? 'Prediction taken back' : `Pick saved: ${(window.NOREX?.brand || 'the club')} ${v.gf}–${v.ga}`, { kind: 'ok' });
     } catch (er) { oops(er); }
   });
 
@@ -173,7 +173,7 @@ ${pub.bench?.length ? `<p class="muted small" style="margin-top:10px">🪑 Bench
   const scoutHtml = (mine, trials) => {
     const counts = trials && FUNNEL.map((k) => [k, trials.filter((t) => t.status === k).length]), max = counts ? Math.max(1, ...counts.map((c) => c[1])) : 1;
     return `${mine.length ? `<div class="sq-tips">${mine.map((t) => `<div class="sq-tip"><div><b class="fit">${esc(t.ea)}</b><small class="muted">${esc([t.platform, (t.positions || []).join('/')].filter(Boolean).join(' · '))} · ${day(t.at)}</small>${t.note ? `<p class="small">“${esc(t.note)}”</p>` : ''}</div><span class="pill ${t.status === 'signed' ? 'w' : ['released', 'declined'].includes(t.status) ? 'l' : 's'}">${STAGE[t.status]?.[0] ?? '•'} ${esc(STAGE[t.status]?.[1] ?? t.status)}</span></div>`).join('')}</div>`
-      : empty('🔭', 'No tips from you yet', 'Know a player who would fit NOREX? Recommend them in the live Hub and follow their trial here.')}
+      : empty('🔭', 'No tips from you yet', 'Know a player who would fit the club? Recommend them in the live Hub and follow their trial here.')}
 <p class="muted tiny" style="margin-top:8px">Your tips stay between you and the managers.</p>
 ${counts ? `<h3 class="sq-sub">🛡️ Staff · trials pipeline</h3><div class="sq-funnel">${counts.map(([k, n]) => `<div><span>${STAGE[k][0]}</span><small class="muted">${STAGE[k][1]}</small><i style="--w:${(n / max) * 100}%"></i><b class="num">${n}</b></div>`).join('')}</div><p class="muted tiny">Counts only. Names and contact details stay in the Dugout.</p>` : ''}`;
   };

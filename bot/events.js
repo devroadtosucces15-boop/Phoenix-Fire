@@ -25,6 +25,7 @@ import { broadcastRoom } from './clubroom.js';
 import { POSITIONS } from './profiles.js';
 import { discordTargets, postEmbed } from './docs.js';
 import { message, header, text, sep, facts, footer, buttons, side, thumb, toLegacy, cards, RESULT_ICON, bannerUrl } from './ui.js';
+import { orgName } from './orgconfig.js';
 import { facesOf } from './faces.js';
 import { awardPoints } from './points.js';
 import { getBotSettings } from './settings.js';
@@ -222,7 +223,7 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const still = [short && `${short} more player${short > 1 ? 's' : ''}`, ...missing.map(([k, left]) => `${left} ${k}`)].filter(Boolean).join(' · ');
   return message({ ping, mentions, accent: cancelled ? 'steel' : 'red', blocks: [
     cancelled ? null : cards(bannerUrl(env, 'matchnight')),
-    header({ eyebrow: `NOREX UNITED · ${EVENT_TYPES[e.type][1] ?? 'Match night'}`, title: `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : ''}${heading}${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R> · ${length}` }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · ${EVENT_TYPES[e.type][1] ?? 'Match night'}`, title: `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : ''}${heading}${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R> · ${length}` }),
     e.notes ? text(`📝 ${String(e.notes).slice(0, 1500)}`) : null,
     sep(),
     facts([['Answers', `✅ ${yes.length} · ❔ ${names('maybe').length} · ❌ ${names('no').length}`]]),
@@ -443,7 +444,7 @@ function reportEmbed(env, rep, origin, { ping, mentions } = {}) {
   const mvp = rep.mvp ? `⭐ Player of the night: **${rep.mvp.n}** (${rep.mvp.avg} avg${rep.mvp.g ? ` · ${rep.mvp.g} G` : ''}${rep.mvp.a ? ` · ${rep.mvp.a} A` : ''})` : '';
   const graded = rep.players.filter((p) => p.grade).slice(0, 10).map((p) => `\`${p.grade.padEnd(2)}\` ${p.n} · ${p.avg}${p.trial ? ` · 🧪 tried ${p.trial.pos}${p.trial.diff != null ? ` (${p.trial.diff >= 0 ? '+' : ''}${p.trial.diff} vs usual)` : ''}` : ''}`).join('\n');
   return message({ ping, mentions, accent: t.games ? (t.w > t.l ? 'win' : t.w < t.l ? 'loss' : 'gold') : 'red', blocks: [
-    header({ eyebrow: 'NOREX UNITED · Match night', title: `📋 Session report · Grade ${t.grade ?? '–'}`, sub: `${label(e)} · <t:${Math.floor(e.start / 1000)}:f>` }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Match night`, title: `📋 Session report · Grade ${t.grade ?? '–'}`, sub: `${label(e)} · <t:${Math.floor(e.start / 1000)}:f>` }),
     e.reportPoster && origin ? cards(`${origin}/media/${e.reportPoster}`) : null, // BE11 – client-rendered poster, if uploaded
     text(t.games ? `**${t.w}W ${t.d}D ${t.l}L** · ${t.gf}–${t.ga}` : 'No results logged for this night yet.'),
     rep.results.length ? text(rep.results.map((r) => `${icon[r.res]} ${r.mode === 'rush' ? '⚡ ' : ''}**${r.gf}–${r.ga}** vs ${r.opp}`).join('\n')) : null,
@@ -601,7 +602,7 @@ function lineupEmbed(env, e, lineup, names, { ping, mentions } = {}) {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/'), order = (FORMATIONS[e.formation] ?? []).map((x) => x[0]);
   const rows = Object.entries(lineup).sort((a, b) => order.indexOf(a[1]) - order.indexOf(b[1]));
   return message({ ping, mentions, blocks: [
-    header({ eyebrow: 'NOREX UNITED · Match night', title: `🧩 Lineup${e.formation ? ` · ${e.formation}` : ''}`, sub: `${label(e)} · <t:${Math.floor(e.start / 1000)}:F> · <t:${Math.floor(e.start / 1000)}:R>` }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Match night`, title: `🧩 Lineup${e.formation ? ` · ${e.formation}` : ''}`, sub: `${label(e)} · <t:${Math.floor(e.start / 1000)}:F> · <t:${Math.floor(e.start / 1000)}:R>` }),
     text(rows.map(([uid, slot]) => `\`${POS_OF(slot).padEnd(4)}\` ${names.get(uid) ?? 'Member'}`).join('\n')),
     footer('Play Style per position: playstyle.html'),
     buttons([{ label: 'Schedule', url: `${site}members.html#schedule-${e.id}` }]),

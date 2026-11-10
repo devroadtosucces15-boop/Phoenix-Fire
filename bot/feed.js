@@ -22,6 +22,7 @@ import { postEmbed } from './docs.js';
 import { mentionMap, mentionTags, notifyMentions, reactionsFor } from './social.js';
 import { attach, checkAttach, dropMedia, IMAGE_MAX, mediaFor, mediaRoute, PER_POST, postMediaKeys, UPLOADS_DAY, VIDEO_MAX } from './media.js';
 import { message, header, text, buttons } from './ui.js';
+import { orgName } from './orgconfig.js';
 
 export const TAGS = { chat: ['💬', 'Chat'], highlight: ['🎬', 'Highlight'], league: ['🏟️', 'League'], rush: ['⚡', 'Rush'] };
 export const EMOJI = ['⚽', '🔥', '👑', '👏', '😂', '😮', '🧤'];
@@ -270,7 +271,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     if (!r) return fail('Post not found.', 404);
     const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
     const res = await postEmbed(env, body.channel, body.role, message({ blocks: [
-      header({ eyebrow: 'NOREX UNITED · Club feed', title: `${TAGS[r.tag]?.[0] ?? '💬'} ${r.name ?? 'A member'}`, size: 3 }),
+      header({ eyebrow: `${orgName(env).toUpperCase()} · Club feed`, title: `${TAGS[r.tag]?.[0] ?? '💬'} ${r.name ?? 'A member'}`, size: 3 }),
       text(excerpt(r.body || '(photo/clip)', 400)),
       buttons([{ label: 'Open post', url: `${site}feed.html#p${id}` }]),
     ] }));

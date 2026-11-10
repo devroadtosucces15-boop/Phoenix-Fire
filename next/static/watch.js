@@ -46,14 +46,14 @@
     d.body.classList.toggle('is-live', !!on);
     const st = stage(), key = on ? `${v.platform}:${v.channel || v.videoId}` : '';
     home(!!on);
-    if (!on) { bar?.remove(); bar = null; shown = ''; if (st) { st.innerHTML = st.hasAttribute('data-compact') ? '' : '<div class="panel wt-off"><b>📺 Not live right now</b><p class="muted small">When NOREX goes live on Twitch or YouTube the player appears here by itself, and a red bar shows on every page.</p></div>'; } return; }
+    if (!on) { bar?.remove(); bar = null; shown = ''; if (st) { st.innerHTML = st.hasAttribute('data-compact') ? '' : '<div class="panel wt-off"><b>📺 Not live right now</b><p class="muted small">When the club goes live on Twitch or YouTube the player appears here by itself, and a red bar shows on every page.</p></div>'; } return; }
     const where = v.platform === 'twitch' ? 'Twitch' : 'YouTube';
     if (!bar) { bar = d.createElement('div'); bar.className = 'wt-bar'; bar.setAttribute('role', 'status'); d.querySelector('.bar')?.after(bar); }
-    bar.innerHTML = `<div class="wrap"><span class="wt-dot" aria-hidden="true"></span><b>LIVE</b><span class="wt-t">NOREX is live on ${where}${v.title ? ` – ${esc(v.title)}` : ''}</span><a class="btn sm" href="watch.html">▶ Watch</a></div>`;
+    bar.innerHTML = `<div class="wrap"><span class="wt-dot" aria-hidden="true"></span><b>LIVE</b><span class="wt-t">${(window.NOREX?.brand || 'the club')} is live on ${where}${v.title ? ` – ${esc(v.title)}` : ''}</span><a class="btn sm" href="watch.html">▶ Watch</a></div>`;
     if (st && key !== shown) {
       shown = key;
       const src = v.platform === 'twitch' ? `https://player.twitch.tv/?channel=${encodeURIComponent(v.channel)}&parent=${encodeURIComponent(location.hostname)}&muted=true` : `https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.videoId)}?autoplay=1&mute=1`;
-      st.innerHTML = `<div class="wt-box wt-live"><iframe src="${esc(src)}" title="NOREX live on ${where}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><p class="small" style="margin-top:8px"><a href="${esc(v.url)}" target="_blank" rel="noopener">Open on ${where} ↗</a></p>`;
+      st.innerHTML = `<div class="wt-box wt-live"><iframe src="${esc(src)}" title="${(window.NOREX?.brand || 'the club')} live on ${where}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><p class="small" style="margin-top:8px"><a href="${esc(v.url)}" target="_blank" rel="noopener">Open on ${where} ↗</a></p>`;
       clip(st.querySelector('.wt-box'));
     }
   };

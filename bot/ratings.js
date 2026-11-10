@@ -5,6 +5,7 @@
 // Nobody rates everybody: a player's rating only shows once MIN_RATERS different members rated them in the window.
 // Rolling = the last 8 weeks, each week weighted 0.85^age, so recent form counts most. Can't rate yourself.
 import { can, flagOn } from './roles.js';
+import { orgName } from './orgconfig.js';
 import { weekOf } from './awards.js';
 import { awardPoints } from './points.js';
 
@@ -97,7 +98,7 @@ export async function ratingsRoute(p, method, body, me, env, loadSite, log, url)
     const stars = Number(body.stars);
     if (!Number.isInteger(stars) || stars < 0 || stars > 5) return fail('Give 1 to 5 stars.');
     const pl = (await loadSite('players')).find((x) => x.k === String(body.player ?? '') && x.home);
-    if (!pl) return fail('Pick a NOREX player.');
+    if (!pl) return fail(`Pick a ${orgName(env)} player.`);
     if ((await one(env, "SELECT player FROM claims WHERE user_id = ? AND status = 'approved'", me.u))?.player === pl.k) return fail('No rating yourself 😉');
     if (!stars) await run(env, 'DELETE FROM star_ratings WHERE week = ? AND user_id = ? AND player = ?', week.key, me.u, pl.k);
     else {

@@ -125,7 +125,7 @@
     if (d.hidden) return;
     const [mem, club] = await Promise.all([call('/api/live/members').catch(() => []), call('/api/live').catch(() => null)]);
     items = [];
-    if (club?.live) items.push({ club: true, name: 'NOREX UNITED', platform: club.platform, title: club.title || '', since: club.since || 0 });
+    if (club?.live) items.push({ club: true, name: (window.NOREX?.brand || 'the club'), platform: club.platform, title: club.title || '', since: club.since || 0 });
     for (const x of Array.isArray(mem) ? mem : []) if (x && x.user && U.safeUrl(x.url)) items.push(x);
     draw();
   };

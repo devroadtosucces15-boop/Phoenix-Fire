@@ -9,6 +9,7 @@
 import { can, flagOn } from './roles.js';
 import { postEmbed } from './docs.js';
 import { message, header, text, buttons } from './ui.js';
+import { orgName } from './orgconfig.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
@@ -111,7 +112,7 @@ async function shareMedia(env, me, id, mid, body, log) {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
   const link = `${site}tactics.html#play${id}`;
   const label = row.kind === 'video' ? '🎬 Video' : '🎙 Voice-over';
-  const panelOf = (note, { file, ping } = {}) => message({ ping, blocks: [header({ eyebrow: 'NOREX UNITED · Tactics Studio', title: `${label} · ${row.title}`.slice(0, 250), size: 3 }), note ? text(note) : null, file ? { type: 13, file: { url: `attachment://${file}` } } : null, buttons([{ label: 'Open in Studio', url: link }])] });
+  const panelOf = (note, { file, ping } = {}) => message({ ping, blocks: [header({ eyebrow: `${orgName(env).toUpperCase()} · Tactics Studio`, title: `${label} · ${row.title}`.slice(0, 250), size: 3 }), note ? text(note) : null, file ? { type: 13, file: { url: `attachment://${file}` } } : null, buttons([{ label: 'Open in Studio', url: link }])] });
   if (row.size > DISCORD_ATTACH_MAX) {
     const res = await postEmbed(env, channel, role, panelOf(`Too big to attach (${mb(row.size)}) – watch it in the Studio.`));
     if (!res.ok) return fail(res.error);

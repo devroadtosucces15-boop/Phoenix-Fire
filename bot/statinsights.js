@@ -24,15 +24,16 @@
 import { atLeast, can } from './roles.js';
 import { TEXT_MODEL } from './aispike.js';
 import { message, header, text, sep, facts, footer, buttons } from './ui.js';
+import { orgName } from './orgconfig.js';
 
 const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
 const WRITER_MODEL = (env) => env.STAT_INSIGHTS_MODEL || TEXT_MODEL; // Workers AI text model (free allowance on the account) – fact-bounded copy, the number checker catches anything it invents
 
-const WRITER_SYSTEM = 'You write short, upbeat analyst copy for NOREX UNITED FC, an amateur EA FC Pro Clubs team. '
+const WRITER_SYSTEM = (env) => 'You write short, upbeat analyst copy for ' + orgName(env) + ', an amateur EA FC Pro Clubs team. '
   + 'Club voice: confident, plain-English, a little cheeky, never corporate. No hashtags, no emoji, no markdown. '
   + "Never invent a number, name or event that is not in the facts you're given – if you're unsure, say something "
   + 'qualitative instead of guessing a figure. Reply with ONLY a JSON object, nothing else.';
-const ASK_SYSTEM = 'You answer a club member\'s follow-up question about NOREX UNITED FC using ONLY the facts given. '
+const ASK_SYSTEM = (env) => 'You answer a club member\'s follow-up question about ' + orgName(env) + ' using ONLY the facts given. '
   + "If the facts don't cover the question, say so plainly instead of guessing. Plain-English, no markdown. "
   + 'Reply with ONLY a JSON object, nothing else.';
 
@@ -42,7 +43,7 @@ async function clubFacts(loadSite) {
   const games = c.gp ?? (c.w ?? 0) + (c.d ?? 0) + (c.l ?? 0);
   const winRatePct = games ? Math.round(((c.w ?? 0) / games) * 1000) / 10 : 0;
   return {
-    title: 'NOREX UNITED – club form',
+    title: `${c.name ?? 'Club'} – club form`,
     facts: {
       gamesPlayed: games, wins: c.w ?? 0, draws: c.d ?? 0, losses: c.l ?? 0, winRatePct,
       goalsFor: c.gf ?? 0, goalsAgainst: c.ga ?? 0, goalDiff: (c.gf ?? 0) - (c.ga ?? 0),
@@ -252,7 +253,7 @@ function parseAsk(text) {
     return typeof j?.answer === 'string' ? { answer: j.answer.slice(0, 500) } : null;
   } catch { return null; }
 }
-const NOTE_SYSTEM = "You write a short private coach's note from the NOREX UNITED FC management to one of their players, an amateur "
+const NOTE_SYSTEM = "You write a short private coach's note from the management to one of their players, an amateur "
   + 'EA FC Pro Clubs team. Speak to the player directly ("you"): warm, honest, motivating, plain-English, never harsh or corporate. '
   + 'Lead with what they do well – the coach strengths listed in the facts matter most – then one thing to push on. No hashtags, no emoji, no markdown. '
   + "Never invent a number, name or event that is not in the facts you're given – if you're unsure, say something "
@@ -269,7 +270,7 @@ function askPrompt(facts, question) {
 
 // Writes (or overwrites) the stored insight for `key` from a freshly-built fact pack. Returns true on success.
 export async function writeInsight(env, key, pack) {
-  const out = await callModel(env, { system: pack.tier === 'private' ? NOTE_SYSTEM : WRITER_SYSTEM, prompt: writerPrompt(pack), facts: pack.facts, parse: parseWriter, label: `writer:${key}` });
+  const out = await callModel(env, { system: pack.tier === 'private' ? NOTE_SYSTEM : WRITER_SYSTEM(env), prompt: writerPrompt(pack), facts: pack.facts, parse: parseWriter, label: `writer:${key}` });
   if (!out) return false;
   const hash = await fingerprint(pack.facts);
   await env.DB.prepare(`INSERT INTO stat_insights (key, hash, headline, body, watch, sources, tier, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -334,7 +335,7 @@ export async function statAskRoute(env, me, body) {
   if (asked >= 10) return { error: 'Too many questions today – try again tomorrow.' };
   let facts = {};
   try { facts = JSON.parse(row.sources); } catch { /* unreachable: written by writeInsight itself */ }
-  const out = await callModel(env, { system: ASK_SYSTEM, prompt: askPrompt(facts, question), facts, parse: parseAsk, label: `ask:${key}` });
+  const out = await callModel(env, { system: ASK_SYSTEM(env), prompt: askPrompt(facts, question), facts, parse: parseAsk, label: `ask:${key}` });
   await env.DB.prepare('INSERT INTO stat_insight_asks (user_id, key, question, at) VALUES (?, ?, ?, ?)').bind(me.u, key, question, Date.now()).run();
   return out ? { answer: out.answer } : { error: "Couldn't answer that from what's known right now." };
 }
@@ -380,23 +381,23 @@ export async function discordH2hEmbed(env, loadSite, o, me) {
   if (!pack) return { error: 'No record against that club yet.' };
   let row = await one(env, 'SELECT key, headline, body, watch, at, hash FROM stat_insights WHERE key = ?', key);
   if (!row || row.hash !== (await fingerprint(pack.facts))) {
-    if (!can(me, 'statInsights.h2h')) return row ? { embed: h2hEmbed(row, pack) } : { error: 'No insight for that opponent yet – log in on the site to write it.' };
+    if (!can(me, 'statInsights.h2h')) return row ? { embed: h2hEmbed(row, pack, env) } : { error: 'No insight for that opponent yet – log in on the site to write it.' };
     const out = await statH2hRoute(env, loadSite, me, { o });
     if (out.error) return { error: out.error };
     row = out.insight;
   }
-  return { embed: h2hEmbed(row, pack) };
+  return { embed: h2hEmbed(row, pack, env) };
 }
 // One panel for every insight post: headline, the writer's text, what to watch, a small "written" line.
-const insightPanel = (row, eyebrow, { title = `✨ ${row.headline}`, extra = null } = {}) => message({ blocks: [
-  header({ eyebrow: `NOREX UNITED · ${eyebrow}`, title, size: 3 }),
+const insightPanel = (row, eyebrow, env, { title = `✨ ${row.headline}`, extra = null } = {}) => message({ blocks: [
+  header({ eyebrow: `${orgName(env).toUpperCase()} · ${eyebrow}`, title, size: 3 }),
   text(row.body),
   extra,
   row.watch ? text(`👀 ${row.watch}`) : null,
   sep(),
   footer(`Written <t:${Math.floor(row.at / 1000)}:R> from the club's stats`),
 ] });
-const h2hEmbed = (row, pack) => insightPanel(row, 'Head to head', { extra: facts([[`vs ${pack.facts.opponent}`, `${pack.facts.wins}W ${pack.facts.draws}D ${pack.facts.losses}L · ${pack.facts.goalsFor}–${pack.facts.goalsAgainst}`]]) });
+const h2hEmbed = (row, pack, env) => insightPanel(row, 'Head to head', env, { extra: facts([[`vs ${pack.facts.opponent}`, `${pack.facts.wins}W ${pack.facts.draws}D ${pack.facts.losses}L · ${pack.facts.goalsFor}–${pack.facts.goalsAgainst}`]]) });
 export async function statFeedbackRoute(env, me, body) {
   const key = String(body?.key ?? '');
   const vote = body?.vote === 1 || body?.vote === -1 ? body.vote : null;
@@ -417,7 +418,7 @@ export async function statInsightWeekly(env, postEmbed, now = Date.now()) {
   const row = await one(env, "SELECT * FROM stat_insights WHERE key = 'club'");
   const channel = (await one(env, "SELECT value FROM meta WHERE key = 'announce_channel'"))?.value;
   if (row && channel) {
-    await postEmbed(env, channel, '', insightPanel(row, 'Insight of the week'));
+    await postEmbed(env, channel, '', insightPanel(row, 'Insight of the week', env));
   }
   await env.DB.prepare("INSERT INTO meta (key, value) VALUES ('stat_insight_week', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(wk).run();
 }
@@ -431,5 +432,5 @@ export async function discordInsightEmbed(env, stat, role = 'guest') {
   const row = await one(env, 'SELECT key, headline, body, watch, tier, at FROM stat_insights WHERE key = ?', key);
   if (!row) return { error: 'No insight for that yet – it appears after the next data refresh.' };
   if (!visibleRow(row, role, null)) return { error: '🔒 That insight is for members only – log in on the site to see it.' };
-  return { embed: insightPanel(row, 'Insight') };
+  return { embed: insightPanel(row, 'Insight', env) };
 }

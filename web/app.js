@@ -2,6 +2,7 @@
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const BASE = document.body.dataset.base || '';
+const CLUB = document.body.dataset.club || 'the club'; // config.siteTitle, set by scripts/build.mjs
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 // Feature flags (P0.7): config.json → features, levels off | owner | managers | members | public.
@@ -1098,7 +1099,7 @@ if (MAPI) (() => {
   const toast = (msg, bad) => UI.toast(msg, bad ? 'bad' : 'ok');
   const loadTrials = () => new Promise((ok, no) => (window.NXTrials ? ok() : document.head.appendChild(Object.assign(document.createElement('script'), { src: `${BASE}assets/trials.js`, onload: ok, onerror: no }))));
   // Role badge (tiers from bot/roles.js). Sessions from before roles existed only carry `adm`.
-  const ROLE = { owner: ['👑 Owner', 'owner'], manager: ['🛡️ Manager', 'home'], claimed: ['✅ Verified player', 'ok'], member: ['NOREX member', ''], guest: ['Guest', ''] };
+  const ROLE = { owner: ['👑 Owner', 'owner'], manager: ['🛡️ Manager', 'home'], claimed: ['✅ Verified player', 'ok'], member: [`${CLUB} member`, ''], guest: ['Guest', ''] };
   const roleTag = (r) => { const [l, c] = ROLE[r] || ROLE.member; return `<span class="tag ${c}">${l}</span>`; };
   const baseRole = previewAs || session && (session.role ?? (session.adm ? 'manager' : 'member'));
   const ago = UI.time;
@@ -1106,7 +1107,7 @@ if (MAPI) (() => {
   const previewUrl = (role) => { const u = new URL(location.href); u.searchParams.set('previewAs', role || 'off'); return u.pathname + u.search + u.hash; };
   const exitPreviewUrl = () => previewUrl(null);
   // Preview mode stays active without the persistent top-of-page banner.
-  if (err) toast(err === 'not_member' ? 'Members only – you need to be in the NOREX Discord server.' : err === 'cancelled' ? 'Login cancelled.' : 'Discord login failed – try again.', true);
+  if (err) toast(err === 'not_member' ? `Members only – you need to be in the ${CLUB} Discord server.` : err === 'cancelled' ? 'Login cancelled.' : 'Discord login failed – try again.', true);
 
   // ---------- Member profiles: hover cards everywhere + member.html (P2.1 / P2.2) ----------
   const profilesOn = !!session && flagOn('profiles', baseRole);
@@ -1231,7 +1232,7 @@ ${VIEW_RANK.indexOf(realRole) >= VIEW_RANK.indexOf('manager') ? `<div class="acc
     $$('.member-badge[data-player]').forEach((el) => {
       const c = claims[el.dataset.player];
       if (!c) return;
-      el.innerHTML = `<div class="verified"><img src="${esc(c.avatar)}" alt=""${c.id && profilesOn ? ` data-hc="${esc(c.id)}" data-hc-name="${esc(c.name ?? '')}" data-hc-av="${esc(c.avatar)}" tabindex="0"` : ''}><div><b>✓ Verified NOREX member</b><span>${c.id && profilesOn ? `<a href="${BASE}member.html?u=${encodeURIComponent(c.id)}">${esc(c.name ?? '')}</a>` : esc(c.name ?? '')}${c.country && /^[A-Z]{2}$/.test(c.country) ? ` ${String.fromCodePoint(...[...c.country].map((x) => 0x1f1a5 + x.charCodeAt(0)))}` : ''}${c.platform ? ` · ${esc(c.platform)}` : ''}${c.positions?.length ? ` · ${c.positions.map(esc).join(' / ')}` : ''}</span>${c.bio ? `<p>${esc(c.bio)}</p>` : ''}</div></div>`;
+      el.innerHTML = `<div class="verified"><img src="${esc(c.avatar)}" alt=""${c.id && profilesOn ? ` data-hc="${esc(c.id)}" data-hc-name="${esc(c.name ?? '')}" data-hc-av="${esc(c.avatar)}" tabindex="0"` : ''}><div><b>✓ Verified ${esc(CLUB)} member</b><span>${c.id && profilesOn ? `<a href="${BASE}member.html?u=${encodeURIComponent(c.id)}">${esc(c.name ?? '')}</a>` : esc(c.name ?? '')}${c.country && /^[A-Z]{2}$/.test(c.country) ? ` ${String.fromCodePoint(...[...c.country].map((x) => 0x1f1a5 + x.charCodeAt(0)))}` : ''}${c.platform ? ` · ${esc(c.platform)}` : ''}${c.positions?.length ? ` · ${c.positions.map(esc).join(' / ')}` : ''}</span>${c.bio ? `<p>${esc(c.bio)}</p>` : ''}</div></div>`;
     });
     if (flagOn('proBuilds', viewerRole)) $$('.member-badge[data-player]').forEach(async (el) => { // PB.4 – mini build cards
       const c = claims[el.dataset.player];
@@ -1265,7 +1266,7 @@ ${VIEW_RANK.indexOf(realRole) >= VIEW_RANK.indexOf('manager') ? `<div class="acc
   const hubEl = $('#hub');
   if (!hubEl) return;
   if (!session) {
-    hubEl.innerHTML = `<div class="card hub-login"><img src="${BASE}assets/crest.png" height="110" alt=""><div><h2>Members only</h2><p class="muted">Log in with your Discord account. Only members of the NOREX server get in.</p><a class="btn discord big" href="${loginUrl()}">Log in with Discord</a></div></div>`;
+    hubEl.innerHTML = `<div class="card hub-login"><img src="${BASE}assets/crest.png" height="110" alt=""><div><h2>Members only</h2><p class="muted">Log in with your Discord account. Only members of the ${esc(CLUB)} server get in.</p><a class="btn discord big" href="${loginUrl()}">Log in with Discord</a></div></div>`;
     return;
   }
   const POS = ['GK', 'CB', 'LB', 'RB', 'CDM', 'CM', 'CAM', 'LM', 'RM', 'LW', 'RW', 'ST'];
@@ -1280,7 +1281,7 @@ ${VIEW_RANK.indexOf(realRole) >= VIEW_RANK.indexOf('manager') ? `<div class="acc
   const lockerBasic = flagOn('locker', baseRole) && !lockerOn; // BE2 simple Locker Room tab for everyone else
   const HOME = lockerOn ? 'locker' : 'me';
   if (flagOn('dugout', baseRole)) S.adminTab = 'dugout'; // board 08: the manager portal opens on the Dugout
-  const TABS = [...(lockerOn ? [['locker', '🎽 My locker']] : []), ['me', lockerOn ? '🪪 My profile' : '👤 My NOREX'], ...(lockerBasic ? [['locker', '🎽 Locker Room']] : []), ...(flagOn('events', baseRole) ? [['schedule', '🗓️ Schedule']] : []), ['availability', '📅 Availability'], ['votes', '⭐ MOTM votes'], ...(flagOn('myStats', baseRole) ? [['stats', '📊 My stats']] : []), ...(flagOn('rushLog', baseRole) ? [['rush', '⚡ Rush']] : []), ...(flagOn('scouting', baseRole) ? [['scout', '🔭 Scout']] : []), ...(flagOn('suggestions', baseRole) ? [['ideas', '💡 Ideas']] : []), ...(flagOn('awards', baseRole) ? [['awards', '🏆 Awards']] : []), ...(flagOn('rushSquads', baseRole) ? [['squads', '🤝 Squads']] : []), ...(flagOn('starRatings', baseRole) ? [['ratings', '🌟 Ratings']] : []), ...(flagOn('predictions', baseRole) ? [['predict', '🔮 Predict']] : []), ...(flagOn('recommendations', baseRole) ? [['teamup', '🎯 Team up']] : []), ...(flagOn('feedback', baseRole) ? [['feedback', '💌 Feedback']] : []), ...(flagOn('avatarCard', baseRole) ? [['card', '🎨 AI Card']] : []), ...(flagOn('cardStudio', baseRole) ? [['cards', '🪪 Card Studio']] : []), ...(notifyOn ? [['alerts', '🔔 Alerts']] : []), ...(session.adm && (RANK[baseRole] ?? 0) >= RANK.manager ? [['manager', '🛡️ Manager']] : [])];
+  const TABS = [...(lockerOn ? [['locker', '🎽 My locker']] : []), ['me', lockerOn ? '🪪 My profile' : `👤 My ${CLUB}`], ...(lockerBasic ? [['locker', '🎽 Locker Room']] : []), ...(flagOn('events', baseRole) ? [['schedule', '🗓️ Schedule']] : []), ['availability', '📅 Availability'], ['votes', '⭐ MOTM votes'], ...(flagOn('myStats', baseRole) ? [['stats', '📊 My stats']] : []), ...(flagOn('rushLog', baseRole) ? [['rush', '⚡ Rush']] : []), ...(flagOn('scouting', baseRole) ? [['scout', '🔭 Scout']] : []), ...(flagOn('suggestions', baseRole) ? [['ideas', '💡 Ideas']] : []), ...(flagOn('awards', baseRole) ? [['awards', '🏆 Awards']] : []), ...(flagOn('rushSquads', baseRole) ? [['squads', '🤝 Squads']] : []), ...(flagOn('starRatings', baseRole) ? [['ratings', '🌟 Ratings']] : []), ...(flagOn('predictions', baseRole) ? [['predict', '🔮 Predict']] : []), ...(flagOn('recommendations', baseRole) ? [['teamup', '🎯 Team up']] : []), ...(flagOn('feedback', baseRole) ? [['feedback', '💌 Feedback']] : []), ...(flagOn('avatarCard', baseRole) ? [['card', '🎨 AI Card']] : []), ...(flagOn('cardStudio', baseRole) ? [['cards', '🪪 Card Studio']] : []), ...(notifyOn ? [['alerts', '🔔 Alerts']] : []), ...(session.adm && (RANK[baseRole] ?? 0) >= RANK.manager ? [['manager', '🛡️ Manager']] : [])];
 
   // hubGold: three levels – main menu → the Hub (everything about the club) → your Locker (only what's about you: profile, stats,
   // AI card, alerts, your availability, your votes and predictions, ideas and feedback). Club tabs still open from the Hub's rooms.
@@ -1508,7 +1509,7 @@ ${m.shot || m.note ? `<p class="small muted">${m.note ? esc(m.note) : ''}${m.sho
 <p class="muted small">EA doesn't share Rush matches, so we log them ourselves. ${S.rush.canConfirm ? 'As a manager, your result counts straight away.' : 'A manager checks it, then it shows on the Matches, player and Stats pages.'}</p>
 <div class="rush-top"><label class="fld">Date<input type="date" id="rf-date" value="${today}" max="${today}" required></label>
 <label class="fld">Opponent<input id="rf-opp" list="rf-clubs" maxlength="60" placeholder="Club name" autocomplete="off" required></label><datalist id="rf-clubs">${S.clubs.map((c) => `<option value="${esc(c.n)}">`).join('')}</datalist></div>
-<div class="rush-score"><label>NOREX<input type="number" id="rf-gf" min="0" max="40" inputmode="numeric" required></label><i>–</i><label>Them<input type="number" id="rf-ga" min="0" max="40" inputmode="numeric" required></label></div>
+<div class="rush-score"><label>${esc(CLUB)}<input type="number" id="rf-gf" min="0" max="40" inputmode="numeric" required></label><i>–</i><label>Them<input type="number" id="rf-ga" min="0" max="40" inputmode="numeric" required></label></div>
 <label class="fld">Our players <small>(up to 5 · goals, assists, rating optional)</small></label><div class="rush-rows">${[0, 1, 2, 3, 4].map((i) => rushRow(i, i ? {} : { k: claim, pos: myPos })).join('')}</div>
 <label class="fld">Screenshot link <small>(optional)</small><input type="url" id="rf-shot" maxlength="300" placeholder="https://…"></label>
 <label class="fld">Note <small>(optional)</small><input id="rf-note" maxlength="200" placeholder="Anything worth remembering"></label>
@@ -1946,7 +1947,7 @@ if (MAPI && $('[data-modes]')) (() => {
   const record = (ms) => ({ p: ms.length, W: ms.filter((m) => m.res === 'W').length, D: ms.filter((m) => m.res === 'D').length, L: ms.filter((m) => m.res === 'L').length, gf: ms.reduce((s, m) => s + m.gf, 0), ga: ms.reduce((s, m) => s + m.ga, 0) });
 
   const fixture = (m, known, open) => `<details class="rfx ${m.res}" id="rush-${m.id}"${open ? ' open' : ''}><summary>
-<span class="fx-date">${day(m.date)}</span>${res(m.res)}<span class="fx-team"><img class="crest" src="${BASE}assets/crest.png" width="28" height="28" alt=""><span>NOREX</span></span>
+<span class="fx-date">${day(m.date)}</span>${res(m.res)}<span class="fx-team"><img class="crest" src="${BASE}assets/crest.png" width="28" height="28" alt=""><span>${esc(CLUB)}</span></span>
 <span class="fx-score">${m.gf}<i>–</i>${m.ga}</span><span class="fx-team away"><span>${esc(m.opp)}</span><span class="rush-badge" aria-hidden="true">⚡</span></span>
 <span class="fx-extra">${m.players.filter((p) => p.g).map((p) => `⚽ ${esc(p.n)}${p.g > 1 ? ` ×${p.g}` : ''}`).join(', ')}</span></summary>
 <div class="rfx-body"><div class="tbl"><table><thead><tr><th>Player</th><th>Pos</th><th class="n">Rating</th><th class="n">G</th><th class="n">A</th><th>MOTM</th></tr></thead><tbody>${m.players.map((p) => `<tr><td>${who(p, known)}</td><td>${esc(p.pos || '–')}</td><td class="n">${rp(p.r)}</td><td class="n">${p.g}</td><td class="n">${p.a}</td><td>${p.motm ? '⭐' : ''}</td></tr>`).join('')}</tbody></table></div>
@@ -2108,13 +2109,13 @@ if (MAPI && liveBar && flagOn('liveBanner', viewerRole)) (() => {
     document.body.classList.toggle('is-live', !!on);
     if (!on) { if (embed) { embed.hidden = true; embed.innerHTML = ''; } shown = ''; return; }
     const where = d.platform === 'twitch' ? 'Twitch' : 'YouTube';
-    liveBar.innerHTML = `<div class="wrap live-in"><span class="live-dot" aria-hidden="true"></span><b>LIVE</b><span class="live-title">NOREX is live on ${where}${d.title ? ` – ${esc(d.title)}` : ''}</span><a class="btn sm" href="${embed ? '#watch' : esc(d.url)}"${embed ? '' : ' target="_blank" rel="noopener"'}>▶ Watch</a></div>`;
+    liveBar.innerHTML = `<div class="wrap live-in"><span class="live-dot" aria-hidden="true"></span><b>LIVE</b><span class="live-title">${esc(CLUB)} is live on ${where}${d.title ? ` – ${esc(d.title)}` : ''}</span><a class="btn sm" href="${embed ? '#watch' : esc(d.url)}"${embed ? '' : ' target="_blank" rel="noopener"'}>▶ Watch</a></div>`;
     if (embed && key !== shown) {
       shown = key;
       const src = d.platform === 'twitch'
         ? `https://player.twitch.tv/?channel=${encodeURIComponent(d.channel)}&parent=${encodeURIComponent(location.hostname)}&muted=true`
         : `https://www.youtube-nocookie.com/embed/${encodeURIComponent(d.videoId)}?autoplay=1&mute=1`;
-      embed.innerHTML = `<div class="live-frame"><iframe src="${src}" title="NOREX live on ${where}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="small"><a href="${esc(d.url)}" target="_blank" rel="noopener">Open on ${where} ↗</a></p>`;
+      embed.innerHTML = `<div class="live-frame"><iframe src="${src}" title="${esc(CLUB)} live on ${where}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><p class="small"><a href="${esc(d.url)}" target="_blank" rel="noopener">Open on ${where} ↗</a></p>`;
       embed.hidden = false;
       // preview: plays muted for about 10 s, then blurs behind a tap-to-keep-watching button (saves data, keeps the home page calm)
       const fr = $('.live-frame', embed);

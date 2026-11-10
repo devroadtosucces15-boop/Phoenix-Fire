@@ -3,6 +3,7 @@
 // minutes. State lives in KV, not D1, so a D1 outage doesn't also break the monitor's own memory.
 
 import { message, header, text, footer } from './ui.js';
+import { orgName } from './orgconfig.js';
 
 const KEY = 'monitor';
 
@@ -28,7 +29,7 @@ async function dbCheck(env) {
 
 // Pure decision: given the last stored state and this run's problems, returns null (nothing changed) or the
 // new state to store + the DM to send. Exported so the logic is tested without any network/DB.
-export function diff(prev, problems) {
+export function diff(prev, problems, name = 'Club') {
   const down = problems.length > 0;
   const was = prev?.down ?? false;
   if (down === was && JSON.stringify(problems) === JSON.stringify(prev?.problems ?? [])) return null;
@@ -37,8 +38,8 @@ export function diff(prev, problems) {
   return {
     state: { down, problems, since, at: Date.now() },
     alert: down
-      ? `🔴 **NOREX bot: something's down**\n${problems.map((p) => `• ${p}`).join('\n')}`
-      : `🟢 **NOREX bot: back to normal** (was down since ${stamp(prev.since ?? prev.at)} UTC)`,
+      ? `🔴 **${name} bot: something's down**\n${problems.map((p) => `• ${p}`).join('\n')}`
+      : `🟢 **${name} bot: back to normal** (was down since ${stamp(prev.since ?? prev.at)} UTC)`,
   };
 }
 
@@ -77,7 +78,7 @@ export async function checkUptime(env) {
   if (!env.NOREX_KV) return null;
   const problems = (await Promise.all([siteCheck(env), dbCheck(env)])).filter(Boolean);
   const prev = await env.NOREX_KV.get(KEY, 'json');
-  const result = diff(prev, problems);
+  const result = diff(prev, problems, orgName(env));
   if (!result) return prev;
   await env.NOREX_KV.put(KEY, JSON.stringify(result.state));
   await dmOwner(env, result.alert);

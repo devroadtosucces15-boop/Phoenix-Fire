@@ -46,11 +46,11 @@ addEventListener('DOMContentLoaded', () => {
       if (opp) g.drawImage(opp, W - 340, 260, 220, 220); else { g.fillStyle = '#2a3344'; g.beginPath(); g.arc(W - 230, 370, 110, 0, 7); g.fill(); g.fillStyle = '#fff'; g.font = '700 110px Oswald'; g.fillText((P.opp[0] || '?').toUpperCase(), W - 230, 410); }
       g.fillStyle = '#fff'; g.font = '700 230px Oswald'; g.fillText(`${P.gf}`, W / 2 - 95, 455); g.fillText(`${P.ga}`, W / 2 + 95, 455); g.fillStyle = rc; g.font = '700 150px Oswald'; g.fillText(':', W / 2, 430);
       const fit = (t, max, size, w = 'bold') => { let s = size; do { g.font = `700 ${s}px Oswald`; s -= 2; } while (g.measureText(t).width > max && s > 16); return t; };
-      g.fillStyle = '#fff'; fit('NOREX UNITED FC', 320, 40); g.fillText('NOREX UNITED FC', 230, 540); fit(P.opp.toUpperCase(), 320, 40); g.fillText(P.opp.toUpperCase(), W - 230, 540);
+      g.fillStyle = '#fff'; fit((window.NOREX?.brand || 'the club').toUpperCase(), 320, 40); g.fillText((window.NOREX?.brand || 'the club').toUpperCase(), 230, 540); fit(P.opp.toUpperCase(), 320, 40); g.fillText(P.opp.toUpperCase(), W - 230, 540);
       g.font = '500 30px Inter'; g.fillStyle = '#d6dce6'; P.us.slice(0, 5).forEach(([n, k], i) => g.fillText(`⚽ ${n}${k > 1 ? ' ×' + k : ''}`, 230, 610 + i * 44)); P.them.slice(0, 5).forEach(([n, k], i) => g.fillText(`⚽ ${n}${k > 1 ? ' ×' + k : ''}`, W - 230, 610 + i * 44));
       if (P.motm) { g.fillStyle = 'rgba(239,207,122,.12)'; g.beginPath(); g.roundRect(140, 900, W - 280, 150, 26); g.fill(); g.strokeStyle = 'rgba(239,207,122,.6)'; g.lineWidth = 2; g.stroke(); g.fillStyle = '#efcf7a'; g.font = '700 28px Oswald'; g.fillText('🏅 MAN OF THE MATCH', W / 2, 950); g.fillStyle = '#fff'; fit(`${P.motm[0]} · ${(+P.motm[1]).toFixed(1)}`, W - 340, 52); g.fillText(`${P.motm[0]} · ${(+P.motm[1]).toFixed(1)}`, W / 2, 1015); }
       g.font = '600 30px Inter'; g.fillStyle = '#cfd6e3'; g.fillText(P.tags.join('   '), W / 2, 1130);
-      g.fillStyle = '#6f7a8c'; g.font = '500 24px Inter'; g.fillText('NOREX UNITED FC · EA FC Pro Clubs · live EA data', W / 2, Hh - 60);
+      g.fillStyle = '#6f7a8c'; g.font = '500 24px Inter'; g.fillText((window.NOREX?.brand || 'the club').toUpperCase() + ' · EA FC Pro Clubs · live EA data', W / 2, Hh - 60);
       const blob = await new Promise((ok, no) => { try { c.toBlob((b) => (b ? ok(b) : no(new Error('blob'))), 'image/png'); } catch (e) { no(e); } });
       const a = d.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `norex-${P.gf}-${P.ga}-${P.opp.replace(/\W+/g, '-').toLowerCase()}.png`; d.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
     }

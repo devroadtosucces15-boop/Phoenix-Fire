@@ -109,8 +109,8 @@ ${m === null ? '<p class="small muted">Loading…</p>' : m.length ? `<ul class="
     const big = x && x.size > ATTACH_MAX, bits = [s1(doc.pieces.length, 'piece'), doc.steps.length ? s1(doc.steps.length, 'keyframe') : '', doc.quiz.length ? `${doc.quiz.length}-question quiz` : ''].filter(Boolean);
     const title = x ? `${x.kind === 'video' ? '🎬 Video' : '🎙 Voice-over'} · ${p.title}` : `${ICON[p.category] || '📋'} ${p.title}`;
     const desc = x ? (big ? `Too big to attach (${Math.round(x.size / 1e6)} MB) – watch it in the Studio.` : '') : bits.join(' · ') || 'A new play in the Tactics Studio.';
-    return `<div class="dc-prev" aria-label="Preview of the Discord post"><div class="dc-who"><img src="crest.png" alt=""><b>NOREX UNITED</b><span class="dc-bot">APP</span><small>Today</small></div>
-${ping ? `<p class="dc-ping">${esc(ping)}</p>` : ''}<div class="dc-emb"><b class="dc-t">${esc(title.slice(0, 250))}</b>${desc ? `<p>${esc(desc)}</p>` : ''}<small>NOREX UNITED · Tactics Studio${x ? '' : ' • Today'}</small></div>
+    return `<div class="dc-prev" aria-label="Preview of the Discord post"><div class="dc-who"><img src="crest.png" alt=""><b>${(window.NOREX?.brand || 'the club')}</b><span class="dc-bot">APP</span><small>Today</small></div>
+${ping ? `<p class="dc-ping">${esc(ping)}</p>` : ''}<div class="dc-emb"><b class="dc-t">${esc(title.slice(0, 250))}</b>${desc ? `<p>${esc(desc)}</p>` : ''}<small>${(window.NOREX?.brand || 'the club').toUpperCase()} · Tactics Studio${x ? '' : ' • Today'}</small></div>
 ${x && !big ? `<div class="dc-att">📎 ${esc(fileOf(x))} <small>${mb(x.size)}</small></div>` : ''}<div class="dc-btns">${x ? '' : '<span class="dc-b ok">✅ Learned it</span>'}<span class="dc-b">▶ Open in Studio ↗</span></div></div>`; };
   const shareHtml = () => { const p = S.play, sh = S.share, t = sh?.t;
     const body = !p.published ? '<p class="small muted" style="margin:6px 0 0">Publish the play first. Then post it to a channel with a ✅ Learned it button (the same tick as the site).</p>'

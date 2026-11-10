@@ -29,7 +29,7 @@
     const lw = Math.min(innerWidth * .66, 380, innerHeight * .5), lh = Math.min(lw * 1.5, innerHeight * .72);
     o.innerHTML = `<div class="fx-veil"></div><div class="fx-light"></div>
       <div class="fx-cam"><div class="fx-locker" style="width:${lw}px;height:${lh}px">
-        <div class="fx-inner"><div class="fx-cone"></div><div class="fx-hook"></div><div class="fx-slot"></div><span class="fx-plate">${p ? p.n : 'NOREX'}</span></div>
+        <div class="fx-inner"><div class="fx-cone"></div><div class="fx-hook"></div><div class="fx-slot"></div><span class="fx-plate">${p ? p.n : (window.NOREX?.brand || 'the club')}</span></div>
         <div class="fx-door l"><i class="vent"></i><i class="vent"></i><i class="vent"></i><b class="handle"></b><span class="rivets"></span></div>
         <div class="fx-door r"><i class="vent"></i><i class="vent"></i><i class="vent"></i><b class="handle"></b><span class="rivets"></span><em class="lock"></em></div>
         <div class="fx-cap"></div></div></div>

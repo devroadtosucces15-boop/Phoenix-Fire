@@ -36,7 +36,7 @@ export function buildDocs({ write, page, pageHead, esc, emptyState, config }) {
   write('docs.html', page({
     title: `Club docs – ${config.siteTitle}`, base: '', active: '',
     description: `${config.siteTitle} announcements, requirements, rules, FAQ and glossary.`,
-    body: `${pageHead('📚 Club docs', 'Announcements, requirements, rules and FAQ – everything a NOREX player needs to know, kept up to date by the managers.', '')}
+    body: `${pageHead('📚 Club docs', `Announcements, requirements, rules and FAQ – everything a ${esc(config.siteTitle)} player needs to know, kept up to date by the managers.`, '')}
 <div data-flag="docs" hidden><div class="dx" data-docs></div>
 <div data-docs-glossary hidden><h3 class="gl-h">📊 The numbers on this site</h3>${grid(OURS)}<h3 class="gl-h">🎮 EA terms</h3>${grid(EA)}</div></div>
 <div class="dx-soon">${emptyState('📚', 'Club docs are on the way', 'Announcements, rules and the FAQ land here soon.')}</div>
@@ -45,7 +45,7 @@ ${scripts}`,
   write('playstyle.html', page({
     title: `Play Style – ${config.siteTitle}`, base: '', active: '',
     description: `How ${config.siteTitle} plays – League and Rush.`,
-    body: `${pageHead('🧠 Play Style', 'How NOREX plays – philosophy, formations, every position, set pieces and tactics. League and Rush each have their own.', '')}
+    body: `${pageHead('🧠 Play Style', `How ${esc(config.siteTitle)} plays – philosophy, formations, every position, set pieces and tactics. League and Rush each have their own.`, '')}
 <div data-flag="playStyle" hidden><div class="ps" data-playstyle></div></div>
 <div class="dx-soon">${emptyState('🧠', 'Play Style is being written', 'The managers are putting our way of playing into words.')}</div>
 ${scripts}`,

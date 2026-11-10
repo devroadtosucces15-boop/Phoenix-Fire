@@ -30,7 +30,7 @@
   }
   d.addEventListener('click', (e) => { const b = e.target.closest('.pick'); if (!b) return; const id = b.closest('.opt').dataset.id; picks = picks.includes(id) ? picks.filter((x) => x !== id) : [...picks, id]; ls.set('lb.picks', picks); paintPicks(); });
   $('#clearp').onclick = () => { picks = []; ls.set('lb.picks', picks); paintPicks(); };
-  $('#copyp').onclick = async () => { const txt = 'My Norex lookbook picks:\n' + picks.map((id, i) => `${i + 1}. ${names[id]} (${id})`).join('\n'); try { await navigator.clipboard.writeText(txt); $('#copied').textContent = 'Copied. Paste it into the chat.'; } catch { $('#copied').textContent = txt.replace(/\n/g, ' | '); } };
+  $('#copyp').onclick = async () => { const txt = 'My ' + (window.NOREX?.brand || 'the club') + ' lookbook picks:\n' + picks.map((id, i) => `${i + 1}. ${names[id]} (${id})`).join('\n'); try { await navigator.clipboard.writeText(txt); $('#copied').textContent = 'Copied. Paste it into the chat.'; } catch { $('#copied').textContent = txt.replace(/\n/g, ' | '); } };
   paintPicks();
 
   // ---- navigation: collapse bar, three follow-you styles ----

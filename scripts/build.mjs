@@ -536,7 +536,7 @@ function page({ title, base, active, body, description, image, hub }) {
 <link rel="icon" href="${base}assets/favicon.png"><link rel="manifest" href="${base}manifest.webmanifest"><link rel="apple-touch-icon" href="${base}assets/icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="${esc(BRAND_MAIN)}"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <script>try{if(sessionStorage.getItem('nxnav'))document.documentElement.classList.add('nx-covered');if(sessionStorage.getItem('nxhub')){sessionStorage.removeItem('nxhub');document.documentElement.classList.add('nx-hubin')}}catch(e){}</script>
-</head><body data-base="${base}"${MEMBER_API ? ` data-api="${esc(MEMBER_API)}"` : ''} data-features="${esc(FEATURES)}" data-group="${activeGroup}" data-active="${esc(active ?? '')}"${hub ? ' class="hubw-body"' : ''}>
+</head><body data-base="${base}" data-club="${esc(config.siteTitle)}"${MEMBER_API ? ` data-api="${esc(MEMBER_API)}"` : ''} data-features="${esc(FEATURES)}" data-group="${activeGroup}" data-active="${esc(active ?? '')}"${hub ? ' class="hubw-body"' : ''}>
 <div class="bg" aria-hidden="true"></div>
 <div class="pxwipe" aria-hidden="true"><span class="pxwipe-ribbon"></span><img class="pxwipe-crest" src="${base}assets/crest.png" alt=""></div>
 <script type="application/json" id="nav-data">${JSON.stringify(NAV_GROUPS.map((g) => ({ id: g.id, icon: g.icon, label: g.label, links: g.links.map((l) => ({ id: l.id, href: l.href, icon: l.icon, label: l.label, desc: l.desc, flag: l.flag, moved: l.moved })) })))}</script>

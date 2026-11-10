@@ -14,6 +14,7 @@ import { broadcastRoom } from './clubroom.js';
 import { postEmbed } from './docs.js';
 import { getBotSettings } from './settings.js';
 import { message, header, text, sep, facts, footer, buttons } from './ui.js';
+import { orgName } from './orgconfig.js';
 
 const DAY = 86400e3, WEEK = 7 * DAY;
 export const STAT_AWARDS = {
@@ -162,7 +163,7 @@ async function announce(env, loadSite) {
       for (const w of winners) (byAward.get(w.award) ?? byAward.set(w.award, { ...w, names: [] }).get(w.award)).names.push(`[${w.n}](${site}players/${encodeURIComponent(w.k)}.html)`);
       const potm = winnersOut(await all(env, "SELECT * FROM award_winners WHERE period = ? AND award = 'potm' AND player != ''", `M${wk.month}`), cats);
       await postEmbed(env, channel, '', message({ accent: 'gold', blocks: [
-        header({ eyebrow: 'NOREX UNITED · Weekly awards', title: `🏆 Week ${wk.week.split('-W')[1]} winners`, sub: 'Voted by the squad' }),
+        header({ eyebrow: `${orgName(env).toUpperCase()} · Weekly awards`, title: `🏆 Week ${wk.week.split('-W')[1]} winners`, sub: 'Voted by the squad' }),
         text([...byAward.values()].map((a) => `${a.icon} **${a.name}** — ${a.names.join(', ')}${a.stat ? '' : ` (${a.value} vote${a.value === 1 ? '' : 's'})`}`).join('\n')),
         potm.length && wk.month < weekOf(Date.now()).month ? sep() : null,
         potm.length && wk.month < weekOf(Date.now()).month ? facts([[`👑 Player of the Month · ${wk.month}`, potm.map((p) => p.n).join(', ')]]) : null,
@@ -216,7 +217,7 @@ export async function awardsRoute(p, method, body, me, env, loadSite, log, url) 
       return json(await state(env, me, loadSite));
     }
     const pl = (await loadSite('players')).find((x) => x.k === String(body.player) && x.home);
-    if (!pl) return fail('Pick a NOREX player.');
+    if (!pl) return fail(`Pick a ${orgName(env)} player.`);
     if ((await one(env, "SELECT player FROM claims WHERE user_id = ? AND status = 'approved'", me.u))?.player === pl.k) return fail('No voting for yourself 😉');
     await run(env, `INSERT INTO award_votes (week, category_id, user_id, player, at) VALUES (?, ?, ?, ?, ?)
       ON CONFLICT (week, category_id, user_id) DO UPDATE SET player = excluded.player, at = excluded.at`, week.key, cat.id, me.u, pl.k, Date.now());

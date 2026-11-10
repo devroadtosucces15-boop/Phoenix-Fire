@@ -8,7 +8,7 @@
   fetch('api/players.json', { cache: 'no-cache' }).then((r) => r.json()).then((all) => {
     const p = all.find((x) => String(x.k).toLowerCase() === q || String(x.n).toLowerCase() === q);
     if (!p) return fail('We could not find that player');
-    document.title = `${p.n} · NOREX UNITED FC`;
+    document.title = `${p.n} · ${(window.NOREX?.brand || 'the club')}`;
     const s = p.s || {}, car = p.car || {}, st = (l, v) => `<div><b>${v ?? '–'}</b>${l}</div>`;
     const names = ['Goals/game', 'Assists/game', 'Pass %', 'Tackles/game', 'Rating', 'Win %'], raw = p.raw || [];
     const rad = (p.rad || []).map((v, i) => `<div><span>${names[i] || ''}</span><span style="display:block;background:var(--line);border-radius:5px"><i style="width:${Math.max(4, Math.min(100, v))}%"></i></span><b>${raw[i] ?? v}</b></div>`).join('');

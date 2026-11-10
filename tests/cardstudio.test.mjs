@@ -194,7 +194,7 @@ t('member cannot see unapproved artwork', (await resGet(m2, two.id)).status === 
 t('member cannot publish artwork', (await call(m2, '/api/cards/requests/review', { id: two.id, decision: 'publish' })).s === 403);
 t('manager can publish after inspecting', (await call(mgr, '/api/cards/requests/review', { id: two.id, decision: 'publish' })).s === 200);
 t('published source photo remains privately available for owner inspection', (await row(two.id)).photo_key === photoKey2 && r2objects.has(photoKey2));
-t('member notified the card is ready', (await env.DB.prepare("SELECT title FROM notifications WHERE user_id = '501' AND type = 'card' ORDER BY id DESC").first('title')) === 'Your NOREX artwork is ready');
+t('member notified the card is ready', (await env.DB.prepare("SELECT title FROM notifications WHERE user_id = '501' AND type = 'card' ORDER BY id DESC").first('title')) === 'Your Phoenix Fire artwork is ready');
 t('requester sees the card', (await resGet(m2, two.id)).status === 200);
 t('manager sees the card', (await resGet(mgr, two.id)).status === 200);
 t('another member cannot', (await resGet(m3, two.id)).status === 404);

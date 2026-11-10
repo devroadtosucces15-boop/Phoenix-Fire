@@ -6,6 +6,8 @@
 // Needs DISCORD_BOT_TOKEN, the bot's **Manage Roles** permission and the bot's own role above those roles.
 // The last result is kept in meta `rolesync` so a failure (missing permission) can be explained by /syncroles.
 
+import { orgName } from './orgconfig.js';
+
 const API = 'https://discord.com/api/v10';
 export const POSITION_ROLES = ['GK', 'DEF', 'MID', 'FWD'];
 const GROUP = { GK: 'GK', CB: 'DEF', LB: 'DEF', RB: 'DEF', LWB: 'DEF', RWB: 'DEF', DEF: 'DEF', CDM: 'MID', CM: 'MID', CAM: 'MID', LM: 'MID', RM: 'MID', MID: 'MID', LW: 'FWD', RW: 'FWD', CF: 'FWD', ST: 'FWD', FWD: 'FWD' };
@@ -16,7 +18,7 @@ const bare = (name) => String(name || '').toLowerCase().replace(/[^a-z]/g, '');
 async function discord(env, method, path, body) {
   const res = await fetch(API + path, {
     method,
-    headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json', 'X-Audit-Log-Reason': 'NOREX player claim (site)' },
+    headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json', 'X-Audit-Log-Reason': `${orgName(env)} player claim (site)` },
     body: body ? JSON.stringify(body) : undefined,
   });
   if (res.ok || res.status === 204) return res.status === 204 ? null : res.json().catch(() => null);

@@ -53,7 +53,7 @@ ${form(s.form.slice().reverse())}</a>`;
     const shared = sharedWithNorex(b, homeNames);
     if (!shared.length) return '';
     const rows = shared.map((p) => `<li>👤 <b>${playerLink(p.n)}</b> – ${p.gp ? `${p.gp} game${p.gp === 1 ? '' : 's'} for ${esc(b.name)} · ${p.g} ⚽ ${p.a} 🎯 ${ratingPill(p.rating)}` : `in ${esc(b.name)} now, no games yet`}${p.active ? '' : ' <span class="tag" data-tip="Not in the club any more">left</span>'}</li>`).join('');
-    return `<h3 class="bn-h">🆚 vs NOREX</h3><p class="muted small">Same gamertag as a ${esc(config.siteTitle)} member.</p><ul class="bn-list bn-vs">${rows}</ul>`;
+    return `<h3 class="bn-h">🆚 vs ${esc(config.siteTitle)}</h3><p class="muted small">Same gamertag as a ${esc(config.siteTitle)} member.</p><ul class="bn-list bn-vs">${rows}</ul>`;
   };
 
   const modeRows = (b) => Object.entries(b.stats.byType).map(([t, r]) => `<li><b>${esc(TYPE_LABEL[t] ?? t)}</b> ${r.gp} played · ${r.w}W ${r.d}D ${r.l}L · ${r.gf}–${r.ga}</li>`).join('');
@@ -88,10 +88,10 @@ ${vsNorex(b)}
     if (!norex || !list.length) return '';
     const data = { norex, burners: list.map((b) => ({ id: b.id, name: b.name, rec: { gp: b.stats.gp, w: b.stats.w, d: b.stats.d, l: b.stats.l, gf: b.stats.gf, ga: b.stats.ga }, players: b.stats.players.map((p) => ({ n: p.n, gp: p.gp, g: p.g, a: p.a, motm: p.motm, rating: p.rating })) })) };
     const json = JSON.stringify(data).replace(/</g, '\\u003c');
-    return `<section class="bn-whatif" data-whatif><h2 class="osw">🧪 What if – NOREX + burners</h2>
+    return `<section class="bn-whatif" data-whatif><h2 class="osw">🧪 What if – ${esc(config.siteTitle)} + burners</h2>
 <p class="muted small">Just for fun: ${esc(config.siteTitle)} is the first division, burners are the B team. These totals are <b>not official</b> – they never count towards the League record, player pages, records, awards or the Hall of Fame.</p>
 <div class="bn-wi-pick" data-wi-pick>${list.map((b) => `<label><input type="checkbox" value="${esc(b.id)}"> ${esc(b.name)}</label>`).join('')}</div>
-<div class="bn-wi-out" data-wi-out><p class="muted">Tick a burner to add it to NOREX.</p></div>
+<div class="bn-wi-out" data-wi-out><p class="muted">Tick a burner to add it to ${esc(config.siteTitle)}.</p></div>
 <script type="application/json" id="bn-whatif-data">${json}</script><script src="assets/burners-whatif.js" defer></script></section>`;
   };
 

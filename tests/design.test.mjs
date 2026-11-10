@@ -14,9 +14,9 @@ const m = club.matches.find((x) => x.ps?.length >= 5) ?? club.matches[0];
 const p = players.find((x) => x.home && x.s?.gp && (x.tr ?? []).length >= 2);
 
 // ---------- kit ----------
-const msg = message({ accent: 'win', blocks: [header({ title: 'T', sub: 'S', thumb: 'https://x/c.png' }), cards('https://x/a.png', null), buttons([{ label: 'Site', url: 'https://x' }, { label: 'Act', id: 'a' }])] });
+const msg = message({ accent: 'win', blocks: [header({ eyebrow: 'Club', title: 'T', sub: 'S', thumb: 'https://x/c.png' }), cards('https://x/a.png', null), buttons([{ label: 'Site', url: 'https://x' }, { label: 'Act', id: 'a' }])] });
 t('message = V2 flag + one panel with the stripe colour', isV2(msg) && msg.components.length === 1 && msg.components[0].type === 17 && msg.components[0].accent_color === ACCENT.win);
-t('header: small label, ## title, grey detail, picture on the right', msg.components[0].components[0].type === 9 && msg.components[0].components[0].components[0].content === '-# NOREX UNITED\n## T\n-# S' && images(msg).includes('https://x/c.png'));
+t('header: small label, ## title, grey detail, picture on the right', msg.components[0].components[0].type === 9 && msg.components[0].components[0].components[0].content === '-# CLUB\n## T\n-# S' && images(msg).includes('https://x/c.png'));
 t('cards() drops missing pictures; nothing to show → null', images(msg).includes('https://x/a.png') && cards(null, undefined) === null);
 const row = msg.components[0].components.at(-1);
 t('buttons: actions first, the site link always last', row.type === 1 && row.components[0].custom_id === 'a' && row.components[1].style === 5);

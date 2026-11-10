@@ -10,6 +10,7 @@
 //   DISCORD_PUBLIC_KEY, SITE_URL, GITHUB_REPO – public values in wrangler.toml
 
 import { getCommandSettings, commandBlocked, shapeReply } from './botcommands.js';
+import { orgName } from './orgconfig.js';
 import { handleMembers } from './members.js';
 import { updateLive } from './live.js';
 import { memberLiveCron } from './memberlive.js';
@@ -98,7 +99,7 @@ export default {
       const site = (env.SITE_URL || '').replace(/\/?$/, '/');
       return handleMembers(request, env, ctx, (file) => load(site, file, ctx));
     }
-    if (request.method === 'GET') return new Response('NOREX UNITED bot is running ⚽');
+    if (request.method === 'GET') return new Response(`${orgName(env)} bot is running ⚽`);
     if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
     const body = await request.text();
@@ -394,7 +395,7 @@ function insightsCommand(i, env, ctx, site, who) {
   ctx.waitUntil((async () => {
     let body, more = [];
     try {
-      const [first, ...rest] = reportMessages(await insightsNow(env, (f) => load(site, f, ctx)), site);
+      const [first, ...rest] = reportMessages(await insightsNow(env, (f) => load(site, f, ctx)), site, env);
       body = first; more = rest;
     } catch (e) {
       body = notice('Could not build the report', e.message === 'no-access' ? "The bot can't see the server – check it is still in the server with **View Channels**." : e.message);

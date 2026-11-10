@@ -51,7 +51,7 @@ ${ps.length > 1 ? `<div class="wx cp-radar"><div class="radar" data-w="radar" da
     else if (e.target.closest('[data-cp-clear]')) { open = false; q = ''; setKeys([]); }
     else if (e.target.closest('[data-cp-share]')) {
       const url = location.origin + location.pathname + '#compare=' + keysOf().map(encodeURIComponent).join(',');
-      if (navigator.share && matchMedia('(pointer:coarse)').matches) navigator.share({ title: 'NOREX UNITED compare', url }).catch(() => {});
+      if (navigator.share && matchMedia('(pointer:coarse)').matches) navigator.share({ title: (window.NOREX?.brand || 'the club') + ' compare', url }).catch(() => {});
       else (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => window.NorexMotion?.toast('Link copied', { kind: 'ok' }), () => window.NorexMotion?.toast(url));
     }
   });

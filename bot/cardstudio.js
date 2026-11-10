@@ -1,4 +1,5 @@
 import { can, flagOn } from './roles.js';
+import { orgName } from './orgconfig.js';
 import { hex } from './media.js';
 import { notify, notifyManagers, safely } from './notify.js';
 
@@ -306,7 +307,7 @@ export async function cardsRoute(p, method, body, me, env, log) {
       const updated = await run(env, "UPDATE card_requests SET published = 1 WHERE id = ? AND status = 'done' AND published = 0", r.id);
       if (!updated.meta?.changes) return fail('Already reviewed.', 409);
       // Retain uploaded photos privately for owner inspection and download.
-      if (!r.user_id.startsWith('player:')) await safely(notify(env, [r.user_id], { type: 'card', icon: '🏁', title: 'Your NOREX artwork is ready', body: 'Manager-approved artwork is ready to download.', link: 'members.html#cards', ref: `card:${r.user_id}:${r.month}` }));
+      if (!r.user_id.startsWith('player:')) await safely(notify(env, [r.user_id], { type: 'card', icon: '🏁', title: `Your ${orgName(env)} artwork is ready`, body: 'Manager-approved artwork is ready to download.', link: 'members.html#cards', ref: `card:${r.user_id}:${r.month}` }));
     } else {
       const updated = await run(env, "UPDATE card_requests SET status = 'approved', published = 0, attempts = 0, started_at = NULL, result_key = NULL, portrait_key = NULL WHERE id = ? AND status = 'done' AND published = 0", r.id);
       if (!updated.meta?.changes) return fail('Already reviewed.', 409);

@@ -61,7 +61,7 @@
     try { sessionStorage.setItem(PENDING, JSON.stringify({ code: code(), cur, then, title: titleDraft, back })); } catch {}
     location.href = A.loginUrl();
   };
-  const gate = (what) => `<div class="panel sq-empty"><span>🔐</span><div><b>Sign in to ${what}</b><p class="muted small">Building and share links are open to everyone. Saving needs a NOREX Discord login. The build on screen comes with you.</p>${API ? '<button type="button" class="btn gold" data-bxlogin>Sign in with Discord</button>' : '<p class="tiny muted">Not available in this preview copy.</p>'}</div></div>`;
+  const gate = (what) => `<div class="panel sq-empty"><span>🔐</span><div><b>Sign in to ${what}</b><p class="muted small">Building and share links are open to everyone. Saving needs a Discord login. The build on screen comes with you.</p>${API ? '<button type="button" class="btn gold" data-bxlogin>Sign in with Discord</button>' : '<p class="tiny muted">Not available in this preview copy.</p>'}</div></div>`;
   const failBox = (what, e, retry) => `<div class="panel sq-empty"><span>📡</span><div><b>Could not load ${what}</b><p class="muted small">${esc(e?.message || 'The club server did not answer.')}</p><button type="button" class="btn ghost sm" data-bxretry="${retry}">↻ Try again</button></div></div>`;
 
   // ---------- tabs + deep links ----------
@@ -385,7 +385,7 @@ ${signed() ? '' : '<p class="tiny muted">🔐 Sign in to compare with your saved
     const crest = new Image(); crest.src = 'crest.png'; await crest.decode().catch(() => {});
     if (crest.naturalWidth) { const h = 170, w = (crest.naturalWidth / crest.naturalHeight) * h; x.drawImage(crest, 60, 50, w, h); }
     const T = (txt, px, py, font, col = '#fff', align = 'left') => { x.font = font; x.fillStyle = col; x.textAlign = align; x.fillText(txt, px, py); };
-    T('NOREX UNITED · PRO BUILD', 250, 100, '600 34px Oswald, Impact, sans-serif', '#9aa3b2');
+    T((window.NOREX?.brand || 'the club').toUpperCase() + ' · PRO BUILD', 250, 100, '600 34px Oswald, Impact, sans-serif', '#9aa3b2');
     T((title || ev.arch.name).toUpperCase().slice(0, 24), 250, 160, '700 58px Oswald, Impact, sans-serif');
     T('★★★★★', 250, 205, '400 28px sans-serif', gold);
     x.fillStyle = red; x.beginPath(); x.roundRect(W - 230, 50, 170, 190, 22); x.fill();
@@ -416,7 +416,7 @@ ${signed() ? '' : '<p class="tiny muted">🔐 Sign in to compare with your saved
     line('BODY', `${ev.choices.h} cm · ${ev.choices.w} kg`);
     line('BEST FIT', ev.fit.slice(0, 3).map(([p, v]) => `${p} ${v}`).join(' · '));
     T(`Game rules ${g.version}${ev.status.preview ? ' · placeholder numbers' : ''} · * estimate`, 60, H - 50, '500 24px Inter, sans-serif', '#6b7280');
-    T('NOREX UNITED FC', W - 60, H - 50, '600 26px Oswald, Impact, sans-serif', '#9aa3b2', 'right');
+    T((window.NOREX?.brand || 'the club').toUpperCase(), W - 60, H - 50, '600 26px Oswald, Impact, sans-serif', '#9aa3b2', 'right');
     const blob = await new Promise((ok, no) => c.toBlob((bl) => (bl ? ok(bl) : no(new Error('The picture could not be drawn.'))), 'image/png'));
     const name = `norex-build-${title || ev.arch.name}-L${ev.level}.png`.replace(/[^\w.-]+/g, '_');
     const file = new File([blob], name, { type: 'image/png' });

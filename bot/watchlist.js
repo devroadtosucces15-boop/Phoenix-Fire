@@ -8,6 +8,7 @@
 // which `related=<position>` uses (a build page can ask for "CAM" videos). Flag `watchlist` (owner first).
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, sep, footer, buttons, cards } from './ui.js';
+import { orgName } from './orgconfig.js';
 import { postEmbed } from './docs.js';
 
 export const WATCH_COMMANDS = new Set(['watchlist', 'watch']);
@@ -58,9 +59,9 @@ export function parseFeed(xml) {
 }
 
 // ---------- the Discord post ----------
-export function videoPanel(v, useful) {
+export function videoPanel(v, useful, env) {
   return message({ accent: 'red', mentions: { parse: [] }, blocks: [
-    header({ eyebrow: `NOREX UNITED · New video · ${TOPIC_ICON[v.topic] ?? ''} ${v.topic}`, title: v.title, sub: v.channel_name, size: 3 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · New video · ${TOPIC_ICON[v.topic] ?? ''} ${v.topic}`, title: v.title, sub: v.channel_name, size: 3 }),
     cards({ url: v.thumb, alt: v.title }),
     sep(),
     buttons([{ label: `👍 Useful · ${useful}`, id: `norex:wl:useful:${v.id}` }, { label: 'Watch', url: watchUrl(v.id) }]),
@@ -95,7 +96,7 @@ export async function watchlistCron(env, now = Date.now(), fetcher = fetch) {
   if (channel && env.DISCORD_BOT_TOKEN) {
     const fresh = await all(env, 'SELECT * FROM watch_videos WHERE posted_at IS NULL AND published > ? ORDER BY published LIMIT ?', now - POST_MAX_AGE, POST_CAP);
     for (const v of fresh) {
-      const r = await postEmbed(env, channel, '', videoPanel(v, 0)).catch(() => null);
+      const r = await postEmbed(env, channel, '', videoPanel(v, 0, env)).catch(() => null);
       if (!r?.ok) break;
       await env.DB.prepare('UPDATE watch_videos SET posted_at = ? WHERE id = ?').bind(now, v.id).run();
       posted++;
@@ -107,10 +108,10 @@ export async function watchlistCron(env, now = Date.now(), fetcher = fetch) {
 }
 
 // ---------- commands ----------
-function listPanel(rows, topic) {
+function listPanel(rows, topic, env) {
   if (!rows.length) return message({ ephemeral: true, accent: 'steel', blocks: [text('**No videos yet**\nThe watch list fills up as the creators upload.')] });
   return message({ ephemeral: true, blocks: [
-    header({ eyebrow: 'NOREX UNITED · Watch list', title: topic ? `${TOPIC_ICON[topic]} ${topic[0].toUpperCase()}${topic.slice(1)}` : '🎬 Latest videos', sub: 'Pro Clubs creators the squad follows', size: 3 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Watch list`, title: topic ? `${TOPIC_ICON[topic]} ${topic[0].toUpperCase()}${topic.slice(1)}` : '🎬 Latest videos', sub: 'Pro Clubs creators the squad follows', size: 3 }),
     text(rows.map((v) => `${TOPIC_ICON[v.topic] ?? ''} [${v.title}](${watchUrl(v.id)})\n-# ${v.channel_name} · <t:${Math.floor(v.published / 1000)}:R>`).join('\n\n')),
   ] });
 }
@@ -122,7 +123,7 @@ export async function watchCommand(i, env, ctx, who, now = Date.now()) {
     if (i.data.name === 'watch') {
       const topic = TOPICS.includes(i.data.options?.[0]?.value) ? i.data.options[0].value : null;
       const rows = await all(env, `SELECT * FROM watch_videos ${topic ? 'WHERE topic = ?' : ''} ORDER BY published DESC LIMIT 6`, ...(topic ? [topic] : []));
-      return reply(listPanel(rows, topic));
+      return reply(listPanel(rows, topic, env));
     }
     if (!can(who, 'watchlist.manage')) return say('Only managers can change the watch list', 'Ask a manager to add a creator.');
     const sub = i.data.options?.[0], o = Object.fromEntries((sub?.options ?? []).map((x) => [x.name, x.value]));
@@ -157,7 +158,7 @@ export async function watchButton(i, env, who) {
   const had = await one(env, 'SELECT 1 AS x FROM watch_useful WHERE video_id = ? AND user_id = ?', id, me);
   if (had) await env.DB.prepare('DELETE FROM watch_useful WHERE video_id = ? AND user_id = ?').bind(id, me).run();
   else await env.DB.prepare('INSERT OR IGNORE INTO watch_useful (video_id, user_id) VALUES (?, ?)').bind(id, me).run();
-  return upd(videoPanel(v, await usefulCount(env, id)));
+  return upd(videoPanel(v, await usefulCount(env, id), env));
 }
 
 // ---------- site API ----------

@@ -7,6 +7,7 @@
 
 import { flagOn } from './roles.js';
 import { message, header, text, sep, footer, buttons } from './ui.js';
+import { orgName } from './orgconfig.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
 import { notifyMembers } from './notify.js';
@@ -84,8 +85,8 @@ export async function updateLive(env) {
 // E2: one Discord post when the club's own channel goes on air, linking to the site's Watch page (flag `liveAnnounce`).
 // A stream that blips off and on again within 3 hours is not announced twice. Set after a successful post only.
 const ANNOUNCE_GAP = 3 * 3600e3;
-export const livePost = (v, site) => message({ accent: 'win', mentions: { parse: [] }, blocks: [
-  header({ eyebrow: `NOREX UNITED · Live · ${v.platform === 'twitch' ? 'Twitch' : 'YouTube'}`, title: `${it('live')} NOREX is live`, sub: v.title || undefined, size: 3 }),
+export const livePost = (v, site, env) => message({ accent: 'win', mentions: { parse: [] }, blocks: [
+  header({ eyebrow: `${orgName(env).toUpperCase()} · Live · ${v.platform === 'twitch' ? 'Twitch' : 'YouTube'}`, title: `${it('live')} ${orgName(env)} is live`, sub: v.title || undefined, size: 3 }),
   text('We just went on air – drop in, watch along and say hello in the chat.'),
   sep(),
   footer('Watch from the club site or straight on the platform'),
@@ -98,10 +99,10 @@ export async function announceLive(env, v, now = Date.now()) {
   const channel = (await env.DB.prepare("SELECT value FROM meta WHERE key = 'announce_channel'").first())?.value;
   if (!channel) return false;
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
-  const r = await postEmbed(env, channel, '', livePost(v, site));
+  const r = await postEmbed(env, channel, '', livePost(v, site, env));
   if (!r?.ok) return false;
   await env.NOREX_KV.put('live_announced', JSON.stringify({ at: now, platform: v.platform }), { expirationTtl: 86400 });
-  await notifyMembers(env, { type: 'live', title: '🔴 NOREX is live', body: v.title || 'Come and watch', link: 'watch.html', ref: 'live' }).catch(() => {}); // bell + banner; pop-up for members who set Live to "DM + site"
+  await notifyMembers(env, { type: 'live', title: `🔴 ${orgName(env)} is live`, body: v.title || 'Come and watch', link: 'watch.html', ref: 'live' }).catch(() => {}); // bell + banner; pop-up for members who set Live to "DM + site"
   return true;
 }
 

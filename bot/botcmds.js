@@ -12,6 +12,7 @@
 //   /awards        this week's ballot + last week's winners                                            (flag `awards`)
 // Replies that are about "me" are ephemeral (flags 64) – only the person who asked sees them.
 import { can, flagOn } from './roles.js';
+import { orgName } from './orgconfig.js';
 import { answerEvents, EVENT_TYPES, eventPost } from './events.js';
 import { currentRole, log, submitRush, voteView, votesByMatch } from './members.js';
 import { state as awardsState } from './awards.js';
@@ -35,7 +36,7 @@ const parse = (s, fb) => { try { return JSON.parse(s) ?? fb; } catch { return fb
 // Short replies in the design system's compact style (bot/ui.js): private unless { flags: 0 }.
 const say = (content, extra = {}) => reply(message({ accent: 'steel', ephemeral: (extra.flags ?? 64) === 64, blocks: [text(content)] }));
 const done = (title, body) => reply(notice(title, body, { accent: 'win' })); // private "it worked"
-const brand = (s) => `NOREX UNITED · ${s}`;
+const brand = (s, env) => `${orgName(env)} · ${s}`;
 const label = (e) => e.title || EVENT_TYPES[e.type]?.[1] || 'Event';
 const ts = (ms, f = 'F') => `<t:${Math.floor(ms / 1000)}:${f}>`;
 const flag = (c) => (/^[A-Z]{2}$/.test(c ?? '') ? String.fromCodePoint(...[...c].map((x) => 0x1f1a5 + x.charCodeAt(0))) : '');
@@ -58,7 +59,7 @@ const rsvpsOf = (env, id) => all(env, 'SELECT r.status, r.name, r.user_id, p.pos
 export async function eventButton(i, env, who) {
   if (!env.DB) return say('⚠️ The member database is not connected.');
   if (!flagOn(env, who, 'events') || !flagOn(env, who, 'discordRsvp')) return say('🔒 Answering on Discord is not switched on for you yet – use the Squad Hub.');
-  if (!can(who, 'events.rsvp')) return say('🔒 Members of the NOREX server only.');
+  if (!can(who, 'events.rsvp')) return say(`🔒 Members of the ${orgName(env)} server only.`);
   const [, , id, status] = i.data.custom_id.split(':');
   if (!['yes', 'maybe', 'no'].includes(status)) return say('⚠️ Unknown answer.');
   const me = await memberOf(i, who, env);
@@ -74,7 +75,7 @@ export async function eventButton(i, env, who) {
 export async function playButton(i, env, who) {
   if (!env.DB) return say('⚠️ The member database is not connected.');
   if (!flagOn(env, who, 'tactics')) return say('🔒 The Tactics Studio is not switched on yet.');
-  if (!can(who, 'plays.view')) return say('🔒 Members of the NOREX server only.');
+  if (!can(who, 'plays.view')) return say(`🔒 Members of the ${orgName(env)} server only.`);
   const [, , id] = i.data.custom_id.split(':');
   const me = await memberOf(i, who, env);
   const res = await markLearned(env, me, Number(id), { learned: true });
@@ -120,7 +121,7 @@ export async function memberCommand(i, env, who, site, h) {
     const names = new Map([...rsvps.map((r) => [r.user_id, r.name]), ...(await all(env, `SELECT id, name FROM users WHERE id IN (${ids.map(() => '?').join(',')})`, ...ids)).map((u) => [u.id, u.name])]);
     const rows = ids.map((id) => [lineup[id], names.get(id) ?? 'Member']).sort((a, b) => SLOT_ORDER(a[0]) - SLOT_ORDER(b[0]));
     return reply(message({ blocks: [
-      header({ eyebrow: brand('Lineup'), title: `🧩 ${label(e)} · ${e.formation ?? 'Lineup'}`, sub: `${ts(e.start)} · ${ts(e.start, 'R')}` }),
+      header({ eyebrow: brand('Lineup', env), title: `🧩 ${label(e)} · ${e.formation ?? 'Lineup'}`, sub: `${ts(e.start)} · ${ts(e.start, 'R')}` }),
       text(`\`\`\`\n${rows.map(([pos, n]) => `${String(pos).padEnd(5)}${n}`).join('\n')}\n\`\`\``),
       footer(`${rows.length} players · positions in formation order`),
       buttons([{ label: 'Open in the Squad Hub', url: `${site}members.html#schedule-${e.id}` }]),
@@ -157,7 +158,7 @@ export async function memberCommand(i, env, who, site, h) {
     const list = rows.map((x) => [x, f(x)]).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).slice(0, 10);
     const medal = [it('first'), it('second'), it('third')];
     return reply(message({ blocks: [
-      header({ eyebrow: brand('Rush leaderboard'), title: `⚡ ${title}`, sub: list[0] ? `${list[0][0].n} leads with ${list[0][1].toFixed(dec)}` : 'No confirmed Rush results yet' }),
+      header({ eyebrow: brand('Rush leaderboard', env), title: `⚡ ${title}`, sub: list[0] ? `${list[0][0].n} leads with ${list[0][1].toFixed(dec)}` : 'No confirmed Rush results yet' }),
       list.length ? text(list.map(([x, v], k) => `${medal[k] ?? `\`${k + 1}.\``} [${x.n}](${site}players/${encodeURIComponent(x.player)}.html) — **${v.toFixed(dec)}**`).join('\n')) : null,
       footer('From Rush results logged by members and confirmed by a manager'),
       buttons([{ label: 'All leaderboards', url: `${site}stats.html` }]),
@@ -176,7 +177,7 @@ export async function memberCommand(i, env, who, site, h) {
     const plats = PLAT.map(([k, l]) => { const v = verified[k]?.name ?? ids[k]; return v ? `${l}: **${v}**${verified[k] ? ' ✓' : ''}` : ''; }).filter(Boolean);
     const pos = (s) => parse(s, []).join(' / ');
     return reply(message({ blocks: [
-      header({ eyebrow: brand('Member profile'), title: `${u.name}${prof?.country ? ` ${flag(prof.country)}` : ''}`, sub: claim ? `Plays as ${claim.player_name} ✅` : 'No verified player yet', thumb: await faceOf(env, id) }),
+      header({ eyebrow: brand('Member profile', env), title: `${u.name}${prof?.country ? ` ${flag(prof.country)}` : ''}`, sub: claim ? `Plays as ${claim.player_name} ✅` : 'No verified player yet', thumb: await faceOf(env, id) }),
       prof?.bio ? text(`> ${String(prof.bio).slice(0, 300).replace(/\n/g, '\n> ')}`) : null,
       facts([['🏆 League', pos(prof?.positions)], ['⚡ Rush', pos(prof?.rush_positions)], ['🎮 Platforms', plats.length ? plats.join(' · ') : null]]),
       footer(Object.keys(verified).length ? '✓ = platform verified through Discord' : 'Full profile on the site'),
@@ -185,13 +186,13 @@ export async function memberCommand(i, env, who, site, h) {
   }
   if (name === 'awards') {
     if (!flagOn(env, who, 'awards')) return say('🔒 Weekly awards are not switched on yet.');
-    if (!can(who, 'awards.vote')) return say('🔒 Members of the NOREX server only.');
+    if (!can(who, 'awards.vote')) return say(`🔒 Members of the ${orgName(env)} server only.`);
     const st = await awardsState(env, me, h.load);
     const ballot = st.categories.length ? st.categories.map((c) => `${c.icon} **${c.name}**`).join('\n') : 'No categories yet – a manager adds them in the Squad Hub.';
     const auto = st.stats.map((s) => `${s.icon} **${s.name}** – ${s.how}`).join('\n');
     const last = st.last?.winners.length ? st.last.winners.map((w) => `${w.icon} **${w.name}** — ${w.n ? `[${w.n}](${site}players/${encodeURIComponent(w.k)}.html)` : '–'}`).join('\n') : 'No winners yet.';
     return reply(message({ accent: 'gold', blocks: [
-      header({ eyebrow: brand('Weekly awards'), title: `🏆 Weekly awards · ${st.week}`, sub: st.closed ? 'Voting has closed for this week' : `Voting closes ${ts(st.closes)} · ${ts(st.closes, 'R')}` }),
+      header({ eyebrow: brand('Weekly awards', env), title: `🏆 Weekly awards · ${st.week}`, sub: st.closed ? 'Voting has closed for this week' : `Voting closes ${ts(st.closes)} · ${ts(st.closes, 'R')}` }),
       heading('Vote now'), text(ballot),
       heading('Decided automatically'), text(auto || '–'),
       sep(),
@@ -213,7 +214,7 @@ export async function memberCommand(i, env, who, site, h) {
     const ICON = { match: '🎮', attendance: '🗓️', community: '💬', behaviour: '🤝' };
     const LABEL = { match: 'Match performance', attendance: 'Attendance', community: 'Community', behaviour: 'Behaviour' };
     return reply(message({ ephemeral: true, accent: 'gold', blocks: [
-      header({ eyebrow: brand('My points'), title: `⭐ ${u?.points ?? 0} points`, sub: `#${rank} on the club leaderboard`, thumb: await faceOf(env, me.u) }),
+      header({ eyebrow: brand('My points', env), title: `⭐ ${u?.points ?? 0} points`, sub: `#${rank} on the club leaderboard`, thumb: await faceOf(env, me.u) }),
       facts(CATEGORIES.map((c) => [`${ICON[c]} ${LABEL[c]}`, `${by[c] ?? 0}`])),
       footer('Only you can see this'),
       buttons([{ label: 'Full breakdown', url: `${site}members.html#points` }]),
@@ -269,7 +270,7 @@ export async function memberCommand(i, env, who, site, h) {
     const nameOf = (k) => v.players.find((p) => p.k === k)?.n ?? k;
     const board = ranked.length ? ranked.map(([k, n], i) => `${[it('first'), it('second'), it('third')][i] ?? `${i + 1}.`} **${nameOf(k)}** — ${n} vote${n === 1 ? '' : 's'}`).join('\n') : 'No votes yet.';
     return reply(message({ accent: 'gold', blocks: [
-      header({ eyebrow: brand('Man of the match vote'), title: `🌟 MOTM · vs ${m.opp}`, sub: `${m.gf}–${m.ga} · ${ranked.reduce((t, [, n]) => t + n, 0)} votes so far`, thumb: m.oppCrest || null }),
+      header({ eyebrow: brand('Man of the match vote', env), title: `🌟 MOTM · vs ${m.opp}`, sub: `${m.gf}–${m.ga} · ${ranked.reduce((t, [, n]) => t + n, 0)} votes so far`, thumb: m.oppCrest || null }),
       ...(await (async () => { // the top 3 on rows with their faces, the rest as a list
         const faces = await playerFaces(env, ranked.slice(0, 3).map(([k]) => k));
         if (!ranked.length || !faces.size) return [text(board)];
@@ -287,7 +288,7 @@ export async function memberCommand(i, env, who, site, h) {
     if (!e) return say(`🤷 No matches found against "${opts.opponent}".`, { flags: 0 });
     const gd = e.gf - e.ga;
     return reply(message({ accent: e.w > e.l ? 'win' : e.l > e.w ? 'loss' : 'gold', blocks: [
-      header({ eyebrow: brand('Head to head'), title: `⚔️ NOREX vs ${e.n}`, sub: `${e.p} game${e.p === 1 ? '' : 's'} · ${e.w}W ${e.d}D ${e.l}L` }),
+      header({ eyebrow: brand('Head to head', env), title: `⚔️ ${orgName(env)} vs ${e.n}`, sub: `${e.p} game${e.p === 1 ? '' : 's'} · ${e.w}W ${e.d}D ${e.l}L` }),
       facts([['Goals', `${e.gf}–${e.ga} (${gd >= 0 ? '+' : ''}${gd})`], ['Win rate', `${Math.round(100 * e.w / Math.max(1, e.p))}%`], ['Last meeting', `${e.lastRes} ${e.lastScore}`]]),
       buttons([{ label: 'Head to head on the site', url: `${site}stats.html#h2h` }]),
     ] }));

@@ -6,6 +6,7 @@
 //   /api/notes, /api/notes/*  managers – timestamped notes per member, player or trial
 // Flags: trials (contacts, form, portal), scouting, managerNotes. Permissions: bot/roles.js.
 import { can, flagOn } from './roles.js';
+import { orgName } from './orgconfig.js';
 import { notify, notifyManagers, safely } from './notify.js';
 
 const DAY = 86400e3;
@@ -104,7 +105,7 @@ export async function applyRoute(request, env, me, loadSite, log) {
 
 // BE4 – optional DM when a trial moves stage (type `trialstage`, default off). The player hears it only when
 // they're a linked member (approved claim on that player page); the managers' Dugout gets it the same way.
-const STAGE_NEWS = { applied: 'is on the trial list', booked: 'has a trial session booked 📅', trialling: 'is now on trial ⚽', played: 'has played a trial session', signed: 'signed for NOREX ✍️', released: 'was released after the trial', declined: 'was declined' };
+const STAGE_NEWS = { applied: 'is on the trial list', booked: 'has a trial session booked 📅', trialling: 'is now on trial ⚽', played: 'has played a trial session', signed: 'signed for the club ✍️', released: 'was released after the trial', declined: 'was declined' };
 export async function notifyStage(env, r, status, me) {
   const word = STAGE_NEWS[status];
   if (!word) return null;
@@ -168,7 +169,7 @@ async function trialsRoute(p, method, body, me, env, loadSite, log) {
       add('INSERT INTO trial_events (trial_id, kind, status, detail, by_name, at) VALUES (?, ?, ?, ?, ?, ?)', r.id, 'status', body.status, clean(body.reason, 200) || null, me.n, at);
       logs.push(['trial-status', `${r.ea_id} → ${body.status}`]);
       // P7.1 – the member who recommended this player hears how their tip is going
-      const scoutWord = { applied: 'is on the trial list', trialling: 'is now on trial ⚽', signed: 'signed for NOREX ✍️', released: 'was released after the trial', declined: 'was declined' }[body.status];
+      const scoutWord = { applied: 'is on the trial list', trialling: 'is now on trial ⚽', signed: 'signed for the club ✍️', released: 'was released after the trial', declined: 'was declined' }[body.status];
       tell = () => Promise.all([
         r.source === 'scout' && r.by_id && r.by_id !== me.u && scoutWord
           ? safely(notify(env, [r.by_id], { type: 'trial', title: `Your tip ${r.ea_id} ${scoutWord}`, body: `Thanks for scouting! Updated by ${me.n}.`, link: 'members.html#scout' }))
@@ -222,7 +223,7 @@ async function scoutRoute(p, method, body, me, env, loadSite, log) {
   if (today.n >= SCOUT_DAILY) return fail(`That's ${SCOUT_DAILY} recommendations today – thanks! Try again tomorrow.`, 429);
   const { t, error } = await readPlayer(body, loadSite, { needContact: false });
   if (error) return fail(error);
-  if (!t.note || t.note.length < 5) return fail('Say why they would fit NOREX.');
+  if (!t.note || t.note.length < 5) return fail(`Say why they would fit ${orgName(env)}.`);
   const dupe = await openDupe(env, t.ea);
   if (dupe) return fail(`${t.ea} is already on the managers' list (${dupe.status}).`, 409);
   await insertTrial(env, t, 'scout', 'recommended', me);

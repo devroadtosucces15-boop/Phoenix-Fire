@@ -7,6 +7,7 @@
 // Everything is in the design system (bot/ui.js). Rejected shares are kept but never shown.
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, sep, footer, buttons, cards, bannerUrl } from './ui.js';
+import { orgName } from './orgconfig.js';
 import { notify, notifyManagers, safely } from './notify.js';
 import { postEmbed } from './docs.js';
 
@@ -37,7 +38,7 @@ export function cleanLink(v) {
 export function discoveryPanel(row, useful, env = {}) {
   return message({ accent: 'gold', mentions: { parse: [] }, blocks: [
     cards(row.image || bannerUrl(env, 'discovery')),
-    header({ eyebrow: 'NOREX UNITED · Discovery', title: row.title, sub: `Shared by <@${row.user_id}>${row.approved_by ? ` · approved by <@${row.approved_by}>` : ''}`, size: 3 }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Discovery`, title: row.title, sub: `Shared by <@${row.user_id}>${row.approved_by ? ` · approved by <@${row.approved_by}>` : ''}`, size: 3 }),
     text(row.body),
     sep(),
     buttons([{ label: `👍 Useful · ${useful}`, id: `norex:dc:useful:${row.id}` }, row.link && { label: 'Open link', url: row.link }, { label: 'On the site', url: `${site(env)}members.html#discoveries` }]),
