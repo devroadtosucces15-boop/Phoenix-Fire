@@ -19,4 +19,10 @@ t('bot name is Phoenix DJ, rooms category is PHOENIX ROOMS', brand.BOT === 'Phoe
 const crest = fs.readFileSync(path.join(ROOT, 'assets/crest.png')), phoenix = fs.readFileSync(new URL('../phoenix/overlay/crest.png', import.meta.url));
 t('panel crest is the Phoenix crest (not the NOREX one)', crest.length > 0 && crest.length !== 60713 && phoenix.length > 0);
 t('six rooms: Phoenix DJ + DJ 1..5', /MAX_ROOMS = 6/.test(fs.readFileSync(path.join(ROOT, 'src/index.js'), 'utf8')));
+const bubbles = fs.readFileSync(path.join(ROOT, 'src/bubbles.js'), 'utf8'), icons = fs.readFileSync(path.join(ROOT, 'src/icons.js'), 'utf8');
+t('room codes use the Phoenix prefix (PHX-001), not NRX', brand.ROOM_CODE === 'PHX' && /\$\{ROOM_CODE\}-/.test(bubbles) && !/NRX-/.test(bubbles));
+t('rooms open in ROOMS_CATEGORY_ID when it is a category, else fall back to the named one', /ROOMS_CATEGORY_ID/.test(bubbles) && /ChannelType\.GuildCategory\) return set/.test(bubbles));
+t('.env.example points rooms at the Phoenix voice category', /^ROOMS_CATEGORY_ID=1328821938243637385$/m.test(fs.readFileSync(path.join(ROOT, '.env.example'), 'utf8')));
+t('empty rooms auto-delete (45 s grace, 3 min if nobody joins)', /EMPTY_GRACE_MS = 45_000, NEVER_USED_MS = 3 \* 60_000/.test(bubbles) && /remove\(id, 'empty'\)/.test(bubbles));
+t('new app emoji are uploaded as px_, old ones still recognised', /name: `\$\{EMOJI_PREFIX\}\$\{name\}`/.test(icons) && brand.EMOJI_PREFIX === 'px_');
 done();

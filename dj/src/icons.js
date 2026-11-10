@@ -1,4 +1,4 @@
-import { ACCENT_2, GOLD, INK } from './brand.js';
+import { ACCENT_2, EMOJI_PREFIX, GOLD, INK } from './brand.js';
 // The Phoenix icon set: simple glyphs in the site's palette, rendered to PNG and uploaded once as the bot's own (application) emoji.
 // Buttons and messages use them instead of generic emoji. If an upload fails, the unicode fallback is used.
 import fs from 'node:fs';
@@ -38,11 +38,11 @@ try { map = JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch { /* first run */
 export async function ensure(rest, appId) {
   try {
     const have = await rest.get(`/applications/${appId}/emojis`);
-    for (const e of have.items || []) map[e.name.replace(/^nx_/, '')] = { id: e.id, name: e.name };
+    for (const e of have.items || []) map[e.name.replace(/^(px|nx)_/, '')] = { id: e.id, name: e.name };
     for (const [name, [svg]] of Object.entries(GLYPH)) {
       if (map[name]) continue;
       const img = png(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">${svg}</svg>`, 128);
-      const e = await rest.post(`/applications/${appId}/emojis`, { body: { name: `nx_${name}`, image: `data:image/png;base64,${img.toString('base64')}` } });
+      const e = await rest.post(`/applications/${appId}/emojis`, { body: { name: `${EMOJI_PREFIX}${name}`, image: `data:image/png;base64,${img.toString('base64')}` } });
       map[name] = { id: e.id, name: e.name };
     }
     fs.mkdirSync(path.dirname(FILE), { recursive: true }); fs.writeFileSync(FILE, JSON.stringify(map));

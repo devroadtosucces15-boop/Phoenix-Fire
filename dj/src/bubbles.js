@@ -1,4 +1,4 @@
-import { BOT, CLUB, ROOMS } from './brand.js';
+import { BOT, CLUB, ROOMS, ROOM_CODE } from './brand.js';
 // Pop-up rooms ("bubbles"): a member runs /room, the bot builds a voice channel from scratch (its built-in chat is the room's chat),
 // tags it with a code, asks the member if they want to move in, greets people as they arrive, and deletes everything once it is empty.
 import fs from 'node:fs';
@@ -27,7 +27,15 @@ export const info = (id) => db.rooms[id] || null;
 const humans = (ch) => ch.members.filter((m) => !m.user.bot).size;
 export const url = (guildId, id) => `https://discord.com/channels/${guildId}/${id}`;
 
+// Rooms open in ROOMS_CATEGORY_ID (the server's own voice category, set in .env). Without it, or if that category is gone,
+// the bot finds or creates a category named ROOMS instead.
+const CATEGORY_ID = process.env.ROOMS_CATEGORY_ID || '';
 async function ensureCategory(guild) {
+  if (CATEGORY_ID) {
+    const set = await guild.channels.fetch(CATEGORY_ID).catch(() => null);
+    if (set?.type === ChannelType.GuildCategory) return set;
+    console.error(`ROOMS_CATEGORY_ID ${CATEGORY_ID} is not a category in this server; using "${CATEGORY}"`);
+  }
   const found = guild.channels.cache.find((c) => c.type === ChannelType.GuildCategory && c.name === CATEGORY);
   return found || guild.channels.create({ name: CATEGORY, type: ChannelType.GuildCategory, reason: `${CLUB} pop-up rooms` });
 }
@@ -35,7 +43,7 @@ async function ensureCategory(guild) {
 export async function create(guild, member, rawName) {
   if (Object.values(db.rooms).filter((r) => r.guildId === guild.id).length >= MAX_ROOMS) throw new Error('FULL');
   const cat = await ensureCategory(guild);
-  const code = `NRX-${String(++db.counter).padStart(3, '0')}`;
+  const code = `${ROOM_CODE}-${String(++db.counter).padStart(3, '0')}`;
   const base = (rawName || `${member.displayName}'s room`).replace(/[^\p{L}\p{N} '’._-]/gu, '').trim().slice(0, 60) || 'room';
   // No explicit view/join permissions: the room follows the rooms category, so you control who sees rooms in one place.
   const vc = await guild.channels.create({
