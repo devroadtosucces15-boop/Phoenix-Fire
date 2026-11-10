@@ -14,7 +14,8 @@
 // that app's DISCORD_APP_ID / DISCORD_BOT_TOKEN (appEnv), so follow-ups and DMs come from the app that was used.
 // Full list of names: bot/README.md.
 
-import { APP_LABEL, answeringApp, appEnv, appConfigured, appFromPath, servedBy } from './apps.js';
+import { APP_LABEL, answeringApp, appCreds, appEnv, appConfigured, appFromPath, servedBy } from './apps.js';
+import { useIconApp } from './icons.js';
 import { getCommandSettings, commandBlocked, shapeReply } from './botcommands.js';
 import { orgName } from './orgconfig.js';
 import { handleMembers } from './members.js';
@@ -59,7 +60,11 @@ import { SERVER_COMMANDS, SERVER_BUTTON, serverCommand, serverButton, memberWatc
 
 export default {
   async scheduled(event, env, ctx) {
-    env = appEnv(await withOrgEnv(env), 'core'); // Discord server + role IDs from the Organization config; cron posts come from core
+    const base = await withOrgEnv(env); // Discord server + role IDs from the Organization config
+    env = appEnv(base, 'core'); // cron posts come from core …
+    useIconApp('core');
+    // … except fun posts (birthdays), which go through the fun app when it has a token, so their buttons come back to fun.
+    const funEnv = appConfigured(base, 'fun') && appCreds(base, 'fun').token ? appEnv(base, 'fun') : env;
     if (event?.cron === '* * * * *') { // the 1-minute timer only sends /remind reminders – everything else stays on the 10-minute one
       ctx.waitUntil(sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
       return;
@@ -80,7 +85,7 @@ export default {
     if (flagOn(env, { role: 'owner' }, 'reminders')) ctx.waitUntil(remindersCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('reminders failed', e.message))); // E3 gentle nudges
     if (flagOn(env, { role: 'owner' }, 'memberLive')) ctx.waitUntil(memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
     if (flagOn(env, { role: 'owner' }, 'watchlist')) ctx.waitUntil(watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
-    if (flagOn(env, { role: 'owner' }, 'fun')) ctx.waitUntil(birthdayCheck(env, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
+    if (flagOn(env, { role: 'owner' }, 'fun')) ctx.waitUntil(birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
     if (flagOn(env, { role: 'owner' }, 'serverTools')) ctx.waitUntil(memberWatch(env).catch((e) => console.log('member watch failed', e.message))); // leave/join alerts + welcome posts
     if (flagOn(env, { role: 'owner' }, 'cardStudio')) ctx.waitUntil(generateCards(env).catch((e) => console.log('card generation failed', e.message))); // Card Studio – approved requests → AI cards (retries included)
     if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_REPO) return;
@@ -112,6 +117,7 @@ export default {
     const app = path.startsWith('/interactions/') ? appFromPath(path) : 'core';
     if (!app || (app !== 'core' && !appConfigured(env, app))) return new Response('Unknown app', { status: 404 });
     env = appEnv(env, app);
+    useIconApp(app); // this app's own emoji set (bot/icons.js)
     const body = await request.text();
     if (!(await verify(request, body, env.DISCORD_PUBLIC_KEY))) return new Response('Bad signature', { status: 401 });
     const i = JSON.parse(body);
