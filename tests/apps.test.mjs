@@ -41,7 +41,7 @@ t('registration: owner settings still apply per app', !registrationPlan(split, {
 t('registration: `only` limits the apps', registrationPlan(split, {}, ['stats']).map((p) => p.app).join() === 'stats');
 t('registration: an app with no token is skipped', !registrationPlan({ ...split, DISCORD_BOT_TOKEN_STATS: '' }).some((p) => p.app === 'stats'));
 const toml = tomlVars(fs.readFileSync(ROOT + 'bot/wrangler.toml', 'utf8'));
-t('tomlVars reads [vars] from wrangler.toml, not commented lines', /^\d+$/.test(toml.DISCORD_APP_ID) && /^[0-9a-f]{64}$/.test(toml.DISCORD_PUBLIC_KEY) && !('DISCORD_APP_ID_STATS' in toml) && !('binding' in toml));
+t('tomlVars reads [vars] from wrangler.toml, incl. the configured apps', /^\d+$/.test(toml.DISCORD_APP_ID) && /^[0-9a-f]{64}$/.test(toml.DISCORD_PUBLIC_KEY) && /^\d+$/.test(toml.DISCORD_APP_ID_STATS) && /^[0-9a-f]{64}$/.test(toml.DISCORD_PUBLIC_KEY_STATS) && !('binding' in toml));
 t('no bot token or client secret is committed in wrangler.toml', !Object.keys(toml).some((k) => /TOKEN|SECRET/.test(k)));
 
 // ---------- the Worker: signatures and routing ----------
