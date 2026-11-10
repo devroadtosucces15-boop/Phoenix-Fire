@@ -15,13 +15,12 @@ const build = (name, extra = []) => {
 };
 const pages = (d) => fs.readdirSync(d).filter((f) => f.endsWith('.html'));
 const noindex = (d, f) => /<meta name="robots" content="[^"]*noindex/.test(fs.readFileSync(path.join(d, f), 'utf8'));
-const HIDDEN = /^(hub|staff|lookbook|canvas|playstyle|offline|404|squad|members)/; // squad = member portal, members = player-claim page
+const HIDDEN = /^(hub|staff|lookbook|canvas|playstyle|offline|404|members)/; // members = player-claim page (squad.html is the public redesigned Squad page)
 
 try {
   // ---------- closed (the config as committed) ----------
   const closed = build('closed');
-  // squad.html (the legacy member portal, copied in after the page pass) has never carried the meta; robots.txt covers it while closed.
-  t('closed: every built page is noindex (squad.html keeps its old behaviour: robots.txt only)', pages(closed).every((f) => f === 'squad.html' || noindex(closed, f)));
+  t('closed: every built page is noindex', pages(closed).every((f) => noindex(closed, f)));
   t('closed: robots.txt blocks everything, exactly as before', fs.readFileSync(path.join(closed, 'robots.txt'), 'utf8') === 'User-agent: *\nDisallow: /\n');
   t('closed: no sitemap.xml', !fs.existsSync(path.join(closed, 'sitemap.xml')));
   t('closed: the home page carries the same noindex,nofollow meta as before', /<meta name="robots" content="noindex,nofollow">/.test(fs.readFileSync(path.join(closed, 'index.html'), 'utf8')));

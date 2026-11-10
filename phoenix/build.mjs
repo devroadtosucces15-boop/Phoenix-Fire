@@ -111,17 +111,15 @@ try {
     }
     fs.writeFileSync(p, h); pages++;
   }
-  // Keep the complete legacy member portal available at squad.html, but make members.html
-  // a Phoenix-native player-claim experience. The claim page talks to the same Phoenix Worker;
-  // no authentication, claim, or manager-approval endpoints are reimplemented here.
-  const legacyMembers = path.join(classic, 'members.html');
+  // squad.html is the redesigned Squad page and hub.html the redesigned Hub; the classic member portal is NOT
+  // published. members.html is a Phoenix-native player-claim experience. The claim page talks to the same Phoenix
+  // Worker; no authentication, claim, or manager-approval endpoints are reimplemented here.
   const legacyAssets = path.join(classic, 'assets');
-  if (fs.existsSync(legacyMembers) && fs.existsSync(legacyAssets)) {
+  if (fs.existsSync(legacyAssets)) {
     fs.cpSync(legacyAssets, path.join(out, 'assets'), { recursive: true });
     // the classic assets carry another club's crest and favicon: replace them with Phoenix art (bot embeds read assets/crest.png)
     fs.cpSync(path.join(here, 'legacy-assets'), path.join(out, 'assets'), { recursive: true });
-    fs.copyFileSync(legacyMembers, path.join(out, 'squad.html'));
-  } else warn('classic member hub was not generated; squad.html will not be published');
+  } else warn('classic assets were not generated; assets/ will not be published');
   const claimTemplate = path.join(here, 'claim.html');
   if (fs.existsSync(claimTemplate)) {
     let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', API);
@@ -129,8 +127,6 @@ try {
     fs.writeFileSync(path.join(out, 'members.html'), claim);
   } else warn('Phoenix claim page template missing; members.html will not be published');
   if (LAUNCH) { // allow robots.txt plus a sitemap of the built public pages. The staged config carries a placeholder siteUrl, so the real one comes from the repo config.
-    const sq = path.join(out, 'squad.html'); // the member portal is copied in after the page pass: keep it out of search results
-    if (fs.existsSync(sq)) { const s = fs.readFileSync(sq, 'utf8'); if (!/name="robots"/.test(s)) fs.writeFileSync(sq, s.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>')); }
     const site = String(JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).siteUrl || '').replace(/\/?$/, '/');
     const day = new Date().toISOString().slice(0, 10), esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     const listed = fs.readdirSync(out).filter((f) => swap.indexable(f) && !/name="robots" content="[^"]*noindex/.test(fs.readFileSync(path.join(out, f), 'utf8'))).sort();
