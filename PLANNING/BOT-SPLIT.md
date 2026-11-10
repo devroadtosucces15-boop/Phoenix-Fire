@@ -10,12 +10,12 @@ design first drafted in the wrong repo; nothing here depends on NOREX.
 | Apps `core`, `stats`, `tools`, `fun` | Live, 4 endpoints answer |
 | Plumbing for `matchday` and `rush` (`bot/apps.js`, `APP_COMMANDS`, `bot.yml`, `set-tokens.sh`) | **Done**, both apps have no commands yet so nothing moved |
 | Icons `phoenix-matchday*`, `phoenix-rush*` | Done (`bot/icons/phoenix/v2/`) |
-| Discord applications "Phoenix Matchday" and "Phoenix Rush" | **Owner step** (checklist in `bot/README.md`) |
-| MB1 command moves, transition replies, `/matchday create|checkin|status` | **Code done, dark** (`bot/apps.js` homeOf/HELD, `bot/matchday.js`; `tests/matchday.test.mjs`) |
+| Discord applications "Phoenix Matchday" and "Phoenix Rush" | **Created and configured 2026-11-10** (`3134c06`: IDs, public keys, `APP_LIVE_SINCE_*` in `bot/wrangler.toml`); both `/interactions/<app>` endpoints answer |
+| MB1 command moves, transition replies, `/matchday create|checkin|status` | **Code done, live since 2026-11-10** (`bot/apps.js` homeOf/HELD, `bot/matchday.js`; `tests/matchday.test.mjs`) |
 | MB2 preferred position (`0056_pref_pos.sql`, Discord select, site chips on Match night, API `pref`) | **Code done**, live now (it only adds an optional select under the answer buttons) |
-| MB4 `rush` move | **Code done, dark** (stays on Stats until the Rush app exists) |
-| MB5 `/lfg now|cancel|list` (`0057_rush_lfg.sql`, `bot/lfg.js`, flag `rushLfg` owner) | **Code done, dark** (`tests/lfg.test.mjs`) |
-| Switch-on | Owner step B3, then set `APP_LIVE_SINCE_MATCHDAY` / `APP_LIVE_SINCE_RUSH` (ISO date) in `wrangler.toml` to start the 14-day transition window |
+| MB4 `rush` move | **Code done, live since 2026-11-10** (answers on Phoenix Rush; Stats points to it until 2026-11-24) |
+| MB5 `/lfg now|cancel|list` (`0057_rush_lfg.sql`, `bot/lfg.js`, flag `rushLfg` owner) | **Code done, app live; the flag is still `owner`** (`tests/lfg.test.mjs`) |
+| Switch-on | **Done 2026-11-10** (B3; the 14-day window ends 2026-11-24). Originally: owner step B3, then set `APP_LIVE_SINCE_MATCHDAY` / `APP_LIVE_SINCE_RUSH` (ISO date) in `wrangler.toml` to start the 14-day transition window |
 
 ## The apps
 
