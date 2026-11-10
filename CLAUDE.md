@@ -33,9 +33,15 @@ Phoenix identity (single source: `config.json` brand, `phoenix/live.json`, `phoe
 4. Do not copy files or code back and forth with the NOREX repo without re-theming them first.
 5. Tests: when you rebrand something, add or extend a test that fails if a NOREX name, colour or crest appears in that output.
 
-### Known leftovers (audit 2026-11-10, not yet fixed)
+### How the site is themed
 
-- `/site` reply (and `/club`, `/last`, `/results`) shows the NOREX crest; the thumbnail is `club.crest` from `data/club.json`.
-- `bot/ui.js` ACCENT palette uses NOREX red `0xc8352c` as the default accent instead of Phoenix `#e8651a`.
-- NOREX mentions by area (files): `site/` 138, `next/` 69, `bot/` 42, `tests/` 40, `web/` 24, `scripts/` 17, `phoenix/` 9, `PLANNING/` 2, `data/` 1.
-- `next/` and `web/` look like NOREX site copies. Decide whether to delete or re-theme them, then remove this line.
+`next/` and `web/` are shared sources. `phoenix/build.mjs` stages them, runs `phoenix/recolor.sh` on both, renames NOREX to Phoenix in
+every staged js/css/html file, then overlays the Phoenix crest and theme layer. Source files may still say NOREX; the **built output**
+must not. `tests/brand.test.mjs` and `tests/phoenix-brand.test.mjs` build the site and fail on a visible NOREX name, the NOREX crest,
+the NOREX red, or a player link that does not resolve.
+
+### Known leftovers (audit 2026-11-10)
+
+- The Worker host is `phoenix-bot.norexunited.workers.dev` (config, wrangler `PUBLIC_URL`, `live.json`, secrets registry). Owner decision: keep the account host or move it.
+- Internal identifiers stay on purpose (`norex_session`, `X-Norex-Key`, `window.Norex*`, `norex.*` storage keys, `NOREX_KV`); see `PLANNING/PHASE1-NOREX-AUDIT.md`.
+- `site/` in a working copy may be an old classic build from `tests/run.mjs`; the published site comes from `phoenix/build.mjs`.

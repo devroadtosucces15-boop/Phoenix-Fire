@@ -124,7 +124,7 @@ async function recordsFacts(loadSite) {
   const best = Object.fromEntries(Object.entries(r.bestMatch ?? {}).filter(([, v]) => v).map(([k, v]) => [k, { value: v.value, player: v.player }]));
   return { title: 'Club records', facts: { games: r.games, biggestWin: r.biggestWin, heaviestDefeat: r.heaviestDefeat, longestWinStreak: r.longestWinStreak, hatTricks: r.hatTricks, hatTrickPlayers: r.hatTrickPlayers, bestInAMatch: best } };
 }
-// BE9 head-to-head vs one opponent club (site `h2h.json`, keyed by EA club id `o`): the whole record NOREX has
+// BE9 head-to-head vs one opponent club (site `h2h.json`, keyed by EA club id `o`): the whole record Phoenix has
 // against them in the archive. Unknown opponent id → null.
 async function h2hFacts(loadSite, o) {
   const e = ((await loadSite('h2h')) ?? []).find((x) => String(x.o) === o);

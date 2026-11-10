@@ -1,4 +1,4 @@
-// NOREX bot design system – one layout for every message the bots send (see the "NOREX Bot Design System" preview).
+// Phoenix bot design system – one layout for every message the bots send (see the "Phoenix Bot Design System" preview).
 // Built on Discord's Components V2: a message is one panel (container) with a colour stripe, a header (small label, title,
 // detail line, optional picture on the right), body blocks split by dividers, drawn cards (scripts/cards.mjs) for anything
 // Discord can't lay out, a small footer line and the buttons last. With V2 a message has no `content`/`embeds` – all text

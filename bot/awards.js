@@ -45,7 +45,7 @@ export function weekOf(ms) {
 const GROUP_OF = (pos) => (pos === 'GK' ? 'GK' : ['CB', 'LB', 'RB', 'LWB', 'RWB', 'DEF'].includes(pos) ? 'DEF' : ['CDM', 'CM', 'CAM', 'LM', 'RM', 'MID'].includes(pos) ? 'MID' : pos && pos !== '—' ? 'FWD' : 'any');
 const siteJson = (env, file) => fetch(`${String(env.SITE_URL).replace(/\/?$/, '/')}api/${file}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
-// Nominees: the NOREX squad (home players), those who played for us this week first.
+// Nominees: the Phoenix squad (home players), those who played for us this week first.
 async function nominees(env, loadSite, week) {
   const [players, squad] = await Promise.all([loadSite('players').catch(() => []), loadSite('squad').catch(() => null)]);
   const played = new Set(Object.entries(squad?.players ?? {}).filter(([, rows]) => rows.some((r) => r[0] * 1000 >= week.start && r[0] * 1000 < week.end)).map(([k]) => k));

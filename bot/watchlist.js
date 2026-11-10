@@ -78,7 +78,7 @@ export async function watchlistCron(env, now = Date.now(), fetcher = fetch) {
   const creators = await all(env, 'SELECT * FROM watch_creators WHERE active = 1');
   let stored = 0;
   for (const c of creators) {
-    const r = await fetcher(`https://www.youtube.com/feeds/videos.xml?channel_id=${c.channel_id}`, { headers: { 'User-Agent': 'NorexUnitedBot/1.0' } }).catch(() => null);
+    const r = await fetcher(`https://www.youtube.com/feeds/videos.xml?channel_id=${c.channel_id}`, { headers: { 'User-Agent': 'PhoenixFireBot/1.0' } }).catch(() => null);
     if (!r?.ok) continue;
     const first = c.seen_at == null; // a creator just added: take the backlog silently, only recent uploads get posted
     for (const v of parseFeed(await r.text()).slice(0, 15)) {

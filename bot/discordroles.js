@@ -1,4 +1,4 @@
-// P2.5 Discord role sync. An approved player claim gives the member the **Verified** role in the NOREX server
+// P2.5 Discord role sync. An approved player claim gives the member the **Verified** role in the Phoenix server
 // (plus an optional position role: GK / DEF / MID / FWD); unlink or reject takes them away again.
 //
 // The Verified role is found by name ("Verified", any emoji around it) or created once by the bot; its ID is kept in

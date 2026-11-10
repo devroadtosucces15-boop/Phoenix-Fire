@@ -187,5 +187,6 @@ export function scouting() {
 
 export default function (P) {
   P('index.html', home()); P('squad.html', squad()); P('halloffame.html', hall()); P('join.html', join()); P('news.html', news()); P('watch.html', watch()); P('scouting.html', scouting());
-  for (const p of players) P(`player-${slug(p.k)}.html`, player(p));
+  // file named with the decoded key: hosts decode %20 in the URL before looking for the file, so a literal %20 in the name 404s
+  for (const p of players) P(`player-${String(p.k).replace(/[\\/]/g, '_')}.html`, player(p));
 }

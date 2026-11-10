@@ -340,7 +340,7 @@ const adminList = async (env) => ({
 async function dispatchSite(env) {
   if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_REPO) return;
   await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/update.yml/dispatches`, {
-    method: 'POST', headers: { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'norex-bot' }, body: JSON.stringify({ ref: 'main' }),
+    method: 'POST', headers: { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'phoenix-bot' }, body: JSON.stringify({ ref: 'main' }),
   }).catch(() => {});
 }
 

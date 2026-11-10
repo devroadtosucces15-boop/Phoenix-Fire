@@ -3,7 +3,7 @@
 //
 // Tiers, lowest → highest (each tier can do everything the tiers below it can):
 //   guest   – not logged in
-//   member  – logged in and in the NOREX Discord server
+//   member  – logged in and in the Phoenix Discord server
 //   claimed – member with an approved player claim
 //   manager – has the manager role (ADMIN_ROLE_ID)
 //   owner   – in ADMIN_IDS or has the Founder role (OWNER_ROLE_ID); sees everything incl. private messages
@@ -128,7 +128,7 @@ export async function muted(env, uid) {
 }
 
 const ids = (s) => String(s || '').split(',').map((x) => x.trim()).filter(Boolean);
-// Role from Discord at login (roles = the member's role IDs in the NOREX server). `claimed` is added per request.
+// Role from Discord at login (roles = the member's role IDs in the Phoenix server). `claimed` is added per request.
 export function discordRole(env, userId, roles = []) {
   // ADMIN_IDS stays as the bootstrap owner (a user ID, not a role – there is no D1 table for it); roles come from wrangler vars or, when those are blank, the Organization config (withOrgEnv).
   const mapped = (g, single) => [single, ...(env.ORG_ROLES?.[g] ?? [])].filter(Boolean).some((r) => roles.includes(r));

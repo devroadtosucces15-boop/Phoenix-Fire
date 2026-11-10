@@ -1,4 +1,4 @@
-// Server tools – what Miona and Carl-bot did for NOREX, now on the Worker. There is no Gateway connection here, so
+// Server tools – what Miona and Carl-bot did for Phoenix, now on the Worker. There is no Gateway connection here, so
 // everything is a slash command, a button, or a cron check:
 //   leave/join alerts  the 10-min cron compares the member list with a D1 snapshot → posts to the managers' channel
 //   welcome posts      same check → a welcome message for each new member in the welcome channel

@@ -14,7 +14,7 @@ await login(UID, [], 'Flagged');
 // ---------- parseAlert ----------
 const alertMsg = (id, uid, keyword) => ({
   id, type: 24,
-  embeds: [{ title: 'AutoMod', description: `Blocked a message from <@${uid}>`, fields: [{ name: 'Rule Triggered', value: 'NOREX profanity filter' }, { name: 'Matched Keyword', value: keyword }] }],
+  embeds: [{ title: 'AutoMod', description: `Blocked a message from <@${uid}>`, fields: [{ name: 'Rule Triggered', value: 'PHOENIX FIRE profanity filter' }, { name: 'Matched Keyword', value: keyword }] }],
 });
 t('parses a mentioned user + keyword out of the alert embed', JSON.stringify(parseAlert(alertMsg('m1', UID, 'badword'))) === JSON.stringify({ uid: UID, keyword: 'badword' }));
 t('non-AutoMod message type → ignored', parseAlert({ id: 'm2', type: 0, content: 'hi' }) === null);

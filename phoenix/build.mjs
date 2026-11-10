@@ -29,6 +29,7 @@ try {
   } else execFileSync('node', [path.join(here, 'gen-data.mjs'), stage], { stdio: 'inherit', env: { ...process.env, PF_API: API } });
   // 3. colours (shell sed) and names (below)
   execFileSync('sh', [path.join(here, 'recolor.sh'), path.join(stage, 'next')], { stdio: 'inherit' });
+  execFileSync('sh', [path.join(here, 'recolor.sh'), path.join(stage, 'web')], { stdio: 'inherit' }); // the classic member hub (squad.html) is built from web/ and must not keep the NOREX red
   const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? (e.name === 'dist' ? [] : walk(path.join(d, e.name))) : [path.join(d, e.name)]);
   const names = [
     [/<b>NOREX<\/b> UNITED/g, '<b>PHOENIX</b> FIRE'], [/NOREX <b>UNITED<\/b>/g, 'PHOENIX <b>FIRE</b>'], [/NOREX UNITED FC/g, 'PHOENIX FIRE'], [/NOREX UNITED/g, 'PHOENIX FIRE'], [/Norex United FC/g, 'Phoenix Fire'], [/Norex United/g, 'Phoenix Fire'],

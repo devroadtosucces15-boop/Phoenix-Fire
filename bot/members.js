@@ -3,7 +3,7 @@
 //
 // Env: DISCORD_APP_ID, DISCORD_CLIENT_SECRET (secret), DISCORD_GUILD_ID, ADMIN_IDS (comma list – owners),
 //      ADMIN_ROLE_ID (managers' role – gets the admin portal), OWNER_ROLE_ID (Founder role – owner tier), MEMBER_ROLE_ID (optional – require a role, not just
-//      server membership), SITE_URL, DB (D1 binding – member data), NOREX_KV (KV binding – `public` cache only)
+//      server membership), SITE_URL, DB (D1 binding – member data), Phoenix_KV (KV binding – `public` cache only)
 //
 // Member data lives in D1 (tables in bot/migrations). KV keeps only the `public` (player-page badges) and `rush`
 // (confirmed Rush results) caches read by the public pages.

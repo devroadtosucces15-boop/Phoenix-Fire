@@ -17,7 +17,8 @@ const API = 'https://discord.com/api/v10';
 const WARN_AT = 3, MUTE_AT = 5, MUTE_HOURS = 24;
 const CLEAN_DAYS = 7, CLEAN_BONUS = 3;
 const DAY = 86400e3;
-const RULE_NAME = 'NOREX profanity filter';
+const RULE_NAME = 'PHOENIX FIRE profanity filter';
+const LEGACY_RULE_NAME = 'NOREX profanity filter'; // an AutoMod rule created before the rename is adopted, not duplicated
 // A starting list – managers can extend it any time in Discord (Server Settings → Safety → AutoMod), this
 // just seeds the rule so /profanitysetup has something to create.
 const DEFAULT_WORDS = ['fuck', 'shit', 'bitch', 'cunt', 'nigger', 'faggot', 'retard'];
@@ -36,7 +37,7 @@ async function dcall(env, path, method, body) {
 const getMeta = async (env, key) => { try { return JSON.parse(await env.DB.prepare('SELECT value FROM meta WHERE key = ?').bind(key).first('value')); } catch { return null; } };
 const setMeta = (env, key, v) => env.DB.prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value').bind(key, JSON.stringify(v)).run();
 
-// Creates (or updates) the guild's NOREX AutoMod rule: blocks the seed word list and alerts the chosen channel.
+// Creates (or updates) the guild's AutoMod rule: blocks the seed word list and alerts the chosen channel.
 // Needs the bot to have Manage Guild in the server (Discord requirement for AutoMod, not something this code can grant).
 export async function setupAutoMod(env, who, channelId) {
   if (!can(who, 'settings.bot')) throw new Error('Owner only.');
@@ -49,7 +50,7 @@ export async function setupAutoMod(env, who, channelId) {
     actions: [{ type: 1, metadata: { custom_message: "Let's keep it clean in here 🙂" } }, { type: 2, metadata: { channel_id: channelId } }],
     enabled: true,
   };
-  const existing = rules.find((r) => r.name === RULE_NAME);
+  const existing = rules.find((r) => r.name === RULE_NAME || r.name === LEGACY_RULE_NAME);
   const rule = existing
     ? await dcall(env, `/guilds/${env.DISCORD_GUILD_ID}/auto-moderation/rules/${existing.id}`, 'PATCH', body)
     : await dcall(env, `/guilds/${env.DISCORD_GUILD_ID}/auto-moderation/rules`, 'POST', body);

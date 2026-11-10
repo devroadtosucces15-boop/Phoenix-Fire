@@ -1,5 +1,5 @@
 // Community star ratings (roadmap P4.2) – a weekly list next to the awards ballot, separate from it.
-//   GET  /api/ratings              members: this week's list (NOREX players, who played this week first), my stars, the board
+//   GET  /api/ratings              members: this week's list (Phoenix players, who played this week first), my stars, the board
 //   POST /api/ratings/rate         members: { player, stars } (1–5, 0 = take it back) – changeable until the week ends
 //   GET  /api/ratings/player?k=    members: a player's rolling + all-time rating and weekly trend; managers also see the raters
 // Nobody rates everybody: a player's rating only shows once MIN_RATERS different members rated them in the window.

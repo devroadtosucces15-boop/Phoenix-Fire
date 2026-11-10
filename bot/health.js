@@ -39,7 +39,7 @@ async function workerAnalytics(env) {
 
 async function actionRuns(env) {
   if (!env.GITHUB_REPO) return { ready: false, error: 'GITHUB_REPO is not set.' };
-  const headers = { 'User-Agent': 'norex-bot', Accept: 'application/vnd.github+json', ...(env.GH_DISPATCH_TOKEN ? { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}` } : {}) };
+  const headers = { 'User-Agent': 'phoenix-bot', Accept: 'application/vnd.github+json', ...(env.GH_DISPATCH_TOKEN ? { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}` } : {}) };
   let r;
   try { r = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/actions/runs?per_page=10`, { headers }); } catch (e) { return { ready: false, error: e.message }; }
   if (!r.ok) return { ready: false, error: `GitHub said ${r.status}` };

@@ -1,4 +1,4 @@
-// NOREX UNITED Discord bot – runs on Cloudflare Workers (free, always on, no PC needed).
+// PHOENIX FIRE Discord bot – runs on Cloudflare Workers (free, always on, no PC needed).
 // Discord sends slash-command "interactions" here over HTTPS; we answer from the site's JSON API.
 //
 // It also runs a timer (see wrangler.toml) that asks GitHub to run the site update every
@@ -94,7 +94,7 @@ export default {
       headers: {
         Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`,
         Accept: 'application/vnd.github+json',
-        'User-Agent': 'norex-bot',
+        'User-Agent': 'phoenix-bot',
       },
       body: JSON.stringify({ ref: 'main' }),
     });

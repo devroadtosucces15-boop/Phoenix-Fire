@@ -3,7 +3,7 @@
 //
 //   /burner search [club]  managers: ask EA for clubs matching a name (or an ID), pick one from a menu → tracked
 //   /burner recent         managers: clubs our own players are also in (linked by gamertag) in a pick menu – no typing;
-//                          /burner search with no name lists the clubs NOREX has faced instead
+//                          /burner search with no name lists the clubs Phoenix has faced instead
 //   /burner track  <club>  managers: track straight away by exact name or ID (falls back to the menu if unsure)
 //   /burner list           managers: tracked clubs with their record so far
 //   /burner remove         managers: menu to stop tracking one
@@ -52,7 +52,7 @@ export async function burnersRoute(request, env) {
 
 // ---------- club lookup: the site's own data first, EA live only as a fallback ----------
 // EA blocks the Worker's network (the same lookup works from GitHub Actions and from a laptop), so searches read what the
-// site already knows – every club NOREX has played (api/opponents.json, with the latest result against each) plus the
+// site already knows – every club Phoenix has played (api/opponents.json, with the latest result against each) plus the
 // discovered-clubs index (api/clubs.json) – both rebuilt every ~10 minutes. EA is tried live only when that has nothing.
 const crestOf = (u) => /l(\d+)\.png/.exec(String(u ?? ''))?.[1] ?? null;
 async function siteClubs(loadSite) {
@@ -64,7 +64,7 @@ async function siteClubs(loadSite) {
   return { clubs, opp: Array.isArray(opp) ? opp : [] };
 }
 
-// Clubs our own players are also in (the crawl links a club when one of NOREX's gamertags is on its roster) → api/linked.json
+// Clubs our own players are also in (the crawl links a club when one of Phoenix's gamertags is on its roster) → api/linked.json
 // [{ id, n, cr, p: [gamertags] }], most shared players first.
 export async function linkedClubs(loadSite) {
   const list = loadSite ? await Promise.resolve().then(() => loadSite('linked')).catch(() => null) : null;
@@ -105,7 +105,7 @@ export function shapeHits(hits, q) {
     .slice(0, 10);
 }
 
-// Who NOREX played lately (EA only keeps each club's last 5 per mode) → newest first, one row per opponent,
+// Who Phoenix played lately (EA only keeps each club's last 5 per mode) → newest first, one row per opponent,
 // with the score and mode of that game. These are the likeliest burners: clubs that just met us.
 // → [{ id, name, crest, ts, type, res, gf, ga }]
 export async function recentOpponents(home = HOME_CLUB, loadSite) {
@@ -141,7 +141,7 @@ export async function relayAsk(env, q, i) {
   const ref = [...crypto.getRandomValues(new Uint8Array(12))].map((b) => b.toString(16).padStart(2, '0')).join('');
   await env.DB.prepare('INSERT INTO ea_relay (ref, kind, q, token, app_id, created_at) VALUES (?, ?, ?, ?, ?, ?)').bind(ref, 'search', q, i.token, String(env.DISCORD_APP_ID), Date.now()).run();
   const res = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/ea-relay.yml/dispatches`, {
-    method: 'POST', headers: { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'norex-bot' },
+    method: 'POST', headers: { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'phoenix-bot' },
     body: JSON.stringify({ ref: 'main', inputs: { ref, kind: 'search', q } }),
   }).catch(() => null);
   if (!res?.ok) { await env.DB.prepare('DELETE FROM ea_relay WHERE ref = ?').bind(ref).run(); return false; }
@@ -179,7 +179,7 @@ export async function trackClub(env, club, user, channelId) {
 async function dispatchUpdate(env) {
   if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_REPO) return;
   await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/update.yml/dispatches`, {
-    method: 'POST', headers: { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'norex-bot' }, body: JSON.stringify({ ref: 'main' }),
+    method: 'POST', headers: { Authorization: `Bearer ${env.GH_DISPATCH_TOKEN}`, Accept: 'application/vnd.github+json', 'User-Agent': 'phoenix-bot' }, body: JSON.stringify({ ref: 'main' }),
   }).catch(() => {});
 }
 
@@ -311,7 +311,7 @@ export function burnerCommand(i, env, ctx, user, site, loadSite) {
       return json({ type: 4, data: panel([header({ eyebrow: 'Staff · Burner clubs', title: `🔥 Burner clubs (${rows.length}/${MAX_BURNERS})`, size: 3 }), text(lines.join('\n')), footer('Full stats on the Burner clubs page · /burner remove to stop tracking'), buttons([{ label: 'Burner clubs page', url: `${site}burners.html` }])]) });
     })();
   }
-  // `recent`, or `search` with no name: dropdown of the clubs NOREX just played.
+  // `recent`, or `search` with no name: dropdown of the clubs Phoenix just played.
   if (sub?.name === 'recent' || (sub?.name === 'search' && !q)) {
     ctx.waitUntil((async () => {
       const body = await within((async () => {

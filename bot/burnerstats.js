@@ -5,7 +5,7 @@ import { it } from './icons.js';
 //
 // A burner club is tracked by its EA club ID (names change, IDs don't). Everything about it lives in
 // data/burners/<id>.json – deliberately apart from data/matches + data/clubs, so a burner can never leak
-// into NOREX's own League totals, player pages or boards.
+// into Phoenix's own League totals, player pages or boards.
 
 const num = (v) => Number(v) || 0;
 const r1 = (v) => (+v || 0).toFixed(1);
@@ -128,8 +128,8 @@ export function reportMessage(burner, m, stats, siteUrl = '') {
   ] });
 }
 
-// Burner squad members who share a gamertag with a NOREX member (case-insensitive). `homeNames` is a Set of
-// lowercase NOREX gamertags (hidden players already removed by the caller). Looks at the squad we have seen in
+// Burner squad members who share a gamertag with a Phoenix member (case-insensitive). `homeNames` is a Set of
+// lowercase Phoenix gamertags (hidden players already removed by the caller). Looks at the squad we have seen in
 // games plus the club's current roster, so a player who has joined but not played yet still shows up.
 export function sharedWithNorex(burner, homeNames) {
   const stats = burner.stats ?? burnerStats(burner.matches);
