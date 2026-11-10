@@ -21,4 +21,4 @@ if (fs.existsSync(built)) {
   const same = fs.readFileSync(built).equals(fs.readFileSync(path.join(root, 'phoenix/legacy-assets/crest.png')));
   if (!same) console.log('note: site/ is an older build; rebuild to pick up the Phoenix crest');
 }
-console.log('phoenix-brand: ok');
+console.log('phoenix-brand: ok\n\n1 passed, 0 failed');

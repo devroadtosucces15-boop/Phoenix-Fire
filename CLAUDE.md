@@ -40,6 +40,8 @@ every staged js/css/html file, then overlays the Phoenix crest and theme layer. 
 must not. `tests/brand.test.mjs` and `tests/phoenix-brand.test.mjs` build the site and fail on a visible NOREX name, the NOREX crest,
 the NOREX red, or a player link that does not resolve.
 
+The build is guarded: `phoenix/leakcheck.mjs` runs at the end of `phoenix/build.mjs` and exits non-zero when the output shows a NOREX name (in visible html or the manifest) or the NOREX red or blue-black (`#c8352c`, `#080b11`). Identifiers inside scripts are ignored. `tests/leakcheck.test.mjs` covers the guard. Keep `next/` and `web/` as shared sources; do not delete them.
+
 ### Known leftovers (audit 2026-11-10)
 
 - The Worker host is `phoenix-bot.norexunited.workers.dev` (config, wrangler `PUBLIC_URL`, `live.json`, secrets registry). Owner decision: keep the account host or move it.

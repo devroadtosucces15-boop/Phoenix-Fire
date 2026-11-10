@@ -4,6 +4,7 @@
 //   1. stage copy of next/ + web/ + bot/*.js   2. mock club data (phoenix/gen-data.mjs)   3. colours + names swapped
 //   4. overlay (badge crest, 3D crest, theme layer, small design touches)   5. build the preview flavour (toolbar, noindex)
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { execFileSync } from 'node:child_process'; import { fileURLToPath, pathToFileURL } from 'node:url';
+import { assertNoLeaks } from './leakcheck.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url)), repo = path.resolve(here, '..');
 const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : null; };
 const out = path.resolve(arg('--out') || path.join(repo, 'site', 'phoenix'));
@@ -112,4 +113,6 @@ try {
   } else warn('Phoenix claim page template missing; members.html will not be published');
   fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
   console.log(`phoenix: ${pages} pages -> ${path.relative(repo, out)}`);
+  // 6. guard: next/ and web/ are shared sources themed here; the output must not show another club's name or palette
+  assertNoLeaks(out, (m) => { console.error(m); process.exitCode = 1; });
 } finally { fs.rmSync(stage, { recursive: true, force: true }); }

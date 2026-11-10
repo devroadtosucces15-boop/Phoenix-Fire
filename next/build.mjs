@@ -1,3 +1,4 @@
+// Shared source, not Phoenix-only: themed to Phoenix at build time by phoenix/build.mjs; the built output must not show NOREX (phoenix/leakcheck.mjs).
 // Club redesign preview site (shared source: phoenix/build.mjs themes it). Detached from the live site: reads the repo's data/ folder (read-only), writes only to dist/.
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
