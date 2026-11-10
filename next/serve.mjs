@@ -27,4 +27,4 @@ http.createServer(async (q, r) => {
     if (!f.startsWith(dist) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { r.writeHead(404, { 'content-type': 'text/plain' }); return r.end('not found'); }
     r.writeHead(200, { 'content-type': T[path.extname(f)] || 'application/octet-stream', 'cache-control': 'no-cache' }); fs.createReadStream(f).pipe(r);
   } catch (e) { json(r, 500, { error: String(e.message || e) }); }
-}).listen(port, () => console.log('NOREX redesign preview: http://localhost:' + port));
+}).listen(port, () => console.log('Club redesign preview: http://localhost:' + port));

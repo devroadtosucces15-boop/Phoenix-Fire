@@ -11,7 +11,7 @@ Last checked: 2026-11-10. Values are never stored here. Public IDs and keys are 
 | tools "Phoenix Toolbot" | 1569608448507650048 | in wrangler.toml (`_TOOLS`) | `/interactions/tools` | members |
 | fun "Phoenix Fun" | 1569608868533637121 | in wrangler.toml (`_FUN`) | `/interactions/fun` | none |
 
-Core OAuth redirect: `https://phoenix-bot.norexunited.workers.dev/auth/callback` (verified in the portal).
+Core OAuth redirect: `https://phoenix-bot.norexunited.workers.dev/auth/callback` (verified in the portal). The host keeps the original account subdomain until the owner decides on B1.
 
 ## Secrets: where each one lives
 

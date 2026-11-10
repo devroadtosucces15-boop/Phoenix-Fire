@@ -1,6 +1,6 @@
 -- Wave 10: P4.2 community star ratings, P4.4 anonymous feedback, P3.8 predictions game.
 
--- P4.2: a member's 1–5★ for a NOREX player in an ISO week (key 'YYYY-Www', same weeks as the awards).
+-- P4.2: a member's 1–5★ for a club player in an ISO week (key 'YYYY-Www', same weeks as the awards).
 -- Changeable until the week ends. Raters stay private (managers see them).
 CREATE TABLE IF NOT EXISTS star_ratings (
   week TEXT NOT NULL,

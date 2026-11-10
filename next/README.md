@@ -1,4 +1,4 @@
-# NOREX redesign preview (local, detached)
+# Club redesign preview (shared source: themed to Phoenix at build time by phoenix/build.mjs) (local, detached)
 Separate from the live site. Reads the repo's `data/` (club matches) and `config.json`; writes only to `dist/`. Ignored by git (PLANNING/).
 - Rebuild after any change: `node PLANNING/redesign-site/build.mjs`
 - View: `PORT=4400 node PLANNING/redesign-site/serve.mjs` then open http://localhost:4400

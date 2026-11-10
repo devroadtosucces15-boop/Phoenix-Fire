@@ -2,7 +2,7 @@
 // Reads data/burners/*.json (written by fetch.mjs, see bot/burnerstats.js) – deliberately nothing from the NOREX
 // archive, so a burner can never leak into League totals. Gated by the `burners` flag (cosmetic; the data is public EA data).
 import path from 'node:path';
-import { burnerStats, sharedWithNorex, TYPE_LABEL, CREST_CDN } from '../bot/burnerstats.js';
+import { burnerStats, sharedWithClub, TYPE_LABEL, CREST_CDN } from '../bot/burnerstats.js';
 
 const num = (v) => Number(v) || 0;
 const POS = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
@@ -50,7 +50,7 @@ ${form(s.form.slice().reverse())}</a>`;
 
   // "vs NOREX": burner squad members who share a gamertag with one of ours – they may be the same person on a throwaway.
   const vsNorex = (b) => {
-    const shared = sharedWithNorex(b, homeNames);
+    const shared = sharedWithClub(b, homeNames);
     if (!shared.length) return '';
     const rows = shared.map((p) => `<li>👤 <b>${playerLink(p.n)}</b> – ${p.gp ? `${p.gp} game${p.gp === 1 ? '' : 's'} for ${esc(b.name)} · ${p.g} ⚽ ${p.a} 🎯 ${ratingPill(p.rating)}` : `in ${esc(b.name)} now, no games yet`}${p.active ? '' : ' <span class="tag" data-tip="Not in the club any more">left</span>'}</li>`).join('');
     return `<h3 class="bn-h">🆚 vs ${esc(config.siteTitle)}</h3><p class="muted small">Same gamertag as a ${esc(config.siteTitle)} member.</p><ul class="bn-list bn-vs">${rows}</ul>`;

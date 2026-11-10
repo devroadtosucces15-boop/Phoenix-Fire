@@ -131,7 +131,7 @@ export function reportMessage(burner, m, stats, siteUrl = '') {
 // Burner squad members who share a gamertag with a Phoenix member (case-insensitive). `homeNames` is a Set of
 // lowercase Phoenix gamertags (hidden players already removed by the caller). Looks at the squad we have seen in
 // games plus the club's current roster, so a player who has joined but not played yet still shows up.
-export function sharedWithNorex(burner, homeNames) {
+export function sharedWithClub(burner, homeNames) {
   const stats = burner.stats ?? burnerStats(burner.matches);
   const out = new Map();
   for (const p of stats.players) {

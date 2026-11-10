@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS rush_matches (
 CREATE INDEX IF NOT EXISTS rush_matches_status ON rush_matches (status, date);
 CREATE INDEX IF NOT EXISTS rush_matches_by ON rush_matches (by_id, at);
 
--- Our players in a Rush match (1–5). `player` = EA player key from the NOREX squad, '' for a guest.
+-- Our players in a Rush match (1–5). `player` = EA player key from the club squad, '' for a guest.
 CREATE TABLE IF NOT EXISTS rush_players (
   match_id INTEGER NOT NULL,
   slot INTEGER NOT NULL,

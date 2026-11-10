@@ -1,4 +1,4 @@
-// The NOREX icon set from the bot design system: small glyphs in the site's palette that replace generic emoji in every message.
+// The club icon set from the bot design system: small glyphs in the site's palette that replace generic emoji in every message.
 // [svg (24×24 box), unicode fallback]. Drawn with strokes only, so no font is needed to turn them into PNGs.
 // bot/ensure-emojis.mjs uploads them once as the bot's own (application) emoji; bot/icons.js looks them up at runtime.
 const WIN = '#4be08a', DRAW = '#efcf7a', LOSS = '#ff7d72', L = '#e4ebf7', RED = '#f58a3d', GOLD = '#efcf7a';

@@ -3,7 +3,7 @@
 import { env, sqlite } from './mock.mjs';
 import worker from '../bot/worker.js';
 import { t, tt, done } from './lib.mjs';
-import { burnerStats, sharedWithNorex, mergeMatches, reportMessage, slimBurnerMatch, updateRoster, MAX_BURNERS } from '../bot/burnerstats.js';
+import { burnerStats, sharedWithClub, mergeMatches, reportMessage, slimBurnerMatch, updateRoster, MAX_BURNERS } from '../bot/burnerstats.js';
 import { burnersKey } from '../bot/burners.js';
 import { plainText } from '../bot/ui.js';
 // the pick menu / body text of a panel message (replies are components now, not embeds)
@@ -40,9 +40,9 @@ const embText = plainText(emb);
 t('report: title, MOTM, season line, link to the burner card', embText.includes('🔥 TeloSico 3–1 Poundin Pitches') && /Man of the match\*\* Mike/.test(embText)
   && embText.includes('1W 0D 1L') && JSON.stringify(emb.components).includes('https://site.test/burners.html#c1355341'));
 
-const vs = sharedWithNorex({ matches: [m2, m1], roster: { Mike: { active: false }, Ghost: { active: true } } }, new Set(['mike', 'ghost', 'nobody']));
+const vs = sharedWithClub({ matches: [m2, m1], roster: { Mike: { active: false }, Ghost: { active: true } } }, new Set(['mike', 'ghost', 'nobody']));
 t('vs NOREX: shared gamertags only, case-insensitive, played-first, roster-only joiners included, left flagged',
-  vs.length === 2 && vs[0].n === 'Mike' && vs[0].gp === 2 && vs[0].g === 2 && vs[0].active === false && vs[1].n === 'Ghost' && vs[1].gp === 0 && vs[1].active && sharedWithNorex({ matches: [m1] }, new Set()).length === 0);
+  vs.length === 2 && vs[0].n === 'Mike' && vs[0].gp === 2 && vs[0].g === 2 && vs[0].active === false && vs[1].n === 'Ghost' && vs[1].gp === 0 && vs[1].active && sharedWithClub({ matches: [m1] }, new Set()).length === 0);
 
 // ---------- keyed endpoint (what fetch.mjs reads) ----------
 const W = (path, init) => worker.fetch(new Request('http://localhost:8788' + path, init), env, { waitUntil() {} });

@@ -61,3 +61,5 @@ uses, which only GitHub Actions / a sandboxed session has.
 - R2 media itself (feed photos/clips, avatar cards, report posters) – not backed up; losing the bucket
   loses those files. Out of scope for BE7 (the roadmap item is specifically the D1/R2 *database* backup);
   revisit if club media turns out to need its own backup too.
+
+> Resource names: the D1 database (`norex`), R2 bucket (`norex-media`) and KV namespace (`norex-members`) keep their original Cloudflare names because renaming a live resource is a migration. They belong to the Phoenix deployment; the names are not shown to members. Rename only together with the Worker host decision (PLANNING/PHOENIX-NEXT.md B1).

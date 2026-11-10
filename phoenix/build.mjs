@@ -75,7 +75,7 @@ try {
   const api = emitSwap({ out, root: stage, classic, pages: htmls });
   fs.writeFileSync(path.join(out, 'sw.js'), fs.readFileSync(path.join(out, 'sw.js'), 'utf8').replace(/nx-v2/g, 'pf-v1'));
   fs.rmSync(path.join(out, 'sitemap.xml'), { force: true });
-  const mf = path.join(out, 'manifest.webmanifest'); fs.writeFileSync(mf, fs.readFileSync(mf, 'utf8').replace('"norex-next"', '"phoenix-fire"').replace('"short_name":"PHOENIX"', '"short_name":"PHOENIX"'));
+  const mf = path.join(out, 'manifest.webmanifest'); fs.writeFileSync(mf, fs.readFileSync(mf, 'utf8').replace('"phoenix-fire-next"', '"phoenix-fire"').replace('"short_name":"PHOENIX"', '"short_name":"PHOENIX"'));
   console.log(`phoenix: ${api.length} api files, sw.js, offline/404`);
   // first visit defaults for the preview toolbar: Owner, full entrance, gold orb menu, transitions on, full motion (tilt, parallax…). Later changes stick.
   const init = '<script>window.PHOENIX_SAFE_HUB=true;try{var L=localStorage;if(!L.getItem("pf.init")){L.setItem("pf.init","1");L.setItem("norex.as","owner");L.setItem("norex.entrance","full");L.setItem("norex.nav","orb");L.setItem("norex.fx","on");L.setItem("norex.mx","full");L.removeItem("norex.motion");L.removeItem("norex.viewas")}}catch(e){}</script>';

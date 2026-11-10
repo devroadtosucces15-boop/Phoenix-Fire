@@ -1,11 +1,12 @@
-"""Makes NOREX-branded bot avatars from the club crest.
+"""Makes club-branded bot avatars from the club crest (name and colours come from config.json brand).
 
-Usage:  python3 bot/icons/make_icon.py "STATS BOT" "#c8352c" stats
+Usage:  python3 bot/icons/make_icon.py "STATS BOT" "#e8651a" stats
         python3 bot/icons/make_icon.py "MATCH BOT" "#e8c16a" match
 
 Writes bot/icons/<slug>.png (1024x1024, Discord app icon) and <slug>-banner.png (1360x480, Discord bot banner).
 Everything important sits inside the centre circle, because Discord crops avatars to a circle.
 """
+import json
 import math
 import sys
 from pathlib import Path
@@ -13,8 +14,17 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 HERE = Path(__file__).parent
-INK = (11, 15, 22)
-RED = (200, 53, 44)
+def _brand():
+    try:
+        cfg = json.loads((HERE.parents[1] / "config.json").read_text())
+    except OSError:
+        cfg = {}
+    return cfg.get("brand", {}), cfg.get("clubName") or cfg.get("name") or "PHOENIX FIRE"
+
+
+_BRAND, CLUB_NAME = _brand()
+INK = tuple(int(_BRAND.get("ink", "#0a0705").lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))
+RED = tuple(int(_BRAND.get("red", "#e8651a").lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))
 WHITE = (255, 255, 255)
 
 
@@ -60,7 +70,7 @@ def shadowed(canvas, layer, xy, blur=18, offset=(0, 16), alpha=170):
 
 
 def ribbon(draw, cx, y, text, font, accent, pad_x=46, height=112):
-    """Banner like the crest's NOREX UNITED ribbon: ink panel, white keyline, accent tails."""
+    """Banner like the crest's club-name ribbon: ink panel, white keyline, accent tails."""
     tw = draw.textlength(text, font=font)
     w = tw + pad_x * 2
     x0, x1 = cx - w / 2, cx + w / 2
@@ -110,7 +120,7 @@ def banner(label, accent, out):
     d = ImageDraw.Draw(img)
     big = ImageFont.truetype(str(HERE / "Anton-Regular.ttf"), 150)
     small = ImageFont.truetype(str(HERE / "Anton-Regular.ttf"), 64)
-    d.text((470, 150), "NOREX UNITED", font=big, fill=WHITE, anchor="lm")
+    d.text((470, 150), CLUB_NAME, font=big, fill=WHITE, anchor="lm")
     d.rectangle([472, 250, 472 + d.textlength(label, font=small) + 40, 330], fill=accent)
     d.text((492, 290), label, font=small, fill=WHITE, anchor="lm")
     stars(d, 520, 385, 13, WHITE, gap=2.2)

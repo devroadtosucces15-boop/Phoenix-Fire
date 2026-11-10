@@ -1,4 +1,4 @@
-// NOREX redesign preview site. Detached from the live site: reads the repo's data/ folder (read-only), writes only to dist/.
+// Club redesign preview site (shared source: phoenix/build.mjs themes it). Detached from the live site: reads the repo's data/ folder (read-only), writes only to dist/.
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 const here = path.dirname(fileURLToPath(import.meta.url));
 // usage: node next/build.mjs [--out <dir>] [--preview]   (--preview = public test build: hidden from search engines, labelled PREVIEW)
@@ -8,13 +8,14 @@ if (process.argv.includes('--preview')) process.env.NEXT_PREVIEW = '1';
 // --public = the swapped-in main site: indexable, no PREVIEW ribbon, Worker API on, plus api/*.json (copied from the classic build, --classic <dir>), sw.js, offline/404, robots, sitemap
 const PUBLIC = process.argv.includes('--public'); if (PUBLIC) process.env.NEXT_PREVIEW = process.env.NEXT_PUBLIC = '1';
 fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(out, { recursive: true });
-const { players, matches } = await import('./lib/data.mjs');
+const { players, matches, cfg } = await import('./lib/data.mjs');
+const CLUB = cfg.siteTitle || 'CLUB'; const INK = (cfg.brand && cfg.brand.ink) || '#080b11';
 const W = (f, h) => fs.writeFileSync(path.join(out, f), h);
 for (const f of fs.readdirSync(path.join(here, 'static')).filter((f) => !f.startsWith('.'))) fs.copyFileSync(path.join(here, 'static', f), path.join(out, f));
 fs.copyFileSync(path.join(here, 'crest.png'), path.join(out, 'crest.png'));
 // the live site's shared browser libraries (markdown-lite for docs, the Team up ranking, the player card PNG maker, the owner's 🐞 issue tool), shared rather than copied
 for (const f of ['docs-md.js', 'recs.js', 'cardcomposer.js', 'report.js', 'report.css', 'build-math.js']) { const lib = path.join(here, '..', 'web', f); if (fs.existsSync(lib)) fs.copyFileSync(lib, path.join(out, f)); }
-fs.writeFileSync(path.join(out, 'manifest.webmanifest'), JSON.stringify({ id: PUBLIC ? './' : 'norex-next', name: 'NOREX UNITED FC', short_name: 'NOREX', description: 'Results, squad, stats and the members Hub of NOREX UNITED FC.', start_url: 'index.html', scope: './', display: 'standalone', orientation: 'portrait', background_color: '#080b11', theme_color: '#080b11', icons: [{ src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' }, { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' }, { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }], shortcuts: [{ name: 'Results', url: 'results.html' }, { name: 'Match Night', url: 'hub-matchnight.html' }, { name: 'Stats', url: 'stats.html' }] }));
+fs.writeFileSync(path.join(out, 'manifest.webmanifest'), JSON.stringify({ id: PUBLIC ? './' : CLUB.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-next', name: CLUB, short_name: CLUB.split(' ')[0], description: 'Results, squad, stats and the members Hub of ' + CLUB + '.', start_url: 'index.html', scope: './', display: 'standalone', orientation: 'portrait', background_color: INK, theme_color: INK, icons: [{ src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' }, { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' }, { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }], shortcuts: [{ name: 'Results', url: 'results.html' }, { name: 'Match Night', url: 'hub-matchnight.html' }, { name: 'Stats', url: 'stats.html' }] }));
 // the builder's offline seed: the newest game-rules dataset (builds.js asks the Worker's GET /api/game first, which has any version a manager published since)
 fs.writeFileSync(path.join(out, 'game.json'), JSON.stringify((await import('./lib/data.mjs')).game));
 // Phase E post-pass on every page: one h1 per page (the page's first heading becomes level 1 for assistive tech, no visual change), a small crest for the 22–86 px logo spots instead of the 180 KB original
