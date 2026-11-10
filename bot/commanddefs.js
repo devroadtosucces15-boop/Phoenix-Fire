@@ -1,7 +1,7 @@
 // The bot's slash command definitions – one list shared by bot/register.mjs (deploy-time registration, a plain Node script)
 // and the Worker (the Boardroom's "Sync to Discord" button, bot/botcommands.js). Keep them here, not in either of those.
 const SUB = 1, STRING = 3, INTEGER = 4, BOOLEAN = 5, USER = 6, CHANNEL = 7, ROLE = 8, ATTACHMENT = 11;
-import { CHANNEL_PURPOSES, PERMISSION_GROUPS } from './orgconfig.js';
+import { CHANNEL_PURPOSES, PERMISSION_GROUPS } from './orgconsts.js';
 const player = (name, description) => ({ type: STRING, name, description, required: true, autocomplete: true });
 export const COMMANDS = [
   { name: 'club', description: 'Club record, division and form' },
@@ -276,6 +276,21 @@ export const COMMANDS = [
       { type: SUB, name: 'list', description: 'Who is available for Rush right now' },
     ],
   },
+  // /queue – the Rush queue manager (bot/rushqueue.js, PLANNING/RUSH-QUEUE.md). Members use the board's buttons; these are for the line and staff.
+  {
+    name: 'queue', description: 'The Rush queue: see the line, or (managers) post the board and set it up', contexts: [0],
+    options: [
+      { type: SUB, name: 'status', description: 'Who is searching and who is next' },
+      { type: SUB, name: 'board', description: 'Managers: post a fresh board in the queue channel(s)' },
+      { type: SUB, name: 'clear', description: 'Managers: empty the queue' },
+      { type: SUB, name: 'remove', description: 'Managers: take a member out of the queue', options: [{ type: USER, name: 'member', description: 'Who', required: true }] },
+      { type: SUB, name: 'settings', description: 'Managers: failed-match rule and the green-light timers', options: [
+        { type: STRING, name: 'failed_policy', description: 'Where a failed match goes', choices: [{ name: 'Next in line (default)', value: 'next' }, { name: 'Back of the line', value: 'bottom' }] },
+        { type: INTEGER, name: 'warn_minutes', description: 'Warn the group after this many minutes at the green light (default 1)', min_value: 1, max_value: 30 },
+        { type: INTEGER, name: 'remove_minutes', description: 'Remove the group after this many minutes (default 2)', min_value: 2, max_value: 60 },
+      ] },
+    ],
+  },
 ];
 
 // ---------- which Discord app owns which command (bot/apps.js) ----------
@@ -289,12 +304,12 @@ export const APP_COMMANDS = {
   // Matchday and Rush (PLANNING/BOT-SPLIT.md, waves MB1/MB4). Until the Discord application exists the commands stay where
   // they were (MOVED_FROM) and the new ones stay dark (HELD), so nothing changes for members; see bot/apps.js.
   matchday: ['host', 'schedule', 'nextevent', 'availability', 'lineup', 'remind', 'reminders', 'trial', 'matchday'],
-  rush: ['rush', 'lfg'],
+  rush: ['rush', 'lfg', 'queue'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).
 export const MOVED_FROM = { host: 'tools', schedule: 'tools', nextevent: 'tools', availability: 'tools', lineup: 'tools', remind: 'tools', reminders: 'tools', trial: 'tools', rush: 'stats' };
 // New commands that exist only once their app is configured (never lent to core).
-export const HELD = new Set(['matchday', 'lfg']);
+export const HELD = new Set(['matchday', 'lfg', 'queue']);
 // Management commands: hidden from non-staff in Discord (Manage Roles bit) on top of the Worker's can() check.
 export const STAFF_COMMANDS = ['insights', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'watchlist', 'setup', 'purge', 'panel', 'host'];
 

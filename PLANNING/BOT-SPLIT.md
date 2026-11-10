@@ -61,6 +61,6 @@ Tests: clash of 3 strikers for 1 slot; preference vs higher-rated non-asker; no-
 | **MB2** | Preferred position: migration, Discord select, site picker | Claude | Sonnet |
 | **MB4** | Rush goes live: move `rush` and rush files | Claude | Sonnet |
 | **MB5** | Rush LFG | Claude | Sonnet |
-| **MB6** | Queue manager, spec in `PLANNING/RUSH-QUEUE.md` (owner's design, 2026-11-10) | Claude | Opus |
+| **MB6** | **Code done 2026-11-10** (`bot/rushqueue.js`, `/queue`, flag `rushQueue` owner): queue manager, spec in `PLANNING/RUSH-QUEUE.md` (owner's design, 2026-11-10) | Claude | Opus |
 
 Branding check for every wave: all replies, embeds, buttons, DMs, cron posts and icons of the new apps use the Phoenix theme (`#e8651a`, Phoenix crest, `phoenix-matchday*` / `phoenix-rush*` icons); add a test that fails on any NOREX name, colour or crest.

@@ -58,7 +58,7 @@ export function since(fromMs, now) {
   return h >= 1 ? `${h} hour${h > 1 ? 's' : ''}` : 'under an hour';
 }
 
-async function discord(env, method, path, body, reason) {
+export async function discord(env, method, path, body, reason) {
   const headers = { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (reason) headers['X-Audit-Log-Reason'] = encodeURIComponent(reason);

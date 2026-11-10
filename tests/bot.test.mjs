@@ -46,6 +46,7 @@ const sample = {
   host: null, // managers, member DB + Discord – tests/host.test.mjs
   matchday: null, // Phoenix Matchday app, dark until configured – tests/matchday.test.mjs
   lfg: null, // Phoenix Rush app, dark until configured – tests/lfg.test.mjs
+  queue: null, // Phoenix Rush app, member DB – tests/rushqueue.test.mjs
   panel: null, // managers, member DB – tests/panel.test.mjs
   jail: null, wheel: null, trivia: null, share: null, discoveries: null, watch: null, watchlist: null, // tests/discoveries.test.mjs
   // fun for members, member DB – tests/fun.test.mjs

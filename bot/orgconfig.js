@@ -21,12 +21,12 @@ const EA_ID = /^\d{1,10}$/;
 const clean = (s, max) => String(s ?? '').replace(/[\u0000-\u001f<>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
 const flag = (v, dflt) => (v === undefined ? dflt : v ? 1 : 0);
 
+import { CHANNEL_PURPOSES, PERMISSION_GROUPS } from './orgconsts.js';
+export { CHANNEL_PURPOSES, PERMISSION_GROUPS };
 export const SCOPES = ['org', 'division', 'club'];
 // A9: every place the bot posts to, reads from or restricts to a channel is a purpose here – never a name or an ID in code.
 // Several channels per purpose are allowed. Purposes after `system_alerts` were added when the last hardcoded/legacy channel
 // settings (meta keys, Worker vars) moved into this table; channelFor() still reads those legacy values when no row exists.
-export const CHANNEL_PURPOSES = ['announcements', 'match_results', 'match_notifications', 'recruitment', 'claims', 'manager_alerts', 'logs', 'welcome', 'config_audit', 'system_alerts',
-  'awards', 'reminders', 'member_log', 'hype', 'voice_recap', 'live_alerts', 'fun_posts', 'automod_alerts', 'rush_queue', 'rush_queue_reports'];
 // What each purpose is for, in the words managers see (site Organization section and /setup channel).
 export const CHANNEL_PURPOSE_INFO = {
   announcements: 'General club announcements and the default for posts that have no channel of their own',
@@ -41,7 +41,6 @@ export const CHANNEL_PURPOSE_INFO = {
 // A purpose with no row of its own may fall back to another purpose before giving up (the old behaviour of the posts that used
 // the shared announce channel). Anything not listed has no fallback: if nothing is configured the feature says so.
 const FALLBACK = { reminders: ['announcements'], live_alerts: ['announcements'], fun_posts: ['announcements'] };
-export const PERMISSION_GROUPS = ['owner', 'administrator', 'manager', 'division_manager', 'club_manager', 'player'];
 
 // Each entity: table, the columns a client may write (cleaned by `clean`), and what the audit log records.
 const ENTITIES = {

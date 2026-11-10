@@ -29,6 +29,7 @@ import { hotwDue } from './hotw.js';
 import { scoreDue } from './predict.js';
 import { eventButton, playButton, memberCommand, memberOf, MEMBER_COMMANDS } from './botcmds.js';
 import { lfgCommand, lfgButton, lfgExpire, LFG_ID } from './lfg.js';
+import { queueCommand, queueInteraction, queueTick, RQ_ID } from './rushqueue.js';
 import { prefPosSelect, PREF_ID } from './prefpos.js';
 import { panelInteraction, PANEL_ID } from './panel.js';
 import { insightsCron, insightsNow, reportMessages } from './insights.js';
@@ -67,8 +68,9 @@ export default {
     useIconApp('core');
     // … except fun posts (birthdays), which go through the fun app when it has a token, so their buttons come back to fun.
     const funEnv = appConfigured(base, 'fun') && appCreds(base, 'fun').token ? appEnv(base, 'fun') : env;
-    if (event?.cron === '* * * * *') { // the 1-minute timer only sends /remind reminders – everything else stays on the 10-minute one
+    if (event?.cron === '* * * * *') { // the 1-minute timer sends /remind reminders and runs the Rush queue tick – everything else stays on the 10-minute one
       ctx.waitUntil(sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
+      ctx.waitUntil(queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
       return;
     }
     ctx.waitUntil(updateLive(env).catch((e) => console.log('live check failed', e.message))); // P1.3 live banner
@@ -199,6 +201,15 @@ export default {
         const sub = i.data.options?.[0];
         return json(await lfgCommand(i, env, await memberOf(i, who, env), who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value]))));
       } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
+    if (i.type === 2 && i.data.name === 'queue') { // MB6: Rush queue manager
+      try {
+        const sub = i.data.options?.[0];
+        return json(await queueCommand(i, env, ctx, await memberOf(i, who, env), who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value]))));
+      } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
+    if ((i.type === 3 || i.type === 5) && RQ_ID.test(i.data?.custom_id ?? '')) { // the board's buttons, crew select and report form
+      try { return json(await queueInteraction(i, env, await memberOf(i, who, env), who, ctx)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
     if (i.type === 3 && LFG_ID.test(i.data?.custom_id ?? '')) {
       try { return json(await lfgButton(i, env, await memberOf(i, who, env), who)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }

@@ -24,7 +24,7 @@ const legacy = { DISCORD_APP_ID: '100', DISCORD_PUBLIC_KEY: 'aa', DISCORD_BOT_TO
 t('core falls back to the unsuffixed names', JSON.stringify(appCreds(legacy, 'core')) === JSON.stringify({ appId: '100', publicKey: 'aa', token: 'tok' }));
 t('_CORE names win over the unsuffixed ones', appCreds({ ...legacy, DISCORD_APP_ID_CORE: '101' }, 'core').appId === '101');
 t('other apps never fall back to core credentials', !appConfigured(legacy, 'stats') && appCreds(legacy, 'stats').token === '');
-t('single-app setup: core serves every command except the held ones', servedBy(legacy, 'core').size === names.length - 2 && !servedBy(legacy, 'core').has('lfg'));
+t('single-app setup: core serves every command except the held ones', servedBy(legacy, 'core').size === names.length - 3 && !servedBy(legacy, 'core').has('lfg'));
 const split = { ...legacy, DISCORD_APP_ID_STATS: '200', DISCORD_PUBLIC_KEY_STATS: 'bb', DISCORD_BOT_TOKEN_STATS: 'tok2' };
 t('a configured app takes its commands off core', !servedBy(split, 'core').has('club') && servedBy(split, 'core').has('purge') && servedBy(split, 'stats').has('club'));
 t('answeringApp follows configuration', answeringApp(legacy, 'club') === 'core' && answeringApp(split, 'club') === 'stats' && answeringApp(split, 'jail') === 'core');
@@ -36,7 +36,7 @@ t('appFromPath', appFromPath('/') === 'core' && appFromPath('/interactions') ===
 const plan = registrationPlan(split);
 t('registration: one entry per configured app with a token', plan.map((p) => p.app).join() === 'core,stats');
 t('registration: each app gets only its own commands', plan.find((p) => p.app === 'stats').commands.every((c) => homeOf(split, c.name) === 'stats') && !plan.find((p) => p.app === 'core').commands.some((c) => homeOf(split, c.name) === 'stats'));
-t('registration: nothing lost or doubled', plan.reduce((n, p) => n + p.commands.length, 0) === names.length - 2);
+t('registration: nothing lost or doubled', plan.reduce((n, p) => n + p.commands.length, 0) === names.length - 3);
 t('registration: uses each app\'s own id + token', plan.find((p) => p.app === 'stats').appId === '200' && plan.find((p) => p.app === 'stats').token === 'tok2' && plan.find((p) => p.app === 'core').token === 'tok');
 t('registration: owner settings still apply per app', !registrationPlan(split, { club: { enabled: false } }).find((p) => p.app === 'stats').commands.some((c) => c.name === 'club'));
 t('registration: `only` limits the apps', registrationPlan(split, {}, ['stats']).map((p) => p.app).join() === 'stats');
