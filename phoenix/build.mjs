@@ -9,6 +9,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), repo = path.resolve(h
 const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : null; };
 const out = path.resolve(arg('--out') || path.join(repo, 'site', 'phoenix'));
 const LIVE = process.argv.includes('--live');
+const LAUNCH = process.argv.includes('--launch') || JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).launch?.public === true; // go-live switch (PLANNING/LAUNCH.md): false keeps the site hidden from search engines
 const liveCfg = LIVE ? JSON.parse(fs.readFileSync(path.join(here, 'live.json'), 'utf8')) : null;
 const API = arg('--api') || (LIVE ? liveCfg.api : '') || 'https://phoenix.mock', MOCK = API === 'https://phoenix.mock';
 if (LIVE && MOCK) { console.error('phoenix: --live needs the Worker URL: set "api" in phoenix/live.json or pass --api <url>'); process.exit(1); } // recording builds point at a local Worker; the published build points at the in-page mock (phoenix-mock.js)
@@ -72,7 +73,7 @@ try {
   const classic = path.join(stage, 'classic-build');
   execFileSync('node', [path.join(stage, 'scripts/build.mjs')], { stdio: 'inherit', cwd: stage, env: { ...process.env, NOREX_OUT: classic } });
   const htmls = fs.readdirSync(out).filter((f) => f.endsWith('.html'));
-  const { emitSwap } = await import(pathToFileURL(path.join(stage, 'next/lib/swap.mjs')).href);
+  const swap = await import(pathToFileURL(path.join(stage, 'next/lib/swap.mjs')).href); const { emitSwap } = swap;
   const api = emitSwap({ out, root: stage, classic, pages: htmls });
   fs.writeFileSync(path.join(out, 'sw.js'), fs.readFileSync(path.join(out, 'sw.js'), 'utf8').replace(/nx-v2/g, 'pf-v1'));
   fs.rmSync(path.join(out, 'sitemap.xml'), { force: true });
@@ -91,7 +92,11 @@ try {
     if (f === 'index.html') { // home hero: the club's own line and the six stars of the badge (skipped silently if the upstream copy changes)
       h = h.replace(/(<div class="eyebrow reveal">)(EA SPORTS)/, '$1<span class="pf-stars" aria-hidden="true">★★★★★★</span> $2').replace(/<h1 class="reveal" style="--i:1">[\s\S]*?<\/h1>/, '<h1 class="reveal" style="--i:1">Rise. Burn.<br><em>Repeat.</em></h1>');
     }
-    if (!/name="robots"/.test(h)) h = h.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>');
+    if (LAUNCH) { // launched: public pages are indexable (the layout's own noindex is dropped); member, staff and design pages stay hidden
+      if (swap.indexable(f)) h = h.replace(/<meta name="robots" content="[^"]*">/g, '');
+      else if (!/name="robots"/.test(h)) h = h.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>');
+    }
+    else if (!/name="robots"/.test(h)) h = h.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>');
     fs.writeFileSync(p, h); pages++;
   }
   // Keep the complete legacy member portal available at squad.html, but make members.html
@@ -111,7 +116,15 @@ try {
     if (MOCK) claim = claim.replace('<head>', '<head><script src="phoenix-mock.js"></script>');
     fs.writeFileSync(path.join(out, 'members.html'), claim);
   } else warn('Phoenix claim page template missing; members.html will not be published');
-  fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
+  if (LAUNCH) { // allow robots.txt plus a sitemap of the built public pages. The staged config carries a placeholder siteUrl, so the real one comes from the repo config.
+    const sq = path.join(out, 'squad.html'); // the member portal is copied in after the page pass: keep it out of search results
+    if (fs.existsSync(sq)) { const s = fs.readFileSync(sq, 'utf8'); if (!/name="robots"/.test(s)) fs.writeFileSync(sq, s.replace('</head>', '<meta name="robots" content="noindex,nofollow"></head>')); }
+    const site = String(JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).siteUrl || '').replace(/\/?$/, '/');
+    const day = new Date().toISOString().slice(0, 10), esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const listed = fs.readdirSync(out).filter((f) => swap.indexable(f) && !/name="robots" content="[^"]*noindex/.test(fs.readFileSync(path.join(out, f), 'utf8'))).sort();
+    fs.writeFileSync(path.join(out, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${listed.map((f) => `<url><loc>${esc(site + (f === 'index.html' ? '' : f))}</loc><lastmod>${day}</lastmod></url>`).join('\n')}\n</urlset>\n`);
+    fs.writeFileSync(path.join(out, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /hub\nDisallow: /staff\n\nSitemap: ${site}sitemap.xml\n`);
+  } else fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
   console.log(`phoenix: ${pages} pages -> ${path.relative(repo, out)}`);
   // 6. guard: next/ and web/ are shared sources themed here; the output must not show another club's name or palette
   assertNoLeaks(out, (m) => { console.error(m); process.exitCode = 1; });

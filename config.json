@@ -1,6 +1,9 @@
 {
   "siteTitle": "PHOENIX FIRE",
   "siteUrl": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
+  "launch": {
+    "public": false
+  },
   "discord": {
     "applyLink": "https://discord.gg/aN2J2Vktxu",
     "guildId": "1328821938243637381",
