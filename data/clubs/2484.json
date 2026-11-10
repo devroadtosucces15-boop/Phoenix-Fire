@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-10T19:42:45.540Z",
+ "fetchedAt": "2026-11-10T19:50:40.285Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1182,12 +1182,12 @@
   {
    "name": "rubNiyo",
    "proPos": "25",
-   "gamesPlayed": "92",
+   "gamesPlayed": "93",
    "goals": "76",
    "assists": "31",
    "manOfTheMatch": "9",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1324,14 +1324,14 @@
   },
   {
    "name": "leo77romano",
-   "proPos": "25",
-   "gamesPlayed": "138",
+   "proPos": "14",
+   "gamesPlayed": "139",
    "goals": "26",
-   "assists": "17",
+   "assists": "18",
    "manOfTheMatch": "6",
    "ratingAve": "7.3",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Voro2rt",
