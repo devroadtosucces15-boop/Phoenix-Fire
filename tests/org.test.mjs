@@ -39,7 +39,7 @@ const dataDir = path.join(tmp, 'live'); fs.mkdirSync(dataDir);
 const config = { homeClubId: 1111, siteTitle: 'Phoenix Fire', members: { api: 'https://worker.test' } };
 const SECRET = 's3cret';
 let seen = null, body = { clubs: cfgClubs.map((c) => ({ ...c, sync_members: 1, sync_matches: 1 })) };
-const fetchFn = async (url, init) => { seen = { url: String(url), key: init.headers['X-Norex-Key'] }; return new Response(JSON.stringify(body), { status: 200 }); };
+const fetchFn = async (url, init) => { seen = { url: String(url), key: init.headers['X-Phoenix-Key'] }; return new Response(JSON.stringify(body), { status: 200 }); };
 
 const live = await resolveOrgClubs(config, { dataDir, live: true, write: true, fetchFn, secret: SECRET, log: quiet });
 t('live: reads /api/org/clubs/public with the keyed header', seen.url === 'https://worker.test/api/org/clubs/public' && seen.key === orgKey(SECRET));
@@ -93,7 +93,7 @@ t('no data at all → empty, not a crash', lone.matches.length === 0 && lone.clu
 
 // ---------- destinations ----------
 const asked = [];
-const routeOk = await resolveRoute(config, 'match_results', B, { fetchFn: async (u, i) => { asked.push({ u: String(u), key: i.headers['X-Norex-Key'] }); return new Response(JSON.stringify({ channelId: '555', guildId: '9', scope: 'division' })); }, secret: SECRET });
+const routeOk = await resolveRoute(config, 'match_results', B, { fetchFn: async (u, i) => { asked.push({ u: String(u), key: i.headers['X-Phoenix-Key'] }); return new Response(JSON.stringify({ channelId: '555', guildId: '9', scope: 'division' })); }, secret: SECRET });
 t('resolveRoute asks the Worker per purpose and club, keyed', asked[0].u === 'https://worker.test/api/org/route/public?purpose=match_results&club=2222' && asked[0].key === orgKey(SECRET) && routeOk.channelId === '555' && routeOk.scope === 'division');
 t('an unconfigured destination comes back as null, never a guess', (await resolveRoute(config, 'match_results', C, { fetchFn: async () => new Response(JSON.stringify({ channelId: null })), secret: SECRET })).channelId === null);
 t('a failed lookup is ok:false with the reason', (await resolveRoute(config, 'match_results', C, { fetchFn: async () => new Response('', { status: 502 }), secret: SECRET })).error === 'HTTP 502');

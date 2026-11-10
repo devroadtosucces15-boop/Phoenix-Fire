@@ -41,7 +41,7 @@ export async function loadOverrides(config, body) {
     const key = createHash('sha256').update(`${secret}:norex-overrides`).digest('hex');
     const res = await fetch(`${api}/api/overrides`, {
       method: body ? 'POST' : 'GET', signal: AbortSignal.timeout(10000),
-      headers: { 'X-Norex-Key': key, ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined,
+      headers: { 'X-Phoenix-Key': key, ...(body ? { 'Content-Type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const d = await res.json();
@@ -62,7 +62,7 @@ export async function loadCrawlCursor(config) {
   const api = config.members?.api, secret = process.env.DISCORD_CLIENT_SECRET;
   if (!api || !secret) return null;
   try {
-    const res = await fetch(`${api}/api/crawl`, { signal: AbortSignal.timeout(10000), headers: { 'X-Norex-Key': await crawlAuthKey() } });
+    const res = await fetch(`${api}/api/crawl`, { signal: AbortSignal.timeout(10000), headers: { 'X-Phoenix-Key': await crawlAuthKey() } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return await res.json(); // { cursor, indexed }
   } catch (e) {
@@ -76,7 +76,7 @@ export async function saveCrawlSlice(config, cursor, found) {
   try {
     const res = await fetch(`${api}/api/crawl`, {
       method: 'POST', signal: AbortSignal.timeout(10000),
-      headers: { 'X-Norex-Key': await crawlAuthKey(), 'Content-Type': 'application/json' },
+      headers: { 'X-Phoenix-Key': await crawlAuthKey(), 'Content-Type': 'application/json' },
       body: JSON.stringify({ cursor, found }),
     });
     return res.ok;
@@ -94,7 +94,7 @@ export async function loadBurners(config) {
   try {
     const { createHash } = await import('node:crypto');
     const key = createHash('sha256').update(`${secret}:norex-burners`).digest('hex');
-    const res = await fetch(`${api}/api/burners/tracked`, { signal: AbortSignal.timeout(10000), headers: { 'X-Norex-Key': key } });
+    const res = await fetch(`${api}/api/burners/tracked`, { signal: AbortSignal.timeout(10000), headers: { 'X-Phoenix-Key': key } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return { ok: true, burners: (await res.json()).burners ?? [] };
   } catch (e) {
@@ -112,7 +112,7 @@ export async function loadBotSettings(config) {
   try {
     const { createHash } = await import('node:crypto');
     const key = createHash('sha256').update(`${secret}:norex-bot-settings`).digest('hex');
-    const res = await fetch(`${api}/api/bot/settings/public`, { signal: AbortSignal.timeout(10000), headers: { 'X-Norex-Key': key } });
+    const res = await fetch(`${api}/api/bot/settings/public`, { signal: AbortSignal.timeout(10000), headers: { 'X-Phoenix-Key': key } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return { ok: true, ...(await res.json()) };
   } catch (e) {

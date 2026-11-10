@@ -10,9 +10,10 @@
 //   GET/POST /api/requests      members: my requests / "Track another club" or "Hide me"   (flag `requests`)
 //   POST /api/requests/public   anyone: "Hide me from the site" (rate-limited per IP)
 //   GET  /api/admin/requests, POST /api/admin/requests/decide   managers: approve / reject / undo
-//   GET/POST /api/overrides     the site build (X-Norex-Key): approved hidden players + clubs to track
+//   GET/POST /api/overrides     the site build (X-Phoenix-Key): approved hidden players + clubs to track
 // Discord DMs: rows are queued (dm = 'queued') and sent right after the request (ctx.waitUntil) or by the cron.
 // Needs the Worker secret DISCORD_BOT_TOKEN; without it DMs are skipped and notifications stay on the site.
+import { sharedKey } from './sharedkey.js';
 import { can, flagOn } from './roles.js';
 import { broadcastRoom } from './clubroom.js';
 import { encryptPayload, safeEndpoint, sendPush } from './webpush.js';
@@ -402,7 +403,7 @@ export async function overridesKey(secret) {
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 async function overridesRoute(request, env) {
-  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await overridesKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await overridesKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
   if (request.method === 'POST') { // fetch.mjs found the EA club ID for a club approved by name
     const body = await request.json().catch(() => ({}));
     for (const x of (Array.isArray(body.resolved) ? body.resolved : []).slice(0, 20)) {

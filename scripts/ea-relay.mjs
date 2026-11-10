@@ -14,7 +14,7 @@ if (kind === 'search') hits = await eaGet('allTimeLeaderboard/search', { clubNam
 console.log(`relay ${ref}: ${kind} "${q}" → ${Array.isArray(hits) ? hits.length : 'no answer'} hit(s)`);
 
 const res = await fetch(`${api}/api/burners/relay`, {
-  method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Norex-Key': await burnersKey(secret) },
+  method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Phoenix-Key': await burnersKey(secret) },
   body: JSON.stringify({ ref, hits: Array.isArray(hits) ? hits.slice(0, 40) : null }),
 });
 console.log(`worker answered ${res.status}`);

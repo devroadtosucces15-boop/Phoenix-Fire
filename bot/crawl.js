@@ -2,8 +2,9 @@
 // one slice per 10-minute run, so the whole range gets indexed over many runs without a single Actions job
 // ever needing to cover it. The checkpoint and the found clubs' lightweight rows (id, name, crest – full
 // detail is fetched on demand elsewhere) live here in D1, since fetch.mjs (GitHub Actions) has no D1 access.
-//   GET  /api/crawl   keyed (X-Norex-Key, same shared-secret pattern as /api/overrides) – { cursor, indexed }
+//   GET  /api/crawl   keyed (X-Phoenix-Key, same shared-secret pattern as /api/overrides) – { cursor, indexed }
 //   POST /api/crawl   { cursor, found: [{id,name,crest}] } – saves the slice, advances the cursor
+import { sharedKey } from './sharedkey.js';
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
 const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
@@ -14,7 +15,7 @@ export async function crawlKey(secret) {
 }
 
 export async function crawlRoute(request, env) {
-  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await crawlKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await crawlKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
   if (request.method === 'GET') {
     const [cursor, total] = await Promise.all([
       one(env, "SELECT value FROM meta WHERE key = 'crawl_cursor'"),

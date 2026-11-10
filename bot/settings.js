@@ -2,8 +2,9 @@
 // Stored as one JSON blob in the D1 meta table (same key/value pattern as awards_channel, announce_channel, …).
 //   GET  /api/bot/settings         owner (settings.bot): current settings, for the manager portal's "Bot settings" tab
 //   POST /api/bot/settings         owner: save settings
-//   GET  /api/bot/settings/public  keyed (X-Norex-Key, same shared-secret pattern as /api/overrides) – fetch.mjs reads
+//   GET  /api/bot/settings/public  keyed (X-Phoenix-Key, same shared-secret pattern as /api/overrides) – fetch.mjs reads
 //                                  this before posting a match result so the channel/colour/emoji/toggle stay in sync.
+import { sharedKey } from './sharedkey.js';
 import { can, loadFlagOverrides } from './roles.js';
 import { getCommandSettings } from './botcommands.js';
 
@@ -58,7 +59,7 @@ export async function botSettingsRoute(p, method, body, me, env, log) {
 
 // Unauthenticated, keyed like /api/overrides – fetch.mjs (GitHub Actions) has no D1 access, so it asks the Worker.
 export async function botSettingsPublicRoute(request, env) {
-  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
   // flags = the Boardroom's live switches (fetch.mjs honours them for the result post); guildId lets it tell "@everyone" from a real role
   return json({ ...(await getBotSettings(env)), flags: await loadFlagOverrides(env), guildId: env.DISCORD_GUILD_ID || '', commands: await getCommandSettings(env) });
 }

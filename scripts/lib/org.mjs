@@ -30,7 +30,7 @@ export async function loadOrgClubs(config, { fetchFn = fetch, secret = process.e
   const api = config.members?.api;
   if (!api || !secret) return { ok: false, error: 'members API or DISCORD_CLIENT_SECRET not set', clubs: [] };
   try {
-    const res = await fetchFn(`${api}/api/org/clubs/public`, { signal: AbortSignal.timeout(10000), headers: { 'X-Norex-Key': orgKey(secret) } });
+    const res = await fetchFn(`${api}/api/org/clubs/public`, { signal: AbortSignal.timeout(10000), headers: { 'X-Phoenix-Key': orgKey(secret) } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const body = await res.json();
     if (!Array.isArray(body?.clubs)) throw new Error('unexpected response');
@@ -193,7 +193,7 @@ export async function resolveRoute(config, purpose, clubId, { fetchFn = fetch, s
   if (!api || !secret) return { ok: false, channelId: null, error: 'members API or DISCORD_CLIENT_SECRET not set' };
   try {
     const qs = new URLSearchParams({ purpose, ...(clubId ? { club: String(clubId) } : {}) });
-    const res = await fetchFn(`${api}/api/org/route/public?${qs}`, { signal: AbortSignal.timeout(10000), headers: { 'X-Norex-Key': orgKey(secret) } });
+    const res = await fetchFn(`${api}/api/org/route/public?${qs}`, { signal: AbortSignal.timeout(10000), headers: { 'X-Phoenix-Key': orgKey(secret) } });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const body = await res.json();
     return { ok: true, channelId: body.channelId ?? null, guildId: body.guildId ?? null, scope: body.scope ?? null };

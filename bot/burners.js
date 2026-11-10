@@ -7,12 +7,13 @@
 //   /burner track  <club>  managers: track straight away by exact name or ID (falls back to the menu if unsure)
 //   /burner list           managers: tracked clubs with their record so far
 //   /burner remove         managers: menu to stop tracking one
-//   GET /api/burners/tracked   keyed (X-Norex-Key, same shared-secret pattern as /api/overrides + /api/crawl)
+//   GET /api/burners/tracked   keyed (X-Phoenix-Key, same shared-secret pattern as /api/overrides + /api/crawl)
 //                              – the clubs fetch.mjs should follow: [{ id, name, crest, channel, at }]
 //
 // Tracking only writes a row; the next site update (≈10 min, or right away – we kick one off) collects the club's
 // squad, history and matches, and every game it plays after that gets a stats report in the channel the club was
 // tracked from. Gated by the `burners` flag + the `burners.manage` permission (managers).
+import { sharedKey } from './sharedkey.js';
 import { can, flagOn } from './roles.js';
 import { eaGet } from './clublookup.js';
 import { orgName } from './orgconfig.js';
@@ -44,7 +45,7 @@ export async function burnersKey(secret) {
 }
 
 export async function burnersRoute(request, env) {
-  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await burnersKey(env.DISCORD_CLIENT_SECRET)) return json({ error: 'Forbidden' }, 403);
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await burnersKey(env.DISCORD_CLIENT_SECRET)) return json({ error: 'Forbidden' }, 403);
   if (request.method !== 'GET' || !env.DB) return json({ error: 'Not found' }, 404);
   const rows = await all(env, 'SELECT club_id, name, crest, channel_id, added_at FROM burner_clubs WHERE active = 1 ORDER BY added_at LIMIT ?', MAX_BURNERS);
   return json({ burners: rows.map((r) => ({ id: r.club_id, name: r.name, crest: r.crest, channel: r.channel_id, at: r.added_at })) });
@@ -150,7 +151,7 @@ export async function relayAsk(env, q, i) {
 
 // The Actions job's answer: { ref, hits } (hits null = EA did not answer) → edits the waiting Discord reply.
 export async function burnersRelay(request, env) {
-  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await burnersKey(env.DISCORD_CLIENT_SECRET)) return json({ error: 'Forbidden' }, 403);
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await burnersKey(env.DISCORD_CLIENT_SECRET)) return json({ error: 'Forbidden' }, 403);
   if (request.method !== 'POST' || !env.DB) return json({ error: 'Not found' }, 404);
   const { ref, hits } = await request.json().catch(() => ({}));
   const row = await one(env, 'SELECT * FROM ea_relay WHERE ref = ?', String(ref ?? ''));

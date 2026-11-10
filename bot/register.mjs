@@ -21,7 +21,7 @@ async function loadCommandSettings() {
     const api = JSON.parse(fs.readFileSync(new URL('../config.json', import.meta.url), 'utf8')).members?.api;
     if (!secret || !api) return {};
     const key = createHash('sha256').update(`${secret}:norex-bot-settings`).digest('hex');
-    const r = await fetch(`${api.replace(/\/$/, '')}/api/bot/settings/public`, { signal: AbortSignal.timeout(10000), headers: { 'X-Norex-Key': key } });
+    const r = await fetch(`${api.replace(/\/$/, '')}/api/bot/settings/public`, { signal: AbortSignal.timeout(10000), headers: { 'X-Phoenix-Key': key } });
     return r.ok ? ((await r.json()).commands ?? {}) : {};
   } catch (e) { console.warn('Command settings not loaded:', e.message); return {}; }
 }

@@ -58,4 +58,21 @@ const app = fs.readFileSync(ROOT + 'web/app.js', 'utf8');
 t('session: classic app.js writes phoenix_session and migrates norex_session once', app.includes("const KEY = 'phoenix_session', OLD = 'norex_session'") && app.includes('else if (!ls.get(KEY) && ls.get(OLD)) ls.set(KEY, ls.get(OLD))'));
 t('session: claim page reads both keys', /KEY='phoenix_session',OLD='norex_session'/.test(fs.readFileSync(ROOT + 'phoenix/claim.html', 'utf8')));
 
+// ---------- 2. shared-secret header (Worker <-> Actions / scripts) ----------
+const { settingsKey } = await import('../bot/settings.js');
+const { env } = await import('./mock.mjs');
+const skey = await settingsKey(env.DISCORD_CLIENT_SECRET);
+const keyed = async (headers) => (await W('/api/bot/settings/public', { headers })).status;
+await tt('header: X-Phoenix-Key is accepted', async () => (await keyed({ 'X-Phoenix-Key': skey })) === 200);
+await tt('header: X-Norex-Key is still accepted', async () => (await keyed({ 'X-Norex-Key': skey })) === 200);
+await tt('header: a wrong X-Phoenix-Key is refused, even next to a right old one', async () => (await keyed({ 'X-Phoenix-Key': 'nope', 'X-Norex-Key': skey })) === 403);
+await tt('header: no key is refused', async () => (await keyed({})) === 403);
+const src = (f) => fs.readFileSync(ROOT + f, 'utf8');
+const senders = ['scripts/lib.mjs', 'scripts/lib/org.mjs', 'scripts/ea-relay.mjs', 'bot/register.mjs', 'scripts/fetch.mjs'];
+t('header: scripts, Actions helpers and register.mjs send X-Phoenix-Key only', senders.every((f) => !src(f).includes('X-Norex-Key')) && ['scripts/lib.mjs', 'scripts/lib/org.mjs', 'bot/register.mjs'].every((f) => src(f).includes("'X-Phoenix-Key'")));
+const bots = fs.readdirSync(ROOT + 'bot').filter((f) => /\.m?js$/.test(f) && f !== 'sharedkey.js');
+t('header: every keyed Worker route reads the header through sharedKey()', bots.every((f) => !src('bot/' + f).includes("headers.get('X-Norex-Key')")));
+const wf = fs.existsSync(ROOT + '.github/workflows') ? fs.readdirSync(ROOT + '.github/workflows').map((f) => src('.github/workflows/' + f)) : [];
+t('header: no workflow sends the old header', wf.every((s) => !/X-Norex-Key/i.test(s)));
+
 done();

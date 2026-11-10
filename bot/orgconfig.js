@@ -5,7 +5,8 @@
 //   POST /api/org/config/<entity>            owner: create (no id) or update (id) – entity = divisions|clubs|servers|channels|roles
 //   POST /api/org/config/<entity>/<id>/delete owner: remove a config row (clubs are archived, never deleted: history stays)
 //   GET  /api/org/diagnostics                owner: what is missing or inconsistent
-//   GET  /api/org/clubs/public               keyed (X-Norex-Key, same secret as /api/bot/settings/public): active club IDs for fetch jobs
+//   GET  /api/org/clubs/public               keyed (X-Phoenix-Key, same secret as /api/bot/settings/public): active club IDs for fetch jobs
+import { sharedKey } from './sharedkey.js';
 import { can } from './roles.js';
 import { settingsKey } from './settings.js';
 
@@ -141,7 +142,7 @@ export async function diagnostics(env) {
 
 // Keyed like /api/bot/settings/public: fetch jobs (GitHub Actions) have no D1 access, so they ask the Worker which clubs to sync.
 export async function orgClubsPublicRoute(request, env) {
-  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
   return json({ clubs: await activeClubs(env) });
 }
 
@@ -254,7 +255,7 @@ export const orgName = (env) => String(env?.ORG_NAME || 'Phoenix Fire').trim();
 // Keyed like /api/org/clubs/public: result posts run in GitHub Actions (no D1), so they ask the Worker where a purpose goes for a source club.
 // Answers { channelId, guildId, scope } or { channelId: null } when nothing is configured – the caller must report that, never substitute.
 export async function orgRoutePublicRoute(request, env) {
-  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
   const q = new URL(request.url).searchParams;
   const purpose = q.get('purpose');
   if (!CHANNEL_PURPOSES.includes(purpose)) return fail('Unknown purpose');
