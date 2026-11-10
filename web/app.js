@@ -1355,7 +1355,7 @@ ${VIEW_RANK.indexOf(realRole) >= VIEW_RANK.indexOf('manager') ? `<div class="acc
     const csv = [cols.join(','), ...rows.map((r) => cols.map((c) => cell(c === 'at' ? new Date(r.at).toISOString() : r[c])).join(','))].join('\r\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-    a.download = `norex-${name}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `${(document.body.dataset.club || 'club').toLowerCase().replace(/\W+/g, '-')}-${name}-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(a.href);
   }

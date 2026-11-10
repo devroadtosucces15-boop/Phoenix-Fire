@@ -52,7 +52,7 @@ addEventListener('DOMContentLoaded', () => {
       g.font = '600 30px Inter'; g.fillStyle = '#cfd6e3'; g.fillText(P.tags.join('   '), W / 2, 1130);
       g.fillStyle = '#6f7a8c'; g.font = '500 24px Inter'; g.fillText((window.NOREX?.brand || 'the club').toUpperCase() + ' · EA FC Pro Clubs · live EA data', W / 2, Hh - 60);
       const blob = await new Promise((ok, no) => { try { c.toBlob((b) => (b ? ok(b) : no(new Error('blob'))), 'image/png'); } catch (e) { no(e); } });
-      const a = d.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `norex-${P.gf}-${P.ga}-${P.opp.replace(/\W+/g, '-').toLowerCase()}.png`; d.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+      const a = d.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${(window.NOREX?.slug || 'club')}-${P.gf}-${P.ga}-${P.opp.replace(/\W+/g, '-').toLowerCase()}.png`; d.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
     }
   }
   // ---------- results / opponents / builds ----------

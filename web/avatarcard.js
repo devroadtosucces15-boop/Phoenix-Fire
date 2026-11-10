@@ -47,7 +47,7 @@
     g.letterSpacing = '0px';
     g.fillStyle = red; g.fillRect(0, H - 14, W, 14);
     const a = document.createElement('a');
-    a.download = `${name}-norex-card.png`.replace(/[^\w.-]+/g, '_');
+    a.download = `${name}-${(document.body.dataset.club || 'club').toLowerCase().replace(/\W+/g, '-')}-card.png`.replace(/[^\w.-]+/g, '_');
     a.href = c.toDataURL('image/png');
     a.click();
   }

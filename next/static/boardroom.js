@@ -284,7 +284,7 @@ ${form}${aw}<div class="br-meds">${hit.map(medCard).join('') || '<p class="muted
       const [ov, med, hofD] = await Promise.all([call('/api/admin/overview'), call('/api/admin/medals'), call('/api/hof').catch(() => ({ legends: [], moments: [] }))]);
       const medals = { custom: med.defs.filter((m) => m.source === 'custom'), edited: med.defs.filter((m) => m.source === 'built-in' && m.edited), hidden: med.hidden.map((m) => m.id) };
       const data = { kind: 'norex-boardroom-backup', version: 1, at: new Date().toISOString(), flags: ov.flags || {}, medals, hallOfFame: hofD };
-      const name = `norex-backup-${data.at.slice(0, 10)}.json`, url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })), a = d.createElement('a');
+      const name = `${(window.NOREX?.slug || 'club')}-backup-${data.at.slice(0, 10)}.json`, url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })), a = d.createElement('a');
       a.href = url; a.download = name; d.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
       S.bak.last = { name, flags: Object.keys(data.flags).length, medals: medals.custom.length + medals.edited.length + medals.hidden.length, hof: (hofD.legends?.length || 0) + (hofD.moments?.length || 0) };
     } finally { S.bak.busy = false; paint(); }

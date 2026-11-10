@@ -231,7 +231,7 @@ ${pl && ctx.mountNote && !noteNone ? '<section class="lk-sec lk-note" data-lk-no
     if (player && artwork) {
       const cv = document.createElement('canvas');
       await NXCardComposer.draw(cv, artwork.url, player, `${ctx.base}assets/crest.png`, { prepared: true });
-      cv.toBlob(b => { if (!b) return; const u = URL.createObjectURL(b), a = Object.assign(document.createElement('a'), { href: u, download: 'norex-player-card.png' }); a.click(); setTimeout(() => URL.revokeObjectURL(u), 30000); }, 'image/png');
+      cv.toBlob(b => { if (!b) return; const u = URL.createObjectURL(b), a = Object.assign(document.createElement('a'), { href: u, download: (document.body.dataset.club || 'club').toLowerCase().replace(/\W+/g, '-') + '-player-card.png' }); a.click(); setTimeout(() => URL.revokeObjectURL(u), 30000); }, 'image/png');
       return;
     }
     const pl = myPlayer();
@@ -257,7 +257,7 @@ ${pl && ctx.mountNote && !noteNone ? '<section class="lk-sec lk-note" data-lk-no
       g.font = '500 22px Inter, sans-serif'; g.fillText(l, x, 735);
     });
     g.font = '600 20px Oswald, Impact, sans-serif'; g.fillStyle = '#c8352c'; g.fillText('' + (document.body.dataset.club || 'the club') + '', 300, 838);
-    const out = () => cv.toBlob((b) => { if (!b) return; const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(b), download: `norex-${String(pl.n).replace(/[^\w-]+/g, '_')}.png` }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }, 'image/png');
+    const out = () => cv.toBlob((b) => { if (!b) return; const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(b), download: `${(document.body.dataset.club || 'club').toLowerCase().replace(/\W+/g, '-')}-${String(pl.n).replace(/[^\w-]+/g, '_')}.png` }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }, 'image/png');
     const img = new Image();
     img.onload = () => { const h = 84, w = (img.width / img.height) * h; g.drawImage(img, 520 - w, 96, w, h); out(); };
     img.onerror = out;

@@ -418,7 +418,7 @@ ${signed() ? '' : '<p class="tiny muted">🔐 Sign in to compare with your saved
     T(`Game rules ${g.version}${ev.status.preview ? ' · placeholder numbers' : ''} · * estimate`, 60, H - 50, '500 24px Inter, sans-serif', '#6b7280');
     T((window.NOREX?.brand || 'the club').toUpperCase(), W - 60, H - 50, '600 26px Oswald, Impact, sans-serif', '#9aa3b2', 'right');
     const blob = await new Promise((ok, no) => c.toBlob((bl) => (bl ? ok(bl) : no(new Error('The picture could not be drawn.'))), 'image/png'));
-    const name = `norex-build-${title || ev.arch.name}-L${ev.level}.png`.replace(/[^\w.-]+/g, '_');
+    const name = `${(window.NOREX?.slug || 'club')}-build-${title || ev.arch.name}-L${ev.level}.png`.replace(/[^\w.-]+/g, '_');
     const file = new File([blob], name, { type: 'image/png' });
     if (matchMedia('(pointer:coarse)').matches && navigator.canShare?.({ files: [file] })) { try { await navigator.share({ files: [file], title: title || ev.arch.name }); return; } catch (e) { if (e?.name === 'AbortError') return; } }
     const a = d.createElement('a'); a.download = name; a.href = URL.createObjectURL(blob); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);

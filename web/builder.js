@@ -332,7 +332,7 @@ ${token() ? '' : `<p class="muted small">🔐 Log in to compare with your saved 
     T(`Game rules ${g.version}${ev.status.preview ? ' · preview numbers' : ''} · * estimate`, 60, H - 50, '500 24px Inter, sans-serif', '#6b7280');
     T(location.host || '' + (document.body.dataset.club || 'the club') + '', W - 60, H - 50, '600 26px Oswald, Impact, sans-serif', '#9aa3b2', 'right');
     const a = document.createElement('a');
-    a.download = `norex-build-${(cur?.title || ev.arch.name)}-L${ev.level}.png`.replace(/[^\w.-]+/g, '_');
+    a.download = `${(document.body.dataset.club || 'club').toLowerCase().replace(/\W+/g, '-')}-build-${(cur?.title || ev.arch.name)}-L${ev.level}.png`.replace(/[^\w.-]+/g, '_');
     a.href = c.toDataURL('image/png'); a.click();
     toast('🖼️ Build card saved');
   }

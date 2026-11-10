@@ -42,7 +42,7 @@ ${S.err.subm ? empty('⚠️', 'Could not load submissions', S.err.subm) : rows 
   function csv() {
     const cols = ['at', 'author', 'subject', 'kind', 'body'], cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
     const text = [cols.join(','), ...S.rows.map((r) => cols.map((c) => cell(c === 'at' ? new Date(r.at).toISOString() : r[c])).join(','))].join('\r\n');
-    const a = Object.assign(d.createElement('a'), { href: URL.createObjectURL(new Blob([text], { type: 'text/csv' })), download: `norex-${S.type}-${new Date().toISOString().slice(0, 10)}.csv` });
+    const a = Object.assign(d.createElement('a'), { href: URL.createObjectURL(new Blob([text], { type: 'text/csv' })), download: `${(window.NOREX?.slug || 'club')}-${S.type}-${new Date().toISOString().slice(0, 10)}.csv` });
     a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 

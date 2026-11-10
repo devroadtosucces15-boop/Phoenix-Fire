@@ -44,7 +44,7 @@
   const fig = (kind, id, cap, name) => `<figure class="cs-fig ${kind}"><span class="cs-ph"><img data-pv="${kind}" data-id="${id}" alt="${esc(cap)}"></span><figcaption>${esc(cap)}</figcaption>${name ? `<a class="btn ghost" data-save href="#" download="${esc(name)}" hidden>⬇ Save</a>` : ''}</figure>`;
   const fillPics = (root) => Promise.all($$('[data-pv]', root).map(async (img) => {
     try { const { u, type } = await blobOf(picPath(img.dataset.pv, img.dataset.id)); img.src = u; img.closest('.cs-ph')?.classList.add('in');
-      img.closest('figure')?.querySelectorAll('[data-save]').forEach((a) => { a.href = u; a.hidden = false; if (img.dataset.pv === 'photo') a.download = `norex-upload-${img.dataset.id}.${EXT[type] || 'jpg'}`; }); }
+      img.closest('figure')?.querySelectorAll('[data-save]').forEach((a) => { a.href = u; a.hidden = false; if (img.dataset.pv === 'photo') a.download = `${(window.NOREX?.slug || 'club')}-upload-${img.dataset.id}.${EXT[type] || 'jpg'}`; }); }
     catch { img.closest('.cs-ph')?.replaceWith(Object.assign(d.createElement('span'), { className: 'cs-gone', textContent: img.dataset.pv === 'photo' ? '📷 Photo removed' : '🖼️ Artwork removed' })); }
   }));
   // phone photos can be 10 MB+: send a 1600 px JPEG instead (keeps the original when that is smaller), like the live studio
@@ -64,7 +64,7 @@
     await go(btn, async () => { await loadComposer(); const p = myPlayer(), c = d.createElement('canvas');
       await NXCardComposer.draw(c, url, { ovr: p.ovr, pos: p.line, n: p.n, s: { g: p.goals, a: p.assists, r: p.rating, p: p.pass, t: p.tackleRate, gp: p.gp } }, 'crest.png', { kitNumber: kit === '' ? null : kit });
       const blob = await new Promise((res) => c.toBlob(res, 'image/png')); if (!blob) throw new Error('Could not build the picture');
-      const u = URL.createObjectURL(blob), a = Object.assign(d.createElement('a'), { href: u, download: 'norex-player-card.png' }); d.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 30000); });
+      const u = URL.createObjectURL(blob), a = Object.assign(d.createElement('a'), { href: u, download: (window.NOREX?.slug || 'club') + '-player-card.png' }); d.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 30000); });
     ok('Player card saved', '⬇');
   }
   const kitInput = (v, id) => `<div class="cs-kit" role="group" aria-label="Kit number"><button type="button" class="btn ghost" data-kit="-1" aria-label="One lower">−</button><input id="${id}" class="num" inputmode="numeric" maxlength="2" value="${esc(v ?? '')}" placeholder="–" aria-label="Kit number, 0 to 99, optional"><button type="button" class="btn ghost" data-kit="1" aria-label="One higher">＋</button></div>`;
@@ -96,7 +96,7 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
 <p class="tiny muted">${ready ? 'Live numbers from the club data. Change the kit number and the shirt follows.' : rough ? 'Your photo on the card. The finished portrait is drawn in the club style.' : 'Approved portraits show on every card on the site.'}</p>
 ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empty for none</small>${kitInput(r.kitNumber, 'cs-kitdone')}</label><div class="sq-acts"><button type="button" class="btn ghost" data-kitsave hidden>💾 Save number</button><button type="button" class="btn gold" data-export>⬇ Export player card</button></div>` : ''}</div>`; };
   const artHtml = () => { const r = R?.request; if (!(r?.status === 'done' && (r.hasResult || r.hasPortrait))) return '';
-    return `<div class="panel cs-art"><div class="eyebrow">🖼️ Your artwork · ${esc(monthName(r.month))}</div><div class="cs-figs">${r.hasResult ? fig('avatar', r.id, 'Cinematic avatar', `norex-avatar-${r.month}.png`) : ''}${r.hasPortrait ? fig('portrait', r.id, 'Website portrait', `norex-portrait-${r.month}.png`) : ''}</div>
+    return `<div class="panel cs-art"><div class="eyebrow">🖼️ Your artwork · ${esc(monthName(r.month))}</div><div class="cs-figs">${r.hasResult ? fig('avatar', r.id, 'Cinematic avatar', `${(window.NOREX?.slug || 'club')}-avatar-${r.month}.png`) : ''}${r.hasPortrait ? fig('portrait', r.id, 'Website portrait', `${(window.NOREX?.slug || 'club')}-portrait-${r.month}.png`) : ''}</div>
 <p class="tiny muted">Use the avatar as your Discord picture: Discord › Settings › Profiles › Change avatar. Discord does not let bots set it for you.</p></div>`; };
   const formHtml = () => { const bgs = T.backgrounds.filter((t) => t.active !== false), poses = T.poses.filter((t) => t.active !== false), w = why();
     return `<form class="panel cs-form" id="cs-form" novalidate><div class="eyebrow">📸 Request my card · ${esc(monthName(R.month))}</div>
@@ -185,7 +185,7 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
     g.textAlign = 'center'; g.fillStyle = '#fff'; g.font = '700 54px Oswald, Impact, sans-serif'; g.fillText(String(name).toUpperCase().slice(0, 24), W / 2, cy + S / 2 + 80);
     g.fillStyle = '#f5d061'; g.font = '600 30px Oswald, Impact, sans-serif'; g.fillText('★  ★  ★  ★  ★', W / 2, cy + S / 2 + 128); g.fillStyle = red; g.fillRect(0, H - 14, W, 14);
     const blob = await new Promise((res) => { try { c.toBlob(res, 'image/png'); } catch { res(null); } }); if (!blob) throw new Error('blocked');
-    const u = URL.createObjectURL(blob), a = Object.assign(d.createElement('a'), { href: u, download: `${name}-norex-card.png`.replace(/[^\w.-]+/g, '_') }); d.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 30000);
+    const u = URL.createObjectURL(blob), a = Object.assign(d.createElement('a'), { href: u, download: `${name}-${(window.NOREX?.slug || 'club')}-card.png`.replace(/[^\w.-]+/g, '_') }); d.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 30000);
   }
 
   // ================= 🛡️ STAFF: review queue, player artwork (owner), looks =================
@@ -204,7 +204,7 @@ ${rest.length ? `<h4 class="al-day">🕘 Last 14 days</h4><ul class="cs-rec">${r
 <div class="cs-ofg"><label class="pf-l">Player<select name="player" required><option value="">Choose a player</option>${[...players].sort((a, b) => String(a.n).localeCompare(String(b.n))).map((p) => `<option value="${esc(p.id)}">${esc(p.n)}</option>`).join('')}</select></label>
 <label class="pf-l">Photo<input name="photo" type="file" accept="image/png,image/jpeg,image/webp" required></label><label class="pf-l">👕 Kit number${kitInput('', 'cs-okit')}</label><button class="btn gold" type="submit">📨 Send for the check</button></div></form>
 <h4 class="al-day">🗂️ Uploads and artwork <span class="cs-n num">${OW.length}</span></h4>${OW.length ? `<ul class="cs-ow">${OW.map((x) => `<li class="panel cs-or" data-or="${x.id}"><div class="cs-sh"><b>${esc(nameOf(x))}</b>${pill(x.status)}</div><small class="muted">${esc(monthName(x.month))}${x.note ? ` · ${esc(x.note)}` : ''}</small>
-<div class="cs-figs sm">${x.hasPhoto ? fig('photo', x.id, 'Uploaded photo', 'x') : '<span class="cs-gone">📷 Source photo gone</span>'}${x.hasPortrait ? fig('portrait', x.id, 'Portrait', `norex-portrait-${x.id}.png`) : ''}${x.hasResult ? fig('avatar', x.id, 'Avatar', `norex-avatar-${x.id}.png`) : ''}</div>
+<div class="cs-figs sm">${x.hasPhoto ? fig('photo', x.id, 'Uploaded photo', 'x') : '<span class="cs-gone">📷 Source photo gone</span>'}${x.hasPortrait ? fig('portrait', x.id, 'Portrait', `${(window.NOREX?.slug || 'club')}-portrait-${x.id}.png`) : ''}${x.hasResult ? fig('avatar', x.id, 'Avatar', `${(window.NOREX?.slug || 'club')}-avatar-${x.id}.png`) : ''}</div>
 <div class="cs-orf">${kitInput(x.kitNumber, 'cs-ok' + x.id)}<button type="button" class="btn ghost" data-okit="${x.id}">💾 Number</button>${x.status !== 'rejected' ? `<button type="button" class="btn ghost" data-orv="${x.id}">↩ Revoke · allow resubmit</button>` : '<span class="pill d">RESUBMIT OPEN</span>'}</div></li>`).join('')}</ul>` : '<div class="panel sq-empty"><span>🗂️</span><div><b>No uploads yet</b></div></div>'}`;
   const looksHtml = () => { const all = [...ST.backgrounds, ...ST.poses], prem = all.filter((t) => t.tier === 'premium');
     const row = (t) => `<li class="panel cs-lr${t.active ? '' : ' off'}" data-lr="${t.id}"><span class="cs-th"><img src="${esc(media(t.key))}" alt="" loading="lazy"></span><div class="cs-lf"><input data-f="name" value="${esc(t.name)}" maxlength="40" aria-label="Name">
