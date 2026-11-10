@@ -70,6 +70,7 @@ export const PERMS = {
   'messages.use': 'member', // P6.3 – DMs and group chats: read/send in your own chats
   'messages.reported': 'manager', // P6.3 – managers see reported messages only
   'messages.all': 'owner', // P6.3 – owner/founder sees every DM and group chat
+  'settings.org': 'owner', // Phase 0 – organization config: EA clubs, Discord servers/channels/roles
   'settings.bot': 'owner', // P7/P8 – bot and site settings
   'notify.use': 'member', // P7.1 – notification centre (bell, settings, Discord DMs)
   'notify.announce': 'manager', // P7.1 – announcements / rules to every member (optionally must-acknowledge)
