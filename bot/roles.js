@@ -130,8 +130,10 @@ export async function muted(env, uid) {
 const ids = (s) => String(s || '').split(',').map((x) => x.trim()).filter(Boolean);
 // Role from Discord at login (roles = the member's role IDs in the NOREX server). `claimed` is added per request.
 export function discordRole(env, userId, roles = []) {
-  if (ids(env.ADMIN_IDS).includes(userId) || (env.OWNER_ROLE_ID && roles.includes(env.OWNER_ROLE_ID))) return 'owner';
-  if (env.ADMIN_ROLE_ID && roles.includes(env.ADMIN_ROLE_ID)) return 'manager';
+  // ADMIN_IDS stays as the bootstrap owner (a user ID, not a role – there is no D1 table for it); roles come from wrangler vars or, when those are blank, the Organization config (withOrgEnv).
+  const mapped = (g, single) => [single, ...(env.ORG_ROLES?.[g] ?? [])].filter(Boolean).some((r) => roles.includes(r));
+  if (ids(env.ADMIN_IDS).includes(userId) || mapped('owner', env.OWNER_ROLE_ID)) return 'owner';
+  if (mapped('manager', env.ADMIN_ROLE_ID)) return 'manager';
   return 'member';
 }
 // Sessions issued before P0.6 have only `adm`; ADMIN_IDS still marks the owner.

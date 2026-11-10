@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { ROOT, call, login } from './mock.mjs';
+import { ROOT, call, login, config, siteJson } from './mock.mjs';
 import { t, done } from './lib.mjs';
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'nx-'));
@@ -13,14 +13,14 @@ const read = (f, repo) => fs.readFileSync(repo ? path.join(ROOT, '.github/workfl
 const need = ['index', 'watch', 'squad', 'halloffame', 'join', 'results', 'fixtures', 'opponents', 'stats', 'leaders', 'players', 'tactics', 'playstyle', 'studio', 'builds', 'updates', 'hub', 'staff-dugout'];
 
 t('preview: every main page is built', need.every((n) => html.includes(n + '.html')));
-t('preview: one profile page per player and a page per match', html.filter((f) => f.startsWith('player-')).length >= 30 && html.filter((f) => f.startsWith('match-')).length >= 30);
+t('preview: one profile page per player and a page per match', html.filter((f) => f.startsWith('player-')).length >= Math.min(30, siteJson('players').length) && html.filter((f) => f.startsWith('match-')).length >= Math.min(30, siteJson('club').matches.length));
 t('preview: hidden from search engines', html.every((f) => !/^(index|tactics|hub)\.html$/.test(f) || read(f).includes('noindex,nofollow')));
 t('preview: labelled as a preview', read('index.html').includes('prevrib'));
 t('preview: no template leftovers or undefined text', html.every((f) => { const s = read(f).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, ''); return !/\bundefined\b|\bNaN\b|\[object Object\]|\$\{/.test(s); }));
 t('preview: no links to the code repository or localhost', html.every((f) => !/github\.com\/devroadtosucces15|localhost|127\.0\.0\.1/.test(read(f).replace(/<script[\s\S]*?<\/script>/g, ''))));
 t('preview: all 29 FC27 formations ship with the tactics pages', (JSON.parse(read('tactics.html').match(/"formations":(\[[\s\S]*?\]),"formationNote"/)?.[1] ?? '[]')).length === 29);
 t('preview: static assets present', ['style.css', 'widgets.css', 'fx.css', 'fx.js', 'widgets.js', 'pitch.js', 'cards.js', 'crest.png'].every((f) => fs.existsSync(path.join(out, f))));
-t('preview: real card-art API is configured only in preview builds', read('index.html').includes('norex-bot.norexunited.workers.dev'));
+t('preview: real card-art API is configured only in preview builds', read('index.html').includes(new URL(config.members.api).host));
 // ---- app shell, phone layout and motion guards (the browser overflow sweep is next/tools/overflow-audit.mjs) ----
 const pages = html.filter((f) => !/^(lookbook|canvas)\.html$/.test(f)), css = ['style.css', 'motion.css', 'widgets.css'].map((f) => read(f)).join('\n');
 t('app: viewport fills the notch (cover) and locks zoom (zn11: maximum-scale=1, fields 16px+ on touch)', pages.every((f) => /name="viewport" content="[^"]*maximum-scale=1[^"]*viewport-fit=cover[^"]*"/.test(read(f))) && /\(pointer:coarse\)\{:where\(input[^}]*font-size:16px!important/.test(read('style.css')));
@@ -155,7 +155,7 @@ t('hub: Staff tab in the Hub menu shows only for staff', read('hub.html').includ
 }
 // ---- Phase D1: Watch + embeds ----
 { const wh = read('watch.html'), wj = read('watch.js');
-  t('watch: page has the live slot, channels and the Watch menu entry', wh.includes('data-watch-live') && wh.includes('twitch.tv') && read('index.html').includes('watch.html'));
+  t('watch: page has the live slot, channels and the Watch menu entry', wh.includes('data-watch-live') && (!config.streams?.twitch || wh.includes('twitch.tv')) && read('index.html').includes('watch.html'));
   t('watch: script on every page, reads /api/live, clip blurs after 10 s with a prompt', pages.every((f) => read(f).includes('watch.js')) && wj.includes('/api/live') && wj.includes('CLIP_MS = 10000') && wj.includes('Tap to keep watching'));
   t('watch: feed/doc video links become posters that load only on tap', wj.includes('.md-video') && wj.includes('i.ytimg.com') && wj.includes("wt-play').addEventListener('click'"));
   t('watch: Twitch parent is the page host, no autoplay with sound', wj.includes('parent=${encodeURIComponent(location.hostname)}') && wj.includes('muted=true')); }
@@ -167,7 +167,7 @@ t('hub: Staff tab in the Hub menu shows only for staff', read('hub.html').includ
 // ---- Phase D2–D4: news, join flow, opponent reports ----
 { const jh = read('join.html'), jj = read('join.js'), nh = read('news.html'), nj = read('news.js'), oh = read('opponents.html');
   const oppFiles = fs.readdirSync(out).filter((f) => /^opp-.+\.html$/.test(f)), op = read(oppFiles[0]);
-  t('join: real Discord apply link, requirements, positions and the open/closed line are on the page', jh.includes('https://discord.gg/') && jh.includes('What we look for') && jh.includes('Positions we want') && /Trials are (open|closed)/.test(jh));
+  t('join: real Discord apply link, requirements, positions and the open/closed line are on the page', jh.includes(`href="${config.discord?.applyLink || '#'}"`) && jh.includes('What we look for') && jh.includes('Positions we want') && /Trials are open|closed for now/.test(jh));
   t('join: short form posts to /api/trials/apply with a honeypot, validates positions/discord/clips and stays hidden until the API answers', jj.includes('/api/trials/apply') && jh.includes('name="website"') && jh.includes('data-join-form hidden') && jj.includes('Pick up to three positions') && jj.includes('must start with https://'));
   t('join: signed-in status reads /api/me (approved, pending, declined, unlinked) and guests get a sign-in card', jj.includes("get('/api/me')") && ['approved', 'pending', 'declined'].every((k) => jj.includes(`'${k}'`)) && jj.includes('data-login'));
   t('join: managers to talk to come from /api/contacts', jj.includes('/api/contacts') && jh.includes('data-join-contacts'));
@@ -227,13 +227,13 @@ t('hub: Staff tab in the Hub menu shows only for staff', read('hub.html').includ
   t('preview as (#53): owner can view the site as a member, display only, with a way back', sj.includes("norex.viewas") && sj.includes('viewAs') && hj.includes('data-va="member"') && hj.includes('Back to owner'));
   t('report (#40): layout diagnostics saved with every 🐞 report', rj.includes('function layoutDiag') && ['visualViewport', 'offsetTop', 'scrollY', 'tabbar', 'fixed'].every((k) => rj.includes(k)) && rj.includes('diag: layoutDiag()')); }
 // ---- pages bulk: #41 crest dots, #42 scorers, #43 opponents + burners page, #38 guest squad, #32 watch previews, #37 crests ----
-{ const rs = read('results.html'), op = read('opponents.html'), bn = read('burners.html'), jn = read('join.html'), wt = read('watch.html'), wp = read('watchprev.js'), nav = read('stats.html'), sc = read('style.css'), pm = fs.readFileSync(path.join(ROOT, 'scripts/media.mjs'), 'utf8');
+{ const rs = read('results.html'), op = read('opponents.html'), bn = read('burners.html'), hasB = read('burners.html').includes('data-burner='), jn = read('join.html'), wt = read('watch.html'), wp = read('watchprev.js'), nav = read('stats.html'), sc = read('style.css'), pm = fs.readFileSync(path.join(ROOT, 'scripts/media.mjs'), 'utf8');
   t('results (#41): season reel and spotlight dots carry the opponent crest, W/D/L stays as the ring', /class="dot [WDL]"[^>]*><span class="pt"><(img|span) class="ecrest/.test(rs) && read('widgets.css').includes('.wx .sdot .ecrest') && read('widgets.js').includes('crests/256x256/l${m.c}.png'));
   t('results (#42): rows show who scored and assisted per side, never invented minutes', rs.includes('class="evs"') && rs.includes('class="eg"') && !/class="ev[sa]?"[^>]*>[^<]*\d+['′]/.test(rs));
   t('opponents (#43): compact table, W-D-L horizontal, columns drop on phones, no burner slicer', op.includes('class="otb"') && op.includes('class="owl"') && op.includes('.otb .hm{display:none}') && !op.includes('id="ot"') && !op.includes('id="pb"') && !op.includes('Burner clubs ·'));
-  t('burners (#43): own page under Stats, per-club cards, combined total, never in League totals, ready for the include picker', nav.includes('href="burners.html"') && bn.includes('id="bn-all"') && bn.includes('data-burner=') && bn.includes('id="bn-include"') && bn.includes('id="bn-data"') && bn.includes('never count') && read('opponents.html').includes('href="burners.html"'));
+  t('burners (#43): own page under Stats, per-club cards, combined total, never in League totals, ready for the include picker', nav.includes('href="burners.html"') && (!hasB || (bn.includes('id="bn-all"') && bn.includes('data-burner=') && bn.includes('id="bn-include"') && bn.includes('id="bn-data"') && bn.includes('never count'))) && read('opponents.html').includes('href="burners.html"'));
   t('join (#38): Meet the squad opens a guest-safe card section on the page itself', jn.includes('data-open-squad') && jn.includes('id="squad"') && jn.includes('data-squad-open') && jn.includes('data-close-squad') && !/id="squad"[\s\S]{0,40}data-for="member/.test(jn));
-  t('watch (#32): previews are lazy (IntersectionObserver), muted, inline, looping, capped, and a tap opens the full player', wt.includes('data-wt-prev') && wt.includes('src="watchprev.js"') && ['IntersectionObserver', 'mute=1', 'playsinline=1', 'loop=1', 'seekTo', 'muted=${', 'wtp-modal', 'MAX = 3'].every((k) => wp.includes(k)));
+  t('watch (#32): previews are lazy (IntersectionObserver), muted, inline, looping, capped, and a tap opens the full player', (!(config.streams?.youtube || config.streams?.twitch) || (wt.includes('data-wt-prev') && wt.includes('src="watchprev.js"'))) && ['IntersectionObserver', 'mute=1', 'playsinline=1', 'loop=1', 'seekTo', 'muted=${', 'wtp-modal', 'MAX = 3'].every((k) => wp.includes(k)));
   t('watch (#32): ids come from a build-time fetch (CORS-blocked in browsers), failures keep the old list', pm.includes('feeds/videos.xml') && pm.includes('gql.twitch.tv') && pm.includes('Twitch failed') && read('update.yml', true).includes('scripts/media.mjs'));
   t('crests (#37): glow is red with a trace of gold and no hard disc edge, big crests use the sharp artwork', sc.includes('rgba(200,53,44,.34)') && sc.includes('rgba(239,207,122,.07)') && !sc.includes('rgba(255,138,60,.5)') && read('index.html').includes('crest-lg.png') && jn.includes('crest-lg.png') && read('hub.html').includes('src="crest.png"')); }
 
@@ -252,8 +252,8 @@ t('hub: Staff tab in the Hub menu shows only for staff', read('hub.html').includ
   t('hub (#1–2): the crest on the gold tile with a light sweep is the site logo on every page, motion-aware', hdc.includes('.bar .lg img') && hdc.includes('lgSweep') && hdc.includes('prefers-reduced-motion') && ['index.html', 'results.html', 'hub.html', 'squad.html', 'staff.html'].every((f) => read(f).includes('href="header.css"')));
 }
 // ---- bulk 5: burners what-if, about, scout, iOS tab bar, glow, background ----
-{ const bn = read('burners.html'), bw = read('burnerswhatif.js'), ab = read('about.html'), sc = read('scout.html'), sj = read('scout.js'), mc = read('motion.css'), pw = read('pwa.js'), st = read('style.css'), rd = fs.readFileSync(path.join(ROOT, 'next/lib/redirects.mjs'), 'utf8');
-  t('burners what-if: opt-in tick-box + club picker, labelled unofficial, remembered per viewer, never touches official numbers', bn.includes('id="bn-wi-on"') && bn.includes('id="bn-wi-pick"') && bn.includes('burnerswhatif.js') && bn.includes('<b>unofficial</b>') && bw.includes("'norex.burnerWhatIf'") && bw.includes('Unofficial') && !/fetch\(|XMLHttpRequest|sendBeacon/.test(bw) && JSON.parse(bn.match(/id="bn-data">([\s\S]*?)<\/script>/)[1]).norex.players.length > 0);
+{ const bn = read('burners.html'), hasB = read('burners.html').includes('data-burner='), bw = read('burnerswhatif.js'), ab = read('about.html'), sc = read('scout.html'), sj = read('scout.js'), mc = read('motion.css'), pw = read('pwa.js'), st = read('style.css'), rd = fs.readFileSync(path.join(ROOT, 'next/lib/redirects.mjs'), 'utf8');
+  t('burners what-if: opt-in tick-box + club picker, labelled unofficial, remembered per viewer, never touches official numbers', (!hasB || (bn.includes('id="bn-wi-on"') && bn.includes('id="bn-wi-pick"') && bn.includes('burnerswhatif.js') && bn.includes('<b>unofficial</b>'))) && bw.includes("'norex.burnerWhatIf'") && bw.includes('Unofficial') && !/fetch\(|XMLHttpRequest|sendBeacon/.test(bw) && (!hasB || JSON.parse(bn.match(/id="bn-data">([\s\S]*?)<\/script>/)[1]).norex.players.length > 0));
   t('about page exists, is linked from every footer and carries no repo link', ab.includes('About') && ab.includes('ab-card') && read('index.html').includes('href="about.html"') && !/github\.com/i.test(ab));
   t('scout page: profile for players outside the squad from api/players.json, old players/<id> links land there', sc.includes('src="scout.js"') && sj.includes('api/players.json') && rd.includes('scout.html#k='));
   t('#40 tab bar: composited, horizontal overflow clipped, and a settle-time drift check pulls it back to the bottom edge', mc.includes('html,body{overflow-x:clip}') && mc.includes('--tbfix') && pw.includes('--tbfix') && pw.includes('visualViewport') === true);

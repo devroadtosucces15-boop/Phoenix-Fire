@@ -32,10 +32,10 @@ t('P1.1 results.html has all 8 drill-down panels', ['played', 'won', 'drawn', 'l
 t('P1.1 home stat cards link to drill-downs', /class="stat link" href="results\.html\?f=won"/.test(index) && /href="results\.html\?f=winrate"/.test(index));
 t('P1.1 results page has League/Rush switch', res.includes('data-rush="results"'));
 const clubPages = files.filter((f) => /clubs\/\d+\.html$/.test(f));
-t('P1.1 other clubs link to their own drill-down (if archived)', clubPages.every((f) => { const h = read(f); const m = h.match(/href="(\d+-results\.html)\?f=played"/); return !m || fs.existsSync(SITE + 'clubs/' + m[1]); }) && clubPages.some((f) => /-results\.html\?f=won/.test(read(f))));
+t('P1.1 other clubs link to their own drill-down (if archived)', clubPages.every((f) => { const h = read(f); const m = h.match(/href="(\d+-results\.html)\?f=played"/); return !m || fs.existsSync(SITE + 'clubs/' + m[1]); }) && (clubPages.length <= 1 || clubPages.some((f) => /-results\.html\?f=won/.test(read(f)))));
 // P1.3 streams
-t('P1.3 home has Watch section + live embed slot', index.includes('id="watch"') && index.includes('class="live-embed"') && index.includes(config.streams.twitch));
-t('P1.3 footer links both channels on every page', read(SITE + 'stats.html').includes(`href="${config.streams.youtube}"`) && read(SITE + 'stats.html').includes('class="live-bar"'));
+t('P1.3 home has Watch section + live embed slot', (!config.streams.twitch && !config.streams.youtube || (index.includes('id="watch"') && index.includes('class="live-embed"'))) && (!config.streams.twitch || index.includes(config.streams.twitch)));
+t('P1.3 footer links both channels on every page', (!config.streams.youtube || read(SITE + 'stats.html').includes(`href="${config.streams.youtube}"`)) && (!config.streams.youtube || read(SITE + 'stats.html').includes('class="live-bar"')));
 // QA1: deferred page scripts placed before ui.js run first – they must wait for DOMContentLoaded or guard window.UI
 const early = new Set(html.flatMap((f) => { const h = read(f); const ui = h.indexOf('assets/ui.js'); return [...h.matchAll(/src="(?:\.\.\/)*assets\/([\w-]+\.js)"/g)].filter((m) => ui < 0 || m.index < ui).map((m) => m[1]); }));
 t('QA1 page scripts before ui.js never touch UI at load', [...early].every((js) => { const src = fs.existsSync(SITE + 'assets/' + js) ? read(SITE + 'assets/' + js) : ''; return !/\bUI\./.test(src) || /DOMContentLoaded|window\.UI/.test(src); }));

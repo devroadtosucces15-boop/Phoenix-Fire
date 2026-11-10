@@ -23,10 +23,11 @@ globalThis.fetch = async (url, init = {}) => {
 process.env.DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1/abc';
 process.env.DISCORD_BOT_TOKEN = 'tok';
 const manifest = { match: { 1: { score: 'score-1.png', field: 'field-1.png' } } };
+const route = async (cfg, purpose, club) => ({ ok: true, channelId: purpose === 'match_results' && club === '100' ? 'chan-1' : null }); // Organization config says: club 100's results go to chan-1
 
-await postResults([m], { config, homeId: '100', drawn: { dir, manifest } });
+await postResults([m], { config, homeId: '100', route, drawn: { dir, manifest } });
 const post = calls.find((c) => c.url.endsWith('/channels/chan-1/messages'));
-t('the result is posted by the bot into the webhook channel', !!post);
+t('the result is posted by the bot into the channel the Organization config resolves for the source club', !!post);
 t('with the pictures it goes up as a multipart form', post?.init.body instanceof FormData);
 const payload = JSON.parse(post?.init.body.get('payload_json') ?? '{}');
 t('the score card and field view are attached', post?.init.body.get('files[0]') && post?.init.body.get('files[1]'));
@@ -36,9 +37,26 @@ t('goals and man of the match are there', /Goals/.test(plainText(payload)) && /M
 t('the "Show my match" menu is still on it', JSON.stringify(payload).includes('norex:mm:1'));
 
 calls.length = 0;
-await postResults([m], { config, homeId: '100', drawn: null });
+await postResults([m], { config, homeId: '100', route, drawn: null });
 const plain = calls.find((c) => c.url.endsWith('/channels/chan-1/messages'));
 t('without cards it is a plain JSON post with no pictures', typeof plain?.init.body === 'string' && !plain.init.body.includes('attachment://'));
+
+// Missing destination: reported, nothing posted anywhere (not the webhook's own channel, not another club's channel).
+calls.length = 0;
+const cwd = process.cwd(); process.chdir(dir);
+const lost = await postResults([m], { config, homeId: '100', route: async () => ({ ok: true, channelId: null }), drawn: null });
+t('no match_results destination → nothing is posted', !calls.some((c) => /\/channels\/|\/webhooks\/1\/abc$/.test(c.url) && c.init.method === 'POST'));
+t('…and it is reported with the club and purpose', lost.missing.length === 1 && lost.missing[0].club === '100' && lost.missing[0].purpose === 'match_results');
+t('…and written to .outbox/missing-destinations.json', fs.existsSync(path.join(dir, '.outbox', 'missing-destinations.json')));
+const failedLookup = await postResults([m], { config, homeId: '100', route: async () => ({ ok: false, error: 'HTTP 500' }), drawn: null });
+t('a failed destination lookup is reported too, never guessed', failedLookup.missing.length === 1 && /lookup failed/.test(failedLookup.missing[0].why));
+// A derby between two of our clubs fetched from club 101 posts to club 101's destination, from 101's side.
+calls.length = 0;
+const derby = { ...m, matchId: '9', fetchedFrom: '101', clubs: { 100: m.clubs[100], 101: { wins: '0', losses: '1', goals: '1', details: { name: 'NOREX B' } } }, players: { 100: m.players[100], 101: { z: { playername: 'Zed', goals: '1', rating: '6.5' } } } };
+const seen = [];
+await postResults([derby], { config, homeId: '100', orgIds: ['100', '101'], route: async (c, p, club) => (seen.push(club), { ok: true, channelId: 'chan-101' }), drawn: null });
+t('a match is routed by its source club ID', seen.join() === '101' && calls.some((c) => c.url.endsWith('/channels/chan-101/messages')));
+process.chdir(cwd);
 
 globalThis.fetch = realFetch;
 done();

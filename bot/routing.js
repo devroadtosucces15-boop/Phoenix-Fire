@@ -7,7 +7,7 @@
 // single place to change where anything goes. Callers use routeNotification(); it returns null when the action has no rules.
 import { can } from './roles.js';
 import { notify } from './notify.js';
-import { getBotSettings } from './settings.js';
+import { resolveChannel } from './orgconfig.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
@@ -81,7 +81,6 @@ export async function routeNotification(env, action, ctx) {
   const out = { notified: 0, posts: [], errors: [] };
   const cache = {};
   const people = (g) => (cache[g] ??= peopleOf(env, g, ctx));
-  const settings = await getBotSettings(env);
   for (const r of rules) {
     try {
       if (r.method === 'dm') {
@@ -89,9 +88,10 @@ export async function routeNotification(env, action, ctx) {
         if (ids.length && ctx.notify) out.notified += (await notify(env, ids, ctx.notify)) ?? 0;
         continue;
       }
-      const channel = r.channel || ctx.channel || settings.reminderChannel
-        || (await one(env, "SELECT value FROM meta WHERE key = 'announce_channel'"))?.value;
-      if (!channel) { out.errors.push(`${ACTIONS[action].label}: no channel to post in – pick one on the rule.`); continue; }
+      // Rule's own channel → the event's own post → the Organization config (match_notifications: club → division → org scope).
+      // No other channel is ever substituted: a missing destination is reported so someone sets it (Boardroom → Organization).
+      const channel = r.channel || ctx.channel || (await resolveChannel(env, 'match_notifications', { clubId: ctx.clubId ?? null, divisionId: ctx.divisionId ?? null }))?.channelId;
+      if (!channel) { out.errors.push(`${ACTIONS[action].label}: no destination – set a match_notifications channel in Boardroom → Organization, or pick a channel on the rule.`); continue; }
       let ping = null, mentions = { parse: [] };
       if (r.method === 'everyone') { ping = '@everyone'; mentions = { parse: ['everyone'] }; }
       else if (r.method === 'tag') {

@@ -51,7 +51,7 @@ async function startJob(env, now) {
   const [guild, channels, roles] = await Promise.all([dget(env, `/guilds/${g}?with_counts=true`), dget(env, `/guilds/${g}/channels`), dget(env, `/guilds/${g}/roles`)]);
   let members = null;
   try { members = await dget(env, `/guilds/${g}/members?limit=1000`); } catch (e) { if (e.message !== 'no-access') throw e; }
-  const staff = new Set([env.ADMIN_ROLE_ID, env.OWNER_ROLE_ID].filter(Boolean));
+  const staff = new Set([env.ADMIN_ROLE_ID, env.OWNER_ROLE_ID, ...(env.ORG_ROLES?.owner ?? []), ...(env.ORG_ROLES?.manager ?? [])].filter(Boolean));
   const chans = channels.map((c) => ({ id: c.id, name: c.name, type: c.type, last: snowTs(c.last_message_id) }));
   const count = {};
   const m = members && { humans: 0, bots: 0, joins7: 0, joins30: 0, noRole: 0, byMonth: {}, ids: [], staff: [] };

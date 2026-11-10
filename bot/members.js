@@ -48,7 +48,7 @@ import { memberCard, profileOut, profileSummary, saveProfile } from './profiles.
 import { syncMember } from './discordroles.js';
 import { botSettingsPublicRoute, botSettingsRoute } from './settings.js';
 import { routingRoute } from './routing.js';
-import { orgConfigRoute, orgClubsPublicRoute } from './orgconfig.js';
+import { orgConfigRoute, orgClubsPublicRoute, orgRoutePublicRoute } from './orgconfig.js';
 import { botCommandsRoute } from './botcommands.js';
 import { crawlRoute } from './crawl.js';
 import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
@@ -422,6 +422,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
       if (me) me.role = await currentRole(env, me, request);
       return cors(env, await publicRequestRoute(request, env, me, loadSite, log));
     }
+    if (url.pathname === '/api/org/route/public') return cors(env, await orgRoutePublicRoute(request, env)); // result posts ask where a purpose goes for a club
     if (url.pathname === '/api/org/clubs/public') return cors(env, await orgClubsPublicRoute(request, env)); // jobs read the saved club list
     if (url.pathname === '/api/bot/settings/public') return cors(env, await botSettingsPublicRoute(request, env)); // P7.5 – fetch.mjs reads before posting
     if (url.pathname === '/api/crawl') return cors(env, await crawlRoute(request, env)); // P9.1 – fetch.mjs's resumable club-ID crawl checkpoint

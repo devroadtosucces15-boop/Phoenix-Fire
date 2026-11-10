@@ -25,6 +25,7 @@ import { insightsCron, insightsNow, reportMessages } from './insights.js';
 import { matchComponents, matchInteraction } from './matchcard.js';
 import { ROLE_HELP, syncAll } from './discordroles.js';
 import { can, discordRole, flagOn, loadFlagOverrides, withFlagOverrides } from './roles.js';
+import { withOrgEnv } from './orgconfig.js';
 import { mediaCron, serveMedia } from './media.js';
 import { exportContent } from './exportcontent.js';
 import { checkUptime } from './monitor.js';
@@ -51,6 +52,7 @@ import { SERVER_COMMANDS, SERVER_BUTTON, serverCommand, serverButton, memberWatc
 
 export default {
   async scheduled(event, env, ctx) {
+    env = await withOrgEnv(env); // Discord server + role IDs from the Organization config
     if (event?.cron === '* * * * *') { // the 1-minute timer only sends /remind reminders – everything else stays on the 10-minute one
       ctx.waitUntil(sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
       return;
@@ -91,6 +93,7 @@ export default {
     const path = new URL(request.url).pathname;
     if (path.startsWith('/crest/')) return crestProxy(path, ctx);
     if (path.startsWith('/media/')) return serveMedia(request, env, path.slice(7)); // P6.1b feed photos/clips (R2)
+    env = await withOrgEnv(env); // Discord server + role IDs from the Organization config
     if (path.startsWith('/auth/') || path.startsWith('/api/')) {
       const site = (env.SITE_URL || '').replace(/\/?$/, '/');
       return handleMembers(request, env, ctx, (file) => load(site, file, ctx));
@@ -195,6 +198,7 @@ export default {
   // BE9's background jobs (JOBS queue, BE0) – currently just the insight writer; refreshStatInsights()
   // only enqueues a key whose fact pack actually changed, so this rebuilds the pack and writes it.
   async queue(batch, env, ctx) {
+    env = await withOrgEnv(env);
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');
     const loadSite = (file) => load(site, file, ctx);
     for (const msg of batch.messages) {

@@ -62,7 +62,7 @@ t('a server that still has channels cannot be deleted', (await call(owner, `/api
 t('rejects a bad permission group', (await call(owner, '/api/org/config/roles', { server_id: s1.id, role_id: C(9), permission_group: 'god' })).s === 400);
 await call(owner, '/api/org/config/roles', { server_id: s1.id, role_id: C(9), permission_group: 'owner' });
 await call(owner, '/api/org/config/roles', { server_id: s2.id, role_id: C(8), permission_group: 'club_manager', scope_type: 'club', scope_id: c2.id });
-t('roles map to groups, with scope and server', (await rolesFor(env, 'club_manager'))[0]?.guild_id === G2 && (await rolesFor(env, 'owner')).length === 1);
+t('roles map to groups, with scope and server', (await rolesFor(env, 'club_manager'))[0]?.guild_id === G2 && (await rolesFor(env, 'owner')).some((r) => r.role_id === C(9)));
 
 // audit + diagnostics
 const audit = (await call(owner, '/api/org/config')).d.audit;

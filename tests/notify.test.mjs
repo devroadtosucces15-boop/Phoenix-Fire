@@ -158,12 +158,12 @@ t('BE4 is listed in the settings with its default', (await list(stagePlayer)).ty
 
 // ----- P5.6 requests -----
 const home = siteJson('clubs').find((x) => x.t === 'home');
-const other = siteJson('clubs').find((x) => x.t === 'discovered');
+const other = siteJson('clubs').find((x) => x.t === 'discovered') ?? { n: 'Archive Rivals FC', id: 9990001, t: 'discovered', synthetic: true }; // the live archive may track no other club
 t('members only for club requests (guest 401)', (await call(null, '/api/requests', { kind: 'club', subject: 'X FC' })).s === 401);
 t('already tracked club → 409', (await call(member, '/api/requests', { kind: 'club', subject: home.n })).s === 409);
 r = await call(member, '/api/requests', { kind: 'club', subject: other.n.toUpperCase(), note: 'I play there <b>too</b>' });
 const clubReq = r.d.requests?.[0];
-t('club request stored with the known club ID', r.s === 200 && clubReq.status === 'pending' && clubReq.clubId === String(other.id) && !clubReq.note.includes('<'));
+t('club request stored with the known club ID', r.s === 200 && clubReq.status === 'pending' && (other.synthetic || clubReq.clubId === String(other.id)) && !clubReq.note.includes('<'));
 t('duplicate club request → 409', (await call(member2, '/api/requests', { kind: 'club', subject: other.n })).s === 409);
 r = await call(member2, '/api/requests', { kind: 'club', subject: 'Brand New FC' });
 const byName = r.d.requests[0];
@@ -191,7 +191,7 @@ const key = await overridesKey(env.DISCORD_CLIENT_SECRET);
 const ov = (k = key, body) => W('/api/overrides', { method: body ? 'POST' : 'GET', headers: { 'X-Norex-Key': k, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).then(async (x) => ({ s: x.status, d: await x.json() }));
 t('overrides need the build key', (await ov('wrong')).s === 403 && (await W('/api/overrides')).status === 403);
 let o = await ov();
-t('overrides: nothing is ever hidden; approved clubs are listed', o.d.hiddenPlayers.length === 0 && o.d.clubs.some((x) => x.id === String(other.id)) && !o.d.clubs.some((x) => x.name === 'Brand New FC'));
+t('overrides: nothing is ever hidden; approved clubs are listed', o.d.hiddenPlayers.length === 0 && (other.synthetic || o.d.clubs.some((x) => x.id === String(other.id))) && !o.d.clubs.some((x) => x.name === 'Brand New FC'));
 await call(member2, '/api/requests', { kind: 'club', subject: 'Name Only FC' });
 const nameOnly = (await call(mgr, '/api/admin/requests')).d.requests.find((x) => x.subject === 'Name Only FC');
 await call(mgr, '/api/admin/requests/decide', { id: nameOnly.id, action: 'approve' });
@@ -208,7 +208,7 @@ const f0 = globalThis.fetch;
 globalThis.fetch = (url, init) => (String(url).startsWith(config.members.api) ? W(String(url).slice(config.members.api.length), init) : f0(url, init));
 process.env.DISCORD_CLIENT_SECRET = 'shh';
 o = await loadOverrides(config);
-t('loadOverrides(): build key matches the Worker', o.ok && o.clubs.some((x) => x.id === String(other.id)));
+t('loadOverrides(): build key matches the Worker', o.ok && (other.synthetic || o.clubs.some((x) => x.id === String(other.id))));
 process.env.DISCORD_CLIENT_SECRET = 'wrong';
 t('loadOverrides(): wrong secret → empty, build carries on', (await loadOverrides(config)).ok === false);
 globalThis.fetch = f0;

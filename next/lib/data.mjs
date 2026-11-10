@@ -1,21 +1,30 @@
 // Real club data, read from the repo's data/ folder (read-only). Everything the pages show comes from here.
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
+import { orgClubsFromDisk, combineOrg, orgOverview } from '../../scripts/lib/org.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url));
 // the repo root is the nearest parent holding config.json (works from next/ in the repo and through the PLANNING symlink)
 const root = (() => { let p = here; for (let i = 0; i < 6; i++) { if (fs.existsSync(path.join(p, 'config.json')) && fs.existsSync(path.join(p, 'data'))) return p; p = path.dirname(p); } return path.join(here, '..', '..'); })();
 const J = (p, d = null) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return d; } };
 export const cfg = J(path.join(root, 'config.json'), {});
-export const CLUB = String(cfg.homeClubId ?? cfg.clubId ?? 80869);
-const club = J(path.join(root, `data/clubs/${CLUB}.json`), {});
+// Phase 2: the organization's clubs (data/org.json = the last snapshot of /api/org/clubs/public, else config.homeClubId) are combined into one
+// "club": CLUB stays the primary club ID, every club's matches and members are in, duplicates counted once, source club IDs kept (m.src / p.clubs).
+const dataDir = path.join(root, 'data');
+const org = orgClubsFromDisk({ ...cfg, homeClubId: cfg.homeClubId ?? cfg.clubId ?? 80869 }, dataDir);
+export const CLUB = org.primary;
+const clubRecords = new Map(org.ids.map((id) => [id, J(path.join(dataDir, `clubs/${id}.json`))]).filter(([, r]) => r));
+const rawMatches = fs.readdirSync(path.join(dataDir, 'matches')).map((f) => ({ f, m: J(path.join(dataDir, 'matches', f)) })).filter((x) => x.m);
+const combined = combineOrg({ org, records: clubRecords, matches: rawMatches.map((x) => x.m) });
+const club = combined.club ?? {};
+export const orgInfo = orgOverview(combined, org);
 const world = J(path.join(root, 'data/world.json'), { clubs: [] });
 const num = (x) => (x == null || x === '' ? 0 : +x || 0);
 const LINE = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
 export const ARCH = ['Shot Stopper', 'Sweeper Keeper', 'Progressor', 'Boss', 'Engine', 'Marauder', 'Recycler', 'Maestro', 'Creator', 'Spark', 'Magician', 'Finisher', 'Target'];
 
 // ---- matches (club perspective) ----
-const mdir = path.join(root, "data/matches"); export const matches = []; const arch = new Map(); const pidBy = new Map(); // EA player id by gamer tag (same key the live site and the Card Studio use)
-for (const f of fs.readdirSync(mdir)) {
-  const m = J(path.join(mdir, f)); const me = m?.clubs?.[CLUB]; if (!me) continue;
+export const matches = []; const arch = new Map(); const pidBy = new Map(); // EA player id by gamer tag (same key the live site and the Card Studio use)
+for (const m of combined.matches) {
+  const f = `${m.matchId}.json`; const me = m.src ? m.clubs?.[CLUB] : null; if (!me) continue;
   const oppId = Object.keys(m.clubs).find((k) => k !== CLUB); const opp = m.clubs[oppId] ?? {};
   const gf = num(me.goals), ga = num(me.goalsAgainst);
   // every per-player number EA sends for a match (both sides); no possession, no event timeline exist in the feed
@@ -24,7 +33,7 @@ for (const f of fs.readdirSync(mdir)) {
   for (const [pid, p] of Object.entries(m.players?.[CLUB] ?? {})) if (p.playername) pidBy.set(p.playername.toLowerCase(), pid);
   const lines = Object.values(m.players?.[CLUB] ?? {}).map(toLine), olines = Object.values(m.players?.[oppId] ?? {}).map(toLine);
   for (const l of lines) { const a = arch.get(l.n) ?? {}; a[l.arch] = (a[l.arch] || 0) + 1; arch.set(l.n, a); }
-  matches.push({ id: m.matchId ?? f.replace('.json', ''), t: num(m.timestamp), type: m.matchType, oppId, crest: opp.kit?.crestAssetId ? String(opp.kit.crestAssetId) : '', opp: opp.name ?? `Club ${oppId}`, gf, ga, res: gf > ga ? 'W' : gf < ga ? 'L' : 'D', lines, olines });
+  matches.push({ id: m.matchId ?? f.replace('.json', ''), t: num(m.timestamp), type: m.matchType, src: m.src, sources: m.sources, internal: m.internal, oppId, crest: opp.kit?.crestAssetId ? String(opp.kit.crestAssetId) : '', opp: opp.name ?? `Club ${oppId}`, gf, ga, res: gf > ga ? 'W' : gf < ga ? 'L' : 'D', lines, olines });
 }
 matches.sort((a, b) => b.t - a.t);
 // team totals for the comparison bars (only fields EA sends)

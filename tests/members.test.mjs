@@ -1,5 +1,5 @@
 // Member API: login, D1 migration from KV, claims, profile, availability, votes, portal, roles (P0.3, P0.6).
-import { call, env, login, mockDiscord, seal, siteJson, sqlite, W } from './mock.mjs';
+import { CLAIM_PID, call, env, login, mockDiscord, seal, siteJson, sqlite, W } from './mock.mjs';
 import { t, done } from './lib.mjs';
 import { can, permsFor } from '../bot/roles.js';
 
@@ -33,8 +33,8 @@ t('overview shape', ov.users['222'].logins === 3 && ov.users['111'].admin === tr
 t('approve claim', (await call(boss, '/api/admin/claims', { user: '222', action: 'approve' })).s === 200);
 let pub = (await call(null, '/api/public')).d;
 t('public cache rebuilt on approve', Object.values(pub.claims)[0]?.name === 'Mike' && Object.values(pub.claims)[0].platform === 'PS5');
-t('claiming an owned player → 409', (await call(other, '/api/claim', { player: '1007531598629' })).s === 409);
-const p2 = siteJson('players').find((x) => x.home && x.k !== '1007531598629');
+t('claiming an owned player → 409', (await call(other, '/api/claim', { player: CLAIM_PID })).s === 409);
+const p2 = siteJson('players').find((x) => x.home && x.k !== CLAIM_PID);
 r = await call(other, '/api/claim', { player: p2.k });
 t('new claim pending', r.s === 200 && r.d.claim.status === 'pending' && r.d.claim.playerName === p2.n);
 t('claim for a non-squad player → 400/404', [400, 404].includes((await call(other, '/api/claim', { player: 'nobody' })).s));

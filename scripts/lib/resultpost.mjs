@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadBotSettings, num } from '../lib.mjs';
+import { resolveRoute } from './org.mjs';
 import { matchComponents } from '../../bot/matchcard.js';
 import { message, header, facts, footer, resultAccent, cards, label } from '../../bot/ui.js';
 import { it } from '../../bot/icons.js';
@@ -12,7 +13,7 @@ import { it } from '../../bot/icons.js';
 // posted by the bot into the webhook's channel with the P7.2 "Show my match" menu (plain webhooks can't carry
 // interactive components); if that fails, or otherwise, it goes through the webhook as before.
 // matches: raw EA matches (newest last). drawn: { dir, manifest } of site/cards + site/api/cards.json, or null.
-export async function postResults(matches, { config, homeId, hidden = [], drawn = null }) {
+export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute }) {
   const hook = process.env.DISCORD_WEBHOOK;
   if (!hook || !matches.length) return;
   const settings = await loadBotSettings(config); // P7.5 – result channel override, ping role, emoji, on/off
@@ -24,11 +25,13 @@ export async function postResults(matches, { config, homeId, hidden = [], drawn 
     .sort((a, b) => a.timestamp - b.timestamp)
     .slice(-10)
     .map((m) => {
-      const us = m.clubs[homeId];
-      const oppId = Object.keys(m.clubs).find((k) => k !== homeId);
+      // Source club: the organization club the match was fetched from (derbies: the first of ours in it). Its ID routes the post.
+      const src = [m.fetchedFrom, ...orgIds, homeId].find((id) => id && m.clubs[id]);
+      const us = m.clubs[src];
+      const oppId = Object.keys(m.clubs).find((k) => k !== src);
       const opp = m.clubs[oppId];
       const res = us.wins === '1' ? 'W' : us.losses === '1' ? 'L' : 'D';
-      const ourIds = Object.entries(m.players?.[homeId] || {}).filter(([pid, p]) => !hide.has(pid.toLowerCase()) && !hide.has(String(p.playername).toLowerCase()));
+      const ourIds = Object.entries(m.players?.[src] || {}).filter(([pid, p]) => !hide.has(pid.toLowerCase()) && !hide.has(String(p.playername).toLowerCase()));
       const ours = ourIds.map(([, p]) => p);
       const list = (f) => ours.filter((p) => num(p[f]) > 0).map((p) => `${p.playername}${num(p[f]) > 1 ? ` ×${p[f]}` : ''}`).join('\n');
       const motm = Object.values(m.players || {}).flatMap((l) => Object.values(l)).find((p) => p.mom === '1');
@@ -36,7 +39,7 @@ export async function postResults(matches, { config, homeId, hidden = [], drawn 
       const oppCrest = opp.details?.customKit?.crestAssetId;
       const url = site ? `${site}matches/${m.matchId}.html` : undefined;
       const components = matchComponents(m.matchId, ourIds.map(([k, p]) => ({ k, n: p.playername, r: num(p.rating), g: num(p.goals), a: num(p.assists) })), url);
-      const clubName = us.details?.name ?? 'NOREX';
+      const clubName = us.details?.name ?? us.name ?? config.siteTitle ?? 'Club';
       // Drawn pictures are attached to the post itself (attachment://), so nothing has to be deployed before Discord can show them.
       const files = [];
       const pic = (kind, alt) => {
@@ -45,7 +48,7 @@ export async function postResults(matches, { config, homeId, hidden = [], drawn 
         files.push({ name: `${kind}-${m.matchId}.png`, path: path.join(drawn.dir, file) });
         return { url: `attachment://${kind}-${m.matchId}.png`, alt };
       };
-      const scoreImg = pic('score', `${us.details?.name ?? 'NOREX'} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`);
+      const scoreImg = pic('score', `${clubName} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`);
       const fieldImg = pic('field', 'Our players on the pitch with their match ratings');
       const panel = (ping, mentions) => message({ accent: resultAccent(res), ping, mentions, blocks: [
         header({
@@ -61,8 +64,8 @@ export async function postResults(matches, { config, homeId, hidden = [], drawn 
         footer(fieldImg ? 'Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match' : 'Pick your name below to see your own match'),
         ...components,
       ] });
-      return { components, files, panel, embed: {
-        title: `${settings.emoji ? `${settings.emoji} ` : ''}${us.details?.name ?? 'NOREX'} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`,
+      return { src, matchId: m.matchId, components, files, panel, embed: {
+        title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${opp.details?.name ?? oppId}`,
         url,
         color: { W: 0x22c55e, D: 0xeab308, L: 0xef4444 }[res],
         description: res === 'W' ? '✅ **Victory**' : res === 'L' ? '❌ **Defeat**' : '➖ **Draw**',
@@ -77,34 +80,43 @@ export async function postResults(matches, { config, homeId, hidden = [], drawn 
         footer: { text: m.matchType === 'playoffMatch' ? 'Playoff match' : 'League match' },
       } };
     });
-  let rest = items;
   const token = process.env.DISCORD_BOT_TOKEN;
   // A "role" equal to the server's own ID is @everyone: <@&id> renders as "@@everyone" and pings nobody, so say it the way Discord expects.
   const everyone = !!settings.pingRole && settings.pingRole === settings.guildId;
   const pingContent = everyone ? '@everyone' : settings.pingRole ? `<@&${settings.pingRole}>` : undefined;
   const allowedMentions = everyone ? { parse: ['everyone'] } : settings.pingRole ? { roles: [settings.pingRole] } : { parse: [] };
-  if (token && ['members', 'public'].includes(settings.flags?.discordMatch ?? config.features?.discordMatch)) { // live Boardroom switch first, committed config as the fallback
-    // P7.5: a configured result channel overrides the webhook's own channel (still needs the bot token to redirect).
-    const channel = settings.resultChannel || await fetch(hook).then((r) => (r.ok ? r.json() : null)).then((w) => w?.channel_id).catch(() => null);
-    while (channel && rest.length) {
-      const { panel, files } = rest[0];
-      const payload = panel(pingContent, allowedMentions);
+  const missing = []; // destinations that did not resolve – reported, never replaced by another channel
+  const report = (src, why) => { missing.push({ club: src, purpose: 'match_results', why }); console.warn(`Result post skipped for club ${src}: ${why}`); };
+  const interactive = token && ['members', 'public'].includes(settings.flags?.discordMatch ?? config.features?.discordMatch); // live Boardroom switch first, committed config as the fallback
+  if (interactive) {
+    // Destination per source club: Organization config (club → division → org scope) via the Worker. A club with no match_results destination is reported.
+    const cache = new Map();
+    for (const item of items) {
+      if (!cache.has(item.src)) cache.set(item.src, await route(config, 'match_results', item.src));
+      const dest = cache.get(item.src);
+      if (!dest.ok) { report(item.src, `destination lookup failed (${dest.error})`); continue; }
+      if (!dest.channelId) { report(item.src, 'no match_results channel configured (club, division or organization scope) – set one in Boardroom → Organization'); continue; }
+      const payload = item.panel(pingContent, allowedMentions);
       let body, headers = { Authorization: `Bot ${token}` };
-      if (files.length) { // pictures ride along as attachments
+      if (item.files.length) { // pictures ride along as attachments
         body = new FormData();
         body.set('payload_json', JSON.stringify(payload));
-        files.forEach((f, k) => body.set(`files[${k}]`, new Blob([fs.readFileSync(f.path)], { type: 'image/png' }), f.name));
+        item.files.forEach((f, k) => body.set(`files[${k}]`, new Blob([fs.readFileSync(f.path)], { type: 'image/png' }), f.name));
       } else { body = JSON.stringify(payload); headers['Content-Type'] = 'application/json'; }
-      const r = await fetch(`https://discord.com/api/v10/channels/${channel}/messages`, { method: 'POST', headers, body }).catch((e) => ({ ok: false, status: e.message }));
-      if (!r.ok) { console.warn(`Bot post failed (${r.status}) – the bot needs View Channel + Send Messages + Embed Links there. Using the webhook.`); break; }
-      rest = rest.slice(1);
+      const r = await fetch(`https://discord.com/api/v10/channels/${dest.channelId}/messages`, { method: 'POST', headers, body }).catch((e) => ({ ok: false, status: e.message }));
+      if (!r.ok) report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`);
     }
+  } else {
+    // No bot token / flag off: the plain webhook IS the configured destination (the deployment's own DISCORD_WEBHOOK secret), as before.
+    await fetch(hook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png` : undefined, content: pingContent, embeds: items.map((x) => x.embed), allowed_mentions: allowedMentions }),
+    }).catch((e) => console.warn('Discord post failed:', e.message));
   }
-  if (!rest.length) return;
-  await fetch(hook, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username: 'NOREX UNITED', avatar_url: site ? `${site}assets/crest.png` : undefined, content: pingContent, embeds: rest.map((x) => x.embed), allowed_mentions: allowedMentions }),
-  }).catch((e) => console.warn('Discord post failed:', e.message));
+  if (missing.length) {
+    fs.mkdirSync('.outbox', { recursive: true });
+    fs.writeFileSync(path.join('.outbox', 'missing-destinations.json'), JSON.stringify({ at: new Date().toISOString(), missing }, null, 2));
+  }
+  return { posted: items.length - missing.length, missing };
 }
-

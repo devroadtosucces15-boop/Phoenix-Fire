@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ROOT, DATA, readJson, loadConfig, loadOverrides, num } from './lib.mjs';
+import { orgClubsFromDisk, combineOrg, orgOverview } from './lib/org.mjs';
 import { lineChart, goalBars, donut, radar, spark, pitchMap } from './charts.mjs';
 import { buildUpdates } from './updates-page.mjs';
 import { buildBuilder } from './builder-page.mjs';
@@ -17,7 +18,9 @@ import { buildBurners, burnersFeed, loadBurners } from './burners-page.mjs';
 
 const OUT = process.env.NOREX_OUT || path.join(ROOT, 'site');
 const config = loadConfig();
-const homeId = String(config.homeClubId);
+// Phase 2: one organization, many EA clubs. data/org.json is the snapshot fetch.mjs took of /api/org/clubs/public (config.homeClubId = fallback).
+const org = orgClubsFromDisk(config, DATA);
+const homeId = org.primary;
 const brand = config.brand ?? {};
 const state = readJson(path.join(DATA, 'state.json'), { clubs: {} });
 const overrides = await loadOverrides(config); // P5.6 – "hide me" requests approved by managers
@@ -97,7 +100,10 @@ function write(rel, html) {
 
 // ---------- load ----------
 const clubs = new Map(readDir(path.join(DATA, 'clubs')).map((c) => [String(c.id), c]));
-const allMatches = readDir(path.join(DATA, 'matches')).sort((a, b) => b.timestamp - a.timestamp);
+// Combined view (the default): our clubs' members become one player each, our matches count once, every match keeps its source club ID (m.src).
+const combinedOrg = combineOrg({ org, records: new Map(org.ids.filter((id) => clubs.has(id)).map((id) => [id, clubs.get(id)])), matches: readDir(path.join(DATA, 'matches')) });
+if (clubs.has(homeId)) clubs.set(homeId, combinedOrg.club);
+const allMatches = combinedOrg.matches.sort((a, b) => b.timestamp - a.timestamp);
 // P1.8: club friendlies are a mode of their own – never mixed into League/playoff totals, players or boards.
 const matches = allMatches.filter((m) => m.matchType !== 'friendlyMatch');
 const friendlies = allMatches.filter((m) => m.matchType === 'friendlyMatch' && m.clubs[homeId]);
@@ -1300,6 +1306,7 @@ write('api/squad.json', JSON.stringify({
   players: Object.fromEntries(visiblePlayers.filter((pl) => pl.isHome || pl.playedForHome).map((pl) => [pl.key, pl.apps.filter((x) => x.clubId === homeId).slice(0, 300).reverse()
     .map((x) => [x.ts, x.res, x.goals, x.assists, x.rating, x.mom ? 1 : 0, x.shots, x.passes, x.passAtt, x.tackles, x.tackleAtt, x.saves, x.gf, x.ga, GRP[x.pos] ?? '', x.dribbles, x.sa])]).filter(([, l]) => l.length)),
 }));
+write('api/org.json', JSON.stringify(orgOverview(combinedOrg, org)));
 write('api/clubs.json', JSON.stringify([...clubs.values()].map((c) => ({ id: c.id, n: clubName(c.id), t: state.clubs[c.id]?.tier ?? 'archived', ...(clubKit(c.id)?.crestAssetId ? { cr: crestSrc(c.id, SITE) } : {}) }))));
 // P9.2: global rankings – EA's world top 100 with Norex's rank, the cut-off and per-club rates (scripts/rankings.mjs)
 // Every club NOREX has met (any mode, friendlies included) with the latest result against each – the bot's /burner search + recent read this

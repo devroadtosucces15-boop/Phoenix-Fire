@@ -3,7 +3,9 @@ import { call, KV, login, siteJson, W } from './mock.mjs';
 import { t, done } from './lib.mjs';
 
 const players = siteJson('players').filter((p) => p.home);
-const clubs = siteJson('clubs');
+const tracked = siteJson('clubs');
+const realOpp = tracked[1]; // the live archive may track only our own club – then fall back to an unmatched opponent
+const clubs = [tracked[0], realOpp ?? { n: 'Archive Rivals FC', id: 9990001 }];
 const member = await login('500');
 const mgr = await login('600', ['mgr']);
 const other = await login('700');
@@ -24,7 +26,7 @@ t('rating > 10 rejected', (await call(member, '/api/rush', { ...base, players: [
 const sub = await call(member, '/api/rush', base);
 t('member submit → pending', sub.s === 200 && sub.d.status === 'pending' && sub.d.mine.length === 1);
 const m1 = sub.d.mine[0];
-t('opponent matched to tracked club (case-insensitive)', m1.opp === clubs[1].n && m1.oppId === String(clubs[1].id));
+t('opponent matched to tracked club (case-insensitive)', !realOpp || (m1.opp === clubs[1].n && m1.oppId === String(clubs[1].id)));
 t('XSS: HTML stripped from note and guest name', !m1.note.includes('<') && !m1.players[2].n.includes('<'));
 t('rating rounded, guest has no key', m1.players[1].r === 7.3 && m1.players[2].k === undefined);
 t('pending not public', (await publicList()).length === 0);

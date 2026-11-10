@@ -216,3 +216,45 @@ export async function resolveChannel(env, purpose, { clubId = null, divisionId =
 export async function rolesFor(env, group) {
   return all(env, 'SELECT r.role_id, s.guild_id, r.scope_type, r.scope_id FROM discord_roles r JOIN discord_servers s ON s.id = r.server_id WHERE r.permission_group = ? AND r.active = 1 AND s.active = 1', group);
 }
+
+// ---------- Discord env from Organization config (replaces hardcoded wrangler vars) ----------
+
+const HYDRATE_TTL = 60e3;
+let hydrated = null; // { at, db, values } – one D1 read per minute per isolate, keyed to the DB binding so tests with fresh mocks never share it
+
+// wrangler.toml no longer carries the Discord server or role IDs: the active server and the owner / manager role mappings come from D1.
+// A value still set in wrangler.toml / secrets wins (nothing changes for a deployment that keeps them); D1 only fills the blanks.
+// Returns a NEW env (the shared binding is never mutated). Without D1 or on a read error the env comes back untouched – never a baked-in ID.
+export async function withOrgEnv(env) {
+  if (!env?.DB) return env;
+  if (!hydrated || hydrated.db !== env.DB || Date.now() - hydrated.at > HYDRATE_TTL) {
+    try {
+      const [server] = await all(env, 'SELECT guild_id FROM discord_servers WHERE active = 1 ORDER BY id LIMIT 1');
+      const [owner, manager] = await Promise.all([rolesFor(env, 'owner'), Promise.all(['administrator', 'manager', 'division_manager', 'club_manager'].map((g) => rolesFor(env, g))).then((x) => x.flat())]);
+      hydrated = { at: Date.now(), db: env.DB, values: { guildId: server?.guild_id ?? '', owner: owner.map((r) => r.role_id), manager: manager.map((r) => r.role_id) } };
+    } catch { return env; }
+  }
+  const v = hydrated.values;
+  return {
+    ...env,
+    DISCORD_GUILD_ID: env.DISCORD_GUILD_ID || v.guildId,
+    OWNER_ROLE_ID: env.OWNER_ROLE_ID || v.owner[0] || '',
+    ADMIN_ROLE_ID: env.ADMIN_ROLE_ID || v.manager[0] || '',
+    ORG_ROLES: { owner: v.owner, manager: v.manager }, // every mapped role, for the checks that accept more than one
+  };
+}
+export const resetOrgEnvCache = () => { hydrated = null; };
+
+// Keyed like /api/org/clubs/public: result posts run in GitHub Actions (no D1), so they ask the Worker where a purpose goes for a source club.
+// Answers { channelId, guildId, scope } or { channelId: null } when nothing is configured – the caller must report that, never substitute.
+export async function orgRoutePublicRoute(request, env) {
+  if (!env.DISCORD_CLIENT_SECRET || request.headers.get('X-Norex-Key') !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
+  const q = new URL(request.url).searchParams;
+  const purpose = q.get('purpose');
+  if (!CHANNEL_PURPOSES.includes(purpose)) return fail('Unknown purpose');
+  const ea = q.get('club');
+  const club = ea ? await one(env, 'SELECT id, division_id FROM ea_clubs WHERE ea_club_id = ? AND archived = 0', String(ea)) : null;
+  if (ea && !club) return json({ channelId: null, guildId: null, scope: null, reason: 'unknown club' });
+  const hit = await resolveChannel(env, purpose, { clubId: club?.id ?? null, divisionId: club?.division_id ?? null });
+  return json(hit ?? { channelId: null, guildId: null, scope: null, reason: 'no destination configured' });
+}

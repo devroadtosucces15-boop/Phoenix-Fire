@@ -18,6 +18,7 @@ import path from 'node:path';
 import { DATA, readJson, writeJson, loadConfig, loadOverrides, loadBotSettings, loadBurners, loadCrawlCursor, saveCrawlSlice, num, sleep, eventCounts } from './lib.mjs';
 import { MAX_BURNERS, burnerStats, mergeMatches, reportMessage, slimBurnerMatch, updateRoster } from '../bot/burnerstats.js';
 import { postResults } from './lib/resultpost.mjs';
+import { resolveOrgClubs } from './lib/org.mjs';
 
 const API = 'https://proclubs.ea.com/api/fc/';
 const HEADERS = {
@@ -32,7 +33,12 @@ const FULL_TIERS = new Set(['home', 'manual', 'linked']);
 
 const config = loadConfig();
 const platform = config.platform;
-const homeId = String(config.homeClubId);
+// Phase 2: the organization's EA clubs come from the Worker (/api/org/clubs/public) → last snapshot → config.homeClubId.
+// homeId is the primary club (stable URLs); every club in the organization is fetched in full, in every match mode.
+const org = await resolveOrgClubs(config, { dataDir: DATA, live: true, write: true });
+const homeId = org.primary;
+const orgIds = new Set(org.ids);
+const orgCfg = new Map(org.clubs.map((c) => [c.ea_club_id, c]));
 const stateFile = path.join(DATA, 'state.json');
 const state = readJson(stateFile, { clubs: {} });
 state.scanned ??= {};
@@ -78,7 +84,7 @@ function track(id, tier, extra = {}) {
 }
 
 // Strip bulky/opaque fields so the archive stays small.
-function slimMatch(m, matchType) {
+function slimMatch(m, matchType, fetchedFrom = null) {
   const players = {};
   for (const [clubId, list] of Object.entries(m.players || {})) {
     players[clubId] = {};
@@ -93,7 +99,7 @@ function slimMatch(m, matchType) {
     const { details, ...rest } = c;
     clubs[clubId] = { ...rest, name: details?.name ?? null, kit: details?.customKit ?? null };
   }
-  return { matchId: m.matchId, timestamp: m.timestamp, matchType, clubs, players };
+  return { matchId: m.matchId, timestamp: m.timestamp, matchType, fetchedFrom, clubs, players }; // fetchedFrom = source club ID (provenance)
 }
 
 const homeRoster = new Set(); // lower-case gamertags of home members
@@ -102,12 +108,14 @@ const newHomeMatches = [];
 
 async function fetchClub(id) {
   const c = state.clubs[id];
+  const isOrg = orgIds.has(id);
+  const flags = orgCfg.get(id); // sync_members / sync_matches can switch a club's parts off
   const full = FULL_TIERS.has(c.tier);
   const [info, overall, members, career] = await Promise.all([
     api('clubs/info', { clubIds: id }),
     api('clubs/overallStats', { clubIds: id }),
-    api('members/stats', { clubId: id }),
-    api('members/career/stats', { clubId: id }),
+    flags?.sync_members === false ? null : api('members/stats', { clubId: id }),
+    flags?.sync_members === false ? null : api('members/career/stats', { clubId: id }),
   ]);
   const clubInfo = info?.[id] ?? null;
   const record = {
@@ -135,9 +143,9 @@ async function fetchClub(id) {
     if (o && o !== '-1' && o !== '0') opponents.add(String(o));
   }
 
-  if (full) {
-    // Club friendlies (P1.8) only for the home club – a third mode on the site, never mixed into League totals.
-    for (const matchType of id === homeId ? ['leagueMatch', 'playoffMatch', 'friendlyMatch'] : ['leagueMatch', 'playoffMatch']) {
+  if (full && flags?.sync_matches !== false) {
+    // Every club of the organization gets every match mode (friendlies are their own mode on the site, never mixed into League totals).
+    for (const matchType of isOrg ? ['leagueMatch', 'playoffMatch', 'friendlyMatch'] : ['leagueMatch', 'playoffMatch']) {
       const matches = (await api('clubs/matches', { clubIds: id, matchType })) || [];
       for (const m of matches) {
         Object.keys(m.clubs || {}).forEach((o) => o !== id && opponents.add(o));
@@ -146,13 +154,13 @@ async function fetchClub(id) {
         }
         const file = path.join(DATA, 'matches', `${m.matchId}.json`);
         if (fs.existsSync(file)) continue;
-        writeJson(file, slimMatch(m, matchType));
+        writeJson(file, slimMatch(m, matchType, id)); // the file check above also makes a derby between two of our clubs land once
         if (matchType === 'friendlyMatch') continue; // no Discord post, no link/discovery from friendlies
-        if (id === homeId) newHomeMatches.push(m);
-        if (id === homeId) Object.keys(m.players?.[id] || {}).forEach((pid) => homePlayerIds.add(pid));
+        if (isOrg) newHomeMatches.push({ ...m, fetchedFrom: id });
+        if (isOrg) Object.keys(m.players?.[id] || {}).forEach((pid) => homePlayerIds.add(pid));
         // A home player appearing for another club in an archived match links that club.
         for (const [clubId, list] of Object.entries(m.players || {})) {
-          if (clubId === homeId) continue;
+          if (orgIds.has(clubId)) continue;
           if (Object.keys(list).some((pid) => homePlayerIds.has(pid))) track(clubId, 'linked');
         }
       }
@@ -160,7 +168,7 @@ async function fetchClub(id) {
   }
 
   // Link clubs whose squads contain one of our members.
-  if (id !== homeId && c.tier === 'discovered') {
+  if (!isOrg && c.tier === 'discovered') {
     const shared = record.members.filter((m) => homeRoster.has(m.name.toLowerCase())).map((m) => m.name);
     if (shared.length) {
       c.tier = 'linked';
@@ -222,7 +230,7 @@ async function crawlSlice() {
   const found = [];
   for (let id = start; id < start + size; id++) {
     const key = String(id);
-    if (key === homeId || state.clubs[key]) continue;
+    if (orgIds.has(key) || state.clubs[key]) continue;
     const info = await api('clubs/info', { clubIds: key }).catch(() => null);
     const clubInfo = info?.[key];
     if (clubInfo?.name) found.push({ id: key, name: clubInfo.name, crest: clubInfo.customKit?.crestAssetId ?? null });
@@ -243,7 +251,7 @@ async function postToDiscord() {
     fs.writeFileSync(path.join('.outbox', 'results.json'), JSON.stringify({ matches: newHomeMatches, hidden }));
     return;
   }
-  await postResults(newHomeMatches, { config, homeId, hidden });
+  await postResults(newHomeMatches, { config, homeId, orgIds: [...orgIds], hidden });
 }
 // P5.6: clubs approved in the manager portal. Approved by name only → look the ID up once via EA's club search and
 // report it back. Clubs no longer requested (undone) drop back to 'discovered' – only when the list loaded.
@@ -260,7 +268,7 @@ async function trackRequested() {
       if (!id) { console.warn(`Requested club not found on EA: ${c.name}`); continue; }
       resolved.push({ req: c.req, clubId: String(id) });
     }
-    if (String(id) !== homeId) track(id, 'manual', { depth: 0 });
+    if (!orgIds.has(String(id))) track(id, 'manual', { depth: 0 });
     c.id = String(id);
   }
   if (resolved.length) await loadOverrides(config, { resolved });
@@ -358,22 +366,34 @@ async function postBurnerReports() {
 }
 
 async function main() {
-  track(homeId, 'home', { depth: 0 });
-  for (const id of config.extraClubIds || []) track(id, 'manual', { depth: 0 });
+  console.log(`Organization: ${orgIds.size} club(s) from ${org.source}${org.source === 'config' ? ' (config.json homeClubId fallback)' : ''}`);
+  for (const id of org.ids) track(id, 'home', { depth: 0 });
+  for (const id of config.extraClubIds || []) if (!orgIds.has(String(id))) track(id, 'manual', { depth: 0 });
   await trackRequested();
 
-  // Home first, so the roster is known before other clubs are checked for links.
-  const home = await fetchClub(homeId);
-  home.members.forEach((m) => homeRoster.add(m.name.toLowerCase()));
-  console.log(`Home: ${home.info?.name} – ${home.members.length} members`);
+  // The organization's clubs first, so the roster is known before other clubs are checked for links.
+  // One club failing must not hide the others – but the primary failing with nothing else fetched is still a failed run.
+  let fetched = 0;
+  for (const id of org.ids) {
+    try {
+      const r = await fetchClub(id);
+      r.members.forEach((m) => homeRoster.add(m.name.toLowerCase()));
+      console.log(`Org club ${id}: ${r.info?.name} – ${r.members.length} members`);
+      fetched++;
+    } catch (e) {
+      state.clubs[id].fails = (state.clubs[id].fails ?? 0) + 1;
+      console.warn(`Org club ${id} failed: ${e.message}`);
+    }
+  }
+  if (!fetched) throw new Error('No club of the organization could be fetched');
 
   // Rebuild known home player IDs from the archive.
   for (const f of fs.readdirSync(path.join(DATA, 'matches'))) {
     const m = readJson(path.join(DATA, 'matches', f));
-    Object.keys(m?.players?.[homeId] || {}).forEach((pid) => homePlayerIds.add(pid));
+    for (const id of org.ids) Object.keys(m?.players?.[id] || {}).forEach((pid) => homePlayerIds.add(pid));
   }
 
-  const entries = Object.entries(state.clubs).filter(([id]) => id !== homeId);
+  const entries = Object.entries(state.clubs).filter(([id]) => !orgIds.has(id));
   const always = entries.filter(([, c]) => FULL_TIERS.has(c.tier));
   const rotating = entries
     .filter(([, c]) => c.tier === 'discovered')

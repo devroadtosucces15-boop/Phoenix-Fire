@@ -11,11 +11,12 @@ PUBLIC_URL = "https://phoenix-bot.norexunited.workers.dev" # this Worker – Car
 GITHUB_REPO = "devroadtosucces15-boop/Phoenix-Fire"
 DISCORD_APP_ID = "1569450321057550537"
 DISCORD_PUBLIC_KEY = "997cfab5315bb5bf6941860ea81b3e80b70c74d2649397f28bf7680540722bcb"
-DISCORD_GUILD_ID = "1328821938243637381"
+# Discord server, owner/manager roles and every channel are no longer hardcoded here: they live in the Organization config
+# (Boardroom → Organization, D1 tables discord_servers / discord_roles / discord_channels) and are read by bot/orgconfig.js (withOrgEnv).
+# DISCORD_GUILD_ID, OWNER_ROLE_ID, ADMIN_ROLE_ID and MEMBER_ROLE_ID may still be set as vars/secrets to override the config.
+# ADMIN_IDS = bootstrap owner(s): comma-separated Discord USER IDs. A user ID cannot come from the role mapping, so it stays a Worker
+# var – set it with `wrangler secret put ADMIN_IDS` or add it back here; without any owner, nobody can open Boardroom to configure the rest.
 ADMIN_IDS = "1322770005535756290"
-MEMBER_ROLE_ID = ""
-ADMIN_ROLE_ID = ""
-OWNER_ROLE_ID = ""
 # BE0: Web Push (RFC 8292). Public half of the VAPID keypair – safe to commit, sent to browsers on purpose.
 # The private half is VAPID_PRIVATE_KEY, a Worker secret uploaded from the GH Actions secret of the same name.
 

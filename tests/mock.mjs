@@ -97,7 +97,8 @@ export const env = {
 // Legacy KV documents (pre-D1) – the Worker copies them into D1 on first request.
 const A2 = 'https://cdn.discordapp.com/embed/avatars/2.png';
 await KV.put('users', JSON.stringify({ 222: { n: 'Mike', a: A2, tag: 'mike', admin: false, first: Date.now() - 864e5, last: Date.now() - 36e5, logins: 3 } }));
-await KV.put('claims', JSON.stringify({ 222: { player: '1007531598629', playerName: 'x_MrMike_x', status: 'pending', at: Date.now() - 6e5, n: 'Mike', a: A2, history: [] } }));
+export const CLAIM_PID = siteJson('players').find((p) => p.home)?.k ?? '1007531598629';
+await KV.put('claims', JSON.stringify({ 222: { player: CLAIM_PID, playerName: 'x_MrMike_x', status: 'pending', at: Date.now() - 6e5, n: 'Mike', a: A2, history: [] } }));
 const today = new Date().toISOString().slice(0, 10);
 await KV.put(`avail:${today}`, JSON.stringify({ 222: { s: 'yes', n: 'Mike', a: A2, at: Date.now() } }));
 await KV.put('profile:222', JSON.stringify({ bio: 'Box-to-box <b>engine</b>', positions: ['CM', 'CDM'], platform: 'PS5', updated: Date.now() - 5e5 }));
