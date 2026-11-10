@@ -59,13 +59,13 @@ For "that lobby is searching without posting" (the cause of Phoenix vs Phoenix m
 
 ## More ideas (included in scope, cheap)
 
-1. **Idle timers:** green light with no action for 5 min pings again, then skips the group to just behind the next one (configurable). A search over 15 min asks "still searching?". A waiting entry idle for 90 min is dropped.
+1. **Idle timers:** green light with no action for 1 min pings again, and at 2 min the group is removed (configurable, see Decisions). A search over 15 min asks "still searching?". A waiting entry idle for 90 min is dropped.
 2. **Pause/AFK:** a waiting group can pause without losing its place for 10 min.
 3. **Self-match guard:** the board says which groups are Phoenix, and warns when a Phoenix group is searching while another says "Searching now".
 4. **ETA and stats:** estimated wait from the average search time; weekly numbers per group (searches, average wait, failed rate) feed the Rush leaderboard and `/rush` profile.
 5. **Result logging hook:** **Match found** offers a one-tap "Log the result" that opens `/rush log` pre-filled with the crew as the squad.
 6. **Staff controls:** a manager can move, remove or pause a group; a nightly reset clears the board.
-7. **LFG link:** "Need a 5th?" posts the existing availability marker (see `PLANNING/BOT-SPLIT.md`, Rush LFG: pings the Rush role, never `@everyone`, "I'm in / later", auto-expires after 60 min) and accepted players can be added to the crew.
+7. **LFG link:** "Need a player" (need 1, need 2, need a keeper) posts the existing availability marker (see `PLANNING/BOT-SPLIT.md`, Rush LFG: pings the Rush role, never `@everyone`, "I'm in / later", auto-expires after 60 min) and accepted players can be added to the crew.
 8. **DM option:** members can opt in to a DM when their group gets the green light.
 
 ## Data
@@ -73,7 +73,7 @@ For "that lobby is searching without posting" (the cause of Phoenix vs Phoenix m
 - `rush_crews(captain_id, members JSON, updated_at)`
 - `rush_queue(id, captain_id, members JSON, status, joined_at, searching_since, attempts, paused_until)`
 - `rush_queue_stats(week, captain_id, searches, matched, failed, wait_seconds)`
-- `rush_queue_settings` in the org config (channel id, staff channel id, failed policy, timers)
+- org settings (failed policy, idle timers) in the Organization config; channels are `discord_channels` rows with purposes `rush_queue` and `rush_queue_reports`
 - Board message id and last-post time in KV.
 
 ## Build order
@@ -85,8 +85,10 @@ For "that lobby is searching without posting" (the cause of Phoenix vs Phoenix m
 
 Tests: strict click order; two groups cannot share a member; match found promotes the next and pings it; failed goes next (and bottom when the policy says so); idle timers skip; board re-posted when not last; report stores no user id; no NOREX name, colour or crest in any output.
 
-## Questions to confirm (defaults used until answered)
+## Decisions (owner, 2026-11-10)
 
-- Queue channel and staff-report channel names (set in org config).
-- Is the captain's crew limit 5 including them? Default yes.
-- Should the green light skip an idle group (default 5 min) or wait? Default skip.
+1. **No hardcoded channel names or IDs, anywhere.** The queue channel and the staff-report channel are **channel purposes** in the existing Organization config (`discord_channels`, `bot/orgconfig.js`, `CHANNEL_PURPOSES`): add `rush_queue` and `rush_queue_reports`. Several channels per purpose are allowed (one board per queue channel; a report goes to every report channel). They are edited on the website's Organization section **and** by a manager slash command (for example `/setup channel purpose:rush_queue` run inside the channel that should hold the board). Both write the same `discord_channels` rows, so the site and Discord always show the same thing. The bot never falls back to some other channel; if none is set it says so (existing rule in `orgconfig.js`).
+2. **Group size:** max 5 including the captain. Typical groups are 2 to 4 because there are few keepers and an AI keeper fills the gap, so the board shows "needs N" instead of assuming five.
+3. **"Need a player", not "need a 5th":** the extra-player marker is a button/field with a count (need 1 / need 2 / need a keeper) and posts through the Rush LFG marker (role ping, never `@everyone`, auto-expires). Accepted players join the crew.
+4. **Idle rule is 2 minutes, not 5:** a group at the green light that does nothing for **2 minutes** is removed from the queue (it gets a one-line notice and can press Join again). The warning ping goes out at 1 minute. Both values are org settings, default 2 min / 1 min.
+5. **General rule for every bot feature:** any command or feature that posts to, reads from, or is restricted to a channel or role takes it from Organization config (purpose-based, multiple allowed, editable on the site and by a manager command, both writing the same rows). No module may hardcode a channel name, channel ID or role ID. See `CLAUDE.md`.

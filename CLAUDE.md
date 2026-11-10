@@ -47,3 +47,10 @@ The build is guarded: `phoenix/leakcheck.mjs` runs at the end of `phoenix/build.
 - The Worker host is `phoenix-bot.norexunited.workers.dev` (config, wrangler `PUBLIC_URL`, `live.json`, secrets registry). Owner decision: keep the account host or move it.
 - Internal identifiers stay on purpose (`norex_session`, `X-Norex-Key`, `window.Norex*`, `norex.*` storage keys, `NOREX_KV`); see `PLANNING/PHASE1-NOREX-AUDIT.md`.
 - `site/` in a working copy may be an old classic build from `tests/run.mjs`; the published site comes from `phoenix/build.mjs`.
+
+### Channels and roles are never hardcoded
+
+Every channel or role a bot feature uses (queue boards, reports, announcements, reminders, results, alerts) comes from the Organization config
+(`discord_channels` / `discord_roles` by purpose, `bot/orgconfig.js`): several allowed per purpose, editable on the website **and** by a manager
+command that writes the same rows, so site and Discord always agree. A feature with no channel configured says so instead of guessing. New
+features add a purpose; they never add a name or ID to code. Add a test that the feature reads its channel from config.

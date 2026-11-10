@@ -30,3 +30,7 @@ Phoenix is its own project (`CLAUDE.md`): no NOREX text, crest or red in any out
 | B8 | **Public launch go-ahead**: the site is `noindex` and `robots.txt` blocks all. Say when to open it. | Launch timing | Search visibility |
 
 Order of work: A1, A3, A4, A5 (cheap, Sonnet), then A2 and A6 (Opus), then A7. B items run in parallel whenever the owner has time; B3 and B1 unlock the most.
+
+## Added 2026-11-10: config-driven channels (cross-cutting)
+
+- **A9 (Opus)**: audit every bot module and site page for hardcoded channel or role names/IDs (`wrangler.toml` vars, `config.json`, string literals) and move each to an Organization-config purpose; add the missing purposes to `CHANNEL_PURPOSES`; give managers one slash command (`/setup channel` and `/setup role`, purpose + the current channel or a chosen role) that writes the same `discord_channels` / `discord_roles` rows the website edits; test that each feature reads its channel from config and that site edits and the command produce identical rows. Do this before A8 so the queue uses it.
