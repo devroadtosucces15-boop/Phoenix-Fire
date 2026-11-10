@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-10T00:15:29.937Z",
+ "fetchedAt": "2026-11-10T00:22:50.137Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2177,12 +2177,12 @@
   {
    "name": "MejMech",
    "proPos": "25",
-   "gamesPlayed": "568",
+   "gamesPlayed": "569",
    "goals": "426",
-   "assists": "432",
+   "assists": "433",
    "manOfTheMatch": "151",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2199,7 +2199,7 @@
   {
    "name": "Zorg7",
    "proPos": "5",
-   "gamesPlayed": "236",
+   "gamesPlayed": "237",
    "goals": "64",
    "assists": "68",
    "manOfTheMatch": "26",
