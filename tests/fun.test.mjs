@@ -35,7 +35,7 @@ let chosen = 0; rng.pick = (n) => Math.min(chosen, n - 1);
 await tt('/jail: mugshot panel in the loss colour with a charge, sentence, offence count and buttons', async () => {
   const r = await jailCmd(MEMBER, '600');
   const txt = plainText(r.d.data), panel = r.d.data.components.find((c) => c.type === 17);
-  return r.d.type === 4 && isV2(r.d.data) && panel.accent_color === 0xff7d72 && txt.includes('NRX-0001') && txt.includes(CHARGES[0]) && /30 min/.test(txt) && /1st offence this month/.test(txt)
+  return r.d.type === 4 && isV2(r.d.data) && panel.accent_color === 0xff7d72 && txt.includes('PHX-0001') && txt.includes(CHARGES[0]) && /30 min/.test(txt) && /1st offence this month/.test(txt)
     && buttonIds(r.d.data).join() === 'norex:fun:bail:1,norex:fun:sheet:600' && /<@500>/.test(txt) && r.d.data.allowed_mentions.parse.length === 0;
 });
 await tt('/jail: own reason and minutes are used, second offence counted', async () => {
@@ -63,7 +63,7 @@ await tt('/jail: a manager can post bail for anyone', async () => {
 await tt('rap sheet: private list of offences, newest first, bailed ones marked', async () => {
   const r = await press(MEMBER, 'norex:fun:sheet:600');
   const txt = plainText(r.d.data);
-  return (r.d.data.flags & 64) === 64 && /Rap sheet/.test(txt) && /2 offences/.test(txt) && /bailed/.test(txt) && txt.indexOf('NRX-0002') < txt.indexOf('NRX-0001');
+  return (r.d.data.flags & 64) === 64 && /Rap sheet/.test(txt) && /2 offences/.test(txt) && /bailed/.test(txt) && txt.indexOf('PHX-0002') < txt.indexOf('PHX-0001');
 });
 await tt('rap sheet: clean record', async () => /Clean record/.test(plainText((await press(MEMBER, 'norex:fun:sheet:12345')).d.data)));
 

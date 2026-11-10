@@ -54,7 +54,7 @@ const userName = (i, id) => {
 
 // ---------- /jail ----------
 function jailPanel(row, count, { bail = null, env } = {}) {
-  const num = `NRX-${String(row.id).padStart(4, '0')}`;
+  const num = `PHX-${String(row.id).padStart(4, '0')}`;
   const out = row.at + row.minutes * MIN;
   return message({ accent: bail ? 'win' : 'loss', blocks: [
     cards(bannerUrl(env, 'jail')),
@@ -103,7 +103,7 @@ async function rapSheet(env, userId) {
   const total = (await env.DB.prepare('SELECT COUNT(*) AS n FROM fun_jail WHERE user_id = ?').bind(userId).first())?.n ?? rows.length;
   return reply(message({ ephemeral: true, accent: 'steel', blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Jail`, title: `📜 Rap sheet · ${rows[0].name}`, sub: `${total} offence${total === 1 ? '' : 's'} on file`, size: 3 }),
-    text(rows.map((r) => `\`NRX-${String(r.id).padStart(4, '0')}\` ${ts(r.at, 'd')} · ${r.minutes} min · ${r.reason}${r.bail_at ? ' · 💸 bailed' : ''}`).join('\n')),
+    text(rows.map((r) => `\`PHX-${String(r.id).padStart(4, '0')}\` ${ts(r.at, 'd')} · ${r.minutes} min · ${r.reason}${r.bail_at ? ' · 💸 bailed' : ''}`).join('\n')),
   ] }));
 }
 

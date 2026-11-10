@@ -92,9 +92,9 @@ globalThis.fetch = async (url, init = {}) => {
     const g = (id, name, goals, w, l) => ({ goals: String(goals), wins: w, losses: l, details: { name, customKit: { crestAssetId: '5' } } });
     const nowS = Math.floor(Date.now() / 1000);
     return Response.json(mt === 'leagueMatch'
-      ? [{ matchId: 'x1', timestamp: String(nowS - 7200), clubs: { 80869: g(0, 'NOREX UNITED FC', 3, '1', '0'), 1355341: g(0, 'TeloSico', 1, '0', '1') } },
-        { matchId: 'x2', timestamp: String(nowS - 90000), clubs: { 80869: g(0, 'NOREX UNITED FC', 0, '0', '1'), 218552: g(0, 'Poundin Pitches', 2, '1', '0') } }]
-      : mt === 'friendlyMatch' ? [{ matchId: 'x3', timestamp: String(nowS - 600), clubs: { 80869: g(0, 'NOREX UNITED FC', 2, '0', '0'), 1355341: g(0, 'TeloSico', 2, '0', '0') } }] : []);
+      ? [{ matchId: 'x1', timestamp: String(nowS - 7200), clubs: { 1111: g(0, 'PHOENIX FIRE', 3, '1', '0'), 1355341: g(0, 'TeloSico', 1, '0', '1') } },
+        { matchId: 'x2', timestamp: String(nowS - 90000), clubs: { 1111: g(0, 'PHOENIX FIRE', 0, '0', '1'), 218552: g(0, 'Poundin Pitches', 2, '1', '0') } }]
+      : mt === 'friendlyMatch' ? [{ matchId: 'x3', timestamp: String(nowS - 600), clubs: { 1111: g(0, 'PHOENIX FIRE', 2, '0', '0'), 1355341: g(0, 'TeloSico', 2, '0', '0') } }] : []);
   }
   if (url.includes('api.github.com') && url.includes('ea-relay.yml/dispatches')) { dispatches.push(JSON.parse(init.body)); return new Response(null, { status: 204 }); }
   if (url.includes('/webhooks/') && init.method === 'PATCH') { patches.push(JSON.parse(init.body)); return new Response('{}'); }
