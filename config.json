@@ -57,6 +57,8 @@
   },
   "features": {
     "rushLog": "members",
+    "rushLfg": "owner",
+    "rushQueue": "owner",
     "gameRules": "public",
     "liveBanner": "public",
     "trials": "public",

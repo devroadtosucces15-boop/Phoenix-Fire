@@ -5,7 +5,8 @@
 //   GET  /api/events/calendar?month=YYYY-MM  members: one month's events + my answers + type colours, one call (BE11)
 //   POST /api/events                 managers: create (optionally repeat weekly, notify, post to Discord) or edit
 //   POST /api/events/cancel          managers: cancel { id, reason } – people who said yes/maybe are told
-//   POST /api/events/rsvp            members: { ids: [...], status: yes | maybe | no | clear } – bulk, like day availability
+//   POST /api/events/rsvp            members: { ids: [...], status: yes | maybe | no | clear, pref?: [GK|CB|LB/RB|CDM|CM|CAM|LW/RW|ST ×2] } – bulk, like day availability;
+//                                    { id, pref } alone changes only the preferred position (MB2, bot/prefpos.js)
 //   GET  /api/events/discord         managers: channels + roles to post to (shared with P5.3)
 //   POST /api/events/checkin         members, during the night: "I'm on" { id, on, trial }       (flag `matchNight`)
 //   POST /api/events/lineup          managers: quick lineup { id, lineup: { <discord id>: 'CB' } }
@@ -33,6 +34,7 @@ import { routeNotification } from './routing.js';
 import { recommendRoute } from './lineuprec.js';
 import { hex } from './media.js';
 
+import { cleanPref, parsePref, savePref } from './prefpos.js';
 const REMIND = ['dm', 'mention', 'off'];
 
 const MIN = 60e3, HOUR = 3600e3, DAY = 86400e3;
@@ -80,7 +82,7 @@ export function usuallyOn(profile, ms) {
 // ---------- reading ----------
 const rsvpOut = (r, profiles, mode) => {
   const pf = profiles.get(r.user_id);
-  return { id: r.user_id, n: r.name, a: opt(r.avatar), s: r.status, pos: parse(mode === 'rush' ? pf?.rush_positions : pf?.positions, []) };
+  return { id: r.user_id, n: r.name, a: opt(r.avatar), s: r.status, pos: parse(mode === 'rush' ? pf?.rush_positions : pf?.positions, []), pref: parsePref(r.pref_pos) };
 };
 // BE3: ready-check breakdown for a published lineup – each slot's answer (yes/maybe/no/unanswered) + check-in,
 // plus "subs" (said yes but not in the lineup). Learned % per play needs the Tactics Studio (BE1, not built yet).
@@ -351,7 +353,7 @@ async function saveEvent(body, me, env, log) {
 }
 
 // One member's answer to one or more events – used by the Squad Hub and the Discord buttons. → rows answered (or [] if none open).
-export async function answerEvents(env, me, ids, status) {
+export async function answerEvents(env, me, ids, status, pref) {
   const rows = ids.length ? await all(env, `SELECT id, start, duration, lineup FROM events WHERE id IN (${marks(ids.length)}) AND status = 'scheduled' AND start + duration * 60000 > ?`, ...ids, Date.now()) : [];
   if (!rows.length) return rows;
   const stmts = [];
@@ -362,6 +364,11 @@ export async function answerEvents(env, me, ids, status) {
     // "Yes" to an event also counts as "I'm in" that day (attendance boards + streaks read day availability) – never overwrites a day answer.
     if (status === 'yes') stmts.push(env.DB.prepare('INSERT OR IGNORE INTO availability (date, user_id, status, name, avatar, at) VALUES (?, ?, ?, ?, ?, ?)').bind(new Date(r.start).toISOString().slice(0, 10), me.u, 'yes', me.n, me.a ?? null, Date.now()));
   }
+  // MB2: the preferred position rides along with a yes/maybe; "no" drops it. Omitted (undefined) leaves what they chose before.
+  for (const r of rows) {
+    if (status === 'no') stmts.push(env.DB.prepare('UPDATE event_rsvps SET pref_pos = NULL WHERE event_id = ? AND user_id = ?').bind(r.id, me.u));
+    else if (pref !== undefined && (status === 'yes' || status === 'maybe')) { const c = cleanPref(pref); stmts.push(env.DB.prepare('UPDATE event_rsvps SET pref_pos = ? WHERE event_id = ? AND user_id = ?').bind(c.length ? JSON.stringify(c) : null, r.id, me.u)); }
+  }
   await env.DB.batch(stmts);
   for (const r of rows) await refreshEventPost(env, r.id);
   return rows;
@@ -370,8 +377,12 @@ async function rsvp(body, me, env, log) {
   if (!can(me, 'events.rsvp')) return fail('Members only.', 403);
   const ids = [...new Set((Array.isArray(body.ids) ? body.ids : [body.id]).map(Number).filter(Number.isInteger))].slice(0, 30);
   const status = body.status;
+  if (!status && body.pref !== undefined && ids.length === 1) { // MB2: change only the preferred position of an existing yes/maybe
+    if (!(await savePref(env, ids[0], me.u, body.pref))) return fail('Say you are in (or maybe) first.', 409);
+    return json(await listFor(env, me));
+  }
   if (!ids.length || !(STATUSES.includes(status) || status === 'clear')) return fail('Bad answer.');
-  const rows = await answerEvents(env, me, ids, status);
+  const rows = await answerEvents(env, me, ids, status, body.pref);
   if (!rows.length) return fail('Those events are over or cancelled.', 409);
   await broadcastRoom(env, 'locker', { t: 'locker', why: 'rsvp' }); // BE2: "who's in" changed for everyone
   for (const r of rows) if (hasLineup(r)) await pushLineup(env, r.id, 'rsvp'); // BE3: the ready check moved

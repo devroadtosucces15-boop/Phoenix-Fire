@@ -26,10 +26,12 @@ import { message, panel, reply, notice, header, text, sep, facts, side, thumb, l
 import { it } from './icons.js';
 import { faceOf, playerFaces } from './faces.js';
 import { hostCommand } from './host.js';
+import { matchdayCommand } from './matchday.js';
+import { prefSelect, parsePref } from './prefpos.js';
 
 // P11.16: quick one-line wrappers around features that already exist – reuse the same route
 // functions the Squad Hub calls, rather than duplicating their validation/limits here.
-export const MEMBER_COMMANDS = new Set(['schedule', 'availability', 'lineup', 'rush', 'me', 'leaderboard', 'profile', 'awards', 'points', 'nextevent', 'feedback', 'suggest', 'announce', 'trial', 'motm', 'history', 'host']);
+export const MEMBER_COMMANDS = new Set(['schedule', 'availability', 'lineup', 'rush', 'me', 'leaderboard', 'profile', 'awards', 'points', 'nextevent', 'feedback', 'suggest', 'announce', 'trial', 'motm', 'history', 'host', 'matchday']);
 const all = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).all().then((r) => r.results);
 const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
 const parse = (s, fb) => { try { return JSON.parse(s) ?? fb; } catch { return fb; } };
@@ -68,7 +70,12 @@ export async function eventButton(i, env, who) {
   const e = await one(env, 'SELECT * FROM events WHERE id = ?', Number(id));
   const n = (await one(env, "SELECT COUNT(*) AS n FROM event_rsvps WHERE event_id = ? AND status = 'yes'", e.id)).n;
   await env.DB.prepare('INSERT INTO activity (at, user_id, name, avatar, type, detail) VALUES (?, ?, ?, ?, ?, ?)').bind(Date.now(), me.u, me.n, me.a, 'event-rsvp', `${status} · ${label(e)} · Discord`).run();
-  return say(`${{ yes: '✅ You’re in', maybe: '❔ Marked as maybe', no: '❌ Marked as can’t make it' }[status]} for **${label(e)}** · ${ts(e.start)} (${ts(e.start, 'R')}). ${n} said yes so far – change it any time with the buttons or in the Squad Hub.`);
+  const out = say(`${{ yes: '✅ You’re in', maybe: '❔ Marked as maybe', no: '❌ Marked as can’t make it' }[status]} for **${label(e)}** · ${ts(e.start)} (${ts(e.start, 'R')}). ${n} said yes so far – change it any time with the buttons or in the Squad Hub.`);
+  if (status !== 'no') { // MB2: ask which position they would like tonight (optional)
+    const mine = await one(env, 'SELECT pref_pos FROM event_rsvps WHERE event_id = ? AND user_id = ?', e.id, me.u);
+    out.data.components.push(prefSelect(e.id, parsePref(mine?.pref_pos)));
+  }
+  return out;
 }
 
 // ---------- BE1 "✅ Learned it" button on a shared play ----------
@@ -91,9 +98,13 @@ export async function memberCommand(i, env, who, site, h) {
   const name = i.data.name, opts = Object.fromEntries(flatOptions(i.data.options).map((o) => [o.name, o.value]));
   if (!env.DB) return say('⚠️ The member database is not connected.');
   const me = await memberOf(i, who, env);
-  const events = ['schedule', 'availability', 'lineup', 'host'].includes(name);
+  const events = ['schedule', 'availability', 'lineup', 'host', 'matchday'].includes(name);
   if (events && !flagOn(env, who, 'events')) return say('🔒 The schedule is not switched on yet.');
 
+  if (name === 'matchday') {
+    const sub = i.data.options?.[0];
+    return matchdayCommand(i, env, me, who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value])), { log, loadSite: h.load });
+  }
   if (name === 'host') {
     if (!can(who, 'events.manage')) return say('🔒 Only managers can host sessions – ask one, or suggest a time in the chat.');
     return hostCommand(i, env, me, opts, { log, loadSite: h.load });

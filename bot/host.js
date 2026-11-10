@@ -99,7 +99,7 @@ export function hostBody(o, tz, when) {
 }
 
 // Called from botcmds.js with the member (`me`) already resolved. Returns the interaction response.
-export async function hostCommand(i, env, me, o, { log, loadSite }) {
+export async function hostCommand(i, env, me, o, { log, loadSite }, build = hostBody) {
   const say = (title, body, accent) => reply(notice(title, body, accent ? { accent } : {}));
   const prof = await env.DB.prepare('SELECT tz FROM profiles WHERE user_id = ?').bind(me.u).first().catch(() => null);
   const tz = String(o.timezone || prof?.tz || '').trim();
@@ -107,7 +107,7 @@ export async function hostCommand(i, env, me, o, { log, loadSite }) {
   if (!validZone(tz)) return say(`I don’t know the time zone “${tz}”`, 'Start typing a city in `timezone:` and pick one from the list.');
   const when = parseWhen(o.when, tz);
   if (when.error) return say('I couldn’t read that time', when.error);
-  const body = hostBody(o, tz, when);
+  const body = build(o, tz, when);
   if (!o.silent) {
     const pings = (await getToolSettings(env)).pingRoles ?? {};
     const role = o.ping ?? (o.mode === 'rush' ? pings.rush : pings.match);

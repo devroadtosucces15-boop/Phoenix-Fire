@@ -14,7 +14,7 @@
 // that app's DISCORD_APP_ID / DISCORD_BOT_TOKEN (appEnv), so follow-ups and DMs come from the app that was used.
 // Full list of names: bot/README.md.
 
-import { APP_LABEL, answeringApp, appCreds, appEnv, appConfigured, appFromPath, servedBy } from './apps.js';
+import { APP_LABEL, answeringApp, appCreds, appEnv, appConfigured, appFromPath, servedBy, movedNote } from './apps.js';
 import { useIconApp } from './icons.js';
 import { getCommandSettings, commandBlocked, shapeReply } from './botcommands.js';
 import { orgName } from './orgconfig.js';
@@ -28,6 +28,8 @@ import { closeDue } from './awards.js';
 import { hotwDue } from './hotw.js';
 import { scoreDue } from './predict.js';
 import { eventButton, playButton, memberCommand, memberOf, MEMBER_COMMANDS } from './botcmds.js';
+import { lfgCommand, lfgButton, lfgExpire, LFG_ID } from './lfg.js';
+import { prefPosSelect, PREF_ID } from './prefpos.js';
 import { panelInteraction, PANEL_ID } from './panel.js';
 import { insightsCron, insightsNow, reportMessages } from './insights.js';
 import { matchComponents, matchInteraction } from './matchcard.js';
@@ -83,6 +85,7 @@ export default {
       ctx.waitUntil(refreshStatInsights(env, loadSite).then(() => statInsightWeekly(env, postEmbed)).catch((e) => console.log('stat insights cron failed', e.message))); // BE9
     }
     if (flagOn(env, { role: 'owner' }, 'reminders')) ctx.waitUntil(remindersCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('reminders failed', e.message))); // E3 gentle nudges
+    if (flagOn(env, { role: 'owner' }, 'rushLfg')) ctx.waitUntil(lfgExpire(env).catch((e) => console.log('rush lfg expiry failed', e.message))); // MB5 calls past their time stop taking answers
     if (flagOn(env, { role: 'owner' }, 'memberLive')) ctx.waitUntil(memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
     if (flagOn(env, { role: 'owner' }, 'watchlist')) ctx.waitUntil(watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
     if (flagOn(env, { role: 'owner' }, 'fun')) ctx.waitUntil(birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
@@ -123,10 +126,12 @@ export default {
     const i = JSON.parse(body);
 
     if (i.type === 1) return json({ type: 1 }); // PING
-    // Commands answer only on the app that owns them (core also covers apps not set up yet). Buttons and menus are not
+    // Commands answer only on the app that is their home right now (bot/apps.js homeOf: a moved command stays on its old app until the new one is configured). Buttons and menus are not
     // filtered: they arrive on whichever app posted the message, and every app runs the same norex:* handlers.
     if ((i.type === 2 || i.type === 4) && !servedBy(env, app).has(i.data?.name)) {
       if (i.type === 4) return json({ type: 8, data: { choices: [] } });
+      const moved = movedNote(env, app, i.data?.name); // transition window: the old app only points to the new one
+      if (moved) return json(privateNote(moved));
       const home = answeringApp(env, i.data?.name);
       return json(privateNote(`/${i.data?.name} is not on this bot${home !== app ? ` – use it from ${APP_LABEL[home]}` : ''}.`));
     }
@@ -186,6 +191,18 @@ export default {
     if (i.type === 2 && i.data.name === 'insight') return insightCommand(i, env, ctx, site, who); // BE9
     if (i.type === 2 && i.data.name === 'burner') return burnerCommand(i, env, ctx, who, site, (f) => load(site, f, ctx)); // burner-club tracker
     if (i.type === 3 && /^norex:bn:/.test(i.data?.custom_id ?? '')) return burnerPick(i, env, ctx, who, (f) => load(site, f, ctx)); // …its pickers
+    if (i.type === 3 && PREF_ID.test(i.data?.custom_id ?? '')) { // MB2: preferred position select under an answer
+      try { return json(await prefPosSelect(i, env, await memberOf(i, who, env))); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
+    if (i.type === 2 && i.data.name === 'lfg') { // MB5: Rush LFG
+      try {
+        const sub = i.data.options?.[0];
+        return json(await lfgCommand(i, env, await memberOf(i, who, env), who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value]))));
+      } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
+    if (i.type === 3 && LFG_ID.test(i.data?.custom_id ?? '')) {
+      try { return json(await lfgButton(i, env, await memberOf(i, who, env), who)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
     if (i.type === 3 && /^norex:ev:\d+:\w+$/.test(i.data?.custom_id ?? '')) { // P3.3 ✅ ❔ ❌ on event posts
       try { return json(await eventButton(i, env, who)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }

@@ -234,6 +234,39 @@ export const COMMANDS = [
       { type: BOOLEAN, name: 'silent', description: 'Post without pinging anyone' },
     ],
   },
+  // /matchday – the Phoenix Matchday app (bot/matchday.js). Dark until that app is configured (HELD below).
+  {
+    name: 'matchday', description: 'Run a match day: create one, check in, see who is in', contexts: [0],
+    options: [
+      { type: SUB, name: 'create', description: 'Managers: schedule a league night, playoffs, friendly, tournament or VPG match', options: [
+        { type: STRING, name: 'kind', description: 'What kind of match day', required: true, choices: [{ value: 'league', name: '🏆 League' }, { value: 'playoffs', name: '🥇 Playoffs' }, { value: 'friendly', name: '🤝 Friendly' }, { value: 'tournament', name: '🏟️ Tournament' }, { value: 'vpg', name: '🎮 VPG' }] },
+        { type: STRING, name: 'when', description: 'tonight 9pm · tomorrow 20:30 · fri 8:30pm · oct 14 9pm · in 2h', required: true, max_length: 40 },
+        { type: STRING, name: 'timezone', description: 'Your time zone (default: the one in your Squad Hub profile)', autocomplete: true, max_length: 64 },
+        { type: INTEGER, name: 'players', description: 'Players needed (default 11)', min_value: 1, max_value: 30 },
+        { type: INTEGER, name: 'length', description: 'How long, in minutes (default 120)', min_value: 15, max_value: 600 },
+        { type: STRING, name: 'opponent', description: 'The club we play', max_length: 60 },
+        { type: STRING, name: 'notes', description: 'Lobby info, kit, anything else', max_length: 500 },
+        { type: BOOLEAN, name: 'weekly', description: 'Repeat every week for 4 weeks' },
+        { type: CHANNEL, name: 'channel', description: 'Where to post it (default: here)', channel_types: [0, 5] },
+        { type: ROLE, name: 'ping', description: 'Role to ping (default: the Match night ping role)' },
+        { type: BOOLEAN, name: 'silent', description: 'Post without pinging anyone' },
+      ] },
+      { type: SUB, name: 'checkin', description: 'Say you are on for tonight (opens an hour before the start)' },
+      { type: SUB, name: 'status', description: 'Who is in for the next match day and which positions are missing' },
+    ],
+  },
+  // /lfg – the Phoenix Rush app (bot/lfg.js). Dark until that app is configured (HELD below).
+  {
+    name: 'lfg', description: 'Looking for Rush players: say you are available, or see who is', contexts: [0],
+    options: [
+      { type: SUB, name: 'now', description: 'Post that you are available for Rush', options: [
+        { type: INTEGER, name: 'minutes', description: 'How long you are around (default 60, max 180)', min_value: 15, max_value: 180 },
+        { type: STRING, name: 'note', description: 'Position, mode, anything else', max_length: 80 },
+      ] },
+      { type: SUB, name: 'cancel', description: 'Take your availability down' },
+      { type: SUB, name: 'list', description: 'Who is available for Rush right now' },
+    ],
+  },
 ];
 
 // ---------- which Discord app owns which command (bot/apps.js) ----------
@@ -241,15 +274,18 @@ export const COMMANDS = [
 // lends its commands to core, so a command can sit in its target app before that app exists.
 export const APP_COMMANDS = {
   core: ['syncroles', 'aispike', 'site'],
-  stats: ['club', 'last', 'results', 'player', 'compare', 'top', 'leaderboard', 'history', 'motm', 'me', 'profile', 'rush', 'insight', 'ask', 'burner'],
-  tools: ['setup', 'purge', 'announce', 'trial', 'host', 'panel', 'insights', 'watchlist', 'exportcontent', 'profanitysetup', 'tag', 'tags', 'remind', 'reminders',
-    'suggest', 'feedback', 'schedule', 'nextevent', 'availability', 'lineup'],
+  stats: ['club', 'last', 'results', 'player', 'compare', 'top', 'leaderboard', 'history', 'motm', 'me', 'profile', 'insight', 'ask', 'burner'],
+  tools: ['setup', 'purge', 'announce', 'panel', 'insights', 'watchlist', 'exportcontent', 'profanitysetup', 'tag', 'tags', 'suggest', 'feedback'],
   fun: ['jail', 'wheel', 'trivia', 'share', 'discoveries', 'watch', 'awards', 'points', 'avatarcard'],
-  // Planned apps (PLANNING/BOT-SPLIT.md): empty until their Discord application exists, so nothing moves yet. Commands are
-  // moved here in waves MB1 (matchday) and MB4 (rush); an unconfigured app lends its commands to core, so a move is safe.
-  matchday: [],
-  rush: [],
+  // Matchday and Rush (PLANNING/BOT-SPLIT.md, waves MB1/MB4). Until the Discord application exists the commands stay where
+  // they were (MOVED_FROM) and the new ones stay dark (HELD), so nothing changes for members; see bot/apps.js.
+  matchday: ['host', 'schedule', 'nextevent', 'availability', 'lineup', 'remind', 'reminders', 'trial', 'matchday'],
+  rush: ['rush', 'lfg'],
 };
+// Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).
+export const MOVED_FROM = { host: 'tools', schedule: 'tools', nextevent: 'tools', availability: 'tools', lineup: 'tools', remind: 'tools', reminders: 'tools', trial: 'tools', rush: 'stats' };
+// New commands that exist only once their app is configured (never lent to core).
+export const HELD = new Set(['matchday', 'lfg']);
 // Management commands: hidden from non-staff in Discord (Manage Roles bit) on top of the Worker's can() check.
 export const STAFF_COMMANDS = ['insights', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'watchlist', 'setup', 'purge', 'panel', 'host'];
 

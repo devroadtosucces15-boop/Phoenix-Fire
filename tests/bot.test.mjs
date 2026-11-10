@@ -44,6 +44,8 @@ const sample = {
   nextevent: null, feedback: null, suggest: null, announce: null, trial: null, motm: null, history: null, // P11.16 – need the member DB: tests/quickcommands.test.mjs
   setup: null, purge: null, tag: null, tags: null, remind: null, reminders: null, // server tools – need the member DB + Discord: tests/servertools.test.mjs
   host: null, // managers, member DB + Discord – tests/host.test.mjs
+  matchday: null, // Phoenix Matchday app, dark until configured – tests/matchday.test.mjs
+  lfg: null, // Phoenix Rush app, dark until configured – tests/lfg.test.mjs
   panel: null, // managers, member DB – tests/panel.test.mjs
   jail: null, wheel: null, trivia: null, share: null, discoveries: null, watch: null, watchlist: null, // tests/discoveries.test.mjs
   // fun for members, member DB – tests/fun.test.mjs

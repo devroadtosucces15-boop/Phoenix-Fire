@@ -27,13 +27,17 @@
   const mine = (e) => (e.rsvps || []).find((r) => r.id === me())?.s || '';
   const switchHtml = (e, cur) => `<div class="mn-sw" role="radiogroup" aria-label="Your answer" data-pos="${Math.max(0, SW.findIndex((x) => x[0] === cur))}"${cur ? '' : ' data-none'}><i class="mn-thumb" aria-hidden="true"></i>${SW.map(([v, ic, l]) => `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'on ' : ''}s-${v}" data-ev="${e.id}" data-v="${v}"><span>${ic}</span><b>${l}</b></button>`).join('')}</div>`;
   const left = (ms) => { const s = Math.max(0, Math.round((ms - Date.now()) / 1000)), dd = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60); return dd ? `${dd}d ${h}h` : h ? `${h}h ${m}m` : `${m}m ${String(s % 60).padStart(2, '0')}s`; };
+  // Preferred position (optional, up to two): a preference for the managers, never a promise.
+  const PREF = ['GK', 'CB', 'LB/RB', 'CDM', 'CM', 'CAM', 'LW/RW', 'ST'];
+  const prefOf = (e) => ((e.rsvps || []).find((r) => r.id === me()) || {}).pref || [];
+  const prefHtml = (e, cur) => (cur === 'yes' || cur === 'maybe') ? `<div class="mn-pref"><div class="tiny muted">POSITION YOU WANT (OPTIONAL, UP TO 2)</div><div class="chips" role="group" aria-label="Preferred position">${PREF.map((p) => `<button type="button" class="chip${prefOf(e).includes(p) ? ' on' : ''}" aria-pressed="${prefOf(e).includes(p)}" data-pref="${esc(p)}" data-evp="${e.id}">${esc(p)}</button>`).join('')}</div></div>` : '';
   const heroHtml = () => {
     const now = Date.now(), list = (EV || []).filter((e) => e.status === 'scheduled' && e.end > now).slice(0, 6);
     if (!list.length) return `<div class="mn-none"><span class="mn-bigi" aria-hidden="true">🗓️</span><div><b>No match night scheduled</b><p class="muted small">When the managers schedule one you answer right here, and you get an alert.</p></div></div>`;
     const e = list[0], cur = mine(e), yes = count(e, 'yes'), mb = count(e, 'maybe'), who = (e.rsvps || []).filter((r) => r.s === 'yes').slice(0, 7);
     return `<div class="mn-top"><div><div class="eyebrow">🗓️ Next up</div><h3 class="mn-t fit">${esc(evName(e))}</h3><p class="mn-when">${esc(whenTxt(e.start))}</p></div><div class="mn-cd" role="timer" aria-live="off"><small>${e.start > now ? 'kick-off in' : 'under way'}</small><b class="num" id="mncd">${e.start > now ? left(e.start) : 'LIVE'}</b></div></div>
 <div class="mn-who"><div class="mn-av">${who.map((r) => r.a ? `<img${r.id ? ` data-uid="${esc(r.id)}"` : ''} src="${esc(r.a)}" alt="" title="${esc(r.n || '')}">` : `<span title="${esc(r.n || '')}">${esc((r.n || '?')[0])}</span>`).join('')}</div><span><b class="num">${yes}</b> in${mb ? ` · <b class="num">${mb}</b> maybe` : ''}${(e.plays || []).length ? ` · <a class="tp-pill" href="#mn-plays">📋 ${e.plays.length} play${e.plays.length === 1 ? '' : 's'}</a>` : ''}</span></div>
-${switchHtml(e, cur)}<p class="muted small mn-msg" id="mnmsg">${cur ? 'Saved. Tap your answer again to clear it.' : 'Tap one. You can change it any time before kick-off.'}</p>
+${switchHtml(e, cur)}${prefHtml(e, cur)}<p class="muted small mn-msg" id="mnmsg">${cur ? 'Saved. Tap your answer again to clear it.' : 'Tap one. You can change it any time before kick-off.'}</p>
 ${list.length > 1 ? `<div class="mn-more"><div class="tiny muted">ALSO COMING UP</div>${list.slice(1).map((x) => `<div class="mn-row"><span><b>${esc(evName(x))}</b><small class="muted"> ${esc(new Date(x.start).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }))}</small></span><button type="button" class="mn-cyc s-${mine(x) || 'none'}" data-evc="${x.id}" aria-label="${esc(evName(x))}: ${mine(x) || 'not answered'}. Tap to change">${{ yes: '✅', maybe: '❔', no: '❌' }[mine(x)] || '＋'}</button></div>`).join('')}</div>` : ''}`;
   };
   const drawHero = () => { hero.innerHTML = heroHtml(); clearInterval(tick); const c = $('#mncd'); const e = (EV || []).find((x) => x.status === 'scheduled' && x.end > Date.now()); if (c && e && e.start > Date.now()) tick = setInterval(() => { if (!c.isConnected) return clearInterval(tick); c.textContent = e.start > Date.now() ? left(e.start) : 'LIVE'; }, 1000); };
@@ -45,6 +49,8 @@ ${list.length > 1 ? `<div class="mn-more"><div class="tiny muted">ALSO COMING UP
   };
   hero.addEventListener('click', (ev) => {
     const b = ev.target.closest('[data-ev]'); if (b && live) return rsvp(b, +b.dataset.ev, b.dataset.v);
+    const pb = ev.target.closest('[data-pref]'); if (pb && live) { const e = EV.find((x) => x.id === +pb.dataset.evp), has = prefOf(e), v = pb.dataset.pref; const next = has.includes(v) ? has.filter((x) => x !== v) : [...has, v].slice(-2); pb.disabled = true;
+      return post('/api/events/rsvp', { id: e.id, pref: next }).then((L) => { EV = L.events || EV; drawHero(); }).catch(() => { pb.disabled = false; toast('Could not save that. Try again.', 'err'); }); }
     const c = ev.target.closest('[data-evc]'); if (c && live) { const e = EV.find((x) => x.id === +c.dataset.evc), cur = mine(e), nx = { '': 'yes', yes: 'maybe', maybe: 'no', no: 'clear' }[cur] || 'yes'; c.disabled = true;
       post('/api/events/rsvp', { id: e.id, status: nx }).then((L) => { EV = L.events || EV; drawHero(); }).catch(() => { c.disabled = false; toast('Could not save that. Try again.', 'err'); }); }
   });

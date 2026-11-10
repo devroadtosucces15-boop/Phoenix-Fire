@@ -15,7 +15,7 @@
 //
 // Until an app is configured (app ID + public key set), its commands stay on core – registered there and answered
 // there – so splitting can happen one app at a time.
-import { COMMANDS, APP_COMMANDS, buildRegistration } from './commanddefs.js';
+import { COMMANDS, APP_COMMANDS, MOVED_FROM, HELD, buildRegistration } from './commanddefs.js';
 
 export const APPS = Object.keys(APP_COMMANDS);
 const OWNER = new Map(Object.entries(APP_COMMANDS).flatMap(([app, names]) => names.map((n) => [n, app])));
@@ -29,15 +29,35 @@ export function appCreds(env, app) {
 // configured = Discord can reach it (ID + key); the token is only needed for registration, DMs and channel posts.
 export const appConfigured = (env, app) => { const c = appCreds(env, app); return !!(c.appId && c.publicKey); };
 
-// The command names an app answers (and registers): its own, plus – for core – every unconfigured app's.
-export function servedBy(env, app) {
-  const names = new Set(APP_COMMANDS[app] ?? []);
-  if (app === 'core') for (const a of APPS) if (a !== 'core' && !appConfigured(env, a)) for (const n of APP_COMMANDS[a]) names.add(n);
-  return names;
+// Where a command is answered right now: its owner once that app is configured; before that, the app it moved from
+// (MOVED_FROM) or core; a HELD command (new, no former home) is nowhere until its app exists.
+export function homeOf(env, name) {
+  const owner = appOf(name);
+  if (!owner) return null;
+  if (owner === 'core' || appConfigured(env, owner)) return owner;
+  if (HELD.has(name)) return null;
+  const former = MOVED_FROM[name];
+  return former && appConfigured(env, former) ? former : 'core'; // an unconfigured old app has already lent its commands to core
 }
-export const commandsFor = (env, app) => { const names = servedBy(env, app); return COMMANDS.filter((c) => names.has(c.name)); };
-// The app that answers a command right now (its owner if configured, else core).
-export const answeringApp = (env, name) => { const a = appOf(name); return a && a !== 'core' && appConfigured(env, a) ? a : 'core'; };
+// Transition window: after an app goes live (APP_LIVE_SINCE_<APP>, an ISO date set by the owner) its moved commands stay
+// registered on the old app for GRACE_DAYS, answering with a one-line pointer, then drop off.
+export const GRACE_DAYS = 14;
+export function inGrace(env, app, now = Date.now()) {
+  const since = Date.parse(env?.[`APP_LIVE_SINCE_${String(app).toUpperCase()}`] ?? '');
+  return appConfigured(env, app) && Number.isFinite(since) && now >= since && now < since + GRACE_DAYS * 86400e3;
+}
+const names_of = (pred) => new Set(COMMANDS.filter((c) => pred(c.name)).map((c) => c.name));
+// The command names an app answers: the ones whose home it is.
+export const servedBy = (env, app) => names_of((n) => homeOf(env, n) === app);
+// Moved commands an old app still lists during the transition window (they only point to the new app).
+export const movedOnly = (env, app, now = Date.now()) => names_of((n) => MOVED_FROM[n] === app && appOf(n) !== app && inGrace(env, appOf(n), now));
+// What an app registers with Discord: what it serves plus the moved pointers.
+export const registeredBy = (env, app, now = Date.now()) => new Set([...servedBy(env, app), ...movedOnly(env, app, now)]);
+export const commandsFor = (env, app, now = Date.now()) => { const names = registeredBy(env, app, now); return COMMANDS.filter((c) => names.has(c.name)); };
+// The app that answers a command right now (core when it is nowhere).
+export const answeringApp = (env, name) => homeOf(env, name) ?? 'core';
+// One line for someone who used a moved command on its old app.
+export const movedNote = (env, app, name, now = Date.now()) => movedOnly(env, app, now).has(name) ? `/${name} moved to ${APP_LABEL[appOf(name)]} – use it there from now on.` : null;
 
 // Which app a request path is for: '/' and '/interactions' are the legacy single-app endpoint → core.
 export function appFromPath(path) {

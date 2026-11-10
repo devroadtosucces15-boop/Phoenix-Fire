@@ -33,6 +33,7 @@ export const TYPES = {
   trial: { icon: '🔭', label: 'My scouting tips', def: 'dm' },
   trialstage: { icon: '🏟️', label: 'Trial stage changes – my trial and the Dugout board', def: 'off' }, // BE4 (opt-in)
   rush: { icon: '⚡', label: 'My Rush results', def: 'site' },
+  lfg: { icon: '🙋', label: 'Rush calls – someone is available to play', def: 'site' }, // MB5 (flag rushLfg)
   badge: { icon: '🎖️', label: 'Badges & achievements I get', def: 'site' },
   request: { icon: '📨', label: 'My club & privacy requests', def: 'dm' },
   idea: { icon: '💡', label: 'Replies to my suggestions', def: 'site' },
