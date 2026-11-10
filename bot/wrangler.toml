@@ -20,6 +20,13 @@ DISCORD_APP_ID_TOOLS = "1569608448507650048"
 DISCORD_PUBLIC_KEY_TOOLS = "cb15761d8ecfd62313458aadc9648f5c4f50b612650cb48724b1ffe59f3a5848"
 DISCORD_APP_ID_FUN = "1569608868533637121"
 DISCORD_PUBLIC_KEY_FUN = "68601b9fa1452c857bb903fbfd6a32e91a3c67c754388f39d545ea2e62330d56"
+DISCORD_APP_ID_MATCHDAY = "1569650108256092180"
+DISCORD_PUBLIC_KEY_MATCHDAY = "6e864c23e39900638ff1a2376fbcc4ca198843cc32960acd3e16e92d0d6963ea"
+DISCORD_APP_ID_RUSH = "1569650983120805988"
+DISCORD_PUBLIC_KEY_RUSH = "6e3f4f5253e6a7a78a7215a0c026e7a6a57ebadd507a0d5d77aa56b4a0cb1460"
+# Switch-on date: moved commands stay on their old app with a "moved" reply for 14 days from here (bot/apps.js).
+APP_LIVE_SINCE_MATCHDAY = "2026-11-10"
+APP_LIVE_SINCE_RUSH = "2026-11-10"
 # Discord server, owner/manager roles and every channel are no longer hardcoded here: they live in the Organization config
 # (Boardroom → Organization, D1 tables discord_servers / discord_roles / discord_channels) and are read by bot/orgconfig.js (withOrgEnv).
 # DISCORD_GUILD_ID, OWNER_ROLE_ID, ADMIN_ROLE_ID and MEMBER_ROLE_ID may still be set as vars/secrets to override the config.
