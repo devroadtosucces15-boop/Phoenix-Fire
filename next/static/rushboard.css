@@ -20,7 +20,9 @@
 #sc-fl,#lb-tabs,#sc-by,#sc-view{margin-bottom:10px}
 .lb-kpi:has(.sbt:nth-child(8):last-child){grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}@media(min-width:900px){.lb-kpi:has(.sbt:nth-child(8):last-child){grid-template-columns:repeat(4,1fr)}}
 .tbx{overflow-x:auto;-webkit-overflow-scrolling:touch}.tbx.fade{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 40px),transparent)}
-.tbx .tb th,.tbx .tb td{white-space:nowrap}.tbx .tb td.small{white-space:normal;min-width:200px;max-width:280px}
+.tbx .tb th,.tbx .tb td{white-space:nowrap}.tbx .tb td.small{white-space:normal;min-width:160px;max-width:230px}
 @media(max-width:620px){.lb-h{grid-template-columns:minmax(0,1fr) auto auto;row-gap:4px}.lb-h>span:nth-child(2){grid-column:1;grid-row:2;color:var(--soft)}.lb-h>b{grid-column:2;grid-row:1}.lb-h>.num{grid-column:3;grid-row:1}.lb-h>.btn{grid-column:2/-1;grid-row:2;justify-self:end}
 .tbx .tb th,.tbx .tb td{padding-left:10px;padding-right:10px}.chips .chip,.btn.sm{min-height:40px}.lb-tb td:nth-child(2){max-width:46vw;overflow:hidden;text-overflow:ellipsis}
 .sc-sh{grid-template-columns:minmax(0,1fr) auto;row-gap:4px}.sc-sh>span:first-child{grid-row:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sc-sh>b{grid-row:1;grid-column:2}.sc-sh .lb-bar{grid-row:2;grid-column:1/-1}.sc-sh small{display:none}.sc-miss{columns:1}}
+/* Phone: keep the player name in view while the wide manager table scrolls sideways */
+@media(max-width:620px){#sc-dash .tb th:first-child,#sc-dash .tb td:first-child{position:sticky;left:0;z-index:1;background:var(--p2);box-shadow:6px 0 8px -6px rgba(0,0,0,.6);max-width:34vw;overflow:hidden;text-overflow:ellipsis}}
