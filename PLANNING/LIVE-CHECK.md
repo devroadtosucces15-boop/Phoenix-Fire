@@ -41,3 +41,7 @@ Not checked (needs a login or the owner): authenticated `/api/*` payloads, Disco
 ## Left over for the owner (part B)
 
 B1 Worker host, B2 founded date, B8 launch go-ahead.
+
+## A5 page pass (local live-flavour build, built-in browser at 375 px, 44 pages)
+
+No page scrolls sideways, none prints `undefined`, `NaN` or `[object]`. Empty states read correctly: Fixtures ("No match night is scheduled right now."), Rush ("shown here once a manager confirms them"), Watch (Twitch channel card, no YouTube). Rush and Watch fill from the Worker at runtime, so their populated state could only be checked on the live site. L1 (manifest colours) is fixed by the A3 manifest change and guarded by A4. `tests/next-quality.test.mjs` now fails on printed broken values and on inline widths of 400 px or more.
