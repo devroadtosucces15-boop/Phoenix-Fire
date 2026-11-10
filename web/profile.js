@@ -225,7 +225,7 @@ ${window.NXViewer?.flagOn('platformLink') ? `<p class="small muted">✓ PSN, Xbo
         try {
           const saved = (await ctx.call('/api/profile', { ...p, updated: undefined })).profile;
           draft = null;
-          cards.delete(ctx.me.u); UI.hoverCard.forget(ctx.me.u); sessionStorage.removeItem('norex_public');
+          cards.delete(ctx.me.u); UI.hoverCard.forget(ctx.me.u); sessionStorage.removeItem('phoenix_public');
           ctx.onSaved?.(saved);
           ctx.toast('Profile saved');
           editor(el, ctx, saved);

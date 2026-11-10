@@ -19,7 +19,7 @@
   const toast = (m, bad, action) => UI.toast(m, bad ? 'bad' : 'ok', action ? { action } : {});
   const flag = (n) => window.NXViewer?.flagOn(n) ?? false;
   const loadCard = () => (window.NXBuildCard ? Promise.resolve() : new Promise((ok, no) => document.head.appendChild(Object.assign(document.createElement('script'), { src: `${BASE}assets/buildcard.js`, onload: ok, onerror: no }))));
-  const OPEN = 'norex_pb_open'; // deep link survives the Discord login round trip
+  const OPEN = 'phoenix_pb_open'; // deep link survives the Discord login round trip
   async function needLogin(what) {
     if (session()) return false;
     if (await UI.confirm({ title: `Log in to ${what}`, icon: '🔐', text: 'Reading Pro Builds is open to everyone. Voting, comments and posting need a ' + (document.body.dataset.club || 'the club') + ' Discord login.', ok: 'Log in with Discord' })) {
@@ -53,7 +53,7 @@
 
   // ================= board =================
   async function board(root) {
-    const pref = (() => { try { return JSON.parse(localStorage.getItem('norex_pb_view') || '{}'); } catch { return {}; } })();
+    const pref = (() => { try { return JSON.parse(localStorage.getItem('phoenix_pb_view') || '{}'); } catch { return {}; } })();
     const S = { list: [], sort: pref.sort || 'hot', mode: pref.mode || 'all', arch: '', pos: '', patch: '', max: false, q: '', g: null };
     root.innerHTML = UI.skeleton ? UI.skeleton('cards', 6) : '<p class="muted">Loading…</p>';
     try {
@@ -66,7 +66,7 @@
     }
     const g = S.g;
     const C = NXBuildCard;
-    const keep = () => { try { localStorage.setItem('norex_pb_view', JSON.stringify({ sort: S.sort, mode: S.mode })); } catch {} };
+    const keep = () => { try { localStorage.setItem('phoenix_pb_view', JSON.stringify({ sort: S.sort, mode: S.mode })); } catch {} };
     const hot = (x) => (x.score + x.comments * 0.5 + 1) / Math.pow((Date.now() - x.at) / 36e5 + 2, 1.3);
     const shown = () => {
       const q = S.q.trim().toLowerCase();

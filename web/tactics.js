@@ -82,7 +82,7 @@
   // ---------- studio state: dirty tracking, local draft, undo/redo, save/publish ----------
   const sig = () => JSON.stringify(studio.doc);
   const dirty = () => !!studio && sig() !== studio.saved;
-  const draftKey = () => `norex_tx_draft_${active}`;
+  const draftKey = () => `phoenix_tx_draft_${active}`;
   function persistDraft() { try { if (dirty()) localStorage.setItem(draftKey(), JSON.stringify({ base: detail?.version, at: Date.now(), doc: studio.doc })); else localStorage.removeItem(draftKey()); } catch {} }
   const normalizeDoc = (d) => ({ pieces: Array.isArray(d?.pieces) ? d.pieces : [], steps: Array.isArray(d?.steps) ? d.steps : [], drawings: Array.isArray(d?.drawings) ? d.drawings : [], quiz: Array.isArray(d?.quiz) ? d.quiz : [] });
   function snap() { studio.undo.push(sig()); if (studio.undo.length > 60) studio.undo.shift(); studio.redo = []; }
@@ -110,11 +110,11 @@
   }
   async function startStudio() {
     let doc = normalizeDoc(structuredClone(detail.doc || STARTER_DOC));
-    let draft = null; try { draft = JSON.parse(localStorage.getItem(`norex_tx_draft_${active}`) || 'null'); } catch {}
+    let draft = null; try { draft = JSON.parse(localStorage.getItem(`phoenix_tx_draft_${active}`) || 'null'); } catch {}
     const saved = JSON.stringify(doc);
     if (draft?.doc && JSON.stringify(normalizeDoc(draft.doc)) !== saved) {
       const yes = await UI.confirm({ title: 'Restore your unsaved edits?', text: `Found changes from ${new Date(draft.at).toLocaleString()} that were never saved${draft.base !== detail.version ? ' (the play has a newer version since – saving will replace it)' : ''}.`, ok: 'Restore', cancel: 'Start fresh' });
-      if (yes) doc = normalizeDoc(draft.doc); else { try { localStorage.removeItem(`norex_tx_draft_${active}`); } catch {} }
+      if (yes) doc = normalizeDoc(draft.doc); else { try { localStorage.removeItem(`phoenix_tx_draft_${active}`); } catch {} }
     }
     doc.drawings.forEach((dr) => { if (!dr.id) dr.id = crypto.randomUUID().slice(0, 8); });
     studio = { doc, saved, undo: [], redo: [], tool: 'move', drawColor: COLORS[0], drawWidth: 6, fill: false, bend: 1, vertical, full: false, selectedPieceId: null, gesture: false };
@@ -173,7 +173,7 @@
   // Orientation: the document is always 1000 (length) × 640 (width). Horizontal draws it as-is; the vertical field turns it a quarter
   // so the length runs up the screen (goal at the top) – the same document, just seen portrait and bigger for drawing.
   let vertical = false;
-  try { vertical = localStorage.getItem('norex_tx_vert') === '1'; } catch {}
+  try { vertical = localStorage.getItem('phoenix_tx_vert') === '1'; } catch {}
   const isV = () => (studio ? studio.vertical : vertical);
   const toPct = (x, y, v = isV()) => (v ? { l: (640 - y) / 6.4, t: x / 10 } : { l: x / 10, t: y / 6.4 });
   const sp = (pt, v = isV()) => (v ? [640 - pt[1], pt[0]] : [pt[0], pt[1]]);
@@ -217,8 +217,8 @@
     return editable ? board : `<div class="tx-stage${is3d() && !v ? ' tx-3d' : ''}" data-stage style="--spin:${spin}deg">${board}</div><div class="tx-view-bar">${v ? '' : `<button class="btn sm ghost" type="button" data-3d aria-pressed="${is3d()}">${is3d() ? '▭ Flat view' : '🧊 3D view'}</button>`}${bar}${is3d() && !v ? '<small class="muted">Drag the board to turn it.</small>' : ''}</div>`;
   }
   // 3D board (C8): CSS-only tilt + spin, pieces stand up facing the viewer. Viewing only – editing stays flat so drags map 1:1.
-  const is3d = () => { try { return localStorage.getItem('norex_tx3d') === '1'; } catch { return false; } };
-  function set3d(on) { try { localStorage.setItem('norex_tx3d', on ? '1' : '0'); } catch {} detailView(); }
+  const is3d = () => { try { return localStorage.getItem('phoenix_tx3d') === '1'; } catch { return false; } };
+  function set3d(on) { try { localStorage.setItem('phoenix_tx3d', on ? '1' : '0'); } catch {} detailView(); }
   let spin = 0;
   function quizEditRow(q, i) {
     return `<div class="tx-qedit" data-q="${i}"><input class="tx-qtext" type="text" value="${esc(q.q)}" data-qfield="q" placeholder="Question text" maxlength="200" aria-label="Question ${i + 1} text"><div class="tx-qopts">${q.options.map((o, j) => `<div class="tx-qopt"><input type="radio" name="qa${i}" ${q.answer === j ? 'checked' : ''} data-qanswer="${j}" aria-label="Correct answer"><input type="text" value="${esc(o)}" data-qopt="${j}" maxlength="80" placeholder="Option ${j + 1}" aria-label="Option ${j + 1}">${q.options.length > 2 ? `<button type="button" class="tx-qdel" data-del-opt="${j}" aria-label="Remove option">×</button>` : ''}</div>`).join('')}</div><div class="tx-qrow-actions">${q.options.length < 6 ? '<button type="button" class="btn sm ghost" data-add-opt>+ Option</button>' : ''}<button type="button" class="btn sm danger" data-del-q>Delete question</button></div></div>`;
@@ -536,8 +536,8 @@
         if (e.target.closest('[data-bend]')) { studio.bend = studio.bend === 1 ? -1 : 1; detailView(); return; }
         if (e.target.closest('[data-undo]')) { undo(); return; }
         if (e.target.closest('[data-redo]')) { redo(); return; }
-        if (e.target.closest('[data-vert]')) { studio.vertical = !studio.vertical; vertical = studio.vertical; try { localStorage.setItem('norex_tx_vert', vertical ? '1' : '0'); } catch {} detailView(); return; }
-        if (e.target.closest('[data-big]')) { studio.full = !studio.full; if (studio.full) { studio.vertical = true; vertical = true; try { localStorage.setItem('norex_tx_vert', '1'); } catch {} } detailView(); return; }
+        if (e.target.closest('[data-vert]')) { studio.vertical = !studio.vertical; vertical = studio.vertical; try { localStorage.setItem('phoenix_tx_vert', vertical ? '1' : '0'); } catch {} detailView(); return; }
+        if (e.target.closest('[data-big]')) { studio.full = !studio.full; if (studio.full) { studio.vertical = true; vertical = true; try { localStorage.setItem('phoenix_tx_vert', '1'); } catch {} } detailView(); return; }
         if (e.target.closest('[data-rename]')) { const pc = studio.doc.pieces.find((x) => x.id === studio.selectedPieceId); if (pc) { const t = await askText('Piece label', pc.label || '', 20); if (t !== null) { snap(); pc.label = t || undefined; sendPiece(pc); detailView(); } } return; }
         if (e.target.closest('[data-dup]')) { const pc = studio.doc.pieces.find((x) => x.id === studio.selectedPieceId); if (pc && studio.doc.pieces.length < 60) { snap(); const np = { ...pc, id: crypto.randomUUID().slice(0, 8), x: Math.min(1000, pc.x + 30), y: Math.min(640, pc.y + 30) }; studio.doc.pieces.push(np); studio.selectedPieceId = np.id; sendPiece(np); detailView(); } return; }
         if (e.target.closest('[data-remove-piece]')) { removeSelected(); return; }
@@ -561,7 +561,7 @@
       const dl = e.target.closest('[data-dl-media]'); if (dl) { try { await saveMedia(dl.dataset.dlMedia, dl.dataset.kind); } catch (x) { toast(x.message, true); } return; }
       const md = e.target.closest('[data-media-discord]'); if (md) { shareMedia(md.dataset.mediaDiscord); return; }
       const t3 = e.target.closest('[data-3d]'); if (t3) { set3d(!is3d()); return; }
-      if (e.target.closest('[data-vert]')) { vertical = !vertical; try { localStorage.setItem('norex_tx_vert', vertical ? '1' : '0'); } catch {} detailView(); return; }
+      if (e.target.closest('[data-vert]')) { vertical = !vertical; try { localStorage.setItem('phoenix_tx_vert', vertical ? '1' : '0'); } catch {} detailView(); return; }
       const hd = e.target.closest('[data-hide-media]'); if (hd) { if (!(await UI.confirm({ title: 'Hide this recording?', text: 'It disappears for members; the file is kept.', ok: 'Hide', danger: true }))) return; try { await call(`/api/plays/${active}/media/${hd.dataset.hideMedia}/delete`, {}); toast('Recording hidden.'); loadMedia(); } catch (x) { toast(x.message, true); } return; }
       if (e.target.closest('[data-learn]')) { try { await call(`/api/plays/${active}/learned`, { learned: true }); detail.mine.learned = true; toast('Marked learned.'); detailView(); } catch (x) { toast(x.message, true); } return; }
       const pub = e.target.closest('[data-publish]'); if (pub) { if (pub.dataset.publish === '1' && !((detail.doc?.pieces?.length) || (detail.doc?.drawings?.length)) && !(await UI.confirm({ title: 'Publish an empty play?', text: 'This saved version has no pieces or chalk. If you were working in the studio, open it and use Save & publish there.', ok: 'Publish anyway' }))) return; try { detail = await call(`/api/plays/${active}/publish`, { published: pub.dataset.publish === '1' }); toast(detail.published ? 'Play published.' : 'Play unpublished.'); detailView(); } catch (x) { toast(x.message, true); } return; }

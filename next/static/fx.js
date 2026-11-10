@@ -9,7 +9,7 @@
   const ico = (n) => `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${(window.NOREX_ICONS || {})[n] || ''}</svg>`;
 
   // ================= menus that follow you =================
-  const mode = () => ls.get('norex.nav', 'orb');
+  const mode = () => ls.get('phoenix.nav', 'orb');
   function buildNav() {
     if (!NAV.length || $('#fxnav')) return;
     const w = d.createElement('div'); w.id = 'fxnav';
@@ -120,11 +120,11 @@
   const KIND = { club: 'cclub', matches: 'cmatches', stats: 'cstats', tactics: 'ctactics', hub: 'locker' };
   const here = () => SECTION(location.pathname.split('/').pop());
   function pick(a) { if (mmode() !== 'full') return 'fade'; const dest = SECTION((a.getAttribute('href') || '').split('#')[0].split('?')[0]); return KIND[dest] || 'fade'; }
-  const cinematic = () => ['full', 'short'].includes(ls.get('norex.entrance', 'skip'));
+  const cinematic = () => ['full', 'short'].includes(ls.get('phoenix.entrance', 'skip'));
   const internal = (a) => { if (!a || a.target || a.hasAttribute('download') || (a.dataset.hub !== undefined && cinematic())) return false; const h = a.getAttribute('href'); if (!h || h[0] === '#' || /^(mailto:|tel:|javascript:)/.test(h)) return false; try { const u = new URL(a.href, location.href); return u.origin === location.origin && u.pathname !== location.pathname && /\.html$|\/$/.test(u.pathname); } catch { return false; } };
   async function go(a) {
     if (busy) return; busy = true; const kind = pick(a), href = a.href;
-    ss.set('norex.t', JSON.stringify({ kind, t: Date.now() })); H.classList.add('fx-busy');
+    ss.set('phoenix.t', JSON.stringify({ kind, t: Date.now() })); H.classList.add('fx-busy');
     const guard = setTimeout(() => location.assign(href), 1400);
     setTimeout(() => { busy = false; H.classList.remove('fx-busy'); if (tov) tov.innerHTML = ''; }, 4500);   // a navigation that never happens (offline, blocked) must not leave the page dead
     try { const fx = FX[kind], parts = fx.build(false); await frames(2); await fx.cover(parts); } catch {}
@@ -135,13 +135,13 @@
     const a = e.target.closest('a'); if (!internal(a)) return;
     // shared-element morph: a player card grows into its profile, a result card into its match page (native View Transitions where supported)
     const vt = a.matches('.pc-card[href^="player-"],.pc-hero') ? 'pcard' : a.matches('.rcard,.rrow') ? 'mcard' : '';
-    if (vt && 'onpageswap' in window && mmode() === 'full' && !a.closest('[data-no-vt]')) { a.style.viewTransitionName = vt; ss.set('norex.vt', vt); return; }
+    if (vt && 'onpageswap' in window && mmode() === 'full' && !a.closest('[data-no-vt]')) { a.style.viewTransitionName = vt; ss.set('phoenix.vt', vt); return; }
     e.preventDefault(); go(a);
   });
   // "fully rendered": fonts ready, and every image in the first screen decoded (capped so a slow image never traps the user)
   const painted = () => Promise.race([Promise.all([d.fonts?.ready, ...[...d.images].filter((i) => { const r = i.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0 && r.width; }).slice(0, 12).map((i) => (i.complete ? i.decode?.().catch(() => {}) : new Promise((ok) => { i.onload = i.onerror = ok; })))]), sleep(1100)]);
   async function arrive() {
-    let t = null; try { t = JSON.parse(ss.get('norex.t') || 'null'); } catch {} ss.del('norex.t');
+    let t = null; try { t = JSON.parse(ss.get('phoenix.t') || 'null'); } catch {} ss.del('phoenix.t');
     const done = () => { H.removeAttribute('data-tin'); dispatchEvent(new Event('norex:arrived')); };
     if (!t || !FX[t.kind] || mmode() === 'off' || Date.now() - (t.t || 0) > 8000) return done();
     const fx = FX[t.kind]; let parts; try { parts = fx.build(true); } catch { return done(); }
@@ -177,6 +177,6 @@
   d.readyState === 'loading' ? d.addEventListener('DOMContentLoaded', start) : start();
   window.NorexFx = { burst, go: (href) => go({ href: new URL(href, location.href).href, getAttribute: () => href }) };
 // native cross-document transition: only animate when a shared-element click set the flag
-addEventListener('pageswap', (e) => { if (!e.viewTransition) return; if (!ss.get('norex.vt')) e.viewTransition.skipTransition(); });
-addEventListener('pagereveal', (e) => { if (!e.viewTransition) return; if (!ss.get('norex.vt')) { e.viewTransition.skipTransition(); return; } ss.del('norex.vt'); });
+addEventListener('pageswap', (e) => { if (!e.viewTransition) return; if (!ss.get('phoenix.vt')) e.viewTransition.skipTransition(); });
+addEventListener('pagereveal', (e) => { if (!e.viewTransition) return; if (!ss.get('phoenix.vt')) { e.viewTransition.skipTransition(); return; } ss.del('phoenix.vt'); });
 })();

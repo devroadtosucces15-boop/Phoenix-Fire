@@ -6,13 +6,13 @@
   const d = document, H = d.documentElement;
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const ss = { get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} } };
-  const VIEW_KEYS = ['norex.viewas', 'norex.viewas.t', 'norex.motion', 'norex.mx', 'norex.insights', 'norex.fx', 'norex.entrance', 'norex.gyro', 'norex_tx_vert', 'norex.stack', 'norex.orbit'];
+  const VIEW_KEYS = ['phoenix.viewas', 'phoenix.viewas.t', 'phoenix.motion', 'phoenix.mx', 'phoenix.insights', 'phoenix.fx', 'phoenix.entrance', 'phoenix.gyro', 'phoenix_tx_vert', 'phoenix.stack', 'phoenix.orbit'];
   const VIEW_MS = 3 * 36e5;
 
   // ---- "view as" never outlives the visit it was set for ----
   try {
-    if (ls.get('norex.viewas')) { const t = +ls.get('norex.viewas.t') || 0; if (!t) ls.set('norex.viewas.t', String(Date.now())); else if (Date.now() - t > VIEW_MS) { ls.set('norex.viewas', null); ls.set('norex.viewas.t', null); } }
-    else if (ls.get('norex.viewas.t')) ls.set('norex.viewas.t', null);
+    if (ls.get('phoenix.viewas')) { const t = +ls.get('phoenix.viewas.t') || 0; if (!t) ls.set('phoenix.viewas.t', String(Date.now())); else if (Date.now() - t > VIEW_MS) { ls.set('phoenix.viewas', null); ls.set('phoenix.viewas.t', null); } }
+    else if (ls.get('phoenix.viewas.t')) ls.set('phoenix.viewas.t', null);
   } catch {}
 
   // ---- free the page: remove overlays, locks and flags that only make sense while something is actually open ----
@@ -38,7 +38,7 @@
 
   // ---- reset: clears view-only choices and cached shells, keeps the sign-in, reloads clean ----
   async function reset() {
-    try { VIEW_KEYS.forEach((k) => ls.set(k, null)); Object.keys(sessionStorage).filter((k) => /^(norex\.(t|vt|mx)|nx\.reloaded)$/.test(k)).forEach((k) => ss.set(k, null)); } catch {}
+    try { VIEW_KEYS.forEach((k) => ls.set(k, null)); Object.keys(sessionStorage).filter((k) => /^(phoenix\.(t|vt|mx)|nx\.reloaded)$/.test(k)).forEach((k) => ss.set(k, null)); } catch {}
     try { if ('caches' in window) await Promise.all((await caches.keys()).map((k) => caches.delete(k))); } catch {}
     try { if (navigator.serviceWorker) await Promise.all((await navigator.serviceWorker.getRegistrations()).map((r) => r.unregister())); } catch {}
     try { const u = new URL(location.href); u.searchParams.delete('reset'); u.searchParams.delete('nx'); location.replace(u.pathname + u.search + u.hash); } catch { location.reload(); }

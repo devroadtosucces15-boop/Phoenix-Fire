@@ -52,7 +52,7 @@ ${hasReporter() ? '<li><button type="button" class="ofab-row" data-report><span 
     panel.addEventListener('click', (e) => {
       if (e.target.closest('.ofab-x')) { set(false); btn.focus(); return; }
       const va = e.target.closest('[data-va]');
-      if (va) { try { localStorage.setItem('norex.viewas', va.dataset.va); localStorage.setItem('norex.viewas.t', String(Date.now())); } catch {} location.reload(); return; }
+      if (va) { try { localStorage.setItem('phoenix.viewas', va.dataset.va); localStorage.setItem('phoenix.viewas.t', String(Date.now())); } catch {} location.reload(); return; }
       if (e.target.closest('[data-panel]')) { // one tap: /panel is on the clipboard, Discord opens; the manager approvals appear where you paste it
         const N = window.NorexOwnerFab, say = (m, kind) => window.NorexMotion?.toast?.(m, { kind, icon: '💬' });
         (navigator.clipboard ? navigator.clipboard.writeText(N.PANEL_CMD) : Promise.reject()).then(() => say('Copied /panel. Paste it in any Discord channel and press Enter.', 'ok'), () => say('Type /panel in any Discord channel.', ''));

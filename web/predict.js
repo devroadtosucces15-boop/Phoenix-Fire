@@ -28,7 +28,7 @@
   }
   // The reveal: my pick on the left, the real score flips in on the right, then the points count up.
   function reveal(r) {
-    ls.set(`norex_pred_${r.id}`, '1');
+    ls.set(`phoenix_pred_${r.id}`, '1');
     const mine = r.mine, pts = mine?.points ?? 0;
     return UI.modal({
       title: `${r.title} · the result`, icon: '🔮',
@@ -75,7 +75,7 @@ ${S.locked.length ? `<section class="pr-sec"><h3>🔒 Kicked off</h3><div class=
 <section class="pr-sec"><h3>Results</h3>${S.recent.length ? `<div class="pr-cards">${S.recent.map((e) => `<article class="card pr-ev pr-res"><header><span class="pr-ic">${ICON[e.type] ?? '📅'}</span><div><b>${esc(e.title)}</b><small>${esc(when(e.start))}</small></div>
 ${e.result.status === 'void' ? '<span class="nx-pill">Void – no match found</span>' : `<span class="pr-final">${e.result.gf}–${e.result.ga}</span>`}</header>
 ${e.result.status === 'scored' ? `${e.result.opp ? `<small class="muted">vs ${esc(e.result.opp)}</small>` : ''}${e.mine ? `<p class="pr-mine">Your pick <b>${e.mine.gf}–${e.mine.ga}</b> <em class="p${e.mine.points}">${PTS[e.mine.points][0]} +${e.mine.points}</em></p>` : ''}
-<button type="button" class="btn sm ghost" data-reveal="${e.id}">🎬 ${ls.get(`norex_pred_${e.id}`) ? 'Watch the reveal again' : 'Reveal'}</button><details><summary class="small">Everyone’s picks (${e.picks.length})</summary>${picks(e.picks, { pts: true })}</details>` : ''}</article>`).join('')}</div>`
+<button type="button" class="btn sm ghost" data-reveal="${e.id}">🎬 ${ls.get(`phoenix_pred_${e.id}`) ? 'Watch the reveal again' : 'Reveal'}</button><details><summary class="small">Everyone’s picks (${e.picks.length})</summary>${picks(e.picks, { pts: true })}</details>` : ''}</article>`).join('')}</div>`
         : UI.empty({ icon: '🏁', title: 'No results yet', text: 'Once a predicted night is played, the score and your points appear here.' })}</section>
 <section class="pr-sec card"><h3>🏅 Prediction table</h3>${UI.tabsHtml([['month', 'This month'], ['season', `Season ${esc(S.boards.seasonLabel)}`], ['all', 'All-time']], board, 'pr-boards')}<div class="pr-board-box">${boardHtml()}</div></section>`;
       UI.tabs($('.pr-boards', el), (k) => { board = k; $('.pr-board-box', el).innerHTML = boardHtml(); });
@@ -84,7 +84,7 @@ ${e.result.status === 'scored' ? `${e.result.opp ? `<small class="muted">vs ${es
       try {
         S = await ctx.call('/api/predict');
         paint();
-        const fresh = S.recent.find((e) => e.result.status === 'scored' && e.mine && !ls.get(`norex_pred_${e.id}`));
+        const fresh = S.recent.find((e) => e.result.status === 'scored' && e.mine && !ls.get(`phoenix_pred_${e.id}`));
         // The Hub can draw a tab twice while it loads – only one reveal pops up by itself per page.
         if (fresh && Date.now() - fresh.result.at < 7 * 864e5 && !autoShown && !document.querySelector('dialog[open]')) { autoShown = true; reveal(fresh); }
       } catch (e) { el.innerHTML = UI.empty({ icon: '📡', title: 'Predictions are unavailable', text: e.message }); }

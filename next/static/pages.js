@@ -10,7 +10,7 @@ addEventListener('DOMContentLoaded', () => {
 
   // ---------- match facts: Field / Table toggle, player mini cards, pitch draw-in, result graphic ----------
   if ($('#mfield')) {
-    const field = $('#mfield'), seg = $$('.seg [data-mv]'), MKEY = 'norex.mview';
+    const field = $('#mfield'), seg = $$('.seg [data-mv]'), MKEY = 'phoenix.mview';
     let pop = null; const close = () => { pop?.remove(); pop = null; $$('.fm.sel', field).forEach((x) => x.classList.remove('sel')); };
     const setView = (v, save) => { seg.forEach((b) => { const on = b.dataset.mv === v; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); $('#mv-field').hidden = v !== 'field'; $('#mv-table').hidden = v !== 'table'; if (save) ls.set(MKEY, v); window.NorexMotion?.watch(); };
     seg.forEach((b) => b.addEventListener('click', () => setView(b.dataset.mv, true)));
@@ -151,7 +151,7 @@ addEventListener('DOMContentLoaded', () => {
     };
     NorexAuth.call('/api/ratings').then(drawRate).catch(() => {});
   } else
-  if ($('#rsvp')) { const v = ls.get('norex.rsvp'); const show = (x) => { $$('#rsvp .chip').forEach((c) => c.classList.toggle('on', c.dataset.v === x)); $('#rs').textContent = x ? 'Saved in this preview browser only.' : ''; }; show(v); $$('#rsvp .chip').forEach((c) => c.onclick = () => { ls.set('norex.rsvp', c.dataset.v); show(c.dataset.v); }); }
+  if ($('#rsvp')) { const v = ls.get('phoenix.rsvp'); const show = (x) => { $$('#rsvp .chip').forEach((c) => c.classList.toggle('on', c.dataset.v === x)); $('#rs').textContent = x ? 'Saved in this preview browser only.' : ''; }; show(v); $$('#rsvp .chip').forEach((c) => c.onclick = () => { ls.set('phoenix.rsvp', c.dataset.v); show(c.dataset.v); }); }
 
   // ---------- leaders + best XI ----------
   if ($('#lt')) {
@@ -161,7 +161,7 @@ addEventListener('DOMContentLoaded', () => {
   }
 
   // ---------- pitch finishes (grass / night / blueprint / chalkboard) ----------
-  (() => { const set = (v) => { document.documentElement.dataset.pstyle = v; ls.set('norex.pstyle', v); $$('.pfin .chip').forEach((b) => b.classList.toggle('on', b.dataset.pf === v)); }; set(ls.get('norex.pstyle', 'grass')); $$('.pfin .chip').forEach((b) => (b.onclick = () => set(b.dataset.pf))); })();
+  (() => { const set = (v) => { document.documentElement.dataset.pstyle = v; ls.set('phoenix.pstyle', v); $$('.pfin .chip').forEach((b) => b.classList.toggle('on', b.dataset.pf === v)); }; set(ls.get('phoenix.pstyle', 'grass')); $$('.pfin .chip').forEach((b) => (b.onclick = () => set(b.dataset.pf))); })();
   // ---------- players directory + compare ----------
   if ($('#dir')) {
     let line = '', q = ''; const run = () => $$('#dir tbody tr').forEach((r) => { r.hidden = (line && r.dataset.l !== line) || (q && !r.dataset.n.includes(q)); });
@@ -190,42 +190,42 @@ addEventListener('DOMContentLoaded', () => {
     const F = N.formations, main = F.find((f) => f.main), LS = { get: ls.get, set: ls.set };
     const mounted = {}; let cam = '3d';
     // XI: formation picker (remembered), usual / best-from-stats fill, tap two players to swap (remembered per formation)
-    const fById = (id) => F.find((f) => f.id === id) || main; let xiF = fById(LS.get('norex.xiF', main.id)).id, picked = -1, assign = [], slotsX = [];
+    const fById = (id) => F.find((f) => f.id === id) || main; let xiF = fById(LS.get('phoenix.xiF', main.id)).id, picked = -1, assign = [], slotsX = [];
     const lineOfSlot = (f, s) => { if (s === 'GK') return 'GK'; const k = f.rows.findIndex((r) => r.includes(s)); return k === 0 ? 'DEF' : k === f.rows.length - 1 ? 'FWD' : 'MID'; };
     const fill = (f, best) => { const sl = NorexPitch.leagueSlots(f), used = new Set();
       if (!best && f.id === main.id) return sl.map((s) => byK(N.xi[s.s]));
       const pool = (line) => N.players.filter((p) => p.line === line && (best ? (p.gp ?? 0) >= 5 : true)).sort((a, b) => best ? (b.rating || 0) - (a.rating || 0) : (b.gp ?? 0) - (a.gp ?? 0));
       return sl.map((s) => { const c = pool(lineOfSlot(f, s.s)).find((p) => !used.has(p.k)) || null; if (c) used.add(c.k); return c; }); };
-    const savedA = (f) => { const m = LS.get('norex.xiA.' + f.id, null); return m ? NorexPitch.leagueSlots(f).map((s, i) => byK(m[i])) : null; };
+    const savedA = (f) => { const m = LS.get('phoenix.xiA.' + f.id, null); return m ? NorexPitch.leagueSlots(f).map((s, i) => byK(m[i])) : null; };
     const load = (best) => { const f = fById(xiF); slotsX = NorexPitch.leagueSlots(f); assign = (!best && savedA(f)) || fill(f, best); picked = -1; };
-    const save = () => LS.set('norex.xiA.' + xiF, assign.map((p) => (p ? p.k : null)));
+    const save = () => LS.set('phoenix.xiA.' + xiF, assign.map((p) => (p ? p.k : null)));
     const paintXI = () => { const o = { mode: 'league', orient: 'auto', slots: slotsX, assign, three: cam === '3d', onPick }; if (mounted.xi) mounted.xi.update(o); else mounted.xi = NorexPitch.mount($('#xiPitch'), o); };
     const onPick = (i) => { if (picked >= 0 && picked !== i) { [assign[picked], assign[i]] = [assign[i], assign[picked]]; save(); picked = -1; paintXI(); pop(assign[i]); $('#xiHint').textContent = 'Swapped. Tap a player for their card · tap two to swap them'; return; }
       picked = i; pop(assign[i]); $('#xiHint').textContent = assign[i] ? `${assign[i].n} selected · tap another spot to swap` : 'Tap a player'; };
     const pop = (p) => { $('#pop').innerHTML = p ? `<div class="pop">${NorexCards.cardHTML(p, { s: .95 })}</div>` : ''; NorexMotion.tilt(); NorexArt.apply($('#pop')); };
     $('#xiForm').innerHTML = F.map((f) => `<option value="${esc(f.id)}"${f.id === xiF ? ' selected' : ''}>${esc(f.id)}${f.main ? ' · ours' : ''}</option>`).join('');
-    $('#xiForm').onchange = (e) => { xiF = e.target.value; LS.set('norex.xiF', xiF); load(false); paintXI(); };
+    $('#xiForm').onchange = (e) => { xiF = e.target.value; LS.set('phoenix.xiF', xiF); load(false); paintXI(); };
     $('#xiBest').onclick = () => { load(true); save(); paintXI(); };
-    $('#xiReset').onclick = () => { LS.set('norex.xiA.' + xiF, null); load(false); paintXI(); };
+    $('#xiReset').onclick = () => { LS.set('phoenix.xiA.' + xiF, null); load(false); paintXI(); };
     load(false); paintXI();
     $$('[data-cam]').forEach((b) => b.onclick = () => { cam = b.dataset.cam; $$('[data-cam]').forEach((x) => x.classList.toggle('on', x === b)); paintXI(); });
     // formation wall
-    let sel = LS.get('norex.sel', '3-5-2'), clubF = LS.get('norex.clubF', '3-5-2'), lobby = new Set(LS.get('norex.lobby', [])), back = 0;
+    let sel = LS.get('phoenix.sel', '3-5-2'), clubF = LS.get('phoenix.clubF', '3-5-2'), lobby = new Set(LS.get('phoenix.lobby', [])), back = 0;
     const mini = (f) => `<svg viewBox="0 0 68 105"><rect width="68" height="105" fill="#14502e"/><rect x=".5" y=".5" width="67" height="104" fill="none" stroke="#fff6" stroke-width=".6"/><line x1="0" y1="52.5" x2="68" y2="52.5" stroke="#fff6" stroke-width=".5"/>${NorexPitch.leagueSlots(f).map((p) => `<circle cx="${p.lat * 68}" cy="${(1 - p.depth) * 105}" r="3.6" fill="${p.s === 'GK' ? '#4aa3ff' : '#f6dc92'}"/>`).join('')}</svg>`;
     const wall = () => { $('#wall').innerHTML = F.filter((f) => !back || f.back === back).map((f, i) => `<button type="button" class="tile ${f.id === sel ? 'on' : ''} ${f.id === clubF ? 'main' : ''}" data-id="${esc(f.id)}" style="--d:${i * .03}s">${mini(f)}<b>${esc(f.id)}${f.id === clubF ? '<span class="tag">OURS</span>' : ''}${lobby.has(f.id) ? ' <span class="ok">✔</span>' : ''}</b><small>${f.variant ? 'variant layout' : f.back + ' at the back'}</small></button>`).join('');
       $('#fc').textContent = `(${F.length})`; $('#fnote').textContent = `${F.length} shapes: ${F.filter((f) => f.back === 3).length} with 3 at the back, ${F.filter((f) => f.back === 4).length} with 4, ${F.filter((f) => f.back === 5).length} with 5. ✔ marks the ones you ticked as offered in the Clubs lobby (${lobby.size} of ${F.length}). ${N.formationNote}`; };
     const R = N.roles, roleDef = (s, id) => { if (id === '3-5-2' && R.clubPlan352[s]) return R.clubPlan352[s]; const t = R.types[R.slotType[s]]; return [t.roles[0].n, t.roles[0].f[0] ?? '']; };
-    const detail = () => { const f = F.find((x) => x.id === sel) || main, plan = LS.get('norex.plan.' + f.id, {}), slots = NorexPitch.leagueSlots(f);
+    const detail = () => { const f = F.find((x) => x.id === sel) || main, plan = LS.get('phoenix.plan.' + f.id, {}), slots = NorexPitch.leagueSlots(f);
       $('#dN').textContent = f.id; $('#dS').textContent = `${f.back} at the back · ${f.id === clubF ? 'our club formation' : f.main ? 'our usual shape in the archive' : 'not used yet'}`;
       if (mounted.d) mounted.d.update({ slots }); else mounted.d = NorexPitch.mount($('#dPitch'), { mode: 'league', orient: 'v', slots, three: false });
       $('#dSlots').innerHTML = slots.map((p) => { const t = R.types[R.slotType[p.s]], cur = plan[p.s] || roleDef(p.s, f.id), role = t.roles.find((r) => r.n === cur[0]) || t.roles[0];
         return `<div class="slot" data-s="${p.s}"><b>${p.s}</b><select data-k="r" aria-label="${p.s} role">${t.roles.map((r) => `<option ${r.n === role.n ? 'selected' : ''}>${r.n}</option>`).join('')}</select><select data-k="f" aria-label="${p.s} focus">${role.f.length ? role.f.map((x) => `<option ${x === cur[1] ? 'selected' : ''}>${x}</option>`).join('') : '<option>set in game</option>'}</select></div>`; }).join('');
       $('#lobby').textContent = lobby.has(f.id) ? '✔ Offered in the Clubs lobby' : '☐ Tick if the Clubs lobby offers it';
       $('#dMsg').textContent = f.main ? 'Roles pre-filled from the club League Tactics document (a suggestion, edit freely). Saved in this browser only.' : 'Default roles shown. Saved in this browser only, nothing is sent.'; };
-    $('#wall').onclick = (e) => { const t = e.target.closest('.tile'); if (!t) return; sel = t.dataset.id; LS.set('norex.sel', sel); wall(); detail(); };
-    $('#dSlots').onchange = (e) => { const row = e.target.closest('.slot'); if (!row) return; const f = F.find((x) => x.id === sel), plan = LS.get('norex.plan.' + f.id, {}), s = row.dataset.s, t = R.types[R.slotType[s]]; const rn = $('[data-k=r]', row).value, role = t.roles.find((x) => x.n === rn); plan[s] = [rn, e.target.dataset.k === 'r' ? (role.f[0] || '') : $('[data-k=f]', row).value]; LS.set('norex.plan.' + f.id, plan); detail(); };
-    $('#setClub').onclick = () => { clubF = sel; LS.set('norex.clubF', clubF); wall(); detail(); $('#dMsg').textContent = `${sel} marked as our club formation (preview, this browser only).`; };
-    $('#lobby').onclick = () => { lobby.has(sel) ? lobby.delete(sel) : lobby.add(sel); LS.set('norex.lobby', [...lobby]); wall(); detail(); };
+    $('#wall').onclick = (e) => { const t = e.target.closest('.tile'); if (!t) return; sel = t.dataset.id; LS.set('phoenix.sel', sel); wall(); detail(); };
+    $('#dSlots').onchange = (e) => { const row = e.target.closest('.slot'); if (!row) return; const f = F.find((x) => x.id === sel), plan = LS.get('phoenix.plan.' + f.id, {}), s = row.dataset.s, t = R.types[R.slotType[s]]; const rn = $('[data-k=r]', row).value, role = t.roles.find((x) => x.n === rn); plan[s] = [rn, e.target.dataset.k === 'r' ? (role.f[0] || '') : $('[data-k=f]', row).value]; LS.set('phoenix.plan.' + f.id, plan); detail(); };
+    $('#setClub').onclick = () => { clubF = sel; LS.set('phoenix.clubF', clubF); wall(); detail(); $('#dMsg').textContent = `${sel} marked as our club formation (preview, this browser only).`; };
+    $('#lobby').onclick = () => { lobby.has(sel) ? lobby.delete(sel) : lobby.add(sel); LS.set('phoenix.lobby', [...lobby]); wall(); detail(); };
     tabs('#back', 'b', (b) => { back = +b; wall(); });
     // roles catalogue
     $('#rn').textContent = R.note;
@@ -275,11 +275,11 @@ addEventListener('DOMContentLoaded', () => {
 
   // ---------- dugout: pick a formation, tap a slot, tap a player ----------
   if ($('#dgPitch')) {
-    const F = N.formations; $('#dgF').innerHTML = F.map((f) => `<option>${f.id}</option>`).join(''); const saved = ls.get('norex.lineup', { f: '3-5-2', a: {} }); $('#dgF').value = saved.f;
+    const F = N.formations; $('#dgF').innerHTML = F.map((f) => `<option>${f.id}</option>`).join(''); const saved = ls.get('phoenix.lineup', { f: '3-5-2', a: {} }); $('#dgF').value = saved.f;
     let f = F.find((x) => x.id === saved.f) || F[0], slots = NorexPitch.leagueSlots(f), a = saved.a, selSlot = null, inst;
     const draw = () => { const asg = slots.map((s) => byK(a[s.s])); if (inst) inst.update({ slots, assign: asg }); else inst = NorexPitch.mount($('#dgPitch'), { mode: 'league', orient: 'auto', slots, assign: asg, three: false, onPick: (i) => { selSlot = slots[i].s; $('#dgMsg').textContent = `Picking for ${selSlot}. Choose a player.`; } });
       const used = new Set(Object.values(a)); $('#dgList').innerHTML = N.players.map((p) => `<button class="chip ${used.has(p.k) ? 'on' : ''}" style="justify-content:space-between" data-k="${esc(p.k)}"><span>${esc(p.n)}</span><span class="muted">${p.line} · ${p.ovr ?? '—'}</span></button>`).join(''); };
-    const save = () => ls.set('norex.lineup', { f: f.id, a });
+    const save = () => ls.set('phoenix.lineup', { f: f.id, a });
     $('#dgList').onclick = (e) => { const b = e.target.closest('[data-k]'); if (!b || !selSlot) { if (b) $('#dgMsg').textContent = 'Tap a marker on the pitch first.'; return; } for (const s in a) if (a[s] === b.dataset.k) delete a[s]; a[selSlot] = b.dataset.k; selSlot = null; save(); draw(); $('#dgMsg').textContent = 'Saved in this preview browser.'; };
     $('#dgF').onchange = (e) => { f = F.find((x) => x.id === e.target.value); slots = NorexPitch.leagueSlots(f); const keep = {}; for (const s of slots) if (a[s.s]) keep[s.s] = a[s.s]; a = keep; save(); draw(); };
     $('#dgFill').onclick = () => { a = {}; for (const s of slots) if (N.xi[s.s]) a[s.s] = N.xi[s.s]; save(); draw(); };

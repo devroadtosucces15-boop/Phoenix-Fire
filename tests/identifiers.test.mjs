@@ -75,4 +75,24 @@ t('header: every keyed Worker route reads the header through sharedKey()', bots.
 const wf = fs.existsSync(ROOT + '.github/workflows') ? fs.readdirSync(ROOT + '.github/workflows').map((f) => src('.github/workflows/' + f)) : [];
 t('header: no workflow sends the old header', wf.every((s) => !/X-Norex-Key/i.test(s)));
 
+// ---------- 3. norex.* / norex_* browser storage keys ----------
+const grab = (f) => (src(f).match(/\/\*A2\*\/[\s\S]*?\/\*\/A2\*\//) || [''])[0];
+const MIG = grab('next/lib/ui.mjs');
+t('storage: the same one-time migration heads the inline script of the new site and the classic site', MIG && MIG === grab('scripts/build.mjs'));
+t('storage: it runs before anything reads a preference (first statement of the first inline script)', src('next/lib/ui.mjs').includes('<script>' + MIG) && src('scripts/build.mjs').includes('<script>' + MIG));
+const store = (o) => { const m = new Map(Object.entries(o)); return { m, get length() { return m.size; }, key: (i) => [...m.keys()][i] ?? null, getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: (k) => m.delete(k) }; };
+const migrate = (l, s = store({})) => { vm.runInNewContext(MIG, { localStorage: l, sessionStorage: s }); return { l: l.m, s: s.m }; };
+{
+  const { l, s } = migrate(store({ 'norex.mx': 'calm', 'norex_tx_draft_7': '{"a":1}', 'norex.xiA.main': '[1]', 'phoenix.fx': 'off', 'norex.fx': 'on', norex_session: 'tok', other: 'x' }), store({ 'norex.vt': 'hero' }));
+  t('storage: old values are copied to the phoenix.* / phoenix_* names', l.get('phoenix.mx') === 'calm' && l.get('phoenix_tx_draft_7') === '{"a":1}' && l.get('phoenix.xiA.main') === '[1]' && s.get('phoenix.vt') === 'hero');
+  t('storage: a value already saved under the new name wins', l.get('phoenix.fx') === 'off');
+  t('storage: old keys stay readable (rollback-safe); the session key and unrelated keys are left alone', l.get('norex.mx') === 'calm' && !l.has('phoenix_session') && !l.has('phoenix.other') && l.get('other') === 'x');
+  l.set('norex.mx', 'full'); const again = migrate({ ...store({}), m: l, get length() { return l.size; }, key: (i) => [...l.keys()][i] ?? null, getItem: (k) => (l.has(k) ? l.get(k) : null), setItem: (k, v) => l.set(k, String(v)), removeItem: (k) => l.delete(k) });
+  t('storage: it runs once (phoenix.migrated), later old writes do not overwrite new choices', l.get('phoenix.migrated') === '1' && again.l.get('phoenix.mx') === 'calm');
+}
+t('storage: a browser that blocks storage does not break the page', (() => { try { vm.runInNewContext(MIG, { get localStorage() { throw new Error('blocked'); }, sessionStorage: null }); return true; } catch { return false; } })());
+const leftovers = [...fs.readdirSync(ROOT + 'next/static').map((f) => 'next/static/' + f), ...fs.readdirSync(ROOT + 'web').map((f) => 'web/' + f), 'next/lib/ui.mjs', 'phoenix/build.mjs', 'phoenix/overlay/phoenix-fx.js', 'phoenix/overlay/phoenix-mock.js', 'scripts/build.mjs']
+  .filter((f) => /\.(m?js|html)$/.test(f)).filter((f) => /['"`]norex[._](?!session\b|error\b)/.test(src(f).split(MIG).join('')));
+t(`storage: pages write and read only phoenix.* / phoenix_* keys${leftovers.length ? ' – old keys in ' + leftovers.join(', ') : ''}`, leftovers.length === 0);
+
 done();

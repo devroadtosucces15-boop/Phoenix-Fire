@@ -87,8 +87,8 @@
   });
 
   // ---------- account chip + dropdown ----------
-  const viewAs = () => { try { return localStorage.getItem('norex.viewas') || ''; } catch { return ''; } };
-  const setViewAs = (v) => { try { if (v) { localStorage.setItem('norex.viewas', v); localStorage.setItem('norex.viewas.t', String(Date.now())); } else { localStorage.removeItem('norex.viewas'); localStorage.removeItem('norex.viewas.t'); } } catch {} location.reload(); };
+  const viewAs = () => { try { return localStorage.getItem('phoenix.viewas') || ''; } catch { return ''; } };
+  const setViewAs = (v) => { try { if (v) { localStorage.setItem('phoenix.viewas', v); localStorage.setItem('phoenix.viewas.t', String(Date.now())); } else { localStorage.removeItem('phoenix.viewas'); localStorage.removeItem('phoenix.viewas.t'); } } catch {} location.reload(); };
   const realOwner = () => !!(A && A.session && A.realAs === 'owner');
   const since = (t) => { const m = Math.max(1, Math.round((Date.now() - t) / 60e3)); return m < 60 ? `${m} min ago` : '1 h ago'; };
   const person = (u, sub) => `<li><span class="pav">${u.a ? `<img src="${esc(u.a)}" alt="" width="28" height="28" loading="lazy">` : esc((u.n || '?')[0].toUpperCase())}</span><span class="pn">${esc(u.n || 'Member')}</span><small>${esc(sub)}</small></li>`;
@@ -130,7 +130,7 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
 
   // ---------- 🔔 bell, 💬 clubhouse button, in-app banners ----------
   const dot = (el, n) => { const i = el?.querySelector('.hdr-n'); if (!i) return; i.hidden = !n; i.textContent = n > 99 ? '99+' : String(n || ''); };
-  const SEEN = 'norex.nseen', seenId = () => { try { return +sessionStorage.getItem(SEEN) || 0; } catch { return 0; } };
+  const SEEN = 'phoenix.nseen', seenId = () => { try { return +sessionStorage.getItem(SEEN) || 0; } catch { return 0; } };
   const setSeen = (v) => { try { sessionStorage.setItem(SEEN, String(v)); } catch {} };
   const room = (l) => (/^feed\.html/.test(l || '') ? 'hub-clubhouse.html#ch-feed' : /^messages\.html/.test(l || '') ? 'hub-clubhouse.html#ch-chat' : /^members\.html#feedback/.test(l || '') ? 'hub-clubhouse.html#ch-feedback' : /^https:/.test(l || '') ? l : 'hub.html#lk-alerts');
   const banner = (n) => {

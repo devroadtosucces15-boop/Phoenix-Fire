@@ -4,7 +4,7 @@
   if (!root || !dataEl) return;
   let data; try { data = JSON.parse(dataEl.textContent); } catch { return; }
   if (!data.norex) return;
-  const KEY = 'norex.burnerWhatIf', on = document.getElementById('bn-wi-on'), pick = document.getElementById('bn-wi-pick'), out = document.getElementById('bn-wi-out');
+  const KEY = 'phoenix.burnerWhatIf', on = document.getElementById('bn-wi-on'), pick = document.getElementById('bn-wi-pick'), out = document.getElementById('bn-wi-out');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   let st = { on: false, ids: [] };
   try { const v = JSON.parse(localStorage.getItem(KEY) || 'null'); if (v && typeof v === 'object') st = { on: !!v.on, ids: Array.isArray(v.ids) ? v.ids.map(String) : [] }; } catch {}

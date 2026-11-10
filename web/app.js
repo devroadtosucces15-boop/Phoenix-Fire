@@ -320,7 +320,7 @@ function reset(c) { c.classList.remove('tilting'); c.style.setProperty('--rx', '
   const hero = $('[data-hero]');
   if (!hero) return;
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const motionKey = 'norex_hero_motion';
+  const motionKey = 'phoenix_hero_motion';
   let motionOn = (() => { try { return localStorage.getItem(motionKey) !== 'off'; } catch { return true; } })();
   const toggle = $('[data-motion-toggle]', hero);
   const label = $('[data-motion-label]', hero);
@@ -1073,7 +1073,7 @@ if (MAPI) (() => {
   const decode = (t) => JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))));
   const session = (() => { try { const t = ls.get(KEY); const p = decode(t); return p.exp > Date.now() / 1000 ? { token: t, ...p } : null; } catch { return null; } })();
   if (!session) { ls.set(KEY, null); ls.set(OLD, null); }
-  const logout = () => { ls.set(KEY, null); ls.set(OLD, null); ls.set('norex_me', null); ls.set('norex_preview_as', null); location.href = `${BASE}index.html`; };
+  const logout = () => { ls.set(KEY, null); ls.set(OLD, null); ls.set('phoenix_me', null); ls.set('phoenix_preview_as', null); location.href = `${BASE}index.html`; };
   const loginUrl = () => `${MAPI}/auth/login?return=${encodeURIComponent(location.href.split('#')[0])}`;
   // BE5 – Boardroom "preview as": a manager/owner can add ?previewAs=member (…claimed / guest) to any URL
   // to see the site (and the member API) as that lower role. Never lets them escalate. The Worker
@@ -1083,7 +1083,7 @@ if (MAPI) (() => {
   const realRole = session && (session.role ?? (session.adm ? 'manager' : 'member'));
   // The chosen preview sticks across every page (and app relaunches) until "Exit preview": ?previewAs=<role> saves it,
   // ?previewAs=off clears it, no param = use the saved one. Logging out clears it too.
-  const PREVIEW_KEY = 'norex_preview_as';
+  const PREVIEW_KEY = 'phoenix_preview_as';
   const qp = new URLSearchParams(location.search);
   const previewParam = qp.get('previewAs');
   if (previewParam === 'off') ls.set(PREVIEW_KEY, null);
@@ -1121,7 +1121,7 @@ if (MAPI) (() => {
   const slot = $('.auth-slot');
   if (slot && !session) slot.innerHTML = `<a class="login-btn" href="${loginUrl()}">Member login</a>`;
   if (slot && session) {
-    const cached = (() => { try { return JSON.parse(ls.get('norex_me') || 'null'); } catch { return null; } })();
+    const cached = (() => { try { return JSON.parse(ls.get('phoenix_me') || 'null'); } catch { return null; } })();
     const hub = `${BASE}members.html`;
     const myRole = baseRole === 'member' && cached?.player ? 'claimed' : baseRole;
     slot.innerHTML = `<div class="acct"><button class="me-btn" type="button" aria-haspopup="true" aria-expanded="false"><img src="${esc(session.a)}" alt=""><span>${esc(session.n)}</span><i>▾</i></button>
@@ -1226,9 +1226,9 @@ ${VIEW_RANK.indexOf(realRole) >= VIEW_RANK.indexOf('manager') ? `<div class="acc
   // ---------- verified badges (public) ----------
   (async () => {
     let data;
-    try { data = JSON.parse(sessionStorage.getItem('norex_public') || 'null'); } catch {}
+    try { data = JSON.parse(sessionStorage.getItem('phoenix_public') || 'null'); } catch {}
     if (!data || Date.now() - data.t > 120000) {
-      try { data = { t: Date.now(), ...(await (await fetch(`${MAPI}/api/public`, { cache: 'no-store' })).json()) }; sessionStorage.setItem('norex_public', JSON.stringify(data)); } catch { return; }
+      try { data = { t: Date.now(), ...(await (await fetch(`${MAPI}/api/public`, { cache: 'no-store' })).json()) }; sessionStorage.setItem('phoenix_public', JSON.stringify(data)); } catch { return; }
     }
     const claims = data.claims || {};
     $$('.member-badge[data-player]').forEach((el) => {
@@ -1669,7 +1669,7 @@ ${Object.keys(A.flags).length ? `<div class="tbl"><table><thead><tr><th>Feature<
       const r = await call('/api/admin/claims', { user, action });
       S.admin.claims = r.claims;
       S.admin.activity.unshift({ at: Date.now(), u: session.u, n: session.n, a: session.a, type: `claim-${c.status}`, detail: `${c.n} → ${c.playerName}` });
-      sessionStorage.removeItem('norex_public');
+      sessionStorage.removeItem('phoenix_public');
       draw();
       toast(`${c.playerName}: ${c.status}`);
     } catch (e) { S.admin.claims = prev; draw(); toast(e.message, true); }
@@ -1787,7 +1787,7 @@ ${[d.activity, d.claim?.history, d.roleHistory, u?.warnings, d.votes, d.ratings,
       if (d.act === 'profile') {
         try {
           S.me.profile = (await call('/api/profile', { bio: $('#pf-bio').value, platform: $('#pf-plat').value, positions: $$('#pf-pos .chip.on').map((b) => b.dataset.p) })).profile;
-          sessionStorage.removeItem('norex_public');
+          sessionStorage.removeItem('phoenix_public');
           draw(); toast('Profile saved');
         } catch (er) { toast(er.message, true); }
       }
@@ -1903,7 +1903,7 @@ ${[d.activity, d.claim?.history, d.roleHistory, u?.warnings, d.votes, d.ratings,
       const [me, [players, clubs], pub] = await Promise.all([call('/api/me'), api(), fetch(`${MAPI}/api/public`, { cache: 'no-store' }).then((r) => r.json()).catch(() => ({ claims: {} }))]);
       S.me = me; S.players = players; S.clubs = clubs; S.pub = pub.claims || {};
       $('#role-tag').innerHTML = roleTag(me.user.role);
-      ls.set('norex_me', JSON.stringify({ player: me.claim?.status === 'approved' ? me.claim.player : null }));
+      ls.set('phoenix_me', JSON.stringify({ player: me.claim?.status === 'approved' ? me.claim.player : null }));
       go(location.hash.slice(1) || HOME, false);
       if (flagOn('badges', me.user.role)) (window.NXBadges ? Promise.resolve() : new Promise((ok, no) => document.head.appendChild(Object.assign(document.createElement('script'), { src: `${BASE}assets/badges.js`, onload: ok, onerror: no })))) // P4.3 unlock toast
         .then(() => NXBadges.checkUnlocks({ call })).catch(() => {});
@@ -1915,7 +1915,7 @@ ${[d.activity, d.claim?.history, d.roleHistory, u?.warnings, d.votes, d.ratings,
 // Any `[data-modes]` block (built by modes() in build.mjs) gets a switch; the choice is remembered and shared by
 // every switch on the page. Rush views are drawn from confirmed results in the member API (`/api/rush`).
 if (MAPI && $('[data-modes]')) (() => {
-  const KEY = 'norex_mode';
+  const KEY = 'phoenix_mode';
   const saved = (() => { try { return localStorage.getItem(KEY); } catch { return null; } })();
   let mode = /^#rush-\d+$/.test(location.hash) || saved === 'rush' ? 'rush' : saved === 'friendly' ? 'friendly' : 'league';
   let data;

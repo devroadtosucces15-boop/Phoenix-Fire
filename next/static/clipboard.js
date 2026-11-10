@@ -7,7 +7,7 @@
   const $ = (s, r = root) => r.querySelector(s);
   const M = window.NorexMotion, A = window.NorexAuth;
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-  const KEY = 'norex.rules.' + (A?.session?.u || 'local');
+  const KEY = 'phoenix.rules.' + (A?.session?.u || 'local');
   const store = { get() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } }, set(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch {} } };
   const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches || d.documentElement.dataset.motion === 'off';
   let ticks = store.get(), meta = { version: 0, acked: false, ackedAt: 0 }, live = false;

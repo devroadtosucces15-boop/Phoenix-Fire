@@ -125,7 +125,7 @@ t("site: Save still posts the whole document (source of truth)", tactics.include
   t('studio: every chalk tool is offered (pen, line, dashed, arrow, run, two-way, curve, circle, zone, dot, text, eraser)', ["'free'", "'line'", "'dash'", "'arrow'", "'run'", "'darrow'", "'curve'", "'circle'", "'rect'", "'dot'", "'text'", "'erase'"].every((k) => tactics.includes(`[${k},`)));
   t('studio: cone + joker pieces can be added', tactics.includes("'add-cone'") && tactics.includes("'add-joker'") && css.includes('.tx-piece.cone'));
   t('studio: Save keeps you in the studio and Save & publish makes it live', tactics.includes('data-save-publish') && tactics.includes("publish && !detail.published") && tactics.includes('/publish`, { published: true }'));
-  t('studio: leaving with unsaved edits asks first, keeps a local draft and warns on tab close', tactics.includes('confirmLeave') && tactics.includes('norex_tx_draft_') && tactics.includes("addEventListener('beforeunload'"));
+  t('studio: leaving with unsaved edits asks first, keeps a local draft and warns on tab close', tactics.includes('confirmLeave') && tactics.includes('phoenix_tx_draft_') && tactics.includes("addEventListener('beforeunload'"));
   t('studio: undo/redo + keyboard shortcuts, and the live room hears undone changes', tactics.includes('function syncDiff') && tactics.includes("e.key.toLowerCase() === 'z'"));
   t('studio: vertical field maps the same document (rotated) and a big full-screen view exists', tactics.includes('const toPct') && tactics.includes('data-big') && css.includes('.tx-studio.full') && css.includes('.tx-pitch.vert'));
   t('studio: saving tells you when the server left items out', tactics.includes('left out (off the pitch or invalid)'));

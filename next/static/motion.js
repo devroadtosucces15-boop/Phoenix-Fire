@@ -15,9 +15,9 @@
   const CASUAL_OFF = ['tilt', 'gyro', 'glow', 'parallax', 'bursts', 'haptics'];
   const parse = (v) => { const [p, rest = ''] = String(v || 'full').split(':'); return { p: p === 'calm' || p === 'custom' ? p : 'full', off: new Set(p === 'custom' ? rest.split(',').filter((k) => FX.includes(k)) : p === 'calm' ? CASUAL_OFF : []) }; };
   const ser = (s) => (s.p === 'custom' ? 'custom:' + [...s.off].join(',') : s.p);
-  const legacy = () => { const o = ls.get('norex.motion'), fx = ls.get('norex.fx') === 'off', io = ls.get('norex.insights') === 'off'; if (!o && !fx && !io) return null;
+  const legacy = () => { const o = ls.get('phoenix.motion'), fx = ls.get('phoenix.fx') === 'off', io = ls.get('phoenix.insights') === 'off'; if (!o && !fx && !io) return null;
     const s = parse(o === 'off' ? 'custom:' + FX.join(',') : o === 'calm' || fx ? 'calm' : 'full'); if (io) { s.off.add('insights'); s.p = 'custom'; } return ser(s); };
-  let pref = parse(still ? 'custom:' + FX.join(',') : ss.get('norex.mx') || ls.get('norex.mx') || legacy() || (mqR.matches ? 'calm' : 'full')), mode = 'full';
+  let pref = parse(still ? 'custom:' + FX.join(',') : ss.get('phoenix.mx') || ls.get('phoenix.mx') || legacy() || (mqR.matches ? 'calm' : 'full')), mode = 'full';
   const on = (k) => !pref.off.has(k);
   const apply = () => { mode = pref.p === 'calm' ? 'calm' : on('reveals') ? 'full' : 'off'; H.dataset.motion = mode;
     FX.forEach((k) => (on(k) ? H.removeAttribute('data-fx-' + k) : H.setAttribute('data-fx-' + k, 'off'))); H.classList.toggle('insights-off', !on('insights'));
@@ -28,14 +28,14 @@
     get mode() { return mode; }, get preset() { return pref.p; }, get value() { return ser(pref); }, FX, on,
     // a style ('full' | 'calm' | 'custom') or one effect (set('tilt', false) → Custom). Applies now, for this visit; remember() keeps it.
     set(k, val) { if (FX.includes(k)) { const off = new Set(pref.off); val ? off.delete(k) : off.add(k); pref = { p: 'custom', off }; } else pref = k === 'custom' ? { p: 'custom', off: new Set(pref.off) } : parse(k);
-      ss.set('norex.mx', ser(pref)); changed(); },
-    remember() { const v = ser(pref); ls.set('norex.mx', v); ls.set('norex.motion', null); ls.set('norex.insights', null); const A = window.NorexAuth;
+      ss.set('phoenix.mx', ser(pref)); changed(); },
+    remember() { const v = ser(pref); ls.set('phoenix.mx', v); ls.set('phoenix.motion', null); ls.set('phoenix.insights', null); const A = window.NorexAuth;
       return A?.token ? A.call('/api/me/prefs', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ motion: v }) }).then(() => true, () => false) : Promise.resolve(false); },
     setMode(m) { M.set(m === 'off' ? 'custom:' + FX.join(',') : m); M.remember(); },   // old API (dev panel)
     reduced: () => mode !== 'full', get lite() { return mode !== 'full'; }, off: () => mode === 'off',
   };
   // signed in on a new device: the choice saved on their profile follows them (until they pick something here)
-  if (!still && !ss.get('norex.mx') && !ls.get('norex.mx')) window.NorexAuth?.ready?.then(() => { const v = window.NorexAuth.prefs?.motion; if (v && !ss.get('norex.mx') && !ls.get('norex.mx')) { ls.set('norex.mx', v); pref = parse(v); changed(); } });
+  if (!still && !ss.get('phoenix.mx') && !ls.get('phoenix.mx')) window.NorexAuth?.ready?.then(() => { const v = window.NorexAuth.prefs?.motion; if (v && !ss.get('phoenix.mx') && !ls.get('phoenix.mx')) { ls.set('phoenix.mx', v); pref = parse(v); changed(); } });
 
   // ================= scroll reveal =================
   // Blocks reveal when their top passes 88% of the screen (threshold 0, so tall blocks work too). Inside a block the
@@ -224,6 +224,6 @@
     const ms = tail ? 240 : 320, o = { duration: ms, easing: 'cubic-bezier(.22,.8,.3,1)', fill: 'both' };
     w.firstChild.animate(tail ? [{ opacity: .5 }, { opacity: 0 }] : [{ opacity: 0 }, { opacity: .5, offset: .4 }, { opacity: .4 }], o);
     w.lastChild.animate([{ transform: 'translate3d(-110%,0,0)', opacity: 0 }, { opacity: 1, offset: .3 }, { transform: 'translate3d(110%,0,0)', opacity: 0 }], o).onfinish = () => w.remove(); setTimeout(() => w.remove(), ms + 80); };
-  d.addEventListener('pointerdown', (e) => { const a = e.target.closest && e.target.closest('.tabbar a'); if (!a) return; const k = a.dataset.g || (a.hasAttribute('data-hub') ? 'hub' : ''); if (!HALL[k]) return; ss.set('norex.hall', HALL[k] + '|' + Date.now()); hall(HALL[k]); });
-  { const h = (ss.get('norex.hall') || '').split('|'); ss.set('norex.hall', null); if (h[0] && Date.now() - (+h[1] || 0) < 5000) hall(h[0], true); }
+  d.addEventListener('pointerdown', (e) => { const a = e.target.closest && e.target.closest('.tabbar a'); if (!a) return; const k = a.dataset.g || (a.hasAttribute('data-hub') ? 'hub' : ''); if (!HALL[k]) return; ss.set('phoenix.hall', HALL[k] + '|' + Date.now()); hall(HALL[k]); });
+  { const h = (ss.get('phoenix.hall') || '').split('|'); ss.set('phoenix.hall', null); if (h[0] && Date.now() - (+h[1] || 0) < 5000) hall(h[0], true); }
 })();

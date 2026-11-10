@@ -238,7 +238,7 @@ ${!s ? `<p class="dx-guest card">🔒 Club docs are for squad members only. <a h
     await mdReady();
     let S = null;
     const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
-    let mode = location.hash.startsWith('#rush') ? 'rush' : location.hash.startsWith('#league') ? 'league' : ls.get('norex_mode') === 'rush' ? 'rush' : 'league';
+    let mode = location.hash.startsWith('#rush') ? 'rush' : location.hash.startsWith('#league') ? 'league' : ls.get('phoenix_mode') === 'rush' ? 'rush' : 'league';
     const row = (sec) => S.sections.find((x) => x.mode === mode && x.section === sec);
     const sec = ([k, ic, label, ph]) => {
       const r = row(k);
@@ -250,7 +250,7 @@ ${r?.body ? `<div class="md">${md(r.body)}</div>` : `<p class="muted">What goes 
       root.innerHTML = `<div class="ps-bar">${UI.tabsHtml([['league', '🏆 League'], ['rush', '⚡ Rush']], mode, 'ps-modes')}<nav class="chipset ps-index" aria-label="Sections">${PS.map(([k, ic, label]) => `<a class="chip" href="#${mode}-${k}">${ic} ${label}</a>`).join('')}</nav></div>
 <div class="ps-grid">${PS.map(sec).join('')}</div>
 ${S.canEdit ? '<p class="muted small">✍️ Managers: write each part in your own words – text, pictures and video links. Interactive formation boards come later.</p>' : ''}`;
-      UI.tabs($('.ps-modes', root), (k) => { mode = k; ls.set('norex_mode', k); history.replaceState(null, '', `#${k}`); paint(); $('.ps-modes [aria-selected=true]', root)?.focus(); });
+      UI.tabs($('.ps-modes', root), (k) => { mode = k; ls.set('phoenix_mode', k); history.replaceState(null, '', `#${k}`); paint(); $('.ps-modes [aria-selected=true]', root)?.focus(); });
       const target = byHash(root);
       if (target?.classList.contains('ps-sec')) { target.classList.add('flash'); target.scrollIntoView({ block: 'start' }); }
     }

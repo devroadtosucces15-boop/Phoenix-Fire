@@ -29,7 +29,7 @@
   const B = () => window.NorexBoard;
   const sig = () => JSON.stringify(S.doc);
   const dirty = () => !!S && (sig() !== S.saved || S.title !== S.play.title || S.cat !== S.play.category);
-  const draftKey = () => `norex_tx_draft_${S.id}`;
+  const draftKey = () => `phoenix_tx_draft_${S.id}`;
   const keepDraft = () => { if (!S) return; sig() !== S.saved ? ls.set(draftKey(), { base: S.play.version, at: Date.now(), doc: S.doc }) : ls.set(draftKey(), null); };
   const snap = () => { S.undo.push(sig()); if (S.undo.length > 60) S.undo.shift(); S.redo = []; };
   const step = (from, to) => { if (!from.length) return; to.push(sig()); S.doc = norm(JSON.parse(from.pop())); if (S.sel && !S.doc.pieces.some((p) => p.id === S.sel)) S.sel = null; changed(); };

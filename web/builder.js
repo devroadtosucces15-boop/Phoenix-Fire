@@ -40,7 +40,7 @@
     if (!r.ok) throw new Error(d.error || `Error ${r.status}`);
     return d;
   };
-  const PENDING = 'norex_builder_pending'; // the build survives the Discord login round trip (the callback drops our hash)
+  const PENDING = 'phoenix_builder_pending'; // the build survives the Discord login round trip (the callback drops our hash)
   const login = (then) => {
     try { sessionStorage.setItem(PENDING, JSON.stringify({ code: M.encode(g, b), cur, then })); } catch {}
     location.href = `${MAPI}/auth/login?return=${encodeURIComponent(location.href.split('#')[0])}`;

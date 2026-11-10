@@ -42,7 +42,7 @@ ${manager ? (studioOn() ? `<form class="panel pb-new" data-pbnew><div class="eye
   // ================= 🎬 VIEWER =================
   const W = 1000, H = 640;
   let P = null, vert = false, frames = [], dur = 0, t = 0, playing = false, speed = 1, raf = 0, last = 0;
-  try { const s = localStorage.getItem('norex_tx_vert'); vert = s == null ? matchMedia('(max-width:700px)').matches : s === '1'; } catch {}
+  try { const s = localStorage.getItem('phoenix_tx_vert'); vert = s == null ? matchMedia('(max-width:700px)').matches : s === '1'; } catch {}
   const sp = (x, y) => (vert ? [y, W - x] : [x, y]); // (studio.js reads the same orientation through NorexBoard) // tall view: turned so we attack up the screen, our left stays on the left
   const f1 = (n) => Number(n).toFixed(1);
   const colorOf = (c) => (/^#[0-9a-f]{6}$/i.test(c ?? '') ? c : '#c8352c');
@@ -181,7 +181,7 @@ ${p.published ? `<button type="button" class="btn ${p.mine?.learned ? 'ghost' : 
     if (t2.closest('[data-pbplay]')) { playing ? pause() : play(); return; }
     const k = t2.closest('[data-kf]'); if (k) { pause(); at(+k.dataset.kf); syncBtn(); return; }
     const s = t2.closest('[data-spd]'); if (s) { speed = +s.dataset.spd; $$('[data-spd]', el).forEach((b) => { b.classList.toggle('on', b === s); b.setAttribute('aria-checked', b === s); }); return; }
-    if (t2.closest('[data-pbvert]')) { vert = !vert; try { localStorage.setItem('norex_tx_vert', vert ? '1' : '0'); } catch {} const keep = t, was = playing; stop(); $('#pb-board', el).classList.toggle('vert', vert); $('#pb-board', el).innerHTML = boardSvg();
+    if (t2.closest('[data-pbvert]')) { vert = !vert; try { localStorage.setItem('phoenix_tx_vert', vert ? '1' : '0'); } catch {} const keep = t, was = playing; stop(); $('#pb-board', el).classList.toggle('vert', vert); $('#pb-board', el).innerHTML = boardSvg();
       const b = $('[data-pbvert]', el); b.textContent = vert ? '↔ Wide' : '↕ Tall'; b.setAttribute('aria-pressed', vert); at(keep); if (was) play(); return; }
   });
   el.addEventListener('submit', async (e) => {
@@ -204,7 +204,7 @@ ${p.published ? `<button type="button" class="btn ${p.mine?.learned ? 'ghost' : 
   d.addEventListener('keydown', (e) => { if (!P || window.NorexStudio?.active() || /INPUT|TEXTAREA|SELECT/.test(d.activeElement?.tagName || '')) return; if (e.key === ' ' && dur) { e.preventDefault(); playing ? pause() : play(); } if (e.key === 'Escape') $('[data-pbback]', el)?.click(); });
   // the Studio draws on this same board (same chalk, pieces, pitch and wide/tall setting)
   window.NorexBoard = { W, H, shape, framesOf, posAt, svg: (doc, o) => boardSvg(doc, o), sp: (x, y) => sp(x, y),
-    get vert() { return vert; }, set vert(v) { vert = !!v; try { localStorage.setItem('norex_tx_vert', vert ? '1' : '0'); } catch {} },
+    get vert() { return vert; }, set vert(v) { vert = !!v; try { localStorage.setItem('phoenix_tx_vert', vert ? '1' : '0'); } catch {} },
     // screen → play coordinates (0–1000 × 0–640), whatever the orientation or letterboxing
     toPlay(svg, e) { const m = svg.getScreenCTM(); if (!m) return { x: 0, y: 0 }; const q = new DOMPoint(e.clientX, e.clientY).matrixTransform(m.inverse());
       const [x, y] = vert ? [W - q.y, q.x] : [q.x, q.y]; return { x: Math.round(Math.max(0, Math.min(W, x))), y: Math.round(Math.max(0, Math.min(H, y))) }; } };

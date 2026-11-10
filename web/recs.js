@@ -81,7 +81,7 @@
     const BASE = document.body.dataset.base || '';
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
     if (!document.querySelector('link[href$="recs.css"]')) document.head.append(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: `${BASE}assets/recs.css` }));
-    let mode = (() => { try { return localStorage.getItem('norex_mode') === 'rush' ? 'rush' : 'league'; } catch { return 'league'; } })();
+    let mode = (() => { try { return localStorage.getItem('phoenix_mode') === 'rush' ? 'rush' : 'league'; } catch { return 'league'; } })();
     let only = true, squad = null;
     const load = async () => {
       el.innerHTML = UI.skeleton('rows', 5);
@@ -107,7 +107,7 @@ ${shown.length ? `<ol class="rc-list">${shown.map((p, i) => `<li class="card rc-
     };
     el.onclick = (e) => {
       const m = e.target.closest('[data-mode]');
-      if (m && m.dataset.mode !== mode) { mode = m.dataset.mode; try { localStorage.setItem('norex_mode', mode); } catch {} load(); }
+      if (m && m.dataset.mode !== mode) { mode = m.dataset.mode; try { localStorage.setItem('phoenix_mode', mode); } catch {} load(); }
     };
     load();
   }

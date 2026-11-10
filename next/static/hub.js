@@ -42,9 +42,9 @@
     const href = btn.getAttribute('href') || 'hub.html';
     const me = window.NorexMe ? window.NorexMe() : { as: 'guest', player: null };
     if (running) { e.preventDefault?.(); return; }                                    // no duplicate sequences
-    const mode = ls.get('norex.entrance', 'skip');                                  // full | short | skip (default: the locker page transition)
+    const mode = ls.get('phoenix.entrance', 'skip');                                  // full | short | skip (default: the locker page transition)
     const reduced = window.NorexMotion?.reduced();
-    const last = +ls.get('norex.hubSeen', 0), recent = Date.now() - last < 12 * 3600e3;
+    const last = +ls.get('phoenix.hubSeen', 0), recent = Date.now() - last < 12 * 3600e3;
     // Run the same guarded cinematic sequence on desktop, web app, and touch devices.
     if (window.PHOENIX_SAFE_HUB || mode === 'skip' || me.as === 'guest' || !me.player || innerWidth < 300 || !Element.prototype.animate) return;   // plain navigation, hub shows the sign-in state
     e.preventDefault?.(); running = true; btnEl = btn; btn.classList.add('pressing');
@@ -55,7 +55,7 @@
     const prep = Promise.allSettled([fetch(href, { credentials: 'same-origin' }), window.NorexArt?.ready]);
     const { o, lw, lh } = build(me.player, me); overlay = o;
     let finished = false;
-    done = () => { if (finished) return; finished = true; ls.set('norex.hubSeen', Date.now()); const k = $('.fx-flycard .fx-card', o); if (k) k.style.viewTransitionName = 'hubcard'; location.assign(target); };
+    done = () => { if (finished) return; finished = true; ls.set('phoenix.hubSeen', Date.now()); const k = $('.fx-flycard .fx-card', o); if (k) k.style.viewTransitionName = 'hubcard'; location.assign(target); };
     $('.fx-skip', o).addEventListener('click', () => done()); o.addEventListener('click', (ev) => { if (ev.target.classList.contains('fx-veil')) done(); });
     const guard = setTimeout(done, (short ? 8000 : 14000)); timers.push(guard);       // never leave the user on an overlay
     try {

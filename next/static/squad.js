@@ -31,7 +31,7 @@
   const oops = (e) => M?.toast(e.message || 'Could not save that', { kind: 'err' });
 
   // ---------- 🎯 Team up (/api/recs?mode=league|rush) ----------
-  const T = { mode: (() => { try { return localStorage.getItem('norex_mode') === 'rush' ? 'rush' : 'league'; } catch { return 'league'; } })(), only: true, all: false, squad: undefined, d: null, list: [] };
+  const T = { mode: (() => { try { return localStorage.getItem('phoenix_mode') === 'rush' ? 'rush' : 'league'; } catch { return 'league'; } })(), only: true, all: false, squad: undefined, d: null, list: [] };
   const teamHtml = () => {
     const { d: r, list } = T, top = Math.max(1, ...list.map((p) => p.score));
     const pool = list.filter((p) => !T.only || p.around), shown = T.all ? pool : pool.slice(0, 10);
@@ -59,7 +59,7 @@ ${pool.length > 10 ? `<button type="button" class="btn ghost" data-tall>${T.all 
     } catch (e) { el.removeAttribute('aria-busy'); el.innerHTML = failBox('team', 'Team up', e); }
   };
   mounts.team.addEventListener('click', (e) => {
-    const m = e.target.closest('[data-tm]'); if (m && m.dataset.tm !== T.mode) { T.mode = m.dataset.tm; T.all = false; try { localStorage.setItem('norex_mode', T.mode); } catch {} loadTeam(); return; }
+    const m = e.target.closest('[data-tm]'); if (m && m.dataset.tm !== T.mode) { T.mode = m.dataset.tm; T.all = false; try { localStorage.setItem('phoenix_mode', T.mode); } catch {} loadTeam(); return; }
     if (e.target.closest('[data-tall]')) { T.all = !T.all; mounts.team.innerHTML = teamHtml(); fit(mounts.team); }
   });
   mounts.team.addEventListener('change', (e) => { if (e.target.matches('[data-only]')) { T.only = e.target.checked; mounts.team.innerHTML = teamHtml(); fit(mounts.team); } });

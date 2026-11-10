@@ -3,7 +3,7 @@
   try {
     const hero = document.querySelector('.hero'); if (!hero) return;
     const q = location.search.includes('still'); let calm = false;
-    try { calm = localStorage.getItem('norex.motion') === 'calm' || localStorage.getItem('norex.fx') === 'off'; } catch {}
+    try { calm = localStorage.getItem('phoenix.motion') === 'calm' || localStorage.getItem('phoenix.fx') === 'off'; } catch {}
     if (q || calm || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const c = document.createElement('canvas'); c.className = 'pf-embers'; c.setAttribute('aria-hidden', 'true'); hero.prepend(c);
     const x = c.getContext('2d'); let W = 0, H = 0, on = true, last = 0;
@@ -31,8 +31,8 @@
     const icon = (gold) => `<svg class="pfk" viewBox="0 0 32 32" width="100%" height="100%" aria-hidden="true">${gold ? '<defs><linearGradient id="pfkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6cf"/><stop offset=".45" stop-color="#f3c95c"/><stop offset="1" stop-color="#e8741a"/></linearGradient></defs>' : ''}<g fill="${gold ? 'url(#pfkg)' : 'currentColor'}" fill-rule="evenodd"${gold ? ' stroke="#fff3c4" stroke-width=".35"' : ''}>${KEYP}</g></svg>`;
     const calm = () => {
       try {
-        const m = d.documentElement.dataset.motion || d.body.dataset.motion || localStorage.getItem('norex.motion') || '';
-        return m === 'calm' || m === 'off' || localStorage.getItem('norex.fx') === 'off' || d.body.classList.contains('still') || location.search.includes('still') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const m = d.documentElement.dataset.motion || d.body.dataset.motion || localStorage.getItem('phoenix.motion') || '';
+        return m === 'calm' || m === 'off' || localStorage.getItem('phoenix.fx') === 'off' || d.body.classList.contains('still') || location.search.includes('still') || matchMedia('(prefers-reduced-motion: reduce)').matches;
       } catch { return true; }
     };
     d.querySelectorAll('.tabbar .key svg').forEach((s) => { s.outerHTML = icon(false); });

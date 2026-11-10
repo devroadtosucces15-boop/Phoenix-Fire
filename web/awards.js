@@ -39,7 +39,7 @@
     if (!cards.length) return UI.modal({ title: `${wk(last.week)} awards`, icon: '🏆', body: UI.empty({ icon: '🏆', title: 'No winners that week', text: 'Nobody voted and nobody played – vote for this week in the ballot.' }) });
     const sweeps = new Map(); // player key → how many awards they won this week (across every category, not just this card's names)
     for (const w of last.winners) if (w.k) sweeps.set(w.k, (sweeps.get(w.k) ?? 0) + 1);
-    ls.set(`norex_reveal_${last.week}`, '1');
+    ls.set(`phoenix_reveal_${last.week}`, '1');
     let i = 0, timer;
     const v = UI.modal({
       title: `${wk(last.week)} · the awards`, icon: '🏆', wide: true,
@@ -81,7 +81,7 @@
   function tab(el, ctx) {
     let S = null, B = null, view = 'ballot';
     const load = async () => { S = await ctx.call('/api/awards'); paint(); maybeReveal(); };
-    const maybeReveal = () => { if (S.last?.winners?.some((w) => w.k) && !ls.get(`norex_reveal_${S.last.week}`)) reveal(S.last); };
+    const maybeReveal = () => { if (S.last?.winners?.some((w) => w.k) && !ls.get(`phoenix_reveal_${S.last.week}`)) reveal(S.last); };
     const nomsFor = (c) => S.nominees.filter((p) => c.grp === 'any' || p.grp === c.grp || (c.grp === 'FWD' && p.grp === 'any'));
     function ballot() {
       return `<div class="aw-cats">${S.categories.map((c) => {

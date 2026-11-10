@@ -18,7 +18,7 @@
   const res = (r) => `<span class="res ${r}">${r}</span>`;
   const day = (ts) => new Date(ts * 1000).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
   const card = (title, body, cls = '') => `<section class="card ms-card ${cls}"><h3>${title}</h3>${body}</section>`;
-  const MODE_KEY = 'norex_mode';
+  const MODE_KEY = 'phoenix_mode';
 
   // ---------- data → one shape for both modes: { ts, res, g, a, r, motm, shots?, pass?, passAtt?, tkl?, tklAtt?, gf, ga } ----------
   function leagueData(squad) {

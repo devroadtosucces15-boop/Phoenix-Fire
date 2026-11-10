@@ -5,7 +5,7 @@
   const btn = box.querySelector('.c3-btn'), note = box.querySelector('.c3-note'), img = box.querySelector('.c3-img');
   const H = document.documentElement;
   const calm = () => H.dataset.motion === 'calm' || H.dataset.motion === 'off' || matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const store = { get: () => { try { return localStorage.getItem('norex.crest3d') === '1'; } catch (e) { return false; } }, set: (v) => { try { localStorage.setItem('norex.crest3d', v ? '1' : '0'); } catch (e) {} } };
+  const store = { get: () => { try { return localStorage.getItem('phoenix.crest3d') === '1'; } catch (e) { return false; } }, set: (v) => { try { localStorage.setItem('phoenix.crest3d', v ? '1' : '0'); } catch (e) {} } };
   let R = null; // running renderer state
   const load = () => window.THREE ? Promise.resolve() : new Promise((ok, no) => { const s = document.createElement('script'); s.src = 'vendor-three.min.js'; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
   const stop = () => { if (!R) return; R.dead = true; cancelAnimationFrame(R.raf); R.io.disconnect(); R.dispose(); R.cv.remove(); R = null; box.classList.remove('on'); btn.setAttribute('aria-pressed', 'false'); btn.textContent = 'Turn on 3D'; };
