@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-10T18:23:34.901Z",
+ "fetchedAt": "2026-11-10T18:27:22.583Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1954,12 +1954,12 @@
   {
    "name": "MV33xChris",
    "proPos": "25",
-   "gamesPlayed": "171",
+   "gamesPlayed": "172",
    "goals": "156",
    "assists": "108",
    "manOfTheMatch": "34",
    "ratingAve": "7.8",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2031,7 +2031,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "44",
+   "gamesPlayed": "45",
    "goals": "8",
    "assists": "2",
    "manOfTheMatch": "2",
@@ -2130,12 +2130,12 @@
   {
    "name": "YAMI-_-77",
    "proPos": "25",
-   "gamesPlayed": "242",
-   "goals": "114",
+   "gamesPlayed": "243",
+   "goals": "116",
    "assists": "82",
    "manOfTheMatch": "36",
    "ratingAve": "7.7",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
