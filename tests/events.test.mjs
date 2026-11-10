@@ -135,7 +135,7 @@ setFlags({ matchNight: 'members' });
 // Isolate this report from Rush fixtures created by earlier cases; otherwise a real newest match dated today can
 // make unrelated same-day fixture rows leak into the report and change its totals.
 sqlite.exec('DELETE FROM rush_players; DELETE FROM rush_matches;');
-const m0 = siteJson('club').matches[0], p0 = m0.ps[0];
+const m0 = siteJson('club').matches.find((m) => m.type !== 'friendly'), p0 = m0.ps[0]; // club.json also lists friendlies; this night is a League one
 const start = m0.ts * 1000 - 10 * 60e3, day = new Date(start).toISOString().slice(0, 10);
 const evId = Number(sqlite.prepare("INSERT INTO events (type, start, duration, tz, at) VALUES ('league', ?, 120, 'UTC', ?)").run(start, Date.now()).lastInsertRowid);
 sqlite.prepare("INSERT OR REPLACE INTO claims (user_id, player, player_name, status, at) VALUES ('500', ?, ?, 'approved', ?)").run(p0.k, p0.n, Date.now());
@@ -144,7 +144,7 @@ sqlite.prepare("INSERT INTO event_rsvps (event_id, user_id, status, name, at) VA
 const rid = Number(sqlite.prepare("INSERT INTO rush_matches (date, opponent, gf, ga, status, by_id, at) VALUES (?, 'Rush FC', 3, 1, 'confirmed', '500', ?)").run(day, Date.now()).lastInsertRowid);
 sqlite.prepare("INSERT INTO rush_players (match_id, slot, player, name, goals, assists, rating, motm) VALUES (?, 0, ?, ?, 2, 0, 9.0, 1)").run(rid, p0.k, p0.n);
 const rep = await call(member, `/api/events/report?id=${evId}`);
-const inWin = siteJson('club').matches.filter((m) => m.ts * 1000 >= start - 30 * 60e3 && m.ts * 1000 <= start + 210 * 60e3);
+const inWin = siteJson('club').matches.filter((m) => m.type !== 'friendly' && m.ts * 1000 >= start - 30 * 60e3 && m.ts * 1000 <= start + 210 * 60e3);
 const p0lines = inWin.flatMap((m) => m.ps.filter((x) => x.k === p0.k));
 const me0 = rep.d.players.find((p) => p.k === p0.k);
 t('report: League match from EA + confirmed Rush that day', rep.s === 200 && rep.d.results.some((r) => r.mode === 'league' && r.gf === m0.gf) && rep.d.results.some((r) => r.mode === 'rush' && r.opp === 'Rush FC'));

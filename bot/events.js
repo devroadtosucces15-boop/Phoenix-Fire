@@ -410,7 +410,8 @@ export async function sessionReport(env, id, loadSite) {
   const rush = await all(env, `SELECT * FROM rush_matches WHERE status = 'confirmed' AND date IN (${marks(days.length)}) ORDER BY id`, ...days);
   const rushPl = rush.length ? await all(env, `SELECT * FROM rush_players WHERE match_id IN (${marks(rush.length)})`, ...rush.map((r) => r.id)) : [];
   const res = (gf, ga) => (gf > ga ? 'W' : gf < ga ? 'L' : 'D');
-  const league = (club.matches ?? []).filter((m) => m.ts * 1000 >= from && m.ts * 1000 <= to).sort((a, b) => a.ts - b.ts);
+  // club.json also carries friendlies (type 'friendly'): they belong in a friendly night's report and nowhere else.
+  const league = (club.matches ?? []).filter((m) => (ev.type === 'friendly') === (m.type === 'friendly') && m.ts * 1000 >= from && m.ts * 1000 <= to).sort((a, b) => a.ts - b.ts);
   const results = [
     ...league.map((m) => ({ mode: 'league', res: m.res, gf: m.gf, ga: m.ga, opp: m.opp, url: m.url, at: m.ts * 1000 })),
     ...rush.map((m) => ({ mode: 'rush', res: res(m.gf, m.ga), gf: m.gf, ga: m.ga, opp: m.opponent, at: m.at })),
