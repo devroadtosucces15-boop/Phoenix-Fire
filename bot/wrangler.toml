@@ -11,6 +11,15 @@ PUBLIC_URL = "https://phoenix-bot.norexunited.workers.dev" # this Worker – Car
 GITHUB_REPO = "devroadtosucces15-boop/Phoenix-Fire"
 DISCORD_APP_ID = "1569450321057550537"
 DISCORD_PUBLIC_KEY = "997cfab5315bb5bf6941860ea81b3e80b70c74d2649397f28bf7680540722bcb"
+# The two lines above are the core app. Extra Discord apps (bot/apps.js, list in bot/README.md) each add their public
+# values here, uncommented, once created in the Developer Portal; their bot tokens are secrets (DISCORD_BOT_TOKEN_<APP>).
+# Interactions Endpoint URL for each: <PUBLIC_URL>/interactions/<app>.
+# DISCORD_APP_ID_STATS = ""
+# DISCORD_PUBLIC_KEY_STATS = ""
+# DISCORD_APP_ID_TOOLS = ""
+# DISCORD_PUBLIC_KEY_TOOLS = ""
+# DISCORD_APP_ID_FUN = ""
+# DISCORD_PUBLIC_KEY_FUN = ""
 # Discord server, owner/manager roles and every channel are no longer hardcoded here: they live in the Organization config
 # (Boardroom → Organization, D1 tables discord_servers / discord_roles / discord_channels) and are read by bot/orgconfig.js (withOrgEnv).
 # DISCORD_GUILD_ID, OWNER_ROLE_ID, ADMIN_ROLE_ID and MEMBER_ROLE_ID may still be set as vars/secrets to override the config.

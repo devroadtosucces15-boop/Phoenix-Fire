@@ -8,7 +8,13 @@
 //   GH_DISPATCH_TOKEN  – GitHub token allowed to run this repo's Actions (secret)
 //   DISCORD_BOT_TOKEN  – bot token: DMs (P7.1), Verified role sync (P2.5), Club Intelligence server reads (secret)
 //   DISCORD_PUBLIC_KEY, SITE_URL, GITHUB_REPO – public values in wrangler.toml
+//
+// Several Discord apps (core / stats / tools / fun, bot/apps.js) share this Worker. Each sends its interactions to
+// POST /interactions/<app>, checked against that app's own public key; '/' stays the core app. The handlers then see
+// that app's DISCORD_APP_ID / DISCORD_BOT_TOKEN (appEnv), so follow-ups and DMs come from the app that was used.
+// Full list of names: bot/README.md.
 
+import { APP_LABEL, answeringApp, appEnv, appConfigured, appFromPath, servedBy } from './apps.js';
 import { getCommandSettings, commandBlocked, shapeReply } from './botcommands.js';
 import { orgName } from './orgconfig.js';
 import { handleMembers } from './members.js';
@@ -53,7 +59,7 @@ import { SERVER_COMMANDS, SERVER_BUTTON, serverCommand, serverButton, memberWatc
 
 export default {
   async scheduled(event, env, ctx) {
-    env = await withOrgEnv(env); // Discord server + role IDs from the Organization config
+    env = appEnv(await withOrgEnv(env), 'core'); // Discord server + role IDs from the Organization config; cron posts come from core
     if (event?.cron === '* * * * *') { // the 1-minute timer only sends /remind reminders – everything else stays on the 10-minute one
       ctx.waitUntil(sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
       return;
@@ -94,7 +100,7 @@ export default {
     const path = new URL(request.url).pathname;
     if (path.startsWith('/crest/')) return crestProxy(path, ctx);
     if (path.startsWith('/media/')) return serveMedia(request, env, path.slice(7)); // P6.1b feed photos/clips (R2)
-    env = await withOrgEnv(env); // Discord server + role IDs from the Organization config
+    env = appEnv(await withOrgEnv(env), 'core'); // Discord server + role IDs from the Organization config; login + API use core
     if (path.startsWith('/auth/') || path.startsWith('/api/')) {
       const site = (env.SITE_URL || '').replace(/\/?$/, '/');
       return handleMembers(request, env, ctx, (file) => load(site, file, ctx));
@@ -102,11 +108,22 @@ export default {
     if (request.method === 'GET') return new Response(`${orgName(env)} bot is running ⚽`);
     if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
 
+    // Which Discord app this is for: /interactions/<app>; any other path is the original single-app endpoint (core).
+    const app = path.startsWith('/interactions/') ? appFromPath(path) : 'core';
+    if (!app || (app !== 'core' && !appConfigured(env, app))) return new Response('Unknown app', { status: 404 });
+    env = appEnv(env, app);
     const body = await request.text();
     if (!(await verify(request, body, env.DISCORD_PUBLIC_KEY))) return new Response('Bad signature', { status: 401 });
     const i = JSON.parse(body);
 
     if (i.type === 1) return json({ type: 1 }); // PING
+    // Commands answer only on the app that owns them (core also covers apps not set up yet). Buttons and menus are not
+    // filtered: they arrive on whichever app posted the message, and every app runs the same norex:* handlers.
+    if ((i.type === 2 || i.type === 4) && !servedBy(env, app).has(i.data?.name)) {
+      if (i.type === 4) return json({ type: 8, data: { choices: [] } });
+      const home = answeringApp(env, i.data?.name);
+      return json(privateNote(`/${i.data?.name} is not on this bot${home !== app ? ` – use it from ${APP_LABEL[home]}` : ''}.`));
+    }
     env = withFlagOverrides(env, await loadFlagOverrides(env)); // the Boardroom's live flag switches apply to Discord too (they used to reach website requests only)
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');
     if (i.type === 4 && i.data?.name === 'host') return json({ type: 8, data: { choices: zoneChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
@@ -199,7 +216,7 @@ export default {
   // BE9's background jobs (JOBS queue, BE0) – currently just the insight writer; refreshStatInsights()
   // only enqueues a key whose fact pack actually changed, so this rebuilds the pack and writes it.
   async queue(batch, env, ctx) {
-    env = await withOrgEnv(env);
+    env = appEnv(await withOrgEnv(env), 'core');
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');
     const loadSite = (file) => load(site, file, ctx);
     for (const msg of batch.messages) {

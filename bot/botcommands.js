@@ -7,7 +7,8 @@
 // The Worker enforces everything on every interaction (so the rules apply even before a sync); the sync only
 // changes what Discord *shows* (hidden / staff-only commands), see buildRegistration() in commanddefs.js.
 import { can, atLeast, ROLES } from './roles.js';
-import { COMMANDS, buildRegistration } from './commanddefs.js';
+import { COMMANDS } from './commanddefs.js';
+import { answeringApp, putCommands, registrationPlan } from './apps.js';
 import { discordTargets } from './docs.js';
 import { IS_V2, privateNote } from './ui.js';
 
@@ -77,14 +78,17 @@ export async function shapeReply(env, name, res, settings) {
   return json(body);
 }
 
+// One PUT per configured Discord app, each with only its own commands (bot/apps.js registrationPlan).
 export async function syncCommands(env, settings) {
-  if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_APP_ID) return { ok: false, error: 'The bot token / app id are not set on the Worker.' };
-  const list = buildRegistration(COMMANDS, settings);
-  const r = await fetch(`https://discord.com/api/v10/applications/${env.DISCORD_APP_ID}/commands`, {
-    method: 'PUT', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(list),
-  });
-  if (!r.ok) return { ok: false, error: `Discord said ${r.status}: ${(await r.text()).slice(0, 200)}` };
-  return { ok: true, count: list.length };
+  const plan = registrationPlan(env, settings);
+  if (!plan.length) return { ok: false, error: 'The bot token / app id are not set on the Worker.' };
+  const apps = [];
+  for (const p of plan) {
+    const r = await putCommands(p.appId, p.token, p.commands);
+    if (!r.ok) return { ok: false, error: `${p.app}: ${r.error}`, apps };
+    apps.push({ app: p.app, count: p.commands.length });
+  }
+  return { ok: true, count: apps.reduce((n, a) => n + a.count, 0), apps };
 }
 
 export async function botCommandsRoute(p, method, body, me, env, log) {
@@ -93,14 +97,14 @@ export async function botCommandsRoute(p, method, body, me, env, log) {
   if (p === '/api/bot/commands/sync') {
     if (method !== 'POST') return fail('Not found', 404);
     const r = await syncCommands(env, await getCommandSettings(env));
-    if (r.ok) await log?.(env, me, 'bot-commands-sync', `Synced ${r.count} commands to Discord`);
+    if (r.ok) await log?.(env, me, 'bot-commands-sync', `Synced ${r.count} commands to Discord (${r.apps.map((a) => `${a.app} ${a.count}`).join(', ')})`);
     return r.ok ? json(r) : fail(r.error, 502);
   }
   if (method === 'GET') {
     const settings = await getCommandSettings(env);
     const t = await discordTargets(env).catch(() => ({ ready: false }));
     return json({
-      commands: COMMANDS.map((c) => ({ name: c.name, description: c.description, staff: !!c.default_member_permissions, ...(settings[c.name] ?? {}) })),
+      commands: COMMANDS.map((c) => ({ name: c.name, description: c.description, staff: !!c.default_member_permissions, app: answeringApp(env, c.name), ...(settings[c.name] ?? {}) })),
       channels: t.ready ? t.channels : [], channelsError: t.ready ? '' : (t.error ?? ''),
     });
   }

@@ -236,6 +236,19 @@ export const COMMANDS = [
   },
 ];
 
+// ---------- which Discord app owns which command (bot/apps.js) ----------
+// Every command in COMMANDS belongs to exactly one app (tests/apps.test.mjs checks). An app that is not configured yet
+// lends its commands to core, so a command can sit in its target app before that app exists.
+export const APP_COMMANDS = {
+  core: ['syncroles', 'aispike', 'site'],
+  stats: ['club', 'last', 'results', 'player', 'compare', 'top', 'leaderboard', 'history', 'motm', 'me', 'profile', 'rush', 'insight', 'ask', 'burner'],
+  tools: ['setup', 'purge', 'announce', 'trial', 'host', 'panel', 'insights', 'watchlist', 'exportcontent', 'profanitysetup', 'tag', 'tags', 'remind', 'reminders',
+    'suggest', 'feedback', 'schedule', 'nextevent', 'availability', 'lineup'],
+  fun: ['jail', 'wheel', 'trivia', 'share', 'discoveries', 'watch', 'awards', 'points', 'avatarcard'],
+};
+// Management commands: hidden from non-staff in Discord (Manage Roles bit) on top of the Worker's can() check.
+export const STAFF_COMMANDS = ['insights', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'watchlist', 'setup', 'purge', 'panel', 'host'];
+
 // ---------- per-command settings → what Discord is told ----------
 // Who may use a command, as the owner sets it in Boardroom → Bot: guest (anyone in the server) · member · claimed (approved player
 // claim) · manager · owner. Discord itself can only hide a command from people without a permission, so manager/owner commands
@@ -248,6 +261,7 @@ export function buildRegistration(list, settings = {}) {
     .filter((c) => settings[c.name]?.enabled !== false)
     .map((c) => {
       const min = settings[c.name]?.min;
+      if (STAFF_COMMANDS.includes(c.name) && !c.default_member_permissions) return { ...c, default_member_permissions: MANAGER_BIT, contexts: [0] };
       if (!min || min === 'guest' || min === 'member' || min === 'claimed') return c;
       return { ...c, default_member_permissions: MANAGER_BIT, contexts: [0] };
     });
