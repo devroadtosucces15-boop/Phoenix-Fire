@@ -1,0 +1,17 @@
+[Unit]
+Description=Phoenix DJ music bot (PC)
+# Shares the home audio engine (Lavalink on 127.0.0.1:2333) that the PC already runs.
+After=network-online.target norex-lavalink.service
+Wants=norex-lavalink.service
+
+[Service]
+WorkingDirectory=%h/Phoenix-Fire/dj
+# Lavalink password (and Spotify keys) come from the home engine's settings; Phoenix's own .env is read second and wins.
+EnvironmentFile=-%h/norex-dj-home/.env
+EnvironmentFile=%h/Phoenix-Fire/dj/.env
+ExecStart=/usr/bin/node src/index.js
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=default.target
