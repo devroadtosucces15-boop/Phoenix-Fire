@@ -17,27 +17,25 @@ Core OAuth redirect: `https://phoenix-bot.norexunited.workers.dev/auth/callback`
 
 | Name | Needed for | Source | In Worker | In GitHub |
 |---|---|---|---|---|
-| `DISCORD_BOT_TOKEN` | core bot token (fallback name) | Dev Portal, core app, Bot, Reset Token | MISSING | no |
-| `DISCORD_BOT_TOKEN_CORE` | core bot token | same | MISSING | no |
-| `DISCORD_BOT_TOKEN_STATS` | stats app | Dev Portal, Stats app, Bot, Reset Token | MISSING | no |
-| `DISCORD_BOT_TOKEN_TOOLS` | toolbot app | Dev Portal, Toolbot app, Bot, Reset Token | MISSING | no |
-| `DISCORD_BOT_TOKEN_FUN` | fun app | Dev Portal, Fun app, Bot, Reset Token | MISSING | no |
+| `DISCORD_BOT_TOKEN` | core bot token (fallback name) | Dev Portal, core app, Bot, Reset Token | set 2026-11-10 | set 2026-11-10 |
+| `DISCORD_BOT_TOKEN_CORE` | core bot token | same | set 2026-11-10 | set 2026-11-10 |
+| `DISCORD_BOT_TOKEN_STATS` | stats app | Dev Portal, Stats app, Bot, Reset Token | set 2026-11-10 | set 2026-11-10 |
+| `DISCORD_BOT_TOKEN_TOOLS` | toolbot app | Dev Portal, Toolbot app, Bot, Reset Token | set 2026-11-10 | set 2026-11-10 |
+| `DISCORD_BOT_TOKEN_FUN` | fun app | Dev Portal, Fun app, Bot, Reset Token | set 2026-11-10 | set 2026-11-10 |
 | `DISCORD_CLIENT_SECRET` | website login (core) | Dev Portal, core app, OAuth2, Reset Secret | present | no |
 | `GH_DISPATCH_TOKEN` | cron triggers site update | GitHub fine-grained token, Actions write on this repo | MISSING | no |
 | `VAPID_PRIVATE_KEY` | web push | keypair generated once | MISSING | no |
 | `CLOUDFLARE_ANALYTICS_TOKEN` | health page | Cloudflare token, Account Analytics read | MISSING | no |
-| `CLOUDFLARE_ACCOUNT_ID` | health page and CI | c84cd49d2e12a5dca30af9abbb35ce9e (not secret) | MISSING | no |
-| `CLOUDFLARE_API_TOKEN` | CI deploy | Cloudflare, API tokens, "phoenix-bot CI deploy" | n/a | no |
+| `CLOUDFLARE_ACCOUNT_ID` | health page and CI | c84cd49d2e12a5dca30af9abbb35ce9e (not secret) | set 2026-11-10 | set 2026-11-10 |
+| `CLOUDFLARE_API_TOKEN` | CI deploy | Cloudflare, API tokens, "phoenix-bot CI deploy v2" | n/a | set 2026-11-10 |
 
-Cloudflare token form "phoenix-bot CI deploy" is prepared in Chrome but not yet created.
+CI: `bot.yml` run 42778501358 (2026-11-10) passed every step, including slash command registration. All four endpoints answer 401 to unsigned requests.
+Bot tokens are set with `bash bot/set-tokens.sh [CORE STATS TOOLS FUN]` (hidden input, sets Worker and GitHub).
 
 ## Problems found
 
 - The Worker has a secret whose *name* looks like a pasted token value (a mistaken `wrangler secret put <value>`). Delete it with
   `wrangler secret delete "<that name>"` and treat the pasted value as leaked: reset the matching token or secret in its portal.
-- Without `DISCORD_BOT_TOKEN` (core), posts, role sync and cron messages cannot work.
-- No GitHub Actions secrets exist, so `bot.yml` skips every step. Deploys are manual with wrangler until
-  `CLOUDFLARE_API_TOKEN` is added.
 
 ## How to set one
 
