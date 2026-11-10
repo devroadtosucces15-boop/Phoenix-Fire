@@ -228,7 +228,7 @@ ${!s ? `<p class="dx-guest card">🔒 Club docs are for squad members only. <a h
 
   // ================= P5.1 Play Style =================
   const PS = [
-    ['philosophy', '🧭', 'Philosophy', { league: ['What NOREX league football looks like – our identity in one line', 'In possession: how we build, where we attack', 'Out of possession: when we press, when we drop', 'The non-negotiables everyone sticks to'], rush: ['What NOREX Rush looks like – our identity in one line', 'How the small pitch changes our game', 'Risk vs control: when to go for it', 'The non-negotiables everyone sticks to'] }],
+    ['philosophy', '🧭', 'Philosophy', { league: ['What ' + (document.body.dataset.club || 'the club') + ' league football looks like – our identity in one line', 'In possession: how we build, where we attack', 'Out of possession: when we press, when we drop', 'The non-negotiables everyone sticks to'], rush: ['What ' + (document.body.dataset.club || 'the club') + ' Rush looks like – our identity in one line', 'How the small pitch changes our game', 'Risk vs control: when to go for it', 'The non-negotiables everyone sticks to'] }],
     ['formations', '📐', 'Formations', { league: ['Our main formation and why', 'Plan B when chasing a game', 'Plan C when protecting a lead', 'Who covers which zone'], rush: ['Our usual shape and why', 'Shape when we lose the ball', 'Shape when we need a goal', 'Who covers which zone'] }],
     ['positions', '🧍', 'Position by position', { league: ['GK – distribution, sweeping, organising', 'Centre-backs & full-backs – line height, overlaps, marking', 'Midfield – who holds, who goes', 'Wingers & attackers – runs, pressing, finishing'], rush: ['Each role in our Rush setup and its job', 'Who holds, who roams', 'Pressing triggers per role', 'Comms: who calls what'] }],
     ['setpieces', '🎯', 'Set pieces', { league: ['Attacking corners – routine and who goes where', 'Defending corners – zonal or man-marking', 'Free kicks and penalties – who takes them', 'Throw-ins and kick-offs'], rush: ['Attacking restarts – our routine', 'Defending restarts', 'Penalties – who takes them', 'Kick-offs'] }],
@@ -269,7 +269,7 @@ ${S.canEdit ? '<p class="muted small">✍️ Managers: write each part in your o
         try { S = await call('/api/playstyle', { mode, section: k, title: f.title, body: f.body }); paint(); toast('Play Style saved'); return; } catch (er) { toast(er.message, true); }
       }
     });
-    if (!session()) { root.innerHTML = UI.empty({ icon: '🔒', title: 'Members only', text: 'Log in with Discord to read how NOREX plays.', action: `<a class="btn discord" href="${esc(loginUrl())}">Log in with Discord</a>` }); return; }
+    if (!session()) { root.innerHTML = UI.empty({ icon: '🔒', title: 'Members only', text: 'Log in with Discord to read how ' + (document.body.dataset.club || 'the club') + ' plays.', action: `<a class="btn discord" href="${esc(loginUrl())}">Log in with Discord</a>` }); return; }
     root.innerHTML = UI.skeleton('cards', 3);
     try { S = await call('/api/playstyle'); paint(); } catch (e) { root.innerHTML = UI.empty({ icon: '📡', title: 'Could not load Play Style', text: e.message }); }
   }
@@ -309,7 +309,7 @@ ${x.reply ? `<blockquote class="ix-reply"><small>🛡️ ${esc(x.repliedBy || 'M
 <div class="row"><label class="dx-check"><input type="checkbox" name="anon"${draft.anon ? ' checked' : ''}> <span>🕶️ Hide my name from other members <small class="muted">(managers still see it)</small></span></label><span class="grow"></span><button class="btn" type="submit">Send idea</button></div></form>
 <div class="ix-bar"><div class="chipset">${[['top', '🔥 Top'], ['new', '🆕 New']].map(([k, l]) => `<button type="button" class="chip${sort === k ? ' on' : ''}" data-sort="${k}">${l}</button>`).join('')}</div>
 <div class="chipset">${[['all', '📋 All'], ...Object.entries(ST).map(([k, [ic, l]]) => [k, `${ic} ${l}`])].map(([k, l]) => `<button type="button" class="chip${filter === k ? ' on' : ''}" data-filter="${k}">${l} <em>${n(k)}</em></button>`).join('')}</div></div>
-${shown.length ? `<div class="ix-list">${shown.map(item).join('')}</div>` : UI.empty({ icon: '💡', title: filter === 'all' ? 'No ideas yet' : 'Nothing here', text: filter === 'all' ? 'Be the first – what would make NOREX better?' : 'Try another filter.' })}`;
+${shown.length ? `<div class="ix-list">${shown.map(item).join('')}</div>` : UI.empty({ icon: '💡', title: filter === 'all' ? 'No ideas yet' : 'Nothing here', text: filter === 'all' ? 'Be the first – what would make ' + (document.body.dataset.club || 'the club') + ' better?' : 'Try another filter.' })}`;
     }
     const readForm = (e) => { const f = e.target.form; if (f?.id !== 'ix-form') return; const v = (n) => f.elements.namedItem(n); draft = { title: v('title').value, body: v('body').value, anon: v('anon').checked }; };
     el.addEventListener('input', readForm);

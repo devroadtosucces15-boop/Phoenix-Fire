@@ -59,7 +59,7 @@
     if (seen) return onDone();
     const el = document.createElement('div');
     el.className = 'hubw-tunnel';
-    el.innerHTML = `<div class="hubw-tunnel-in"><div class="hubw-tn-key" data-tn="1">🔑 Entering the Hub…</div><div class="hubw-tn-walk" data-tn="2"></div><div class="hubw-tn-doors" data-tn="3"><img src="${BASE}assets/crest.png" alt=""><i class="l"></i><i class="r"></i></div><div class="hubw-tn-title" data-tn="4">NOREX<br>HUB</div></div><button type="button" class="hubw-tn-skip">Skip ⏭</button>`;
+    el.innerHTML = `<div class="hubw-tunnel-in"><div class="hubw-tn-key" data-tn="1">🔑 Entering the Hub…</div><div class="hubw-tn-walk" data-tn="2"></div><div class="hubw-tn-doors" data-tn="3"><img src="${BASE}assets/crest.png" alt=""><i class="l"></i><i class="r"></i></div><div class="hubw-tn-title" data-tn="4">${(document.body.dataset.club || 'the club').split(' ')[0]}<br>HUB</div></div><button type="button" class="hubw-tn-skip">Skip ⏭</button>`;
     document.body.appendChild(el);
     const steps = [1, 2, 3, 4];
     let i = 0, timer;

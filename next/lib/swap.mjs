@@ -79,8 +79,8 @@ self.addEventListener('fetch', (e) => {
 
 self.addEventListener('push', (e) => {
   let d = {};
-  try { d = e.data ? e.data.json() : {}; } catch { d = { title: 'NOREX UNITED FC', body: e.data ? e.data.text() : '' }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'NOREX UNITED FC', {
+  try { d = e.data ? e.data.json() : {}; } catch { d = { title: ${JSON.stringify(cfg.siteTitle)}, body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || ${JSON.stringify(cfg.siteTitle)}, {
     body: d.body || '',
     tag: d.tag || 'norex',
     icon: 'crest-sm.png',

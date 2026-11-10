@@ -16,7 +16,7 @@
     if (!row || !(at > 0) || at > now + 6e4 || !tally(q).rows.find((r) => r.k === o.kind)?.n) return null;
     return { k: row[0], i: row[1], l: row[2], h: row[3], title: String(o.title || '').slice(0, 80), age: waited(now - at), late: now - at > 48 * 36e5 };
   };
-  const PANEL_CMD = '/panel', DISCORD = 'https://discord.com/channels/1371311947894489299';
+  const PANEL_CMD = '/panel', DISCORD = window.NOREX?.links?.discord || ''; // config.discord.guildId, empty when not set
   w.NorexOwnerFab = { tally, oldest, waited, badge: (n) => (n > 99 ? '99+' : String(n)), PANEL_CMD, DISCORD };
 
   const A = w.NorexAuth, API = w.NOREX_API;
@@ -56,7 +56,7 @@ ${hasReporter() ? '<li><button type="button" class="ofab-row" data-report><span 
       if (e.target.closest('[data-panel]')) { // one tap: /panel is on the clipboard, Discord opens; the manager approvals appear where you paste it
         const N = window.NorexOwnerFab, say = (m, kind) => window.NorexMotion?.toast?.(m, { kind, icon: '💬' });
         (navigator.clipboard ? navigator.clipboard.writeText(N.PANEL_CMD) : Promise.reject()).then(() => say('Copied /panel. Paste it in any Discord channel and press Enter.', 'ok'), () => say('Type /panel in any Discord channel.', ''));
-        window.open(N.DISCORD, '_blank', 'noopener'); return;
+        if (N.DISCORD) window.open(N.DISCORD, '_blank', 'noopener'); return;
       }
       if (e.target.closest('[data-report]')) { set(false); d.querySelector('.nxr-fab')?.click(); }
     });

@@ -12,7 +12,7 @@
   function paint() {
     const ids = [...root.querySelectorAll('[data-wi-pick] input:checked')].map((i) => i.value);
     const picked = data.burners.filter((b) => ids.includes(String(b.id)));
-    if (!picked.length) { out.innerHTML = '<p class="muted">Tick a burner to add it to NOREX.</p>'; return; }
+    if (!picked.length) { out.innerHTML = '<p class="muted">Tick a burner to add it to ' + (document.body.dataset.club || 'the club') + '.</p>'; return; }
     const rec = picked.reduce((r, b) => add(r, b.rec), add({ gp: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0 }, data.norex.rec));
     const winPct = rec.gp ? Math.round((rec.w / rec.gp) * 100) : 0;
     const by = new Map();
@@ -26,7 +26,7 @@
     picked.forEach((b) => b.players.forEach((p) => take(p, 'bn')));
     const rows = [...by.values()].filter((e) => e.gp).sort((a, b) => b.g + b.a - (a.g + a.a) || b.gp - a.gp).slice(0, 40);
     out.innerHTML = `<div class="bn-wi-stats">${stat('Played', rec.gp)}${stat('Won', rec.w)}${stat('Drawn', rec.d)}${stat('Lost', rec.l)}${stat('Goals', `${rec.gf}–${rec.ga}`)}${stat('Win rate', `${winPct}%`)}</div>
-<div class="tbl"><table><thead><tr><th>Player</th><th>GP</th><th>NOREX + B team</th><th>⚽</th><th>🎯</th><th>MOTM</th><th>Rating</th></tr></thead><tbody>${rows.map((e) => `<tr><td><b>${esc(e.n)}</b></td><td>${e.gp}</td><td>${e.nx} + ${e.bn}</td><td>${e.g}</td><td>${e.a}</td><td>${e.motm}</td><td>${e.gp ? (e.rSum / e.gp).toFixed(1) : '–'}</td></tr>`).join('')}</tbody></table></div>`;
+<div class="tbl"><table><thead><tr><th>Player</th><th>GP</th><th>${(document.body.dataset.club || 'the club')} + B team</th><th>⚽</th><th>🎯</th><th>MOTM</th><th>Rating</th></tr></thead><tbody>${rows.map((e) => `<tr><td><b>${esc(e.n)}</b></td><td>${e.gp}</td><td>${e.nx} + ${e.bn}</td><td>${e.g}</td><td>${e.a}</td><td>${e.motm}</td><td>${e.gp ? (e.rSum / e.gp).toFixed(1) : '–'}</td></tr>`).join('')}</tbody></table></div>`;
   }
   root.addEventListener('change', paint);
 })();

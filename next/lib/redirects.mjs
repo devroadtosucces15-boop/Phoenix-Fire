@@ -2,6 +2,7 @@
 // GitHub Pages has no server redirects, so every old page address that the new build does not produce gets a tiny page that sends the visitor
 // on (meta refresh + location.replace, query and #fragment kept). Anything without a new equivalent goes to the same page under classic/.
 import fs from 'node:fs'; import path from 'node:path';
+import { cfg } from './data.mjs';
 
 // Old root pages with a different home in the new design (target is relative to the site root; '#x' fragments are kept).
 export const ROOT_MAP = {
@@ -52,7 +53,7 @@ export function stubHtml(file, target) {
   const [page, frag] = target.split('#');
   const to = up + page + (frag ? '#' + frag : '');
   const hashes = file === 'members.html' ? JSON.stringify(Object.fromEntries(Object.entries(HASH_MAP).map(([k, v]) => [k, up + v]))) : 'null';
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>NOREX UNITED FC</title><meta http-equiv="refresh" content="0;url=${esc(to)}"><link rel="canonical" href="${esc(to)}">
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(cfg.siteTitle)}</title><meta http-equiv="refresh" content="0;url=${esc(to)}"><link rel="canonical" href="${esc(to)}">
 <script>(function(){var t=${JSON.stringify(to)},m=${hashes},h=location.hash.slice(1).split('?')[0],i=t.indexOf('#'),base=i<0?t:t.slice(0,i),f=i<0?'':t.slice(i);if(m&&m[h]){base=m[h];f=''}else if(!f)f=location.hash;location.replace(base+location.search+f)})()</script></head>
 <body style="background:#0b0f16;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:40px"><p>Taking you to the new page… <a style="color:#c8352c" href="${esc(to)}">continue</a></p></body></html>
 `;

@@ -238,7 +238,7 @@ ${P.group ? `<button type="button" class="btn gold" data-mkgroup${P.sel.length &
 
   // ================= 🎮 On Discord (public widget feed) =================
   const dc = $('#chdiscord');
-  if (dc && A?.token) discordLive(dc);
+  if (dc && A?.token && dc.dataset.guild) discordLive(dc);
   function discordLive(el) {
     const G = el.dataset.guild, url = `https://discord.com/api/guilds/${G}/widget.json`;
     const ST = { online: ['Online', 'on'], idle: ['Away', 'idle'], dnd: ['Busy', 'dnd'] };

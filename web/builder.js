@@ -48,7 +48,7 @@
   const needLogin = async (what, then) => {
     if (token()) return false;
     if (!MAPI) { toast('Saving isn’t available on this copy of the site', 'error'); return true; }
-    if (window.UI && await UI.confirm({ title: `Log in to ${what}`, icon: '🔐', text: 'Building and sharing is open to everyone. Saving builds needs a NOREX Discord login – your current build comes with you.', ok: 'Log in with Discord' })) login(then);
+    if (window.UI && await UI.confirm({ title: `Log in to ${what}`, icon: '🔐', text: 'Building and sharing is open to everyone. Saving builds needs a ' + (document.body.dataset.club || 'the club') + ' Discord login – your current build comes with you.', ok: 'Log in with Discord' })) login(then);
     return true;
   };
   const archName = (id) => (g.archetypes || []).find((a) => a.id === id)?.name ?? id;
@@ -292,7 +292,7 @@ ${token() ? '' : `<p class="muted small">🔐 Log in to compare with your saved 
     const crest = new Image(); crest.src = `${BASE}assets/crest.png`; await crest.decode().catch(() => {});
     if (crest.naturalWidth) { const h = 170, w = (crest.naturalWidth / crest.naturalHeight) * h; x.drawImage(crest, 60, 50, w, h); }
     const T = (txt, px, py, font, col = '#fff', align = 'left') => { x.font = font; x.fillStyle = col; x.textAlign = align; x.fillText(txt, px, py); };
-    T('NOREX UNITED · PRO BUILD', 200, 100, '600 34px Oswald, Impact, sans-serif', '#9aa3b2');
+    T('' + (document.body.dataset.club || 'the club') + ' · PRO BUILD', 200, 100, '600 34px Oswald, Impact, sans-serif', '#9aa3b2');
     T((cur?.title || ev.arch.name).toUpperCase().slice(0, 28), 200, 160, '700 58px Oswald, Impact, sans-serif');
     T('★★★★★', 200, 205, '400 28px sans-serif', gold);
     // OVR shield
@@ -330,7 +330,7 @@ ${token() ? '' : `<p class="muted small">🔐 Log in to compare with your saved 
     line('BODY', `${ev.choices.h} cm · ${ev.choices.w} kg`);
     line('BEST FIT', ev.fit.slice(0, 3).map(([p, v]) => `${p} ${v}`).join(' · '));
     T(`Game rules ${g.version}${ev.status.preview ? ' · preview numbers' : ''} · * estimate`, 60, H - 50, '500 24px Inter, sans-serif', '#6b7280');
-    T(location.host || 'NOREX UNITED', W - 60, H - 50, '600 26px Oswald, Impact, sans-serif', '#9aa3b2', 'right');
+    T(location.host || '' + (document.body.dataset.club || 'the club') + '', W - 60, H - 50, '600 26px Oswald, Impact, sans-serif', '#9aa3b2', 'right');
     const a = document.createElement('a');
     a.download = `norex-build-${(cur?.title || ev.arch.name)}-L${ev.level}.png`.replace(/[^\w.-]+/g, '_');
     a.href = c.toDataURL('image/png'); a.click();

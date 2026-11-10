@@ -18,7 +18,7 @@
     const el = document.createElement('div');
     el.className = 'hubg-intro';
     el.dataset.step = '0';
-    el.innerHTML = `<div class="hubg-glow"></div><img class="hubg-crest" src="${BASE}assets/crest.png" alt=""><div class="hubg-door l"><i></i><i></i><i></i></div><div class="hubg-door r"><i></i><i></i><i></i></div><div class="hubg-word">NOREX<br>HUB</div><button type="button" class="hubg-skip">Skip ⏭</button>`;
+    el.innerHTML = `<div class="hubg-glow"></div><img class="hubg-crest" src="${BASE}assets/crest.png" alt=""><div class="hubg-door l"><i></i><i></i><i></i></div><div class="hubg-door r"><i></i><i></i><i></i></div><div class="hubg-word">${(document.body.dataset.club || 'the club').split(' ')[0]}<br>HUB</div><button type="button" class="hubg-skip">Skip ⏭</button>`;
     document.body.appendChild(el);
     let done = false;
     const timers = [];

@@ -1,5 +1,5 @@
 // Canvas + card background proposals: the same real content rendered on four dark canvases so they can be compared fairly.
-import { players, clubStats as C, recent, fmtDate } from '../lib/data.mjs';
+import { cfg, players, clubStats as C, recent, fmtDate } from '../lib/data.mjs';
 import { card, esc } from '../lib/ui.mjs';
 const top = players.filter((p) => p.ovr).sort((a, b) => b.ovr - a.ovr);
 const star = top[0], rows = top.slice(0, 4);
@@ -11,14 +11,14 @@ const V = [
   ['c', 'C · Floodlight', 'Black stadium night with light beams falling from above and haze. Glossy black cards with a white rim light.', false],
   ['d', 'D · Velvet Red Night', 'Oxblood-black canvas with gold dust. Red lacquer cards with a gold hairline. Most dramatic, least neutral.', false],
 ];
-const scene = (id) => `<div class="scene" data-cv="${id}"><div class="sbar"><img src="crest.png" alt=""><b>NOREX UNITED</b><span class="np">Squad</span><span class="np on">Stats</span><span class="np">Tactics</span><span class="key">🔑</span></div>
+const scene = (id) => `<div class="scene" data-cv="${id}"><div class="sbar"><img src="crest.png" alt=""><b>${esc(cfg.siteTitle)}</b><span class="np">Squad</span><span class="np on">Stats</span><span class="np">Tactics</span><span class="key">🔑</span></div>
 <div class="shero"><div><em>DIVISION ${C.div || 1} · SKILL RATING ${C.sr}</em><h4>Club stats</h4></div>${cup}</div>
 <div class="sgrid"><div class="cd tile"><u>Played</u><b>${C.gp}</b></div><div class="cd tile"><u>Goals</u><b>${C.gf}</b></div><div class="cd tile gold"><u>Win streak</u><b>${C.streak}</b></div>
 <div class="cd list">${rows.map((p, i) => `<div class="r"><i>${i + 1}</i><span>${esc(p.n)}</span><b>${p.goals}</b></div>`).join('')}</div>
 <div class="cd pl">${card(star, { s: .62, link: false })}</div>
 <div class="cd pt">${pitch}<u>League · 3-5-2</u></div></div></div>`;
 export default function (P) {
-  P('canvas.html', `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Canvas and cards · NOREX UNITED</title><link rel="icon" href="crest.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="canvas.css"></head><body class="cvbody">
+  P('canvas.html', `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Canvas and cards · ${esc(cfg.siteTitle)}</title><link rel="icon" href="crest.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="canvas.css"></head><body class="cvbody">
 <main class="cwrap"><span class="eyebrow">Canvas and card backgrounds</span><h1>What I would choose</h1>
 <p class="lead">Same real content on four darker canvases. Everything else (gloss, patterns, gold only for achievements) stays as you picked. <b>My pick is A.</b></p>
 <div class="why"><div><b>Why A</b><span>Your hardest-working surfaces are tables, pitches and player cards. A cool blue-black canvas keeps the gold cards and green pitch clean and lets red and gold read as light, not paint.</span></div><div><b>The rules</b><span>Canvas stays dark and calm. Cards are glossy graphite with a bright top edge. Red lacquer is for the one hero card on a page. Gold is reserved for achievements and the Hub key.</span></div></div>

@@ -100,7 +100,7 @@ ${premium.length ? `<form id="cs-grant" class="cs-form"><select name="user" requ
 
   const ownerHtml = (requests, players) => `<section class="card cs-wrap cs-owner"><h3>👑 Player artwork</h3>
 <p class="muted">Submit a photo for any player. Generated artwork still goes through quality review before appearing on the site.</p>
-<form id="cs-owner-upload" class="cs-form"><label>Player<select name="player" required><option value="">Choose a player</option>${[...players].sort((a,b)=>String(a.n).localeCompare(String(b.n))).map(p=>`<option value="${esc(p.k)}">${esc(p.n)}${p.home ? ' · NOREX' : ''}</option>`).join('')}</select></label>
+<form id="cs-owner-upload" class="cs-form"><label>Player<select name="player" required><option value="">Choose a player</option>${[...players].sort((a,b)=>String(a.n).localeCompare(String(b.n))).map(p=>`<option value="${esc(p.k)}">${esc(p.n)}${p.home ? ' · ' + (document.body.dataset.club || 'the club') + '' : ''}</option>`).join('')}</select></label>
 <label>Photo<input name="photo" type="file" accept="image/png,image/jpeg,image/webp" required></label>
 <label>Kit number<input name="kitNumber" type="number" min="0" max="99" step="1" placeholder="Optional"></label><button class="btn" type="submit">Submit player photo</button></form>
 <h4>Uploads and artwork</h4><p class="muted small">Revoke removes the player’s published artwork and opens resubmission. Previously deleted source photos are unavailable.</p>

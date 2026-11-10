@@ -3,11 +3,11 @@
 import { shell, esc } from '../lib/ui.mjs';
 import { cfg, matches, players, opponents } from '../lib/data.mjs';
 
-const title = cfg.siteTitle ?? 'NOREX UNITED FC';
+const title = cfg.siteTitle ?? 'Club';
 export function about() {
   const R = cfg.recruitment ?? {};
   const body = `<div class="wrap"><section class="sec" style="margin-top:34px"><header><div><div class="eyebrow">Who we are</div><h2>About <span class="gold-t">${esc(title)}</span></h2></div></header>
-<div class="panel c3 reveal" style="margin-bottom:22px"><img class="c3-img" src="crest-lg.png" alt="NOREX UNITED FC crest"><div class="c3-bar"><button type="button" class="c3-btn" aria-pressed="false">Turn on 3D</button><span class="c3-note"></span></div></div>
+<div class="panel c3 reveal" style="margin-bottom:22px"><img class="c3-img" src="crest-lg.png" alt="${esc(cfg.siteTitle)} crest"><div class="c3-bar"><button type="button" class="c3-btn" aria-pressed="false">Turn on 3D</button><span class="c3-note"></span></div></div>
 <div class="grid g2 ab-grid" data-stagger>
  <div class="panel reveal ab-card"><div class="ab-i">🛡️</div><h3>The club</h3><p>${esc(title)} is an EA SPORTS FC Pro Clubs side competing in the first division. This site is our home: results, squad cards, stats, tactics and the members' hub, all in one place.</p></div>
  <div class="panel reveal ab-card"><div class="ab-i">🤖</div><h3>Nobody types results in</h3><p>The site updates itself about every 10 minutes from EA's public Pro Clubs data. Every match, box score and career stat is read straight from EA, so the numbers are the real ones.</p></div>

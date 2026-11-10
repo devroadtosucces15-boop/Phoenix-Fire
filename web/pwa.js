@@ -46,8 +46,8 @@
     bar = document.createElement('div');
     bar.className = 'nx-install';
     bar.setAttribute('role', 'dialog');
-    bar.setAttribute('aria-label', 'Install the NOREX app');
-    bar.innerHTML = `<img src="${base}assets/icons/icon-192.png" width="44" height="44" alt=""><div class="nx-install-t"><b>Install NOREX UNITED</b><span>${how}</span></div>`
+    bar.setAttribute('aria-label', 'Install the ' + (document.body.dataset.club || 'the club') + ' app');
+    bar.innerHTML = `<img src="${base}assets/icons/icon-192.png" width="44" height="44" alt=""><div class="nx-install-t"><b>Install ${(document.body.dataset.club || 'the club')}</b><span>${how}</span></div>`
       + (deferred ? '<button type="button" class="btn nx-install-go">Install</button>' : '')
       + '<button type="button" class="nx-install-x" aria-label="Not now">✕</button>';
     bar.querySelector('.nx-install-x').addEventListener('click', () => close(true));

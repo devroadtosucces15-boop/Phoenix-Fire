@@ -87,7 +87,7 @@ ${c.tag ? `<button type="button" class="tr-tag" data-copy="${esc(c.tag)}" data-t
   async function scout(el, ctx) {
     const draw = () => {
       el.innerHTML = `<div class="grid2"><form class="card tr-form" data-scout novalidate><h3>🔭 Recommend a player</h3>
-<p class="muted small">Seen someone who'd fit NOREX? Send them to the managers – they can turn it into a trial with one click.</p>
+<p class="muted small">Seen someone who'd fit ${(document.body.dataset.club || 'the club')}? Send them to the managers – they can turn it into a trial with one click.</p>
 <div class="tr-grid"><label class="fld">EA ID / gamertag<input name="ea" maxlength="40" required autocomplete="off"></label><label class="fld">Platform ${platSel()}</label></div>
 <label class="fld">Positions (up to 3)</label>${posChips()}
 <label class="fld" style="margin-top:12px">Why would they fit?<textarea name="note" rows="3" maxlength="500" required placeholder="What you saw: pace, passing, attitude, Rush games…"></textarea></label>

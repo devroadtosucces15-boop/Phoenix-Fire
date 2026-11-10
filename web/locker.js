@@ -256,7 +256,7 @@ ${pl && ctx.mountNote && !noteNone ? '<section class="lk-sec lk-note" data-lk-no
       g.font = '700 46px Oswald, Impact, sans-serif'; g.fillText(String(v), x, 705);
       g.font = '500 22px Inter, sans-serif'; g.fillText(l, x, 735);
     });
-    g.font = '600 20px Oswald, Impact, sans-serif'; g.fillStyle = '#c8352c'; g.fillText('NOREX UNITED FC', 300, 838);
+    g.font = '600 20px Oswald, Impact, sans-serif'; g.fillStyle = '#c8352c'; g.fillText('' + (document.body.dataset.club || 'the club') + '', 300, 838);
     const out = () => cv.toBlob((b) => { if (!b) return; const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(b), download: `norex-${String(pl.n).replace(/[^\w-]+/g, '_')}.png` }); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }, 'image/png');
     const img = new Image();
     img.onload = () => { const h = 84, w = (img.width / img.height) * h; g.drawImage(img, 520 - w, 96, w, h); out(); };

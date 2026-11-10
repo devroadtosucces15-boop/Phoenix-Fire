@@ -75,7 +75,7 @@
     const portrait = options.prepared ? await image(portraitUrl) : await prepare(portraitUrl,options.kitNumber);
     fit(c,portrait,48,186,504,362); c.restore();
     c.fillStyle = tx; c.textAlign = 'center'; c.font = '700 43px Oswald, Impact, sans-serif';
-    const name = safe(player?.n,'NOREX PLAYER').toUpperCase().slice(0,24);
+    const name = safe(player?.n,'' + (document.body.dataset.club || 'the club') + ' PLAYER').toUpperCase().slice(0,24);
     let size = 43; while (c.measureText(name).width > 475 && size > 19) { c.font = 'bold ' + (--size) + 'px Oswald, Impact, sans-serif'; }
     c.fillText(name.toUpperCase(),300,598);
     const stats = [[safe(player?.s?.g),'GLS'],[safe(player?.s?.a),'AST'],[player?.s?.r ? Number(player.s.r).toFixed(1) : '—','RAT'],[player?.s?.p == null ? '—' : player.s.p+'%','PAS'],[player?.s?.t == null ? '—' : player.s.t+'%','TKL'],[safe(player?.s?.gp),'GP']];
@@ -84,7 +84,7 @@
       c.font = '700 45px Oswald, Impact, sans-serif'; c.fillText(value,x,y);
       c.font = '500 23px Oswald, Impact, sans-serif'; c.fillText(label,x,y+28);
     });
-    c.font = 'bold 19px system-ui'; c.fillText('NOREX UNITED FC',300,798);
+    c.font = 'bold 19px system-ui'; c.fillText('' + (document.body.dataset.club || 'the club') + '',300,798);
     return canvas;
   }
   window.NXCardComposer = { draw, prepare, getPlayer, WIDTH, HEIGHT };

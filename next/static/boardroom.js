@@ -50,16 +50,17 @@
     serverTools: ['staff-tools.html', ''], fun: ['staff-tools.html', ''], discoveries: ['staff-tools.html', ''], watchlist: ['staff-tools.html', ''], memberLive: ['index.html', ''], facesSite: ['hub-clubhouse.html', ''], ownerFab: ['index.html', ''], music: ['hub-music.html', ''],
   };
   const go = (page, find) => page + (find ? `?nx=${encodeURIComponent('~' + find)}` : '');
+  const LINKS = { discord: '', botPortal: '', apply: '', youtube: '', twitch: '', ...(window.NOREX?.links || {}) }; // from config.json via the page shell; empty = not set
   const TOOLS = [
     ['🏠 Site pages for staff', [['🧢 Dugout', 'Lineups and match plans', 'staff-dugout.html'], ['🗓️ Schedule', 'Match nights and RSVPs', 'staff-schedule.html'], ['📋 Desk', 'Trials, claims, notes', 'staff-desk.html'], ['🧰 Tools', 'Roles, gear, feedback', 'staff-tools.html'], ['📰 Content', 'News, docs, rules', 'staff-content.html'], ['🧠 Insights', 'Club Intelligence', 'staff-insights.html'], ['🎨 Artwork', 'Card Studio approvals', 'staff-artwork.html'], ['🧭 Staff home', 'Everything staff', 'staff.html']]],
-    ['🔗 Outside the site', [['💬 Discord server', 'Open the club server', 'https://discord.com/channels/1371311947894489299'], ['🤖 Discord bot', 'Developer portal for the bot', 'https://discord.com/developers/applications/1553967740543569970'], ['☁️ Cloudflare', 'Worker, KV, D1, analytics', 'https://dash.cloudflare.com/'], ['📺 YouTube', '@NorexUnitedFC', 'https://www.youtube.com/@NorexUnitedFC'], ['🎮 Twitch', 'norexunitedfc', 'https://www.twitch.tv/norexunitedfc'], ['📨 Apply link', 'The Discord invite for new players', 'https://discord.gg/ZsMqKcqwUq']]],
+    ['🔗 Outside the site', [['💬 Discord server', 'Open the club server', LINKS.discord], ['🤖 Discord bot', 'Developer portal for the bot', LINKS.botPortal], ['☁️ Cloudflare', 'Worker, KV, D1, analytics', 'https://dash.cloudflare.com/'], ['📺 YouTube', LINKS.youtube ? LINKS.youtube.match(/youtube\.com\/(@[\w.-]+)/)?.[1] || 'Channel' : 'Channel', LINKS.youtube], ['🎮 Twitch', LINKS.twitch.match(/twitch\.tv\/([\w]{3,25})/)?.[1] || 'Channel', LINKS.twitch], ['📨 Apply link', 'The Discord invite for new players', LINKS.apply]]],
     ['📊 The public site', [['🏆 Hall of Fame', 'As guests see it', 'halloffame.html'], ['⚽ Squad', 'Card stack', 'squad.html'], ['📈 Stats', 'League and Rush', 'stats.html'], ['🧩 Tactics', 'Formations and 3D pitch', 'tactics.html'], ['🔥 Burners', 'Unofficial clubs', 'burners.html'], ['🚪 Join', 'Recruitment page', 'join.html']]],
   ];
   const VIEWS = [['', '👑', 'Me (owner)', 'Everything I can see'], ['member', '🧑', 'Member', 'A signed-in club member'], ['guest', '👤', 'Guest', 'Someone not signed in']];
 
   function tools() {
     const q = S.filter.toLowerCase();
-    const card = ([n, sub, href]) => { const ext = /^https?:/.test(href); return `<a class="br-tool" href="${esc(href)}"${ext ? ' target="_blank" rel="noopener"' : ''}><b>${esc(n)}</b><small>${esc(sub)}</small><span aria-hidden="true">${ext ? '↗' : '→'}</span></a>`; };
+    const card = ([n, sub, href]) => { if (!href) return `<span class="br-tool" aria-disabled="true"><b>${esc(n)}</b><small>Not set – add it to config.json</small></span>`; const ext = /^https?:/.test(href); return `<a class="br-tool" href="${esc(href)}"${ext ? ' target="_blank" rel="noopener"' : ''}><b>${esc(n)}</b><small>${esc(sub)}</small><span aria-hidden="true">${ext ? '↗' : '→'}</span></a>`; };
     const groups = TOOLS.map(([t, items]) => [t, items.filter((it) => !q || `${it[0]} ${it[1]}`.toLowerCase().includes(q))]).filter(([, it]) => it.length);
     const jump = Object.keys(S.flags || {}).filter((k) => q && (k.toLowerCase().includes(q) || nice(k).toLowerCase().includes(q)) && WHERE[k]).slice(0, 8);
     return `<div class="br-bar"><input type="search" class="br-in" data-filter placeholder="Find a tool or a feature…" value="${esc(S.filter)}" aria-label="Find a tool or feature"></div>

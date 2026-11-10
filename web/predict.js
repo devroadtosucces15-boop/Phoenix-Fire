@@ -56,9 +56,9 @@
     const scoreBox = (e) => {
       const d = draft.get(e.id) ?? (e.mine ? { gf: e.mine.gf, ga: e.mine.ga } : { gf: 1, ga: 0 });
       draft.set(e.id, d);
-      const step = (side) => `<div class="pr-step"><button type="button" data-step="${e.id}:${side}:-1" aria-label="${side === 'gf' ? 'NOREX' : 'Opponent'} minus one">−</button><output>${d[side]}</output><button type="button" data-step="${e.id}:${side}:1" aria-label="${side === 'gf' ? 'NOREX' : 'Opponent'} plus one">+</button></div>`;
+      const step = (side) => `<div class="pr-step"><button type="button" data-step="${e.id}:${side}:-1" aria-label="${side === 'gf' ? (document.body.dataset.club || 'the club') : 'Opponent'} minus one">−</button><output>${d[side]}</output><button type="button" data-step="${e.id}:${side}:1" aria-label="${side === 'gf' ? (document.body.dataset.club || 'the club') : 'Opponent'} plus one">+</button></div>`;
       const same = e.mine && e.mine.gf === d.gf && e.mine.ga === d.ga;
-      return `<div class="pr-box" data-box="${e.id}"><div class="pr-score"><div><small>NOREX</small>${step('gf')}</div><span class="pr-dash">–</span><div><small>Them</small>${step('ga')}</div></div>
+      return `<div class="pr-box" data-box="${e.id}"><div class="pr-score"><div><small>${(document.body.dataset.club || 'the club')}</small>${step('gf')}</div><span class="pr-dash">–</span><div><small>Them</small>${step('ga')}</div></div>
 <div class="row"><button type="button" class="btn sm" data-save="${e.id}"${same ? ' disabled' : ''}>${e.mine ? (same ? '✓ Saved' : '💾 Change my pick') : '🔮 Lock in my pick'}</button>${e.mine ? `<button type="button" class="btn sm ghost" data-clear="${e.id}">Take it back</button>` : ''}</div></div>`;
     };
     const picks = (list, { pts = false } = {}) => `<ul class="pr-picks">${list.map((p) => `<li class="${p.id === ctx.me.u ? 'me' : ''}">${UI.member({ id: p.id, n: p.n, a: p.a }, { size: 22 })}<b>${p.gf}–${p.ga}</b>${pts && p.points != null ? `<em class="p${p.points}">+${p.points}</em>` : ''}</li>`).join('')}</ul>`;

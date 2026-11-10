@@ -5,7 +5,7 @@
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { burnerStats, TYPE_LABEL } from '../../bot/burnerstats.js';
 import { shell, esc, sbt, oppCrest } from '../lib/ui.mjs';
-import { fmtDate, clubStats, players as homePlayers } from '../lib/data.mjs';
+import { cfg, fmtDate, clubStats, players as homePlayers } from '../lib/data.mjs';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 const J = (p, d) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return d; } };
@@ -39,11 +39,11 @@ ${games ? `<ul class="bn-games">${games}</ul>` : ''}
   const data = { norex: { name: clubStats.name, rec: { gp: clubStats.gp, w: clubStats.w, d: clubStats.d, l: clubStats.l, gf: clubStats.gf, ga: clubStats.ga }, players: homePlayers.map((p) => ({ n: p.n, gp: p.gp, g: p.goals, a: p.assists, motm: p.mom, rating: p.rating })) },
     burners: list.map((b) => ({ id: b.id, name: b.name, rec: { gp: b.stats.gp, w: b.stats.w, d: b.stats.d, l: b.stats.l, gf: b.stats.gf, ga: b.stats.ga }, players: b.stats.players.map((p) => ({ n: p.n, gp: p.gp, g: p.g, a: p.a, motm: p.motm, rating: p.rating })) })) };
   const body = `<div class="wrap"><section class="sec" style="margin-top:34px"><header><div><div class="eyebrow">Kept apart from the club stats</div><h2>Burner clubs</h2></div><a class="btn ghost" href="opponents.html">Opponents</a></header>
-<div class="panel reveal bn-intro"><div class="bn-fire">🔥</div><p>Burner clubs are temporary clubs our members start when there are few of us and we just want to play some league games, without a bad night touching the real club's numbers. They are <b>not opponents</b> and <b>never count</b> in NOREX UNITED's League totals, records, awards or player pages.</p></div>
+<div class="panel reveal bn-intro"><div class="bn-fire">🔥</div><p>Burner clubs are temporary clubs our members start when there are few of us and we just want to play some league games, without a bad night touching the real club's numbers. They are <b>not opponents</b> and <b>never count</b> in ${esc(cfg.siteTitle)}'s League totals, records, awards or player pages.</p></div>
 ${list.length ? `<div class="panel reveal bn-all" id="bn-all"><h3>All burners combined</h3><div class="bn-rec big"><span><b>${T.gp}</b>Played</span><span class="w"><b>${T.w}</b>Won</span><span><b>${T.d}</b>Drawn</span><span class="l"><b>${T.l}</b>Lost</span><span><b>${T.gf}–${T.ga}</b>Goals</span><span><b>${T.winPct}%</b>Win rate</span></div><p class="muted small">${list.length} burner club${list.length === 1 ? '' : 's'} · ${T.people} players seen${T.scorer?.g ? ` · top scorer <b>${esc(T.scorer.n)}</b> (${T.scorer.g})` : ''}${T.assister?.a ? ` · most assists <b>${esc(T.assister.n)}</b> (${T.assister.a})` : ''}</p></div>
 <div class="grid g2 bn-grid" data-stagger>${list.map(card).join('')}</div>
-<section class="panel reveal bn-wi" id="bn-include" data-slot="include-in-norex"><h3>🧪 What if: NOREX + burners</h3>
-<label class="bn-wi-main"><input type="checkbox" id="bn-wi-on"> Include burner numbers in Norex's numbers</label>
+<section class="panel reveal bn-wi" id="bn-include" data-slot="include-in-norex"><h3>🧪 What if: ${esc(cfg.siteTitle)} + burners</h3>
+<label class="bn-wi-main"><input type="checkbox" id="bn-wi-on"> Include burner numbers in ${esc(cfg.siteTitle)}'s numbers</label>
 <p class="muted small">Just for fun. Pick which burners to add. This is <b>unofficial</b>, only shown to you on this device, and never changes the League totals, records, awards or player pages.</p>
 <div class="bn-wi-pick" id="bn-wi-pick" hidden>${list.map((b) => `<label class="chip"><input type="checkbox" value="${esc(b.id)}"> ${esc(b.name)}</label>`).join('')}</div>
 <div id="bn-wi-out" aria-live="polite"></div></section>

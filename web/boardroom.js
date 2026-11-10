@@ -85,7 +85,7 @@ ${a?.ready ? `${bar('Worker requests', a.requests, FREE.requests, `${a.requests.
 <div class="br-pills"><button type="button" class="chip${a.audience === 'members' ? ' on' : ''}" data-aud="members">Everyone</button><button type="button" class="chip${a.audience === 'managers' ? ' on' : ''}" data-aud="managers">Managers</button>
 <button type="button" class="chip${a.ack ? ' on' : ''}" data-ack>${a.ack ? '☑' : '☐'} Must acknowledge</button></div>
 <div class="br-preview" aria-label="Preview"><small>Preview · 🔔 alert${a.ack ? ' (stays until they tap “Got it”)' : ''} + Discord DM for members who chose DMs</small>
-<div class="br-dm"><b>NOREX Bot</b><div class="br-embed"><b>📣 ${esc(a.title || 'Your title')}</b><p>${esc(a.body || 'Your message shows here.')}</p></div></div></div>
+<div class="br-dm"><b>${(document.body.dataset.club || 'the club')} Bot</b><div class="br-embed"><b>📣 ${esc(a.title || 'Your title')}</b><p>${esc(a.body || 'Your message shows here.')}</p></div></div></div>
 <button type="button" class="btn sm" data-br="announce"${a.title.trim().length < 3 ? ' disabled' : ''}>📣 Send to ${a.audience === 'managers' ? 'managers' : 'every member'}</button>`;
   }
 

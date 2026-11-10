@@ -176,7 +176,7 @@ ${pts.map((p, i) => `<circle class="dot" cx="${r1(x(i))}" cy="${r1(y(p.r))}" r="
       const f = ach?.facts ?? {};
       const head = `${UI.tabsHtml([['league', '🏟️ League'], ['rush', '⚡ Rush']], mode, 'ms-modes')}`;
       if (!k) {
-        return `${head}${UI.empty({ icon: '🪪', title: 'Claim your player first', text: 'Your personal dashboard is built from your in-game stats. Link your gamertag in My NOREX – a manager approves it.', action: '<a class="btn sm" href="#me">👤 Go to My NOREX</a>' })}${achBlock()}`;
+        return `${head}${UI.empty({ icon: '🪪', title: 'Claim your player first', text: 'Your personal dashboard is built from your in-game stats. Link your gamertag in My ' + (document.body.dataset.club || 'the club') + ' – a manager approves it.', action: '<a class="btn sm" href="#me">👤 Go to My ' + (document.body.dataset.club || 'the club') + '</a>' })}${achBlock()}`;
       }
       if (!ms.length) {
         return `${head}<div class="card">${UI.empty({ icon: league ? '🏟️' : '⚡', title: league ? 'No League games archived yet' : 'No confirmed Rush games yet', text: league ? 'The site keeps every League match from now on – play one and check back.' : 'Log a Rush result in the ⚡ Rush tab; it counts once a manager confirms it.' })}</div>${achBlock()}`;
@@ -186,7 +186,7 @@ ${pts.map((p, i) => `<circle class="dot" cx="${r1(x(i))}" cy="${r1(y(p.r))}" r="
       const formIdx = last5.length ? r1(last5.reduce((s, m, i) => s + m.r * (i + 1), 0) / last5.reduce((s, _, i) => s + i + 1, 0)) : 0;
       return `${head}
 <section class="card ms-hero"><div><small>${league ? '🏟️ League' : '⚡ Rush'} · ${esc(pl?.n ?? claim.playerName)}</small><h2>My stats</h2>
-<p class="muted small">${league ? `From ${t.apps} archived League game${t.apps > 1 ? 's' : ''} for NOREX${pl?.car?.gp > t.apps ? ` · EA career: ${pl.car.gp} games, ${pl.car.g} goals, ${pl.car.a} assists` : ''}.` : `From ${t.apps} confirmed Rush game${t.apps > 1 ? 's' : ''}.`}</p></div>
+<p class="muted small">${league ? `From ${t.apps} archived League game${t.apps > 1 ? 's' : ''} for ${(document.body.dataset.club || 'the club')}${pl?.car?.gp > t.apps ? ` · EA career: ${pl.car.gp} games, ${pl.car.g} goals, ${pl.car.a} assists` : ''}.` : `From ${t.apps} confirmed Rush game${t.apps > 1 ? 's' : ''}.`}</p></div>
 ${pl?.ovr ? `<a class="ms-ovr" href="${BASE}players/${encodeURIComponent(k)}.html" data-tip="Open my player page"><b>${pl.ovr}</b><small>${esc(pl.pos)}</small></a>` : ''}</section>
 <div class="ms-kpis">
 ${kpi('🎽', 'Games', t.apps, `<small class="ms-d eq">${t.W}W ${t.D}D ${t.L}L</small>`)}

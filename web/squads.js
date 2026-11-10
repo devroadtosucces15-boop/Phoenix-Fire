@@ -20,7 +20,7 @@
     const fetchState = async () => { S = await ctx.call('/api/squads'); draftPrefs = draftPrefs ?? [...S.me.prefs]; paint(); };
 
     function prefsBox() {
-      if (!S.me.unlocked) return `<section class="card sq-lock">${UI.empty({ icon: '🔒', title: 'Rush squads unlock with a verified player + your Rush positions', text: S.me.reason === 'claim' ? 'Claim your player in My NOREX – once a manager approves it, come back here.' : 'Set your Rush 1st / 2nd / 3rd positions in My NOREX → profile.', action: `<a class="btn sm" href="${BASE}members.html#me">Go to My NOREX</a>` })}</section>`;
+      if (!S.me.unlocked) return `<section class="card sq-lock">${UI.empty({ icon: '🔒', title: 'Rush squads unlock with a verified player + your Rush positions', text: S.me.reason === 'claim' ? 'Claim your player in My ' + (document.body.dataset.club || 'the club') + ' – once a manager approves it, come back here.' : 'Set your Rush 1st / 2nd / 3rd positions in My ' + (document.body.dataset.club || 'the club') + ' → profile.', action: `<a class="btn sm" href="${BASE}members.html#me">Go to My ' + (document.body.dataset.club || 'the club') + '</a>` })}</section>`;
       const m = byId();
       const others = S.candidates.filter((c) => c.id !== ctx.me.u && !draftPrefs.includes(c.id) && (!q || c.n.toLowerCase().includes(q)));
       const changed = JSON.stringify(draftPrefs) !== JSON.stringify(S.me.prefs);

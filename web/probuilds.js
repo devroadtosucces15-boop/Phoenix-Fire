@@ -22,7 +22,7 @@
   const OPEN = 'norex_pb_open'; // deep link survives the Discord login round trip
   async function needLogin(what) {
     if (session()) return false;
-    if (await UI.confirm({ title: `Log in to ${what}`, icon: '🔐', text: 'Reading Pro Builds is open to everyone. Voting, comments and posting need a NOREX Discord login.', ok: 'Log in with Discord' })) {
+    if (await UI.confirm({ title: `Log in to ${what}`, icon: '🔐', text: 'Reading Pro Builds is open to everyone. Voting, comments and posting need a ' + (document.body.dataset.club || 'the club') + ' Discord login.', ok: 'Log in with Discord' })) {
       try { sessionStorage.setItem(OPEN, location.hash); } catch {}
       location.href = `${MAPI}/auth/login?return=${encodeURIComponent(location.href.split('#')[0])}`;
     }

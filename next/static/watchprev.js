@@ -44,7 +44,7 @@
   const onKey = (e) => e.key === 'Escape' && close();
   d.addEventListener('click', (e) => {
     const t = e.target.closest('.wtp'); if (!t) return; e.preventDefault(); back = t; [...live].forEach(stop);
-    const open = t.dataset.p === 'yt' ? `https://www.youtube.com/watch?v=${t.dataset.id}` : t.dataset.kind === 'clip' ? `https://www.twitch.tv/norexunitedfc/clip/${t.dataset.id}` : `https://www.twitch.tv/videos/${t.dataset.id}`;
+    const open = t.dataset.p === 'yt' ? `https://www.youtube.com/watch?v=${t.dataset.id}` : t.dataset.kind === 'clip' ? `https://clips.twitch.tv/${t.dataset.id}` : `https://www.twitch.tv/videos/${t.dataset.id}`;
     modal = d.createElement('div'); modal.className = 'wtp-modal'; modal.setAttribute('role', 'dialog'); modal.setAttribute('aria-modal', 'true'); modal.setAttribute('aria-label', t.dataset.title || 'Video');
     modal.innerHTML = `<div class="wtp-m"><button type="button" class="wtp-x" aria-label="Close">✕</button><div class="wtp-v ${t.dataset.kind === 'short' ? 'v' : ''}"><iframe src="${src(t, true)}" title="${(t.dataset.title || 'Video').replace(/"/g, '&quot;')}" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p><b></b> <a href="${open}" target="_blank" rel="noopener">Open on ${t.dataset.p === 'yt' ? 'YouTube' : 'Twitch'} ↗</a></p></div>`;
     modal.querySelector('b').textContent = t.dataset.title || '';

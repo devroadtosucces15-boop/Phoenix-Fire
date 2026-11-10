@@ -1,5 +1,5 @@
 // Lookbook: one page of proposed visual types, animations and transitions, all live, using the real club data. Visitors star the ones they like.
-import { players, recent, clubStats as C, leaders, fmtDate } from '../lib/data.mjs';
+import { cfg, players, recent, clubStats as C, leaders, fmtDate } from '../lib/data.mjs';
 import { card, esc } from '../lib/ui.mjs';
 import { formations as FM } from './stats.mjs';
 
@@ -104,9 +104,9 @@ const sections = [
 
 const nav = [['look', 'Look'], ['nav', 'Menus'], ['views', 'Views'], ['pitch', 'Pitches'], ['tables', 'Tables'], ['trophy', 'Trophies'], ['trans', 'Transitions'], ['micro', 'Micro'], ['picks', 'My picks']];
 export default function (P) {
-  P('lookbook.html', `<!doctype html><html lang="en" data-theme="char" data-pat="wing" data-fin="gloss" data-pstyle="grass" data-nav="orb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lookbook · NOREX UNITED</title><link rel="icon" href="crest.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="tactics.css"><link rel="stylesheet" href="lookbook.css"></head><body class="lbody">
+  P('lookbook.html', `<!doctype html><html lang="en" data-theme="char" data-pat="wing" data-fin="gloss" data-pstyle="grass" data-nav="orb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lookbook · ${esc(cfg.siteTitle)}</title><link rel="icon" href="crest.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="tactics.css"><link rel="stylesheet" href="lookbook.css"></head><body class="lbody">
 <div class="glow g1"></div><div class="glow g2"></div>
-<header class="lbbar" id="lbbar"><a class="brand" href="index.html"><img src="crest.png" alt=""><b>NOREX</b> UNITED</a><nav>${nav.map(([i, t]) => `<a href="#${i}">${t}</a>`).join('')}</nav><span class="cnt2" id="pickcount">☆ 0 picked</span></header>
+<header class="lbbar" id="lbbar"><a class="brand" href="index.html"><img src="crest.png" alt=""><b>${esc(String(cfg.siteTitle).split(' ')[0])}</b> ${esc(String(cfg.siteTitle).split(' ').slice(1).join(' '))}</a><nav>${nav.map(([i, t]) => `<a href="#${i}">${t}</a>`).join('')}</nav><span class="cnt2" id="pickcount">☆ 0 picked</span></header>
 <main class="lwrap"><div class="intro"><span class="eyebrow">Design lookbook</span><h1>Pick what feels right</h1><p>${N || 40} proposals, all live and using your real club data. Star the 3–5 you like most (☆ I like this) and your list collects at the bottom. Nothing here is final: it is a menu to choose from.</p><div class="chips"><a class="chip gold" href="#look">Start: the look ↓</a><a class="chip" href="#picks">Jump to my picks</a></div></div>
 ${sections.join('')}
 <section class="lsec" id="picks"><div class="lh"><span class="ico">⭐</span><div><h2>My picks</h2><p>Your starred proposals. Copy the list and send it back to me.</p></div></div><div class="panel picks" id="picklist"><p class="muted">Nothing starred yet.</p></div><div class="chips"><button class="btn gold" id="copyp">Copy my list</button><button class="btn" id="clearp">Clear</button><span class="muted small" id="copied"></span></div></section></main>

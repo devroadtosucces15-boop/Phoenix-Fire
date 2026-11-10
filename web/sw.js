@@ -60,8 +60,8 @@ self.addEventListener('fetch', (e) => {
 
 self.addEventListener('push', (e) => {
   let d = {};
-  try { d = e.data ? e.data.json() : {}; } catch { d = { title: 'NOREX UNITED FC', body: e.data ? e.data.text() : '' }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'NOREX UNITED FC', {
+  try { d = e.data ? e.data.json() : {}; } catch { d = { title: 'New notification', body: e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'New notification', {
     body: d.body || '',
     tag: d.tag || 'norex',
     icon: 'assets/crest.png',
