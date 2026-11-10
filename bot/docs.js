@@ -14,7 +14,7 @@
 //   GET/POST /api/suggestions (+ /vote /decide /remove)   suggestion box (flag `suggestions`)
 // Text is "markdown-lite" (headings, bold, italics, lists, links, image + video lines) rendered by web/docs-md.js.
 import { IS_V2 } from './ui.js';
-import { orgName, channelFor } from './orgconfig.js';
+import { orgName, channelFor, mirrorChannel } from './orgconfig.js';
 import { can, flagOn } from './roles.js';
 import { notify, notifyManagers, notifyMembers, safely } from './notify.js';
 import { message, header, text, cards, footer, buttons } from './ui.js';
@@ -178,6 +178,7 @@ export async function postEmbed(env, channel, role, message) {
   const res = await r.json().catch(() => ({}));
   if (!r.ok) return { ok: false, error: DISCORD_HELP[res.code] ?? `Discord refused the post (${r.status}${res.message ? `: ${res.message}` : ''}).` };
   await run(env, "INSERT INTO meta (key, value) VALUES ('announce_channel', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value", channel);
+  await mirrorChannel(env, 'announcements', channel); // dual-write (fills the purpose only when no config row exists)
   return { ok: true, id: res.id };
 }
 // The rich embed for one docs item – shared by the real post and BE6's dry-run preview, so what a manager

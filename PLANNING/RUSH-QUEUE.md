@@ -92,3 +92,13 @@ Tests: strict click order; two groups cannot share a member; match found promote
 3. **"Need a player", not "need a 5th":** the extra-player marker is a button/field with a count (need 1 / need 2 / need a keeper) and posts through the Rush LFG marker (role ping, never `@everyone`, auto-expires). Accepted players join the crew.
 4. **Idle rule is 2 minutes, not 5:** a group at the green light that does nothing for **2 minutes** is removed from the queue (it gets a one-line notice and can press Join again). The warning ping goes out at 1 minute. Both values are org settings, default 2 min / 1 min.
 5. **General rule for every bot feature:** any command or feature that posts to, reads from, or is restricted to a channel or role takes it from Organization config (purpose-based, multiple allowed, editable on the site and by a manager command, both writing the same rows). No module may hardcode a channel name, channel ID or role ID. See `CLAUDE.md`.
+
+## Follow-ups (queued 2026-11-10, not built yet)
+
+Each is a small item on top of the queue manager (`bot/rushqueue.js`). Channels and timings stay config-driven (decision 1 and 5 above).
+
+| # | Item | What done looks like |
+|---|---|---|
+| Q1 | **Pre-filled `/rush log` from "Match found".** When a group reaches the green light, the "Match found" message gets a button that opens `/rush log` with the group's members, mode and the queue wait already filled in. The captain only adds the score. | One tap from Match found to a ready-to-submit log; a test that the prefill carries the members and never another group's. |
+| Q2 | **Nightly queue reset.** A cron tick clears searching groups at a configured hour (org setting, not a constant) and re-posts a fresh board, so a stale line never carries into the next day. Reports the clear to `rush_queue_reports`. | Settings field plus the cron step; a test that a late-night tick empties the line and a daytime tick does not. |
+| Q3 | **Weekly queue stats on the Rush leaderboard.** Read `rush_queue_stats` (searches, matched, failed, average wait) into a weekly block on the Rush leaderboard page and the board post. Empty weeks say so. | Weekly block on the site and in the bot post, with an honest empty state; tests for the aggregation. |

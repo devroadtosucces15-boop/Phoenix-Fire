@@ -14,7 +14,7 @@ import { broadcastRoom } from './clubroom.js';
 import { postEmbed } from './docs.js';
 import { getBotSettings } from './settings.js';
 import { message, header, text, sep, facts, footer, buttons } from './ui.js';
-import { orgName, channelFor } from './orgconfig.js';
+import { orgName, channelFor, mirrorChannel } from './orgconfig.js';
 
 const DAY = 86400e3, WEEK = 7 * DAY;
 export const STAT_AWARDS = {
@@ -246,6 +246,7 @@ export async function awardsRoute(p, method, body, me, env, loadSite, log, url) 
     const ch = String(body.channel ?? '');
     if (ch && !/^\d{5,25}$/.test(ch)) return fail('Pick a channel.');
     await run(env, ch ? "INSERT INTO meta (key, value) VALUES ('awards_channel', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value" : "DELETE FROM meta WHERE key = 'awards_channel' AND ? = ''", ch);
+    await mirrorChannel(env, 'awards', ch, { explicit: true }); // dual-write into discord_channels so the legacy meta key can retire
     return json(await state(env, me, loadSite));
   }
   if (p === '/api/awards/close') {

@@ -5,7 +5,7 @@ import { env, sqlite, call, login, ROOT } from './mock.mjs';
 import worker from '../bot/worker.js';
 import { t, done } from './lib.mjs';
 import { plainText } from '../bot/ui.js';
-import { channelFor, channelsFor, CHANNEL_PURPOSES, CHANNEL_PURPOSE_INFO } from '../bot/orgconfig.js';
+import { channelFor, channelsFor, mirrorChannel, CHANNEL_PURPOSES, CHANNEL_PURPOSE_INFO } from '../bot/orgconfig.js';
 import { memberWatch } from '../bot/servertools.js';
 
 const owner = await login('111', [], 'Owner'); // before Discord is stubbed: login talks to the mock OAuth
@@ -116,6 +116,23 @@ sqlite.prepare("UPDATE discord_channels SET active = 0 WHERE purpose = 'awards'"
 t('with the config row switched off the legacy value still works (dual read)', (await channelFor(env, 'awards')) === 'legacy-1');
 t('several channels per purpose are all returned', (ADD('hype', '1500000000000000034'), (await channelsFor(env, 'hype')).length) >= 2);
 
+// the older /awards and /docs channel commands dual-write into discord_channels
+const guildWas = env.DISCORD_GUILD_ID; env.DISCORD_GUILD_ID = GUILD; // the Worker's own server, as in production
+const chRows = (purpose) => sqlite.prepare("SELECT channel_id, active FROM discord_channels WHERE purpose = ? ORDER BY id").all(purpose);
+await mirrorChannel(env, 'fun_posts', '1500000000000000051');
+t('a post-time mirror fills a purpose that has no row', chRows('fun_posts').length === 1 && (await channelFor(env, 'fun_posts')) === '1500000000000000051');
+await mirrorChannel(env, 'fun_posts', '1500000000000000052');
+t('a post-time mirror never overrides a configured channel', chRows('fun_posts').length === 1 && chRows('fun_posts')[0].channel_id === '1500000000000000051');
+await mirrorChannel(env, 'fun_posts', '1500000000000000052', { explicit: true });
+t('a manager pick replaces the org-level row', chRows('fun_posts').length === 1 && (await channelFor(env, 'fun_posts')) === '1500000000000000052');
+await mirrorChannel(env, 'fun_posts', '', { explicit: true });
+t('clearing it switches the row off', chRows('fun_posts').every((r) => !r.active));
+t('bad ids and unknown purposes are refused', !(await mirrorChannel(env, 'fun_posts', 'nope', { explicit: true })) && !(await mirrorChannel(env, 'not_a_purpose', '1500000000000000053')));
+sqlite.prepare("DELETE FROM discord_channels WHERE purpose = 'awards'").run();
+const sv = await call(owner, '/api/awards/settings', { channel: '1500000000000000061' });
+t('the Awards settings endpoint writes the meta key and the config row', sv.s === 200 && sqlite.prepare("SELECT value FROM meta WHERE key = 'awards_channel'").get()?.value === '1500000000000000061' && chRows('awards').some((r) => r.channel_id === '1500000000000000061' && r.active));
+
+env.DISCORD_GUILD_ID = guildWas;
 // the leave/join watcher posts where member_log points
 ADD('member_log', '1500000000000000041');
 env.GUILD_ID = '9';

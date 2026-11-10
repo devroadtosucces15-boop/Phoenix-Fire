@@ -37,6 +37,7 @@ export const CHANNEL_PURPOSE_INFO = {
   hype: 'Hype art posts', voice_recap: 'Voice chat recaps', live_alerts: 'Go-live alerts (falls back to announcements)',
   fun_posts: 'Birthdays and other fun posts (falls back to announcements)', automod_alerts: 'AutoMod alerts',
   rush_queue: 'The Rush queue board (the bot keeps one always-latest board here)', rush_queue_reports: 'Anonymous Rush queue reports for staff',
+  rush_board: 'Rush leaderboard scan posts', season_stats: 'Season stats posts',
 };
 // A purpose with no row of its own may fall back to another purpose before giving up (the old behaviour of the posts that used
 // the shared announce channel). Anything not listed has no fallback: if nothing is configured the feature says so.
@@ -264,6 +265,28 @@ export async function channelsFor(env, purpose, { clubId = null, divisionId = nu
 }
 // The channel a feature posts to for a purpose, or null: callers say "no channel is set" and never substitute another one.
 export const channelFor = async (env, purpose, scope) => (await channelsFor(env, purpose, scope))[0] ?? null;
+
+// Dual-write for the older channel commands (the Awards settings and the /docs post), which still keep their meta key so nothing
+// that reads it breaks: they also record the choice here, so the website's Organization section and every config reader agree and
+// the legacy meta keys can retire. `explicit` (a manager picked it) replaces the org-level row; otherwise (a post that merely
+// used a channel) only fills a purpose that has no row yet, so a configured channel is never overridden. Never throws.
+export async function mirrorChannel(env, purpose, channelId, { explicit = false } = {}) {
+  try {
+    if (!CHANNEL_PURPOSES.includes(purpose)) return false;
+    const id = String(channelId ?? '');
+    const server = (env.DISCORD_GUILD_ID && await one(env, 'SELECT id FROM discord_servers WHERE guild_id = ? AND active = 1', String(env.DISCORD_GUILD_ID)))
+      || (await all(env, 'SELECT id FROM discord_servers WHERE active = 1 ORDER BY id LIMIT 2')).filter((_, __, a) => a.length === 1)[0];
+    if (!server) return false;
+    const cur = await all(env, "SELECT id, channel_id FROM discord_channels WHERE server_id = ? AND purpose = ? AND scope_type = 'org' AND active = 1 ORDER BY id", server.id, purpose);
+    if (!id) { if (explicit) for (const r of cur) await run(env, 'UPDATE discord_channels SET active = 0 WHERE id = ?', r.id); return explicit; }
+    if (!/^\d{5,25}$/.test(id)) return false;
+    if (cur.some((r) => String(r.channel_id) === id)) return true;
+    if (cur.length && !explicit) return false;
+    if (cur.length) await run(env, 'UPDATE discord_channels SET channel_id = ? WHERE id = ?', id, cur[0].id);
+    else await run(env, "INSERT INTO discord_channels (server_id, channel_id, purpose, scope_type, label, active) VALUES (?, ?, ?, 'org', '', 1)", server.id, id, purpose);
+    return true;
+  } catch { return false; }
+}
 
 // ---------- readers for the rest of the system ----------
 
