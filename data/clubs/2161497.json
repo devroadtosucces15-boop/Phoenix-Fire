@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-10T23:30:41.731Z",
+ "fetchedAt": "2026-11-10T23:40:39.193Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -511,6 +511,42 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "midfielder"
+  },
+  {
+   "name": "ImWizardJr",
+   "gamesPlayed": "0",
+   "favoritePosition": "",
+   "winRate": "0",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "0",
+   "passSuccessRate": "0",
+   "ratingAve": "0.0",
+   "tacklesMade": "0",
+   "tackleSuccessRate": "0",
+   "proName": "",
+   "proPos": "",
+   "proStyle": "",
+   "proHeight": "",
+   "proNationality": "",
+   "proOverall": "0",
+   "proOverallStr": "",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0"
   }
  ],
  "positionCount": {
@@ -552,6 +588,17 @@
    "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "forward"
+  },
+  {
+   "name": "ImWizardJr",
+   "proPos": "",
+   "gamesPlayed": "0",
+   "goals": "0",
+   "assists": "0",
+   "manOfTheMatch": "0",
+   "ratingAve": "0.0",
+   "prevGoals": "0",
+   "favoritePosition": ""
   },
   {
    "name": "xEthxnH-_-",
