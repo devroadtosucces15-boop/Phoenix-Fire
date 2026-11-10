@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sets each Discord bot token in the Worker AND in GitHub Actions, one prompt per app.
 # Input is hidden and never written to disk. Press Enter on an empty prompt to skip an app.
-# Usage: set-tokens.sh [CORE STATS TOOLS FUN]   (default: all four)
+# Usage: set-tokens.sh [CORE STATS TOOLS FUN MATCHDAY RUSH]   (default: all six)
 set -u
 cd "$(dirname "$0")"
 REPO=devroadtosucces15-boop/Phoenix-Fire
@@ -11,7 +11,7 @@ put() { # $1 = secret name, $2 = token
   gh secret set "$1" --repo "$REPO" --body "$2" && echo "  github: $1 set"
 }
 
-apps=("$@"); [ ${#apps[@]} -eq 0 ] && apps=(CORE STATS TOOLS FUN)
+apps=("$@"); [ ${#apps[@]} -eq 0 ] && apps=(CORE STATS TOOLS FUN MATCHDAY RUSH)
 for app in "${apps[@]}"; do
   printf 'Bot token for %s (Portal > that app > Bot > Reset Token), Enter to skip: ' "$app"
   read -rs tok; echo

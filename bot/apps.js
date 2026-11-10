@@ -6,6 +6,8 @@
 //   stats – club and player records
 //   tools – management + member tools
 //   fun   – engagement
+//   matchday – running one 11v11 match day (planned, PLANNING/BOT-SPLIT.md)
+//   rush  – 5v5 Rush: member-logged games, LFG, queue (planned)
 //
 // Credentials per app (see bot/README.md): DISCORD_APP_ID_<APP>, DISCORD_PUBLIC_KEY_<APP> (public vars),
 // DISCORD_BOT_TOKEN_<APP> (secret). core also falls back to the old unsuffixed DISCORD_APP_ID / DISCORD_PUBLIC_KEY /
@@ -18,7 +20,7 @@ import { COMMANDS, APP_COMMANDS, buildRegistration } from './commanddefs.js';
 export const APPS = Object.keys(APP_COMMANDS);
 const OWNER = new Map(Object.entries(APP_COMMANDS).flatMap(([app, names]) => names.map((n) => [n, app])));
 export const appOf = (name) => OWNER.get(name) ?? null;
-export const APP_LABEL = { core: 'Phoenix', stats: 'Phoenix Stats', tools: 'Phoenix Tools', fun: 'Phoenix Fun' };
+export const APP_LABEL = { core: 'Phoenix', stats: 'Phoenix Stats', tools: 'Phoenix Tools', fun: 'Phoenix Fun', matchday: 'Phoenix Matchday', rush: 'Phoenix Rush' };
 
 const pick = (env, base, app) => env?.[`${base}_${app.toUpperCase()}`] || (app === 'core' ? env?.[base] : '') || '';
 export function appCreds(env, app) {

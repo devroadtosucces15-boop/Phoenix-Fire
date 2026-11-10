@@ -245,6 +245,10 @@ export const APP_COMMANDS = {
   tools: ['setup', 'purge', 'announce', 'trial', 'host', 'panel', 'insights', 'watchlist', 'exportcontent', 'profanitysetup', 'tag', 'tags', 'remind', 'reminders',
     'suggest', 'feedback', 'schedule', 'nextevent', 'availability', 'lineup'],
   fun: ['jail', 'wheel', 'trivia', 'share', 'discoveries', 'watch', 'awards', 'points', 'avatarcard'],
+  // Planned apps (PLANNING/BOT-SPLIT.md): empty until their Discord application exists, so nothing moves yet. Commands are
+  // moved here in waves MB1 (matchday) and MB4 (rush); an unconfigured app lends its commands to core, so a move is safe.
+  matchday: [],
+  rush: [],
 };
 // Management commands: hidden from non-staff in Discord (Manage Roles bit) on top of the Worker's can() check.
 export const STAFF_COMMANDS = ['insights', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'watchlist', 'setup', 'purge', 'panel', 'host'];

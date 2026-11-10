@@ -11,7 +11,8 @@ import { t, tt, done } from './lib.mjs';
 // ---------- the map ----------
 const names = COMMANDS.map((c) => c.name);
 const owned = Object.values(APP_COMMANDS).flat();
-t('apps are core, stats, tools, fun', APPS.join() === 'core,stats,tools,fun');
+t('apps are core, stats, tools, fun, matchday, rush', APPS.join() === 'core,stats,tools,fun,matchday,rush');
+t('matchday and rush are planned: no commands yet, so nothing moved', APP_COMMANDS.matchday.length === 0 && APP_COMMANDS.rush.length === 0);
 t('every command belongs to exactly one app', names.every((n) => owned.filter((x) => x === n).length === 1));
 t('the app map names no unknown command', owned.every((n) => names.includes(n)) && owned.length === names.length);
 t('sample owners', appOf('club') === 'stats' && appOf('purge') === 'tools' && appOf('jail') === 'fun' && appOf('syncroles') === 'core' && appOf('nope') === null);

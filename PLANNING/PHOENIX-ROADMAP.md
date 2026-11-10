@@ -12,21 +12,19 @@ Motto: **Rise. Burn. Repeat.** Phoenix is its own project; NOREX data and compat
 
 - **0053 docs seed.** Rewritten for Phoenix (`bot/migrations/0053_club_docs_content.sql`): welcome, philosophy, 14 rules, requirements and FAQ in Phoenix voice, no NOREX text and no invented club facts. Still on the release hold (nothing pinned, notified or posted until the owner releases the docs). Test: `tests/docsseed.test.mjs`. A database that already ran the old 0053 keeps its rows; apply the new content by re-running the file or editing the docs in the app.
 
+- **Matchday and Rush plumbing.** `matchday` and `rush` are known apps (no commands yet), `bot.yml` and `set-tokens.sh` carry their tokens, icons exist. Design and waves: `PLANNING/BOT-SPLIT.md`. Secrets (VAPID, dispatch, analytics) set 2026-11-10; invite link and guild ID filled in.
+
 ## Open
 
 - **DJ bots on separate hosting.** The music bots cannot run on the Worker; they need their own host.
 - **Worker URL.** `phoenix-bot.norexunited.workers.dev` answers (2026-11-10: root 200, `/api/rush`, `/api/feed/public` and `/api/live` return empty-but-valid JSON, CORS allows only the Pages origin). Rush, News and Watch render their Phoenix empty states against those real responses. Still decide before the public launch whether it keeps the `norexunited` account host. From any origin other than the Pages site, the browser blocks its API calls (CORS), so the Rush log, news feed and live banner stay in their fallback state when previewed on localhost.
 - **Player pages with a space in the name 404 on Pages.** `player-Ana%20Montana8022.html`, `player-Bantu%20Vikng.html` and `player-KOEN%20WIE.html` are written with a literal `%20` in the file name, so the link decodes to a name that does not exist. Fix in the `next/` build (write the file with the decoded name or slug the key). The other 47 player pages load.
-- **`bot.yml`.** Its *Bot icon set* step passes only `DISCORD_BOT_TOKEN`. Add `DISCORD_BOT_TOKEN_STATS`, `_TOOLS` and `_FUN` to that step's `env:` so each app gets its own emoji set.
-- **Stats, tools and fun apps.** Create them in the Developer Portal (checklist in `bot/README.md`).
+- **Matchday and Rush apps.** Create them in the Developer Portal (checklist in `bot/README.md`), then waves MB3, MB1, MB2, MB4, MB5, MB6 in `PLANNING/BOT-SPLIT.md`. MB6 (queue manager) needs the owner's earlier code.
 
 ## What the owner must provide
 
 | Item | Where it goes |
 |---|---|
-| Discord invite link | `phoenix/live.json` `invite`, `config.json` `discord.applyLink` |
-| Discord server ID (guild) | `config.json` `discord.guildId` |
-| Bot portal link | `config.json` `discord.botPortal` |
 | YouTube and Twitch links | `config.json` `streams.youtube`, `streams.twitch` |
 | Founded date | `config.json` `brand.founded`, `phoenix/live.json` `founded` |
 

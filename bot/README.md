@@ -10,6 +10,8 @@ The map lives in `bot/commanddefs.js` (`APP_COMMANDS`); routing helpers are in `
 | `stats` | Club and player records | `<PUBLIC_URL>/interactions/stats` |
 | `tools` | Management and member tools (setup, purge, announce, trial, host, tags, remind, events…) | `<PUBLIC_URL>/interactions/tools` |
 | `fun`   | Engagement (jail, wheel, trivia, share, awards, points…) | `<PUBLIC_URL>/interactions/fun` |
+| `matchday` | *Planned.* Setting up and running one 11v11 match day (see `PLANNING/BOT-SPLIT.md`) | `<PUBLIC_URL>/interactions/matchday` |
+| `rush` | *Planned.* 5v5 Rush: member-logged games, LFG, queue | `<PUBLIC_URL>/interactions/rush` |
 
 Music/DJ bots are out of scope (they need voice hosting outside the Worker).
 
@@ -24,7 +26,7 @@ Music/DJ bots are out of scope (they need voice hosting outside the Worker).
 
 ## Names
 
-Replace `<APP>` with `CORE`, `STATS`, `TOOLS` or `FUN`.
+Replace `<APP>` with `CORE`, `STATS`, `TOOLS`, `FUN`, `MATCHDAY` or `RUSH`.
 
 | Name | Kind | Where it lives |
 |---|---|---|
