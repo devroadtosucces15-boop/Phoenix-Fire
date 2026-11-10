@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-10T21:40:37.574Z",
+ "fetchedAt": "2026-11-10T21:50:42.817Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1995,12 +1995,12 @@
   {
    "name": "KOEN WIE",
    "proPos": "25",
-   "gamesPlayed": "52",
-   "goals": "8",
+   "gamesPlayed": "53",
+   "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2017,7 +2017,7 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "36",
+   "gamesPlayed": "37",
    "goals": "5",
    "assists": "15",
    "manOfTheMatch": "1",
@@ -2093,14 +2093,14 @@
   },
   {
    "name": "YAMI-_-77",
-   "proPos": "14",
-   "gamesPlayed": "252",
-   "goals": "124",
-   "assists": "86",
+   "proPos": "5",
+   "gamesPlayed": "253",
+   "goals": "125",
+   "assists": "87",
    "manOfTheMatch": "37",
    "ratingAve": "7.7",
-   "prevGoals": "2",
-   "favoritePosition": "midfielder"
+   "prevGoals": "1",
+   "favoritePosition": "defender"
   },
   {
    "name": "CanerAKC",
@@ -2248,11 +2248,11 @@
   {
    "name": "ManiManolo88",
    "proPos": "25",
-   "gamesPlayed": "6",
+   "gamesPlayed": "7",
    "goals": "3",
    "assists": "0",
-   "manOfTheMatch": "2",
-   "ratingAve": "7.3",
+   "manOfTheMatch": "3",
+   "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
