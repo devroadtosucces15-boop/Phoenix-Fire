@@ -34,7 +34,16 @@ rooms.init(main.client);
 await Promise.all(helpers.map((h) => h.login()));
 await Promise.all(helpers.map((h) => (h.client.isReady() ? 1 : h.ready())));
 await icons.ensure(main.client.rest, env.MAIN_APP_ID);
-await new REST().setToken(env.MAIN_TOKEN).put(Routes.applicationGuildCommands(env.MAIN_APP_ID, env.GUILD_ID), { body: DEFS });
+// Register the slash commands in the server. Until the bot is invited Discord answers 50001 Missing Access: wait and retry
+// (staying logged in) instead of exiting, so the service does not restart-loop and burn Discord logins.
+for (let tries = 0; ; tries++) {
+  try { await new REST().setToken(env.MAIN_TOKEN).put(Routes.applicationGuildCommands(env.MAIN_APP_ID, env.GUILD_ID), { body: DEFS }); break; }
+  catch (e) {
+    if (e?.code !== 50001) throw e;
+    if (tries === 0) console.log(`${BOT} is not in server ${env.GUILD_ID} yet. Invite it: https://discord.com/oauth2/authorize?client_id=${env.MAIN_APP_ID} (retrying every minute)`);
+    await new Promise((r) => setTimeout(r, 60_000));
+  }
+}
 for (const b of store.bindings.values()) panel.refresh(b, 1500);
 startReportWatch(main.client);
 rooms.reconcile();
