@@ -354,10 +354,14 @@ export async function cardResult(request, me, env, id) {
   return new Response(obj.body, { headers: h });
 }
 
-export const cardPrompt = (poseFragment) =>
-  'Image 0 is the card background: keep its colours, framing and empty centre exactly. '
-  + `Image 1 is the player: keep their real face, hair and skin tone. Place the player from image 1 in the centre of image 0, ${poseFragment}. `
-  + 'Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
+// level > 0 = plainer wording for the retry after the AI safety filter flagged the result.
+export const cardPrompt = (poseFragment, level = 0) => level >= 2
+  ? 'Place the person from image 1 in the centre of image 0.'
+  : level === 1
+    ? `Image 0 is the background. Image 1 is the player. Place the player in the centre of the background, ${poseFragment}.`
+    : 'Image 0 is the card background: keep its colours, framing and empty centre exactly. '
+      + `Image 1 is the player: keep their real face, hair and skin tone. Place the player from image 1 in the centre of image 0, ${poseFragment}. `
+      + 'Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
 
 // FLUX.2 rejects references of 512×512 or more; shrink with the Images binding when it is bound.
 async function reference(env, bytes, type) {
@@ -424,7 +428,7 @@ async function render(env, bg, pose, photo, portrait = false, kit = null, level 
   if (!env.AI) throw new Error('The AI binding is not connected.');
   if (level > 0) kit = null; // a second picture of a person is the likeliest thing for the safety filter to trip on
   const form = new FormData();
-  form.append('prompt', portrait ? portraitPrompt(!!kit, level) : cardPrompt(pose.prompt));
+  form.append('prompt', portrait ? portraitPrompt(!!kit, level) : cardPrompt(pose.prompt, level));
   form.append('width', String(CARD_SIZE));
   form.append('height', String(CARD_SIZE));
   if (!portrait) form.append('input_image_0', await reference(env, bg.bytes, bg.type), 'background.png');
@@ -455,41 +459,51 @@ async function generateOne(env, r, now) {
   now, r.id, MAX_ATTEMPTS, now - RETRY_AFTER, now - STALE_AFTER);
   if (!claimed.meta?.changes) return 'skipped';
   const attempt = r.attempts + 1;
-  let resultKey = null;
-  let portraitKey = null;
+  const wantP = r.portrait_enabled === 1, wantA = r.avatar_enabled !== 0;
+  let portraitKey = r.portrait_key || null; // outputs made on an earlier try are kept: only what is missing is made again
+  let resultKey = r.result_key || null;
   try {
     const [bgT, poseT] = await Promise.all([one(env, 'SELECT asset_key FROM card_templates WHERE id = ?', r.bg_id), one(env, 'SELECT prompt FROM card_templates WHERE id = ?', r.pose_id)]);
     const [bg, photo] = await Promise.all([readAsset(env, bgT?.asset_key), readAsset(env, r.photo_key)]);
-    if (r.avatar_enabled !== 0 && (!bg || !poseT)) throw new Error('The chosen background or pose is gone.');
     if (!photo) throw new Error('The photo is gone.');
-    // The portrait is what every card shows, so it is made first. If the AI's safety filter flags it, the same run
-    // retries straight away with plainer inputs (no kit picture, then a minimal prompt) instead of repeating the same request.
-    if (r.portrait_enabled === 1) {
-      const kit = await readAsset(env, KIT_KEY);
-      let picture = null, lastErr = null;
-      for (let level = 0; level <= 2 && !picture; level++) {
-        try { picture = await render(env, bg, poseT, photo, true, kit, level); } catch (e) { lastErr = e; if (!flagged(e)) throw e; console.log('card flagged, trying a plainer prompt', r.id, level); }
+    // The two outputs are independent: the transparent PNG portrait (what every card on the site shows) and the cinematic
+    // background card (download only). Each has its own plainer-prompt fallback if the AI safety filter flags it (error 3030),
+    // is saved the moment it exists, and a failure of one never throws away or blocks the other.
+    const errors = [];
+    const store = async (column, picture) => {
+      const key = `cardresult/${hex(16)}.${picture.type[1]}`;
+      await env.MEDIA.put(key, picture.bytes, { httpMetadata: { contentType: picture.type[0] } });
+      const saved = await run(env, `UPDATE card_requests SET ${column} = ? WHERE id = ? AND status = 'generating'`, key, r.id);
+      if (!saved.meta?.changes) { await dropPhoto(env, key); throw new Error('The request changed while it was being made.'); }
+      return key;
+    };
+    const attemptEach = async (label, make) => {
+      let lastErr = null;
+      for (let level = 0; level <= 2; level++) {
+        try { return await make(level); } catch (e) { lastErr = e; if (quotaHit(e)) throw e; if (!flagged(e)) break; console.log(`${label} flagged, trying a plainer prompt`, r.id, level); }
       }
-      if (!picture) throw lastErr;
-      const portrait = await cutPortrait(env, picture);
-      portraitKey = `cardresult/${hex(16)}.${portrait.type[1]}`;
-      await env.MEDIA.put(portraitKey, portrait.bytes, { httpMetadata: { contentType: portrait.type[0] } });
+      errors.push(`${label}: ${lastErr?.message || lastErr}`);
+      return null;
+    };
+    if (wantP && !portraitKey) {
+      const kit = await readAsset(env, KIT_KEY);
+      portraitKey = await attemptEach('portrait', async (level) => store('portrait_key', await cutPortrait(env, await render(env, bg, poseT, photo, true, kit, level))));
     }
-    if (r.avatar_enabled !== 0) {
-      try {
-        const card = await render(env, bg, poseT, photo);
-        resultKey = `cardresult/${hex(16)}.${card.type[1]}`;
-        await env.MEDIA.put(resultKey, card.bytes, { httpMetadata: { contentType: card.type[0] } });
-      } catch (e) { if (!(portraitKey && flagged(e))) throw e; console.log('background card flagged, keeping the portrait only', r.id); } // the portrait alone is enough for every card on the site
+    if (wantA && !resultKey) {
+      resultKey = await attemptEach('cinematic', async (level) => {
+        if (!bg || !poseT) throw new Error('The chosen background or pose is gone.');
+        return store('result_key', await render(env, bg, poseT, photo, false, null, level));
+      });
     }
-    const res = await run(env, "UPDATE card_requests SET status = 'done', published = 0, result_key = ?, portrait_key = ?, started_at = NULL WHERE id = ? AND status = 'generating'", resultKey, portraitKey, r.id);
-    if (!res.meta?.changes) { await dropPhoto(env, resultKey); await dropPhoto(env, portraitKey); return 'skipped'; }
-    await safely(notifyManagers(env, { icon: '🎨', title: 'Card artwork awaiting review', body: `Request #${r.id} is ready for final approval.`, link: 'members.html#cards', ref: `cardreview:${r.id}` }));
+    const complete = (!wantP || portraitKey) && (!wantA || resultKey);
+    const usable = wantP ? portraitKey : resultKey; // the site needs the portrait; the cinematic card alone is enough only when no portrait was asked for
+    if (!complete && !(attempt >= MAX_ATTEMPTS && usable)) throw new Error(errors.join(' · ') || 'Nothing was made.');
+    const res = await run(env, "UPDATE card_requests SET status = 'done', published = 0, started_at = NULL WHERE id = ? AND status = 'generating'", r.id);
+    if (!res.meta?.changes) return 'skipped';
+    await safely(notifyManagers(env, { icon: '🎨', title: 'Card artwork awaiting review', body: `Request #${r.id} is ready for final approval${complete ? '' : ` (${errors.join(' · ')})`}.`, link: 'members.html#cards', ref: `cardreview:${r.id}` }));
     return 'done';
   } catch (e) {
     console.log('card generation failed', r.id, attempt, e.message);
-    if (resultKey) await dropPhoto(env, resultKey);
-    if (portraitKey) await dropPhoto(env, portraitKey);
     if (quotaHit(e)) { // not the card's fault: park it (attempt refunded) until the daily allowance resets, then retry on its own
       const resume = (Math.floor(now / DAY) + 1) * DAY - RETRY_AFTER + 60e3;
       await run(env, "UPDATE card_requests SET status = 'approved', attempts = MAX(attempts - 1, 0), started_at = ? WHERE id = ? AND status = 'generating'", resume, r.id);

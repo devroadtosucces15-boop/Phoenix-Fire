@@ -255,8 +255,26 @@ const portraitCalls = calls.filter((c) => /#00FF00/.test(c.form.get('prompt')));
 t('retries are plainer: three portrait tries, no kit picture after the first', portraitCalls.length === 3 && !portraitCalls[1].form.get('input_image_1') && !portraitCalls[2].form.get('input_image_1'));
 await rearm(); flags = 99;
 t('a picture flagged at every level still fails the try', (await generateCards(env, { now: 6e12 }))[0] === 'retry' && (await row(two.id)).status === 'approved');
+// independence: a failing cinematic card never costs the portrait (and the other way round)
 await rearm(); flags = 0; flagAvatar = true;
-t('a flagged background card keeps the portrait only', (await generateCards(env, { now: 7e12 }))[0] === 'done' && !!(await row(two.id)).portrait_key && (await row(two.id)).result_key === null);
+t('cinematic flagged: portrait is saved, request goes back for another try', (await generateCards(env, { now: 7e12 }))[0] === 'retry' && !!(await row(two.id)).portrait_key && (await row(two.id)).result_key === null && (await row(two.id)).status === 'approved');
+const keptPortrait = (await row(two.id)).portrait_key;
+calls.length = 0;
+t('next try only remakes the missing cinematic', (await generateCards(env, { now: 7e12 + 3 * 60e3 }))[0] === 'retry' && calls.every((c) => !/#00FF00/.test(c.form.get('prompt'))) && (await row(two.id)).portrait_key === keptPortrait);
+t('final try ships the portrait even if the cinematic never worked', (await generateCards(env, { now: 7e12 + 6 * 60e3 }))[0] === 'done' && (await row(two.id)).attempts === 3 && (await row(two.id)).status === 'done' && !!(await row(two.id)).portrait_key);
+flagAvatar = false;
+await rearm(); flags = 0;
+env.AI.run = async (model, input) => {
+  const form = await new Response(input.multipart.body, { headers: { 'content-type': input.multipart.contentType } }).formData();
+  if (!/#00FF00/.test(form.get('prompt'))) throw new Error('model busy');
+  return { image: outPng.toString('base64') };
+};
+t('cinematic erroring (not flagged) still keeps the portrait', (await generateCards(env, { now: 8e12 }))[0] === 'retry' && !!(await row(two.id)).portrait_key);
+env.AI.run = async () => ({ image: outPng.toString('base64') });
+t('both outputs present → done with portrait and cinematic', (await generateCards(env, { now: 8e12 + 3 * 60e3 }))[0] === 'done' && !!(await row(two.id)).portrait_key && !!(await row(two.id)).result_key);
+await rearm();
+await env.DB.prepare("UPDATE card_requests SET portrait_enabled = 0 WHERE id = ?").bind(two.id).run();
+t('cinematic-only request works without a portrait', (await generateCards(env, { now: 9e12 }))[0] === 'done' && (await row(two.id)).portrait_key === null && !!(await row(two.id)).result_key);
 env.AI.run = realRun; flagAvatar = false;
 env.AI = realAI;
 
