@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-11T23:20:37.461Z",
+ "fetchedAt": "2026-11-11T23:30:50.835Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1865,7 +1865,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "67",
+   "gamesPlayed": "68",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
