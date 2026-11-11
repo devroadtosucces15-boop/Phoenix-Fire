@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-11T23:00:43.230Z",
+ "fetchedAt": "2026-11-11T23:10:40.909Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1164,14 +1164,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "25",
-   "gamesPlayed": "178",
+   "proPos": "0",
+   "gamesPlayed": "179",
    "goals": "160",
    "assists": "110",
    "manOfTheMatch": "35",
    "ratingAve": "7.8",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "Ibekayne",
@@ -1197,24 +1197,24 @@
   },
   {
    "name": "xEthxnH-_-",
-   "proPos": "14",
-   "gamesPlayed": "44",
-   "goals": "8",
+   "proPos": "25",
+   "gamesPlayed": "45",
+   "goals": "9",
    "assists": "9",
    "manOfTheMatch": "0",
    "ratingAve": "7.1",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "prevGoals": "1",
+   "favoritePosition": "forward"
   },
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "92",
-   "goals": "41",
+   "gamesPlayed": "93",
+   "goals": "42",
    "assists": "36",
    "manOfTheMatch": "12",
    "ratingAve": "7.5",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -1242,7 +1242,7 @@
   {
    "name": "leo77romano",
    "proPos": "14",
-   "gamesPlayed": "156",
+   "gamesPlayed": "157",
    "goals": "35",
    "assists": "24",
    "manOfTheMatch": "8",

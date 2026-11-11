@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-11T23:00:43.230Z",
+ "fetchedAt": "2026-11-11T23:10:40.909Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1843,6 +1843,42 @@
    "prevGoals8": "0",
    "prevGoals9": "0",
    "prevGoals10": "0"
+  },
+  {
+   "name": "LightHazee_",
+   "gamesPlayed": "0",
+   "favoritePosition": "",
+   "winRate": "0",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "0",
+   "passSuccessRate": "0",
+   "ratingAve": "0.0",
+   "tacklesMade": "0",
+   "tackleSuccessRate": "0",
+   "proName": "",
+   "proPos": "",
+   "proStyle": "",
+   "proHeight": "",
+   "proNationality": "",
+   "proOverall": "0",
+   "proOverallStr": "",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0"
   }
  ],
  "positionCount": {
@@ -1953,14 +1989,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "25",
-   "gamesPlayed": "178",
+   "proPos": "0",
+   "gamesPlayed": "179",
    "goals": "160",
    "assists": "110",
    "manOfTheMatch": "35",
    "ratingAve": "7.8",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "Ibekayne",
@@ -2019,14 +2055,14 @@
   },
   {
    "name": "xEthxnH-_-",
-   "proPos": "14",
-   "gamesPlayed": "44",
-   "goals": "8",
+   "proPos": "25",
+   "gamesPlayed": "45",
+   "goals": "9",
    "assists": "9",
    "manOfTheMatch": "0",
    "ratingAve": "7.1",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "prevGoals": "1",
+   "favoritePosition": "forward"
   },
   {
    "name": "Dimantu_",
@@ -2086,11 +2122,11 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "66",
+   "gamesPlayed": "67",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.1",
+   "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
@@ -2185,7 +2221,7 @@
   {
    "name": "leo77romano",
    "proPos": "14",
-   "gamesPlayed": "156",
+   "gamesPlayed": "157",
    "goals": "35",
    "assists": "24",
    "manOfTheMatch": "8",
@@ -2196,7 +2232,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "95",
+   "gamesPlayed": "96",
    "goals": "38",
    "assists": "47",
    "manOfTheMatch": "5",
@@ -2390,6 +2426,17 @@
    "ratingAve": "8.2",
    "prevGoals": "0",
    "favoritePosition": "forward"
+  },
+  {
+   "name": "LightHazee_",
+   "proPos": "0",
+   "gamesPlayed": "1",
+   "goals": "0",
+   "assists": "0",
+   "manOfTheMatch": "0",
+   "ratingAve": "6.3",
+   "prevGoals": "0",
+   "favoritePosition": "goalkeeper"
   }
  ],
  "leaderboard": {

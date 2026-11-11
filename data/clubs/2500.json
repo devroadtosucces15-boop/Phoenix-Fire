@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-11T23:00:43.230Z",
+ "fetchedAt": "2026-11-11T23:10:40.909Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1865,11 +1865,11 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "66",
+   "gamesPlayed": "67",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.1",
+   "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
@@ -2096,12 +2096,12 @@
   {
    "name": "ManiManolo88",
    "proPos": "25",
-   "gamesPlayed": "15",
+   "gamesPlayed": "16",
    "goals": "5",
    "assists": "2",
    "manOfTheMatch": "4",
    "ratingAve": "7.4",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
