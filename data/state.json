@@ -3,7 +3,7 @@
   "1111": {
    "tier": "home",
    "firstSeen": "2026-11-09T20:42:03.405Z",
-   "lastFetched": "2026-11-11T15:20:39.161Z",
+   "lastFetched": "2026-11-11T15:30:37.302Z",
    "fails": 0,
    "depth": 0,
    "name": "Phoenix Fire"
@@ -11,7 +11,7 @@
   "2484": {
    "tier": "home",
    "firstSeen": "2026-11-10T14:50:38.305Z",
-   "lastFetched": "2026-11-11T15:20:39.161Z",
+   "lastFetched": "2026-11-11T15:30:37.302Z",
    "fails": 0,
    "depth": 0,
    "name": "Phoenix Fire XI"
@@ -19,7 +19,7 @@
   "2500": {
    "tier": "home",
    "firstSeen": "2026-11-10T15:00:39.932Z",
-   "lastFetched": "2026-11-11T15:20:39.161Z",
+   "lastFetched": "2026-11-11T15:30:37.302Z",
    "fails": 0,
    "depth": 0,
    "name": "Phoenix FIIre"
@@ -27,7 +27,7 @@
   "2161497": {
    "tier": "home",
    "firstSeen": "2026-11-10T18:10:38.200Z",
-   "lastFetched": "2026-11-11T15:20:39.161Z",
+   "lastFetched": "2026-11-11T15:30:37.302Z",
    "fails": 0,
    "depth": 0,
    "name": "Phoenix FIIIre"
