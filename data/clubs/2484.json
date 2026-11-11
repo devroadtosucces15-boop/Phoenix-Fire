@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-11T19:00:41.545Z",
+ "fetchedAt": "2026-11-11T19:10:39.582Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1253,8 +1253,8 @@
   {
    "name": "Voro2rt",
    "proPos": "25",
-   "gamesPlayed": "322",
-   "goals": "435",
+   "gamesPlayed": "323",
+   "goals": "436",
    "assists": "148",
    "manOfTheMatch": "93",
    "ratingAve": "8.0",
