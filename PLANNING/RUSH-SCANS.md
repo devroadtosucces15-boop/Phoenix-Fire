@@ -30,3 +30,6 @@ The end date is the day the season rolls over and is not counted: 22 Oct → 3 D
 5. First use of the vision model may need the one-off licence agreement; the code sends "agree" and retries by itself.
 
 Throughput: reads are capped per person per hour (Workers AI free tier is metered).
+
+## Optional offline leaderboard reader (dark by default)
+`tools/board-ocr/` reads the leaderboard with OCR (RapidOCR/ONNX) instead of the vision model, on a machine you run, and checks VP ÷ M = AVG VP itself. `scanBoard()` in `bot/scanocr.js` calls it first only when the Worker has both `BOARD_OCR_URL` and `BOARD_OCR_KEY`; if it is down, slow, or `cleanBoard()` rejects its read, the vision model runs as before. Season cards still use the vision model. Setup, flags and limits: `tools/board-ocr/README.md`. Tests: `tests/boardocr.test.mjs`.

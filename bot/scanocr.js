@@ -198,5 +198,29 @@ export function validateSeason(input, { ours = 'Phoenix Fire' } = {}) {
   return { stats, qc };
 }
 
-export const scanBoard = async (env, dataUrl, { timeoutMs, ...opts } = {}) => cleanBoard(await visionJson(env, dataUrl, BOARD_PROMPT, { timeoutMs }), opts);
+// Optional offline reader (tools/board-ocr, run on a machine you control). Dark until env.BOARD_OCR_URL and BOARD_OCR_KEY are set.
+// It reads the table with OCR instead of a vision model and checks VP ÷ M = AVG VP itself. Any failure, or a read that
+// cleanBoard() rejects, falls through to the vision model, so turning it on can never make a scan worse than today.
+async function offlineBoard(env, dataUrl, timeoutMs) {
+  const r = await fetch(`${String(env.BOARD_OCR_URL).replace(/\/$/, '')}/scan`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.BOARD_OCR_KEY}` },
+    body: JSON.stringify({ image: dataUrl }), signal: AbortSignal.timeout(Math.max(3000, Math.round(timeoutMs * 0.6))),
+  });
+  if (!r.ok) throw new Error(`offline reader said ${r.status}`);
+  return r.json();
+}
+export async function scanBoard(env, dataUrl, { timeoutMs = VISION_TIMEOUT_MS, ...opts } = {}) {
+  if (env.BOARD_OCR_URL && env.BOARD_OCR_KEY) {
+    try {
+      const raw = await offlineBoard(env, dataUrl, timeoutMs);
+      const out = cleanBoard(raw, opts);
+      const flagged = raw?.meta?.needs_review ? raw.meta.review_ranks ?? [] : [];
+      if (!out.qc.errors.length) {
+        if (flagged.length) out.qc.warnings.push(`The offline reader was unsure about rank${flagged.length > 1 ? 's' : ''} ${flagged.join(', ')}. Check those rows.`);
+        return { ...out, source: 'offline' };
+      }
+    } catch (e) { console.log('offline board reader skipped', e.message); }
+  }
+  return { ...cleanBoard(await visionJson(env, dataUrl, BOARD_PROMPT, { timeoutMs }), opts), source: 'vision' };
+}
 export const scanSeason = async (env, dataUrl, { timeoutMs, ...opts } = {}) => cleanSeason(await visionJson(env, dataUrl, SEASON_PROMPT, { maxTokens: 700, timeoutMs }), opts);

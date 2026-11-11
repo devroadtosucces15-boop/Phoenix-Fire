@@ -4,3 +4,5 @@ site/
 
 classic-build/
 .outbox/
+tools/board-ocr/.venv/
+tools/board-ocr/__pycache__/
