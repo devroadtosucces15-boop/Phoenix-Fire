@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-11T22:40:41.178Z",
+ "fetchedAt": "2026-11-11T22:50:37.180Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1865,11 +1865,11 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "65",
+   "gamesPlayed": "66",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.0",
+   "ratingAve": "7.1",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
@@ -2041,12 +2041,12 @@
   {
    "name": "Jakeyboy65466",
    "proPos": "14",
-   "gamesPlayed": "160",
-   "goals": "256",
-   "assists": "211",
-   "manOfTheMatch": "99",
+   "gamesPlayed": "161",
+   "goals": "257",
+   "assists": "215",
+   "manOfTheMatch": "100",
    "ratingAve": "8.5",
-   "prevGoals": "3",
+   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
@@ -2096,12 +2096,12 @@
   {
    "name": "ManiManolo88",
    "proPos": "25",
-   "gamesPlayed": "14",
-   "goals": "4",
+   "gamesPlayed": "15",
+   "goals": "5",
    "assists": "2",
-   "manOfTheMatch": "3",
-   "ratingAve": "7.3",
-   "prevGoals": "0",
+   "manOfTheMatch": "4",
+   "ratingAve": "7.4",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {

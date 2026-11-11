@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-11T22:40:41.178Z",
+ "fetchedAt": "2026-11-11T22:50:37.180Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1942,25 +1942,25 @@
   },
   {
    "name": "zouz94230",
-   "proPos": "5",
-   "gamesPlayed": "169",
+   "proPos": "14",
+   "gamesPlayed": "170",
    "goals": "75",
-   "assists": "53",
+   "assists": "54",
    "manOfTheMatch": "21",
    "ratingAve": "7.4",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "MV33xChris",
-   "proPos": "14",
-   "gamesPlayed": "177",
+   "proPos": "25",
+   "gamesPlayed": "178",
    "goals": "160",
-   "assists": "109",
+   "assists": "110",
    "manOfTheMatch": "35",
    "ratingAve": "7.8",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
+   "prevGoals": "0",
+   "favoritePosition": "forward"
   },
   {
    "name": "Ibekayne",
@@ -2020,7 +2020,7 @@
   {
    "name": "xEthxnH-_-",
    "proPos": "14",
-   "gamesPlayed": "43",
+   "gamesPlayed": "44",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "0",
@@ -2086,11 +2086,11 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "65",
+   "gamesPlayed": "66",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.0",
+   "ratingAve": "7.1",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
@@ -2152,7 +2152,7 @@
   {
    "name": "Zorg7",
    "proPos": "5",
-   "gamesPlayed": "246",
+   "gamesPlayed": "247",
    "goals": "64",
    "assists": "68",
    "manOfTheMatch": "26",
@@ -2184,21 +2184,21 @@
   },
   {
    "name": "leo77romano",
-   "proPos": "25",
-   "gamesPlayed": "155",
+   "proPos": "14",
+   "gamesPlayed": "156",
    "goals": "35",
    "assists": "24",
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "94",
+   "gamesPlayed": "95",
    "goals": "38",
-   "assists": "45",
+   "assists": "47",
    "manOfTheMatch": "5",
    "ratingAve": "7.5",
    "prevGoals": "0",
