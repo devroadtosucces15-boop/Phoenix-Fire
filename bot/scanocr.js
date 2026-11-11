@@ -198,5 +198,5 @@ export function validateSeason(input, { ours = 'Phoenix Fire' } = {}) {
   return { stats, qc };
 }
 
-export const scanBoard = async (env, dataUrl, opts) => cleanBoard(await visionJson(env, dataUrl, BOARD_PROMPT), opts);
-export const scanSeason = async (env, dataUrl, opts) => cleanSeason(await visionJson(env, dataUrl, SEASON_PROMPT, { maxTokens: 700 }), opts);
+export const scanBoard = async (env, dataUrl, { timeoutMs, ...opts } = {}) => cleanBoard(await visionJson(env, dataUrl, BOARD_PROMPT, { timeoutMs }), opts);
+export const scanSeason = async (env, dataUrl, { timeoutMs, ...opts } = {}) => cleanSeason(await visionJson(env, dataUrl, SEASON_PROMPT, { maxTokens: 700, timeoutMs }), opts);

@@ -20,6 +20,8 @@ import { appConfigured, appEnv } from './apps.js';
 import { orgName, resolveChannel } from './orgconfig.js';
 import { message, header, text, sep, facts, footer, buttons, notice, reply } from './ui.js';
 import { parseDataUrl, attachmentToDataUrl, scanBoard, scanSeason, cleanBoard, validateSeason } from './scanocr.js';
+// A site upload is a plain request that can wait for the model; only Discord's deferred reply has the ~30 s cut-off.
+const SITE_READ_MS = 75000;
 import { boardInsights, boardSeries, ladder, seasonBoard, seasonClock, fmt, signed } from './lbinsights.js';
 
 export const DEFAULT_SEASON = { name: 'Season 2', start: '2026-10-22', end: '2026-12-03' };
@@ -251,7 +253,7 @@ export async function rushScanRoute(p, method, body, me, env, log) {
       const img = parseDataUrl(body.image);
       if (img.error) return fail(img.error);
       if (!(await spendScan(env, me))) return fail('That is the hourly limit for photo reads. Try again in a bit.', 429);
-      try { const d = await scanBoard(env, img.url, { ours: orgName(env) }); return json({ ...d, season: (await getSeason(env)).name, read: d.season }); } catch (e) { return fail(e.message, 502); }
+      try { const d = await scanBoard(env, img.url, { ours: orgName(env), timeoutMs: SITE_READ_MS }); return json({ ...d, season: (await getSeason(env)).name, read: d.season }); } catch (e) { return fail(e.message, 502); }
     }
     if (sub === '/save') { const r = await saveBoard(env, me, body, { log }); const { status, ...out } = r; return json(out, status); }
     if (sub === '/remove') {
@@ -277,7 +279,7 @@ export async function rushScanRoute(p, method, body, me, env, log) {
     const img = parseDataUrl(body.image);
     if (img.error) return fail(img.error);
     if (!(await spendScan(env, me))) return fail('That is the hourly limit for photo reads. Try again in a bit.', 429);
-    try { const d = await scanSeason(env, img.url, { ours: orgName(env) }); return json(d); } catch (e) { return fail(e.message, 502); }
+    try { const d = await scanSeason(env, img.url, { ours: orgName(env), timeoutMs: SITE_READ_MS }); return json(d); } catch (e) { return fail(e.message, 502); }
   }
   if (sub === '/save') { const r = await saveCard(env, me, body, { log }); const { status, ...out } = r; return json(out, status); }
   if (sub === '/remove') {

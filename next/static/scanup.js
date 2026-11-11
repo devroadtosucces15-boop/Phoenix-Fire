@@ -1,14 +1,14 @@
 // Shared photo picker for the Rush leaderboard and season-card pages: take a photo with the camera or choose one from the gallery,
-// shrink it in the browser (long side 1600 px, JPEG) so the upload stays small, and hand back a data URL. Nothing is kept on the device.
+// shrink it in the browser (long side 2048 px, JPEG quality 92) so the upload stays small, and hand back a data URL. Nothing is kept on the device.
 (() => {
   const d = document;
   const shrink = (file) => new Promise((ok, no) => {
     const url = URL.createObjectURL(file), img = new Image();
     img.onload = () => {
-      const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight)), c = d.createElement('canvas');
+      const k = Math.min(1, 2048 / Math.max(img.naturalWidth, img.naturalHeight)), c = d.createElement('canvas');
       c.width = Math.max(1, Math.round(img.naturalWidth * k)); c.height = Math.max(1, Math.round(img.naturalHeight * k));
       c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', 0.85));
+      URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', 0.92));
     };
     img.onerror = () => { URL.revokeObjectURL(url); no(new Error('That file is not a picture we can read.')); };
     img.src = url;
