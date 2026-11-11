@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-11T21:10:41.292Z",
+ "fetchedAt": "2026-11-11T21:18:04.340Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1954,12 +1954,12 @@
   {
    "name": "MV33xChris",
    "proPos": "14",
-   "gamesPlayed": "173",
+   "gamesPlayed": "174",
    "goals": "157",
    "assists": "108",
    "manOfTheMatch": "34",
    "ratingAve": "7.8",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
@@ -2086,7 +2086,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "61",
+   "gamesPlayed": "62",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
@@ -2163,7 +2163,7 @@
   {
    "name": "CapoGroot",
    "proPos": "14",
-   "gamesPlayed": "19",
+   "gamesPlayed": "20",
    "goals": "1",
    "assists": "1",
    "manOfTheMatch": "1",
@@ -2185,12 +2185,12 @@
   {
    "name": "leo77romano",
    "proPos": "25",
-   "gamesPlayed": "151",
-   "goals": "33",
+   "gamesPlayed": "152",
+   "goals": "34",
    "assists": "22",
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
