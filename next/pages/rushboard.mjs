@@ -15,7 +15,7 @@ export function rushboard() {
   <section class="sec" id="lb-tb-sec" hidden><header><div><span class="ribbon">The ladder</span></div></header><div id="lb-tb" class="panel flat tbx"></div></section>
   <section class="sec" id="lb-hist-sec" hidden><header><div><span class="ribbon">Photos taken</span></div></header><div id="lb-hist" class="lb-hist"></div></section>
   <section class="sec" id="lb-set-sec" hidden><header><div><span class="ribbon">Season clock</span></div></header><div class="panel flat" id="lb-set"></div></section></div>`;
-  return shell({ group: 'matches', page: 'rushboard.html', title: 'Rush leaderboard', body, extraHead: '<link rel="stylesheet" href="rushboard.css"><script src="scanup.js" defer></script><script src="rushboard.js" defer></script>' });
+  return shell({ group: 'stats', page: 'rushboard.html', title: 'Rush leaderboard', body, extraHead: '<link rel="stylesheet" href="rushboard.css"><script src="scanup.js" defer></script><script src="rushboard.js" defer></script>' });
 }
 
 export default function (P) { P('rushboard.html', rushboard()); }

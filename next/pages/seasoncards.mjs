@@ -15,7 +15,7 @@ export function seasoncards() {
    <div class="chips" id="sc-view" role="tablist" aria-label="View"><button type="button" class="chip on" data-v="people">People</button><button type="button" class="chip" data-v="scatter">Matches vs VP</button><button type="button" class="chip" data-v="share">Share of club VP</button><button type="button" class="chip" data-v="missing">Missing</button></div>
    <div class="chips" id="sc-fl" aria-label="Filter"><button type="button" class="chip on" data-g="">Everyone</button><button type="button" class="chip" data-g="star">⭐ Praise</button><button type="button" class="chip" data-g="concern">⚠️ Work on</button><button type="button" class="chip" data-g="flag">🧐 Flagged</button></div>
    <div id="sc-dash" class="panel flat tbx"></div></section></div>`;
-  return shell({ group: 'matches', page: 'seasoncards.html', title: 'Season cards', body, extraHead: '<link rel="stylesheet" href="rushboard.css"><script src="scanup.js" defer></script><script src="seasoncards.js" defer></script>' });
+  return shell({ group: 'stats', page: 'seasoncards.html', title: 'Season cards', body, extraHead: '<link rel="stylesheet" href="rushboard.css"><script src="scanup.js" defer></script><script src="seasoncards.js" defer></script>' });
 }
 
 export default function (P) { P('seasoncards.html', seasoncards()); }
