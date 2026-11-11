@@ -33,7 +33,7 @@ export async function attachmentToDataUrl(att) {
 }
 
 // ---------- vision call ----------
-export const BOARD_PROMPT = `This is a photo or screenshot of the EA SPORTS FC "Rush" global leaderboard (Leaderboards screen, Rush Season). The table columns are: RANK, Club Name, VP, GP, M, BFG, AVG VP. One row is highlighted (our club, "Phoenix Fire", may be shown in a different colour or with a crest). Read EVERY visible row, top to bottom, exactly as printed. Numbers use thousands separators (11,976): write them as plain integers. AVG VP has decimals. Do not guess unreadable digits: use null. Do not invent rows. Reply with ONLY this JSON, no other text:
+export const BOARD_PROMPT = `This is a photo or screenshot of the EA SPORTS FC "Rush" global leaderboard (Leaderboards screen, Rush Season). The table columns are: RANK, Club Name, VP, GP, M, BFG, AVG VP. One row is highlighted (our club, "Phoenix Fire", may be shown in a different colour or with a crest). Read EVERY visible row, top to bottom, exactly as printed. Numbers use thousands separators (11,976): write them as plain integers. AVG VP has decimals. The first (highlighted) row's numbers may touch each other (12,539 and 7,464 can print as 12,5397,464): split them by column. The last row at the very bottom repeats our club's own row: do NOT list it again. Do not guess unreadable digits: use null. Do not invent rows. Reply with ONLY this JSON, no other text:
 {"season_label": string|null, "highlighted_rank": number|null, "rows": [{"rank": number, "club": string, "vp": number, "gp": number|null, "m": number|null, "bfg": number|null, "avg_vp": number|null}]}`;
 export const SEASON_PROMPT = `This is a photo or screenshot of a player's end-of-season screen from EA SPORTS FC "Rush" (it may be in any language, for example Ranked Rush / Rush Klassement / Classement Rush). Read the player's season numbers: matches played, wins, goals, the club's total VP (victory points), the player's own contribution in VP, the club name, the division or rank tier (for example "Top 1%", "Elite Division", "Division 4") and the season label if shown. Numbers use separators (17,520 or 17.520): write plain integers. If a field is not visible use null; never guess. Reply with ONLY this JSON, no other text:
 {"club": string|null, "season_label": string|null, "tier": string|null, "matches": number|null, "wins": number|null, "goals": number|null, "club_vp": number|null, "my_vp": number|null}`;
@@ -98,6 +98,8 @@ export function cleanBoard(raw, { ours = 'Phoenix Fire' } = {}) {
   let rows = src.map((r) => ({
     rank: num(r.rank), club: cleanName(r.club), vp: num(r.vp), gp: num(r.gp), m: num(r.m), bfg: num(r.bfg), avg: num(r.avg_vp ?? r.avg, { decimals: true }),
   })).filter((r) => r.club && r.vp != null && r.vp >= 0);
+  // The game pins our own row again at the bottom of the screen: the same rank and club twice is one row, not a misread.
+  rows = rows.filter((r, i) => !(r.rank != null && rows.findIndex((o) => o.rank === r.rank && sameClub(o.club, r.club)) < i));
   if (rows.length < 3) qc.errors.push(`Only ${rows.length} row${rows.length === 1 ? '' : 's'} could be read. Retake the photo with the whole table in frame.`);
   if (rows.every((r) => r.rank == null)) rows.forEach((r, i) => { r.rank = i + 1; });
   else rows = rows.filter((r) => r.rank != null && r.rank >= 1).sort((a, b) => a.rank - b.rank);
@@ -125,8 +127,8 @@ export function cleanBoard(raw, { ours = 'Phoenix Fire' } = {}) {
   const hl = num(raw?.highlighted_rank);
   if (hl != null) { const i = rows.findIndex((r) => r.rank === hl); if (i >= 0) us = i; }
   const byName = rows.findIndex((r) => sameClub(r.club, ours));
-  if (us == null) us = byName >= 0 ? byName : null;
-  else if (byName >= 0 && byName !== us && !sameClub(rows[us].club, ours)) qc.warnings.push(`The highlighted row is #${rows[us].rank} but "${rows[byName].club}" is also listed at #${rows[byName].rank}. Check which one is ${ours}.`);
+  // In the game the highlight is just the cursor (it often sits on the top club), so our own name wins over it.
+  if (byName >= 0) us = byName;
   if (us == null) qc.errors.push(`${ours} was not found. Tap our row in the list to mark it.`);
   return { rows, us, season: cleanName(raw?.season_label) || null, qc };
 }
