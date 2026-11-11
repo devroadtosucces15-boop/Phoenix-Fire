@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-11T22:50:37.180Z",
+ "fetchedAt": "2026-11-11T23:00:43.230Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1921,12 +1921,12 @@
   {
    "name": "RealMinato7",
    "proPos": "25",
-   "gamesPlayed": "338",
+   "gamesPlayed": "339",
    "goals": "150",
    "assists": "160",
    "manOfTheMatch": "29",
    "ratingAve": "7.0",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2031,7 +2031,7 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "91",
+   "gamesPlayed": "92",
    "goals": "41",
    "assists": "36",
    "manOfTheMatch": "12",
@@ -2097,12 +2097,12 @@
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "144",
-   "goals": "120",
+   "gamesPlayed": "145",
+   "goals": "121",
    "assists": "103",
    "manOfTheMatch": "28",
    "ratingAve": "7.9",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
