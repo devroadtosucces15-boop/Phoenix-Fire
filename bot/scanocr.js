@@ -24,12 +24,19 @@ export async function attachmentToDataUrl(att) {
   const type = String(att?.content_type ?? '').split(';')[0];
   if (!/^image\/(jpeg|png|webp)$/.test(type)) return { error: 'Attach a JPEG, PNG or WebP image.' };
   if ((att.size ?? 0) > MAX_IMAGE_BYTES) return { error: 'That image is too big – 6 MB max.' };
-  const r = await fetch(att.url, { signal: AbortSignal.timeout(8000) }).catch(() => null);
+  // A phone photo is 1.5–6 MB; the vision model is slow on that much. Discord's media proxy hands back a ~1280 px JPEG instead.
+  let src = att.url, mime = type;
+  if (att.proxy_url && att.width > 1280) {
+    src = `${att.proxy_url}${att.proxy_url.includes('?') ? '&' : '?'}format=jpeg&quality=85&width=1280&height=${Math.round((att.height / att.width) * 1280)}`;
+    mime = 'image/jpeg';
+  }
+  let r = await fetch(src, { signal: AbortSignal.timeout(8000) }).catch(() => null);
+  if (!r?.ok && src !== att.url) { r = await fetch(att.url, { signal: AbortSignal.timeout(8000) }).catch(() => null); mime = type; }
   if (!r?.ok) return { error: 'Could not download that attachment from Discord.' };
   const buf = new Uint8Array(await r.arrayBuffer());
   let bin = '';
   for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
-  return parseDataUrl(`data:${type};base64,${btoa(bin)}`);
+  return parseDataUrl(`data:${mime};base64,${btoa(bin)}`);
 }
 
 // ---------- vision call ----------
@@ -52,7 +59,7 @@ export function extractJson(s) {
 // A deferred Discord reply is finished from ctx.waitUntil, which the runtime cancels ~30 s after the response goes out. A vision
 // call that outlives that never reaches the edit and the command sits on "thinking…" – so the read is raced against a deadline
 // well inside it and becomes an ordinary "could not read" notice.
-export const VISION_TIMEOUT_MS = 22000;
+export const VISION_TIMEOUT_MS = 26000;
 export async function visionJson(env, dataUrl, prompt, { maxTokens = 1500, timeoutMs = VISION_TIMEOUT_MS } = {}) {
   if (!env.AI) throw new Error('Photo reading is not connected (the Workers AI binding is missing).');
   const call = () => env.AI.run(VISION_MODEL, {
