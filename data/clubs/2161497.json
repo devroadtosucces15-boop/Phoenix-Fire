@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-11T19:20:37.474Z",
+ "fetchedAt": "2026-11-11T19:30:38.329Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -513,42 +513,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Hitchzyy",
-   "gamesPlayed": "1",
-   "winRate": "100",
-   "goals": "1",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "100",
-   "passesMade": "17",
-   "passSuccessRate": "54",
-   "ratingAve": "8.4",
-   "tacklesMade": "2",
-   "tackleSuccessRate": "50",
-   "proName": "Azizz",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "166",
-   "proNationality": "46",
-   "proOverall": "85",
-   "proOverallStr": "85",
-   "manOfTheMatch": "1",
-   "redCards": "0",
-   "prevGoals": "1",
-   "prevGoals1": "1",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
    "name": "ImWizardJr",
    "gamesPlayed": "0",
    "favoritePosition": "",
@@ -586,7 +550,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 4,
+  "midfielder": 3,
   "goalkeeper": 1,
   "forward": 8,
   "defender": 0
@@ -734,17 +698,6 @@
    "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "forward"
-  },
-  {
-   "name": "Hitchzyy",
-   "proPos": "14",
-   "gamesPlayed": "125",
-   "goals": "71",
-   "assists": "118",
-   "manOfTheMatch": "40",
-   "ratingAve": "8.4",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
   }
  ],
  "leaderboard": {
