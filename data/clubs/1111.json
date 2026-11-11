@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-11T22:30:40.120Z",
+ "fetchedAt": "2026-11-11T22:40:41.178Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2162,14 +2162,14 @@
   },
   {
    "name": "CapoGroot",
-   "proPos": "14",
-   "gamesPlayed": "22",
-   "goals": "1",
+   "proPos": "25",
+   "gamesPlayed": "23",
+   "goals": "3",
    "assists": "2",
    "manOfTheMatch": "1",
-   "ratingAve": "6.7",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "ratingAve": "6.8",
+   "prevGoals": "2",
+   "favoritePosition": "forward"
   },
   {
    "name": "Peru-Chocolate",
