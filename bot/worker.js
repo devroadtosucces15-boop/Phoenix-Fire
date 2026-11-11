@@ -210,7 +210,7 @@ export default {
       try {
         return json(await seasonCardCommand(i, env, ctx, who, {
           defer: () => DEFER_PANEL(true),
-          edit: (m) => fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(m)) }).catch((e) => console.log('seasoncard reply failed', e.message)),
+          edit: (m) => fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(m)) }).then((r) => { if (!r.ok) return r.text().then((t) => console.log('seasoncard reply rejected', r.status, t.slice(0, 200))); }).catch((e) => console.log('seasoncard reply failed', e.message)),
         }));
       } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
@@ -218,7 +218,7 @@ export default {
       try {
         return json(await boardCommand(i, env, ctx, who, {
           defer: () => DEFER_PANEL(true),
-          edit: (m) => fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(m)) }).catch((e) => console.log('board reply failed', e.message)),
+          edit: (m) => fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(m)) }).then((r) => { if (!r.ok) return r.text().then((t) => console.log('board reply rejected', r.status, t.slice(0, 200))); }).catch((e) => console.log('board reply failed', e.message)),
         }));
       } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }

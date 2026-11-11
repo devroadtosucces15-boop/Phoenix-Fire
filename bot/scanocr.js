@@ -24,8 +24,8 @@ export async function attachmentToDataUrl(att) {
   const type = String(att?.content_type ?? '').split(';')[0];
   if (!/^image\/(jpeg|png|webp)$/.test(type)) return { error: 'Attach a JPEG, PNG or WebP image.' };
   if ((att.size ?? 0) > MAX_IMAGE_BYTES) return { error: 'That image is too big – 6 MB max.' };
-  const r = await fetch(att.url);
-  if (!r.ok) return { error: 'Could not download that attachment from Discord.' };
+  const r = await fetch(att.url, { signal: AbortSignal.timeout(8000) }).catch(() => null);
+  if (!r?.ok) return { error: 'Could not download that attachment from Discord.' };
   const buf = new Uint8Array(await r.arrayBuffer());
   let bin = '';
   for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
@@ -49,18 +49,28 @@ export function extractJson(s) {
 }
 
 // One vision call. The first use of the Llama vision model on an account needs a one-off licence acknowledgement; we send it once and retry.
-export async function visionJson(env, dataUrl, prompt) {
+// A deferred Discord reply is finished from ctx.waitUntil, which the runtime cancels ~30 s after the response goes out. A vision
+// call that outlives that never reaches the edit and the command sits on "thinking…" – so the read is raced against a deadline
+// well inside it and becomes an ordinary "could not read" notice.
+export const VISION_TIMEOUT_MS = 22000;
+export async function visionJson(env, dataUrl, prompt, { maxTokens = 1500, timeoutMs = VISION_TIMEOUT_MS } = {}) {
   if (!env.AI) throw new Error('Photo reading is not connected (the Workers AI binding is missing).');
   const call = () => env.AI.run(VISION_MODEL, {
     messages: [{ role: 'user', content: [{ type: 'text', text: prompt }, { type: 'image_url', image_url: { url: dataUrl } }] }],
-    max_tokens: 2000, temperature: 0.1,
+    max_tokens: maxTokens, temperature: 0.1,
   });
-  let out;
-  try { out = await call(); } catch (e) {
-    if (!/agree|licen[sc]e|5016/i.test(String(e?.message))) throw e;
-    await env.AI.run(VISION_MODEL, { prompt: 'agree' }).catch(() => {});
-    out = await call();
-  }
+  const read = async () => {
+    try { return await call(); } catch (e) {
+      if (!/agree|licen[sc]e|5016/i.test(String(e?.message))) throw e;
+      await env.AI.run(VISION_MODEL, { prompt: 'agree' }).catch(() => {});
+      return call();
+    }
+  };
+  let timer;
+  const out = await Promise.race([
+    read(),
+    new Promise((_, rej) => { timer = setTimeout(() => rej(new Error('Reading the photo took too long. Try again, or crop it to just the stats.')), timeoutMs); }),
+  ]).finally(() => clearTimeout(timer));
   const json = extractJson(out?.response ?? out?.result ?? out);
   if (!json) throw new Error('The photo could not be read. Try again with the whole screen in frame and less glare.');
   return json;
@@ -155,4 +165,4 @@ export function validateSeason(input, { ours = 'Phoenix Fire' } = {}) {
 }
 
 export const scanBoard = async (env, dataUrl, opts) => cleanBoard(await visionJson(env, dataUrl, BOARD_PROMPT), opts);
-export const scanSeason = async (env, dataUrl, opts) => cleanSeason(await visionJson(env, dataUrl, SEASON_PROMPT), opts);
+export const scanSeason = async (env, dataUrl, opts) => cleanSeason(await visionJson(env, dataUrl, SEASON_PROMPT, { maxTokens: 700 }), opts);
