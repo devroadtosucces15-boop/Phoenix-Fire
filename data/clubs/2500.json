@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-11T20:10:38.866Z",
+ "fetchedAt": "2026-11-11T21:02:53.563Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -222,42 +222,6 @@
    "prevGoals8": "0",
    "prevGoals9": "0",
    "prevGoals10": "0",
-   "favoritePosition": "defender"
-  },
-  {
-   "name": "MV33xChris",
-   "gamesPlayed": "32",
-   "winRate": "87",
-   "goals": "25",
-   "assists": "18",
-   "cleanSheetsDef": "2",
-   "cleanSheetsGK": "1",
-   "shotSuccessRate": "49",
-   "passesMade": "441",
-   "passSuccessRate": "82",
-   "ratingAve": "7.7",
-   "tacklesMade": "32",
-   "tackleSuccessRate": "50",
-   "proName": "Raphinha",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "188",
-   "proNationality": "54",
-   "proOverall": "85",
-   "proOverallStr": "85",
-   "manOfTheMatch": "8",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "6",
-   "prevGoals8": "3",
-   "prevGoals9": "1",
-   "prevGoals10": "1",
    "favoritePosition": "defender"
   },
   {
@@ -1777,7 +1741,7 @@
   "midfielder": 2,
   "goalkeeper": 3,
   "forward": 3,
-  "defender": 5
+  "defender": 4
  },
  "career": [
   {
@@ -1877,17 +1841,6 @@
    "manOfTheMatch": "0",
    "ratingAve": "7.4",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
-   "name": "MV33xChris",
-   "proPos": "14",
-   "gamesPlayed": "173",
-   "goals": "157",
-   "assists": "108",
-   "manOfTheMatch": "34",
-   "ratingAve": "7.8",
-   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
@@ -2047,7 +2000,7 @@
   {
    "name": "YAMI-_-77",
    "proPos": "5",
-   "gamesPlayed": "255",
+   "gamesPlayed": "257",
    "goals": "125",
    "assists": "88",
    "manOfTheMatch": "37",

@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-11T20:10:38.866Z",
+ "fetchedAt": "2026-11-11T21:02:53.563Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -223,6 +223,42 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "forward"
+  },
+  {
+   "name": "MV33xChris",
+   "gamesPlayed": "9",
+   "winRate": "44",
+   "goals": "11",
+   "assists": "3",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "35",
+   "passesMade": "204",
+   "passSuccessRate": "80",
+   "ratingAve": "7.5",
+   "tacklesMade": "11",
+   "tackleSuccessRate": "52",
+   "proName": "Raphinha",
+   "proPos": "14",
+   "proStyle": "0",
+   "proHeight": "162",
+   "proNationality": "54",
+   "proOverall": "78",
+   "proOverallStr": "78",
+   "manOfTheMatch": "1",
+   "redCards": "1",
+   "prevGoals": "1",
+   "prevGoals1": "1",
+   "prevGoals2": "0",
+   "prevGoals3": "1",
+   "prevGoals4": "1",
+   "prevGoals5": "5",
+   "prevGoals6": "1",
+   "prevGoals7": "0",
+   "prevGoals8": "1",
+   "prevGoals9": "1",
+   "prevGoals10": "0",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "xEthxnH-_-",
@@ -550,7 +586,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 3,
+  "midfielder": 4,
   "goalkeeper": 1,
   "forward": 8,
   "defender": 0
@@ -559,12 +595,12 @@
   {
    "name": "DavidSwede",
    "proPos": "14",
-   "gamesPlayed": "151",
-   "goals": "6",
-   "assists": "13",
+   "gamesPlayed": "153",
+   "goals": "7",
+   "assists": "15",
    "manOfTheMatch": "13",
    "ratingAve": "7.2",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
@@ -599,6 +635,17 @@
    "ratingAve": "7.8",
    "prevGoals": "0",
    "favoritePosition": "forward"
+  },
+  {
+   "name": "MV33xChris",
+   "proPos": "14",
+   "gamesPlayed": "173",
+   "goals": "157",
+   "assists": "108",
+   "manOfTheMatch": "34",
+   "ratingAve": "7.8",
+   "prevGoals": "1",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "ImWizardJr",
@@ -647,7 +694,7 @@
   {
    "name": "Ritzeltod",
    "proPos": "14",
-   "gamesPlayed": "260",
+   "gamesPlayed": "262",
    "goals": "19",
    "assists": "28",
    "manOfTheMatch": "16",
