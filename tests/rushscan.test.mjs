@@ -2,7 +2,7 @@
 // The vision model is faked: tests control exactly what "the photo says".
 import { call, env, login, sqlite } from './mock.mjs';
 import { t, tt, done } from './lib.mjs';
-import { num, cleanBoard, cleanSeason, validateSeason, extractJson, parseDataUrl, visionJson, VISION_MODEL } from '../bot/scanocr.js';
+import { num, cleanBoard, cleanSeason, validateSeason, extractJson, parseDataUrl, visionJson, VISION_MODEL, FALLBACK_VISION_MODEL } from '../bot/scanocr.js';
 import { boardInsights, boardSeries, ladder, seasonBoard, seasonClock } from '../bot/lbinsights.js';
 import { tableText, sparkline, DEFAULT_SEASON } from '../bot/rushscan.js';
 import { plainText } from '../bot/ui.js';
@@ -66,6 +66,12 @@ t('vision: the one-off licence prompt is accepted and the call retried', (await 
 reply = 'I cannot read this';
 await tt('vision: unreadable answer is a friendly error', async () => { try { await visionJson(env, IMG, 'p'); return false; } catch (e) { return /could not be read/.test(e.message); } });
 reply = JSON.stringify(BOARD);
+// the strong model failing falls back to the older one; OpenAI-style answers are understood
+const tried = [], realAI = env.AI;
+env.AI = { run: async (model) => { tried.push(model); if (model === VISION_MODEL) throw new Error('model unavailable'); return { choices: [{ message: { content: JSON.stringify(BOARD) } }] }; } };
+t('vision: falls back to the older model and reads {choices} answers', (await visionJson(env, IMG, 'p')).rows.length === 6 && tried.length === 2 && tried[1] === FALLBACK_VISION_MODEL);
+t('vision: the strong model is Llama 4 Scout', /llama-4-scout/.test(VISION_MODEL));
+env.AI = realAI;
 
 // ---------- insights ----------
 const T0 = Date.parse('2026-11-09T12:00:00Z');

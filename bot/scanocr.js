@@ -6,8 +6,12 @@
 //   * the leaderboard has a built-in checksum (AVG VP = VP ÷ M on every row) and must be sorted by VP, which catches most digit errors;
 //   * the site shows what was read next to the checks, so a person can fix a number before it is saved.
 // The vision call is isolated in visionJson() so tests can feed it a fake `env.AI`.
-export const VISION_MODEL = '@cf/meta/llama-3.2-11b-vision-instruct';
+// Llama 4 Scout reads dense tables far better than the old 11B model and takes full-resolution screenshots; the 11B model stays as a
+// fallback so a hiccup on one model never leaves /rushladder or /seasoncard dead. `env.VISION_MODEL` overrides the first choice.
+export const VISION_MODEL = '@cf/meta/llama-4-scout-17b-16e-instruct';
+export const FALLBACK_VISION_MODEL = '@cf/meta/llama-3.2-11b-vision-instruct';
 export const MAX_IMAGE_BYTES = 6 * 1024 * 1024;
+export const READ_WIDTH = 2048;
 const MIME = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/;
 
 // ---------- image in ----------
@@ -24,10 +28,13 @@ export async function attachmentToDataUrl(att) {
   const type = String(att?.content_type ?? '').split(';')[0];
   if (!/^image\/(jpeg|png|webp)$/.test(type)) return { error: 'Attach a JPEG, PNG or WebP image.' };
   if ((att.size ?? 0) > MAX_IMAGE_BYTES) return { error: 'That image is too big – 6 MB max.' };
-  // A phone photo is 1.5–6 MB; the vision model is slow on that much. Discord's media proxy hands back a ~1280 px JPEG instead.
+  // Keep the picture sharp: small-print digits need pixels. Up to 2048 px wide and 1.5 MB goes through untouched; a bigger phone
+  // photo or PNG comes back from Discord's media proxy as a near-lossless 2048 px JPEG (quality 92) so the upload stays quick.
   let src = att.url, mime = type;
-  if (att.proxy_url && att.width > 1280) {
-    src = `${att.proxy_url}${att.proxy_url.includes('?') ? '&' : '?'}format=jpeg&quality=85&width=1280&height=${Math.round((att.height / att.width) * 1280)}`;
+  const heavy = (att.size ?? 0) > 1.5 * 1024 * 1024;
+  if (att.proxy_url && att.width && att.height && (att.width > READ_WIDTH || heavy)) {
+    const w = Math.min(att.width, READ_WIDTH);
+    src = `${att.proxy_url}${att.proxy_url.includes('?') ? '&' : '?'}format=jpeg&quality=92&width=${w}&height=${Math.round((att.height / att.width) * w)}`;
     mime = 'image/jpeg';
   }
   let r = await fetch(src, { signal: AbortSignal.timeout(8000) }).catch(() => null);
@@ -60,27 +67,45 @@ export function extractJson(s) {
 // call that outlives that never reaches the edit and the command sits on "thinking…" – so the read is raced against a deadline
 // well inside it and becomes an ordinary "could not read" notice.
 export const VISION_TIMEOUT_MS = 26000;
-export async function visionJson(env, dataUrl, prompt, { maxTokens = 1500, timeoutMs = VISION_TIMEOUT_MS } = {}) {
-  if (!env.AI) throw new Error('Photo reading is not connected (the Workers AI binding is missing).');
-  const call = () => env.AI.run(VISION_MODEL, {
+// Models answer as {response}, {result} or OpenAI-style {choices:[{message:{content}}]}.
+const answerText = (out) => {
+  const r = out?.response ?? out?.result ?? out?.choices?.[0]?.message?.content ?? out;
+  return Array.isArray(r) ? r.map((p) => p?.text ?? '').join('') : r;
+};
+async function readWith(env, model, dataUrl, prompt, maxTokens, ms) {
+  const call = () => env.AI.run(model, {
     messages: [{ role: 'user', content: [{ type: 'text', text: prompt }, { type: 'image_url', image_url: { url: dataUrl } }] }],
     max_tokens: maxTokens, temperature: 0.1,
   });
   const read = async () => {
     try { return await call(); } catch (e) {
       if (!/agree|licen[sc]e|5016/i.test(String(e?.message))) throw e;
-      await env.AI.run(VISION_MODEL, { prompt: 'agree' }).catch(() => {});
+      await env.AI.run(model, { prompt: 'agree' }).catch(() => {});
       return call();
     }
   };
   let timer;
   const out = await Promise.race([
     read(),
-    new Promise((_, rej) => { timer = setTimeout(() => rej(new Error('Reading the photo took too long. Try again, or crop it to just the stats.')), timeoutMs); }),
+    new Promise((_, rej) => { timer = setTimeout(() => rej(new Error('Reading the photo took too long. Try again, or crop it to just the stats.')), ms); }),
   ]).finally(() => clearTimeout(timer));
-  const json = extractJson(out?.response ?? out?.result ?? out);
+  const json = extractJson(answerText(out));
   if (!json) throw new Error('The photo could not be read. Try again with the whole screen in frame and less glare.');
   return json;
+}
+// Strong model first (≈60% of the time budget), the older one with whatever is left; the first error is the one reported.
+export async function visionJson(env, dataUrl, prompt, { maxTokens = 1500, timeoutMs = VISION_TIMEOUT_MS } = {}) {
+  if (!env.AI) throw new Error('Photo reading is not connected (the Workers AI binding is missing).');
+  const models = [...new Set([env.VISION_MODEL || VISION_MODEL, FALLBACK_VISION_MODEL])];
+  const started = Date.now();
+  let first = null;
+  for (let k = 0; k < models.length; k++) {
+    const left = timeoutMs - (Date.now() - started);
+    if (left < 2500) break;
+    try { return await readWith(env, models[k], dataUrl, prompt, maxTokens, k === models.length - 1 ? left : Math.round(left * 0.6)); }
+    catch (e) { first ??= e; }
+  }
+  throw first ?? new Error('Reading the photo took too long. Try again, or crop it to just the stats.');
 }
 
 // ---------- cleaners ----------
