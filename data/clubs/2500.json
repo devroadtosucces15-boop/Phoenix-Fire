@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-11T01:10:38.893Z",
+ "fetchedAt": "2026-11-11T01:20:37.913Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -259,42 +259,6 @@
    "prevGoals9": "1",
    "prevGoals10": "1",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "Dimantu_",
-   "gamesPlayed": "14",
-   "winRate": "85",
-   "goals": "4",
-   "assists": "4",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "20",
-   "passesMade": "243",
-   "passSuccessRate": "87",
-   "ratingAve": "7.4",
-   "tacklesMade": "12",
-   "tackleSuccessRate": "19",
-   "proName": "Dimantu",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "21",
-   "proOverall": "82",
-   "proOverallStr": "82",
-   "manOfTheMatch": "1",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "1",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "1",
-   "prevGoals9": "0",
-   "prevGoals10": "1",
-   "favoritePosition": "forward"
   },
   {
    "name": "Hargravee123",
@@ -1776,7 +1740,7 @@
  "positionCount": {
   "midfielder": 2,
   "goalkeeper": 3,
-  "forward": 4,
+  "forward": 3,
   "defender": 5
  },
  "career": [
@@ -1899,17 +1863,6 @@
    "manOfTheMatch": "51",
    "ratingAve": "7.5",
    "prevGoals": "3",
-   "favoritePosition": "forward"
-  },
-  {
-   "name": "Dimantu_",
-   "proPos": "25",
-   "gamesPlayed": "87",
-   "goals": "40",
-   "assists": "35",
-   "manOfTheMatch": "11",
-   "ratingAve": "7.4",
-   "prevGoals": "5",
    "favoritePosition": "forward"
   },
   {
