@@ -11,11 +11,12 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { loadConfig } from './lib.mjs';
 import { BANNER_SPEC } from '../bot/banners.js';
+import { HELP_POSTER_KEYS, HELP_ICON, helpPosterModel } from '../bot/help.js';
 import { buildReview, loadHistory } from './lib/matchreview.mjs';
 import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 7; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 8; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -519,6 +520,33 @@ const familyBanner = (s) => page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{whi
   `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[s.icon] ?? ICONS.flame}</svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${s.title.length <= 10 ? 104 : s.title.length <= 14 ? 88 : 72}px">${esc(s.title)}</h1><p>${esc(s.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}<div class="brand">${esc(SITE)}</div>`);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
+
+// ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------
+// Same look as the family banners (gold line icon, orange accent, crest) but taller: they carry content. Command lists come from the live
+// command definitions (bot/help.js helpPosterModel), so the poster cannot drift from what Discord shows.
+const posterHead = (icon, eyebrow, title, sub) => `<div class="ph"><svg width="120" height="120" viewBox="0 0 24 24">${ICONS[icon] ?? ICONS.flame}</svg><div><div class="eyebrow">${esc(eyebrow)}</div><h1 class="gold">${esc(title)}</h1><p>${esc(sub)}</p></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}</div>`;
+const POSTER_CSS = '.ph{display:flex;align-items:center;gap:34px;padding:38px 56px 26px;border-bottom:2px solid var(--line);position:relative}.ph h1{font:700 74px/1 Oswald;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}.ph p{margin-top:8px;font:600 24px/1.3 Inter;color:var(--soft);max-width:690px}.ph .wm{position:absolute;right:56px;top:50%;width:150px;height:150px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 12px 26px rgba(0,0,0,.6))}';
+function helpPoster(key) {
+  const m = helpPosterModel(key);
+  // two columns; a description over ~44 characters wraps to a second line, which makes its row taller
+  let h = 0;
+  for (let k = 0; k < m.cmds.length; k += 2) h += (m.cmds.slice(k, k + 2).some((c) => c.desc.length > 44) ? 104 : 84) + 10;
+  const chip = (w) => (w && w !== 'Everyone' ? `<i class="ch">${esc(w)}</i>` : '');
+  return page(`body{height:${190 + 60 + h}px}${POSTER_CSS}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;padding:24px 56px 0}.c{display:grid;gap:2px;padding:10px 16px 10px 20px;border-radius:14px;background:linear-gradient(90deg,rgba(255,255,255,.05),transparent);border-left:5px solid var(--red);min-height:74px}
+.c b{font:600 28px/1.1 Oswald;letter-spacing:.04em;color:#fff}.c span{font:500 21px/1.25 Inter;color:#cfd8e8}.ch{font:800 15px Inter;letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:#2d1f06;background:var(--g2);border-radius:999px;padding:2px 10px;margin-left:12px;vertical-align:3px}`,
+  `${posterHead(HELP_ICON[key] ?? 'flame', `${SITE} · help`, m.label, m.blurb)}<div class="g">${m.cmds.map((c) => `<div class="c"><b>${esc(c.name)}${chip(c.who)}</b><span>${esc(c.desc)}</span></div>`).join('')}</div>`);
+}
+const QSTEPS = [['1', 'Join queue', 'The captain taps it. The crew is saved after the first time.', 'people'], ['2', 'Green light', 'Front of the line gets a ping: you are up, start searching.', 'bolt'],
+  ['3', 'Search in EA', 'Tap Searching now. Only one group searches at a time.', 'search'], ['4', 'Match found', 'Next group gets the green light. Match failed? You go next in line.', 'trophy']];
+const queuePoster = () => page(`body{height:560px}${POSTER_CSS}
+.s{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:30px 56px 0}.k{position:relative;padding:22px 20px 20px;border-radius:18px;background:linear-gradient(180deg,#1a110c,#0c0805);border:1px solid var(--line2)}
+.k .n{position:absolute;top:-16px;left:18px;width:44px;height:44px;border-radius:50%;background:var(--red);color:#fff;font:700 28px/44px Oswald;text-align:center}.k b{display:block;margin-top:14px;font:600 32px/1.1 Oswald;letter-spacing:.04em;text-transform:uppercase}.k span{display:block;margin-top:8px;font:500 22px/1.3 Inter;color:#cfd8e8}.k svg{margin-top:4px}
+.f{margin:30px 56px 0;font:600 23px/1.4 Inter;color:var(--soft);text-align:center}.f b{color:var(--g2)}`,
+  `${posterHead('people', `${SITE} · Rush`, 'Rush queue', 'One group searches at a time, in click order')}<div class="s">${QSTEPS.map(([n, t, d, ic]) => `<div class="k"><div class="n">${n}</div><svg width="64" height="64" viewBox="0 0 24 24">${ICONS[ic]}</svg><b>${t}</b><span>${d}</span></div>`).join('')}</div>
+<div class="f">Lobbies take turns so <b>Phoenix never queues against Phoenix</b>. Captain presses the buttons, the crew waits for the ping.</div>`);
+for (const k of HELP_POSTER_KEYS) BANNERS[`help-${k}`] = () => helpPoster(k);
+BANNERS.queueflow = queuePoster;
 
 // review / picture: (matchId) → the match review model or merged-picture model (scripts/lib/matchreview.mjs, matchpicture.mjs), or null;
 // given only by the real build, for the newest few matches.

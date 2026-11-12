@@ -4,6 +4,8 @@ import { BANNERS } from '../scripts/cards.mjs';
 import { COMMANDS } from '../bot/commanddefs.js';
 import { TYPES } from '../bot/notify.js';
 import { message, header, text, cards, notice, withBanner, autoBanner, images, bannerUrl, buttons } from '../bot/ui.js';
+import { HELP_POSTER_KEYS, helpMessage, helpPosterModel } from '../bot/help.js';
+import { boardMessage } from '../bot/rushqueue.js';
 import { t, done } from './lib.mjs';
 
 const env = { SITE_URL: 'https://x.test/' };
@@ -21,4 +23,12 @@ t('a one-line notice stays compact', images(withBanner(notice('No'), bannerUrl(e
 t('no site URL, no banner, no crash', images(withBanner(panel(), bannerUrl({}, 'club'))).length === 0);
 t('autoBanner picks the family from the header label', images(autoBanner(env, message({ accent: 'red', blocks: [header({ eyebrow: 'Phoenix · Rush queue', title: 'T' })] }))).some((u) => u.includes('banner-queue.png')));
 t('banners are drawn Phoenix, not NOREX', Object.values(BANNERS).every((f) => !/norex|c8352c|080b11/i.test(f())) && /Rise\. Burn\. Repeat\./.test(BANNERS.general()));
+
+// ----- help and queue posters -----
+t('a help poster is drawn for every bot and the hub', HELP_POSTER_KEYS.every((k) => typeof BANNERS[`help-${k}`] === 'function') && HELP_POSTER_KEYS.length === 6);
+t('the poster lists the live commands of the bot', helpPosterModel('rush').cmds.some((c) => c.name === '/queue') && helpPosterModel('stats').cmds.every((c) => c.desc.length > 0));
+t('help posters carry Phoenix branding and no NOREX', HELP_POSTER_KEYS.every((k) => { const h = BANNERS[`help-${k}`](); return !/norex|c8352c|080b11/i.test(h) && /Phoenix|PHOENIX/i.test(h); }));
+t('the help contents page shows the poster, a command page does not', images(helpMessage('stats', 0, env)).some((u) => u.includes('banner-help-stats.png')) && !images(helpMessage('stats', 2, env)).some((u) => u.includes('banner-help-stats.png')));
+t('the queue board shows the how-it-works poster, and no second banner', (() => { const u = images(boardMessage([], { poster: bannerUrl(env, 'queueflow') })); return u.length === 1 && u[0].includes('banner-queueflow.png'); })());
+t('the queue poster is drawn Phoenix', typeof BANNERS.queueflow === 'function' && !/norex|c8352c/i.test(BANNERS.queueflow()) && /Rush queue/i.test(BANNERS.queueflow()));
 done();

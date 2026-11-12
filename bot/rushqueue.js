@@ -6,7 +6,7 @@
 //   Discord      buttons, a member select and modals on the Phoenix Rush app; a 1-minute cron keeps the board last and runs the idle timers
 // Flag `rushQueue` (default owner). Nothing here names a channel or role; pings go to the group's own members only.
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, footer, sep, button, buttons, autoBanner } from './ui.js';
+import { message, notice, reply, header, text, footer, sep, button, buttons, autoBanner, cards, bannerUrl } from './ui.js';
 import { orgName, channelsFor } from './orgconfig.js';
 import { discord } from './servertools.js';
 import { appEnv, appConfigured } from './apps.js';
@@ -148,7 +148,7 @@ export const etaSeconds = (q, captain, avgSec = 300) => {
 const mention = (id) => `<@${id}>`;
 const crewText = (e) => [mention(e.captain), ...e.members.map(mention)].join(', ') + (e.needs ? ` · ${NEED[e.needs]}` : '');
 const clock = (ms) => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`;
-export function boardMessage(q, { now = Date.now(), org = 'Phoenix Fire', st = settingsOf(), avgSec = 300 } = {}) {
+export function boardMessage(q, { now = Date.now(), org = 'Phoenix Fire', st = settingsOf(), avgSec = 300, poster = null } = {}) {
   const sorted = byOrd(q), front = sorted.find((e) => e.status === 'green' || e.status === 'searching');
   const searching = sorted.filter((e) => e.status === 'searching'), waiting = sorted.filter((e) => e.status === 'waiting');
   const lines = [];
@@ -162,6 +162,7 @@ export function boardMessage(q, { now = Date.now(), org = 'Phoenix Fire', st = s
     accent: 'red', mentions: { parse: [] },
     blocks: [
       header({ eyebrow: `${org} · Rush`, title: '🔥 Rush queue', sub: 'One group searches at a time, in click order' }),
+      poster ? cards({ url: poster, alt: 'How the queue works: join, wait for the green light, search in EA, then match found or match failed' }) : null,
       sep(), text(lines.join('\n')), sep(),
       footer(`${sorted.length} group${sorted.length === 1 ? '' : 's'} in line · captain presses the buttons, the rest of the crew just waits for the ping`),
       buttons([
@@ -217,7 +218,7 @@ export async function refreshBoards(env, { now = Date.now(), pings = [] } = {}) 
   if (!channels.length) return { channels: 0 };
   const e = rushEnv(env), kv = kvOf(env);
   const q = await loadQueue(env), st = await getSettings(env), avgSec = await avgSearchSeconds(env);
-  const msg = autoBanner(env, boardMessage(q, { now, org: orgName(env), st, avgSec }), 'queue');
+  const msg = autoBanner(env, boardMessage(q, { now, org: orgName(env), st, avgSec, poster: bannerUrl(env, 'queueflow') }), 'queue');
   for (const ch of channels) {
     const old = await kv?.get(BOARD_KEY + ch, 'json').catch(() => null);
     if (old?.id) await discord(e, 'DELETE', `/channels/${ch}/messages/${old.id}`).catch(() => null);
