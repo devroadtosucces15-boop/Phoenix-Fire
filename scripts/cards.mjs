@@ -17,7 +17,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 11; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 12; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -592,6 +592,38 @@ export const POSTS = {
 };
 export const postPicture = (key) => taggedPicture(POSTS[key]);
 for (const k of Object.keys(POSTS)) BANNERS[k] = () => postPicture(k);
+// ---------- slash-reply pictures (section 7): one drawn picture per command result, plus the three states every command shares ----------
+// The tag says who sees it ("Only you", "Managers", "Match night" ...). Same look as the post pictures; `calm` = steel stripes for staff, empty and error states.
+export const SLASH = {
+  'cmd-locked': { art: 'shield', title: 'Not available', sub: 'Switched off, or not for your role', tag: 'Only you', calm: true },
+  'cmd-problem': { art: 'pulse', title: 'Check and try again', sub: 'Nothing was changed', tag: 'Only you', calm: true },
+  'cmd-empty': { art: 'inbox', title: 'Nothing here yet', sub: 'It will show up when there is something', tag: 'Only you', calm: true },
+  'cmd-lineup': { art: 'pitch', title: 'Line-up', sub: 'Who starts, who is on the bench', tag: 'Match night' },
+  'cmd-lineup-none': { art: 'pitch', title: 'No line-up yet', sub: 'Managers publish it before kick-off', tag: 'Match night', calm: true },
+  'cmd-host-done': { art: 'calendar', title: 'Session scheduled', sub: 'Posted with sign-up buttons', tag: 'Managers' },
+  'cmd-host-ask': { art: 'calendar', title: 'One thing to fix', sub: 'The time, the zone or the channel', tag: 'Managers', calm: true },
+  'cmd-matchday-create': { art: 'calendar', title: 'Match day set up', sub: 'Sign-ups are open', tag: 'Managers' },
+  'cmd-matchday-in': { art: 'ball', title: 'You are on', sub: 'Checked in for match day', tag: 'Only you' },
+  'cmd-matchday-none': { art: 'calendar', title: 'Nothing scheduled', sub: 'No match day is set yet', tag: 'Match night', calm: true },
+  'cmd-lfg-post': { art: 'hand', title: 'Available for Rush', sub: 'Tap I\u2019m in to join', tag: 'Rush' },
+  'cmd-lfg-list': { art: 'people', title: 'Who is free', sub: 'Open Rush calls right now', tag: 'Rush' },
+  'cmd-lfg-off': { art: 'hand', title: 'Call taken down', sub: 'Your availability is off', tag: 'Only you', calm: true },
+  'cmd-trial': { art: 'search', title: 'Trial cards', sub: 'Open cards, newest first', tag: 'Staff only', calm: true },
+  'cmd-feedback-sent': { art: 'chat', title: 'Sent anonymously', sub: 'They will never see who sent it', tag: 'Only you' },
+  'cmd-suggest-sent': { art: 'bulb', title: 'On the board', sub: 'Vote it up in the Squad Hub', tag: 'Only you' },
+  'cmd-share-sent': { art: 'spark', title: 'Sent to the managers', sub: 'It shows up once approved', tag: 'Only you' },
+  'cmd-discoveries': { art: 'spark', title: 'Waiting for you', sub: 'Approve or reject each one', tag: 'Staff only', calm: true },
+  'cmd-wheel-error': { art: 'dice', title: 'Wheel not ready', sub: 'Give it at least two options', tag: 'Only you', calm: true },
+  'cmd-tag-post': { art: 'book', title: 'Saved answer', sub: 'The club\u2019s ready-made reply', tag: 'Club' },
+  'cmd-tag-list': { art: 'book', title: 'Saved answers', sub: 'Post one with /tag', tag: 'Only you', calm: true },
+  'cmd-tag-saved': { art: 'book', title: 'Tag saved', sub: 'Anyone can post it now', tag: 'Managers' },
+  'cmd-remind-set': { art: 'bell', title: 'Reminder set', sub: 'We will ping you when it is due', tag: 'Only you' },
+  'cmd-remind-list': { art: 'bell', title: 'Your reminders', sub: 'Waiting to go off', tag: 'Only you', calm: true },
+  'cmd-setup-done': { art: 'gear', title: 'Setup saved', sub: 'Same setting as the Boardroom', tag: 'Managers' },
+  'cmd-announce-sent': { art: 'horn', title: 'Announcement sent', sub: 'Squad Hub bell and Discord DM', tag: 'Managers' },
+};
+export const slashPicture = (key) => taggedPicture(SLASH[key]);
+for (const k of Object.keys(SLASH)) BANNERS[k] = () => slashPicture(k);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------

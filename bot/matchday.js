@@ -6,7 +6,7 @@
 import { hostCommand } from './host.js';
 import { eventsRoute, eventPost } from './events.js';
 import { can, flagOn } from './roles.js';
-import { reply, notice } from './ui.js';
+import { reply, pictureNote } from './ui.js';
 
 // kind → [event type, default title]. Tournament and VPG are league-type events with their own title, so lineups,
 // predictions and stats treat them like league games without a schema change.
@@ -23,28 +23,28 @@ export function matchdayBody(o, tz, when) {
   };
 }
 
-const say = (title, body, accent) => reply(notice(title, body, accent ? { accent } : {}));
+const say = (env, key, title, body, accent) => reply(pictureNote(env, key, title, body, accent ? { accent } : {}));
 const nextEvent = (env) => env.DB.prepare("SELECT * FROM events WHERE status = 'scheduled' AND start + duration * 60000 > ? ORDER BY start LIMIT 1").bind(Date.now()).first();
 
 // `sub` is the subcommand name; `o` its options by name; me/who already resolved by botcmds.js.
 export async function matchdayCommand(i, env, me, who, sub, o, deps) {
-  if (!flagOn(env, who, 'events')) return say('The schedule is not switched on yet', 'Ask a manager.');
+  if (!flagOn(env, who, 'events')) return say(env, 'cmd-locked', 'The schedule is not switched on yet', 'Ask a manager.');
   if (sub === 'create') {
-    if (!can(who, 'events.manage')) return say('Managers only', 'Only managers can set up a match day – ask one, or suggest a time in the chat.');
-    return hostCommand(i, env, me, { ...o, mode: 'league', kind: o.kind ?? 'league' }, deps, matchdayBody);
+    if (!can(who, 'events.manage')) return say(env, 'cmd-locked', 'Managers only', 'Only managers can set up a match day – ask one, or suggest a time in the chat.');
+    return hostCommand(i, env, me, { ...o, mode: 'league', kind: o.kind ?? 'league' }, deps, matchdayBody, 'cmd-matchday-create');
   }
   if (sub === 'checkin') {
     const e = await nextEvent(env);
-    if (!e) return say('Nothing to check in to', 'No match day is scheduled right now.');
+    if (!e) return say(env, 'cmd-matchday-none', 'Nothing to check in to', 'No match day is scheduled right now.');
     const res = await eventsRoute('/api/events/checkin', 'POST', { id: e.id, on: true }, me, env, deps.log, deps.loadSite, new URL('https://bot.invalid/'));
     const d = await res.json().catch(() => ({}));
-    return res.ok ? say('✅ You are on', `Checked in for **${e.title || 'the next match day'}**. Good luck tonight.`, 'win') : say('Could not check in', d.error ?? 'Try again in a moment.');
+    return res.ok ? say(env, 'cmd-matchday-in', '✅ You are on', `Checked in for **${e.title || 'the next match day'}**. Good luck tonight.`, 'win') : say(env, 'cmd-problem', 'Could not check in', d.error ?? 'Try again in a moment.');
   }
   if (sub === 'status') {
     const e = await nextEvent(env);
-    if (!e) return say('Nothing scheduled yet', 'Managers add match days with /matchday create.');
+    if (!e) return say(env, 'cmd-matchday-none', 'Nothing scheduled yet', 'Managers add match days with /matchday create.');
     const rsvps = await env.DB.prepare('SELECT r.status, r.name, r.user_id, p.positions, p.rush_positions FROM event_rsvps r LEFT JOIN profiles p ON p.user_id = r.user_id WHERE r.event_id = ? ORDER BY r.at').bind(e.id).all().then((r) => r.results);
     return reply(await eventPost(env, e, rsvps, '', { who: true }));
   }
-  return say('Unknown /matchday command', 'Use create, checkin or status.');
+  return say(env, 'cmd-problem', 'Unknown /matchday command', 'Use create, checkin or status.');
 }

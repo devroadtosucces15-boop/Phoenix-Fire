@@ -99,11 +99,16 @@ export function cardUrl(manifest, ...key) {
 }
 
 // A fixed banner picture (jail, wheel, discovery, matchnight – drawn by scripts/cards.mjs). Needs no manifest lookup.
-export const BANNER_V = 11; // = TEMPLATE_VERSION in scripts/cards.mjs
+export const BANNER_V = 12; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
 
 // A drawn picture for one output, alt text from BANNER_SPEC (null without SITE_URL, so a post never breaks).
 export const picture = (env, key) => (bannerUrl(env, key) ? cards({ url: bannerUrl(env, key), alt: BANNER_SPEC[key]?.title }) : null);
+
+// A short reply (confirmation, empty state, error) that opens with its own drawn picture: the picture, one bold line, one line on what to do.
+// Private unless { ephemeral: false }. No SITE_URL → no picture, the reply still sends (the family banner fallback skips nothing).
+export const pictureNote = (env, key, title, body = '', { accent = 'steel', ephemeral = true, extra = [] } = {}) =>
+  message({ accent, ephemeral, blocks: [picture(env, key), text(`**${title}**${body ? `\n${body}` : ''}`), ...extra] });
 
 // The empty pitch of a formation (scripts/cards-events.mjs draws one per shape: lineup-<slug>.png).
 export const lineupSlug = (f) => String(f).toLowerCase().replace(/[^0-9a-z]+/g, '-').replace(/^-|-$/g, '');

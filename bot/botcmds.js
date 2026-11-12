@@ -22,7 +22,7 @@ import { knowledgeRoute } from './docs.js';
 import { notifyRouteAll } from './notify.js';
 import { trialsState } from './trials.js';
 import { markLearned } from './plays.js';
-import { message, panel, reply, notice, header, text, sep, facts, side, thumb, label as heading, footer, buttons, cards, bannerUrl } from './ui.js';
+import { message, panel, reply, notice, header, text, sep, facts, side, thumb, label as heading, footer, buttons, cards, bannerUrl, lineupUrl, picture, pictureNote } from './ui.js';
 import { it } from './icons.js';
 import { faceOf, playerFaces } from './faces.js';
 import { hostCommand } from './host.js';
@@ -37,7 +37,9 @@ const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
 const parse = (s, fb) => { try { return JSON.parse(s) ?? fb; } catch { return fb; } };
 // Short replies in the design system's compact style (bot/ui.js): private unless { flags: 0 }.
 const say = (content, extra = {}) => reply(message({ accent: 'steel', ephemeral: (extra.flags ?? 64) === 64, blocks: [text(content)] }));
-const done = (title, body) => reply(notice(title, body, { accent: 'win' })); // private "it worked"
+// A short private reply (or public with { flags: 0 }) that opens with a drawn picture: key = a SLASH entry of scripts/cards.mjs.
+const sayPic = (env, key, content, extra = {}) => reply(message({ accent: 'steel', ephemeral: (extra.flags ?? 64) === 64, blocks: [picture(env, key), text(content)] }));
+const donePic = (env, key, title, body) => reply(pictureNote(env, key, title, body, { accent: 'win' }));
 const brand = (s, env) => `${orgName(env)} · ${s}`;
 const label = (e) => e.title || EVENT_TYPES[e.type]?.[1] || 'Event';
 const ts = (ms, f = 'F') => `<t:${Math.floor(ms / 1000)}:${f}>`;
@@ -112,17 +114,17 @@ export async function playButton(i, env, who) {
 // helpers from worker.js: load(file) → site JSON, playerMessage(p) → the /player card (design system), top(stat) → the /top reply
 export async function memberCommand(i, env, who, site, h) {
   const name = i.data.name, opts = Object.fromEntries(flatOptions(i.data.options).map((o) => [o.name, o.value]));
-  if (!env.DB) return say('⚠️ The member database is not connected.');
+  if (!env.DB) return sayPic(env, 'cmd-problem', '⚠️ The member database is not connected.');
   const me = await memberOf(i, who, env);
   const events = ['schedule', 'availability', 'lineup', 'host', 'matchday'].includes(name);
-  if (events && !flagOn(env, who, 'events')) return say('🔒 The schedule is not switched on yet.');
+  if (events && !flagOn(env, who, 'events')) return sayPic(env, 'cmd-locked', '🔒 The schedule is not switched on yet.');
 
   if (name === 'matchday') {
     const sub = i.data.options?.[0];
     return matchdayCommand(i, env, me, who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value])), { log, loadSite: h.load });
   }
   if (name === 'host') {
-    if (!can(who, 'events.manage')) return say('🔒 Only managers can host sessions – ask one, or suggest a time in the chat.');
+    if (!can(who, 'events.manage')) return sayPic(env, 'cmd-locked', '🔒 Only managers can host sessions – ask one, or suggest a time in the chat.');
     return hostCommand(i, env, me, opts, { log, loadSite: h.load });
   }
   if (name === 'schedule') {
@@ -139,15 +141,17 @@ export async function memberCommand(i, env, who, site, h) {
   if (name === 'availability' || name === 'lineup') {
     // /lineup: the next event with a published lineup (falls back to the very next event to say "not yet").
     const e = (name === 'lineup' ? await one(env, "SELECT * FROM events WHERE status = 'scheduled' AND lineup_at IS NOT NULL AND start + duration * 60000 > ? ORDER BY start LIMIT 1", Date.now()) : null) ?? (await nextEvents(env, 1))[0];
-    if (!e) return say('🗓️ Nothing scheduled yet.', { flags: 0 });
+    if (!e) return name === 'lineup' ? sayPic(env, 'cmd-lineup-none', '🗓️ Nothing scheduled yet.', { flags: 0 }) : say('🗓️ Nothing scheduled yet.', { flags: 0 });
     const rsvps = await rsvpsOf(env, e.id);
     if (name === 'availability') return reply(await eventPost(env, e, rsvps, '', { who: true }));
     const lineup = parse(e.lineup, {});
     const ids = Object.keys(lineup);
-    if (!ids.length || !e.lineup_at) return say(`🧩 No lineup published yet for **${label(e)}** (${ts(e.start, 'R')}).`, { flags: 0 });
+    if (!ids.length || !e.lineup_at) return sayPic(env, 'cmd-lineup-none', `🧩 No lineup published yet for **${label(e)}** (${ts(e.start, 'R')}).`, { flags: 0 });
     const names = new Map([...rsvps.map((r) => [r.user_id, r.name]), ...(await all(env, `SELECT id, name FROM users WHERE id IN (${ids.map(() => '?').join(',')})`, ...ids)).map((u) => [u.id, u.name])]);
     const rows = ids.map((id) => [lineup[id], names.get(id) ?? 'Member']).sort((a, b) => SLOT_ORDER(a[0]) - SLOT_ORDER(b[0]));
+    const pitch = lineupUrl(env, e.formation); // the shape's drawn pitch (scripts/cards-events.mjs), else the Line-up picture
     return reply(message({ blocks: [
+      pitch ? cards({ url: pitch, alt: `${e.formation} formation` }) : picture(env, 'cmd-lineup'),
       header({ eyebrow: brand('Lineup', env), title: `🧩 ${label(e)} · ${e.formation ?? 'Lineup'}`, sub: `${ts(e.start)} · ${ts(e.start, 'R')}` }),
       text(`\`\`\`\n${rows.map(([pos, n]) => `${String(pos).padEnd(5)}${n}`).join('\n')}\n\`\`\``),
       footer(`${rows.length} players · positions in formation order`),
@@ -259,34 +263,35 @@ export async function memberCommand(i, env, who, site, h) {
     return reply(await eventPost(env, e, await rsvpsOf(env, e.id), 'Next up · '));
   }
   if (name === 'feedback') {
-    if (!flagOn(env, who, 'feedback')) return say('🔒 Feedback is not switched on yet.');
+    if (!flagOn(env, who, 'feedback')) return sayPic(env, 'cmd-locked', '🔒 Feedback is not switched on yet.');
     const res = await feedbackRoute('/api/feedback/send', 'POST', { to: String(opts.to), kind: opts.kind, text: opts.text }, me, env, log);
     const d = await res.json().catch(() => ({}));
-    if (!res.ok) return say(`⚠️ ${d.error ?? 'Could not send that.'}`);
-    return done(`${FEEDBACK_KINDS[opts.kind][0]} Sent anonymously`, `${d.left} left today. They’ll never see who sent it.`);
+    if (!res.ok) return sayPic(env, 'cmd-problem', `⚠️ ${d.error ?? 'Could not send that.'}`);
+    return donePic(env, 'cmd-feedback-sent', `${FEEDBACK_KINDS[opts.kind][0]} Sent anonymously`, `${d.left} left today. They’ll never see who sent it.`);
   }
   if (name === 'suggest') {
-    if (!flagOn(env, who, 'suggestions')) return say('🔒 The suggestion box is not switched on yet.');
+    if (!flagOn(env, who, 'suggestions')) return sayPic(env, 'cmd-locked', '🔒 The suggestion box is not switched on yet.');
     const res = await knowledgeRoute('/api/suggestions', 'POST', { title: opts.title, body: opts.body, anon: !!opts.anon }, me, env, log);
     const d = await res.json().catch(() => ({}));
-    if (!res.ok) return say(`⚠️ ${d.error ?? 'Could not add that.'}`);
-    return done(`💡 Added to the board: ${opts.title}`, `Vote it up in the Squad Hub: ${site}members.html#suggestions`);
+    if (!res.ok) return sayPic(env, 'cmd-problem', `⚠️ ${d.error ?? 'Could not add that.'}`);
+    return donePic(env, 'cmd-suggest-sent', `💡 Added to the board: ${opts.title}`, `Vote it up in the Squad Hub: ${site}members.html#suggestions`);
   }
   if (name === 'announce') {
-    if (!can(who, 'notify.announce')) return say('🔒 Managers only.');
+    if (!can(who, 'notify.announce')) return sayPic(env, 'cmd-locked', '🔒 Managers only.');
     const res = await notifyRouteAll('/api/notify/announce', 'POST', { title: opts.title, body: opts.text, ack: !!opts.ack, audience: opts.audience ?? 'all' }, me, env, h.load, log);
     const d = await res.json().catch(() => ({}));
-    if (!res.ok) return say(`⚠️ ${d.error ?? 'Could not send that.'}`);
-    return done(`📣 Sent: ${opts.title}`, `Delivered to ${d.sent} member${d.sent === 1 ? '' : 's'} (Squad Hub bell + Discord DM).`);
+    if (!res.ok) return sayPic(env, 'cmd-problem', `⚠️ ${d.error ?? 'Could not send that.'}`);
+    return donePic(env, 'cmd-announce-sent', `📣 Sent: ${opts.title}`, `Delivered to ${d.sent} member${d.sent === 1 ? '' : 's'} (Squad Hub bell + Discord DM).`);
   }
   if (name === 'trial') {
-    if (!can(who, 'trials.manage')) return say('🔒 Managers only.');
+    if (!can(who, 'trials.manage')) return sayPic(env, 'cmd-locked', '🔒 Managers only.');
     const { trials } = await trialsState(env, me);
     const q = String(opts.gamertag ?? '').toLowerCase();
     const rows = (q ? trials.filter((t) => t.ea.toLowerCase().includes(q)) : trials).slice(0, 15);
-    if (!rows.length) return say(q ? `🤷 No trial cards match "${opts.gamertag}".` : '📋 No open trial cards right now.');
+    if (!rows.length) return sayPic(env, 'cmd-empty', q ? `🤷 No trial cards match "${opts.gamertag}".` : '📋 No open trial cards right now.');
     const ICON = { recommended: '💡', applied: '📨', trialling: '⚽', signed: '✍️', released: '👋', declined: '❌' };
     return reply(message({ ephemeral: true, accent: 'steel', blocks: [
+      picture(env, 'cmd-trial'),
       header({ eyebrow: 'Staff · Trials', title: `📋 Trial cards (${rows.length})`, sub: q ? `Matching “${opts.gamertag}”` : 'Open cards, newest first' }),
       text(rows.map((t) => `${ICON[t.status] ?? '•'} **${t.ea}** — ${t.status}${t.positions.length ? ` · ${t.positions.join('/')}` : ''}`).join('\n')),
       buttons([{ label: 'Decide in the Squad Hub', url: `${site}members.html#trials` }]),

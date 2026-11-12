@@ -77,8 +77,8 @@ await guard('welcome', async () => add({ id: 'auto:welcome', name: 'Welcome post
 await guard('ping', async () => add({ id: 'auto:pingroles', name: 'Ping-roles panel', category: 'automated', trigger: '/setup pingroles', schedule: 'on command', destination: ['configured channel'], flag: 'serverTools', level: 'managers', source: 'bot/servertools.js pingPanel()', related: ['slash:/setup pingroles'] }, pingPanel(env)));
 await guard('lfg', async () => {
   const post = { id: 7, name: 'Mike', status: 'open', expires: now + 36e5, note: 'Rush 5v5 anyone?' };
-  add({ id: 'auto:lfg-open', name: 'Rush LFG call (open)', category: 'automated', trigger: '/lfg now', schedule: 'on command, expires in 60 min', destination: ['Rush channel + Rush role ping'], flag: 'rushLfg', level: 'owner', source: 'bot/lfg.js lfgMessage()', status: 'owner testing', related: ['slash:/lfg now'] }, lfgMessage(post, [{ answer: 'in', name: 'Jez' }, { answer: 'later', name: 'Kruger' }], { roleId: 'R1', now }));
-  add({ id: 'auto:lfg-expired', name: 'Rush LFG call (expired)', category: 'automated', trigger: 'cron: call passes its time', schedule: 'every 10 min', destination: ['edits the original post'], flag: 'rushLfg', level: 'owner', source: 'bot/lfg.js lfgMessage()', status: 'owner testing', related: ['auto:lfg-open'] }, lfgMessage({ ...post, status: 'expired', expires: now - 6e4 }, [], { now }));
+  add({ id: 'auto:lfg-open', name: 'Rush LFG call (open)', category: 'automated', trigger: '/lfg now', schedule: 'on command, expires in 60 min', destination: ['Rush channel + Rush role ping'], flag: 'rushLfg', level: 'owner', source: 'bot/lfg.js lfgMessage()', status: 'owner testing', related: ['slash:/lfg now'] }, lfgMessage(post, [{ answer: 'in', name: 'Jez' }, { answer: 'later', name: 'Kruger' }], { roleId: 'R1', now, env }));
+  add({ id: 'auto:lfg-expired', name: 'Rush LFG call (expired)', category: 'automated', trigger: 'cron: call passes its time', schedule: 'every 10 min', destination: ['edits the original post'], flag: 'rushLfg', level: 'owner', source: 'bot/lfg.js lfgMessage()', status: 'owner testing', related: ['auto:lfg-open'] }, lfgMessage({ ...post, status: 'expired', expires: now - 6e4 }, [], { now, env }));
 });
 await guard('events', async () => {
   const e = { id: 1, type: 'league', title: 'League night', start: now + 864e5, duration: 90, notes: 'Be on 10 minutes early.', needs: JSON.stringify({ players: 11, GK: 1, ST: 2 }), status: 'scheduled' };
@@ -112,7 +112,7 @@ await guard('rushqueue', async () => {
   ];
   const rq = (id, name, trig, extra = {}) => ({ id, name, category: 'automated', trigger: trig, schedule: 'kept as the newest message by the 1-minute cron', destination: ['rush_queue (Organization channel purpose)'], flag: 'rushQueue', level: 'owner', source: 'bot/rushqueue.js boardMessage()', related: ['slash:/queue'], ...extra });
   add(rq('auto:rushqueue-busy', 'Rush queue board: groups in line', '/queue board, then every button press'), boardMessage(q, { now }));
-  add(rq('auto:rushqueue-empty', 'Rush queue board: empty', 'nobody in the queue', { related: ['auto:rushqueue-busy'] }), boardMessage([], { now }));
+  add(rq('auto:rushqueue-empty', 'Rush queue board: empty', 'nobody in the queue', { related: ['auto:rushqueue-busy'] }), boardMessage([], { now, env }));
 });
 await guard('rushscan', async () => {
   const { boardMessage, seasonCardMessage, DEFAULT_SEASON } = await import('../../bot/rushscan.js');
