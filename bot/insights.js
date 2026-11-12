@@ -19,7 +19,8 @@ import { autoBanner } from './ui.js';
 import { can, flagOn } from './roles.js';
 import { orgName } from './orgconfig.js';
 import { notifyManagers, safely } from './notify.js';
-import { message, header, text, sep, footer, buttons } from './ui.js';
+import { message, header, text, sep, footer, buttons, cards, bannerUrl } from './ui.js';
+import { BANNER_SPEC } from './banners.js';
 
 const API = 'https://discord.com/api/v10';
 const DAY = 86400e3;
@@ -339,6 +340,7 @@ export function reportMessages(r, site, env) {
   const body = (e) => (e.fields ?? []).map((f) => `**${f.name}**\n${f.value}`).join('\n\n');
   const [overview, ...sections] = embeds;
   const first = message({ accent: 'steel', blocks: [
+    bannerUrl(env, 'intel') && cards({ url: bannerUrl(env, 'intel'), alt: BANNER_SPEC.intel.title }),
     header({ eyebrow: 'Staff · Club Intelligence', title: overview.title.replace(/^🧠 /, '🧠 '), sub: p ? `Compared with ${new Date(p.at).toISOString().slice(0, 10)}` : 'First report' }),
     text(overview.description),
     sep(),

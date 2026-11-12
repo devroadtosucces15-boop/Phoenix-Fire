@@ -17,7 +17,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 9; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 10; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -549,6 +549,29 @@ export function alertPicture(key) {
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${a.title.length <= 12 ? 104 : 88}px">${esc(a.title)}</h1><p>${esc(a.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
 }
 for (const k of Object.keys(ALERTS)) BANNERS[k] = () => alertPicture(k);
+// ---------- private-reply pictures (section 5): one drawn picture per stat insight, /me and Club Intelligence ----------
+// Same family look as the alert pictures (stripes, big line icon, crest) plus a small label saying who can see it: "Only you" for a private
+// reply, "Staff only" for Club Intelligence, "Club" for the public /insight. Icons reuse ICONS; the crest comes from phoenix/overlay.
+const PRIVATE = {
+  'insight-club': { art: 'chart', title: 'Club form', sub: 'What the numbers say', tag: 'Club' },
+  'insight-match': { art: 'pitch', title: 'Latest match', sub: 'The one that just finished', tag: 'Club' },
+  'insight-last5': { art: 'calendar', title: 'Last five', sub: 'How the run is going', tag: 'Club' },
+  'insight-goals': { art: 'ball', title: 'Goal leaders', sub: 'Who is putting them away', tag: 'Club' },
+  'insight-assists': { art: 'hand', title: 'Assist leaders', sub: 'Who is setting them up', tag: 'Club' },
+  'insight-rating': { art: 'medal', title: 'Top rated', sub: 'Form on the pitch', tag: 'Club' },
+  'insight-motm': { art: 'trophy', title: 'Man of the match', sub: 'Who keeps winning it', tag: 'Club' },
+  'me-claim': { art: 'id', title: 'Claim your player', sub: 'Link your card to the squad', tag: 'Only you' },
+  'me-hidden': { art: 'search', title: 'Card not found', sub: 'Waiting for the next data refresh', tag: 'Only you' },
+  intel: { art: 'crystal', title: 'Club Intelligence', sub: 'Server, site and team · scores and advice', tag: 'Staff only', calm: true },
+};
+export function privatePicture(key) {
+  const a = PRIVATE[key];
+  const tone = a.calm ? 'repeating-linear-gradient(135deg,#5a6578 0 22px,#0a0705 22px 44px)' : 'repeating-linear-gradient(135deg,#e8651a 0 22px,#0a0705 22px 44px)';
+  return page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.hz{position:absolute;left:0;right:0;height:16px;background:${tone}}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 30px rgba(232,101,26,.5))}.tag{position:absolute;left:56px;bottom:34px;padding:6px 18px;border:2px solid #e8651a;border-radius:99px;font:700 20px/1 Oswald;letter-spacing:.2em;text-transform:uppercase;color:#e8651a;background:#0a0705}`,
+    `<div class="hz" style="top:0"></div><div class="hz" style="bottom:0"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[a.art]}</svg>
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${a.title.length <= 12 ? 104 : a.title.length <= 16 ? 88 : 72}px">${esc(a.title)}</h1><p>${esc(a.sub)}</p></div></div><div class="tag">${esc(a.tag)}</div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
+}
+for (const k of Object.keys(PRIVATE)) BANNERS[k] = () => privatePicture(k);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------

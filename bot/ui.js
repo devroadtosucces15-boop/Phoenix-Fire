@@ -99,7 +99,7 @@ export function cardUrl(manifest, ...key) {
 }
 
 // A fixed banner picture (jail, wheel, discovery, matchnight – drawn by scripts/cards.mjs). Needs no manifest lookup.
-export const BANNER_V = 9; // = TEMPLATE_VERSION in scripts/cards.mjs
+export const BANNER_V = 10; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
 
 // The empty pitch of a formation (scripts/cards-events.mjs draws one per shape: lineup-<slug>.png).

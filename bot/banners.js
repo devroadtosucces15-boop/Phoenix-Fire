@@ -62,6 +62,17 @@ export const BANNER_SPEC = {
   eventsoon: { icon: 'flame', title: 'Starts in 30', sub: 'Get ready · check in now' },
   trialstage: { icon: 'flame', title: 'Trial update', sub: 'A trial moved to a new stage' },
   caution: { icon: 'flame', title: 'Caution', sub: 'A player needs a second look' },
+  // Private-reply pictures (drawn by scripts/cards.mjs privatePicture; the title is the picture's alt text).
+  'insight-club': { icon: 'spark', title: 'Club form', sub: 'What the numbers say' },
+  'insight-match': { icon: 'spark', title: 'Latest match', sub: 'The one that just finished' },
+  'insight-last5': { icon: 'spark', title: 'Last five', sub: 'How the run is going' },
+  'insight-goals': { icon: 'spark', title: 'Goal leaders', sub: 'Who is putting them away' },
+  'insight-assists': { icon: 'spark', title: 'Assist leaders', sub: 'Who is setting them up' },
+  'insight-rating': { icon: 'spark', title: 'Top rated', sub: 'Form on the pitch' },
+  'insight-motm': { icon: 'spark', title: 'Man of the match', sub: 'Who keeps winning it' },
+  'me-claim': { icon: 'id', title: 'Claim your player', sub: 'Link your card to the squad' },
+  'me-hidden': { icon: 'id', title: 'Card not found', sub: 'Waiting for the next data refresh' },
+  intel: { icon: 'crystal', title: 'Club Intelligence', sub: 'Server, site and team' },
 };
 
 // Slash command → family.

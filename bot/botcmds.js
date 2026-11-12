@@ -22,7 +22,7 @@ import { knowledgeRoute } from './docs.js';
 import { notifyRouteAll } from './notify.js';
 import { trialsState } from './trials.js';
 import { markLearned } from './plays.js';
-import { message, panel, reply, notice, header, text, sep, facts, side, thumb, label as heading, footer, buttons } from './ui.js';
+import { message, panel, reply, notice, header, text, sep, facts, side, thumb, label as heading, footer, buttons, cards, bannerUrl } from './ui.js';
 import { it } from './icons.js';
 import { faceOf, playerFaces } from './faces.js';
 import { hostCommand } from './host.js';
@@ -169,9 +169,14 @@ export async function memberCommand(i, env, who, site, h) {
   }
   if (name === 'me') {
     const claim = await one(env, "SELECT player FROM claims WHERE user_id = ? AND status = 'approved'", me.u);
-    if (!claim) return say(`🪪 You haven’t got a verified player yet – claim yours in the Squad Hub: ${site}members.html`);
+    // Private and compact: a drawn picture, one line, one button. Only the player card (below) is the full card.
+    const meNote = (key, title, line, label) => reply(message({ accent: 'steel', ephemeral: true, blocks: [
+      cards(bannerUrl(env, key) && { url: bannerUrl(env, key), alt: title }), header({ eyebrow: brand('My player card', env), title, size: 3 }), text(line),
+      buttons([{ label, url: `${site}members.html` }]),
+    ] }));
+    if (!claim) return meNote('me-claim', 'No verified player yet', 'Claim your player in the Squad Hub and a manager links it to your Discord account.', 'Open the Squad Hub');
     const p = (await h.load('players')).find((x) => x.k === claim.player);
-    if (!p) return say('🙈 Your player is hidden from the site or not in the latest data yet.');
+    if (!p) return meNote('me-hidden', 'Your card is not here yet', 'Your player is hidden from the site or not in the latest data. It appears after the next refresh.', 'Open the Squad Hub');
     const msg = await h.playerMessage(p, { eyebrow: 'My player card' });
     return { type: 4, data: { ...msg, flags: msg.flags | 64 } }; // only you see it
   }
