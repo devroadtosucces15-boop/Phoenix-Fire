@@ -37,12 +37,12 @@ export const CHANNEL_PURPOSE_INFO = {
   awards: 'Weekly awards and Highlight of the week', reminders: 'Event reminders (falls back to announcements)', member_log: 'Leave and join alerts',
   hype: 'Hype art posts', voice_recap: 'Voice chat recaps', live_alerts: 'Go-live alerts (falls back to announcements)',
   fun_posts: 'Birthdays and other fun posts (falls back to announcements)', automod_alerts: 'AutoMod alerts',
-  rush_queue: 'The Rush queue board (the bot keeps one always-latest board here)', rush_queue_reports: 'Anonymous Rush queue reports for staff',
+  rush_queue: 'The Rush queue board (the bot keeps one always-latest board here)', rush_queue_reports: 'Anonymous Rush queue reports for staff', rush_need: '"Need a player" posts from the Rush queue (falls back to the queue channel)',
   rush_board: 'Rush leaderboard scan posts', season_stats: 'Season stats posts',
 };
 // A purpose with no row of its own may fall back to another purpose before giving up (the old behaviour of the posts that used
 // the shared announce channel). Anything not listed has no fallback: if nothing is configured the feature says so.
-const FALLBACK = { reminders: ['announcements'], live_alerts: ['announcements'], fun_posts: ['announcements'] };
+const FALLBACK = { reminders: ['announcements'], live_alerts: ['announcements'], fun_posts: ['announcements'], rush_need: ['rush_queue'] };
 
 // Each entity: table, the columns a client may write (cleaned by `clean`), and what the audit log records.
 const ENTITIES = {

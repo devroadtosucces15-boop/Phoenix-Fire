@@ -38,9 +38,11 @@ for (const [label, id, ours, theirs] of [['loss', '1', 0, 3], ['win', '2', 3, 0]
 // Webhook fallback (no bot path): the embed colour is the brand colour, not result red/green, and the thumbnail is the site crest, not the opponent's.
 sent.length = 0; delete process.env.DISCORD_BOT_TOKEN;
 await postResults([mk('1', 0, 3)], { config: { ...config, features: {} }, homeId: '100', route, drawn: null });
-const hook = JSON.parse(sent.find((c) => c.url.includes('/webhooks/'))?.init.body ?? '{}');
-t('webhook embed colour is the Phoenix orange', hook.embeds?.[0]?.color === 0xe8651a);
-t('webhook thumbnail is the Phoenix site crest, not the opponent', hook.embeds?.[0]?.thumbnail?.url === 'https://x.test/assets/crest.png?v=phoenix2');
+const hookCall = sent.find((c) => c.url.includes('/webhooks/'));
+const hookBody = hookCall?.init.body, hook = typeof hookBody === 'string' ? JSON.parse(hookBody) : JSON.parse(hookBody?.get?.('payload_json') ?? '{}'); // the panel goes as multipart (with files), the classic embed as JSON
+const hookJson = JSON.stringify(hook);
+t('webhook: the post (panel or classic embed) is the Phoenix orange, never a result red or green', (hook.components?.at(-1)?.accent_color ?? hook.embeds?.[0]?.color) === 0xe8651a && !/c8352c|080b11/i.test(hookJson));
+t('webhook: the crest is the Phoenix crest (attached or the versioned site crest), never the opponent\'s', /attachment:\/\/crest\.png|https:\/\/x\.test\/assets\/crest\.png\?v=phoenix2/.test(hookJson) && !/easports|crestAssetId/i.test(hookJson));
 globalThis.fetch = realFetch;
 // Bot replies: any crest on our own site is versioned (Discord caches by URL, so an old NOREX crest sticks), and a defeat keeps the orange stripe.
 const { header, thumb, resultAccent, ACCENT } = await import('../bot/ui.js');
