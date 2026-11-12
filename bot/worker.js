@@ -184,8 +184,8 @@ export default {
       if (!env.DB) return json({ type: 4, data: notice('The member database isn’t connected') });
       return json(await panelInteraction(i, env, await memberOf(i, who, env), site, (f) => load(site, f, ctx)));
     }
-    if (i.type === 2 && HELP_COMMANDS[i.data.name]) return json(helpCommand(i.data.name)); // /corehelp … /rushhelp: private, button-driven menus (bot/help.js)
-    if (i.type === 3 && HELP_BUTTON.test(i.data?.custom_id ?? '')) return json(helpButton(i));
+    if (i.type === 2 && HELP_COMMANDS[i.data.name]) return json(helpCommand(i.data.name, env)); // /corehelp … /rushhelp: private, button-driven menus (bot/help.js)
+    if (i.type === 3 && HELP_BUTTON.test(i.data?.custom_id ?? '')) return json(helpButton(i, env));
     if (i.type === 2 && STREAM_COMMANDS.has(i.data.name)) return json(await streamCommand(i, env, ctx, who)); // /streamalerts (owner)
     if (i.type === 2 && WATCH_COMMANDS.has(i.data.name)) return json(await watchCommand(i, env, ctx, who)); // /watch /watchlist
     if (i.type === 3 && WATCH_BUTTON.test(i.data?.custom_id ?? '')) return json(await watchButton(i, env, who)); // 👍 Useful

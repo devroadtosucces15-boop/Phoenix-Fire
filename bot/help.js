@@ -5,7 +5,7 @@
 // shows; only the tips and the step-by-step guides below are written by hand.
 // Buttons carry norex:help:<bot>:<page>; the list carries norex:help:<bot>:j. Every app answers them (buttons are not filtered by app).
 import { COMMANDS, APP_COMMANDS } from './commanddefs.js';
-import { message, header, text, sep, footer, button, buttons } from './ui.js';
+import { message, header, text, sep, footer, button, buttons, cards, bannerUrl } from './ui.js';
 
 export const HELP_BUTTON = /^norex:help:(core|stats|tools|matchday|rush|hub):(\d+|j)(?::[a-z])?$/;
 export const HELP_COMMANDS = { corehelp: 'core', statshelp: 'stats', toolshelp: 'tools', matchdayhelp: 'matchday', rushhelp: 'rush' };
@@ -183,6 +183,15 @@ const who = (c) => (/^Owner:/.test(c.description) ? 'Owner only' : /^Managers?:/
 const plain = (d) => String(d ?? '').replace(/^(Managers?|Owner):\s*/, '').replace(/\s*\(P\d+\.\d+\)|\s*\(✨ BE9\)/g, '');
 const optLine = (o) => `\`${o.name}\`${o.required ? ' (needed)' : ''} – ${plain(o.description)}`;
 
+// What the help poster (scripts/cards.mjs, banner names help-<key>) draws: the app's commands from the live definitions, or the five bots for the hub.
+export const HELP_POSTER_KEYS = ['hub', ...Object.keys(BOTS)];
+export const HELP_ICON = { hub: 'flame', core: 'gear', stats: 'chart', tools: 'board', matchday: 'calendar', rush: 'bolt' };
+export function helpPosterModel(key) {
+  if (key === 'hub') return { key, label: 'Which bot do you need?', blurb: 'Phoenix is five bots. Each has its own help command.', who: '', cmds: Object.entries(BOTS).map(([k, b]) => ({ name: `/${Object.keys(HELP_COMMANDS).find((c) => HELP_COMMANDS[c] === k)}`, desc: clip(`${b.label} · ${b.blurb}`, 84), who: b.who })) };
+  const bot = BOTS[key];
+  return { key, label: bot.label, blurb: bot.blurb, who: bot.who, cmds: APP_COMMANDS[key].filter((n) => !(n in HELP_COMMANDS) && defOf(n)).map((n) => ({ name: `/${n}`, desc: clip(plain(defOf(n).description), 64), who: who(defOf(n)) })) };
+}
+
 export function pagesFor(key) {
   if (key === 'hub') return [{ id: 'hub', title: 'Which bot do you need?', kind: 'hub' }];
   const bot = BOTS[key];
@@ -241,7 +250,7 @@ function hubBlocks() {
 // ---------- the message ----------
 const id = (key, n, tag = '') => `norex:help:${key}:${Math.max(0, n)}${tag ? `:${tag}` : ''}`; // custom ids must be unique in a message, so each button has its own tag
 
-export function helpMessage(key, index = 0) {
+export function helpMessage(key, index = 0, env = null) {
   const pages = pagesFor(key);
   const i = Math.min(Math.max(Number(index) || 0, 0), pages.length - 1);
   const page = pages[i];
@@ -250,6 +259,10 @@ export function helpMessage(key, index = 0) {
   else if (page.kind === 'flows') blocks = flowBlocks(key);
   else if (page.kind === 'command') blocks = commandBlocks(key, defOf(page.name));
   else blocks = contentsBlocks(key, pages);
+  if (page.kind === 'hub' || page.kind === 'contents') { // the drawn poster of this bot's commands sits under the title; every other page gets the plain help banner
+    const poster = cards(bannerUrl(env, `help-${key}`) && { url: bannerUrl(env, `help-${key}`), alt: `${key === 'hub' ? 'The Phoenix bots' : BOTS[key].label}: every command at a glance` });
+    if (poster) blocks = [blocks[0], poster, ...blocks.slice(1)];
+  }
 
   const rows = [];
   if (key === 'hub') {
@@ -276,14 +289,14 @@ export function helpMessage(key, index = 0) {
 }
 
 // /corehelp and friends → a private message. A button or the list → the same message, updated in place.
-export function helpCommand(name) {
+export function helpCommand(name, env = null) {
   const key = HELP_COMMANDS[name];
-  return key ? { type: 4, data: helpMessage(key, 0) } : null;
+  return key ? { type: 4, data: helpMessage(key, 0, env) } : null;
 }
-export function helpButton(i) {
+export function helpButton(i, env = null) {
   const m = String(i.data?.custom_id ?? '').match(HELP_BUTTON);
   if (!m) return null;
   const key = m[1];
   const n = m[2] === 'j' ? Number(i.data?.values?.[0]) : Number(m[2]);
-  return { type: 7, data: helpMessage(key, n) };
+  return { type: 7, data: helpMessage(key, n, env) };
 }

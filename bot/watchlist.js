@@ -62,7 +62,7 @@ export function parseFeed(xml) {
 export function videoPanel(v, useful, env) {
   return message({ accent: 'red', mentions: { parse: [] }, blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · New video · ${TOPIC_ICON[v.topic] ?? ''} ${v.topic}`, title: v.title, sub: v.channel_name, size: 3 }),
-    cards({ url: v.thumb, alt: v.title }),
+    cards({ url: v.thumb || `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`, alt: v.title }),
     sep(),
     buttons([{ label: `👍 Useful · ${useful}`, id: `norex:wl:useful:${v.id}` }, { label: 'Watch', url: watchUrl(v.id) }]),
   ] });

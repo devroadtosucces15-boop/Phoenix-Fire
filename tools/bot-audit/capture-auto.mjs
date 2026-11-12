@@ -17,7 +17,9 @@ import { discoveryPanel } from '../../bot/discoveries.js';
 import { birthdayPanel } from '../../bot/fun.js';
 import { welcomeMessage, pingPanel } from '../../bot/servertools.js';
 import { lfgMessage } from '../../bot/lfg.js';
-import { eventMessage } from '../../bot/events.js';
+import { eventMessage, checkinMessage, lineupEmbed } from '../../bot/events.js';
+import { checkinDone } from '../../bot/botcmds.js';
+import { cards } from '../../bot/ui.js';
 import { autoBanner } from '../../bot/ui.js';
 
 const OUT = fileURLToPath(new URL('./out/', import.meta.url));
@@ -85,6 +87,18 @@ await guard('events', async () => {
   add(ev('auto:event-league', 'Event post: league night', 'manager creates an event (site or /host)'), eventMessage(env, e, rs, '', { who: true }));
   add(ev('auto:event-rush', 'Event post: Rush session', 'manager creates a Rush event'), eventMessage(env, { ...e, id: 2, type: 'rush', title: 'Rush night' }, rs, ''));
   add(ev('auto:event-cancelled', 'Event post: cancelled', 'manager cancels an event', { related: ['auto:event-league'] }), eventMessage(env, { ...e, id: 3, status: 'cancelled' }, rs, ''));
+  // roster picture sample: the drawn picture block (needs the image draw live; here a stand-in url so the layout is checked)
+  const roster = cards({ url: 'https://example.com/roster-sample.png', alt: 'In: 1 Mike ST, 2 Jez CM' });
+  add(ev('auto:event-roster', 'Event post: with the roster picture', 'manager creates an event, roster flag on', { related: ['auto:event-league'] }), eventMessage(env, e, rs, '', { roster }));
+  const ci = (id, name, trig, extra = {}) => ({ id, name, category: 'automated', trigger: trig, schedule: 'posted 30 min before kick-off, refreshed on every check-in', destination: ['match_notifications'], flag: 'matchNight', level: 'public', source: 'bot/events.js checkinMessage()', related: ['auto:event-league'], ...extra });
+  const soon = { ...e, start: now + 18e5 };
+  add(ci('auto:checkin', 'Check-in post', 'cron: 30 minutes before kick-off'), checkinMessage(env, soon, rs, [{ user_id: '222', name: 'Mike' }]));
+  add(ci('auto:checkin-roster', 'Check-in post: with the roster picture', 'cron: 30 minutes before kick-off, roster flag on'), checkinMessage(env, soon, rs, [{ user_id: '222', name: 'Mike' }], { roster }));
+  add({ id: 'auto:checkin-reply', name: 'Check in button reply', category: 'automated', trigger: 'member presses Check in', schedule: 'on press', destination: ['ephemeral reply to the member'], flag: 'matchNight', level: 'members', source: 'bot/botcmds.js checkinDone()', related: ['auto:checkin'] }, checkinDone(soon).data);
+  const lineup = { 222: 'ST', 333: 'CM', 555: 'GK' }, names = new Map([['222', 'Mike'], ['333', 'Jez'], ['555', 'Kruger']]), bench = [{ rank: 4, name: 'Sam', status: 'yes' }, { rank: 5, name: 'Lee', status: 'maybe' }];
+  const lu = (id, name, trig) => ({ id, name, category: 'automated', trigger: trig, schedule: 'on lineup save', destination: ['match_notifications'], flag: 'matchNight', level: 'public', source: 'bot/events.js lineupEmbed()', related: ['auto:checkin'] });
+  add(lu('auto:lineup-suggested', 'Lineup post: suggested', 'cron: suggested lineup before check-in'), lineupEmbed(env, { ...e, formation: '4-3-3' }, lineup, names, { suggested: true, bench }));
+  add(lu('auto:lineup-final', 'Lineup post: final', 'manager publishes the lineup'), lineupEmbed(env, { ...e, formation: '4-3-3' }, lineup, names, { bench }));
 });
 
 
