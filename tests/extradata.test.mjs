@@ -56,7 +56,9 @@ if (olderFixture) {
 }
 // A friendly: copy of the oldest match, new id, a day later, with a 9–0 score nobody could miss.
 const fr = JSON.parse(JSON.stringify(league.at(-1)));
-fr.matchId = '999000111'; fr.matchType = 'friendlyMatch'; fr.timestamp = league[0].timestamp + 86400;
+// Newest across the whole archive (the org feed merges every source club and keeps only 10 friendlies), so the fixture friendly is always the one "latest" sees.
+const newestTs = Math.max(...files.map(read).map((m) => Number(m.timestamp) || 0));
+fr.matchId = '999000111'; fr.matchType = 'friendlyMatch'; fr.timestamp = newestTs + 86400;
 const opp = Object.keys(fr.clubs).find((k) => k !== home);
 fr.clubs[home] = { ...fr.clubs[home], goals: '9', wins: '1', losses: '0', ties: '0' };
 fr.clubs[opp] = { ...fr.clubs[opp], goals: '0', wins: '0', losses: '1', ties: '0' };

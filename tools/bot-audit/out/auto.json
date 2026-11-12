@@ -26,12 +26,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 📣 Sample Announcements & rules"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-announce.png?v=8"
+           },
+           "description": "Announcement"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it.\n\n**Please open the site and tap “Got it” to acknowledge.**"
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -80,12 +91,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🪪 Sample Player claim decisions"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-claim.png?v=8"
+           },
+           "description": "Player claim"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -134,12 +156,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🔭 Sample My scouting tips"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-trial.png?v=8"
+           },
+           "description": "Trials"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -188,12 +221,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🏟️ Sample Trial stage changes – my trial and the Dugout board"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-trial.png?v=8"
+           },
+           "description": "Trials"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -242,12 +286,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### ⚡ Sample My Rush results"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-rush.png?v=8"
+           },
+           "description": "Rush"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -296,12 +351,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🙋 Sample Rush calls – someone is available to play"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-lfg.png?v=8"
+           },
+           "description": "Need a player"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -350,12 +416,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🎖️ Sample Badges & achievements I get"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-badge.png?v=8"
+           },
+           "description": "Badges"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -404,12 +481,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 📨 Sample My club & privacy requests"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-request.png?v=8"
+           },
+           "description": "Requests"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -458,12 +546,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 💡 Sample Replies to my suggestions"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-idea.png?v=8"
+           },
+           "description": "Ideas"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -512,12 +611,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 📅 Sample New events, changes and session reports"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-event.png?v=8"
+           },
+           "description": "Match night"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -566,12 +676,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🏆 Sample Weekly awards – results and my wins"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-award.png?v=8"
+           },
+           "description": "Awards"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -620,12 +741,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 💌 Sample Anonymous feedback from teammates"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-feedback.png?v=8"
+           },
+           "description": "Feedback"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -674,12 +806,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🔮 Sample My prediction points"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-predict.png?v=8"
+           },
+           "description": "Predictions"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -728,12 +871,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🎮 Sample Game updates – new max level & rules"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-game.png?v=8"
+           },
+           "description": "Game update"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -782,12 +936,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 📣 Sample When someone @mentions me"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-social.png?v=8"
+           },
+           "description": "Messages"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -836,12 +1001,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 💬 Sample New DMs and group chat messages"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-social.png?v=8"
+           },
+           "description": "Messages"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -890,12 +1066,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 💬 Sample Comments, replies and reactions on my feed posts"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-social.png?v=8"
+           },
+           "description": "Messages"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -944,12 +1131,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 💾 Sample Media storage clean-ups (feed photos & clips)"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-storage.png?v=8"
+           },
+           "description": "Storage"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -998,12 +1196,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🛡️ Sample Manager to-dos (new claims, trials, Rush results, requests)"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-staff.png?v=8"
+           },
+           "description": "Staff"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1052,12 +1261,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🛡️ Sample Warnings and mutes from the managers"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-moderation.png?v=8"
+           },
+           "description": "Moderation"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1106,12 +1326,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 📋 Sample New plays assigned to me"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-play.png?v=8"
+           },
+           "description": "Plays"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1160,12 +1391,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🪪 Sample Card Studio – decisions on my card request"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-card.png?v=8"
+           },
+           "description": "Card Studio"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1214,12 +1456,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 👋 Sample Waves from teammates in the Hub"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-social.png?v=8"
+           },
+           "description": "Messages"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1268,12 +1521,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### ⏰ Sample Reminders – feedback waiting for you, and the odd nudge to use it"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-remind.png?v=8"
+           },
+           "description": "Reminder"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1322,12 +1586,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### ⚠️ Sample Caution – a player disagrees with or is confused by feedback"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-feedback.png?v=8"
+           },
+           "description": "Feedback"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1376,12 +1651,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🔴 Sample The club goes live on Twitch or YouTube"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-live.png?v=8"
+           },
+           "description": "Live"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1430,12 +1716,23 @@
          "content": "-# PHOENIX FIRE · ALERT\n### 🔔 Sample Test notifications"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-general.png?v=8"
+           },
+           "description": "Phoenix Fire"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "Sample notification text, as a member would receive it."
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1794317549:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1794451840:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1482,6 +1779,17 @@
         {
          "type": 10,
          "content": "-# PHOENIX FIRE · LIVE · TWITCH\n### 🔴 Phoenix Fire is live\n-# Sample · Pro Clubs night"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-live.png?v=8"
+           },
+           "description": "Live"
+          }
+         ]
         },
         {
          "type": 10,
@@ -1548,6 +1856,17 @@
          "content": "-# PHOENIX FIRE · LIVE · TWITCH\n### 🔴 Mike is live\n-# Sample · Ranked grind"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-live.png?v=8"
+           },
+           "description": "Live"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "<@222> just went on air – drop in and say hello."
         },
@@ -1606,6 +1925,17 @@
          "content": "-# STAFF · UPTIME MONITOR\n### Phoenix bot: something's down"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-health.png?v=8"
+           },
+           "description": "Bot status"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "• Worker: EA relay timed out"
         },
@@ -1648,7 +1978,18 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · UPTIME MONITOR\n### Phoenix bot: back to normal (was down since 2026-11-10 12:32 UTC)"
+         "content": "-# STAFF · UPTIME MONITOR\n### Phoenix bot: back to normal (was down since 2026-11-12 01:50 UTC)"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-health.png?v=8"
+           },
+           "description": "Bot status"
+          }
+         ]
         },
         {
          "type": 10,
@@ -1686,7 +2027,18 @@
        "components": [
         {
          "type": 10,
-         "content": "-# BURNER TRACKER · LEAGUE\n## 🔥 Burner FC 3–1 Sample FC\n-# ✅ Win · <t:1794317548:f> · burner club report"
+         "content": "-# BURNER TRACKER · LEAGUE\n## 🔥 Burner FC 3–1 Sample FC\n-# ✅ Win · <t:1794451839:f> · burner club report"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-burner.png?v=8"
+           },
+           "description": "Burner report"
+          }
+         ]
         },
         {
          "type": 10,
@@ -1771,7 +2123,7 @@
          "items": [
           {
            "media": {
-            "url": ""
+            "url": "https://i.ytimg.com/vi/sampleVid001/hqdefault.jpg"
            },
            "description": "Sample · Best CAM build for FC 27 Pro Clubs"
           }
@@ -1837,7 +2189,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-discovery.png?v=4"
+            "url": "http://localhost:4321/cards/banner-discovery.png?v=8"
            }
           }
          ]
@@ -1913,6 +2265,17 @@
          "content": "-# PHOENIX FIRE · BIRTHDAYS\n## 🎂 Happy birthday!"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-birthday.png?v=8"
+           },
+           "description": "Birthday"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "🎉 <@222>"
         },
@@ -1960,6 +2323,17 @@
         {
          "type": 10,
          "content": "-# WELCOME\n## Welcome to Phoenix Fire\n-# Glad you’re here, Mike"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-welcome.png?v=8"
+           },
+           "description": "Welcome"
+          }
+         ]
         },
         {
          "type": 10,
@@ -2020,6 +2394,17 @@
         {
          "type": 10,
          "content": "-# PHOENIX FIRE · PINGS\n## 🔔 Pick your pings\n-# Tap to turn one on, tap again to turn it off. Only you see the answer."
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-general.png?v=8"
+           },
+           "description": "Phoenix Fire"
+          }
+         ]
         },
         {
          "type": 9,
@@ -2125,7 +2510,18 @@
        "components": [
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Mike is available for Rush\n-# Until <t:1794321148:t> · <t:1794321148:R>"
+         "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Mike is available for Rush\n-# Until <t:1794455439:t> · <t:1794455439:R>"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-rush.png?v=8"
+           },
+           "description": "Rush"
+          }
+         ]
         },
         {
          "type": 10,
@@ -2209,6 +2605,17 @@
          "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Mike is available for Rush\n-# This call is over"
         },
         {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-rush.png?v=8"
+           },
+           "description": "Rush"
+          }
+         ]
+        },
+        {
          "type": 10,
          "content": "📝 Rush 5v5 anyone?"
         },
@@ -2265,14 +2672,14 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-matchnight.png?v=4"
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=8"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1794403948:F> · <t:1794403948:R> · 1 h 30 min"
+         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1794538239:F> · <t:1794538239:R> · 1 h 30 min"
         },
         {
          "type": 10,
@@ -2381,14 +2788,14 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-matchnight.png?v=4"
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=8"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · RUSH SESSION\n## ⚡ Rush night\n-# <t:1794403948:F> · <t:1794403948:R> · 1 h 30 min"
+         "content": "-# PHOENIX FIRE · RUSH SESSION\n## ⚡ Rush night\n-# <t:1794538239:F> · <t:1794538239:R> · 1 h 30 min"
         },
         {
          "type": 10,
@@ -2489,7 +2896,18 @@
        "components": [
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 🚫 Cancelled · League night\n-# <t:1794403948:F> · <t:1794403948:R> · 1 h 30 min"
+         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 🚫 Cancelled · League night\n-# <t:1794538239:F> · <t:1794538239:R> · 1 h 30 min"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-general.png?v=8"
+           },
+           "description": "Phoenix Fire"
+          }
+         ]
         },
         {
          "type": 10,
@@ -2537,6 +2955,1264 @@
    ]
   },
   {
+   "id": "auto:event-roster",
+   "name": "Event post: with the roster picture",
+   "category": "automated",
+   "trigger": "manager creates an event, roster flag on",
+   "schedule": "on create, refreshed after every answer",
+   "destination": [
+    "match_notifications",
+    "announcements"
+   ],
+   "flag": "events",
+   "level": "public",
+   "source": "bot/events.js eventMessage()",
+   "related": [
+    "auto:event-league"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=8"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1794538239:F> · <t:1794538239:R> · 1 h 30 min"
+        },
+        {
+         "type": 10,
+         "content": "📝 Be on 10 minutes early."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "https://example.com/roster-sample.png"
+           },
+           "description": "In: 1 Mike ST, 2 Jez CM"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**🧩 Still needed** 10 more players · 1 GK · 1 ST"
+        },
+        {
+         "type": 10,
+         "content": "-# Tap a button to answer · only you see the confirmation"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "norex:ev:1:yes",
+           "label": "I’m in",
+           "emoji": {
+            "name": "✅"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "norex:ev:1:maybe",
+           "label": "Maybe",
+           "emoji": {
+            "name": "❔"
+           }
+          },
+          {
+           "type": 2,
+           "style": 4,
+           "custom_id": "norex:ev:1:no",
+           "label": "Can’t make it",
+           "emoji": {
+            "name": "❌"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-1",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:checkin",
+   "name": "Check-in post",
+   "category": "automated",
+   "trigger": "cron: 30 minutes before kick-off",
+   "schedule": "posted 30 min before kick-off, refreshed on every check-in",
+   "destination": [
+    "match_notifications"
+   ],
+   "flag": "matchNight",
+   "level": "public",
+   "source": "bot/events.js checkinMessage()",
+   "related": [
+    "auto:event-league"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-checkin.png?v=8"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · CHECK-IN\n## ⏰ Check in now · League night\n-# <t:1794453639:F> · <t:1794453639:R>"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**Checked in** ✅ 1\n**Not yet** 1"
+        },
+        {
+         "type": 10,
+         "content": "-# **CHECKED IN**\n` 1` **Mike**"
+        },
+        {
+         "type": 10,
+         "content": "-# **NOT CHECKED IN – NOT CONSIDERED UNTIL THEY DO**\n` 2` **Jez** · maybe"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "⏱️ **Be lined up 10 minutes before the start.** There is a grace period of 5 to 10 minutes. After that we start without you.\n👥 **6 real players are needed to start.** AI players do not count; playoffs and other tournaments need 8. Fewer than 6 by the start time and the session is cancelled or rescheduled."
+        },
+        {
+         "type": 10,
+         "content": "-# Only players who check in are considered for the lineup"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "phoenix:ci:1",
+           "label": "Check in",
+           "emoji": {
+            "name": "✅"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-1",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:checkin-roster",
+   "name": "Check-in post: with the roster picture",
+   "category": "automated",
+   "trigger": "cron: 30 minutes before kick-off, roster flag on",
+   "schedule": "posted 30 min before kick-off, refreshed on every check-in",
+   "destination": [
+    "match_notifications"
+   ],
+   "flag": "matchNight",
+   "level": "public",
+   "source": "bot/events.js checkinMessage()",
+   "related": [
+    "auto:event-league"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · CHECK-IN\n## ⏰ Check in now · League night\n-# <t:1794453639:F> · <t:1794453639:R>"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**Checked in** ✅ 1\n**Not yet** 1"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "https://example.com/roster-sample.png"
+           },
+           "description": "In: 1 Mike ST, 2 Jez CM"
+          }
+         ]
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "⏱️ **Be lined up 10 minutes before the start.** There is a grace period of 5 to 10 minutes. After that we start without you.\n👥 **6 real players are needed to start.** AI players do not count; playoffs and other tournaments need 8. Fewer than 6 by the start time and the session is cancelled or rescheduled."
+        },
+        {
+         "type": 10,
+         "content": "-# Only players who check in are considered for the lineup"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "phoenix:ci:1",
+           "label": "Check in",
+           "emoji": {
+            "name": "✅"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-1",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:checkin-reply",
+   "name": "Check in button reply",
+   "category": "automated",
+   "trigger": "member presses Check in",
+   "schedule": "on press",
+   "destination": [
+    "ephemeral reply to the member"
+   ],
+   "flag": "matchNight",
+   "level": "members",
+   "source": "bot/botcmds.js checkinDone()",
+   "related": [
+    "auto:checkin"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32832,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "✅ You are checked in for **League night** · <t:1794453639:F> (<t:1794453639:R>). Be lined up 10 minutes before the start."
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:lineup-suggested",
+   "name": "Lineup post: suggested",
+   "category": "automated",
+   "trigger": "cron: suggested lineup before check-in",
+   "schedule": "on lineup save",
+   "destination": [
+    "match_notifications"
+   ],
+   "flag": "matchNight",
+   "level": "public",
+   "source": "bot/events.js lineupEmbed()",
+   "related": [
+    "auto:checkin"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/lineup-4-3-3.png?v=8"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · MATCH NIGHT\n## 🧩 Suggested lineup · 4-3-3\n-# League night · <t:1794538239:F> · <t:1794538239:R>"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# **GK**\n`GK ` **Kruger**"
+        },
+        {
+         "type": 10,
+         "content": "-# **MIDFIELD**\n`CM ` **Jez**"
+        },
+        {
+         "type": 10,
+         "content": "-# **ATTACK**\n`ST ` **Mike**"
+        },
+        {
+         "type": 10,
+         "content": "-# **BENCH · IN THE ORDER THEY ANSWERED**\n` 4` **Sam** · ✅ in\n` 5` **Lee** · ❔ maybe"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "📝 **This is a suggested lineup.** It was picked from the answers so far.\n⏰ **Check in 30 minutes before kick-off.** Anyone who has not checked in will not be considered."
+        },
+        {
+         "type": 10,
+         "content": "⏱️ **Be lined up 10 minutes before the start.** There is a grace period of 5 to 10 minutes. After that we start without you.\n👥 **6 real players are needed to start.** AI players do not count; playoffs and other tournaments need 8. Fewer than 6 by the start time and the session is cancelled or rescheduled."
+        },
+        {
+         "type": 10,
+         "content": "-# 3 starting · 2 on the bench · Play Style per position in the Handbook"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-1",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:lineup-final",
+   "name": "Lineup post: final",
+   "category": "automated",
+   "trigger": "manager publishes the lineup",
+   "schedule": "on lineup save",
+   "destination": [
+    "match_notifications"
+   ],
+   "flag": "matchNight",
+   "level": "public",
+   "source": "bot/events.js lineupEmbed()",
+   "related": [
+    "auto:checkin"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/lineup-4-3-3.png?v=8"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · MATCH NIGHT\n## 🧩 Lineup · 4-3-3\n-# League night · <t:1794538239:F> · <t:1794538239:R>"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# **GK**\n`GK ` **Kruger**"
+        },
+        {
+         "type": 10,
+         "content": "-# **MIDFIELD**\n`CM ` **Jez**"
+        },
+        {
+         "type": 10,
+         "content": "-# **ATTACK**\n`ST ` **Mike**"
+        },
+        {
+         "type": 10,
+         "content": "-# **BENCH · IN THE ORDER THEY ANSWERED**\n` 4` **Sam** · ✅ in\n` 5` **Lee** · ❔ maybe"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "⏱️ **Be lined up 10 minutes before the start.** There is a grace period of 5 to 10 minutes. After that we start without you.\n👥 **6 real players are needed to start.** AI players do not count; playoffs and other tournaments need 8. Fewer than 6 by the start time and the session is cancelled or rescheduled."
+        },
+        {
+         "type": 10,
+         "content": "-# 3 starting · 2 on the bench · Play Style per position in the Handbook"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#schedule-1",
+           "label": "Squad Hub"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:rushqueue-busy",
+   "name": "Rush queue board: groups in line",
+   "category": "automated",
+   "trigger": "/queue board, then every button press",
+   "schedule": "kept as the newest message by the 1-minute cron",
+   "destination": [
+    "rush_queue (Organization channel purpose)"
+   ],
+   "flag": "rushQueue",
+   "level": "owner",
+   "source": "bot/rushqueue.js boardMessage()",
+   "related": [
+    "slash:/queue"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · RUSH\n## 🔥 Rush queue\n-# One group searches at a time, in click order"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-rush.png?v=8"
+           },
+           "description": "Rush"
+          }
+         ]
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**SEARCHING NOW**  <@222>, <@333>  · since 1:35\n\n**NEXT**\n1. <@444> · needs 1 player · ~5 min\n2. <@111>, <@555>, <@666> · ⏸ paused · ~10 min"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# 3 groups in line · captain presses the buttons, the rest of the crew just waits for the ping"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "pf:rq:join",
+           "label": "Join queue",
+           "emoji": {
+            "name": "➕"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:leave",
+           "label": "Leave",
+           "emoji": {
+            "name": "🚪"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:crew",
+           "label": "Edit my crew",
+           "emoji": {
+            "name": "👥"
+           }
+          },
+          {
+           "type": 2,
+           "style": 1,
+           "custom_id": "pf:rq:search",
+           "label": "Searching now",
+           "emoji": {
+            "name": "🔎"
+           }
+          },
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "pf:rq:found",
+           "label": "Match found",
+           "emoji": {
+            "name": "✅"
+           }
+          }
+         ]
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:failed",
+           "label": "Match failed",
+           "emoji": {
+            "name": "⚠️"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:need",
+           "label": "Need a player",
+           "emoji": {
+            "name": "🙋"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:pause",
+           "label": "Pause",
+           "emoji": {
+            "name": "⏸"
+           }
+          },
+          {
+           "type": 2,
+           "style": 4,
+           "custom_id": "pf:rq:report",
+           "label": "Report",
+           "emoji": {
+            "name": "📢"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:rushqueue-empty",
+   "name": "Rush queue board: empty",
+   "category": "automated",
+   "trigger": "nobody in the queue",
+   "schedule": "kept as the newest message by the 1-minute cron",
+   "destination": [
+    "rush_queue (Organization channel purpose)"
+   ],
+   "flag": "rushQueue",
+   "level": "owner",
+   "source": "bot/rushqueue.js boardMessage()",
+   "related": [
+    "auto:rushqueue-busy"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · RUSH\n## 🔥 Rush queue\n-# One group searches at a time, in click order"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-rush.png?v=8"
+           },
+           "description": "Rush"
+          }
+         ]
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**Nobody is searching.** Press **Join queue** to go first."
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# 0 groups in line · captain presses the buttons, the rest of the crew just waits for the ping"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "pf:rq:join",
+           "label": "Join queue",
+           "emoji": {
+            "name": "➕"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:leave",
+           "label": "Leave",
+           "emoji": {
+            "name": "🚪"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:crew",
+           "label": "Edit my crew",
+           "emoji": {
+            "name": "👥"
+           }
+          },
+          {
+           "type": 2,
+           "style": 1,
+           "custom_id": "pf:rq:search",
+           "label": "Searching now",
+           "emoji": {
+            "name": "🔎"
+           }
+          },
+          {
+           "type": 2,
+           "style": 3,
+           "custom_id": "pf:rq:found",
+           "label": "Match found",
+           "emoji": {
+            "name": "✅"
+           }
+          }
+         ]
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:failed",
+           "label": "Match failed",
+           "emoji": {
+            "name": "⚠️"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:need",
+           "label": "Need a player",
+           "emoji": {
+            "name": "🙋"
+           }
+          },
+          {
+           "type": 2,
+           "style": 2,
+           "custom_id": "pf:rq:pause",
+           "label": "Pause",
+           "emoji": {
+            "name": "⏸"
+           }
+          },
+          {
+           "type": 2,
+           "style": 4,
+           "custom_id": "pf:rq:report",
+           "label": "Report",
+           "emoji": {
+            "name": "📢"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:rushladder",
+   "name": "Rush leaderboard post (read from a photo)",
+   "category": "automated",
+   "trigger": "/rushladder scan, or a photo saved on the site",
+   "schedule": "on each confirmed photo",
+   "destination": [
+    "rush_board (Organization channel purpose)"
+   ],
+   "flag": "rushBoard",
+   "level": "owner",
+   "source": "bot/rushscan.js boardMessage()",
+   "related": [
+    "slash:/rushladder"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · RUSH LEADERBOARD\n## #2 ▲1 · 60,950 VP\n-# Season 2 · Day 22/42 · photo <t:1794430239:R>"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-rush.png?v=8"
+           },
+           "description": "Rush"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "```\n #  Club                  VP    AVG     Δ\n 1  Sample United     63,100   38.0  +700\n 2▶ Phoenix Fire      60,950   40.6+2,050\n 3  Rivals FC         60,700   39.3  +800\n 4  Night Owls        59,200   41.9  +600\n```"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**To #1** 2,150 VP behind Sample United (+1,350 since the last photo)\n**Behind us** Rivals FC −250 VP (+1,250)"
+        },
+        {
+         "type": 10,
+         "content": "**Since the last photo (12h)** +2,050 VP · 0 matches"
+        },
+        {
+         "type": 10,
+         "content": "**VP trend** `▁▄█`   **Rank** #4 → #3 → #2"
+        },
+        {
+         "type": 10,
+         "content": "**Pace** 160.4 VP/h · Sample United: 79.2 · Rivals FC: 79.2"
+        },
+        {
+         "type": 10,
+         "content": "**Projected finish** ~141,407 VP at this pace (20.9 days left)"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "• Up 1 place since the last photo. 🔥\n• At the current pace we pass Sample United in about 27h. Keep the tempo.\n• To finish ahead of Sample United we need about 2,004 VP a day for the remaining 20.9 days."
+        },
+        {
+         "type": 10,
+         "content": "-# Photo by Mike · Numbers are read from the photo and checked"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/rushboard.html",
+           "label": "Full leaderboard and charts"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:seasoncard",
+   "name": "Season card post (@here)",
+   "category": "automated",
+   "trigger": "/seasoncard scan → Save, or a card saved on the site",
+   "schedule": "on each confirmed card",
+   "destination": [
+    "season_cards (Organization channel purpose)"
+   ],
+   "flag": "seasonCards",
+   "level": "owner",
+   "source": "bot/rushscan.js seasonCardMessage()",
+   "related": [
+    "slash:/seasoncard"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 10,
+       "content": "@here <@222>"
+      },
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · SEASON 2 RUSH CARD\n## Mike\n-# Elite · Phoenix Fire"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-season.png?v=8"
+           },
+           "description": "Season card"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**🎮 Matches** 184\n**🏆 Wins** 121 (66%)\n**⚽ Goals** 263 (1.43 per match)\n**🔥 Contribution** 7,420 VP · 12.2% of the club's VP"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "**#2** by VP · **#1** by win rate · **#3** by goals — of 9 cards in"
+        },
+        {
+         "type": 10,
+         "content": "-# Read from the member’s own screenshot and checked"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/seasoncards.html",
+           "label": "Season rankings"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": [
+       "everyone"
+      ],
+      "users": [
+       "222"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:stream-live",
+   "name": "Stream alert: live now",
+   "category": "automated",
+   "trigger": "cron: a /streamalerts source goes live or uploads",
+   "schedule": "every 10 min",
+   "destination": [
+    "the channel chosen in /streamalerts add"
+   ],
+   "flag": "streamAlerts",
+   "level": "owner",
+   "source": "bot/streamalerts.js",
+   "related": [
+    "slash:/streamalerts"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · LIVE · TWITCH\n### 🔴 Phoenix Fire is live\n-# Sample · Division rivals night"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "https://static-cdn.jtvnw.net/previews-ttv/live_user_kingmitch93-1280x720.jpg?t=29907530"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**Where** Twitch\n**Channel** kingmitch93\n**Status** 🟢 On air\n**Playing** EA SPORTS FC\n**Viewers** 42 when posted"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# Picture and viewers are a snapshot from when this was posted · drop in and say hello"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/watch.html",
+           "label": "Watch on the site"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://www.twitch.tv/kingmitch93",
+           "label": "Open Twitch"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:stream-offline",
+   "name": "Stream alert: channel card (offline)",
+   "category": "automated",
+   "trigger": "cron: a /streamalerts source goes live or uploads",
+   "schedule": "every 10 min",
+   "destination": [
+    "the channel chosen in /streamalerts add"
+   ],
+   "flag": "streamAlerts",
+   "level": "owner",
+   "source": "bot/streamalerts.js",
+   "related": [
+    "auto:stream-live"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · CHANNEL · TWITCH\n### 🔴 Phoenix Fire on Twitch\n-# Not live right now"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-channel.png?v=8"
+           }
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**Where** Twitch\n**Channel** kingmitch93\n**Status** ⚪ Offline"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "-# Follow the channel to catch the next stream"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/watch.html",
+           "label": "Watch on the site"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://www.twitch.tv/kingmitch93",
+           "label": "Open Twitch"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "auto:stream-video",
+   "name": "Stream alert: new video",
+   "category": "automated",
+   "trigger": "cron: a /streamalerts source goes live or uploads",
+   "schedule": "every 10 min",
+   "destination": [
+    "the channel chosen in /streamalerts add"
+   ],
+   "flag": "streamAlerts",
+   "level": "owner",
+   "source": "bot/streamalerts.js",
+   "related": [
+    "slash:/streamalerts"
+   ],
+   "how": "rebuilt",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15230234,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · NEW VIDEO · CONTRIBUTOR\n### Sample · Best CAM build for FC 27 Pro Clubs\n-# A contributor"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "https://i.ytimg.com/vi/sampleVid001/hqdefault.jpg"
+           },
+           "description": "Sample · Best CAM build for FC 27 Pro Clubs"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**Where** YouTube\n**Type** Video"
+        },
+        {
+         "type": 14,
+         "divider": true,
+         "spacing": 1
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://www.youtube.com/watch?v=sampleVid001",
+           "label": "Watch"
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://www.youtube.com/@sample",
+           "label": "Channel"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
    "id": "auto:result-panel",
    "name": "Match result post (score + field cards)",
    "category": "automated",
@@ -2558,14 +4234,18 @@
      "components": [
       {
        "type": 17,
-       "accent_color": 16743794,
+       "accent_color": 4972682,
        "components": [
+        {
+         "type": 10,
+         "content": "**`PHOENIX FIRE`** · PLAYOFF"
+        },
         {
          "type": 9,
          "components": [
           {
            "type": 10,
-           "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## ⚽ Phoenix Fire 0–2 842844\n-# <t:1793575163:f> · Defeat"
+           "content": "-# PHOENIX FIIRE · MATCH CENTRE · PLAYOFF\n## ⚽ Phoenix FIIre 1–0 Joga Bokito\n-# <t:1792191308:f> · Win"
           }
          ],
          "accessory": {
@@ -2580,440 +4260,77 @@
          "items": [
           {
            "media": {
-            "url": "attachment://score-159660491030161.png"
+            "url": "http://localhost:4321/cards/banner-match.png?v=8"
            },
-           "description": "Phoenix Fire 0–2 842844"
+           "description": "Match centre"
           }
          ]
         },
         {
          "type": 10,
-         "content": "**⭐ Man of the match** Brunsfield (9.2)\n**📈 Top rated** Superdaddysi (7.8)"
+         "content": "**⚽ Goals** ShIzZq-\n**🎯 Assists** kingmitch93\n**⭐ Man of the match** JayenStyle20 (9.2)\n**📈 Top rated** Goff915 (7.9)"
         },
         {
          "type": 10,
-         "content": "-# **FIELD VIEW · RATINGS**"
-        },
-        {
-         "type": 12,
-         "items": [
-          {
-           "media": {
-            "url": "attachment://field-159660491030161.png"
-           },
-           "description": "Our players on the pitch with their match ratings"
-          }
-         ]
-        },
-        {
-         "type": 10,
-         "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match"
+         "content": "-# Pick your name below to see your own match"
         },
         {
          "type": 1,
          "components": [
           {
            "type": 3,
-           "custom_id": "norex:mm:159660491030161",
+           "custom_id": "norex:mm:109202685610149",
            "placeholder": "📊 Show my match – pick your player",
            "min_values": 1,
            "max_values": 1,
            "options": [
             {
-             "label": "Superdaddysi",
-             "value": "1009204943808",
+             "label": "Goff915",
+             "value": "180231353",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.9"
+            },
+            {
+             "label": "Two_K_Two",
+             "value": "1008400524782",
              "emoji": {
               "name": "🟡"
              },
              "description": "Rating 7.8"
             },
             {
-             "label": "leo77romano",
-             "value": "1005706168629",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.4"
-            },
-            {
-             "label": "Bantu Vikng",
-             "value": "1205881367",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.3"
-            },
-            {
-             "label": "khytEN_Prodige",
-             "value": "1005819534824",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.3"
-            },
-            {
-             "label": "Niko-the-Great",
-             "value": "179113036",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.9"
-            },
-            {
-             "label": "OH-912",
-             "value": "282474465",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.6"
-            },
-            {
-             "label": "kingmitch93",
-             "value": "182169169",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.1"
-            },
-            {
-             "label": "HristoNL",
-             "value": "1006208965101",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.1"
-            },
-            {
-             "label": "xEthxnH-_-",
-             "value": "1812822388",
-             "emoji": {
-              "name": "🔴"
-             },
-             "description": "Rating 5.7"
-            }
-           ]
-          }
-         ]
-        },
-        {
-         "type": 1,
-         "components": [
-          {
-           "type": 2,
-           "style": 1,
-           "custom_id": "norex:mme:159660491030161",
-           "label": "My match",
-           "emoji": {
-            "name": "🙋"
-           }
-          },
-          {
-           "type": 2,
-           "style": 5,
-           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159660491030161.html",
-           "label": "Match page",
-           "emoji": {
-            "name": "📋"
-           }
-          }
-         ]
-        }
-       ]
-      }
-     ],
-     "allowed_mentions": {
-      "parse": []
-     },
-     "files": [
-      {
-       "name": "score-159660491030161.png",
-       "size": 224262
-      },
-      {
-       "name": "field-159660491030161.png",
-       "size": 276530
-      }
-     ]
-    },
-    {
-     "flags": 32768,
-     "components": [
-      {
-       "type": 17,
-       "accent_color": 15716218,
-       "components": [
-        {
-         "type": 9,
-         "components": [
-          {
-           "type": 10,
-           "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## ⚽ Phoenix Fire 1–1 842844\n-# <t:1793576510:f> · Draw"
-          }
-         ],
-         "accessory": {
-          "type": 11,
-          "media": {
-           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
-          }
-         }
-        },
-        {
-         "type": 12,
-         "items": [
-          {
-           "media": {
-            "url": "attachment://score-159502910480217.png"
-           },
-           "description": "Phoenix Fire 1–1 842844"
-          }
-         ]
-        },
-        {
-         "type": 10,
-         "content": "**⚽ Goals** OH-912\n**⭐ Man of the match** PConvictions (8.0)\n**📈 Top rated** HristoNL (7.7)"
-        },
-        {
-         "type": 10,
-         "content": "-# **FIELD VIEW · RATINGS**"
-        },
-        {
-         "type": 12,
-         "items": [
-          {
-           "media": {
-            "url": "attachment://field-159502910480217.png"
-           },
-           "description": "Our players on the pitch with their match ratings"
-          }
-         ]
-        },
-        {
-         "type": 10,
-         "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match"
-        },
-        {
-         "type": 1,
-         "components": [
-          {
-           "type": 3,
-           "custom_id": "norex:mm:159502910480217",
-           "placeholder": "📊 Show my match – pick your player",
-           "min_values": 1,
-           "max_values": 1,
-           "options": [
-            {
-             "label": "HristoNL",
-             "value": "1006208965101",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.7"
-            },
-            {
-             "label": "OH-912",
-             "value": "282474465",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.6 · ⚽ 1"
-            },
-            {
-             "label": "Niko-the-Great",
-             "value": "179113036",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.3"
-            },
-            {
-             "label": "Bantu Vikng",
-             "value": "1205881367",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.2"
-            },
-            {
-             "label": "kingmitch93",
-             "value": "182169169",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.7"
-            },
-            {
-             "label": "leo77romano",
-             "value": "1005706168629",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.6"
-            },
-            {
-             "label": "xEthxnH-_-",
-             "value": "1812822388",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.3"
-            },
-            {
-             "label": "khytEN_Prodige",
-             "value": "1005819534824",
-             "emoji": {
-              "name": "🟠"
-             },
-             "description": "Rating 6.0"
-            },
-            {
-             "label": "Superdaddysi",
-             "value": "1009204943808",
-             "emoji": {
-              "name": "🔴"
-             },
-             "description": "Rating 5.9"
-            }
-           ]
-          }
-         ]
-        },
-        {
-         "type": 1,
-         "components": [
-          {
-           "type": 2,
-           "style": 1,
-           "custom_id": "norex:mme:159502910480217",
-           "label": "My match",
-           "emoji": {
-            "name": "🙋"
-           }
-          },
-          {
-           "type": 2,
-           "style": 5,
-           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159502910480217.html",
-           "label": "Match page",
-           "emoji": {
-            "name": "📋"
-           }
-          }
-         ]
-        }
-       ]
-      }
-     ],
-     "allowed_mentions": {
-      "parse": []
-     },
-     "files": [
-      {
-       "name": "score-159502910480217.png",
-       "size": 216687
-      },
-      {
-       "name": "field-159502910480217.png",
-       "size": 275721
-      }
-     ]
-    },
-    {
-     "flags": 32768,
-     "components": [
-      {
-       "type": 17,
-       "accent_color": 15716218,
-       "components": [
-        {
-         "type": 9,
-         "components": [
-          {
-           "type": 10,
-           "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## ⚽ Phoenix Fire 1–1 666618\n-# <t:1793577928:f> · Draw"
-          }
-         ],
-         "accessory": {
-          "type": 11,
-          "media": {
-           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
-          }
-         }
-        },
-        {
-         "type": 12,
-         "items": [
-          {
-           "media": {
-            "url": "attachment://score-159890081220288.png"
-           },
-           "description": "Phoenix Fire 1–1 666618"
-          }
-         ]
-        },
-        {
-         "type": 10,
-         "content": "**⚽ Goals** OH-912\n**🎯 Assists** xEthxnH-_-\n**⭐ Man of the match** OH-912 (7.7)\n**📈 Top rated** kingmitch93 (7.7)"
-        },
-        {
-         "type": 10,
-         "content": "-# **FIELD VIEW · RATINGS**"
-        },
-        {
-         "type": 12,
-         "items": [
-          {
-           "media": {
-            "url": "attachment://field-159890081220288.png"
-           },
-           "description": "Our players on the pitch with their match ratings"
-          }
-         ]
-        },
-        {
-         "type": 10,
-         "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match"
-        },
-        {
-         "type": 1,
-         "components": [
-          {
-           "type": 3,
-           "custom_id": "norex:mm:159890081220288",
-           "placeholder": "📊 Show my match – pick your player",
-           "min_values": 1,
-           "max_values": 1,
-           "options": [
-            {
-             "label": "kingmitch93",
-             "value": "182169169",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.7"
-            },
-            {
-             "label": "OH-912",
-             "value": "282474465",
+             "label": "ShIzZq-",
+             "value": "1007050632765",
              "emoji": {
               "name": "🟡"
              },
              "description": "Rating 7.7 · ⚽ 1"
             },
             {
-             "label": "Bantu Vikng",
-             "value": "1205881367",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.6"
-            },
-            {
              "label": "leo77romano",
              "value": "1005706168629",
              "emoji": {
               "name": "🟡"
              },
+             "description": "Rating 7.5"
+            },
+            {
+             "label": "rubNiyo",
+             "value": "245256219",
+             "emoji": {
+              "name": "🟡"
+             },
              "description": "Rating 7.4"
+            },
+            {
+             "label": "Pain11x",
+             "value": "1008599408953",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.2"
             },
             {
              "label": "HristoNL",
@@ -3021,19 +4338,11 @@
              "emoji": {
               "name": "🟡"
              },
-             "description": "Rating 7.2"
+             "description": "Rating 7.1"
             },
             {
-             "label": "xEthxnH-_-",
-             "value": "1812822388",
-             "emoji": {
-              "name": "🟡"
-             },
-             "description": "Rating 7.1 · 🎯 1"
-            },
-            {
-             "label": "khytEN_Prodige",
-             "value": "1005819534824",
+             "label": "shamaMUC",
+             "value": "1007853901016",
              "emoji": {
               "name": "🟠"
              },
@@ -3045,15 +4354,23 @@
              "emoji": {
               "name": "🟠"
              },
-             "description": "Rating 6.4"
+             "description": "Rating 6.8"
             },
             {
-             "label": "Superdaddysi",
-             "value": "1009204943808",
+             "label": "kingmitch93",
+             "value": "182169169",
              "emoji": {
               "name": "🟠"
              },
-             "description": "Rating 6.2"
+             "description": "Rating 6.8 · 🎯 1"
+            },
+            {
+             "label": "xEthxnH-_-",
+             "value": "1812822388",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.8"
             }
            ]
           }
@@ -3065,7 +4382,7 @@
           {
            "type": 2,
            "style": 1,
-           "custom_id": "norex:mme:159890081220288",
+           "custom_id": "norex:mme:109202685610149",
            "label": "My match",
            "emoji": {
             "name": "🙋"
@@ -3074,7 +4391,7 @@
           {
            "type": 2,
            "style": 5,
-           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159890081220288.html",
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/109202685610149.html",
            "label": "Match page",
            "emoji": {
             "name": "📋"
@@ -3087,17 +4404,361 @@
      ],
      "allowed_mentions": {
       "parse": []
-     },
-     "files": [
+     }
+    },
+    {
+     "flags": 32768,
+     "components": [
       {
-       "name": "score-159890081220288.png",
-       "size": 219664
-      },
-      {
-       "name": "field-159890081220288.png",
-       "size": 275502
+       "type": 17,
+       "accent_color": 4972682,
+       "components": [
+        {
+         "type": 10,
+         "content": "**`PHOENIX FIRE`** · PLAYOFF"
+        },
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "-# PHOENIX FIIRE · MATCH CENTRE · PLAYOFF\n## ⚽ Phoenix FIIre 3–0 EL FetjeCorp\n-# <t:1792192162:f> · Win"
+          }
+         ],
+         "accessory": {
+          "type": 11,
+          "media": {
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+          }
+         }
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-match.png?v=8"
+           },
+           "description": "Match centre"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**⚽ Goals** Goff915, kingmitch93, ShIzZq-\n**🎯 Assists** rubNiyo, WelshJordyy-\n**⭐ Man of the match** WelshJordyy- (8.0)\n**📈 Top rated** WelshJordyy- (8.0)"
+        },
+        {
+         "type": 10,
+         "content": "-# Pick your name below to see your own match"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 3,
+           "custom_id": "norex:mm:109194865460423",
+           "placeholder": "📊 Show my match – pick your player",
+           "min_values": 1,
+           "max_values": 1,
+           "options": [
+            {
+             "label": "WelshJordyy-",
+             "value": "1006893729962",
+             "emoji": {
+              "name": "🟢"
+             },
+             "description": "Rating 8.0 · 🎯 1"
+            },
+            {
+             "label": "Goff915",
+             "value": "180231353",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.9 · ⚽ 1"
+            },
+            {
+             "label": "ShIzZq-",
+             "value": "1007050632765",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.3 · ⚽ 1"
+            },
+            {
+             "label": "Pain11x",
+             "value": "1008599408953",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.3"
+            },
+            {
+             "label": "rubNiyo",
+             "value": "245256219",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.2 · 🎯 1"
+            },
+            {
+             "label": "HristoNL",
+             "value": "1006208965101",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.1"
+            },
+            {
+             "label": "kingmitch93",
+             "value": "182169169",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.9 · ⚽ 1"
+            },
+            {
+             "label": "Niko-the-Great",
+             "value": "179113036",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.8"
+            },
+            {
+             "label": "leo77romano",
+             "value": "1005706168629",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.6"
+            },
+            {
+             "label": "Two_K_Two",
+             "value": "1008400524782",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.6"
+            },
+            {
+             "label": "shamaMUC",
+             "value": "1007853901016",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.1"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 1,
+           "custom_id": "norex:mme:109194865460423",
+           "label": "My match",
+           "emoji": {
+            "name": "🙋"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/109194865460423.html",
+           "label": "Match page",
+           "emoji": {
+            "name": "📋"
+           }
+          }
+         ]
+        }
+       ]
       }
-     ]
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    },
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 16743794,
+       "components": [
+        {
+         "type": 10,
+         "content": "**`PHOENIX FIRE`** · PLAYOFF"
+        },
+        {
+         "type": 9,
+         "components": [
+          {
+           "type": 10,
+           "content": "-# PHOENIX FIIRE · MATCH CENTRE · PLAYOFF\n## ⚽ Phoenix FIIre 1–2 Xiclibics FC\n-# <t:1792194392:f> · Defeat"
+          }
+         ],
+         "accessory": {
+          "type": 11,
+          "media": {
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+          }
+         }
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-match.png?v=8"
+           },
+           "description": "Match centre"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "**⚽ Goals** rubNiyo\n**🎯 Assists** HristoNL\n**⭐ Man of the match** yangKNG (8.4)\n**📈 Top rated** Pain11x (8.0)"
+        },
+        {
+         "type": 10,
+         "content": "-# Pick your name below to see your own match"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 3,
+           "custom_id": "norex:mm:109612043260402",
+           "placeholder": "📊 Show my match – pick your player",
+           "min_values": 1,
+           "max_values": 1,
+           "options": [
+            {
+             "label": "Pain11x",
+             "value": "1008599408953",
+             "emoji": {
+              "name": "🟢"
+             },
+             "description": "Rating 8.0"
+            },
+            {
+             "label": "WelshJordyy-",
+             "value": "1006893729962",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.8"
+            },
+            {
+             "label": "rubNiyo",
+             "value": "245256219",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.7 · ⚽ 1"
+            },
+            {
+             "label": "kingmitch93",
+             "value": "182169169",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.5"
+            },
+            {
+             "label": "ShIzZq-",
+             "value": "1007050632765",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.3"
+            },
+            {
+             "label": "Two_K_Two",
+             "value": "1008400524782",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.3"
+            },
+            {
+             "label": "Traperosky",
+             "value": "1007082785406",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.1"
+            },
+            {
+             "label": "Niko-the-Great",
+             "value": "179113036",
+             "emoji": {
+              "name": "🟡"
+             },
+             "description": "Rating 7.0"
+            },
+            {
+             "label": "HristoNL",
+             "value": "1006208965101",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.8 · 🎯 1"
+            },
+            {
+             "label": "leo77romano",
+             "value": "1005706168629",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.6"
+            },
+            {
+             "label": "shamaMUC",
+             "value": "1007853901016",
+             "emoji": {
+              "name": "🟠"
+             },
+             "description": "Rating 6.1"
+            }
+           ]
+          }
+         ]
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 1,
+           "custom_id": "norex:mme:109612043260402",
+           "label": "My match",
+           "emoji": {
+            "name": "🙋"
+           }
+          },
+          {
+           "type": 2,
+           "style": 5,
+           "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/109612043260402.html",
+           "label": "Match page",
+           "emoji": {
+            "name": "📋"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
     }
    ]
   },
@@ -3124,8 +4785,87 @@
      "avatar_url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png",
      "embeds": [
       {
-       "title": "⚽ Phoenix Fire 0–2 842844",
-       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159660491030161.html",
+       "author": {
+        "name": "PHOENIX FIRE · PLAYOFF"
+       },
+       "title": "⚽ Phoenix FIIre 1–0 Joga Bokito",
+       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/109202685610149.html",
+       "color": 2278750,
+       "description": "✅ **Victory**",
+       "thumbnail": {
+        "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+       },
+       "fields": [
+        {
+         "name": "⚽ Goals",
+         "value": "ShIzZq-",
+         "inline": true
+        },
+        {
+         "name": "🎯 Assists",
+         "value": "kingmitch93",
+         "inline": true
+        },
+        {
+         "name": "⭐ Man of the match",
+         "value": "JayenStyle20 (9.2)",
+         "inline": true
+        },
+        {
+         "name": "📈 Our top rated",
+         "value": "Goff915 (7.9)",
+         "inline": true
+        }
+       ],
+       "timestamp": "2026-10-16T22:55:08.000Z",
+       "footer": {
+        "text": "PHOENIX FIRE · Playoff match"
+       }
+      },
+      {
+       "author": {
+        "name": "PHOENIX FIRE · PLAYOFF"
+       },
+       "title": "⚽ Phoenix FIIre 3–0 EL FetjeCorp",
+       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/109194865460423.html",
+       "color": 2278750,
+       "description": "✅ **Victory**",
+       "thumbnail": {
+        "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
+       },
+       "fields": [
+        {
+         "name": "⚽ Goals",
+         "value": "Goff915\nkingmitch93\nShIzZq-",
+         "inline": true
+        },
+        {
+         "name": "🎯 Assists",
+         "value": "rubNiyo\nWelshJordyy-",
+         "inline": true
+        },
+        {
+         "name": "⭐ Man of the match",
+         "value": "WelshJordyy- (8.0)",
+         "inline": true
+        },
+        {
+         "name": "📈 Our top rated",
+         "value": "WelshJordyy- (8.0)",
+         "inline": true
+        }
+       ],
+       "timestamp": "2026-10-16T23:09:22.000Z",
+       "footer": {
+        "text": "PHOENIX FIRE · Playoff match"
+       }
+      },
+      {
+       "author": {
+        "name": "PHOENIX FIRE · PLAYOFF"
+       },
+       "title": "⚽ Phoenix FIIre 1–2 Xiclibics FC",
+       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/109612043260402.html",
        "color": 15680580,
        "description": "❌ **Defeat**",
        "thumbnail": {
@@ -3133,84 +4873,29 @@
        },
        "fields": [
         {
-         "name": "⭐ Man of the match",
-         "value": "Brunsfield (9.2)",
-         "inline": true
-        },
-        {
-         "name": "📈 Our top rated",
-         "value": "Superdaddysi (7.8)",
-         "inline": true
-        }
-       ],
-       "timestamp": "2026-11-01T23:19:23.000Z",
-       "footer": {
-        "text": "League match"
-       }
-      },
-      {
-       "title": "⚽ Phoenix Fire 1–1 842844",
-       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159502910480217.html",
-       "color": 15381256,
-       "description": "➖ **Draw**",
-       "thumbnail": {
-        "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
-       },
-       "fields": [
-        {
          "name": "⚽ Goals",
-         "value": "OH-912",
-         "inline": true
-        },
-        {
-         "name": "⭐ Man of the match",
-         "value": "PConvictions (8.0)",
-         "inline": true
-        },
-        {
-         "name": "📈 Our top rated",
-         "value": "HristoNL (7.7)",
-         "inline": true
-        }
-       ],
-       "timestamp": "2026-11-01T23:41:50.000Z",
-       "footer": {
-        "text": "League match"
-       }
-      },
-      {
-       "title": "⚽ Phoenix Fire 1–1 666618",
-       "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/159890081220288.html",
-       "color": 15381256,
-       "description": "➖ **Draw**",
-       "thumbnail": {
-        "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png"
-       },
-       "fields": [
-        {
-         "name": "⚽ Goals",
-         "value": "OH-912",
+         "value": "rubNiyo",
          "inline": true
         },
         {
          "name": "🎯 Assists",
-         "value": "xEthxnH-_-",
+         "value": "HristoNL",
          "inline": true
         },
         {
          "name": "⭐ Man of the match",
-         "value": "OH-912 (7.7)",
+         "value": "yangKNG (8.4)",
          "inline": true
         },
         {
          "name": "📈 Our top rated",
-         "value": "kingmitch93 (7.7)",
+         "value": "Pain11x (8.0)",
          "inline": true
         }
        ],
-       "timestamp": "2026-11-02T00:05:28.000Z",
+       "timestamp": "2026-10-16T23:46:32.000Z",
        "footer": {
-        "text": "League match"
+        "text": "PHOENIX FIRE · Playoff match"
        }
       }
      ],

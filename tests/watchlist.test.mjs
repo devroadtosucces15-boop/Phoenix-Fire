@@ -3,7 +3,7 @@ import { env, call, login, sqlite } from './mock.mjs';
 import worker from '../bot/worker.js';
 import { t, tt, done } from './lib.mjs';
 import { plainText, images } from '../bot/ui.js';
-import { topicOf, tagsOf, parseFeed, watchlistCron, TOPICS } from '../bot/watchlist.js';
+import { topicOf, tagsOf, parseFeed, watchlistCron, TOPICS, videoPanel } from '../bot/watchlist.js';
 
 const kp = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, ['sign', 'verify']);
 env.DISCORD_PUBLIC_KEY = Buffer.from(await crypto.subtle.exportKey('raw', kp.publicKey)).toString('hex');
@@ -105,6 +105,13 @@ const us = await call(tok, '/api/watchlist/new00000002/useful', {});
 t('API: useful toggles for the signed-in member', us.s === 200 && us.d.useful === 1 && us.d.mine === true && (await call(tok, '/api/watchlist')).d[0].mine === true);
 t('API: unknown video → 404', (await call(tok, '/api/watchlist/nope0000001/useful', {})).s === 404);
 t('topics list is the contract’s five', TOPICS.join() === 'builds,tactics,tips,meta,news');
+// ---------- video post picture + Phoenix brand ----------
+{
+  const pic = (v) => JSON.stringify(videoPanel(v, 0, env));
+  const noThumb = pic({ id: 'abc12345678', title: 'T', topic: 'builds', channel_name: 'C', thumb: null });
+  t('video post: a row with no thumb still gets a picture url (YouTube fallback)', noThumb.includes('https://i.ytimg.com/vi/abc12345678/hqdefault.jpg'));
+  t('video post: Phoenix brand, no NOREX name, red or crest', !/norex united|c8352c|13122604/i.test(noThumb) && /PHOENIX FIRE/.test(noThumb));
+}
 setFlags({ watchlist: 'owner' });
 t('API: hidden while the flag is owner-only for a member', (await call(tok, '/api/watchlist')).s === 404);
 done();
