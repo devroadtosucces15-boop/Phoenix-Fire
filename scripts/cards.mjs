@@ -9,6 +9,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { loadConfig } from './lib.mjs';
+import { buildReview, loadHistory } from './lib/matchreview.mjs';
+import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 export const TEMPLATE_VERSION = 6; // bump to redraw every card after a template change
@@ -281,6 +284,171 @@ ${ms.map((m) => `<div class="row"><span class="pill ${m.res}" style="text-align:
 </div><div class="brand">${esc(SITE)}</div>`);
 }
 
+// ---------- match review (message 2 of a result): one picture, one plain pattern for every row ----------
+// Neutral palette: white headings, icon tiles, rows that all follow the same shape. Colour only on small status marks – gold stays for
+// special callouts (man of the match), so nothing here uses it. Model comes from scripts/lib/matchreview.mjs.
+const RV = (d) => (c = '#fff', s = 26) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}">${d.replaceAll('$', c)}</svg>`;
+export const REVIEW_ICON = {
+  team: RV('<circle cx="8" cy="8" r="3.2" fill="$"/><circle cx="17" cy="9" r="2.6" fill="$" opacity=".7"/><path d="M2 20c0-4 3-6 6-6s6 2 6 6zM14 20c0-3 2-5 4.5-5S23 17 23 20z" fill="$"/>'),
+  glove: RV('<path d="M7 21v-6.5L4.6 11a1.6 1.6 0 0 1 2.5-2L9 11V4.6a1.4 1.4 0 0 1 2.8 0V10h.4V3.6a1.4 1.4 0 0 1 2.8 0V10h.4V4.8a1.4 1.4 0 0 1 2.8 0V15c0 3-2 6-5 6z" fill="none" stroke="$" stroke-width="1.8" stroke-linejoin="round"/>'),
+  shield: RV('<path d="M12 2.5l8 2.8v6.2c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V5.3z" fill="none" stroke="$" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none" stroke="$" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'),
+  flow: RV('<path d="M4 8h13M13 4l4 4-4 4M20 16H7M11 12l-4 4 4 4" fill="none" stroke="$" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'),
+  goal: RV('<circle cx="12" cy="12" r="10" fill="none" stroke="$" stroke-width="2"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z" fill="$"/>'),
+  assist: RV('<circle cx="12" cy="12" r="9" fill="none" stroke="$" stroke-width="2"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="$" stroke-width="2"/><circle cx="12" cy="12" r="1.5" fill="$"/>'),
+  chip: RV('<rect x="6" y="6" width="12" height="12" rx="2.5" fill="none" stroke="$" stroke-width="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4" stroke="$" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="$"/>'),
+  check: RV('<path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="$" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>'),
+  swap: RV('<path d="M4 9h14M14 5l4 4-4 4M20 16H6M10 12l-4 4 4 4" fill="none" stroke="$" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'),
+  me: RV('<circle cx="12" cy="8" r="4" fill="$"/><path d="M4 21c0-5 4-8 8-8s8 3 8 8z" fill="$"/>'),
+};
+const rvIcon = (k, c, s) => (REVIEW_ICON[k] ?? REVIEW_ICON.team)(c, s);
+function shapeDiagram(model, w = 600, h = 250) {
+  const cols = [['GK', 0.1], ['DEF', 0.33], ['MID', 0.58], ['FWD', 0.84]], rad = 20;
+  const LATS = { 1: [.5], 2: [.34, .66], 5: [.09, .29, .5, .71, .91] };
+  let out = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><rect width="${w}" height="${h}" rx="22" fill="#10301f"/><rect x="2" y="2" width="${w - 4}" height="${h - 4}" rx="20" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="2"/><line x1="${w / 2}" y1="6" x2="${w / 2}" y2="${h - 6}" stroke="rgba(255,255,255,.16)" stroke-width="2"/><circle cx="${w / 2}" cy="${h / 2}" r="${h * 0.16}" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="2"/>`;
+  for (const [g, fx] of cols) {
+    const ps = model.shape.players.filter((p) => p.g === g).sort((a, b) => b.r - a.r);
+    const lat = LATS[ps.length] ?? ps.map((_, j) => .1 + .8 * j / Math.max(1, ps.length - 1));
+    ps.forEach((_, j) => { const x = w * fx + (ps.length >= 5 ? (j % 2 ? 0.032 : -0.032) * w : 0), y = h * (0.12 + 0.76 * lat[j]); out += `<circle cx="${x}" cy="${y}" r="${rad}" fill="#0b0f16" stroke="#9fb0cf" stroke-width="3.5"/>`; });
+    out += `<text x="${w * fx}" y="${h - 10}" text-anchor="middle" font-family="Inter" font-weight="800" font-size="19" letter-spacing="3" fill="rgba(255,255,255,.7)">${g} ${ps.length}</text>`;
+  }
+  if (model.shape.ai > 0) out += `<circle cx="${w * 0.955}" cy="${h * 0.5}" r="25" fill="none" stroke="#9fb0cf" stroke-width="3" stroke-dasharray="7 6"/><text x="${w * 0.955}" y="${h * 0.5 + 8}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="22" fill="#9fb0cf">AI</text>`;
+  return `${out}</svg>`;
+}
+export function reviewCard(model, club) {
+  const head = (icon, t) => `<div class="sh"><span class="si">${rvIcon(icon, '#fff', 26)}</span><b class="osw">${esc(t)}</b></div>`;
+  const row = (r, label) => `<div class="rw"><span class="ri">${rvIcon(r.icon, '#fff', 26)}</span><div><b>${esc(r.lead ?? r.t)}</b><p>${label ? `<i>${label}</i>` : ''}${esc(r.text ?? r.tr)}</p>${r.why ? `<p class="wy">${esc(r.why)}</p>` : ''}</div></div>`;
+  const ring = (t) => { const frac = t.lower ? Math.min(1, t.b / Math.max(1, t.a)) : Math.min(1, t.a / Math.max(1, t.b)); return `<svg viewBox="0 0 100 100" width="88" height="88"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="11"/><circle cx="50" cy="50" r="40" fill="none" stroke="#ff8a3d" stroke-width="11" stroke-linecap="round" stroke-dasharray="${frac * 251.3} 251.3" transform="rotate(-90 50 50)"/><text x="50" y="61" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="29" fill="#fff">${t.a}${t.u}</text></svg>`; };
+  const next = model.next.map((t) => `<div class="nx">${ring(t)}<span>${esc(t.k)}</span><b class="osw">${t.lower ? 'Under' : 'Target'} ${t.b}${t.u}</b></div>`).join('');
+  const sh = model.shape;
+  return page(`
+body:before{background:radial-gradient(900px 340px at 50% -12%,rgba(232,101,26,.26),transparent 65%),linear-gradient(180deg,#140c07,#0a0705)}
+.top{padding:26px 40px 6px;border-top:8px solid var(--red)}.top .eyebrow{font-size:19px;display:block}
+.big{font:700 70px/1.05 Oswald;letter-spacing:.03em;margin-top:4px;display:block;text-transform:uppercase}
+.sub{font:600 25px/1.3 Inter;color:var(--soft);margin-top:2px}
+.sec{margin:22px 40px 0}.two{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin:0 40px}.two .sec{margin:22px 0 0}
+.sh{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--line);padding-bottom:9px;margin-bottom:4px}.sh b{font:600 31px/1 Oswald;letter-spacing:.08em}.si{display:inline-flex;width:40px;height:40px;border-radius:11px;background:var(--red);align-items:center;justify-content:center}
+.lu{display:grid;grid-template-columns:600px 1fr;gap:28px;align-items:center;margin-top:12px}.lf{display:grid;gap:4px}.lf b{font:700 76px/1 Oswald;letter-spacing:.04em}.lf span{font:700 26px/1.2 Inter;color:#e1e8f5}.lf em{font:500 21px/1.3 Inter;color:var(--mute);font-style:normal;margin-top:6px}
+.rw{display:grid;grid-template-columns:46px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);align-items:start}.rw:last-child{border-bottom:0}
+.ri{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid var(--line);display:grid;place-items:center}
+.rw b{font:800 25px/1.2 Inter;color:#fff;display:block}.rw p{font:500 22px/1.3 Inter;color:#cfd8e8;margin-top:3px}.rw p.wy{font-size:20px;color:var(--mute)}.rw i{font:800 17px Inter;letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:var(--red2);margin-right:10px}
+.nxh{margin-top:18px}.nxs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:10px}.nx{display:grid;justify-items:center;gap:2px;text-align:center}.nx span{font:700 20px Inter;color:#cfd8e8}.nx b{font:600 24px/1 Oswald;letter-spacing:.04em}
+.last{padding-bottom:34px}.rg{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}`,
+  `<div class="top"><div class="eyebrow">${esc(club?.name ?? SITE)} · Match review · vs ${esc(model.opp)}</div><div class="big">${esc(model.title)}</div><div class="sub">${esc(model.sub)}</div></div>
+<div class="sec">${head('me', 'How we lined up')}<div class="lu"><div>${shapeDiagram(model)}</div><div class="lf"><b class="osw">${esc(sh.label)}</b><span>${sh.humans} player${sh.humans === 1 ? '' : 's'}${sh.ai ? ` and ${sh.ai} AI slot${sh.ai === 1 ? '' : 's'}` : ''}</span><em>Shape from where the players lined up. EA does not record which slot the AI took.</em></div></div></div>
+<div class="two">
+  <div class="sec">${head('check', 'What went well')}${model.good.map((g) => row(g)).join('')}</div>
+  <div class="sec">${head('assist', 'What to work on')}${model.work.map((g) => row(g)).join('')}${next ? `<div class="nxh">${head('goal', 'Next match')}<div class="nxs">${next}</div></div>` : ''}</div>
+</div>
+${model.recs.length ? `<div class="sec last">${head('swap', 'Recommendations for the squad')}<div class="rg">${model.recs.map((r) => row(r, 'Try')).join('')}</div></div>` : '<div style="height:34px"></div>'}`);
+}
+
+
+// ---------- merged match picture (message 1 of a result): scoreboard → goals and assists + man of the match → stats → rating by line → field view ----------
+// Model from scripts/lib/matchpicture.mjs. faces: Map(EA player key → data URI); anyone without one gets a drawn avatar. Gold is for the
+// man of the match only (the one special callout); everything else is the plain palette.
+const MEDAL = (c = '#efcf7a', s = 40) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M6.5 1.5h4l2 6.5-3 .6zM17.5 1.5h-4l-2 6.5 3 .6z" fill="${c}" opacity=".6"/><circle cx="12" cy="15.2" r="7" fill="${c}"/><circle cx="12" cy="15.2" r="4.6" fill="none" stroke="#0b0f16" stroke-opacity=".45" stroke-width="1.4"/><path d="M12 11.8l1.1 2.3 2.5.3-1.8 1.7.5 2.5-2.3-1.2-2.3 1.2.5-2.5-1.8-1.7 2.5-.3z" fill="#0b0f16" fill-opacity=".5"/></svg>`;
+const initials = (name) => String(name ?? '?').replace(/[^A-Za-z0-9]/g, '').slice(0, 2) || '?';
+const avatar = (p, faces, size, ring = null, ringW = 0) => {
+  const src = faces?.get(String(p.k));
+  const shadow = ring ? `box-shadow:0 0 0 ${ringW}px ${ring},0 10px 24px rgba(0,0,0,.55)` : 'box-shadow:0 8px 20px rgba(0,0,0,.5)';
+  return `<span style="display:inline-block;width:${size}px;height:${size}px;border-radius:50%;overflow:hidden;flex:none;${shadow};background:linear-gradient(160deg,#3a4c72,#101827)">${src
+    ? `<img src="${src}" width="${size}" height="${size}" style="display:block;object-fit:cover">`
+    : `<span style="display:grid;place-items:center;width:100%;height:100%;font:700 ${Math.round(size * 0.4)}px Oswald;letter-spacing:.04em;color:#cfd8e8;text-transform:uppercase">${esc(initials(p.n))}</span>`}</span>`;
+};
+const GENERIC_BUST = (h = 200) => `<svg viewBox="0 0 200 232" width="${Math.round(h * 0.86)}" height="${h}" style="display:block"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a8aa6"/><stop offset="1" stop-color="#4a5973"/></linearGradient></defs><path d="M4 232c0-46 38-70 96-70s96 24 96 70z" fill="url(#gb)"/><ellipse cx="100" cy="86" rx="42" ry="50" fill="url(#gb)"/><rect x="82" y="124" width="36" height="44" rx="14" fill="url(#gb)"/></svg>`;
+export function matchPicture(mp, club, faces = new Map()) {
+  const TONE = { good: '#4be08a', even: '#efcf7a', bad: '#ff7d72' };
+  const donut = (frac, color, label, size = 124) => `<svg viewBox="0 0 100 100" width="${size}" height="${size}"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="11"/><circle cx="50" cy="50" r="40" fill="none" stroke="${color}" stroke-width="11" stroke-linecap="round" stroke-dasharray="${Math.max(0.02, Math.min(1, frac)) * 251.3} 251.3" transform="rotate(-90 50 50)"/><text x="50" y="61" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="29" fill="#fff">${label}</text></svg>`;
+  const row = (r) => {
+    const d = r.a - r.b, tol = r.tol ?? 0, tone = Math.abs(d) <= tol ? 'even' : d > 0 ? 'good' : 'bad';
+    const frac = (v) => (r.kind === 'pct' ? v / 100 : r.kind === 'rate' ? v / 10 : v / ((r.a + r.b) || 1));
+    const lab = (v) => (r.kind === 'pct' ? `${v}%` : r.kind === 'rate' ? v.toFixed(1) : `${v}`);
+    const sign = d > 0 ? '+' : d < 0 ? '−' : '';
+    const delta = r.kind === 'pct' ? `${sign}${Math.abs(d)} pts` : r.kind === 'rate' ? `${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(1)}` : `${sign}${Math.abs(d)}`;
+    return `<div class="sr"><div class="dc">${donut(frac(r.a), TONE[tone], lab(r.a))}</div><div class="sm"><span>${r.k}</span><b class="chipd ${tone}">${tone === 'even' ? 'Level' : delta}</b></div><div class="dc">${donut(frac(r.b), '#6b7da0', lab(r.b))}</div></div>`;
+  };
+  const crow = (p) => `<div class="cr"><b class="osw">${esc(String(p.n).length > 14 ? `${String(p.n).slice(0, 13)}…` : p.n)}</b><span class="ic">${REVIEW_ICON.goal('#ff8a3d', 32).repeat(p.g)}${REVIEW_ICON.assist('#efcf7a', 32).repeat(p.a)}</span></div>`;
+  const contrib = mp.contrib.slice(0, 6);
+  const motm = mp.motm;
+  const motmCell = motm ? `<div class="mo"><div class="glow"></div><div class="bw">${faces.get(String(motm.k)) ? `<img src="${faces.get(String(motm.k))}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : GENERIC_BUST(200)}<span class="mb">${MEDAL('#efcf7a', 46)}</span></div><div class="ml"><div class="lab gold">${MEDAL('#efcf7a', 26)}<span>Man of<br>the match</span></div><div class="mt"><b class="osw" style="font-size:${Math.max(22, Math.min(34, Math.floor(165 / (String(motm.n).length * 0.47))))}px">${esc(motm.n)}</b><em class="osw gold">${r1(motm.r)}</em></div></div></div>` : '';
+  const GR = [['goalkeeper', 7], ['defender', 27], ['midfielder', 52], ['forward', 79]];
+  const LATS = { 1: [.5], 2: [.3, .7], 3: [.18, .5, .82], 4: [.1, .37, .63, .9], 5: [.08, .29, .5, .71, .92] };
+  const slots = [];
+  for (const [pos, bx] of GR) {
+    const g = mp.players.filter((p) => p.pos === pos).sort((a, b) => b.r - a.r);
+    const lat = LATS[g.length] ?? g.map((_, j) => .08 + .84 * j / Math.max(1, g.length - 1));
+    g.forEach((p, j) => slots.push({ p, x: g.length >= 4 ? bx + (j % 2 ? 6.5 : -6.5) : bx, y: 6 + 58 * lat[j] }));
+  }
+  const stripes = Array.from({ length: 7 }, (_, k) => `<rect x="${7.5 + 15 * k}" width="7.5" height="68" fill="#17603a"/>`).join('');
+  const marks = slots.map(({ p, x, y }) => {
+    const b = band(p.r, p.mom), c = BAND[b], big = b === 'gold', sz = big ? 92 : 76;
+    const ev = (p.g ? `<span class="ev">${REVIEW_ICON.goal('#0b0f16', 22)}${p.g > 1 ? `<small>×${p.g}</small>` : ''}</span>` : '') + (p.a ? `<span class="ev as">${REVIEW_ICON.assist('#0b0f16', 22)}</span>` : '');
+    return `<div class="pl" style="left:${(x / 105) * 100}%;top:${(y / 68) * 100}%"><div class="fw">${avatar(p, faces, sz, c, big ? 7 : 5)}<span class="rt ${big ? 'g' : ''}" style="${big ? '' : `border-color:${c};color:${c}`}">${r1(p.r)}</span>${ev ? `<span class="evs">${ev}</span>` : ''}${big ? `<span class="crown">${MEDAL('#2d1f06', 30)}</span>` : ''}</div><div class="nm ${big ? 'g' : ''}">${esc(String(p.n).length > 13 ? `${String(p.n).slice(0, 12)}…` : p.n)}</div></div>`;
+  }).join('');
+  const ring = `<svg viewBox="0 0 120 120" width="112" height="112"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="10"/><circle cx="60" cy="60" r="50" fill="none" stroke="#efcf7a" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(mp.avg / 10) * 314} 314" transform="rotate(-90 60 60)"/><text x="60" y="73" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="36" fill="#fff">${r1(mp.avg)}</text></svg>`;
+  const opp = String(mp.opp);
+  return page(`
+body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.3),transparent 65%),linear-gradient(180deg,#140c07,#0a0705)}
+.lab{font:700 18px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}
+.sb{padding:30px 40px 0;text-align:center;position:relative}.sb .eyebrow{font-size:20px}
+.srow{display:grid;grid-template-columns:1fr 420px 1fr;align-items:center;margin-top:14px}
+.team{display:grid;justify-items:center;gap:6px}.team b{font:600 40px/1.1 Oswald;letter-spacing:.06em;text-transform:uppercase;max-width:330px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mid b{display:block;font:700 176px/1 Oswald;text-shadow:0 10px 50px rgba(232,101,26,.6)}.mid .pill{margin-top:-6px}
+.gm{display:grid;grid-template-columns:1fr 400px;gap:0;margin:20px 40px 0;border-top:2px solid rgba(255,255,255,.1);padding-top:20px;min-height:214px;align-items:stretch}
+.gl{padding-right:30px;display:grid;align-content:center}.legend{display:flex;gap:24px;font:600 22px Inter;color:#b9c4d9;margin-bottom:6px}.legend span{display:inline-flex;align-items:center;gap:8px}
+.cr{display:flex;justify-content:space-between;align-items:center;height:52px;border-bottom:1px solid rgba(255,255,255,.07)}.cr b{font:600 28px/1 Oswald;letter-spacing:.04em}.ic{display:inline-flex;gap:8px}
+.mo{position:relative;contain:size;border-left:2px solid rgba(239,207,122,.4);padding-left:32px;display:grid;align-items:center}
+.ml{display:grid;gap:14px;max-width:196px;z-index:2}.ml .lab{display:flex;align-items:center;gap:10px;font-size:19px;line-height:1.25;letter-spacing:.13em;white-space:nowrap}.ml .lab svg{flex:none}
+.mt{display:grid;gap:0;text-align:left}.mt b{font:600 34px/1.05 Oswald;letter-spacing:.04em;white-space:nowrap}.mt em{font:700 60px/1.05 Oswald;font-style:normal}
+.bw{position:absolute;right:30px;top:50%;height:70%;max-height:168px;aspect-ratio:200/232;line-height:0;z-index:1;transform:translateY(-50%)}.bw svg{width:100%;height:100%}
+.mb{position:absolute;left:-14px;bottom:6px;line-height:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.55))}
+.glow{position:absolute;right:-30px;top:-10px;bottom:-30px;aspect-ratio:1;background:radial-gradient(closest-side,rgba(239,207,122,.13),rgba(239,207,122,.05) 55%,rgba(239,207,122,0));z-index:0}
+.st{margin:18px 40px 0;border-top:2px solid rgba(255,255,255,.1)}
+.sr,.sh{display:grid;grid-template-columns:340px 1fr 340px;align-items:center}.sr{height:132px;border-bottom:1px solid rgba(255,255,255,.07)}
+.dc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.dc svg{display:block}
+.sh{height:84px}.sh .dc{flex-direction:row;gap:14px}.sh .lab{font-size:26px;color:#e1e8f5}
+.sm{text-align:center;display:grid;justify-items:center;gap:10px}.sm span{font:700 25px Inter;letter-spacing:.14em;text-transform:uppercase;color:#e1e8f5}
+.chipd{font:700 26px/1 Oswald;letter-spacing:.06em;padding:6px 16px 4px;border-radius:999px;border:2px solid}
+.chipd.good{color:#4be08a;background:rgba(75,224,138,.12);border-color:rgba(75,224,138,.45)}.chipd.even{color:#efcf7a;background:rgba(239,207,122,.12);border-color:rgba(239,207,122,.45)}.chipd.bad{color:#ff7d72;background:rgba(255,125,114,.12);border-color:rgba(255,125,114,.45)}
+.key{display:flex;gap:30px;justify-content:center;padding:12px 0 2px;font:600 22px Inter;color:#b9c4d9}.key i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:9px}
+.ln4{display:grid;grid-template-columns:repeat(${Math.max(1, mp.lines.length)},1fr);gap:20px;margin:10px 40px 0;padding:16px 0 50px;border-top:2px solid rgba(255,255,255,.1);position:relative}
+.ln{display:grid;justify-items:center;gap:6px;grid-template-rows:auto 48px auto}.ln b{font:700 32px/1 Oswald}.lb{display:flex;align-items:flex-end;width:52px;height:48px;border-radius:10px;background:rgba(255,255,255,.06)}.lb i{display:block;width:100%;border-radius:10px}.ln .lab{font-size:21px;color:#e1e8f5}
+.cap{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:19px}
+.fv{padding:0 40px}.pitch{position:relative;width:1120px;height:725px;border-radius:24px;overflow:hidden;box-shadow:0 0 0 2px rgba(255,255,255,.08)}
+.pl{position:absolute;transform:translate(-50%,-44%);display:grid;justify-items:center}
+.fw{position:relative}.rt{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font:700 28px/1 Oswald;background:#0b0f16;border:3px solid;border-radius:999px;padding:3px 12px 2px;white-space:nowrap}
+.rt.g{background:var(--gold);color:#2d1f06;border-color:#fff1c2;font-size:34px}
+.nm{margin-top:24px;font:700 25px Inter;color:#fff;text-shadow:0 0 6px #0b0f16,0 0 3px #0b0f16,0 2px 6px #0b0f16;white-space:nowrap}.nm.g{color:#fff1c2;font-size:27px}
+.evs{position:absolute;left:-14px;top:-8px;display:flex;flex-direction:column;gap:4px}
+.ev{display:flex;align-items:center;background:#fff;border-radius:999px;padding:4px 7px;box-shadow:0 3px 10px rgba(0,0,0,.5);font:700 18px Oswald;gap:2px}.ev small{font-size:18px;color:#0b0f16}.ev.as{background:#efcf7a}
+.crown{position:absolute;right:-12px;top:-14px;width:46px;height:46px;border-radius:50%;background:var(--gold);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.55)}
+.hud{position:absolute;display:flex;align-items:center;gap:14px}.hud.l{left:26px;top:22px}.hud.r{right:26px;top:16px;flex-direction:column;gap:2px}
+.eb{font:800 21px Inter;letter-spacing:.3em;text-transform:uppercase;color:#ffffffb8;text-shadow:0 2px 6px #0b0f16}
+.fkey{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 0 34px;font:600 22px Inter;color:#b9c4d9}.fkey i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:9px}`,
+  `<div class="sb">
+  <div class="eyebrow">${esc(club?.name ?? SITE)} · ${mp.mode} · ${esc(when(mp.ts))}</div>
+  <div class="srow">
+    <div class="team">${crest(club?.crest, club?.name ?? SITE, 150, true)}<b class="osw">${esc(String(club?.name ?? SITE).replace(/\s+FC$/i, ''))}</b></div>
+    <div class="mid"><b class="osw">${mp.gf}–${mp.ga}</b><span class="pill ${mp.res}">${RESULT[mp.res] ?? ''}</span></div>
+    <div class="team">${crest(mp.oppCrest, opp, 150, false)}<b class="osw">${esc(opp)}</b></div>
+  </div>
+</div>
+<div class="gm">
+  <div class="gl"><div class="legend"><span>${REVIEW_ICON.goal('#ff8a3d', 30)}Goal</span><span>${REVIEW_ICON.assist('#efcf7a', 30)}Assist</span></div>${contrib.length ? contrib.map(crow).join('') : '<div class="cr"><b class="osw">No goals for us</b></div>'}</div>
+  ${motmCell}
+</div>
+<div class="st">
+  <div class="sh"><div class="dc">${crest(club?.crest, club?.name ?? SITE, 54, true)}<span class="lab">${esc(String(club?.name ?? SITE).replace(/\s+FC$/i, '').split(' ')[0])}</span></div><div class="sm"></div><div class="dc">${crest(mp.oppCrest, opp, 54, false)}<span class="lab">${esc(opp.length > 12 ? `${opp.slice(0, 11)}…` : opp)}</span></div></div>
+  ${mp.rows.map(row).join('')}
+  <div class="key"><span><i style="background:#4be08a"></i>Ahead</span><span><i style="background:#efcf7a"></i>Level</span><span><i style="background:#ff7d72"></i>Behind</span></div>
+</div>
+<div class="ln4">${mp.lines.map((l) => { const c = BAND[band(l.r)]; return `<div class="ln"><b class="osw" style="color:${c}">${r1(l.r)}</b><div class="lb"><i style="height:${Math.max(20, Math.min(100, Math.round(((l.r - 6) / 2) * 100)))}%;background:${c}"></i></div><span class="lab">${l.t}</span></div>`; }).join('')}<span class="lab cap">Rating by line</span></div>
+<div class="fv"><div class="pitch"><svg viewBox="0 0 105 68" style="position:absolute;inset:0;width:100%;height:100%"><defs><radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></radialGradient></defs>
+<rect width="105" height="68" fill="#14502e"/>${stripes}<g fill="none" stroke="#ffffffb0" stroke-width=".3"><rect x="1" y="1" width="103" height="66"/><line x1="52.5" y1="1" x2="52.5" y2="67"/><circle cx="52.5" cy="34" r="9.15"/><rect x="1" y="13.84" width="16.5" height="40.32"/><rect x="1" y="24.84" width="5.5" height="18.32"/><rect x="87.5" y="13.84" width="16.5" height="40.32"/><rect x="98.5" y="24.84" width="5.5" height="18.32"/></g><rect width="105" height="68" fill="url(#vig)"/></svg>
+<div class="hud l"><span class="eb">Field view</span></div><div class="hud r">${ring}<span class="eb">Team rating</span></div>${marks}</div>
+<div class="fkey"><span><i style="background:#efcf7a"></i>Man of the match</span><span><i style="background:#4be08a"></i>7 and up</span><span><i style="background:#ff9f43"></i>6 to 6.9</span><span><i style="background:#ff7d72"></i>Under 6</span></div></div>`);
+}
+
 // ---------- what gets drawn, and the manifest the bot reads ----------
 const hash = (x) => crypto.createHash('sha1').update(JSON.stringify([TEMPLATE_VERSION, x])).digest('hex').slice(0, 10);
 
@@ -304,9 +472,16 @@ export const BANNERS = {
     `<div class="ln"></div><div class="bn" style="justify-content:center;text-align:center"><div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Match night</h1><p>Be there · tell us if you can play</p></div></div><div class="brand">${esc(SITE)}</div>`),
 };
 
-export function cardJobs(club, players, { matches = 10 } = {}) {
+// review / picture: (matchId) → the match review model or merged-picture model (scripts/lib/matchreview.mjs, matchpicture.mjs), or null;
+// given only by the real build, for the newest few matches.
+const REVIEW_MATCHES = 3;
+export function cardJobs(club, players, { matches = 10, review = null, picture = null } = {}) {
   const jobs = [];
-  for (const m of (club.matches ?? []).slice(0, matches)) {
+  for (const [i, m] of (club.matches ?? []).slice(0, matches).entries()) {
+    const model = review && i < REVIEW_MATCHES ? review(m.id) : null;
+    const pic = picture && i < REVIEW_MATCHES ? picture(m.id) : null;
+    if (pic) jobs.push({ key: ['match', m.id, 'picture'], file: `picture-${m.id}-${hash([pic.model, club.name, club.crest, m.oppCrest, [...pic.faces.keys()]])}.png`, html: () => matchPicture({ ...pic.model, oppCrest: m.oppCrest }, club, pic.faces) });
+    if (model) jobs.push({ key: ['match', m.id, 'review'], file: `review-${m.id}-${hash([model, club.name, club.crest])}.png`, html: () => reviewCard(model, club) });
     jobs.push({ key: ['match', m.id, 'score'], file: `score-${m.id}-${hash([m, club.name, club.crest])}.png`, html: () => scoreCard(m, club) });
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'field'], file: `field-${m.id}-${hash(m.ps)}.png`, html: () => fieldCard(m) });
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'box'], file: `box-${m.id}-${hash([m.ps, m.gf, m.ga, m.opp])}.png`, html: () => boxScoreCard(m, club) });
@@ -348,7 +523,9 @@ async function inlineCrests(club, siteDir) {
     }
     return cache.get(url);
   };
-  club.crest = await get(club.crest) ?? club.crest;
+  // Our own crest is always the Phoenix crest from the overlay (single source), never whatever an older site build left in site/assets.
+  const own = path.join(ROOT, 'phoenix/overlay/crest-sm.png');
+  club.crest = fs.existsSync(own) ? `data:image/png;base64,${fs.readFileSync(own).toString('base64')}` : (await get(club.crest) ?? club.crest);
   for (const m of club.matches ?? []) m.oppCrest = await get(m.oppCrest);
 }
 
@@ -361,7 +538,22 @@ async function main() {
   const publicClub = { ...club }; // the manifest keeps real URLs; only the drawn copy gets inlined crests
   const drawClub = structuredClone(club);
   await inlineCrests(drawClub, siteDir);
-  const jobs = cardJobs(drawClub, players);
+  const config = loadConfig(), homeId = String(config.homeClubId), hide = new Set((config.hiddenPlayers ?? []).map((h) => String(h).toLowerCase()));
+  const rawDir = path.join(ROOT, 'data/matches');
+  const rawOf = (id) => { try { return JSON.parse(fs.readFileSync(path.join(rawDir, `${id}.json`), 'utf8')); } catch { return null; } };
+  // Phoenix plays under several of our clubs: each match is read from the club it was fetched for (club.json match.src), the home club otherwise.
+  const srcOf = new Map(drawClub.matches.map((cm) => [cm.id, String(cm.src ?? homeId)]));
+  const review = (id) => {
+    const raw = rawOf(id);
+    if (!raw) return null;
+    const us = srcOf.get(id) ?? homeId;
+    try { return buildReview(raw, us, { history: loadHistory(rawDir, us, +raw.timestamp), hide }); } catch { return null; }
+  };
+  // The merged match picture: faces come from the Worker once for the newest matches, then every picture reads them from memory.
+  const models = new Map(drawClub.matches.slice(0, REVIEW_MATCHES).map((cm) => [cm.id, rawOf(cm.id)]).filter(([, raw]) => raw).map(([id, raw]) => [id, buildMatchPicture(raw, srcOf.get(id) ?? homeId, { hide })]).filter(([, mp]) => mp));
+  const faces = await fetchPlayerFaces(config, [...models.values()].flatMap((mp) => mp.players.map((p) => p.k)));
+  const picture = (id) => (models.has(id) ? { model: models.get(id), faces: new Map([...faces].filter(([k]) => models.get(id).players.some((p) => p.k === k))) } : null);
+  const jobs = cardJobs(drawClub, players, { review, picture });
   const { launchChrome } = await import('./lib/chrome.mjs');
   const chrome = await launchChrome();
   const manifest = { v: TEMPLATE_VERSION, at: Date.now(), base: `${(publicClub.url || '').replace(/\/?$/, '/')}cards/` };

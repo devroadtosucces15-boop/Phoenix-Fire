@@ -5,6 +5,7 @@
 //   GET  /api/bot/settings/public  keyed (X-Phoenix-Key, same shared-secret pattern as /api/overrides) – fetch.mjs reads
 //                                  this before posting a match result so the channel/colour/emoji/toggle stay in sync.
 import { sharedKey } from './sharedkey.js';
+import { playerFaces } from './faces.js';
 import { can, loadFlagOverrides } from './roles.js';
 import { getCommandSettings } from './botcommands.js';
 
@@ -62,4 +63,14 @@ export async function botSettingsPublicRoute(request, env) {
   if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
   // flags = the Boardroom's live switches (fetch.mjs honours them for the result post); guildId lets it tell "@everyone" from a real role
   return json({ ...(await getBotSettings(env)), flags: await loadFlagOverrides(env), guildId: env.DISCORD_GUILD_ID || '', commands: await getCommandSettings(env) });
+}
+
+// Faces for the match picture: fetch/cards (GitHub Actions) have no D1 access, so they ask the Worker, keyed like the settings route.
+//   GET /api/bot/faces?players=<EA player key>,…  →  { "<EA player key>": "<picture URL>" } for players with an approved claim
+// Same order as everywhere (bot/faces.js): a shipped Card Studio card, then the Discord picture, then Discord's default.
+export async function botFacesRoute(request, env) {
+  if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return fail('Forbidden', 403);
+  const url = new URL(request.url);
+  const keys = String(url.searchParams.get('players') ?? '').split(',').map((x) => x.trim()).filter((x) => /^[\w-]{1,40}$/.test(x)).slice(0, 40);
+  return json(Object.fromEntries(await playerFaces(env, keys, { origin: url.origin })));
 }

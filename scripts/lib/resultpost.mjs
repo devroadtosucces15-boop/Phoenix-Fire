@@ -27,6 +27,8 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
     console.warn(`Results NOT posted: ${why}`);
     return { posted: 0, missing: [{ club: 'all', purpose: 'match_results', why }] };
   }
+  const flagOn = (k) => ['members', 'public'].includes(settings.flags?.[k] ?? config.features?.[k]);
+  const matchPictureOn = flagOn('matchPicture'), reviewOn = flagOn('matchReview');
   const site = config.siteUrl?.replace(/\/?$/, '/') ?? '';
   const crestCdn = 'https://eafc24.content.easports.com/fifa/fltOnlineAssets/24B23FDE-7835-41C2-87A2-F453DFDB2E82/2024/fcweb/crests/256x256/l';
   const hide = new Set([...(config.hiddenPlayers || []), ...hidden].map((h) => String(h).toLowerCase()));
@@ -60,24 +62,37 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         files.push({ name: `${kind}-${m.matchId}.png`, path: path.join(drawn.dir, file) });
         return { url: `attachment://${kind}-${m.matchId}.png`, alt };
       };
-      const scoreImg = pic('score', `${clubName} ${us.goals}–${opp.goals} ${oppName}`);
-      const fieldImg = pic('field', 'Our players on the pitch with their match ratings');
+      // The merged match picture (flag matchPicture) replaces the score card and the field view with one picture.
+      const mergedFile = matchPictureOn ? drawn?.manifest?.match?.[m.matchId]?.picture : null;
+      const mergedImg = mergedFile && fs.existsSync(path.join(drawn.dir, mergedFile)) ? pic('picture', `${clubName} ${us.goals}–${opp.goals} ${oppName}: scoreboard, goals and assists, man of the match, team stats, rating by line and the field view with every player's rating`) : null;
+      const scoreImg = mergedImg ? null : pic('score', `${clubName} ${us.goals}–${opp.goals} ${oppName}`);
+      const fieldImg = mergedImg ? null : pic('field', 'Our players on the pitch with their match ratings');
+      // Message 2: the match review picture, posted right after the result (flag matchReview; skipped when the picture was not drawn).
+      const reviewFiles = [];
+      const reviewFile = drawn?.manifest?.match?.[m.matchId]?.review;
+      const reviewImg = reviewOn && reviewFile && fs.existsSync(path.join(drawn.dir, reviewFile)) ? (reviewFiles.push({ name: `review-${m.matchId}.png`, path: path.join(drawn.dir, reviewFile) }), { url: `attachment://review-${m.matchId}.png`, alt: 'Match review: what went well, what to work on, next match targets and recommendations for the squad' }) : null;
+      const reviewPanel = () => message({ accent: 'steel', blocks: [
+        tagBlock(tag, kind),
+        header({ eyebrow: `${clubName} · Match review`, title: `${clubName} vs ${oppName}`, sub: `Insights and recommendations · <t:${m.timestamp}:f>`, thumb: site ? `${site}assets/crest.png` : undefined }),
+        cards(reviewImg),
+        footer('Written from the match numbers'),
+      ] });
       const panel = (ping, mentions) => message({ accent: resultAccent(res), ping, mentions, blocks: [
         tagBlock(tag, kind),
         header({
           eyebrow: `${clubName} · Match centre · ${kind}`,
-          title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
+          title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${mergedImg ? 'vs' : `${us.goals}–${opp.goals}`} ${oppName}`, // the score is in the merged picture
           sub: `<t:${m.timestamp}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[res]}`,
           thumb: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : site ? `${site}assets/crest.png` : undefined,
         }),
-        cards(scoreImg),
-        facts([[`${it('goal')} Goals`, list('goals').replace(/\n/g, ', ')], [`${it('assist')} Assists`, list('assists').replace(/\n/g, ', ')], [`${it('motm')} Man of the match`, motm ? `${motm.playername} (${num(motm.rating).toFixed(1)})` : ''], ['📈 Top rated', best ? `${best.playername} (${num(best.rating).toFixed(1)})` : '']]),
+        cards(mergedImg ?? scoreImg),
+        mergedImg ? null : facts([[`${it('goal')} Goals`, list('goals').replace(/\n/g, ', ')], [`${it('assist')} Assists`, list('assists').replace(/\n/g, ', ')], [`${it('motm')} Man of the match`, motm ? `${motm.playername} (${num(motm.rating).toFixed(1)})` : ''], ['📈 Top rated', best ? `${best.playername} (${num(best.rating).toFixed(1)})` : '']]),
         fieldImg ? label('Field view · ratings') : null,
         cards(fieldImg),
-        footer(fieldImg ? 'Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match' : 'Pick your name below to see your own match'),
+        footer(mergedImg ? 'Pick your name below to see your own match' : fieldImg ? 'Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match' : 'Pick your name below to see your own match'),
         ...components,
       ] });
-      return { src, matchId: m.matchId, components, files, panel, embed: {
+      return { src, matchId: m.matchId, components, files, panel, review: reviewImg ? { panel: reviewPanel, files: reviewFiles } : null, embed: {
         author: { name: `${tag.important ? '🚨 ' : ''}${tag.label} · ${kind.toUpperCase()}` },
         title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
         url,
@@ -108,16 +123,20 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const dest = cache.get(item.src);
       if (!dest.ok) { report(item.src, `destination lookup failed (${dest.error})`); continue; }
       if (!dest.channelId) { report(item.src, 'no match_results channel configured (club, division or organization scope) – set one in Boardroom → Organization'); continue; }
-      const payload = item.panel(pingContent, allowedMentions);
-      let body, headers = { Authorization: `Bot ${token}` };
-      if (item.files.length) { // pictures ride along as attachments
-        body = new FormData();
-        body.set('payload_json', JSON.stringify(payload));
-        item.files.forEach((f, k) => body.set(`files[${k}]`, new Blob([fs.readFileSync(f.path)], { type: 'image/png' }), f.name));
-      } else { body = JSON.stringify(payload); headers['Content-Type'] = 'application/json'; }
-      const r = await fetch(`https://discord.com/api/v10/channels/${dest.channelId}/messages`, { method: 'POST', headers, body }).catch((e) => ({ ok: false, status: e.message }));
+      const send = (card, ping, mentions) => {
+        const payload = card.panel(ping, mentions);
+        let body, headers = { Authorization: `Bot ${token}` };
+        if (card.files.length) { // pictures ride along as attachments
+          body = new FormData();
+          body.set('payload_json', JSON.stringify(payload));
+          card.files.forEach((f, k) => body.set(`files[${k}]`, new Blob([fs.readFileSync(f.path)], { type: 'image/png' }), f.name));
+        } else { body = JSON.stringify(payload); headers['Content-Type'] = 'application/json'; }
+        return fetch(`https://discord.com/api/v10/channels/${dest.channelId}/messages`, { method: 'POST', headers, body }).catch((e) => ({ ok: false, status: e.message }));
+      };
+      const r = await send(item, pingContent, allowedMentions);
       console.log(`Result ${item.matchId} (club ${item.src}) → channel ${dest.channelId} [scope ${dest.scope ?? '?'}, guild ${dest.guildId ?? '?'}] → Discord ${r.status}`);
-      if (!r.ok) report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`);
+      if (!r.ok) { report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`); continue; }
+      if (item.review) await send(item.review, undefined, { parse: [] }); // the review goes right after its result, same channel, no ping
     }
   } else {
     // No bot token / flag off: the plain webhook IS the configured destination (the deployment's own DISCORD_WEBHOOK secret), as before.
