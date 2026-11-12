@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-12T13:50:38.451Z",
+ "fetchedAt": "2026-11-12T14:00:39.622Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1864,14 +1864,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "14",
-   "gamesPlayed": "71",
+   "proPos": "25",
+   "gamesPlayed": "72",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.1",
+   "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "Ana Montana8022",
@@ -2074,12 +2074,12 @@
   {
    "name": "Ghostz_x12",
    "proPos": "25",
-   "gamesPlayed": "23",
+   "gamesPlayed": "24",
    "goals": "27",
    "assists": "15",
    "manOfTheMatch": "1",
-   "ratingAve": "7.8",
-   "prevGoals": "3",
+   "ratingAve": "7.7",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
