@@ -817,6 +817,7 @@ async function main() {
   } finally { await chrome.close(); }
   fs.writeFileSync(path.join(siteDir, 'api', 'cards.json'), JSON.stringify(manifest));
   console.log(`✔ cards  ${drawn}/${jobs.length} drawn in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+  if (!drawn) throw new Error('No card was drawn: the manifest lists nothing');
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
