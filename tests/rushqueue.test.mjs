@@ -81,7 +81,7 @@ const press = (me, id, extra = {}, at = T0, ctx) => Q.queueInteraction({ type: 3
 const posts = (ch) => calls.filter((c) => c.method === 'POST' && c.path === `/channels/${ch}/messages`);
 const T = (r) => plainText(r.data ?? r);
 
-t('no queue channel set → says so and posts nothing', /No queue channel is set/.test(T(await press(p1, 'pf:rq:join'))) && calls.length === 0);
+t('no queue channel set → says so and posts nothing', /No channel is set for rush queue\b/.test(T(await press(p1, 'pf:rq:join'))) && calls.length === 0);
 sqlite.prepare("INSERT OR IGNORE INTO discord_servers (guild_id, display_name) VALUES (?, 'Test')").run(GUILD);
 const sid = sqlite.prepare('SELECT id FROM discord_servers WHERE guild_id = ?').get(GUILD).id;
 const addCh = (purpose, id) => sqlite.prepare("INSERT INTO discord_channels (server_id, channel_id, purpose, scope_type, label, active) VALUES (?, ?, ?, 'org', '', 1)").run(sid, id, purpose);
@@ -148,7 +148,7 @@ const modal = (me, group, note = '', at = T0) => Q.queueInteraction({ type: 5, d
 const open = await press(p2, 'pf:rq:report');
 t('the Report button opens a form', open.type === 9 && /group/.test(JSON.stringify(open)));
 calls.length = 0;
-t('no staff channel set → says so, sends nothing', /No staff channel/.test(T(await modal(p2, 'The Dax lobby'))) && calls.length === 0);
+t('no staff channel set → says so, sends nothing', /No channel is set for rush queue reports/.test(T(await modal(p2, 'The Dax lobby'))) && calls.length === 0);
 addCh('rush_queue_reports', STAFF);
 t('a report goes to the staff channel', /Report sent/.test(T(await modal(p2, 'The Dax lobby', 'searching and not posting'))) && posts(STAFF).length === 1);
 const rep = JSON.stringify(posts(STAFF)[0].body);

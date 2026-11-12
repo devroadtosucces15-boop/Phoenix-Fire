@@ -7,7 +7,7 @@
 // Flag `rushQueue` (default owner). Nothing here names a channel or role; pings go to the group's own members only.
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, footer, sep, button, buttons, autoBanner, cards, bannerUrl } from './ui.js';
-import { orgName, channelsFor } from './orgconfig.js';
+import { orgName, channelsFor, channelNotice } from './orgconfig.js';
 import { discord } from './servertools.js';
 import { appEnv, appConfigured } from './apps.js';
 import { kvOf } from './kv.js';
@@ -208,7 +208,8 @@ export const saveSettings = (env, st) => env.DB.prepare("INSERT INTO meta (key, 
 
 // ---------- Discord side ----------
 const say = (title, body = '', accent) => reply(notice(title, body, accent ? { accent } : {}));
-const NO_CHANNEL = 'No queue channel is set. A manager runs `/setup channel purpose:rush_queue` in the channel that should hold the board (or sets it under Boardroom → Organization).';
+// "No channel set" replies come from the Organization config (channelNotice: which purpose, where a manager sets it), never from a hand-written string.
+const noChannel = async (env, purpose) => reply(await channelNotice(env, purpose));
 const rushEnv = (env) => (appConfigured(env, 'rush') && env.BOT_APP !== 'rush' ? appEnv(env, 'rush') : env); // buttons only work on messages the Rush app posted
 const BOARD_KEY = 'rq:board:';
 
@@ -286,7 +287,7 @@ export async function queueInteraction(i, env, me, who, ctx, now = Date.now()) {
   if (!env.DB) return say('The member database is not connected');
   if (!flagOn(env, who, 'rushQueue')) return say('The Rush queue is not switched on for you yet', 'Ask a manager.');
   if (!can(who, 'events.rsvp')) return say('Members only', 'Join the Phoenix Fire server and link your account first.');
-  if (!(await channelsFor(env, 'rush_queue')).length) return say('No queue channel is set', NO_CHANNEL);
+  if (!(await channelsFor(env, 'rush_queue')).length) return noChannel(env, 'rush_queue');
   const id = String(i.data?.custom_id ?? ''), [, , action, mode] = id.split(':');
   const uid = String(me.u), picked = (i.data?.values ?? []).map(String);
   const q = await loadQueue(env), st = await getSettings(env);
@@ -392,7 +393,7 @@ export async function report(i, env, me, now) {
   const group = clean(fields.group, 100), note = clean(fields.note, 300);
   if (!group) return say('Tell us which group', 'Name the group or what you saw.');
   const targets = await channelsFor(env, 'rush_queue_reports');
-  if (!targets.length) return say('No staff channel is set for reports', 'A manager runs `/setup channel purpose:rush_queue_reports` in the staff channel (or sets it under Boardroom → Organization).');
+  if (!targets.length) return noChannel(env, 'rush_queue_reports');
   const kv = kvOf(env), key = `rq:rl:${await sha(`${env.RUSH_REPORT_SALT || env.DISCORD_PUBLIC_KEY || 'phoenix'}:${me.u}`)}`;
   const used = Number(await kv?.get(key).catch(() => 0)) || 0;
   if (used >= REPORT_LIMIT) return say('Too many reports', `You can send ${REPORT_LIMIT} an hour. Staff have seen yours.`);
@@ -415,7 +416,7 @@ export async function queueCommand(i, env, ctx, me, who, sub, o = {}, now = Date
   if (!staff) return say('Only managers can use that', '`/queue status` shows the line for everyone.');
   if (sub === 'board') {
     const r = await refreshBoards(env, { now });
-    return r.channels ? say('✅ Board posted', `${r.channels} channel${r.channels === 1 ? '' : 's'}.`, 'win') : say('No queue channel is set', NO_CHANNEL);
+    return r.channels ? say('✅ Board posted', `${r.channels} channel${r.channels === 1 ? '' : 's'}.`, 'win') : noChannel(env, 'rush_queue');
   }
   if (sub === 'clear') { await saveQueue(env, q, []); await after(env, ctx, () => refreshBoards(env, { now })); return say('🧹 Queue cleared', 'Everyone presses **Join queue** again.', 'win'); }
   if (sub === 'remove') {

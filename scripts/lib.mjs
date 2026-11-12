@@ -107,7 +107,7 @@ export async function loadBurners(config) {
 // loadOverrides() (a key derived from DISCORD_CLIENT_SECRET, a GitHub secret the Worker also has).
 export async function loadBotSettings(config) {
   const api = config.members?.api, secret = process.env.DISCORD_CLIENT_SECRET;
-  const none = { ok: false, resultChannel: '', pingRole: '', color: 'c8352c', emoji: '⚽', autoPosts: { results: true, reminders: true, awards: true } };
+  const none = { ok: false, resultChannel: '', pingRole: '', color: String(config.brand?.red ?? '').replace(/^#/, ''), emoji: '⚽', autoPosts: { results: true, reminders: true, awards: true } };
   if (!api || !secret) return none;
   try {
     const { createHash } = await import('node:crypto');

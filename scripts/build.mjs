@@ -456,8 +456,10 @@ ${s.mvp ? `<div class="se-mvp">🏅 Session MVP <b>${pLink(s.mvp.pid, base, s.mv
 
 // ---------- layout ----------
 const homeKit = clubs.get(homeId)?.info?.customKit ?? {};
-const RED = brand.red ?? hex(homeKit.kitColor2, '#c8352c');
-const INK = brand.ink ?? hex(homeKit.kitColor1, '#0b0f16');
+// Colours come from config.json brand (Phoenix); the club's kit colour only fills in when the config leaves one out, and no colour is ever hardcoded here.
+const RED = brand.red ?? hex(homeKit.kitColor2, null);
+const INK = brand.ink ?? hex(homeKit.kitColor1, null);
+if (!RED || !INK) throw new Error('config.json brand.red and brand.ink are required (the Phoenix theme colours)');
 // Grouped navigation (redesign board 01): 4 named groups replace the old flat link row, so every page –
 // including what used to live only in the footer – is one click away. `id` matches a page()'s `active`.
 // `flag` (optional) hides the link until FEATURES unlocks it for the viewer's role, same as the old NAV.
