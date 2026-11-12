@@ -79,6 +79,8 @@ export async function eventButton(i, env, who) {
 }
 
 // ---------- "✅ Check in" button on the check-in post (phoenix:ci:<event id>, older posts norex:ci:<id>) – the same check-in the Squad Hub writes ----------
+// The private reply after a successful Check in press (also drawn by the output audit).
+export const checkinDone = (e) => say(`✅ You are checked in for **${label(e)}** · ${ts(e.start)} (${ts(e.start, 'R')}). Be lined up 10 minutes before the start.`);
 export async function checkinButton(i, env, who) {
   if (!env.DB) return say('⚠️ The member database is not connected.');
   if (!flagOn(env, who, 'events') || !flagOn(env, who, 'matchNight')) return say('🔒 Checking in on Discord is not switched on for you yet – use the Squad Hub.');
@@ -89,7 +91,7 @@ export async function checkinButton(i, env, who) {
   const me = await memberOf(i, who, env);
   await setCheckin(env, me, e, true, null);
   await env.DB.prepare('INSERT INTO activity (at, user_id, name, avatar, type, detail) VALUES (?, ?, ?, ?, ?, ?)').bind(Date.now(), me.u, me.n, me.a, 'event-checkin', `on · ${label(e)} · Discord`).run();
-  return say(`✅ You are checked in for **${label(e)}** · ${ts(e.start)} (${ts(e.start, 'R')}). Be lined up 10 minutes before the start.`);
+  return checkinDone(e);
 }
 
 // ---------- BE1 "✅ Learned it" button on a shared play ----------

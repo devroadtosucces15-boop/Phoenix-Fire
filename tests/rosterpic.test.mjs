@@ -3,6 +3,7 @@ import { env, R2 } from './mock.mjs';
 import { rosterModel, rosterSvg, drawRoster, rosterBlock, rosterOn } from '../bot/rosterpic.js';
 import { eventMessage, checkinMessage, eventPost, checkinPost } from '../bot/events.js';
 import { plainText } from '../bot/ui.js';
+import { checkinDone } from '../bot/botcmds.js';
 import { t, done } from './lib.mjs';
 
 const PNG = Uint8Array.from({ length: 4000 }, (_, i) => (i < 8 ? [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a][i] : i % 251));
@@ -89,4 +90,9 @@ t('brand: the drawing fetches the Phoenix crest from the site and inlines it', s
 const ckSvg = rosterSvg(c, new Map(), { title: 'Check-in', sub: 'League' });
 t('brand: the check-in picture is Phoenix too, with the ticked-in ring in green', ckSvg.includes('PHOENIX FIRE') && ckSvg.includes('#e8651a') && ckSvg.includes('#4be08a') && !/norex|#c8352c/i.test(ckSvg));
 globalThis.fetch = realFetch;
+// ----- the private reply after pressing Check in -----
+const cd = checkinDone({ ...e, title: 'League night' });
+const cdJson = JSON.stringify(cd);
+t('check-in reply: private (ephemeral) and names the event', (cd.data.flags & 64) === 64 && cdJson.includes('League night') && cdJson.includes('checked in'));
+t('brand: the check-in reply has no NOREX name or colour', !/norex|#c8352c|0xc8352c|13121836/i.test(cdJson));
 done();
