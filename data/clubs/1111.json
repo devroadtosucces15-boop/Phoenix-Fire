@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-11T23:50:38.834Z",
+ "fetchedAt": "2026-11-12T00:00:38.124Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1957,7 +1957,7 @@
   {
    "name": "RealMinato7",
    "proPos": "25",
-   "gamesPlayed": "341",
+   "gamesPlayed": "342",
    "goals": "150",
    "assists": "162",
    "manOfTheMatch": "29",
@@ -1979,7 +1979,7 @@
   {
    "name": "zouz94230",
    "proPos": "5",
-   "gamesPlayed": "172",
+   "gamesPlayed": "173",
    "goals": "75",
    "assists": "54",
    "manOfTheMatch": "21",
@@ -2067,12 +2067,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "94",
+   "gamesPlayed": "95",
    "goals": "43",
    "assists": "36",
    "manOfTheMatch": "12",
    "ratingAve": "7.5",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2133,12 +2133,12 @@
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "147",
+   "gamesPlayed": "148",
    "goals": "124",
    "assists": "104",
    "manOfTheMatch": "29",
    "ratingAve": "7.9",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2188,7 +2188,7 @@
   {
    "name": "Zorg7",
    "proPos": "5",
-   "gamesPlayed": "249",
+   "gamesPlayed": "250",
    "goals": "64",
    "assists": "68",
    "manOfTheMatch": "26",
