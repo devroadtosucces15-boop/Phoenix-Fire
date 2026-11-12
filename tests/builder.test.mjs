@@ -16,11 +16,14 @@ const emptySeed = JSON.parse(fs.readFileSync(ROOT + 'data/game/fc27-launch.json'
 t('a seed with empty archetypes/AP/costs still flags preview', M.evaluate(emptySeed, { arch: 'finisher', level: emptySeed.levelCap.value, spent: {} }).status.preview);
 t('AP total grows with level', M.apAt(seed, 1) < M.apAt(seed, 10) && M.apAt(seed, 10) < M.apAt(seed, cap));
 t('face stats + OVR present', ev0.face.length === 6 && ev0.ovr > 0);
-t('Finisher mastery at L10: +1 Finishing', M.evaluate(seed, { arch: 'finisher', level: 10, spent: {} }).rows.find((r) => r.name === 'Finishing').bonus === 1
-  && M.evaluate(seed, { arch: 'finisher', level: 9, spent: {} }).rows.find((r) => r.name === 'Finishing').bonus === 0);
+// The current community ruleset lists no Masteries (the source builder does not apply them); the mastery code still works for a dataset that has them.
+t('current ruleset applies no Masteries', M.evaluate(seed, { arch: 'finisher', level: cap, spent: {} }).rows.every((r) => r.bonus === 0));
+const gm = { ...seed, masteries: [{ archetype: 'finisher', level: 10, bonus: { Finishing: 1, Composure: 1 } }] };
+t('Finisher mastery at L10: +1 Finishing (dataset with Masteries)', M.evaluate(gm, { arch: 'finisher', level: 10, spent: {} }).rows.find((r) => r.name === 'Finishing').bonus === 1
+  && M.evaluate(gm, { arch: 'finisher', level: 9, spent: {} }).rows.find((r) => r.name === 'Finishing').bonus === 0);
 
 // Real-looking numbers once managers enter them.
-const g = { ...seed, levelCap: { value: 10 }, apPerLevel: [5, 2], apCosts: [{ upTo: 60, cost: 1 }, { upTo: 99, cost: 3 }],
+const g = { ...seed, facilityRules: undefined, faceStats: undefined, aliases: undefined, levelCap: { value: 10 }, apPerLevel: [5, 2], apCosts: [{ upTo: 60, cost: 1 }, { upTo: 99, cost: 3 }],
   archetypes: [{ id: 'x', name: 'X', group: 'FWD', signature: ['Finishing'], base: Object.fromEntries(M.attrsOf(seed).map((a) => [a.name, 58])) }] };
 t('real data → no preview flag', !M.evaluate(g, { arch: 'x', level: 10, spent: {} }).status.preview);
 t('AP at level: start + per level', M.apAt(g, 1) === 5 && M.apAt(g, 10) === 5 + 9 * 2);
