@@ -6,8 +6,10 @@ import { playstyleBlock } from './tactics.mjs';
 
 const ROOMS = [['hub.html', '🎽', 'My Locker', 'Your card, artwork, stats, trophies and alerts'], ['hub-matchnight.html', '🗓️', 'Match Night', 'RSVP, availability, MOTM votes, ratings, Rush log'], ['hub-squad.html', '🤝', 'Squad Room', 'Team up, awards, predictions, Rush squads and scouting'], ['hub-clubhouse.html', '💬', 'Clubhouse', 'Club feed, ideas board, chat room and who is on Discord'], ['hub-handbook.html', '📜', 'Handbook', 'Club rules, docs and how the site works']];
 const ROOMCLS = { 'hub.html': 'locker', 'hub-matchnight.html': 'night', 'hub-squad.html': 'squadr', 'hub-clubhouse.html': 'clubh', 'hub-handbook.html': 'handb', 'hub-watchlist.html': 'clubh', 'hub-discoveries.html': 'clubh', 'hub-music.html': 'clubh' };
+// The ring menu (dock.js) draws the room map from this list, so rooms are defined once. [href, emoji, title, blurb, colour class]
+const RING_ROOMS = [...ROOMS.map(([h, i, t, d]) => [h, i, t, d, ROOMCLS[h] || 'clubh']), ['hub-watchlist.html', '🎬', 'Watch list', 'Pro Clubs videos sorted by topic', 'clubh'], ['hub-music.html', '🎧', 'Music', 'DJ rooms: now playing and the queue', 'clubh'], ['hub-discoveries.html', '🔎', 'Discoveries', 'Tips teammates found, checked by the managers', 'clubh']];
 const HUBX = '<link rel="stylesheet" href="hubx.css"><script src="hubx.js" defer></script>';
-const hubShell = (page, title, body, extra = {}) => shell({ group: 'hub', page, title, body, ...extra, bodyClass: `hub-page room-${ROOMCLS[page] || 'staff'}${extra.bodyExtra ? ' ' + extra.bodyExtra : ''}`, extraHead: HUBX + (extra.extraHead || '') });
+const hubShell = (page, title, body, extra = {}) => shell({ group: 'hub', page, title, body, ...extra, bodyClass: `hub-page room-${ROOMCLS[page] || 'staff'}${extra.bodyExtra ? ' ' + extra.bodyExtra : ''}`, extraHead: HUBX + `<script>window.PF_ROOMS=${JSON.stringify({ rooms: RING_ROOMS, lk: LK_BUTTONS })}</script>` + (extra.extraHead || '') });
 
 
 // ---------- guest gate: what is behind the door, one clear way in (shared by the landing and every room) ----------
@@ -39,9 +41,8 @@ export function locker(variant = 'landing') {
      <div class="panel reveal" style="--i:1" id="alertpanel"><div class="eyebrow"><span class="lk-bell" aria-hidden="true">🔔</span> Alerts</div><p class="muted small" style="margin-top:6px">${sample()} No new alerts. Approvals, RSVPs and mentions appear here.</p></div>
      </div>
     <div id="cardslot"></div>
-    <div class="side r"><div class="panel reveal" id="mystats"></div><div class="panel reveal" style="--i:1" id="formpanel" hidden></div></div>${btns}</section>
+    <div class="side r"><div class="panel reveal" id="mystats"></div><div class="panel reveal" style="--i:1" id="formpanel" hidden></div></div>${variant === 'landing' ? '' : btns}</section>
    <div class="wrap lk-below"><div class="panel reveal" style="--i:2" id="medalpanel" hidden></div>
-     <nav class="panel reveal lk-quick" style="--i:2" aria-label="Rooms"><div class="eyebrow">🚪 Rooms</div><div class="lk-q">${ROOMS.filter(([h]) => h !== 'hub.html').map(([h, i, t]) => `<a href="${h}"><span>${i}</span>${t}</a>`).join('')}</div></nav>
      <div class="panel reveal" style="--i:3" id="artpanel"></div></div>
    <div class="wrap">${liveStrip}</div>
    <div class="wrap lk-prof"><section class="sec sq-sec" id="lk-me" style="margin-top:20px"><header><div><span class="ribbon">🪪 My profile</span></div><p>What teammates see on your card, hover card and in Team up. Only what you change is saved.</p></header><div id="lkme" class="sq-mount"></div></section>
@@ -53,8 +54,6 @@ export function locker(variant = 'landing') {
    <section class="sec sq-sec" id="lk-alertset"><header><div><span class="ribbon">⚙️ Alert settings</span></div><p>Pick how each kind of alert reaches you: a Discord DM, only here, or not at all.</p></header><div id="lkprefs" class="sq-mount"></div></section></div>
    <div class="wrap"><section class="sec" data-disc-widget hidden style="margin-top:20px"><header><div><span class="ribbon">Discoveries</span></div><a class="btn ghost" href="hub-discoveries.html">See them all</a></header><div class="nxd-row" data-disc-row></div></section></div>
    <div class="wrap"><section class="sec" style="margin-top:20px"><header><div><span class="ribbon">Your shape</span></div><p>How your game compares with the squad. Each axis is scaled to the best player.</p></header><div class="grid g2"><div class="panel reveal" id="myviz"></div><div class="panel reveal" style="--i:1"><h3>Your tier</h3>${W.tiers()}<h3 style="margin-top:16px">Trophy cabinet</h3>${W.cabinet()}</div></div></section></div>
-   <div class="wrap"><section class="sec" style="margin-top:20px"><header><div><span class="ribbon">The Hub</span></div><p>Pick a room. Each one has its own colour and its own page.</p></header>
-    <div class="rm-map" data-stagger>${[...ROOMS.map(([h, i, t, d], n) => [h, i, t, d, '']), ['hub-watchlist.html', '🎬', 'Watch list', 'Pro Clubs videos sorted by topic', 'data-flag="watchlist" hidden'], ['hub-music.html', '🎧', 'Music', esc(cfg.siteTitle) + ' DJ rooms: now playing and the queue', 'data-flag="music" hidden'], ['hub-discoveries.html', '🔎', 'Discoveries', 'Tips teammates found, checked by the managers', 'data-flag="discoveries" hidden'], ['staff.html', '🛡️', 'Staff', 'Dugout, Boardroom and the Artwork studio', 'data-for="owner" hidden']].map(([h, i, t, d, a], n) => `<a class="rm rm-${ROOMCLS[h] || (h === 'staff.html' ? 'staff' : 'clubh')}" ${a} href="${h}" style="--i:${n}"><span class="rm-ic" aria-hidden="true">${i}</span><span class="rm-no">${String(n + 1).padStart(2, '0')}</span><b class="rm-t">${t}</b><span class="rm-d">${d}</span><span class="rm-go">Enter <i aria-hidden="true">→</i></span></a>`).join('')}</div></section></div>
   </div>`;
   return hubShell('hub.html', variant === 'landing' ? 'My Locker' : LK_PAGES[variant][1] + ' · My Locker', body, { bodyExtra: 'lk-' + variant, extraHead: (variant === 'landing' ? LK_FWD : '') + '<link rel="stylesheet" href="tactics.css"><link rel="stylesheet" href="locker.css"><script src="alerts.js" defer></script><script src="mylocker.js" defer></script><script src="botpages.js" defer></script><script src="tonight.js" defer></script><script src="cardstudio.js" defer></script>', data: { full: players } });
 }

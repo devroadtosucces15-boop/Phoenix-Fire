@@ -48,23 +48,3 @@
  .lk-alerts .lk-al2 .sec{margin-top:0}.lk-alerts .lk-al2 .sec::before{display:none}
 }
 .lk-landing .lockstage .lk-jump{max-width:none;width:100%;padding:0;margin:0;box-sizing:border-box}
-
-/* The Hub room map (bottom of the landing page): a feature tile plus colour-coded tiles */
-.rm-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.rm{--c:232,101,26;position:relative;display:flex;flex-direction:column;gap:6px;min-height:150px;padding:18px 18px 16px;border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;isolation:isolate;
- background:linear-gradient(155deg,rgba(var(--c),.22),rgba(10,7,5,.92) 62%);border:1px solid rgba(var(--c),.38);transition:transform .35s var(--spring,ease),box-shadow .25s,border-color .25s}
-.rm:hover,.rm:focus-visible{transform:translateY(-5px);border-color:rgba(var(--c),.85);box-shadow:0 18px 36px rgba(0,0,0,.5),0 0 28px rgba(var(--c),.22)}
-.rm[hidden]{display:none}
-.rm-ic{position:absolute;right:-6px;bottom:-18px;font-size:92px;line-height:1;opacity:.16;transform:rotate(-8deg);z-index:-1;transition:opacity .25s,transform .35s}
-.rm:hover .rm-ic{opacity:.3;transform:rotate(0) scale(1.08)}
-.rm-no{font:600 12px/1 var(--mono,monospace);letter-spacing:.14em;color:rgba(var(--c),1)}
-.rm-t{font-size:20px;line-height:1.1;letter-spacing:.02em}
-.rm-d{font-size:13px;opacity:.72;max-width:30ch}
-.rm-go{margin-top:auto;align-self:flex-start;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:99px;background:rgba(var(--c),.18);border:1px solid rgba(var(--c),.45)}
-.rm-go i{display:inline-block;font-style:normal;transition:transform .25s}.rm:hover .rm-go i{transform:translateX(4px)}
-.rm-locker{grid-column:span 2;grid-row:span 2;min-height:314px}.rm-locker .rm-t{font-size:30px}.rm-locker .rm-ic{font-size:190px}
-.rm-night{--c:224,73,63}.rm-squadr{--c:70,200,170}.rm-clubh{--c:110,160,255}.rm-handb{--c:226,196,140}
-.rm-staff{--c:239,207,122;background:linear-gradient(155deg,rgba(239,207,122,.2),rgba(8,6,3,.96) 60%)}
-@media(max-width:1000px){.rm-map{grid-template-columns:repeat(2,minmax(0,1fr))}.rm-locker{grid-column:span 2;grid-row:auto;min-height:190px}}
-@media(max-width:520px){.rm-map{grid-template-columns:1fr}.rm-locker{grid-column:auto}.rm{min-height:120px}}
-@media(prefers-reduced-motion:reduce){.rm,.rm-ic,.rm-go i{transition:none}}
