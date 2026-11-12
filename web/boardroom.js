@@ -16,7 +16,7 @@
     trials: ['🧭', 'Trials page'], liveBanner: ['🔴', 'Live banner'], gameRules: ['🎮', 'Game rules'], requests: ['📨', 'Club & privacy requests'], playStyle: ['🎯', 'Play style'],
     docs: ['📄', 'Club docs'], suggestions: ['💡', 'Suggestion box'], matchNight: ['🌙', 'Match night mode'], platformLink: ['🔗', 'Platform links'], discordRsvp: ['✅', 'RSVP from Discord'],
     awards: ['🏆', 'Weekly awards'], rushSquads: ['🤝', 'Rush squads'], starRatings: ['🌟', 'Star ratings'], feedback: ['💌', 'Anonymous feedback'], predictions: ['🔮', 'Predictions'],
-    recommendations: ['🎯', 'Who to play with'], scoutReport: ['📋', 'Scout reports'], ask: ['❓', 'Ask the club'], aiInsights: ['🧠', 'Player notes'], lineupRec: ['✨', 'Line-up suggestions'],
+    recommendations: ['🎯', 'Who to play with'], scoutReport: ['📋', 'Scout reports'], ask: ['❓', 'Ask the club'], aiInsights: ['🧠', 'Player notes'], lineupRec: ['✨', 'Line-up suggestions'], rosterPicture: ['🖼️', 'Match-night roster picture'],
     insights: ['🧭', 'Club Intelligence'], feed: ['📰', 'Club feed'], hotw: ['🔥', 'Highlight of the week'], presence: ['🟢', 'Who’s online'], mentions: ['@', 'Mentions'],
     messages: ['✉️', 'Messages'], points: ['⭐', 'Club points'], avatarCard: ['🎨', 'Avatar card'], cardStudio: ['🪪', 'Card Studio'], locker: ['🎽', 'Locker Room tab'], lockerRoom: ['🎽', 'Locker Room redesign'],
     dugout: ['🧢', 'Dugout'], boardroom: ['👑', 'Boardroom'], tactics: ['🧠', 'Tactics Studio + Playbook'], statInsights: ['✨', 'Stat insights'], insightWidget: ['✨', 'Insight widget (front end)'], hub: ['🔑', 'The Hub'], push: ['📲', 'Phone notifications'],
