@@ -17,7 +17,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 8; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 9; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -521,6 +521,34 @@ const crestUri = (() => { let c = null; return () => (c ??= (() => { try { retur
 const familyBanner = (s) => page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 14px 30px rgba(0,0,0,.6));opacity:.95}`,
   `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[s.icon] ?? ICONS.flame}</svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${s.title.length <= 10 ? 104 : s.title.length <= 14 ? 88 : 72}px">${esc(s.title)}</h1><p>${esc(s.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}<div class="brand">${esc(SITE)}</div>`);
+// ---------- alert pictures: one drawn picture per alert (bot/banners.js ALERT_KEYS), hazard stripes + a big line icon + the crest ----------
+// Warning tone (orange stripes) for things to act on, calm tone (steel) for "back to normal" and "cancelled". The crest comes from phoenix/overlay.
+const ALERT_ART = {
+  siren: `<path d="M5 20h14v-2a7 7 0 0 0-14 0z" fill="${O}" stroke="${G}" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 20h18M12 3v3M4.5 6.5l2 2M19.5 6.5l-2 2M2.5 12h2.5M19 12h2.5" stroke="${G}" stroke-width="1.6" stroke-linecap="round" fill="none"/>`,
+  down: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 6v7" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1.4" fill="${O}"/>`,
+  up: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M7.5 12.5l3 3 6-7" stroke="${O}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+  cancel: `<rect x="3.5" y="5" width="17" height="15" rx="2.5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><path d="M9 13l6 5M15 13l-6 5" stroke="${O}" stroke-width="2.2" stroke-linecap="round"/>`,
+  clock: `<circle cx="12" cy="13" r="8" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 8v5l3 2M9 2.5h6" stroke="${O}" stroke-width="2" stroke-linecap="round" fill="none"/>`,
+  stage: `<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="${G}" stroke-width="1.8"/><path d="M15.5 15.5L21 21" stroke="${G}" stroke-width="2" stroke-linecap="round"/><path d="M7.5 10.5h6M11 8l2.5 2.5L11 13" stroke="${O}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+  caution: `<path d="M12 3l10 17H2z" fill="none" stroke="${G}" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 9.5v5" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.3" fill="${O}"/>`,
+};
+const ALERTS = {
+  matchalert: { art: 'siren', title: 'Match alert', sub: 'We need to change something', warn: true },
+  'uptime-down': { art: 'down', title: 'Bot is down', sub: 'Something stopped answering', warn: true },
+  'uptime-up': { art: 'up', title: 'Back to normal', sub: 'Everything is answering again' },
+  eventcancelled: { art: 'cancel', title: 'Cancelled', sub: 'This session is off' },
+  eventsoon: { art: 'clock', title: 'Starts in 30', sub: 'Get ready · check in now', warn: true },
+  trialstage: { art: 'stage', title: 'Trial update', sub: 'A trial moved to a new stage' },
+  caution: { art: 'caution', title: 'Caution', sub: 'A player needs a second look', warn: true },
+};
+export function alertPicture(key) {
+  const a = ALERTS[key];
+  const tone = a.warn ? 'repeating-linear-gradient(135deg,#e8651a 0 22px,#0a0705 22px 44px)' : 'repeating-linear-gradient(135deg,#5a6578 0 22px,#0a0705 22px 44px)';
+  return page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.hz{position:absolute;left:0;right:0;height:16px;background:${tone}}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 30px rgba(232,101,26,.5))}`,
+    `<div class="hz" style="top:0"></div><div class="hz" style="bottom:0"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ALERT_ART[a.art]}</svg>
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${a.title.length <= 12 ? 104 : 88}px">${esc(a.title)}</h1><p>${esc(a.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
+}
+for (const k of Object.keys(ALERTS)) BANNERS[k] = () => alertPicture(k);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------

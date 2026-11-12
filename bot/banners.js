@@ -54,6 +54,14 @@ export const BANNER_SPEC = {
   fun: { icon: 'dice', title: 'Phoenix Fun', sub: 'Just for fun' },
   music: { icon: 'note', title: 'Music', sub: 'Now playing' },
   burner: { icon: 'flame', title: 'Burner report', sub: 'Who we are up against' },
+  // Alert pictures (drawn by scripts/cards.mjs alertPicture; the title is the picture's alt text).
+  matchalert: { icon: 'flame', title: 'Match alert', sub: 'We need to change something' },
+  'uptime-down': { icon: 'flame', title: 'Bot is down', sub: 'Something stopped answering' },
+  'uptime-up': { icon: 'flame', title: 'Back to normal', sub: 'Everything is answering again' },
+  eventcancelled: { icon: 'flame', title: 'Cancelled', sub: 'This session is off' },
+  eventsoon: { icon: 'flame', title: 'Starts in 30', sub: 'Get ready · check in now' },
+  trialstage: { icon: 'flame', title: 'Trial update', sub: 'A trial moved to a new stage' },
+  caution: { icon: 'flame', title: 'Caution', sub: 'A player needs a second look' },
 };
 
 // Slash command → family.
@@ -75,9 +83,9 @@ export const BANNER_BY_COMPONENT = [
 ];
 // Direct message (notification type, bot/notify.js TYPES) → family.
 export const BANNER_BY_DM = {
-  announce: 'announce', claim: 'claim', trial: 'trial', trialstage: 'trial', rush: 'rush', lfg: 'lfg', badge: 'badge', request: 'request', idea: 'idea', event: 'event',
+  announce: 'announce', claim: 'claim', trial: 'trial', trialstage: 'trialstage', rush: 'rush', lfg: 'lfg', badge: 'badge', request: 'request', idea: 'idea', event: 'event',
   award: 'award', feedback: 'feedback', predict: 'predict', game: 'game', mention: 'social', message: 'social', feed: 'social', storage: 'storage', queue: 'staff',
-  moderation: 'moderation', play: 'play', card: 'card', wave: 'social', remind: 'remind', caution: 'feedback', live: 'live', test: 'general',
+  moderation: 'moderation', play: 'play', card: 'card', wave: 'social', remind: 'remind', caution: 'caution', live: 'live', test: 'general',
 };
 // Automated posts have no command or button: the header's small label (eyebrow) says what they are.
 const BY_EYEBROW = [

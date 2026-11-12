@@ -66,7 +66,7 @@ async function dmOwner(env, content) {
       const d = await r.json().catch(() => ({}));
       if (!d.id) continue;
       await fetch(`https://discord.com/api/v10/channels/${d.id}/messages`, {
-        method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, alertPanel(content), 'health')),
+        method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, alertPanel(content), String(content).startsWith('🔴') ? 'uptime-down' : 'uptime-up')),
       });
     } catch (e) {
       console.log('monitor DM failed', e.message);
