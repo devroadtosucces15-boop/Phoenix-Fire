@@ -13,7 +13,7 @@ const env = { SITE_URL: 'https://x.test/', ORG_NAME: 'Phoenix Fire', ADMIN_IDS: 
 const KEYS = ['matchalert', 'uptime-down', 'uptime-up', 'eventcancelled', 'eventsoon', 'trialstage', 'caution'];
 t('versions bumped together', BANNER_V === TEMPLATE_VERSION && BANNER_V >= 9);
 t('each alert picture is drawn, Phoenix, no NOREX', KEYS.every((k) => { const h = BANNERS[k](); return !/norex|c8352c|080b11/i.test(h) && /e8651a/i.test(h) && /<img class="wm" src="data:image\/png/.test(h); }));
-t('DM types map to their own picture', bannerForDm('caution') === 'caution' && bannerForDm('trialstage') === 'trialstage');
+t('DM types map to their own picture', bannerForDm('caution') === 'dm-caution' && bannerForDm('trialstage') === 'dm-trialstage');
 
 const has = (m, k) => images(m).some((u) => u.includes(`banner-${k}.png`));
 t('uptime down / up use their own picture', has(autoBanner(env, alertPanel(diff(null, ['x']).alert), 'uptime-down'), 'uptime-down') && has(autoBanner(env, alertPanel('🟢 **back**'), 'uptime-up'), 'uptime-up'));

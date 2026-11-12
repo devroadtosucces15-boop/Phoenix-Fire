@@ -13,7 +13,7 @@ t('every family in the spec is drawn by cards.mjs', Object.keys(BANNER_SPEC).eve
 t('every mapping points at a known family or a drawn banner', [...Object.values(BANNER_BY_COMMAND), ...Object.values(BANNER_BY_DM), ...BANNER_BY_COMPONENT.map((x) => x[1])].every((k) => BANNERS[k]));
 t('every slash command has its own family (none falls to the general banner by accident)', COMMANDS.every((c) => c.name in BANNER_BY_COMMAND));
 t('every notification type has a family', Object.keys(TYPES).every((k) => k in BANNER_BY_DM));
-t('lookups', bannerForCommand('club') === 'club' && bannerForComponent('pf:rq:join') === 'queue' && bannerForDm('award') === 'award' && bannerFromEyebrow('PHOENIX FIRE · Rush queue') === 'queue' && bannerForCommand('nope') === 'general');
+t('lookups', bannerForCommand('club') === 'club' && bannerForComponent('pf:rq:join') === 'queue' && bannerForDm('award') === 'dm-award' && bannerFromEyebrow('PHOENIX FIRE · Rush queue') === 'queue' && bannerForCommand('nope') === 'general');
 
 const panel = () => message({ accent: 'red', blocks: [header({ eyebrow: 'Phoenix · Club', title: 'T', sub: 's' }), text('body'), buttons([{ label: 'Go', id: 'x' }])] });
 const withPic = withBanner(panel(), bannerUrl(env, 'club'), 'Club');

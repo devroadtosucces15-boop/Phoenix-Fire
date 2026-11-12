@@ -22,5 +22,5 @@ Building blocks that exist (do not rebuild):
 | 5 | Private replies | My insights, My game plan, form score, locker summary, `/me`, `/insight`, `/intel` | done (private pictures: `privatePicture` in scripts/cards.mjs, version 10; the first four are site Locker Room pages, not bot outputs) |
 | 6 | Automated posts | live, member live, hype, awards, hotw, birthday, welcome, patch notes, media guard, voice recap, burner report, plays, squad post, doc post | done (post pictures: `postPicture` in scripts/cards.mjs, `picture()` in bot/ui.js, version 11; media guard is the `storage` DM) |
 | 7 | Slash replies still bare | `/lineup`, `/host`, `/matchday`, `/lfg`, `/trial`, `/feedback`, `/suggest`, `/share`, `/discoveries`, `/wheel`, `/tag`, `/remind`, `/setup`, `/announce` | done |
-| 8 | DMs | one poster layout per notification type (27 DM outputs) | open |
+| 8 | DMs | one poster layout per notification type (27 DM outputs) | done (`DMS` table + `dmPicture` in scripts/cards.mjs, banners `dm-<type>`, `BANNER_BY_DM` in bot/banners.js, version 13; tests/dm-posters.test.mjs) |
 | 9 | Buttons, menus, notices | component replies and errors: compact variant of the same look, final audit with `studio.mjs check --strict` | open |

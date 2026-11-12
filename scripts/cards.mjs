@@ -17,7 +17,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 12; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 13; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -567,7 +567,7 @@ const PRIVATE = {
 const taggedPicture = (a) => {
   const tone = a.calm ? 'repeating-linear-gradient(135deg,#5a6578 0 22px,#0a0705 22px 44px)' : 'repeating-linear-gradient(135deg,#e8651a 0 22px,#0a0705 22px 44px)';
   return page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.hz{position:absolute;left:0;right:0;height:16px;background:${tone}}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 30px rgba(232,101,26,.5))}.tag{position:absolute;left:56px;bottom:34px;padding:6px 18px;border:2px solid #e8651a;border-radius:99px;font:700 20px/1 Oswald;letter-spacing:.2em;text-transform:uppercase;color:#e8651a;background:#0a0705}`,
-    `<div class="hz" style="top:0"></div><div class="hz" style="bottom:0"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[a.art]}</svg>
+    `<div class="hz" style="top:0"></div><div class="hz" style="bottom:0"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[a.art] ?? ALERT_ART[a.art] ?? ICONS.flame}</svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${a.title.length <= 12 ? 104 : a.title.length <= 16 ? 88 : 72}px">${esc(a.title)}</h1><p>${esc(a.sub)}</p></div></div><div class="tag">${esc(a.tag)}</div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
 };
 export const privatePicture = (key) => taggedPicture(PRIVATE[key]);
@@ -624,6 +624,41 @@ export const SLASH = {
 };
 export const slashPicture = (key) => taggedPicture(SLASH[key]);
 for (const k of Object.keys(SLASH)) BANNERS[k] = () => slashPicture(k);
+// ---------- DM pictures (section 8): one drawn picture per notification type (bot/notify.js TYPES), same look as the post pictures ----------
+// Types of one kind share a group (personal, social, club, rush, tactics, warning, staff) and the stripe tone, but each has its own title, icon and tag.
+// The tag says why you got it: "Only you" for your own results, "Managers" for staff to-dos, "Warning" for moderation. Art for caution and trial
+// stage comes from the alert pictures (ALERT_ART), storage reuses the storage-guard disk; nothing is redrawn.
+export const DMS = {
+  'dm-announce': { art: 'horn', title: 'Announcement', sub: 'From the managers, to the whole club', tag: 'Club news' },
+  'dm-claim': { art: 'id', title: 'Claim decision', sub: 'Your player card request', tag: 'Only you' },
+  'dm-trial': { art: 'search', title: 'Scouting tip', sub: 'Someone is looking at a trialist', tag: 'Only you' },
+  'dm-trialstage': { art: 'stage', title: 'Trial update', sub: 'A trial moved to a new stage', tag: 'Trials' },
+  'dm-rush': { art: 'bolt', title: 'Rush result', sub: 'Your Rush game is in', tag: 'Only you' },
+  'dm-lfg': { art: 'hand', title: 'Rush call', sub: 'Someone is free to play', tag: 'Rush' },
+  'dm-badge': { art: 'medal', title: 'Badge earned', sub: 'A new one for your locker', tag: 'Only you' },
+  'dm-request': { art: 'doc', title: 'Request update', sub: 'Your club or privacy request', tag: 'Only you' },
+  'dm-idea': { art: 'bulb', title: 'Idea reply', sub: 'The club answered your suggestion', tag: 'Only you' },
+  'dm-event': { art: 'calendar', title: 'Session update', sub: 'A new event, change or report', tag: 'Match night' },
+  'dm-award': { art: 'trophy', title: 'Weekly awards', sub: 'The votes are counted', tag: 'Winners' },
+  'dm-feedback': { art: 'chat', title: 'Feedback for you', sub: 'Sent anonymously by a teammate', tag: 'Only you' },
+  'dm-predict': { art: 'crystal', title: 'Prediction points', sub: 'Your calls just paid off', tag: 'Only you' },
+  'dm-game': { art: 'pad', title: 'Game update', sub: 'New max level or rules', tag: 'EA update' },
+  'dm-mention': { art: 'people', title: 'You were mentioned', sub: 'Someone tagged you in the Hub', tag: 'Social' },
+  'dm-message': { art: 'inbox', title: 'New message', sub: 'A DM or group chat in the Hub', tag: 'Social' },
+  'dm-feed': { art: 'board', title: 'Feed activity', sub: 'Comments, replies and reactions', tag: 'Social' },
+  'dm-storage': { art: 'disk', title: 'Storage guard', sub: 'Old feed files were cleared', tag: 'Owner only', calm: true },
+  'dm-queue': { art: 'shield', title: 'Manager to-do', sub: 'Something is waiting for review', tag: 'Managers', calm: true },
+  'dm-moderation': { art: 'down', title: 'Manager warning', sub: 'Read it and act on it', tag: 'Warning' },
+  'dm-play': { art: 'pitch', title: 'New play', sub: 'Assigned to you to learn', tag: 'Tactics' },
+  'dm-card': { art: 'player', title: 'Card decision', sub: 'Your Card Studio request', tag: 'Only you' },
+  'dm-wave': { art: 'spark', title: 'Wave', sub: 'A teammate said hello', tag: 'Social' },
+  'dm-remind': { art: 'bell', title: 'Reminder', sub: 'A nudge from the club', tag: 'Only you' },
+  'dm-caution': { art: 'caution', title: 'Caution', sub: 'A player needs a second look', tag: 'Warning' },
+  'dm-live': { art: 'antenna', title: 'We are live', sub: 'The club just went on air', tag: 'On air' },
+  'dm-test': { art: 'pulse', title: 'Test alert', sub: 'Your DMs are working', tag: 'Test', calm: true },
+};
+export const dmPicture = (key) => taggedPicture(DMS[key]);
+for (const k of Object.keys(DMS)) BANNERS[k] = () => dmPicture(k);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------

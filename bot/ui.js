@@ -99,7 +99,7 @@ export function cardUrl(manifest, ...key) {
 }
 
 // A fixed banner picture (jail, wheel, discovery, matchnight – drawn by scripts/cards.mjs). Needs no manifest lookup.
-export const BANNER_V = 12; // = TEMPLATE_VERSION in scripts/cards.mjs
+export const BANNER_V = 13; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
 
 // A drawn picture for one output, alt text from BANNER_SPEC (null without SITE_URL, so a post never breaks).

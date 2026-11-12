@@ -44,7 +44,7 @@ t('burner report: picture, Phoenix', has(br, 'post-burner') && clean(br));
 // builders inside crons or routes: the picture is wired in and the post still goes through its own sender
 const wired = { 'bot/hype.js': 'post-hype', 'bot/awards.js': 'post-awards', 'bot/hotw.js': 'post-hotw', 'bot/voicerecap.js': 'post-voice', 'bot/plays.js': 'post-play', 'bot/squads.js': 'post-squad', 'bot/docs.js': 'post-doc' };
 for (const [f, k] of Object.entries(wired)) t(`${f}: wired to ${k}`, src(f).includes(`picture(env, '${k}')`));
-t('media guard DM uses its own picture (only storage notice)', bannerForDm('storage') === 'post-media' && /type: 'storage'/.test(src('bot/media.js')));
+t('media guard DM uses its own picture (only storage notice)', bannerForDm('storage') === 'dm-storage' && /type: 'storage'/.test(src('bot/media.js')));
 t('hype and voice keep the model picture and fall back to the drawn one', /art \? cards\('attachment:\/\/hype\.png'\) : picture\(env, 'post-hype'\)/.test(src('bot/hype.js')) && /art \? cards\('attachment:\/\/quote\.png'\) : picture\(env, 'post-voice'\)/.test(src('bot/voicerecap.js')));
 
 // channels and roles come from the Organization config, never code
