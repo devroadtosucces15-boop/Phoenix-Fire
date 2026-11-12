@@ -357,7 +357,7 @@ async function postBurnerReports() {
     if (posted >= 4) break; // a catch-up never floods the channel; the rest follow next run
     const r = await fetch(`https://discord.com/api/v10/channels/${channel}/messages`, {
       method: 'POST', headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(autoBanner({ SITE_URL: site }, reportMessage(record, match, stats, site), 'burner')),
+      body: JSON.stringify(autoBanner({ SITE_URL: site }, reportMessage(record, match, stats, site), 'post-burner')),
     }).catch((e) => ({ ok: false, status: e.message }));
     if (!r.ok) { console.warn(`Burner report failed (${r.status}) – the bot needs View Channel + Send Messages + Embed Links there.`); break; }
     record.reported = [...new Set([...record.reported, match.id])].slice(-200);

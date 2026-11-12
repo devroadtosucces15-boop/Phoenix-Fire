@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DATA, readJson, writeJson, loadConfig } from './lib.mjs';
-import { message, header, text as block, footer, buttons } from '../bot/ui.js';
+import { message, header, text as block, footer, buttons, picture } from '../bot/ui.js';
 
 const EA = 'https://www.ea.com';
 const INDEX = `${EA}/games/ea-sports-fc/fc-27/news`;
@@ -138,6 +138,7 @@ export function updatePanel(e, site, name = 'Club') {
   const cap = e.hits.find((h) => h.kind === 'levelCap');
   return message({ accent: e.clubs ? 'red' : 'steel', blocks: [
     header({ eyebrow: `${name} · New FC update`, title: `📢 ${e.title}`.slice(0, 250), sub: `<t:${Math.floor(Date.parse(e.published) / 1000)}:D> · ${e.clubs ? 'Clubs changes inside' : 'No Clubs section in this one'}`, size: 3 }),
+    picture({ SITE_URL: site }, 'post-patch'),
     block(e.summary ? clip(e.summary, 400) : ''),
     cap ? block(`**Level cap mentioned**\n${clip(cap.quote, 600)}\n-# A manager can confirm it in the portal.`) : null,
     footer('Source: EA SPORTS FC pitch notes'),

@@ -7,7 +7,7 @@
 
 import { kvOf } from './kv.js';
 import { flagOn } from './roles.js';
-import { message, header, text, sep, footer, buttons } from './ui.js';
+import { message, header, text, sep, footer, buttons, picture } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
@@ -89,6 +89,7 @@ export async function updateLive(env) {
 const ANNOUNCE_GAP = 3 * 3600e3;
 export const livePost = (v, site, env) => message({ accent: 'win', mentions: { parse: [] }, blocks: [
   header({ eyebrow: `${orgName(env).toUpperCase()} · Live · ${v.platform === 'twitch' ? 'Twitch' : 'YouTube'}`, title: `${it('live')} ${orgName(env)} is live`, sub: v.title || undefined, size: 3 }),
+  picture(env, 'post-live'),
   text('We just went on air – drop in, watch along and say hello in the chat.'),
   sep(),
   footer('Watch from the club site or straight on the platform'),

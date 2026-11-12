@@ -9,7 +9,7 @@
 //   /setup             managers: the leave-log channel, the welcome channel and the ping-role panel
 // Reading the member list needs "Server Members Intent" switched on (Discord developer portal → Bot).
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2, autoBanner } from './ui.js';
+import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2, autoBanner, picture } from './ui.js';
 import { orgName, channelFor, setupMapping, CHANNEL_PURPOSE_INFO } from './orgconfig.js';
 import { facesOf } from './faces.js';
 
@@ -181,6 +181,7 @@ export function welcomeMessage(env, st, r) {
   const ping = (st.welcomeText || DEFAULT_WELCOME).replaceAll('{user}', `<@${r.user_id}>`).replaceAll('{name}', r.name);
   return message({ ping, mentions: { users: [r.user_id] }, blocks: [
     header({ eyebrow: 'Welcome', title: `Welcome to ${orgName(env)}`, sub: `Glad you’re here, ${r.name}`, thumb: r.avatar }),
+    picture(env, 'post-welcome'),
     text(['**Start here**', '📜 Read the rules and say hi in the chat', env.SITE_URL && '🏠 Log in to the **Squad Hub** with Discord and claim your player', env.SITE_URL && '📊 Results, stats and the squad are on the **club site**'].filter(Boolean).join('\n')),
     env.SITE_URL && buttons([{ label: 'Squad Hub', url: `${site}members.html` }, { label: 'Club site', url: site }]),
   ] });

@@ -17,7 +17,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 10; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 11; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -564,14 +564,34 @@ const PRIVATE = {
   'me-hidden': { art: 'search', title: 'Card not found', sub: 'Waiting for the next data refresh', tag: 'Only you' },
   intel: { art: 'crystal', title: 'Club Intelligence', sub: 'Server, site and team · scores and advice', tag: 'Staff only', calm: true },
 };
-export function privatePicture(key) {
-  const a = PRIVATE[key];
+const taggedPicture = (a) => {
   const tone = a.calm ? 'repeating-linear-gradient(135deg,#5a6578 0 22px,#0a0705 22px 44px)' : 'repeating-linear-gradient(135deg,#e8651a 0 22px,#0a0705 22px 44px)';
   return page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.hz{position:absolute;left:0;right:0;height:16px;background:${tone}}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 30px rgba(232,101,26,.5))}.tag{position:absolute;left:56px;bottom:34px;padding:6px 18px;border:2px solid #e8651a;border-radius:99px;font:700 20px/1 Oswald;letter-spacing:.2em;text-transform:uppercase;color:#e8651a;background:#0a0705}`,
     `<div class="hz" style="top:0"></div><div class="hz" style="bottom:0"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[a.art]}</svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${a.title.length <= 12 ? 104 : a.title.length <= 16 ? 88 : 72}px">${esc(a.title)}</h1><p>${esc(a.sub)}</p></div></div><div class="tag">${esc(a.tag)}</div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
-}
+};
+export const privatePicture = (key) => taggedPicture(PRIVATE[key]);
 for (const k of Object.keys(PRIVATE)) BANNERS[k] = () => privatePicture(k);
+// ---------- automated-post pictures (section 6): one drawn picture per public post, same look as the private pictures ----------
+// The tag says what kind of post it is. Posts keep their own pings; the picture only sits under the header (bot/ui.js picture()).
+export const POSTS = {
+  'post-live': { art: 'antenna', title: 'We are live', sub: 'The club is on air right now', tag: 'On air' },
+  'post-memberlive': { art: 'antenna', title: 'Member live', sub: 'One of ours just went on air', tag: 'On air' },
+  'post-hype': { art: 'flame', title: 'Match hype', sub: 'The result, the scorers, the moment', tag: 'Full time' },
+  'post-awards': { art: 'trophy', title: 'Weekly awards', sub: 'Voted by the squad', tag: 'Winners' },
+  'post-hotw': { art: 'film', title: 'Highlight of the week', sub: 'The clip the squad voted for', tag: 'Clip' },
+  'post-birthday': { art: 'cake', title: 'Happy birthday', sub: 'From everyone at the club', tag: 'Today' },
+  'post-welcome': { art: 'door', title: 'Welcome', sub: 'Glad you are here', tag: 'New member' },
+  'post-patch': { art: 'doc', title: 'Patch notes', sub: 'What changed in the game', tag: 'EA update' },
+  'post-media': { art: 'disk', title: 'Storage guard', sub: 'Old feed files were cleared', tag: 'Owner only', calm: true },
+  'post-voice': { art: 'mic', title: 'Quote of the match', sub: 'Best line from voice chat', tag: 'Voice' },
+  'post-burner': { art: 'flame', title: 'Burner report', sub: 'Who we are up against', tag: 'Tracker' },
+  'post-play': { art: 'board', title: 'New play', sub: 'Learn it, then run it', tag: 'Tactics' },
+  'post-squad': { art: 'people', title: 'Rush squads', sub: 'Who plays with who', tag: 'Rush' },
+  'post-doc': { art: 'horn', title: 'Club announcement', sub: 'Read it, then get on with it', tag: 'Club' },
+};
+export const postPicture = (key) => taggedPicture(POSTS[key]);
+for (const k of Object.keys(POSTS)) BANNERS[k] = () => postPicture(k);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------

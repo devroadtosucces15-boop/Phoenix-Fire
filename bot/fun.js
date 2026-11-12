@@ -6,7 +6,7 @@
 //   birthdays  the 10-min cron posts one 🎂 panel a day (after 08:00 UTC) for members whose profile has a birthday
 // Jail counts feed the member profile (GET /api/member → fun.jail, see bot/members.js).
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, facts, footer, sep, buttons, cards, bannerUrl } from './ui.js';
+import { message, notice, reply, header, text, facts, footer, sep, buttons, cards, bannerUrl, picture } from './ui.js';
 import { it } from './icons.js';
 import { orgName, channelFor } from './orgconfig.js';
 
@@ -271,6 +271,7 @@ export function birthdaysOn(now) {
 export function birthdayPanel(rows, env) {
   return message({ accent: 'gold', blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Birthdays`, title: rows.length === 1 ? '🎂 Happy birthday!' : `🎂 ${rows.length} birthdays today`, size: 2 }),
+    picture(env, 'post-birthday'),
     text(rows.map((r) => `🎉 <@${r.user_id}>`).join('\n')),
     footer('From everyone at the club – have a good one'),
   ] });

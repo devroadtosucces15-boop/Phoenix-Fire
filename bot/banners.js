@@ -73,6 +73,21 @@ export const BANNER_SPEC = {
   'me-claim': { icon: 'id', title: 'Claim your player', sub: 'Link your card to the squad' },
   'me-hidden': { icon: 'id', title: 'Card not found', sub: 'Waiting for the next data refresh' },
   intel: { icon: 'crystal', title: 'Club Intelligence', sub: 'Server, site and team' },
+  // Automated-post pictures (drawn by scripts/cards.mjs postPicture; the title is the picture's alt text).
+  'post-live': { icon: 'antenna', title: 'We are live', sub: 'The club is on air right now' },
+  'post-memberlive': { icon: 'antenna', title: 'Member live', sub: 'One of ours just went on air' },
+  'post-hype': { icon: 'flame', title: 'Match hype', sub: 'The result, the scorers, the moment' },
+  'post-awards': { icon: 'trophy', title: 'Weekly awards', sub: 'Voted by the squad' },
+  'post-hotw': { icon: 'film', title: 'Highlight of the week', sub: 'The clip the squad voted for' },
+  'post-birthday': { icon: 'cake', title: 'Happy birthday', sub: 'From everyone at the club' },
+  'post-welcome': { icon: 'door', title: 'Welcome', sub: 'Glad you are here' },
+  'post-patch': { icon: 'doc', title: 'Patch notes', sub: 'What changed in the game' },
+  'post-media': { icon: 'disk', title: 'Storage guard', sub: 'Old feed files were cleared' },
+  'post-voice': { icon: 'mic', title: 'Quote of the match', sub: 'Best line from voice chat' },
+  'post-burner': { icon: 'flame', title: 'Burner report', sub: 'Who we are up against' },
+  'post-play': { icon: 'board', title: 'New play', sub: 'Learn it, then run it' },
+  'post-squad': { icon: 'people', title: 'Rush squads', sub: 'Who plays with who' },
+  'post-doc': { icon: 'horn', title: 'Club announcement', sub: 'Read it, then get on with it' },
 };
 
 // Slash command → family.
@@ -95,7 +110,7 @@ export const BANNER_BY_COMPONENT = [
 // Direct message (notification type, bot/notify.js TYPES) → family.
 export const BANNER_BY_DM = {
   announce: 'announce', claim: 'claim', trial: 'trial', trialstage: 'trialstage', rush: 'rush', lfg: 'lfg', badge: 'badge', request: 'request', idea: 'idea', event: 'event',
-  award: 'award', feedback: 'feedback', predict: 'predict', game: 'game', mention: 'social', message: 'social', feed: 'social', storage: 'storage', queue: 'staff',
+  award: 'award', feedback: 'feedback', predict: 'predict', game: 'game', mention: 'social', message: 'social', feed: 'social', storage: 'post-media', queue: 'staff',
   moderation: 'moderation', play: 'play', card: 'card', wave: 'social', remind: 'remind', caution: 'caution', live: 'live', test: 'general',
 };
 // Automated posts have no command or button: the header's small label (eyebrow) says what they are.

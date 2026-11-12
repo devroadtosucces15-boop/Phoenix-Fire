@@ -20,7 +20,7 @@ Building blocks that exist (do not rebuild):
 | 3 | Match night | roster, check-in, lineup pitch, suggested lineup, first-answer order (branch `claude/practical-chandrasekhar-707b93`, pushed, not merged) | done (merged, verified) |
 | 4 | Alerts | match alert (CAUTION message 3), uptime, event cancelled, 30-minute reminder, trial stage, caution DMs | done (alert pictures in scripts/cards.mjs, bot/matchalert.js; match-alert trigger not wired yet) |
 | 5 | Private replies | My insights, My game plan, form score, locker summary, `/me`, `/insight`, `/intel` | done (private pictures: `privatePicture` in scripts/cards.mjs, version 10; the first four are site Locker Room pages, not bot outputs) |
-| 6 | Automated posts | live, member live, hype, awards, hotw, birthday, welcome, patch notes, media guard, voice recap, burner report, plays, squad post, doc post | open |
+| 6 | Automated posts | live, member live, hype, awards, hotw, birthday, welcome, patch notes, media guard, voice recap, burner report, plays, squad post, doc post | done (post pictures: `postPicture` in scripts/cards.mjs, `picture()` in bot/ui.js, version 11; media guard is the `storage` DM) |
 | 7 | Slash replies still bare | `/lineup`, `/host`, `/matchday`, `/lfg`, `/trial`, `/feedback`, `/suggest`, `/share`, `/discoveries`, `/wheel`, `/tag`, `/remind`, `/setup`, `/announce` | open |
 | 8 | DMs | one poster layout per notification type (27 DM outputs) | open |
 | 9 | Buttons, menus, notices | component replies and errors: compact variant of the same look, final audit with `studio.mjs check --strict` | open |
