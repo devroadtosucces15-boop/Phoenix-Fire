@@ -1,13 +1,16 @@
 // The match-night pictures drawn at build time (scripts/cards-events.mjs): lineup pitches and the check-in banner, in Phoenix colours.
 import fs from 'node:fs';
 import { eventJobs, lineupCard, checkinBanner, lineupSlug } from '../scripts/cards-events.mjs';
-import { cardJobs } from '../scripts/cards.mjs';
+import { cardJobs, BANNERS } from '../scripts/cards.mjs';
 import { FORMATIONS } from '../bot/events.js';
 import { lineupUrl } from '../bot/ui.js';
 import { t, done } from './lib.mjs';
 
 const jobs = eventJobs();
-t('one pitch per formation plus the check-in banner', jobs.length === Object.keys(FORMATIONS).length + 1 && jobs.some((j) => j.file === 'banner-checkin.png'));
+t('one pitch per formation from eventJobs', jobs.length === Object.keys(FORMATIONS).length);
+const all = cardJobs({ matches: [], name: 'PHOENIX FIRE' }, []);
+t('the check-in banner is a BANNERS entry and gets exactly one job (banner-checkin.png)', typeof BANNERS.checkin === 'function' && all.filter((j) => j.file === 'banner-checkin.png').length === 1);
+t('brand: BANNERS.checkin renders the same Phoenix banner', BANNERS.checkin() === checkinBanner());
 t('cards.mjs includes them in its job list', cardJobs({ matches: [], name: 'PHOENIX FIRE' }, []).filter((j) => j.key[0] === 'lineup').length === Object.keys(FORMATIONS).length);
 t('file names match the URLs the bot builds', lineupUrl({ SITE_URL: 'https://x/' }, '4-3-3').includes(`cards/${jobs.find((j) => j.key[1] === '4-3-3').file}`) && lineupSlug('4-2-3-1') === '4-2-3-1');
 const crestB64 = fs.readFileSync(new URL('../phoenix/overlay/crest-sm.png', import.meta.url)).toString('base64').slice(0, 60);
