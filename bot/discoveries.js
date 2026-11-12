@@ -6,7 +6,7 @@
 //   POST /api/discoveries/useful { id }       toggle "useful" on one
 // Everything is in the design system (bot/ui.js). Rejected shares are kept but never shown.
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, sep, footer, buttons, cards, bannerUrl } from './ui.js';
+import { message, reply, pictureNote, picture, header, text, sep, footer, buttons, cards, bannerUrl } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 import { notify, notifyManagers, safely } from './notify.js';
 import { postEmbed } from './docs.js';
@@ -17,7 +17,8 @@ const MAX_WAITING = 3;
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
 const clean = (s, n) => String(s ?? '').replace(/[\u0000-\u0009\u000b-\u001f<>]/g, ' ').replace(/[ \t]+/g, ' ').trim().slice(0, n);
-const say = (title, body) => reply(notice(title, body));
+// Short private replies carry a drawn picture (scripts/cards.mjs SLASH): the shared states or this command's own.
+const say = (env, key, title, body) => reply(pictureNote(env, key, title, body));
 const upd = (m) => ({ type: 7, data: { components: m.components, allowed_mentions: { parse: [] } } });
 const one = (env, sql, ...a) => env.DB.prepare(sql).bind(...a).first();
 const all = (env, sql, ...a) => env.DB.prepare(sql).bind(...a).all().then((r) => r.results ?? []);
@@ -51,24 +52,25 @@ async function share(i, env, now) {
   const o = Object.fromEntries((i.data?.options ?? []).map((x) => [x.name, x.value]));
   const me = i.member?.user?.id ?? i.user?.id;
   const title = clean(o.title, 100), body = clean(o.tip, 600);
-  if (title.length < 4 || body.length < 10) return say('Add a bit more', 'A short title and a tip of at least a sentence.');
+  if (title.length < 4 || body.length < 10) return say(env, 'cmd-problem', 'Add a bit more', 'A short title and a tip of at least a sentence.');
   const link = o.link ? cleanLink(o.link) : '';
-  if (link === null) return say('That link doesn’t look right', 'Use a full web address starting with https://');
+  if (link === null) return say(env, 'cmd-problem', 'That link doesn’t look right', 'Use a full web address starting with https://');
   const waiting = (await one(env, "SELECT COUNT(*) AS n FROM discoveries WHERE user_id = ? AND status = 'pending'", me))?.n ?? 0;
-  if (waiting >= MAX_WAITING) return say('You have three waiting already', 'Give the managers a moment to look at those first.');
+  if (waiting >= MAX_WAITING) return say(env, 'cmd-problem', 'You have three waiting already', 'Give the managers a moment to look at those first.');
   const name = clean(i.member?.nick || i.member?.user?.global_name || i.member?.user?.username || 'A member', 40);
   const res = await env.DB.prepare('INSERT INTO discoveries (user_id, name, title, body, link, status, at) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(me, name, title, body, link || null, 'pending', now).run();
   await safely(notifyManagers(env, { icon: '🔎', title: `New discovery to approve: ${title}`, body: `From ${name}`, link: 'members.html#manager' }, me));
-  return reply(notice('Sent to the managers', `“${title}” will show up here and on the site once a manager approves it.`, { accent: 'win' }));
+  return reply(pictureNote(env, 'cmd-share-sent', 'Sent to the managers', `“${title}” will show up here and on the site once a manager approves it.`, { accent: 'win' }));
 }
 
 // ---------- /discoveries (managers) ----------
 const queueRows = (env) => all(env, "SELECT * FROM discoveries WHERE status = 'pending' ORDER BY at LIMIT 5");
 async function queuePanel(env) {
   const rows = await queueRows(env);
-  if (!rows.length) return message({ ephemeral: true, accent: 'steel', blocks: [text('**Nothing waiting**\nEvery discovery has been looked at.')] });
+  if (!rows.length) return pictureNote(env, 'cmd-empty', 'Nothing waiting', 'Every discovery has been looked at.');
   const total = (await one(env, "SELECT COUNT(*) AS n FROM discoveries WHERE status = 'pending'"))?.n ?? rows.length;
   return message({ ephemeral: true, accent: 'steel', blocks: [
+    picture(env, 'cmd-discoveries'),
     header({ eyebrow: 'Staff · Discoveries', title: `🔎 ${total} waiting`, sub: total > rows.length ? `Showing the oldest ${rows.length}` : undefined, size: 3 }),
     ...rows.flatMap((r, k) => [k ? sep() : null, text(`**${r.title}**\nFrom <@${r.user_id}>\n${r.body}${r.link ? `\n${r.link}` : ''}`),
       { type: 1, components: [{ type: 2, style: 3, label: 'Approve', custom_id: `norex:dc:ok:${r.id}` }, { type: 2, style: 4, label: 'Reject', custom_id: `norex:dc:no:${r.id}` }] }]),
@@ -93,7 +95,7 @@ async function decide(i, env, who, id, approve, now) {
 
 async function toggleUseful(i, env, id) {
   const row = await one(env, "SELECT * FROM discoveries WHERE id = ? AND status = 'approved'", id);
-  if (!row) return say('That discovery is gone', 'It may have been removed.');
+  if (!row) return say(env, 'cmd-empty', 'That discovery is gone', 'It may have been removed.');
   const me = i.member?.user?.id ?? i.user?.id;
   const had = await one(env, 'SELECT 1 AS x FROM discovery_useful WHERE discovery_id = ? AND user_id = ?', id, me);
   if (had) await env.DB.prepare('DELETE FROM discovery_useful WHERE discovery_id = ? AND user_id = ?').bind(id, me).run();
@@ -103,37 +105,37 @@ async function toggleUseful(i, env, id) {
 
 // ---------- entry points ----------
 export async function discoveryCommand(i, env, ctx, who, now = Date.now()) {
-  if (!flagOn(env, who, 'discoveries')) return say('This isn’t switched on yet', 'Discoveries are being tested.');
-  if (!env.DB) return say('The member database isn’t connected');
+  if (!flagOn(env, who, 'discoveries')) return say(env, 'cmd-locked', 'This isn’t switched on yet', 'Discoveries are being tested.');
+  if (!env.DB) return say(env, 'cmd-problem', 'The member database isn’t connected');
   try {
     if (i.data.name === 'share') {
-      if (!can(who, 'discoveries.share')) return say('Members only', 'Link your Discord account on the site first.');
+      if (!can(who, 'discoveries.share')) return say(env, 'cmd-locked', 'Members only', 'Link your Discord account on the site first.');
       return await share(i, env, now);
     }
-    if (!can(who, 'discoveries.manage')) return say('Only managers can use /discoveries', 'Ask a manager to look at the waiting ones.');
+    if (!can(who, 'discoveries.manage')) return say(env, 'cmd-locked', 'Only managers can use /discoveries', 'Ask a manager to look at the waiting ones.');
     return reply(await queuePanel(env));
   } catch (e) {
-    return say('Something went wrong', String(e.message ?? e).slice(0, 200));
+    return say(env, 'cmd-problem', 'Something went wrong', String(e.message ?? e).slice(0, 200));
   }
 }
 
 export async function discoveryButton(i, env, who, now = Date.now()) {
-  if (!flagOn(env, who, 'discoveries')) return say('This isn’t switched on yet');
-  if (!env.DB) return say('The member database isn’t connected');
+  if (!flagOn(env, who, 'discoveries')) return say(env, 'cmd-locked', 'This isn’t switched on yet');
+  if (!env.DB) return say(env, 'cmd-problem', 'The member database isn’t connected');
   const [, , kind, a] = String(i.data?.custom_id ?? '').split(':');
   try {
     if (kind === 'ok' || kind === 'no') {
-      if (!can(who, 'discoveries.manage')) return say('Managers only', 'Only a manager can approve or reject.');
+      if (!can(who, 'discoveries.manage')) return say(env, 'cmd-locked', 'Managers only', 'Only a manager can approve or reject.');
       return await decide(i, env, who, Number(a), kind === 'ok', now);
     }
     if (kind === 'useful') {
-      if (!can(who, 'discoveries.share')) return say('Members only', 'Link your Discord account on the site first.');
+      if (!can(who, 'discoveries.share')) return say(env, 'cmd-locked', 'Members only', 'Link your Discord account on the site first.');
       return await toggleUseful(i, env, Number(a));
     }
   } catch (e) {
-    return say('Something went wrong', String(e.message ?? e).slice(0, 200));
+    return say(env, 'cmd-problem', 'Something went wrong', String(e.message ?? e).slice(0, 200));
   }
-  return say('Unknown button');
+  return say(env, 'cmd-problem', 'Unknown button');
 }
 
 // ---------- site API ----------

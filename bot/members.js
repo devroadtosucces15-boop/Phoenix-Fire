@@ -50,6 +50,7 @@ import { memberCard, profileOut, profileSummary, saveProfile } from './profiles.
 import { syncMember } from './discordroles.js';
 import { botSettingsPublicRoute, botSettingsRoute, botFacesRoute } from './settings.js';
 import { routingRoute } from './routing.js';
+import { matchAlertRoute } from './matchalert.js';
 import { orgConfigRoute, orgClubsPublicRoute, orgRoutePublicRoute, orgName } from './orgconfig.js';
 import { botCommandsRoute } from './botcommands.js';
 import { crawlRoute } from './crawl.js';
@@ -425,6 +426,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
       return cors(env, await publicRequestRoute(request, env, me, loadSite, log));
     }
     if (url.pathname === '/api/org/route/public') return cors(env, await orgRoutePublicRoute(request, env)); // result posts ask where a purpose goes for a club
+    if (url.pathname === '/api/org/match-alert') return cors(env, await matchAlertRoute(request, env)); // result import asks the Worker to post the match alert
     if (url.pathname === '/api/org/clubs/public') return cors(env, await orgClubsPublicRoute(request, env)); // jobs read the saved club list
     if (url.pathname === '/api/bot/settings/public') return cors(env, await botSettingsPublicRoute(request, env)); // P7.5 – fetch.mjs reads before posting
     if (url.pathname === '/api/bot/faces') return cors(env, await botFacesRoute(request, env)); // faces for the match picture, drawn in the Action
@@ -581,14 +583,18 @@ export const cleanMotion = (v) => {
   const off = m[1] ? m[1].split(',') : [];
   return off.every((k) => MOTION_FX.includes(k)) && new Set(off).size === off.length ? s : null;
 };
+export const cleanPins = (a) => (Array.isArray(a) ? a : []).filter((x) => Array.isArray(x) && /^[a-z0-9._/-]+(#[\w-]+)?$/i.test(String(x[0] ?? '')) && String(x[0]).length <= 120).map((x) => [String(x[0]), String(x[1] ?? '').slice(0, 40), String(x[2] ?? '').slice(0, 8)]).slice(0, 12);
+const pinsOf = async (env, me, k) => { const v = (await one(env, 'SELECT value FROM meta WHERE key = ?', `${k}:${me.u}`))?.value; try { return v ? JSON.parse(v) : undefined; } catch { return undefined; } };
 const motionOf = async (env, me) => (await one(env, 'SELECT value FROM meta WHERE key = ?', `motion:${me.u}`))?.value ?? undefined;
 async function route(p, method, body, me, env, loadSite, url) {
   if (!can(me, 'hub.use')) return fail('Members only.', 403);
   if (p === '/api/me/prefs' && method === 'POST') { // quiet on purpose: no log entry, no site rebuild
-    const motion = cleanMotion(body.motion);
-    if (!motion) return fail('Pick full, calm or custom:<effects that are off>.');
-    await run(env, 'INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value', `motion:${me.u}`, motion);
-    return json({ ok: true, prefs: { motion } });
+    const put = (k, v) => run(env, 'INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value', `${k}:${me.u}`, v);
+    const out = {};
+    if (body.motion !== undefined) { const motion = cleanMotion(body.motion); if (!motion) return fail('Pick full, calm or custom:<effects that are off>.'); await put('motion', motion); out.motion = motion; }
+    for (const k of ['pins', 'spins']) if (body[k] !== undefined) { const v = cleanPins(body[k]); if (k === 'spins' && !can(me, 'portal.view')) continue; await put(k, JSON.stringify(v)); out[k] = v; }
+    if (!Object.keys(out).length) return fail('Nothing to save.');
+    return json({ ok: true, prefs: out });
   }
   if (p === '/api/faces' && method === 'GET') { // faces everywhere (BOT-SITE #7): Card Studio card → Discord picture → default, same order as the bot
     const ids = String(url?.searchParams.get('ids') ?? '').split(',').map((x) => x.trim()).filter((x) => /^\d{1,25}$/.test(x)).slice(0, 100);
@@ -602,7 +608,7 @@ async function route(p, method, body, me, env, loadSite, url) {
     // and offer only the roles at or below it.
     const user = {
       id: me.u, name: me.n, avatar: me.a, admin: can(me, 'portal.view'), role: me.role, roleLabel: ROLE_LABEL[me.role], perms: permsFor(me.role), features: featuresFor(env, me),
-      prefs: { motion: await motionOf(env, me) },
+      prefs: { motion: await motionOf(env, me), pins: await pinsOf(env, me, 'pins'), ...(can(me, 'portal.view') ? { spins: await pinsOf(env, me, 'spins') } : {}) },
       ...(me.realRole ? { realRole: me.realRole, realRoleLabel: ROLE_LABEL[me.realRole], viewAsOptions: ROLES.filter((r) => atLeast(me.realRole, r)) } : can(me, 'preview.viewAs') ? { viewAsOptions: ROLES.filter((r) => atLeast(me.role, r)) } : {}),
     };
     return json({ user, claim, profile: profileOut(profile) ?? null });

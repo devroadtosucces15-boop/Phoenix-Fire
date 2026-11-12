@@ -15,7 +15,7 @@
 import { kvOf } from './kv.js';
 import { safely } from './notify.js';
 import { orgName, channelFor } from './orgconfig.js';
-import { message, header, text, cards } from './ui.js';
+import { message, header, text, cards, picture } from './ui.js';
 
 const API = 'https://discord.com/api/v10';
 const WHISPER_MODEL = '@cf/openai/whisper';
@@ -110,7 +110,7 @@ export async function checkVoiceRecap(env, loadSite) {
   const msg = message({ accent: 'gold', blocks: [
     header({ eyebrow: `${club?.name ?? orgName(env)} · Voice chat`, title: '🎤 Quote of the match', thumb: club?.crest }),
     text(`*"${quote}"*\n— ${newest.author?.username ?? 'a member'}`),
-    art ? cards('attachment://quote.png') : null,
+    art ? cards('attachment://quote.png') : picture(env, 'post-voice'),
   ] });
   await safely(postCard(env, channel, msg, art));
   return { posted: true };

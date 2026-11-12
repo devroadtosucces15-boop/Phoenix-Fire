@@ -10,7 +10,7 @@ import { can, flagOn, flags } from './roles.js';
 import { notify, safely } from './notify.js';
 import { weekOf } from './awards.js';
 import { postEmbed } from './docs.js';
-import { message, header, text, footer, buttons } from './ui.js';
+import { message, header, text, footer, buttons, picture } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 
 const DAY = 86400e3, WEEK = 7 * DAY;
@@ -96,6 +96,7 @@ async function announce(env, w) {
   if (!['members', 'public'].includes(level) || !channel || !env.DISCORD_BOT_TOKEN) return;
   const r = await postEmbed(env, channel, '', message({ accent: 'gold', blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Highlight of the week`, title: `🎬 ${w.name}`, sub: `Week ${weekNo(w.week)}` }),
+    picture(env, 'post-hotw'),
     w.body ? text(excerpt(w.body.replace(CLIP, '').trim() || '🎬', 300)) : null,
     footer(`${w.votes} vote${w.votes === 1 ? '' : 's'} · ${w.entries} clip${w.entries === 1 ? '' : 's'} in the running`),
     buttons([w.video && { label: 'Watch clip', url: w.video }, { label: 'On the site', url: `${site}${level === 'public' ? 'index.html' : `feed.html#p${w.post_id}`}` }]),

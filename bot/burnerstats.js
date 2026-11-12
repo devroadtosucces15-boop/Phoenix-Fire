@@ -1,4 +1,4 @@
-import { message, header, text, sep, facts, label, footer, buttons, resultAccent } from './ui.js';
+import { message, header, text, sep, facts, label, footer, buttons, resultAccent, picture } from './ui.js';
 import { it } from './icons.js';
 // Burner-club tracker – pure helpers shared by the fetcher (scripts/fetch.mjs), the site build
 // (scripts/burners-page.mjs), the Worker (/burner) and the tests. No imports, no I/O.
@@ -117,6 +117,7 @@ export function reportMessage(burner, m, stats, siteUrl = '') {
   const crest = burner.crest ? `${CREST_CDN}${num(burner.crest)}.png` : undefined;
   return message({ accent: resultAccent(m.res), blocks: [
     header({ eyebrow: `Burner tracker · ${TYPE_LABEL[m.type] ?? 'League'}`, title: `🔥 ${burner.name} ${m.gf}–${m.ga} ${m.opp.name ?? `Club ${m.opp.id}`}`, sub: `${RES_WORD[m.res]} · <t:${m.ts}:f> · burner club report`, thumb: crest }),
+    picture({ SITE_URL: siteUrl }, 'post-burner'),
     facts([[`${it('goal')} Goals`, list('g')], [`${it('assist')} Assists`, list('a')], [`${it('motm')} Man of the match`, motm ? `${motm.n} (${r1(motm.r)})` : ''], ['📈 Top rated', best && !motm ? `${best.n} (${r1(best.r)})` : '']]),
     lineup ? sep() : null,
     lineup ? label(`Lineup (${ps.length})`) : null,

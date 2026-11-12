@@ -13,7 +13,7 @@ t('every family in the spec is drawn by cards.mjs', Object.keys(BANNER_SPEC).eve
 t('every mapping points at a known family or a drawn banner', [...Object.values(BANNER_BY_COMMAND), ...Object.values(BANNER_BY_DM), ...BANNER_BY_COMPONENT.map((x) => x[1])].every((k) => BANNERS[k]));
 t('every slash command has its own family (none falls to the general banner by accident)', COMMANDS.every((c) => c.name in BANNER_BY_COMMAND));
 t('every notification type has a family', Object.keys(TYPES).every((k) => k in BANNER_BY_DM));
-t('lookups', bannerForCommand('club') === 'club' && bannerForComponent('pf:rq:join') === 'queue' && bannerForDm('award') === 'award' && bannerFromEyebrow('PHOENIX FIRE · Rush queue') === 'queue' && bannerForCommand('nope') === 'general');
+t('lookups', bannerForCommand('club') === 'club' && bannerForComponent('pf:rq:join') === 'queue' && bannerForDm('award') === 'dm-award' && bannerFromEyebrow('PHOENIX FIRE · Rush queue') === 'queue' && bannerForCommand('nope') === 'general');
 
 const panel = () => message({ accent: 'red', blocks: [header({ eyebrow: 'Phoenix · Club', title: 'T', sub: 's' }), text('body'), buttons([{ label: 'Go', id: 'x' }])] });
 const withPic = withBanner(panel(), bannerUrl(env, 'club'), 'Club');
@@ -22,6 +22,7 @@ t('a message with a picture of its own keeps it, no second picture', images(with
 t('a one-line notice stays compact', images(withBanner(notice('No'), bannerUrl(env, 'club'))).length === 0);
 t('no site URL, no banner, no crash', images(withBanner(panel(), bannerUrl({}, 'club'))).length === 0);
 t('autoBanner picks the family from the header label', images(autoBanner(env, message({ accent: 'red', blocks: [header({ eyebrow: 'Phoenix · Rush queue', title: 'T' })] }))).some((u) => u.includes('banner-queue.png')));
+t('every notice kind has a banner entry, alt text and a drawn picture (section 9)', ['success', 'info', 'warning', 'error', 'locked', 'empty', 'expired', 'cooldown', 'notconfigured'].every((k) => typeof BANNERS[`notice-${k}`] === 'function' && BANNER_SPEC[`notice-${k}`]?.title));
 t('banners are drawn Phoenix, not NOREX', Object.values(BANNERS).every((f) => !/norex|c8352c|080b11/i.test(f())) && /Rise\. Burn\. Repeat\./.test(BANNERS.general()));
 
 // ----- help and queue posters -----

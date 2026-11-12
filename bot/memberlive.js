@@ -7,7 +7,7 @@
 // channel endpoint. A check that fails counts as "not live" – nothing is posted on a failed fetch.
 import { flagOn } from './roles.js';
 import { parseTwitch, parseYouTube } from './live.js';
-import { message, header, text, sep, footer, buttons } from './ui.js';
+import { message, header, text, sep, footer, buttons, picture } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
@@ -62,6 +62,7 @@ export async function liveOf(profile, fetcher = fetch) {
 
 export const livePanel = (row, env) => message({ accent: 'win', mentions: { parse: [] }, blocks: [
   header({ eyebrow: `${orgName(env).toUpperCase()} · Live · ${row.platform}`, title: `${it('live')} ${row.name ?? 'A member'} is live`, sub: row.title || undefined, size: 3 }),
+  picture(env, 'post-memberlive'),
   text(`<@${row.user_id}> just went on air – drop in and say hello.`),
   sep(),
   footer('Streaming from their profile on the site'),

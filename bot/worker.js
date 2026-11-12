@@ -53,7 +53,7 @@ import { refreshStatInsights, handleStatInsightJob, statInsightWeekly, discordIn
 import { handleHubWaveJob } from './hub.js';
 import { burnerCommand, burnerPick } from './burners.js';
 import { generateCards } from './cardstudio.js';
-import { message, notice, header, cards, facts, text, sep, side, thumb, label, footer, buttons, cardUrl, privateNote, resultAccent, RESULT_ICON, tagBlock, withBanner, bannerUrl } from './ui.js';
+import { message, notice, header, cards, facts, text, sep, side, thumb, label, footer, buttons, cardUrl, privateNote, resultAccent, RESULT_ICON, tagBlock, withBanner, withNotice, bannerUrl } from './ui.js';
 import { BANNER_SPEC, bannerForCommand, bannerForComponent } from './banners.js';
 import { it } from './icons.js';
 import { playerFaces } from './faces.js';
@@ -500,7 +500,8 @@ function jsonBanner(obj, i, env) {
   try {
     if (obj?.data?.flags && (obj.type === 4 || obj.type === 7)) {
       const name = i.type === 2 ? bannerForCommand(i.data?.name) : i.type === 3 || i.type === 5 ? bannerForComponent(i.data?.custom_id) : null;
-      if (name) return json({ ...obj, data: withBanner(obj.data, bannerUrl(env, name), BANNER_SPEC[name]?.title) });
+      const framed = name ? withBanner(obj.data, bannerUrl(env, name), BANNER_SPEC[name]?.title) : obj.data;
+      return json({ ...obj, data: withNotice(framed, env) }); // a compact private notice that got no family banner gets its notice strip (section 9)
     }
   } catch { /* a banner is decoration: never block the reply */ }
   return json(obj);

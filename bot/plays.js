@@ -25,7 +25,7 @@ import { can, flagOn } from './roles.js';
 import { notify, safely } from './notify.js';
 import { discordTargets, postEmbed } from './docs.js';
 import { broadcastRoom } from './clubroom.js';
-import { message, header, text, footer, buttons } from './ui.js';
+import { message, header, text, footer, buttons, picture } from './ui.js';
 import { orgName } from './orgconfig.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
@@ -297,6 +297,7 @@ function playEmbed(env, r, doc) {
   const bits = [`${doc.pieces.length} piece${doc.pieces.length === 1 ? '' : 's'}`, doc.steps.length ? `${doc.steps.length} keyframe${doc.steps.length === 1 ? '' : 's'}` : null, doc.quiz.length ? `${doc.quiz.length}-question quiz` : null].filter(Boolean);
   return message({ blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Tactics Studio`, title: `${CAT_ICON[r.category] ?? '📋'} ${r.title}`.slice(0, 250), size: 3 }),
+    picture(env, 'post-play'),
     text(bits.join(' · ') || 'A new play in the Tactics Studio.'),
     footer(`Updated <t:${Math.floor(r.updated_at / 1000)}:R>`),
     buttons([{ label: 'Learned it', id: `norex:play:${r.id}:learned`, style: 'ok', emoji: '✅' }, { label: 'Open in Studio', url: `${site}tactics.html#play${r.id}` }]),

@@ -75,7 +75,7 @@ try {
   const htmls = fs.readdirSync(out).filter((f) => f.endsWith('.html'));
   const swap = await import(pathToFileURL(path.join(stage, 'next/lib/swap.mjs')).href); const { emitSwap } = swap;
   const api = emitSwap({ out, root: stage, classic, pages: htmls });
-  fs.writeFileSync(path.join(out, 'sw.js'), fs.readFileSync(path.join(out, 'sw.js'), 'utf8').replace(/nx-v2/g, 'pf-v1'));
+  fs.writeFileSync(path.join(out, 'sw.js'), fs.readFileSync(path.join(out, 'sw.js'), 'utf8').replace(/nx-v2/g, 'pf-v2')); // pf-v2: new cache name so installed browsers drop the old smooth.js (search-palette freeze fix)
   fs.rmSync(path.join(out, 'sitemap.xml'), { force: true });
   const mf = path.join(out, 'manifest.webmanifest'); fs.writeFileSync(mf, fs.readFileSync(mf, 'utf8').replace('"phoenix-fire-next"', '"phoenix-fire"').replace('"short_name":"PHOENIX"', '"short_name":"PHOENIX"'));
   console.log(`phoenix: ${api.length} api files, sw.js, offline/404`);

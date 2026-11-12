@@ -13,7 +13,7 @@
 //   GET/POST /api/playstyle        Play Style per mode + section (flag `playStyle`, members read, managers edit)
 //   GET/POST /api/suggestions (+ /vote /decide /remove)   suggestion box (flag `suggestions`)
 // Text is "markdown-lite" (headings, bold, italics, lists, links, image + video lines) rendered by web/docs-md.js.
-import { IS_V2, autoBanner } from './ui.js';
+import { IS_V2, autoBanner, picture } from './ui.js';
 import { orgName, channelFor, mirrorChannel } from './orgconfig.js';
 import { can, flagOn } from './roles.js';
 import { notify, notifyManagers, notifyMembers, safely } from './notify.js';
@@ -207,6 +207,7 @@ function docMessage(env, me, d) {
   const icon = { announce: '📣', rules: '📜', requirements: '✅', faq: '❓', glossary: '📖', playstyle: '🧠' }[d.area] ?? '📣';
   return message({ blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Club announcements`, title: `${icon} ${d.title}`.slice(0, 250), sub: `Posted by ${me.n}` }),
+    picture(env, 'post-doc'),
     text(plain(d.body, true)),
     img ? cards(img) : null,
     footer(`Updated <t:${Math.floor((d.edited_at ?? d.at) / 1000)}:R>`),

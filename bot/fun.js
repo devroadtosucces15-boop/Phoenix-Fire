@@ -6,7 +6,7 @@
 //   birthdays  the 10-min cron posts one 🎂 panel a day (after 08:00 UTC) for members whose profile has a birthday
 // Jail counts feed the member profile (GET /api/member → fun.jail, see bot/members.js).
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, facts, footer, sep, buttons, cards, bannerUrl } from './ui.js';
+import { message, notice, reply, header, text, facts, footer, sep, buttons, cards, bannerUrl, picture, pictureNote } from './ui.js';
 import { it } from './icons.js';
 import { orgName, channelFor } from './orgconfig.js';
 
@@ -37,6 +37,8 @@ const ordinal = (n) => `${n}${[, 'st', 'nd', 'rd'][(n % 100 >> 3) ^ 1 && n % 10]
 const clean = (s, n) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
 const ts = (ms, f = 'R') => `<t:${Math.floor(ms / 1000)}:${f}>`;
 const say = (title, body) => reply(notice(title, body));
+// Same short private reply with a drawn picture (scripts/cards.mjs SLASH): used by /wheel and by the shared "not available" / "check and try again" states.
+const sayP = (env, key, title, body) => reply(pictureNote(env, key, title, body));
 const monthStart = (now) => { const d = new Date(now); return Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1); };
 
 // The panel edit that goes with a button press (type 7): same layout, components only.
@@ -126,7 +128,7 @@ function wheelPanel(row, options, winnerIdx, env) {
 async function wheel(i, env, who, now) {
   const o = opts(i);
   const options = parseOptions(o.options);
-  if (options.length < MIN_WHEEL) return say('The wheel needs at least two options', 'Separate them with commas: /wheel options:Jez, Kruger, Davey');
+  if (options.length < MIN_WHEEL) return sayP(env, 'cmd-wheel-error', 'The wheel needs at least two options', 'Separate them with commas: /wheel options:Jez, Kruger, Davey');
   const me = i.member?.user?.id ?? i.user?.id;
   const question = clean(o.question, 100);
   const res = await env.DB.prepare('INSERT INTO fun_wheels (question, options, by_id, at) VALUES (?, ?, ?, ?)').bind(question, JSON.stringify(options), me, now).run();
@@ -136,10 +138,10 @@ async function wheel(i, env, who, now) {
 
 async function spin(env, id, removeIdx) {
   const row = await env.DB.prepare('SELECT * FROM fun_wheels WHERE id = ?').bind(id).first();
-  if (!row) return say('That wheel is gone', 'Start a new one with /wheel.');
+  if (!row) return sayP(env, 'cmd-empty', 'That wheel is gone', 'Start a new one with /wheel.');
   let options = JSON.parse(row.options);
   if (removeIdx != null) {
-    if (options.length <= MIN_WHEEL) return say('Two is the minimum', 'Spin again instead.');
+    if (options.length <= MIN_WHEEL) return sayP(env, 'cmd-wheel-error', 'Two is the minimum', 'Spin again instead.');
     options = options.filter((_, k) => k !== removeIdx);
     await env.DB.prepare('UPDATE fun_wheels SET options = ? WHERE id = ?').bind(JSON.stringify(options), id).run();
   }
@@ -148,19 +150,19 @@ async function spin(env, id, removeIdx) {
 
 // ---------- entry points ----------
 export async function funCommand(i, env, ctx, who, now = Date.now()) {
-  if (!flagOn(env, who, 'fun')) return say('This isn’t switched on yet', 'Fun commands are being tested.');
-  if (!env.DB) return say('The member database isn’t connected');
+  if (!flagOn(env, who, 'fun')) return sayP(env, 'cmd-locked', 'This isn’t switched on yet', 'Fun commands are being tested.');
+  if (!env.DB) return sayP(env, 'cmd-problem', 'The member database isn’t connected');
   try {
     if (i.data.name === 'trivia') return await trivia(i, env, now);
     return i.data.name === 'jail' ? await jail(i, env, who, now) : await wheel(i, env, who, now);
   } catch (e) {
-    return say('Something went wrong', String(e.message ?? e).slice(0, 200));
+    return sayP(env, 'cmd-problem', 'Something went wrong', String(e.message ?? e).slice(0, 200));
   }
 }
 
 export async function funButton(i, env, who, now = Date.now()) {
-  if (!flagOn(env, who, 'fun')) return say('This isn’t switched on yet');
-  if (!env.DB) return say('The member database isn’t connected');
+  if (!flagOn(env, who, 'fun')) return sayP(env, 'cmd-locked', 'This isn’t switched on yet');
+  if (!env.DB) return sayP(env, 'cmd-problem', 'The member database isn’t connected');
   const [, , kind, a, b] = String(i.data?.custom_id ?? '').split(':');
   try {
     if (kind === 'bail') return await bail(i, env, who, Number(a), now);
@@ -169,9 +171,9 @@ export async function funButton(i, env, who, now = Date.now()) {
     if (kind === 'rmspin') return await spin(env, Number(a), Number(b));
     if (kind === 'tq') return await triviaAnswer(i, env, Number(a), Number(b), now);
   } catch (e) {
-    return say('Something went wrong', String(e.message ?? e).slice(0, 200));
+    return sayP(env, 'cmd-problem', 'Something went wrong', String(e.message ?? e).slice(0, 200));
   }
-  return say('Unknown button');
+  return sayP(env, 'cmd-problem', 'Unknown button');
 }
 
 // How many sentences a member has – for the profile (bot/members.js).
@@ -271,6 +273,7 @@ export function birthdaysOn(now) {
 export function birthdayPanel(rows, env) {
   return message({ accent: 'gold', blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Birthdays`, title: rows.length === 1 ? '🎂 Happy birthday!' : `🎂 ${rows.length} birthdays today`, size: 2 }),
+    picture(env, 'post-birthday'),
     text(rows.map((r) => `🎉 <@${r.user_id}>`).join('\n')),
     footer('From everyone at the club – have a good one'),
   ] });

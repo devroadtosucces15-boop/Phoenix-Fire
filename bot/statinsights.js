@@ -23,7 +23,8 @@
 // without it the writer just logs and skips, so the feature never fails the cron or a request.
 import { atLeast, can } from './roles.js';
 import { TEXT_MODEL } from './aispike.js';
-import { message, header, text, sep, facts, footer, buttons } from './ui.js';
+import { BANNER_SPEC } from './banners.js';
+import { message, header, text, sep, facts, footer, buttons, cards, bannerUrl } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 
 const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
@@ -389,7 +390,8 @@ export async function discordH2hEmbed(env, loadSite, o, me) {
   return { embed: h2hEmbed(row, pack, env) };
 }
 // One panel for every insight post: headline, the writer's text, what to watch, a small "written" line.
-const insightPanel = (row, eyebrow, env, { title = `✨ ${row.headline}`, extra = null } = {}) => message({ blocks: [
+const insightPanel = (row, eyebrow, env, { title = `✨ ${row.headline}`, extra = null, pic = null } = {}) => message({ blocks: [
+  pic && bannerUrl(env, pic) && cards({ url: bannerUrl(env, pic), alt: BANNER_SPEC[pic]?.title }), // drawn picture per insight (scripts/cards.mjs privatePicture)
   header({ eyebrow: `${orgName(env).toUpperCase()} · ${eyebrow}`, title, size: 3 }),
   text(row.body),
   extra,
@@ -432,5 +434,5 @@ export async function discordInsightEmbed(env, stat, role = 'guest') {
   const row = await one(env, 'SELECT key, headline, body, watch, tier, at FROM stat_insights WHERE key = ?', key);
   if (!row) return { error: 'No insight for that yet – it appears after the next data refresh.' };
   if (!visibleRow(row, role, null)) return { error: '🔒 That insight is for members only – log in on the site to see it.' };
-  return { embed: insightPanel(row, 'Insight', env) };
+  return { embed: insightPanel(row, 'Insight', env, { pic: `insight-${stat}` }) };
 }

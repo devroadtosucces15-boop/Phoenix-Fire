@@ -133,7 +133,7 @@ t('P7.4 /rush log → pending result with me as the player', /manager confirms/.
 t('P7.4 /rush log uses the Hub checks (goals > score refused)', /more than our/.test(txt((await slash('rush', [{ type: 1, name: 'log', options: [{ name: 'opponent', value: 'X FC' }, { name: 'for', value: 1 }, { name: 'against', value: 0 }, { name: 'goals', value: 3 }] }])).data)));
 const me = await slash('me');
 t('P7.4 /me: my player card (design-system panel), only for me', (me.data.flags & 64) === 64 && isV2(me.data) && plainText(me.data).includes(pk.n) && /MY PLAYER CARD/.test(plainText(me.data)));
-t('P7.4 /me without a claim → how to claim', /claim yours/.test(txt((await slash('me', undefined, '501')).data)));
+t('P7.4 /me without a claim → how to claim', /Claim your player/.test(txt((await slash('me', undefined, '501')).data)));
 sqlite.prepare("UPDATE rush_matches SET status = 'confirmed' WHERE opponent = 'Rush FC'").run();
 t('P7.4 /leaderboard mode:rush from confirmed logs', /RUSH LEADERBOARD[\s\S]*Top scorers/.test(txt((await slash('leaderboard', [{ name: 'mode', value: 'rush' }, { name: 'stat', value: 'goals' }])).data)));
 t('P7.4 /leaderboard mode:league = the EA leaderboard', /## Top scorers/.test(plainText((await slash('leaderboard', [{ name: 'mode', value: 'league' }, { name: 'stat', value: 'goals' }])).data)));

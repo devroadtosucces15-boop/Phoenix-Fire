@@ -303,7 +303,7 @@ export function burnerCommand(i, env, ctx, user, site, loadSite) {
     return (async () => {
       const rows = await all(env, 'SELECT club_id, name FROM burner_clubs WHERE active = 1 ORDER BY added_at');
       if (!rows.length) return reply('🔥 No burner clubs tracked yet. Use `/burner search` with the club’s name when someone makes a new one.');
-      if (sub.name === 'remove') return json({ type: 4, data: panel([text('Which club should I stop tracking? (Its history stays on file.)'), removeMenu(rows)]) });
+      if (sub.name === 'remove') return json({ type: 4, data: panel([header({ eyebrow: 'Staff · Burner clubs', title: 'Stop tracking a club', size: 3 }), text('Which club should I stop tracking? (Its history stays on file.)'), removeMenu(rows)]) });
       const stats = new Map((await loadSite('burners').catch(() => ({ clubs: [] }))).clubs.map((c) => [c.id, c]));
       const lines = rows.map((r) => {
         const s = stats.get(r.club_id);
