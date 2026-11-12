@@ -165,6 +165,10 @@ const cmd = (me, sub, o = {}) => Q.queueCommand({ channel_id: QCH, data: {} }, e
 t('/queue status is for everyone, the rest is managers only', /Nobody is in the queue/.test(T(await cmd(p1, 'status'))) && /Only managers/.test(T(await cmd(p1, 'board'))) && /Only managers/.test(T(await cmd(p1, 'settings', { failed_policy: 'bottom' }))));
 t('/queue settings saves the failed policy and the timers', /goes to the bottom/.test(T(await cmd(mgr, 'settings', { failed_policy: 'bottom', warn_minutes: 2, remove_minutes: 4 }))) && (await Q.getSettings(env)).greenRemoveMin === 4);
 await cmd(mgr, 'settings', { failed_policy: 'next', warn_minutes: 1, remove_minutes: 2 });
+import { noticeKind } from "../bot/ui.js";
+const setRes = await cmd(mgr, "settings", { failed_policy: "bottom" });
+t("a settings confirmation is a success notice, not the error banner", noticeKind(setRes.data ?? setRes) === "success");
+await cmd(mgr, "settings", { failed_policy: "next" });
 calls.length = 0;
 t('/queue board posts a board in the configured channel', /Board posted/.test(T(await cmd(mgr, 'board'))) && boardCalls().length === 1);
 await press(p1, 'pf:rq:join', {}, T0 + 41 * MIN);

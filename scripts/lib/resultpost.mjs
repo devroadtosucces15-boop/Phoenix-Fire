@@ -3,6 +3,7 @@
 // calls it straight away only when posts aren't deferred (no cards then – the same layout without the pictures).
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadBotSettings, num } from '../lib.mjs';
 import { resolveRoute, requestMatchAlert } from './org.mjs';
 import { alertLine, loseByOf } from '../../bot/matchalert.js';
@@ -42,7 +43,12 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
   const flagOn = (k) => ['members', 'public'].includes(settings.flags?.[k] ?? config.features?.[k]);
   const matchPictureOn = flagOn('matchPicture'), reviewOn = flagOn('matchReview');
   const site = config.siteUrl?.replace(/\/?$/, '/') ?? '';
-  const crestCdn = 'https://eafc24.content.easports.com/fifa/fltOnlineAssets/24B23FDE-7835-41C2-87A2-F453DFDB2E82/2024/fcweb/crests/256x256/l';
+  // The crest beside the title is ALWAYS ours: the Phoenix crest from phoenix/overlay, sent with the post itself so it never depends on what
+  // the published site serves and never changes to the opponent's crest. Brand accent from config.json.
+  const crestPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../phoenix/overlay/crest-sm.png');
+  const crestFile = fs.existsSync(crestPath) ? { name: 'crest.png', path: crestPath } : null;
+  const crestThumb = crestFile ? 'attachment://crest.png' : site ? `${site}assets/crest.png` : undefined;
+  const brandHex = /^#[0-9a-f]{6}$/i.test(config.brand?.red ?? '') ? parseInt(config.brand.red.slice(1), 16) : 0xe8651a;
   const hide = new Set([...(config.hiddenPlayers || []), ...hidden].map((h) => String(h).toLowerCase()));
   const items = matches
     .sort((a, b) => a.timestamp - b.timestamp)
@@ -62,12 +68,11 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const list = (f) => ours.filter((p) => num(p[f]) > 0).map((p) => `${p.playername}${num(p[f]) > 1 ? ` ×${p[f]}` : ''}`).join('\n');
       const motm = Object.values(m.players || {}).flatMap((l) => Object.values(l)).find((p) => p.mom === '1');
       const best = [...ours].sort((a, b) => num(b.rating) - num(a.rating))[0];
-      const oppCrest = opp.details?.customKit?.crestAssetId;
       const url = site ? `${site}matches/${m.matchId}.html` : undefined;
       const components = matchComponents(m.matchId, ourIds.map(([k, p]) => ({ k, n: p.playername, r: num(p.rating), g: num(p.goals), a: num(p.assists) })), url);
-      const clubName = us.details?.name ?? us.name ?? config.siteTitle ?? 'Club';
+      const clubName = config.siteTitle ?? us.details?.name ?? us.name ?? 'Club'; // our name comes from config (EA's spelling of it can differ)
       // Drawn pictures are attached to the post itself (attachment://), so nothing has to be deployed before Discord can show them.
-      const files = [];
+      const files = crestFile ? [crestFile] : [];
       const pic = (kind, alt) => {
         const file = drawn?.manifest?.match?.[m.matchId]?.[kind];
         if (!file || !fs.existsSync(path.join(drawn.dir, file))) return null;
@@ -80,22 +85,22 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const scoreImg = mergedImg ? null : pic('score', `${clubName} ${us.goals}–${opp.goals} ${oppName}`);
       const fieldImg = mergedImg ? null : pic('field', 'Our players on the pitch with their match ratings');
       // Message 2: the match review picture, posted right after the result (flag matchReview; skipped when the picture was not drawn).
-      const reviewFiles = [];
+      const reviewFiles = crestFile ? [crestFile] : [];
       const reviewFile = drawn?.manifest?.match?.[m.matchId]?.review;
       const reviewImg = reviewOn && reviewFile && fs.existsSync(path.join(drawn.dir, reviewFile)) ? (reviewFiles.push({ name: `review-${m.matchId}.png`, path: path.join(drawn.dir, reviewFile) }), { url: `attachment://review-${m.matchId}.png`, alt: 'Match review: what went well, what to work on, next match targets and recommendations for the squad' }) : null;
-      const reviewPanel = () => message({ accent: 'steel', blocks: [
+      const reviewPanel = () => message({ accent: 'red', blocks: [
         tagBlock(tag, kind),
-        header({ eyebrow: `${clubName} · Match review`, title: `${clubName} vs ${oppName}`, sub: `Insights and recommendations · <t:${m.timestamp}:f>`, thumb: site ? `${site}assets/crest.png` : undefined }),
+        header({ eyebrow: `${clubName} · Match review`, title: `${clubName} vs ${oppName}`, sub: `Insights and recommendations · <t:${m.timestamp}:f>`, thumb: crestThumb }),
         cards(reviewImg),
         footer('Written from the match numbers'),
       ] });
-      const panel = (ping, mentions) => message({ accent: resultAccent(res), ping, mentions, blocks: [
+      const panel = (ping, mentions) => message({ accent: 'red', ping, mentions, blocks: [
         tagBlock(tag, kind),
         header({
           eyebrow: `${clubName} · Match centre · ${kind}`,
           title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${mergedImg ? 'vs' : `${us.goals}–${opp.goals}`} ${oppName}`, // the score is in the merged picture
           sub: `<t:${m.timestamp}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[res]}`,
-          thumb: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : site ? `${site}assets/crest.png` : undefined,
+          thumb: crestThumb,
         }),
         cards(mergedImg ?? scoreImg),
         mergedImg ? null : facts([[`${it('goal')} Goals`, list('goals').replace(/\n/g, ', ')], [`${it('assist')} Assists`, list('assists').replace(/\n/g, ', ')], [`${it('motm')} Man of the match`, motm ? `${motm.playername} (${num(motm.rating).toFixed(1)})` : ''], ['📈 Top rated', best ? `${best.playername} (${num(best.rating).toFixed(1)})` : '']]),
@@ -108,9 +113,9 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         author: { name: `${tag.important ? '🚨 ' : ''}${tag.label} · ${kind.toUpperCase()}` },
         title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
         url,
-        color: { W: ACCENT.win, D: ACCENT.gold, L: ACCENT.loss }[res], // the Phoenix palette (bot/ui.js ACCENT), same stripe colours as the panel
+        color: brandHex,
         description: res === 'W' ? '✅ **Victory**' : res === 'L' ? '❌ **Defeat**' : '➖ **Draw**',
-        thumbnail: { url: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : `${site}assets/crest.png` },
+        thumbnail: { url: `${site}assets/crest.png` }, // webhook fallback can't carry attachments: the site's Phoenix crest
         fields: [
           list('goals') && { name: '⚽ Goals', value: list('goals'), inline: true },
           list('assists') && { name: '🎯 Assists', value: list('assists'), inline: true },

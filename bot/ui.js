@@ -36,7 +36,7 @@ export const tagBlock = (tag, kind) => {
 };
 // Header: small grey label · bold title · grey detail line, with an optional picture on the right (crest, avatar, card).
 // Discord only fetches http(s) pictures: a data: URI (an inline fallback crest) is dropped so the row stays valid.
-const webUrl = (u) => (/^https?:\/\//i.test(String(u ?? '')) ? u : null);
+const webUrl = (u) => (/^(https?|attachment):\/\//i.test(String(u ?? '')) ? u : null); // attachment:// = a file sent with the message itself
 export function header({ eyebrow = null, title, sub, thumb, size = 2 }) {
   thumb = webUrl(thumb);
   const t = text([eyebrow && `-# ${String(eyebrow).toUpperCase()}`, `${'#'.repeat(size)} ${title}`, sub && `-# ${sub}`].filter(Boolean).join('\n'));
@@ -99,7 +99,7 @@ export function cardUrl(manifest, ...key) {
 }
 
 // A fixed banner picture (jail, wheel, discovery, matchnight – drawn by scripts/cards.mjs). Needs no manifest lookup.
-export const BANNER_V = 14; // = TEMPLATE_VERSION in scripts/cards.mjs
+export const BANNER_V = 15; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
 
 // A drawn picture for one output, alt text from BANNER_SPEC (null without SITE_URL, so a post never breaks).

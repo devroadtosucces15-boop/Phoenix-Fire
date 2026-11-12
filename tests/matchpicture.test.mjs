@@ -67,13 +67,13 @@ process.env.DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1/abc';
 process.env.DISCORD_BOT_TOKEN = 'tok';
 const run = async (features, man = manifest) => { calls.length = 0; await postResults([match()], { config: { siteUrl: 'https://x.test/', features: { discordMatch: 'members', ...features }, hiddenPlayers: [] }, homeId: '100', route: async () => ({ ok: true, channelId: 'chan-1' }), drawn: { dir: out, manifest: man } }); return calls.filter((c) => c.url.endsWith('/channels/chan-1/messages')); };
 const old = (await run({}))[0];
-t('flag off (the default): the score card and field view, as before', JSON.stringify(JSON.parse(old.init.body.get('payload_json'))).includes('score-900.png') && old.init.body.get('files[1]') && !old.init.body.get('files[2]'));
+t('flag off (the default): the score card and field view, as before', JSON.stringify(JSON.parse(old.init.body.get('payload_json'))).includes('score-900.png') && old.init.body.get('files[2]') && !old.init.body.get('files[3]'));
 const merged = (await run({ matchPicture: 'members' }))[0];
 const payload = JSON.parse(merged.init.body.get('payload_json'));
-t('flag on: one picture instead of two, and only that file is attached', images(payload).filter((u) => u.startsWith('attachment://')).join() === 'attachment://picture-900.png' && merged.init.body.get('files[0]') && !merged.init.body.get('files[1]'));
+t('flag on: one picture instead of two, and only that file is attached', images(payload).filter((u) => u.startsWith('attachment://') && !u.endsWith('crest.png')).join() === 'attachment://picture-900.png' && merged.init.body.get('files[1]') && !merged.init.body.get('files[2]'));
 t('… the title has no score, the "Show my match" menu is still there', /vs Poundin P\./.test(plainText(payload)) && !/3–1/.test(plainText(payload).split('\n')[1] ?? '') && JSON.stringify(payload).includes('norex:mm:900'));
 const fallback = (await run({ matchPicture: 'members' }, { match: { 900: { score: 'score-900.png', field: 'field-900.png' } } }))[0];
-t('flag on but the picture was not drawn: falls back to the two pictures', images(JSON.parse(fallback.init.body.get('payload_json'))).filter((u) => u.startsWith('attachment://')).join() === 'attachment://score-900.png,attachment://field-900.png');
+t('flag on but the picture was not drawn: falls back to the two pictures', images(JSON.parse(fallback.init.body.get('payload_json'))).filter((u) => u.startsWith('attachment://') && !u.endsWith('crest.png')).join() === 'attachment://score-900.png,attachment://field-900.png');
 globalThis.fetch = realFetch;
 
 // Phoenix branding rule: no NOREX name, colour or crest in what this draws; the accent is Phoenix orange.

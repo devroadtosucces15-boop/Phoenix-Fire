@@ -428,8 +428,9 @@ export async function queueCommand(i, env, ctx, me, who, sub, o = {}, now = Date
   }
   if (sub === 'settings') {
     const next = settingsOf({ ...st, ...(o.failed_policy ? { failedPolicy: o.failed_policy } : {}), ...(o.warn_minutes != null ? { greenWarnMin: o.warn_minutes } : {}), ...(o.remove_minutes != null ? { greenRemoveMin: o.remove_minutes } : {}) });
-    if (o.failed_policy || o.warn_minutes != null || o.remove_minutes != null) await saveSettings(env, next);
-    return say('Queue settings', `Failed match: **${next.failedPolicy === 'next' ? 'goes next' : 'goes to the bottom'}**\nGreen light warning: **${next.greenWarnMin} min**, removed after **${next.greenRemoveMin} min**`);
+    const changed = !!(o.failed_policy || o.warn_minutes != null || o.remove_minutes != null);
+    if (changed) await saveSettings(env, next);
+    return say(changed ? 'Queue settings saved' : 'Queue settings', `A match that falls through: **${next.failedPolicy === 'next' ? 'goes next' : 'goes to the bottom'}**\nGreen light warning: **${next.greenWarnMin} min**, removed after **${next.greenRemoveMin} min**`, changed ? 'win' : undefined);
   }
   return say('Unknown queue command');
 }

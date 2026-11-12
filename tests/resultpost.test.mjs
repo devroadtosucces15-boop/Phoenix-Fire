@@ -30,8 +30,8 @@ const post = calls.find((c) => c.url.endsWith('/channels/chan-1/messages'));
 t('the result is posted by the bot into the channel the Organization config resolves for the source club', !!post);
 t('with the pictures it goes up as a multipart form', post?.init.body instanceof FormData);
 const payload = JSON.parse(post?.init.body.get('payload_json') ?? '{}');
-t('the score card and field view are attached', post?.init.body.get('files[0]') && post?.init.body.get('files[1]'));
-t('both pictures sit in the panel', images(payload).filter((u) => u.startsWith('attachment://')).join() === 'attachment://score-1.png,attachment://field-1.png');
+t('the crest, score card and field view are attached', post?.init.body.get('files[0]') && post?.init.body.get('files[2]'));
+t('both pictures sit in the panel', images(payload).filter((u) => u.startsWith('attachment://') && !u.endsWith('crest.png')).join() === 'attachment://score-1.png,attachment://field-1.png');
 t('score card comes before the facts, field view after', (() => { const s = JSON.stringify(payload); return s.indexOf('score-1.png') < s.indexOf('Goals') && s.indexOf('Goals') < s.indexOf('field-1.png'); })());
 t('goals and man of the match are there', /Goals/.test(plainText(payload)) && /Man of the match/.test(plainText(payload)) && /Mike/.test(plainText(payload)));
 t('the "Show my match" menu is still on it', JSON.stringify(payload).includes('norex:mm:1'));
@@ -39,7 +39,7 @@ t('the "Show my match" menu is still on it', JSON.stringify(payload).includes('n
 calls.length = 0;
 await postResults([m], { config, homeId: '100', route, drawn: null });
 const plain = calls.find((c) => c.url.endsWith('/channels/chan-1/messages'));
-t('without cards it is a plain JSON post with no pictures', typeof plain?.init.body === 'string' && !plain.init.body.includes('attachment://'));
+t('without cards it carries only the Phoenix crest, no pictures', plain?.init.body instanceof FormData && !plain.init.body.get('files[1]') && !plain.init.body.get('payload_json').replace('attachment://crest.png', '').includes('attachment://'));
 
 // Missing destination: reported, nothing posted anywhere (not the webhook's own channel, not another club's channel).
 calls.length = 0;
