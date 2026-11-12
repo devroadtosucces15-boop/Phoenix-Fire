@@ -11,8 +11,8 @@
   // ---------- search palette ----------
   const SETTINGS = [
     ['Motion & effects', 'Settings · animations, glow, tilt, haptics', '🎬', { act: 'motion' }, 'motion effects animation calm full glow tilt parallax haptics settings'],
-    ['Alert settings', 'Settings · choose how each alert reaches you', '⚙️', { href: 'hub.html#lk-alertset' }, 'alert notification settings discord dm push site off'],
-    ['Alerts inbox', 'My Locker · everything the club sent you', '🔔', { href: 'hub.html#lk-alerts' }, 'alerts inbox notifications bell unread'],
+    ['Alert settings', 'Settings · choose how each alert reaches you', '⚙️', { href: 'hub-alerts.html' }, 'alert notification settings discord dm push site off'],
+    ['Alerts inbox', 'My Locker · everything the club sent you', '🔔', { href: 'hub-alerts.html' }, 'alerts inbox notifications bell unread'],
     ['Clubhouse feed', 'Clubhouse · goals, results and posts', '📰', { href: 'hub-clubhouse.html#ch-feed' }, 'feed club news posts'],
     ['Direct messages & chat', 'Clubhouse · chat room and DMs', '💬', { href: 'hub-clubhouse.html#ch-chat' }, 'chat messages dm direct inbox'],
     ['Ideas & suggestions', 'Clubhouse · suggest something', '💡', { href: 'hub-clubhouse.html#ch-ideas' }, 'ideas suggestions feedback']];
@@ -132,7 +132,7 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
   const dot = (el, n) => { const i = el?.querySelector('.hdr-n'); if (!i) return; i.hidden = !n; i.textContent = n > 99 ? '99+' : String(n || ''); };
   const SEEN = 'phoenix.nseen', seenId = () => { try { return +sessionStorage.getItem(SEEN) || 0; } catch { return 0; } };
   const setSeen = (v) => { try { sessionStorage.setItem(SEEN, String(v)); } catch {} };
-  const room = (l) => (/^feed\.html/.test(l || '') ? 'hub-clubhouse.html#ch-feed' : /^messages\.html/.test(l || '') ? 'hub-clubhouse.html#ch-chat' : /^members\.html#feedback/.test(l || '') ? 'hub-clubhouse.html#ch-feedback' : /^https:/.test(l || '') ? l : 'hub.html#lk-alerts');
+  const room = (l) => (/^feed\.html/.test(l || '') ? 'hub-clubhouse.html#ch-feed' : /^messages\.html/.test(l || '') ? 'hub-clubhouse.html#ch-chat' : /^members\.html#feedback/.test(l || '') ? 'hub-clubhouse.html#ch-feedback' : /^https:/.test(l || '') ? l : 'hub-alerts.html');
   const banner = (n) => {
     if (d.querySelector(`.nx-note[data-id="${n.id}"]`) || d.querySelectorAll('.nx-note').length >= 2) return;
     const b = d.createElement('div'); b.className = 'nx-note'; b.dataset.id = n.id; b.setAttribute('role', 'status');
@@ -175,7 +175,7 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
       ac.innerHTML = `<span class="pav">${A.avatar ? `<img src="${esc(A.avatar)}" alt="" width="34" height="34">` : esc((A.name || 'M')[0].toUpperCase())}</span><span class="acn">${esc(A.name || 'Member')}</span>`;
       pill = d.createElement('button'); pill.type = 'button'; pill.className = 'hdr-on'; pill.hidden = true; pill.title = 'Who is online'; pill.innerHTML = '<i aria-hidden="true"></i><b>0</b>'; pill.onclick = toggleMenu;
       live = d.createElement('a'); live.className = 'hdr-lv'; live.hidden = true; live.href = 'index.html#live'; live.innerHTML = '<i aria-hidden="true"></i><b>0</b><span>live</span>';
-      bell = d.createElement('a'); bell.className = 'hdr-i hdr-bell'; bell.href = 'hub.html#lk-alerts'; bell.hidden = true; bell.setAttribute('aria-label', 'Alerts'); bell.title = 'Alerts'; bell.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="hdr-n" hidden></i>';
+      bell = d.createElement('a'); bell.className = 'hdr-i hdr-bell'; bell.href = 'hub-alerts.html'; bell.hidden = true; bell.setAttribute('aria-label', 'Alerts'); bell.title = 'Alerts'; bell.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="hdr-n" hidden></i>';
       chat = d.createElement('a'); chat.className = 'hdr-i hdr-chat'; chat.href = 'hub-clubhouse.html#ch-chat'; chat.hidden = true; chat.setAttribute('aria-label', 'Clubhouse feed and messages'); chat.title = 'Clubhouse feed & messages'; chat.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12Z"/></svg><i class="hdr-n" hidden></i>';
       box.append(live, pill, bell, chat); paintLive(); (A.ready || Promise.resolve()).then(paintLive); ac.onclick = toggleMenu; box.appendChild(ac);
       if (viewAs() && realOwner()) { const ribbon = d.createElement('div'); ribbon.className = 'hdr-va'; ribbon.innerHTML = '👁️ Viewing the site as a <b>' + (viewAs() === 'guest' ? 'guest' : 'member') + '</b> <button type="button">Back to owner</button>'; ribbon.querySelector('button').onclick = () => setViewAs(''); d.body.insertBefore(ribbon, d.body.firstChild); }

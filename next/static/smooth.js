@@ -16,8 +16,14 @@
   lenis.on('scroll', ({ progress }) => { bar.style.transform = `scaleX(${progress || 0})`; });
   if (G) gsap.utils.toArray('.ab-card .ab-i').forEach((el) => gsap.fromTo(el, { y: 14 }, { y: -14, ease: 'none', scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 0.6 } }));
   // hand scrolling back to the browser while a menu, sheet or dialog has locked the page
-  const locked = () => getComputedStyle(H).overflowY === 'hidden' || getComputedStyle(document.body).overflowY === 'hidden' || document.body.className.split(/\s+/).some((c) => /(^|-)lock$/.test(c));
-  const sync = () => (locked() ? lenis.stop() : lenis.start());
+  // Lenis's own stop adds .lenis-stopped, and smooth.css turns that into overflow:clip on <html>. If the lock test read that
+  // computed value it would see "not hidden" the moment Lenis stopped, call start(), see "hidden" again and stop() again:
+  // an endless stop/start loop that froze the page (opening the search palette, which adds html.hdr-lock). So the lock is
+  // read from the page's own signals only (lock classes, inline overflow, the body), never from Lenis's own class or its
+  // overflow, and the observer only acts when the wanted state differs from Lenis's current state.
+  const lockClass = (e) => Array.from(e.classList).some((c) => /(^|-)lock$/.test(c));
+  const locked = () => lockClass(H) || lockClass(document.body) || H.style.overflowY === 'hidden' || document.body.style.overflowY === 'hidden' || getComputedStyle(document.body).overflowY === 'hidden' || (!H.classList.contains('lenis-stopped') && getComputedStyle(H).overflowY === 'hidden');
+  const sync = () => { const want = locked(); if (want !== !!lenis.isStopped) (want ? lenis.stop() : lenis.start()); };
   new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['style', 'class'] });
   new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
   if (G) { addEventListener('norex:revealed', () => ScrollTrigger.refresh()); addEventListener('load', () => ScrollTrigger.refresh()); }
