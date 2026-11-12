@@ -13,7 +13,7 @@ import { loadConfig } from './lib.mjs';
 import { BANNER_SPEC } from '../bot/banners.js';
 import { buildReview, loadHistory } from './lib/matchreview.mjs';
 import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
-import { eventJobs } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
+import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 export const TEMPLATE_VERSION = 7; // bump to redraw every card after a template change
@@ -459,6 +459,7 @@ const hash = (x) => crypto.createHash('sha1').update(JSON.stringify([TEMPLATE_VE
 // scene, with the names, reasons and times left to the message text. Stable file names (the ?v= in the URL busts Discord's cache).
 const BANNER_CSS = 'body{height:300px}.bn{position:absolute;inset:0;display:flex;align-items:center;gap:56px;padding:0 76px}.bn h1{font:700 104px/.95 Oswald;text-transform:uppercase;letter-spacing:.03em;text-shadow:0 8px 40px rgba(232,101,26,.55)}.bn p{margin-top:16px;font:600 26px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}.art{flex:none}';
 export const BANNERS = {
+  checkin: () => checkinBanner(), // match-night Check-in post (scripts/cards-events.mjs)
   jail: () => page(`${BANNER_CSS}.bars{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 78px,rgba(255,255,255,.07) 78px 90px)}`,
     `<div class="bars"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><rect x="4" y="3" width="32" height="34" rx="3" fill="#0b0f16" stroke="#efcf7a" stroke-width="1.6"/><g stroke="#efcf7a" stroke-width="1.6"><path d="M12 3v34M20 3v34M28 3v34"/></g><circle cx="20" cy="20" r="3.2" fill="#e8651a" stroke="#0b0f16" stroke-width="1"/></svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">County Jail</h1><p>Just for fun · bail is one tap</p></div></div><div class="brand">${esc(SITE)}</div>`),

@@ -46,10 +46,9 @@ ${crest}${markers}</svg>`);
 export const checkinBanner = () => page('body{height:300px}.bn{position:absolute;inset:0;display:flex;align-items:center;gap:56px;padding:0 76px}.bn h1{font:700 104px/.95 Oswald;text-transform:uppercase;letter-spacing:.03em;text-shadow:0 8px 40px rgba(232,101,26,.55)}.bn p{margin-top:16px;font:600 26px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}.art{flex:none}',
   `<div class="bn">${crestImg(190, 'filter:drop-shadow(0 6px 30px rgba(232,101,26,.5))')}<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Check in</h1><p>${esc(MOTTO || 'Be there')} · tap the button</p></div></div><div class="brand">${esc(SITE)}</div>`);
 
-// Jobs for cards.mjs: { key, file, html } like its own. Stable file names (the ?v= in the URL busts Discord's cache).
+// Jobs for cards.mjs (the Check-in banner is a BANNERS entry there, so it is drawn with the other banners): { key, file, html } like its own. Stable file names (the ?v= in the URL busts Discord's cache).
 export function eventJobs() {
   return [
     ...Object.keys(FORMATIONS).map((f) => ({ key: ['lineup', f], file: `lineup-${lineupSlug(f)}.png`, html: () => lineupCard(f) })),
-    { key: ['banner', 'checkin'], file: 'banner-checkin.png', html: checkinBanner },
   ];
 }
