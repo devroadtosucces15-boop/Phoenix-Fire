@@ -5,6 +5,7 @@
 // lives in text blocks.
 //   reply(message({ accent: 'win', blocks: [header({...}), cards(url), text('…'), footer('…'), buttons([...])] }))
 import { it } from './icons.js';
+import { BANNER_SPEC, bannerFromEyebrow } from './banners.js';
 export const IS_V2 = 1 << 15;
 export const EPHEMERAL = 1 << 6;
 
@@ -98,7 +99,7 @@ export function cardUrl(manifest, ...key) {
 }
 
 // A fixed banner picture (jail, wheel, discovery, matchnight – drawn by scripts/cards.mjs). Needs no manifest lookup.
-export const BANNER_V = 6; // = TEMPLATE_VERSION in scripts/cards.mjs
+export const BANNER_V = 7; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
 
 // Every piece of text in a message, flattened – for tests and for logging.
@@ -137,4 +138,32 @@ export function images(msg) {
   };
   walk(msg?.components);
   return out;
+}
+
+// Puts the family banner under the header of a panel that carries no picture of its own. A message that already has a drawn card
+// keeps it; a one-line notice (no header) stays compact. `url` null (no SITE_URL) leaves the message as it was.
+export function withBanner(msg, url, alt = '') {
+  if (!url || !isV2(msg) || !Array.isArray(msg.components)) return msg;
+  const at = msg.components.findIndex((c) => c?.type === 17);
+  if (at < 0) return msg;
+  const blocks = msg.components[at].components ?? [];
+  let hasGallery = false;
+  const walk = (c) => { if (!c || typeof c !== 'object') return; if (Array.isArray(c)) return c.forEach(walk); if (c.type === 12) hasGallery = true; walk(c.components); };
+  walk(blocks);
+  if (hasGallery) return msg;
+  const h = blocks.findIndex((b) => b?.type === 9 || (b?.type === 10 && /^(-# |#{1,3} )/.test(b.content ?? '')));
+  if (h < 0) return msg;
+  const next = [...blocks.slice(0, h + 1), cards({ url, alt: alt || 'Phoenix Fire' }), ...blocks.slice(h + 1)];
+  const comps = [...msg.components];
+  comps[at] = { ...comps[at], components: next };
+  return { ...msg, components: comps };
+}
+
+// For posts with no command or button behind them (cron, alerts, reports): the family comes from the header's small label.
+export function autoBanner(env, msg, name = null) {
+  if (!isV2(msg)) return msg;
+  const panel = (msg.components ?? []).find((c) => c?.type === 17);
+  const first = (panel?.components ?? []).map((b) => (b?.type === 9 ? b.components?.[0] : b)).find((b) => b?.type === 10 && /^-# /.test(b.content ?? ''));
+  const fam = name ?? bannerFromEyebrow(String(first?.content ?? '').split('\n')[0].replace(/^-# /, ''));
+  return withBanner(msg, bannerUrl(env, fam), BANNER_SPEC[fam]?.title);
 }

@@ -92,7 +92,7 @@ t('/club + /results show their cards', images(await slash('club')).includes(`${b
 
 deck = null; // no cards drawn yet (or the card step failed) → the same layout, with the numbers as text
 const bare = await slash('leaderboard', [{ name: 'stat', value: 'assists' }]);
-t('no card for it → text fallback in the same panel', isV2(bare) && /🥇/.test(plainText(bare)) && !images(bare).some((u) => u.includes('/cards/')));
+t('no card for it → text fallback in the same panel', isV2(bare) && /🥇/.test(plainText(bare)) && !images(bare).some((u) => u.includes('/cards/') && !u.includes('/banner-'))) /* the family banner stays */;
 
 // ---------- the Boardroom "post to channel" setting keeps the V2 flag ----------
 const posted = [];

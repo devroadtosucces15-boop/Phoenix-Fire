@@ -10,11 +10,12 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { loadConfig } from './lib.mjs';
+import { BANNER_SPEC } from '../bot/banners.js';
 import { buildReview, loadHistory } from './lib/matchreview.mjs';
 import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 6; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 7; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -471,6 +472,53 @@ export const BANNERS = {
   matchnight: () => page(`${BANNER_CSS}.ln{position:absolute;inset:34px 60px;border:3px solid rgba(255,255,255,.14);border-radius:10px}.ln:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:3px solid rgba(255,255,255,.14)}.ln:after{content:"";position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px;border:3px solid rgba(255,255,255,.14);border-radius:50%}`,
     `<div class="ln"></div><div class="bn" style="justify-content:center;text-align:center"><div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Match night</h1><p>Be there · tell us if you can play</p></div></div><div class="brand">${esc(SITE)}</div>`),
 };
+
+// ---------- family banners: one for every kind of message (bot/banners.js BANNER_SPEC; bot/ui.js withBanner puts it in the panel) ----------
+// Gold line icons with one orange accent, the family title, a one-line subtitle and the Phoenix crest on the right. Same layout every time,
+// so a reminder, a help menu and a queue board all read as one product. The crest comes from phoenix/overlay (single source).
+const G = '#efcf7a', O = '#e8651a';
+const ICONS = {
+  flame: `<path d="M12 2c1 4 5 6 5 11a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-10z" fill="${O}" stroke="${G}" stroke-width="1.4" stroke-linejoin="round"/>`,
+  shield: `<path d="M12 2.5l8 2.8v6.2c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V5.3z" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="11.5" r="3" fill="${O}"/>`,
+  chart: `<path d="M4 20V4M4 20h16" stroke="${G}" stroke-width="1.6" stroke-linecap="round" fill="none"/><rect x="7" y="12" width="3" height="6" fill="${G}"/><rect x="12" y="8" width="3" height="10" fill="${O}"/><rect x="17" y="5" width="3" height="13" fill="${G}"/>`,
+  player: `<circle cx="12" cy="8" r="4" fill="${O}"/><path d="M4 21c0-5 4-8 8-8s8 3 8 8z" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/>`,
+  ball: `<circle cx="12" cy="12" r="9.5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z" fill="${O}"/>`,
+  bolt: `<path d="M13 2L5 13h6l-1 9 8-12h-6z" fill="${O}" stroke="${G}" stroke-width="1.4" stroke-linejoin="round"/>`,
+  people: `<circle cx="8" cy="8" r="3" fill="${O}"/><circle cx="17" cy="9" r="2.5" fill="none" stroke="${G}" stroke-width="1.5"/><path d="M2 20c0-4 3-6 6-6s6 2 6 6zM15 20c0-3 2-5 4-5s3 2 3 5z" fill="none" stroke="${G}" stroke-width="1.5" stroke-linejoin="round"/>`,
+  hand: `<path d="M7 21v-6L4.6 11a1.6 1.6 0 0 1 2.5-2L9 11V4.6a1.4 1.4 0 0 1 2.8 0V10h.4V3.6a1.4 1.4 0 0 1 2.8 0V10h.4V4.8a1.4 1.4 0 0 1 2.8 0V15c0 3-2 6-5 6z" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="19" cy="4" r="2" fill="${O}"/>`,
+  trophy: `<path d="M7 3h10v5a5 5 0 0 1-10 0zM7 5H3v2a4 4 0 0 0 4 4M17 5h4v2a4 4 0 0 1-4 4M12 13v4M8 21h8M9 17h6" fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="1.8" fill="${O}"/>`,
+  calendar: `<rect x="3.5" y="5" width="17" height="15" rx="2.5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><rect x="7" y="13" width="4" height="4" rx="1" fill="${O}"/>`,
+  pitch: `<rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 5v14" stroke="${G}" stroke-width="1.4"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="${O}" stroke-width="1.6"/>`,
+  search: `<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="${G}" stroke-width="1.8"/><path d="M15.5 15.5L21 21" stroke="${G}" stroke-width="2" stroke-linecap="round"/><circle cx="10.5" cy="10.5" r="2" fill="${O}"/>`,
+  id: `<rect x="3" y="5" width="18" height="14" rx="2.5" fill="none" stroke="${G}" stroke-width="1.6"/><circle cx="9" cy="11" r="2.2" fill="${O}"/><path d="M13.5 10h5M13.5 14h4M6 16.5c.5-1.6 1.7-2.4 3-2.4s2.5.8 3 2.4" stroke="${G}" stroke-width="1.4" stroke-linecap="round" fill="none"/>`,
+  medal: `<path d="M7 2h4l1 6-3 .8zM17 2h-4l-1 6 3 .8z" fill="${G}" opacity=".6"/><circle cx="12" cy="15" r="6.5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 11.5l1.1 2.2 2.4.3-1.8 1.7.5 2.4-2.2-1.2-2.2 1.2.5-2.4-1.8-1.7 2.4-.3z" fill="${O}"/>`,
+  spark: `<path d="M12 2l2 6.5L20.5 10 14 12l-2 8-2-8-6.5-2L10 8.5z" fill="${O}" stroke="${G}" stroke-width="1.4" stroke-linejoin="round"/>`,
+  book: `<path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 6v14" stroke="${O}" stroke-width="1.6"/>`,
+  gear: `<circle cx="12" cy="12" r="3.2" fill="${O}"/><path d="M12 2.5l1.6 2.4 2.8-.6.6 2.8 2.4 1.6-1.6 2.4 1.6 2.4-2.4 1.6-.6 2.8-2.8-.6L12 21.5l-1.6-2.4-2.8.6-.6-2.8L4.6 15.3 6.2 12.9 4.6 10.5l2.4-1.6.6-2.8 2.8.6z" fill="none" stroke="${G}" stroke-width="1.4" stroke-linejoin="round"/>`,
+  bell: `<path d="M6 17V11a6 6 0 0 1 12 0v6l2 2H4zM10 21h4" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="18" cy="5" r="2.4" fill="${O}"/>`,
+  horn: `<path d="M3 10v4h4l8 5V5L7 10zM18 9a4 4 0 0 1 0 6" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/><circle cx="20" cy="5" r="1.8" fill="${O}"/>`,
+  chat: `<path d="M4 5h16v11H11l-5 4v-4H4z" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="9" cy="10.5" r="1.2" fill="${O}"/><circle cx="12.5" cy="10.5" r="1.2" fill="${O}"/><circle cx="16" cy="10.5" r="1.2" fill="${O}"/>`,
+  bulb: `<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.8c.6.5 1 1.2 1 2V17h5v-1.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9" r="2" fill="${O}"/>`,
+  inbox: `<path d="M3 13l3-8h12l3 8v6H3zM3 13h5l1 3h6l1-3h5" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="8" r="1.8" fill="${O}"/>`,
+  crystal: `<circle cx="12" cy="10" r="7" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M7 20h10M9 17l-1 3M15 17l1 3" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><circle cx="9.5" cy="8" r="1.6" fill="${O}"/>`,
+  pad: `<rect x="2.5" y="7" width="19" height="11" rx="5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M8 10v5M5.5 12.5h5" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><circle cx="16" cy="11" r="1.4" fill="${O}"/><circle cx="18.5" cy="14" r="1.4" fill="${O}"/>`,
+  disk: `<ellipse cx="12" cy="6" rx="8" ry="3" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" fill="none" stroke="${G}" stroke-width="1.6"/><circle cx="17" cy="12.5" r="1.2" fill="${O}"/>`,
+  board: `<rect x="3" y="4" width="18" height="13" rx="2" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M8 20l4-3 4 3M7 9l3 3 4-4 3 2" fill="none" stroke="${O}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`,
+  antenna: `<circle cx="12" cy="12" r="2.6" fill="${O}"/><g fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round"><path d="M7.5 7.5a6.4 6.4 0 0 0 0 9M16.5 7.5a6.4 6.4 0 0 1 0 9"/><path d="M4.5 4.5a10.6 10.6 0 0 0 0 15M19.5 4.5a10.6 10.6 0 0 1 0 15"/></g>`,
+  pulse: `<path d="M2 12h5l2-6 4 12 2-6h7" fill="none" stroke="${G}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="21" cy="12" r="1.5" fill="${O}"/>`,
+  cake: `<path d="M4 20h16v-7H4zM4 15c2 1.5 4 1.5 4 0 0 1.5 4 1.5 4 0 0 1.5 4 1.5 4 0 0 1.5 2 1.5 4 0M12 13V9" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 3c1 1.5 1.5 2.2 0 3.5-1.5-1.3-1-2 0-3.5z" fill="${O}"/>`,
+  door: `<path d="M5 21V4h10v17M3 21h18M15 7l4 1.5V21" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="1.2" fill="${O}"/>`,
+  mic: `<rect x="9" y="3" width="6" height="11" rx="3" fill="${O}"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/>`,
+  doc: `<path d="M6 3h9l4 4v14H6z" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 11h7M9 14.5h7M9 18h4" stroke="${O}" stroke-width="1.6" stroke-linecap="round"/>`,
+  film: `<rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M7 5v14M17 5v14M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4" stroke="${G}" stroke-width="1.4"/><path d="M10.5 9.5l4 2.5-4 2.5z" fill="${O}"/>`,
+  dice: `<rect x="4" y="4" width="16" height="16" rx="3.5" fill="none" stroke="${G}" stroke-width="1.6"/><circle cx="9" cy="9" r="1.5" fill="${O}"/><circle cx="15" cy="15" r="1.5" fill="${O}"/><circle cx="15" cy="9" r="1.5" fill="${G}"/><circle cx="9" cy="15" r="1.5" fill="${G}"/>`,
+  note: `<path d="M9 18V5l10-2v13" fill="none" stroke="${G}" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.8" fill="${O}"/><circle cx="16.5" cy="16" r="2.8" fill="${O}"/>`,
+};
+const crestUri = (() => { let c = null; return () => (c ??= (() => { try { return `data:image/png;base64,${fs.readFileSync(path.join(ROOT, 'phoenix/overlay/crest-sm.png')).toString('base64')}`; } catch { return ''; } })()); })();
+const familyBanner = (s) => page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 14px 30px rgba(0,0,0,.6));opacity:.95}`,
+  `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[s.icon] ?? ICONS.flame}</svg>
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${s.title.length <= 10 ? 104 : s.title.length <= 14 ? 88 : 72}px">${esc(s.title)}</h1><p>${esc(s.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}<div class="brand">${esc(SITE)}</div>`);
+for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // review / picture: (matchId) → the match review model or merged-picture model (scripts/lib/matchreview.mjs, matchpicture.mjs), or null;
 // given only by the real build, for the newest few matches.

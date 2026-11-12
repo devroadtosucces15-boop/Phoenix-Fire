@@ -53,7 +53,8 @@ import { refreshStatInsights, handleStatInsightJob, statInsightWeekly, discordIn
 import { handleHubWaveJob } from './hub.js';
 import { burnerCommand, burnerPick } from './burners.js';
 import { generateCards } from './cardstudio.js';
-import { message, notice, header, cards, facts, text, sep, side, thumb, label, footer, buttons, cardUrl, privateNote, resultAccent, RESULT_ICON, tagBlock } from './ui.js';
+import { message, notice, header, cards, facts, text, sep, side, thumb, label, footer, buttons, cardUrl, privateNote, resultAccent, RESULT_ICON, tagBlock, withBanner, bannerUrl } from './ui.js';
+import { BANNER_SPEC, bannerForCommand, bannerForComponent } from './banners.js';
 import { it } from './icons.js';
 import { playerFaces } from './faces.js';
 import { zoneChoices } from './host.js';
@@ -131,6 +132,7 @@ export default {
     const body = await request.text();
     if (!(await verify(request, body, env.DISCORD_PUBLIC_KEY))) return new Response('Bad signature', { status: 401 });
     const i = JSON.parse(body);
+    const json = (obj) => jsonBanner(obj, i, env); // every reply that carries no picture of its own gets its family banner (bot/banners.js)
 
     if (i.type === 1) return json({ type: 1 }); // PING
     // Commands answer only on the app that is their home right now (bot/apps.js homeOf: a moved command stays on its old app until the new one is configured). Buttons and menus are not
@@ -490,6 +492,16 @@ function insightsCommand(i, env, ctx, site, who) {
 }
 
 const json = (obj) => new Response(JSON.stringify(obj), { headers: { 'Content-Type': 'application/json' } });
+// Interaction replies (type 4 message, 7 update) get a banner by command or by button id; ephemeral or not, V2 panels only.
+function jsonBanner(obj, i, env) {
+  try {
+    if (obj?.data?.flags && (obj.type === 4 || obj.type === 7)) {
+      const name = i.type === 2 ? bannerForCommand(i.data?.name) : i.type === 3 || i.type === 5 ? bannerForComponent(i.data?.custom_id) : null;
+      if (name) return json({ ...obj, data: withBanner(obj.data, bannerUrl(env, name), BANNER_SPEC[name]?.title) });
+    }
+  } catch { /* a banner is decoration: never block the reply */ }
+  return json(obj);
+}
 
 // ---------- club crest proxy (P1.6) ----------
 // EA's crest CDN sends no CORS header, so the site can't draw opponent crests onto the result-graphic canvas.

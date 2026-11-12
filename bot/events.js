@@ -25,7 +25,7 @@ import { notify, notifyMembers, safely } from './notify.js';
 import { broadcastRoom } from './clubroom.js';
 import { POSITIONS } from './profiles.js';
 import { discordTargets, postEmbed } from './docs.js';
-import { message, header, text, sep, facts, footer, buttons, side, thumb, toLegacy, cards, RESULT_ICON, bannerUrl } from './ui.js';
+import { message, header, text, sep, facts, footer, buttons, side, thumb, toLegacy, cards, RESULT_ICON, bannerUrl, autoBanner } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 import { facesOf } from './faces.js';
 import { awardPoints } from './points.js';
@@ -730,7 +730,7 @@ export async function thirtyMinutes(env, now, everyone) {
     if (everyone && e.discord_channel && env.DISCORD_BOT_TOKEN) {
       const tags = ids.slice(0, 50);
       const msg = await eventPost(env, e, await rsvpRows(env, e.id), '⏰ ', { ping: `**⏰ Starting in 30 minutes · ${label(e)}**\n${tags.map((id) => `<@${id}>`).join(' ')}`, mentions: { users: tags } });
-      await safely(fetch(`https://discord.com/api/v10/channels/${e.discord_channel}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(msg) }));
+      await safely(fetch(`https://discord.com/api/v10/channels/${e.discord_channel}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg, 'event')) }));
     }
     sent++;
   }
@@ -762,7 +762,7 @@ export async function eventReminders(env) {
         ping: `**${head}** – ${yes} ✅ so far${pings.length ? `\nNot answered yet: ${pings.map((id) => `<@${id}>`).join(' ')}` : ''}`, mentions: { users: pings },
       });
       await safely(fetch(`https://discord.com/api/v10/channels/${e.discord_channel}/messages`, {
-        method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(msg),
+        method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg, 'event')),
       }));
     }
     if (e.remind === 'dm' && quiet.length) await safely(notify(env, quiet, { type: 'event', icon: soon ? '⏰' : '📅', title: `${head} – can you make it?`, body: `${yes} said yes so far. Answer ✅ ❔ ❌ in the Squad Hub${e.discord_channel ? ' or on the Discord post' : ''}.`, link: `members.html#schedule-${e.id}` }));

@@ -6,7 +6,7 @@
 //   Discord      buttons, a member select and modals on the Phoenix Rush app; a 1-minute cron keeps the board last and runs the idle timers
 // Flag `rushQueue` (default owner). Nothing here names a channel or role; pings go to the group's own members only.
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, footer, sep, button, buttons } from './ui.js';
+import { message, notice, reply, header, text, footer, sep, button, buttons, autoBanner } from './ui.js';
 import { orgName, channelsFor } from './orgconfig.js';
 import { discord } from './servertools.js';
 import { appEnv, appConfigured } from './apps.js';
@@ -217,7 +217,7 @@ export async function refreshBoards(env, { now = Date.now(), pings = [] } = {}) 
   if (!channels.length) return { channels: 0 };
   const e = rushEnv(env), kv = kvOf(env);
   const q = await loadQueue(env), st = await getSettings(env), avgSec = await avgSearchSeconds(env);
-  const msg = boardMessage(q, { now, org: orgName(env), st, avgSec });
+  const msg = autoBanner(env, boardMessage(q, { now, org: orgName(env), st, avgSec }), 'queue');
   for (const ch of channels) {
     const old = await kv?.get(BOARD_KEY + ch, 'json').catch(() => null);
     if (old?.id) await discord(e, 'DELETE', `/channels/${ch}/messages/${old.id}`).catch(() => null);
@@ -396,7 +396,7 @@ export async function report(i, env, me, now) {
   const used = Number(await kv?.get(key).catch(() => 0)) || 0;
   if (used >= REPORT_LIMIT) return say('Too many reports', `You can send ${REPORT_LIMIT} an hour. Staff have seen yours.`);
   await kv?.put(key, String(used + 1), { expirationTtl: REPORT_TTL });
-  const msg = message({ accent: 'gold', mentions: { parse: [] }, blocks: [header({ eyebrow: `${orgName(env)} · Rush queue`, title: '📢 Anonymous report', sub: `<t:${Math.floor(now / 1000)}:f>` }), text(`**Group:** ${group}${note ? `\n**Note:** ${note}` : ''}`), footer('Sent anonymously. Staff can message the group.')] });
+  const msg = autoBanner(env, message({ accent: 'gold', mentions: { parse: [] }, blocks: [header({ eyebrow: `${orgName(env)} · Rush queue`, title: '📢 Anonymous report', sub: `<t:${Math.floor(now / 1000)}:f>` }), text(`**Group:** ${group}${note ? `\n**Note:** ${note}` : ''}`), footer('Sent anonymously. Staff can message the group.')] }), 'queue');
   for (const ch of targets) await discord(rushEnv(env), 'POST', `/channels/${ch}/messages`, msg).catch((e) => console.log('rush report post failed', e.message));
   return say('✅ Report sent', 'Staff got it. Your name is not attached.', 'win');
 }

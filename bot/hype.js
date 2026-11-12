@@ -14,7 +14,7 @@
 import { kvOf } from './kv.js';
 import { channelFor } from './orgconfig.js';
 import { safely } from './notify.js';
-import { message, header, text, cards, facts, buttons, resultAccent, tagBlock } from './ui.js';
+import { message, header, text, cards, facts, buttons, resultAccent, tagBlock, autoBanner } from './ui.js';
 import { it } from './icons.js';
 
 const RED = 0xe8651a, GREEN = 0x22c55e, GREY = 0x6b7280;
@@ -54,7 +54,7 @@ async function generateRecap(env, club, m) {
 
 async function postHype(env, channel, msg, art) {
   const form = new FormData();
-  form.set('payload_json', JSON.stringify(msg));
+  form.set('payload_json', JSON.stringify(autoBanner(env, msg, 'hype')));
   if (art) form.set('files[0]', new Blob([art], { type: 'image/png' }), 'hype.png');
   const r = await fetch(`https://discord.com/api/v10/channels/${channel}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` }, body: form });
   if (!r.ok) console.log('hype post failed', r.status, await r.text());

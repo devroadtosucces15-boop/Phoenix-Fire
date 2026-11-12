@@ -3,7 +3,7 @@
 // minutes. State lives in KV, not D1, so a D1 outage doesn't also break the monitor's own memory.
 
 import { kvOf } from './kv.js';
-import { message, header, text, footer } from './ui.js';
+import { message, header, text, footer, autoBanner } from './ui.js';
 import { orgName } from './orgconfig.js';
 
 const KEY = 'monitor';
@@ -66,7 +66,7 @@ async function dmOwner(env, content) {
       const d = await r.json().catch(() => ({}));
       if (!d.id) continue;
       await fetch(`https://discord.com/api/v10/channels/${d.id}/messages`, {
-        method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(alertPanel(content)),
+        method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, alertPanel(content), 'health')),
       });
     } catch (e) {
       console.log('monitor DM failed', e.message);

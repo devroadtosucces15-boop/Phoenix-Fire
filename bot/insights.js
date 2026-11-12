@@ -15,6 +15,7 @@
 //   POST /api/intel/act      managers: { id, undo? } mark a recommendation handled (or undo that)
 //   POST /api/intel/remind   managers: { id } DM the other managers the recommendation's text as a nudge
 
+import { autoBanner } from './ui.js';
 import { can, flagOn } from './roles.js';
 import { orgName } from './orgconfig.js';
 import { notifyManagers, safely } from './notify.js';
@@ -415,7 +416,7 @@ async function dmOwners(env, report) {
     const [first, ...rest] = reportMessages(report, site, env);
     const intro = { type: 10, content: '📬 **Your weekly Club Intelligence report** – run **/intel** in the server any time for a fresh one.' };
     for (const m of [{ ...first, components: [intro, ...first.components] }, ...rest]) {
-      await post(`/channels/${ch.id}/messages`, m).catch((e) => console.log('insights DM failed', e.message));
+      await post(`/channels/${ch.id}/messages`, autoBanner(env, m, 'insight')).catch((e) => console.log('insights DM failed', e.message));
     }
   }
 }

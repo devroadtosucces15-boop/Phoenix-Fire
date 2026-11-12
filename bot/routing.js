@@ -5,6 +5,7 @@
 // this WAY (Discord DM · post in a channel · post and tag the group · post and tag @everyone), optionally in a specific
 // channel. An action with no rules keeps its built-in behaviour; an action with rules uses only those, so the table is the
 // single place to change where anything goes. Callers use routeNotification(); it returns null when the action has no rules.
+import { autoBanner } from './ui.js';
 import { can } from './roles.js';
 import { notify } from './notify.js';
 import { resolveChannel } from './orgconfig.js';
@@ -117,7 +118,7 @@ async function peopleOf(env, group, ctx) {
 async function post(env, channel, msg) {
   if (!env.DISCORD_BOT_TOKEN) return { ok: false, channel, error: 'Discord is not connected.' };
   const r = await fetch(`https://discord.com/api/v10/channels/${channel}/messages`, {
-    method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(msg),
+    method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg)),
   });
   const d = await r.json().catch(() => ({}));
   if (!r.ok) return { ok: false, channel, error: `Discord refused the post in <#${channel}> (${r.status}${d.message ? `: ${d.message}` : ''}).` };

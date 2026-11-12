@@ -17,7 +17,8 @@ import { sharedKey } from './sharedkey.js';
 import { can, flagOn } from './roles.js';
 import { broadcastRoom } from './clubroom.js';
 import { encryptPayload, safeEndpoint, sendPush } from './webpush.js';
-import { message, header, text, footer, buttons } from './ui.js';
+import { message, header, text, footer, buttons, withBanner, bannerUrl } from './ui.js';
+import { BANNER_SPEC, bannerForDm } from './banners.js';
 import { orgName } from './orgconfig.js';
 
 const DAY = 86400e3;
@@ -181,12 +182,12 @@ export async function deliverDMs(env, limit = 25) {
     channels[n.user_id] = ch;
     const url = siteUrl(env, n.link);
     const r = await discord(env, `/channels/${ch}/messages`, {
-      ...message({ accent: DM_ACCENT[n.type] ?? 'red', blocks: [
+      ...withBanner(message({ accent: DM_ACCENT[n.type] ?? 'red', blocks: [
         header({ eyebrow: `${orgName(env).toUpperCase()} · Alert`, title: `${n.icon ?? '🔔'} ${n.reminders ? 'Reminder: ' : ''}${n.title}`.slice(0, 250), size: 3 }),
         text([n.body, n.ack ? '**Please open the site and tap “Got it” to acknowledge.**' : ''].filter(Boolean).join('\n\n')),
         footer(`Sent <t:${Math.floor(n.at / 1000)}:R> · change DM settings: Squad Hub → 🔔 Alerts`),
         buttons([{ label: 'Open on the site', url }]),
-      ] }),
+      ] }), bannerUrl(env, bannerForDm(n.type)), BANNER_SPEC[bannerForDm(n.type)]?.title),
     });
     if (r.status === 429) break;
     if (r.ok) { await mark(n.id, 'sent'); sent++; continue; }

@@ -13,7 +13,7 @@
 //   GET/POST /api/playstyle        Play Style per mode + section (flag `playStyle`, members read, managers edit)
 //   GET/POST /api/suggestions (+ /vote /decide /remove)   suggestion box (flag `suggestions`)
 // Text is "markdown-lite" (headings, bold, italics, lists, links, image + video lines) rendered by web/docs-md.js.
-import { IS_V2 } from './ui.js';
+import { IS_V2, autoBanner } from './ui.js';
 import { orgName, channelFor, mirrorChannel } from './orgconfig.js';
 import { can, flagOn } from './roles.js';
 import { notify, notifyManagers, notifyMembers, safely } from './notify.js';
@@ -157,7 +157,7 @@ export async function discordTargets(env) {
 }
 // Sends one message to a channel, pinging `role` (the guild id = @everyone) and nobody else. Never throws.
 // Shared with P3.1 events. Returns { ok, id } or { ok: false, error } with a human explanation.
-export async function postEmbed(env, channel, role, message, { remember = true } = {}) { // remember:false = a source-specific post (stream alerts) that must not become the shared announce channel
+export async function postEmbed(env, channel, role, message, { remember = true, banner = null } = {}) { // remember:false = a source-specific post (stream alerts) that must not become the shared announce channel
   if (!env.DISCORD_BOT_TOKEN || !env.DISCORD_GUILD_ID) return { ok: false, error: DISCORD_HELP.setup };
   channel = String(channel ?? ''); role = String(role ?? '');
   if (!/^\d{5,25}$/.test(channel)) return { ok: false, error: 'Pick a channel.' };
@@ -166,6 +166,7 @@ export async function postEmbed(env, channel, role, message, { remember = true }
   const tag = role ? (everyone ? '@everyone' : `<@&${role}>`) : '';
   const allowed = role ? (everyone ? { parse: ['everyone'] } : { roles: [role] }) : { parse: [] };
   let msg;
+  message = autoBanner(env, message, banner); // no picture of its own → the banner of its family (bot/banners.js)
   if (message.flags & IS_V2) { // design-system message (bot/ui.js): the ping goes in the line above the panel, there's no `content`
     const comps = [...message.components];
     if (tag) comps[0]?.type === 10 ? (comps[0] = { ...comps[0], content: `${tag} ${comps[0].content}` }) : comps.unshift({ type: 10, content: tag });

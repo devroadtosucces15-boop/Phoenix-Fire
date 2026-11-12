@@ -13,6 +13,7 @@
 // home/manual/linked clubs are fetched every run and every match is archived.
 // discovered clubs are refreshed in rotating batches; they exist to find your
 // members' other clubs and to fill in stats for players you meet.
+import { autoBanner } from '../bot/ui.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { DATA, readJson, writeJson, loadConfig, loadOverrides, loadBotSettings, loadBurners, loadCrawlCursor, saveCrawlSlice, num, sleep, eventCounts } from './lib.mjs';
@@ -356,7 +357,7 @@ async function postBurnerReports() {
     if (posted >= 4) break; // a catch-up never floods the channel; the rest follow next run
     const r = await fetch(`https://discord.com/api/v10/channels/${channel}/messages`, {
       method: 'POST', headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(reportMessage(record, match, stats, site)),
+      body: JSON.stringify(autoBanner({ SITE_URL: site }, reportMessage(record, match, stats, site), 'burner')),
     }).catch((e) => ({ ok: false, status: e.message }));
     if (!r.ok) { console.warn(`Burner report failed (${r.status}) – the bot needs View Channel + Send Messages + Embed Links there.`); break; }
     record.reported = [...new Set([...record.reported, match.id])].slice(-200);

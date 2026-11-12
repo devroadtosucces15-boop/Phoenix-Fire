@@ -9,7 +9,7 @@
 //   /setup             managers: the leave-log channel, the welcome channel and the ping-role panel
 // Reading the member list needs "Server Members Intent" switched on (Discord developer portal → Bot).
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2 } from './ui.js';
+import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2, autoBanner } from './ui.js';
 import { orgName, channelFor, setupMapping, CHANNEL_PURPOSE_INFO } from './orgconfig.js';
 import { facesOf } from './faces.js';
 
@@ -68,7 +68,7 @@ export async function discord(env, method, path, body, reason) {
   if (!r.ok) throw new Error(r.status === 403 || d.code === 50001 || d.code === 50013 ? 'no-access' : d.message || `discord-${r.status}`);
   return d;
 }
-const post = (env, channel, msg) => discord(env, 'POST', `/channels/${channel}/messages`, msg);
+const post = (env, channel, msg) => discord(env, 'POST', `/channels/${channel}/messages`, autoBanner(env, msg));
 
 // Deferred reply: answer "thinking…" now (Discord's 3-second limit), patch the real answer in when the work is done.
 function later(env, i, ctx, work) {

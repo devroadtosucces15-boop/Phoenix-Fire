@@ -41,7 +41,7 @@ await tt('image model failing does not block the post, just drops the image', as
   imgFail = true;
   const r = await checkHype(env, loadSite(club('m3')));
   imgFail = false;
-  return r.posted === true && posts.length === 2 && images(lastMsg()).length === 0;
+  return r.posted === true && posts.length === 2 && !images(lastMsg()).some((u) => u.startsWith('attachment://')); // the family banner still shows (bot/banners.js)
 });
 await tt('text model failing falls back to a plain result line, still posts', async () => {
   textFail = true;
