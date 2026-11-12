@@ -7,9 +7,20 @@ import { loadBotSettings, num } from '../lib.mjs';
 import { resolveRoute, requestMatchAlert } from './org.mjs';
 import { alertLine, loseByOf } from '../../bot/matchalert.js';
 import { matchComponents } from '../../bot/matchcard.js';
-import { message, header, facts, footer, resultAccent, cards, label, tagBlock } from '../../bot/ui.js';
+import { message, header, facts, footer, resultAccent, cards, label, tagBlock, ACCENT } from '../../bot/ui.js';
 import { clubTag } from './clubtag.mjs';
 import { it } from '../../bot/icons.js';
+
+// A panel without its buttons and menus, for the plain-webhook path (a webhook can send the layout but not interactive components).
+export function staticPanel(data) {
+  const strip = (cs) => (cs ?? []).filter((c) => c?.type !== 1).map((c) => {
+    const o = { ...c };
+    if (o.accessory?.type === 2 || o.accessory?.type === 3) delete o.accessory;
+    if (o.components) o.components = strip(o.components);
+    return o;
+  }).filter((c) => !(c.type === 9 && !c.accessory && !(c.components ?? []).length));
+  return { ...data, components: strip(data.components) };
+}
 
 // New home results → Discord. With the bot token and the discordMatch flag on for members/public, each result is
 // posted by the bot into the webhook's channel with the P7.2 "Show my match" menu (plain webhooks can't carry
@@ -97,7 +108,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         author: { name: `${tag.important ? '🚨 ' : ''}${tag.label} · ${kind.toUpperCase()}` },
         title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
         url,
-        color: { W: 0x22c55e, D: 0xeab308, L: 0xef4444 }[res],
+        color: { W: ACCENT.win, D: ACCENT.gold, L: ACCENT.loss }[res], // the Phoenix palette (bot/ui.js ACCENT), same stripe colours as the panel
         description: res === 'W' ? '✅ **Victory**' : res === 'L' ? '❌ **Defeat**' : '➖ **Draw**',
         thumbnail: { url: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : `${site}assets/crest.png` },
         fields: [
@@ -141,11 +152,24 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
     }
   } else {
     // No bot token / flag off: the plain webhook IS the configured destination (the deployment's own DISCORD_WEBHOOK secret), as before.
-    await fetch(hook, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png` : undefined, content: pingContent, embeds: items.map((x) => x.embed), allowed_mentions: allowedMentions }),
-    }).catch((e) => console.warn('Discord post failed:', e.message));
+    // Same design-system panel as the bot's post, minus the buttons and menus (a webhook cannot carry interactive components; with_components
+    // lets it send the layout). If Discord refuses that, the result still goes out as the classic embed.
+    const url = `${hook}${hook.includes('?') ? '&' : '?'}with_components=true`;
+    const identity = { username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png` : undefined };
+    for (const item of items) {
+      const payload = { ...identity, ...staticPanel(item.panel(pingContent, allowedMentions)) };
+      let body, headers = {};
+      if (item.files.length) {
+        body = new FormData();
+        body.set('payload_json', JSON.stringify(payload));
+        item.files.forEach((f, k) => body.set(`files[${k}]`, new Blob([fs.readFileSync(f.path)], { type: 'image/png' }), f.name));
+      } else { body = JSON.stringify(payload); headers = { 'Content-Type': 'application/json' }; }
+      let r = await fetch(url, { method: 'POST', headers, body }).catch((e) => ({ ok: false, status: e.message }));
+      if (!r?.ok) {
+        console.warn(`Webhook panel refused (${r?.status}), posting the classic embed instead`);
+        r = await fetch(hook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...identity, content: pingContent, embeds: [item.embed], allowed_mentions: allowedMentions }) }).catch((e) => console.warn('Discord post failed:', e.message));
+      }
+    }
   }
   // Match alert: a result that trips the rule (default: a defeat by 3 or more, config.matchAlert.loseBy) asks the Worker for the alert,
   // right after the result and its review. Only results that really went out; a manual repost never alerts twice.
