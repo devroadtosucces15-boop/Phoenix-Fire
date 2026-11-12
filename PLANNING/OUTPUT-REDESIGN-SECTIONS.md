@@ -17,7 +17,7 @@ Building blocks that exist (do not rebuild):
 |---|---|---|---|
 | 1 | Match report + family banners | merged match picture, review message, 49 banners on every send point | done (8519e4c, banners commit) |
 | 2 | Help and Rush queue posters | 6 help posters, queue how-it-works poster | done |
-| 3 | Match night | roster, check-in, lineup pitch, suggested lineup, first-answer order (branch `claude/practical-chandrasekhar-707b93`, pushed, not merged) | to merge and verify |
+| 3 | Match night | roster, check-in, lineup pitch, suggested lineup, first-answer order (branch `claude/practical-chandrasekhar-707b93`, pushed, not merged) | done (merged, verified) |
 | 4 | Alerts | match alert (CAUTION message 3), uptime, event cancelled, 30-minute reminder, trial stage, caution DMs | open |
 | 5 | Private replies | My insights, My game plan, form score, locker summary, `/me`, `/insight`, `/intel` | open |
 | 6 | Automated posts | live, member live, hype, awards, hotw, birthday, welcome, patch notes, media guard, voice recap, burner report, plays, squad post, doc post | open |
