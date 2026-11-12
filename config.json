@@ -102,6 +102,7 @@
     "ask": "members",
     "aiInsights": "members",
     "lineupRec": "managers",
+    "rosterPicture": "members",
     "insights": "managers",
     "burners": "members",
     "issueTool": "owner",

@@ -102,6 +102,10 @@ export function cardUrl(manifest, ...key) {
 export const BANNER_V = 8; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
 
+// The empty pitch of a formation (scripts/cards-events.mjs draws one per shape: lineup-<slug>.png).
+export const lineupSlug = (f) => String(f).toLowerCase().replace(/[^0-9a-z]+/g, '-').replace(/^-|-$/g, '');
+export const lineupUrl = (env, formation) => (env?.SITE_URL && formation ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/lineup-${lineupSlug(formation)}.png?v=${BANNER_V}` : null);
+
 // Every piece of text in a message, flattened – for tests and for logging.
 export function plainText(msg) {
   const out = [];

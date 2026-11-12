@@ -14,6 +14,7 @@ import { BANNER_SPEC } from '../bot/banners.js';
 import { HELP_POSTER_KEYS, HELP_ICON, helpPosterModel } from '../bot/help.js';
 import { buildReview, loadHistory } from './lib/matchreview.mjs';
 import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
+import { eventJobs } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 export const TEMPLATE_VERSION = 8; // bump to redraw every card after a template change
@@ -50,7 +51,7 @@ body:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gr
 .tile b{display:block;font:700 78px/1 Oswald;font-variant-numeric:tabular-nums}.tile.g b{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent}
 .tile span{display:block;margin-top:10px;font:700 18px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}
 `;
-const page = (css, body) => `<!doctype html><html><head><meta charset="utf-8"><style>${fontFaces()}${BASE}${css}</style></head><body>${body}</body></html>`;
+export const page = (css, body) => `<!doctype html><html><head><meta charset="utf-8"><style>${fontFaces()}${BASE}${css}</style></head><body>${body}</body></html>`;
 const SHIELD = (fill, stroke, letter) => `<svg viewBox="0 0 40 46" width="100%" height="100%"><path d="M20 1 38 7v15c0 11-8 19-18 23C10 41 2 33 2 22V7z" fill="${fill}" stroke="${stroke}" stroke-width="2"/><text x="20" y="29" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="16" fill="#fff">${esc(letter)}</text></svg>`;
 // a crest <img> that falls back to a drawn shield if the picture can't load
 const crest = (src, name, size, home) => {
@@ -575,6 +576,7 @@ export function cardJobs(club, players, { matches = 10, review = null, picture =
     const rows = topRows(players, stat).map(([p, v]) => [p.n, p.pos, p.s, v]);
     jobs.push({ key: ['top', stat], file: `top-${stat}-${hash([rows, club.name])}.png`, html: () => tableCard(players, stat, club) });
   }
+  jobs.push(...eventJobs());
   for (const [name, html] of Object.entries(BANNERS)) jobs.push({ key: ['banner', name], file: `banner-${name}.png`, html });
   jobs.push({ key: ['club'], file: `club-${hash([club.name, club.crest, club.division, club.gp, club.w, club.d, club.l, club.gf, club.ga, club.form])}.png`, html: () => clubCard(club) });
   jobs.push({ key: ['results'], file: `results-${hash((club.matches ?? []).slice(0, 8))}.png`, html: () => resultsCard(club) });
