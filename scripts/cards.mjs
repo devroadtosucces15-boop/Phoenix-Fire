@@ -17,7 +17,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 13; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 14; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -659,6 +659,34 @@ export const DMS = {
 };
 export const dmPicture = (key) => taggedPicture(DMS[key]);
 for (const k of Object.keys(DMS)) BANNERS[k] = () => dmPicture(k);
+// ---------- notice pictures (section 9): a compact strip for button, menu and form replies and every private notice ----------
+// One table for the nine notice kinds (bot/banners.js NOTICE_KINDS says which kind a reply is). The strip is 150 px tall, not a full poster: a coloured
+// edge for the tone, a line icon, the title, one line on what to do, and the Phoenix crest. The words that name a person, channel or time stay in the message text.
+const NOTICE_ART = {
+  ok: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M7.5 12.5l3 3 6-7" stroke="${O}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+  info: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 11v6" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.4" fill="${O}"/>`,
+  lock: `<rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="15.5" r="1.6" fill="${O}"/>`,
+  hourglass: `<path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9" fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><path d="M9.5 18.5h5L12 16z" fill="${O}"/>`,
+};
+export const NOTICES = {
+  'notice-success': { art: ALERT_ART.up, title: 'Done', sub: 'That went through', tone: 'win' },
+  'notice-info': { art: NOTICE_ART.info, title: 'Good to know', sub: 'Nothing for you to do', tone: 'steel' },
+  'notice-warning': { art: ALERT_ART.caution, title: 'Heads up', sub: 'Read this before you go on', tone: 'warn' },
+  'notice-error': { art: ALERT_ART.down, title: 'That did not work', sub: 'Nothing was changed', tone: 'loss' },
+  'notice-locked': { art: NOTICE_ART.lock, title: 'Not available', sub: 'Switched off, or not for your role', tone: 'steel' },
+  'notice-empty': { art: ICONS.inbox, title: 'Nothing here yet', sub: 'It will show up when there is something', tone: 'steel' },
+  'notice-expired': { art: ALERT_ART.clock, title: 'Too late', sub: 'This one has closed or expired', tone: 'steel' },
+  'notice-cooldown': { art: NOTICE_ART.hourglass, title: 'Slow down', sub: 'Wait a moment, then try again', tone: 'warn' },
+  'notice-notconfigured': { art: ICONS.gear, title: 'Not set up yet', sub: 'A manager sets this in the Boardroom', tone: 'warn' },
+};
+const NOTICE_EDGE = { win: '#4be08a', loss: '#ff7d72', warn: '#e8651a', steel: '#6c7890' };
+export function noticePicture(key) {
+  const n = NOTICES[key];
+  const edge = NOTICE_EDGE[n.tone] ?? NOTICE_EDGE.steel;
+  return page(`body{height:150px}.ns{position:absolute;inset:0;display:flex;align-items:center;gap:34px;padding:0 200px 0 62px}.ns:before{content:"";position:absolute;left:0;top:0;bottom:0;width:18px;background:${edge}}.ns svg{flex:none}.ns h1{font:700 62px/1 Oswald;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;text-shadow:0 6px 30px rgba(232,101,26,.5)}.ns p{margin-top:8px;font:600 22px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);white-space:nowrap}.ns .eyebrow{font-size:16px;margin-bottom:4px}.wm{position:absolute;right:46px;top:50%;width:104px;height:104px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 22px rgba(232,101,26,.5))}.brand{display:none}`,
+    `<div class="ns"><svg width="92" height="92" viewBox="0 0 24 24">${n.art}</svg><div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">${esc(n.title)}</h1><p>${esc(n.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
+}
+for (const k of Object.keys(NOTICES)) BANNERS[k] = () => noticePicture(k);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------

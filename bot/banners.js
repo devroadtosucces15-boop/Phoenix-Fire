@@ -143,6 +143,16 @@ export const BANNER_SPEC = {
   'dm-caution': { icon: 'flame', title: 'Caution', sub: 'A player needs a second look' },
   'dm-live': { icon: 'antenna', title: 'We are live', sub: 'The club just went on air' },
   'dm-test': { icon: 'pulse', title: 'Test alert', sub: 'Your DMs are working' },
+  // Notice pictures (drawn by scripts/cards.mjs noticePicture, a compact strip; the title is the picture's alt text).
+  'notice-success': { icon: 'flame', title: 'Done', sub: 'That went through' },
+  'notice-info': { icon: 'flame', title: 'Good to know', sub: 'Nothing for you to do' },
+  'notice-warning': { icon: 'flame', title: 'Heads up', sub: 'Read this before you go on' },
+  'notice-error': { icon: 'flame', title: 'That did not work', sub: 'Nothing was changed' },
+  'notice-locked': { icon: 'shield', title: 'Not available', sub: 'Switched off, or not for your role' },
+  'notice-empty': { icon: 'inbox', title: 'Nothing here yet', sub: 'It will show up when there is something' },
+  'notice-expired': { icon: 'flame', title: 'Too late', sub: 'This one has closed or expired' },
+  'notice-cooldown': { icon: 'flame', title: 'Slow down', sub: 'Wait a moment, then try again' },
+  'notice-notconfigured': { icon: 'gear', title: 'Not set up yet', sub: 'A manager sets this in the Boardroom' },
 };
 
 // Slash command → family.
@@ -205,3 +215,24 @@ export const bannerFromEyebrow = (s) => BY_EYEBROW.find(([re]) => re.test(String
 export const bannerForCommand = (name) => BANNER_BY_COMMAND[name] ?? 'general';
 export const bannerForComponent = (id) => BANNER_BY_COMPONENT.find(([re]) => re.test(String(id ?? '')))?.[1] ?? 'general';
 export const bannerForDm = (type) => BANNER_BY_DM[type] ?? 'general';
+
+// ---------- notices (section 9): which of the nine notice pictures a short reply gets ----------
+// A notice is the small private reply every button, menu, form and command sends for a refusal, an error or a confirmation. The kind comes from the
+// words and the stripe tone (win / loss / gold / red / steel); the first rule that matches wins, so the more specific kinds come first.
+export const NOTICE_KINDS = ['success', 'info', 'warning', 'error', 'locked', 'empty', 'expired', 'cooldown', 'notconfigured'];
+const NOTICE_RULES = [
+  ['notconfigured', /not (been )?(set up|configured|connected|switched on for this server)|isn.t (set up|configured|connected)|no (channel|role) (is )?(set|configured)|(channel|role) (is )?not set|boardroom|organization config|database (is|isn.t|isn’t) (not )?connected/i],
+  ['locked', /managers? only|owner only|staff only|members only|only (a |the )?(manager|managers|owner|captain|staff|member)|not (switched on|available|allowed|for you)|isn.t switched on|permission|locked|🔒|not on this bot|no access/i],
+  ['cooldown', /cool-?down|slow down|too fast|too many|rate.?limit|wait (a|\d)|try again in|once (an|per|every)|already (asked|sent|voted).*(today|hour|minute)/i],
+  ['expired', /expired|timed out|too late|no longer (open|available|active)|has closed|is closed|already (finished|started|over|closed)|ran out/i],
+  ['empty', /nothing (here|waiting|scheduled|to show|yet)|no .{1,40} (yet|found|waiting|scheduled|available)|is empty|none yet|no results/i],
+  ['error', /went wrong|could ?n.t|couldn.t|can.t|cannot|failed|not found|is gone|doesn.t exist|unknown|invalid|error|⚠️|try again|didn.t work/i],
+  ['success', /^(done|saved|sent|added|removed|deleted|updated|approved|posted|joined|left|set|confirmed|you are|you.re|✅)|\b(saved|sent|added|removed|approved|scheduled|confirmed|thanks)\b/i],
+];
+export const noticeKindFor = (text, tone = 'steel') => {
+  const s = String(text ?? '');
+  const hit = NOTICE_RULES.find(([, re]) => re.test(s))?.[0];
+  if (hit) return hit;
+  return tone === 'win' ? 'success' : tone === 'loss' ? 'error' : tone === 'gold' || tone === 'red' ? 'warning' : 'info';
+};
+export const noticeBanner = (kind) => `notice-${NOTICE_KINDS.includes(kind) ? kind : 'info'}`;

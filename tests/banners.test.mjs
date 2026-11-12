@@ -22,6 +22,7 @@ t('a message with a picture of its own keeps it, no second picture', images(with
 t('a one-line notice stays compact', images(withBanner(notice('No'), bannerUrl(env, 'club'))).length === 0);
 t('no site URL, no banner, no crash', images(withBanner(panel(), bannerUrl({}, 'club'))).length === 0);
 t('autoBanner picks the family from the header label', images(autoBanner(env, message({ accent: 'red', blocks: [header({ eyebrow: 'Phoenix · Rush queue', title: 'T' })] }))).some((u) => u.includes('banner-queue.png')));
+t('every notice kind has a banner entry, alt text and a drawn picture (section 9)', ['success', 'info', 'warning', 'error', 'locked', 'empty', 'expired', 'cooldown', 'notconfigured'].every((k) => typeof BANNERS[`notice-${k}`] === 'function' && BANNER_SPEC[`notice-${k}`]?.title));
 t('banners are drawn Phoenix, not NOREX', Object.values(BANNERS).every((f) => !/norex|c8352c|080b11/i.test(f())) && /Rise\. Burn\. Repeat\./.test(BANNERS.general()));
 
 // ----- help and queue posters -----
