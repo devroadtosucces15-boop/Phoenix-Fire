@@ -41,8 +41,8 @@
   const cap = () => X.capOf(g);
   const capWord = () => (g.levelCap?.verified ? 'official' : 'unverified');
   const code = (x = b) => X.encode(g, x);
-  const fromCode = (c) => { const x = X.decode(g, c); return x && { arch: x.arch, level: x.level, spent: x.spent, ps: x.ps, plus: x.plus, sp: x.sp, fa: x.fa, h: x.h, w: x.w, v: x.version }; };
-  const plain = (x) => ({ arch: x.arch, level: x.level, spent: { ...x.spent }, ps: x.ps, plus: x.plus, sp: x.sp, fa: x.fa, h: x.h, w: x.w });
+  const fromCode = (c) => { const x = X.decode(g, c); return x && { arch: x.arch, level: x.level, spent: x.spent, ps: x.ps, plus: x.plus, sp: x.sp, fa: x.fa, fl: x.fl, sm: x.sm, wf: x.wf, h: x.h, w: x.w, v: x.version }; };
+  const plain = (x) => ({ arch: x.arch, level: x.level, spent: { ...x.spent }, ps: x.ps, plus: x.plus, sp: x.sp, fa: x.fa, fl: x.fl, sm: x.sm, wf: x.wf, h: x.h, w: x.w });
   const outdated = (x) => !!(x.version && x.version !== g.version);
   const linkFor = (hash) => location.origin + location.pathname + '#' + hash;
   const dirty = () => !!(cur?.mine && cur.base !== code());
@@ -126,11 +126,12 @@
   const bar = (r, top) => { const p = (v) => Math.max(0, Math.min(100, (v / top) * 100)).toFixed(1); return `<span class="bx-bar" aria-hidden="true"><i class="b" style="width:${p(r.base)}%"></i>${r.add ? `<i class="a" style="left:${p(r.base)}%;width:${p(Math.min(r.add, r.top - r.base))}%"></i>` : ''}${r.bonus ? `<i class="m" style="left:${p(r.base + r.add)}%;width:${p(r.bonus)}%"></i>` : ''}${r.top < top ? `<i class="cap" style="left:${p(r.top)}%"></i>` : ''}</span>`; };
   function grpHtml(ev, grp) {
     const rows = ev.rows.filter((r) => r.group === grp.id);
+    if (!rows.length) return ''; // Goalkeeping only exists for goalkeeper archetypes
     const avg = Math.round(rows.reduce((s, r) => s + r.value, 0) / (rows.length || 1));
     const key = (ev.arch.group === 'GK') === (grp.id === 'goalkeeping') || grp.id === 'physical' || (ev.arch.group === 'GK' && grp.id === 'pace');
     return `<section class="panel bx-grp${key ? '' : ' dim'}"><header><span>${GICON[grp.id] ?? '•'} ${esc(grp.name)}</span><b class="num">${avg}</b></header>${rows.map((r) => {
       const c = X.canAdd(g, ev, r.name), open = openAttr === r.name;
-      return `<div class="bx-row${r.sig ? ' sig' : ''}${r.add ? ' up' : ''}" data-attr="${esc(r.name)}"><button type="button" class="bx-nm" data-bxq aria-expanded="${open}" title="Tap for Min / −5 / +5 / Max">${r.sig ? '<i aria-label="Signature attribute">★</i> ' : ''}${esc(r.name)}</button>
+      return `<div class="bx-row${r.sig ? ' sig' : ''}${r.add ? ' up' : ''}" data-attr="${esc(r.name)}"><button type="button" class="bx-nm" data-bxq aria-expanded="${open}" title="Tap for Min / −5 / +5 / Max">${r.sig ? '<i aria-label="Signature attribute">★</i> ' : ''}${esc(r.name)}<small class="bx-cs" title="${c == null ? 'No next point' : `Next point costs ${c} AP`} · this archetype’s ceiling is ${r.top}">${c == null ? '–' : c + ' AP'} · max ${r.top}</small></button>
 <button type="button" class="bx-pm" data-d="-1" aria-label="Lower ${esc(r.name)}"${r.add ? '' : ' disabled'}>−</button><b class="bx-v num">${r.value}${r.add ? `<small class="a">+${r.add}</small>` : ''}${r.bonus ? `<small class="m" title="Mastery bonus">+${r.bonus}</small>` : ''}${r.mod ? `<small class="${r.mod > 0 ? 'a' : 'neg'}" title="${esc(r.modFrom.map(([f, v]) => `${f} ${v > 0 ? '+' : ''}${v}`).join(' · '))}">${r.mod > 0 ? '+' : ''}${r.mod}</small>` : ''}</b><button type="button" class="bx-pm" data-d="1" aria-label="Raise ${esc(r.name)}"${c == null ? ' disabled' : ''} title="${c == null ? (r.value >= r.top ? `At this archetype’s ceiling (${r.top})` : 'Not enough points left') : `Costs ${c} point${c === 1 ? '' : 's'}`}">+</button>${bar(r, ev.top)}
 ${open ? `<div class="bx-quick"><button type="button" data-qq="min"${r.add ? '' : ' disabled'}>⏮ Min <small>${r.base}</small></button><button type="button" data-qq="-5"${r.add ? '' : ' disabled'}>−5</button><button type="button" data-qq="+5"${c == null ? ' disabled' : ''}>+5</button><button type="button" data-qq="max"${c == null ? ' disabled' : ''}>Max <small>${r.top}</small> ⏭</button><span class="tiny muted">${r.cost ? `${r.cost} pts in` : 'nothing spent yet'}</span></div>` : ''}</div>`;
     }).join('')}</section>`;
@@ -142,19 +143,22 @@ ${open ? `<div class="bx-quick"><button type="button" data-qq="min"${r.add ? '' 
     let body;
     if (xt === 'playstyles') {
       const list = g.playstyles || [];
-      body = !list.length ? none('PlayStyles') : `<p class="muted small">Up to <b>${sl.playstyles}</b> PlayStyles and <b>${sl.plus}</b> PlayStyle+. Tap once to pick, again to make it +, again to remove. <b class="num">${c.ps.length}/${sl.playstyles}</b> · <b class="num">${c.plus.length}/${sl.plus}</b>+</p>
+      const own = ev.arch.playStyles?.names || [];
+      body = !list.length ? none('PlayStyles') : `${own.length ? `<p class="muted small">${esc(ev.arch.name)} starts with <b>${own.map(esc).join(', ')}</b>${ev.arch.playStyles.complete ? '' : ' (the full set is not confirmed yet)'}.</p>` : `<p class="muted small">${esc(ev.arch.name)}’s own PlayStyles are not confirmed yet.</p>`}<p class="muted small">Up to <b>${sl.playstyles}</b> PlayStyles and <b>${sl.plus}</b> PlayStyle+. Tap once to pick, again to make it +, again to remove. <b class="num">${c.ps.length}/${sl.playstyles}</b> · <b class="num">${c.plus.length}/${sl.plus}</b>+</p>
 <div class="bx-opts">${list.map((p) => { const on = c.ps.includes(p.id), pl = c.plus.includes(p.id), sig = ev.arch.signaturePlaystyle === p.id; return `<button type="button" class="bx-opt${on ? ' on' : ''}${pl ? ' plus' : ''}" data-ps="${esc(p.id)}" aria-pressed="${on || pl}"${p.desc ? ` title="${esc(p.desc)}"` : ''}><span aria-hidden="true">${esc(p.icon || '💫')}</span><b>${esc(p.name)}${pl ? ' <i>+</i>' : ''}</b>${sig ? '<small class="g">★ signature</small>' : p.plus === false ? '<small class="muted">no +</small>' : ''}</button>`; }).join('')}</div>`;
     } else if (xt === 'specializations') {
       const list = X.specsFor(g, b.arch);
-      body = !list.length ? none(`Specializations for ${esc(ev.arch.name)}`) : `<p class="muted small">One Specialization per build.</p><div class="bx-opts wide">${list.map((s) => `<button type="button" class="bx-opt wide${c.sp === s.id ? ' on' : ''}" data-sp="${esc(s.id)}" aria-pressed="${c.sp === s.id}"><span aria-hidden="true">🎓</span><b>${esc(s.name)}</b>${s.desc ? `<small class="muted">${esc(s.desc)}</small>` : ''}<span class="bx-fx">${fx(s.bonus)}</span></button>`).join('')}</div>`;
+      body = !list.length ? none(`Specializations for ${esc(ev.arch.name)}`) : `<p class="muted small">One Specialization per build.</p><div class="bx-opts wide">${list.map((s) => `<button type="button" class="bx-opt wide${c.sp === s.id ? ' on' : ''}" data-sp="${esc(s.id)}" aria-pressed="${c.sp === s.id}"><span aria-hidden="true">🎓</span><b>${esc(s.name)}</b>${s.desc ? `<small class="muted">${esc(s.desc)}</small>` : ''}${s.thresholds ? `<small class="${Object.entries(s.thresholds).every(([k, v]) => (ev.rows.find((r) => r.name === k)?.value ?? 0) >= v) ? 'g' : 'muted'}">${Object.entries(s.thresholds).every(([k, v]) => (ev.rows.find((r) => r.name === k)?.value ?? 0) >= v) ? 'Requirements met' : Object.entries(s.thresholds).filter(([k, v]) => (ev.rows.find((r) => r.name === k)?.value ?? 0) < v).map(([k, v]) => `${esc(k)} ${ev.rows.find((r) => r.name === k)?.value ?? 0}→${v}`).join(' · ')}</small>` : ''}<span class="bx-fx">${fx(s.bonus)}</span></button>`).join('')}</div>`;
     } else if (xt === 'facilities') {
       const list = g.facilities || [];
-      body = !list.length ? none('Facilities') : `<p class="muted small">Up to <b>${sl.facilities}</b> Facilities · <b class="num">${c.fa.length}/${sl.facilities}</b></p><div class="bx-opts wide">${list.map((f) => `<button type="button" class="bx-opt wide${c.fa.includes(f.id) ? ' on' : ''}" data-fa="${esc(f.id)}" aria-pressed="${c.fa.includes(f.id)}"><span aria-hidden="true">🏟️</span><b>${esc(f.name)}</b>${f.desc ? `<small class="muted">${esc(f.desc)}</small>` : ''}<span class="bx-fx">${fx(f.bonus)}</span></button>`).join('')}</div>`;
+      const F = ev.facility, K = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1)} M` : `${n} K`), mx = g.facilityRules?.maxLevel || 3;
+      if (list.length && F.on) body = `<p class="muted small">Facilities cost budget, not AP. <b class="num ${F.left < 0 ? 'neg' : ''}">${K(Math.max(0, F.left))}</b> left of ${K(F.budget)} at level ${ev.level}. Each star adds to two attributes.</p>${F.left < 0 ? '<p class="neg small">Over budget: lower a Facility or raise your level.</p>' : ''}<div class="bx-opts wide">${list.map((f) => { const l = c.fl[f.id] || 0; return `<div class="bx-opt wide${l ? ' on' : ''}" role="group" aria-label="${esc(f.name)}"><span aria-hidden="true">🏟️</span><b>${esc(f.name)}</b><small class="muted">${esc(f.category)} · ${f.attributes.map(esc).join(' · ')}${l ? ` <b class="a">+${f.boosts[l - 1]}</b>` : ''}</small><span class="bx-stars">${Array.from({ length: mx }, (_, i) => i + 1).map((n) => { const cost = X.facCost(g, f, l, n), ok = n <= l || cost <= F.left; return `<button type="button" class="bx-star${n <= l ? ' on' : ''}" data-fl="${esc(f.id)}" data-n="${n}"${ok ? '' : ' disabled'} aria-label="${esc(f.name)} ${n} star" title="${n <= l ? 'Tap to lower' : `${K(cost)}`}">★</button>`; }).join('')}<small class="num muted">${l < mx ? K(X.facCost(g, f, l, l + 1)) : 'Max'}</small></span></div>`; }).join('')}</div>`;
+      else body = !list.length ? none('Facilities') : `<p class="muted small">Up to <b>${sl.facilities}</b> Facilities · <b class="num">${c.fa.length}/${sl.facilities}</b></p><div class="bx-opts wide">${list.map((f) => `<button type="button" class="bx-opt wide${c.fa.includes(f.id) ? ' on' : ''}" data-fa="${esc(f.id)}" aria-pressed="${c.fa.includes(f.id)}"><span aria-hidden="true">🏟️</span><b>${esc(f.name)}</b>${f.desc ? `<small class="muted">${esc(f.desc)}</small>` : ''}<span class="bx-fx">${fx(f.bonus)}</span></button>`).join('')}</div>`;
     } else {
-      const H = X.rangeOf(g, 'height'), W = X.rangeOf(g, 'weight'), mods = X.modsOf(g, b);
+      const H = ev.body.height, W = ev.body.weight, mods = X.modsOf(g, b);
       const from = (src) => { const l = Object.entries(mods).flatMap(([k, v]) => v.filter(([f]) => f === src).map(([, n]) => [k, n])); return l.length ? `<span class="bx-fx">${fx(Object.fromEntries(l))}</span>` : '<span class="tiny muted">No change at this value</span>'; };
       body = `<div class="bx-body"><label><span>📏 Height <b class="num" data-bv="h">${c.h}</b> cm</span><input type="range" min="${H.min}" max="${H.max}" value="${c.h}" data-body="h" aria-label="Height in cm">${from('Height')}</label>
-<label><span>⚖️ Weight <b class="num" data-bv="w">${c.w}</b> kg</span><input type="range" min="${W.min}" max="${W.max}" value="${c.w}" data-body="w" aria-label="Weight in kg">${from('Weight')}</label></div>${!g.body?.heightMods?.length && !g.body?.weightMods?.length ? '<p class="tiny muted">Height and weight tables are not entered yet, so body size does not change attributes here.</p>' : ''}`;
+<label><span>⚖️ Weight <b class="num" data-bv="w">${c.w}</b> kg</span><input type="range" min="${W.min}" max="${W.max}" value="${c.w}" data-body="w" aria-label="Weight in kg">${from('Weight')}</label></div>${ev.accel ? `<p class="small">Acceleration type: <b>${esc(ev.accel)}</b> <span class="muted">(from Agility, Strength, Acceleration and height)</span></p>` : ''}<p class="tiny muted">${esc(ev.arch.name)} can be ${H.min}–${H.max} cm and ${W.min}–${W.max} kg. Taller and heavier trades Acceleration, Agility and Sprint Speed for Strength and Jumping.</p>${!g.body?.modifier && !g.body?.heightMods?.length && !g.body?.weightMods?.length ? '<p class="tiny muted">Height and weight tables are not entered yet, so body size does not change attributes here.</p>' : ''}`;
     }
     const n = { playstyles: c.ps.length + c.plus.length, specializations: c.sp ? 1 : 0, facilities: c.fa.length, body: 0 };
     return `<div class="panel bx-xt"><div class="chips" role="tablist" aria-label="Extras">${XT.map(([k, i, l]) => `<button type="button" role="tab" class="chip${k === xt ? ' on' : ''}" aria-selected="${k === xt}" data-xt="${k}">${i} ${l}${n[k] ? ` <small class="num">${n[k]}</small>` : ''}</button>`).join('')}</div><div class="bx-xp">${body}</div></div>`;
@@ -182,6 +186,7 @@ ${cur ? `<div class="bx-cur"><span aria-hidden="true">${cur.mine ? '📂' : '�
 <label><span>Level <b class="num" data-bxl>${ev.level}</b> of ${ev.cap}${ev.level === ev.cap ? ' <span class="pill s">MAX</span>' : ''}</span><input type="range" min="1" max="${ev.cap}" value="${ev.level}" data-level aria-label="Level"></label><button type="button" class="btn sm${ev.level === ev.cap ? ' ghost' : ''}" data-bxmax>MAX</button></div>
 <div class="bx-ap${ev.left === 0 && ev.total ? ' full' : ''}"><div><small class="muted">Archetype points left</small><b class="num" data-bxap>${ev.left}</b><span class="muted" data-bxapt>/ ${ev.total}</span></div><span class="bx-apbar"><i style="width:${(left * 100).toFixed(1)}%"></i></span></div>
 <div class="bx-face">${ev.face.map(([k, v]) => `<div><small>${k}</small><b class="num ${v >= 80 ? 'hi' : v >= 65 ? 'mid' : ''}">${v}</b></div>`).join('')}</div>
+<div class="bx-stars2">${['skillMoves', 'weakFoot'].map((k) => { const r = ev.stars[k]; return `<div><small class="muted">${k === 'skillMoves' ? 'Skill Moves' : 'Weak Foot'}${r.cost ? ` · ${r.cost} AP` : ''}</small><span>${[1, 2, 3, 4, 5].map((n) => { const c2 = X.canStar(ev, k, n); const ok = c2 != null; return `<button type="button" class="bx-star${n <= r.value ? ' on' : ''}" data-star="${k}" data-n="${n}"${ok ? '' : ' disabled'} aria-label="${n} star ${k === 'skillMoves' ? 'skill moves' : 'weak foot'}" title="${n > r.max ? `Above this archetype’s ${r.max}-star limit` : n < r.base ? `Below this archetype’s ${r.base}-star start` : c2 > 0 ? `${c2} AP` : c2 < 0 ? `Refunds ${-c2} AP` : 'Current'}">★</button>`; }).join('')}</span></div>`; }).join('')}${ev.accel ? `<div><small class="muted">Accelerate</small><b>${esc(ev.accel)}</b></div>` : ''}</div>
 <div class="bx-fit"><small class="muted">📍 Best positions*</small>${ev.fit.slice(0, 3).map(([p, v], i) => `<div class="${i ? '' : 'best'}"><b>${esc(p)}</b><span class="bx-bar"><i class="a" style="left:0;width:${Math.min(100, (v / ev.top) * 100).toFixed(1)}%"></i></span><em class="num">${v}</em></div>`).join('')}</div>
 <div class="bx-row-acts"><button type="button" class="btn ghost sm" data-bxundo${hist.length ? '' : ' disabled'}>↶ Undo</button><button type="button" class="btn ghost sm" data-bxreset${ev.used ? '' : ' disabled'}>⟲ Reset</button><button type="button" class="btn ghost sm" data-bxshare>🔗 Share</button></div>
 <div class="bx-row-acts"><button type="button" class="btn ghost sm" data-bxcmp aria-expanded="${cmp.open}">⚖️ Compare</button><button type="button" class="btn ghost sm" data-bximg>🖼️ Image card</button>${pickPills(cur?.mine && cur.id)}</div>
@@ -189,7 +194,7 @@ ${cur ? `<div class="bx-cur"><span aria-hidden="true">${cur.mine ? '📂' : '�
 ${signed() ? `<div class="bx-row-acts"><button type="button" class="btn gold sm" data-bxsave${busy ? ' disabled' : ''}>💾 ${cur?.mine ? 'Save' : 'Save to My builds'}</button>${cur?.mine ? `<button type="button" class="btn ghost sm" data-bxsavenew${busy ? ' disabled' : ''}>＋ Save as new</button>` : ''}<button type="button" class="btn ghost sm" data-bxpostgo aria-expanded="${postOpen}">📣 ${cur?.posted && cur.mine ? 'Update post' : 'Post'}</button><button type="button" class="btn ghost sm" data-bxusego="side" aria-expanded="${useAt === 'side'}">⭐ Use as my build</button></div>${cur?.posted && cur.mine ? `<button type="button" class="bx-link" data-bxunpost="${cur.id}">Take the post down</button>` : ''}`
     : `<button type="button" class="btn gold sm" data-bxlogin>🔐 Sign in to save</button>`}
 ${postOpen && signed() ? postHtml(ev) : ''}${useAt === 'side' && signed() ? useHtml('side', cur?.position || ev.fit[0]?.[0], cur?.mode) : ''}</div>
-<p class="tiny muted">* Face stats are group averages and OVR is an estimate: EA does not publish its formula. Game rules <code>${esc(g.version)}</code>, max level ${ev.cap} (${capWord()}).</p>
+<p class="tiny muted">* ${ev.status && g.faceStats ? 'Face stats and OVR use the community weights from the Pro Clubs Builder import (unverified)' : 'Face stats are group averages and OVR is an estimate: EA does not publish its formula'}. Game rules <code>${esc(g.version)}</code>, max level ${ev.cap} (${capWord()}).</p>
 ${masteries.length ? `<div class="bx-mast"><b>🏅 Masteries</b>${masteries.map((m) => `<span class="${ev.level >= m.level ? 'on' : ''}">L${m.level}: ${Object.entries(m.bonus).map(([k, v]) => `+${v} ${esc(k)}`).join(', ')}</span>`).join('')}</div>` : ''}
 </aside>`;
   }
@@ -432,7 +437,7 @@ ${signed() ? '' : '<p class="tiny muted">🔐 Sign in to compare with your saved
     if ('bxq' in t.dataset) { openAttr = openAttr === row.dataset.attr ? null : row.dataset.attr; draw(); return; }
     if (t.dataset.qq) { const q = t.dataset.qq; step(row.dataset.attr, q === 'min' || q === '-5' ? -1 : 1, q === 'min' || q === 'max' ? 500 : 5); return; }
     if (t.dataset.d) { step(row.dataset.attr, +t.dataset.d, e.shiftKey ? 5 : 1); return; }
-    if (t.dataset.arch) { if (t.dataset.arch === b.arch) return; push(); b = { ...b, arch: t.dataset.arch, spent: {}, sp: null }; openAttr = null; setHash(); draw(); return; }
+    if (t.dataset.arch) { if (t.dataset.arch === b.arch) return; push(); b = { ...b, arch: t.dataset.arch, spent: {}, sp: null, h: undefined, w: undefined, sm: undefined, wf: undefined }; openAttr = null; setHash(); draw(); return; }
     if (t.dataset.xt) { xt = t.dataset.xt; draw(); return; }
     if (t.dataset.ps) {
       const id = t.dataset.ps, p = (g.playstyles || []).find((x) => x.id === id), c = X.choices(g, b), sl = X.slotsOf(g);
@@ -444,6 +449,12 @@ ${signed() ? '' : '<p class="tiny muted">🔐 Sign in to compare with your saved
       setHash(); draw(); return;
     }
     if (t.dataset.sp) { push(); b = { ...b, sp: b.sp === t.dataset.sp ? null : t.dataset.sp }; setHash(); draw(); return; }
+    if (t.dataset.star) { const ev = X.evaluate(g, b), n = +t.dataset.n; if (X.canStar(ev, t.dataset.star, n) == null) return; push(); b = { ...b, [t.dataset.star === 'skillMoves' ? 'sm' : 'wf']: n }; setHash(); draw(); return; }
+    if (t.dataset.fl) {
+      const c = X.choices(g, b), id = t.dataset.fl, n = +t.dataset.n, cur1 = c.fl[id] || 0, nx = n === cur1 ? n - 1 : n, f = (g.facilities || []).find((x) => x.id === id);
+      if (!f || (nx > cur1 && X.facCost(g, f, cur1, nx) > X.evaluate(g, b).facility.left)) return;
+      push(); const fl = { ...c.fl }; if (nx <= 0) delete fl[id]; else fl[id] = nx; b = { ...b, fl }; setHash(); draw(); return;
+    }
     if (t.dataset.fa) {
       const c = X.choices(g, b), sl = X.slotsOf(g), id = t.dataset.fa;
       if (!c.fa.includes(id) && c.fa.length >= sl.facilities) { toast(`All ${sl.facilities} Facility slots are full. Remove one first.`, 'err'); return; }
@@ -451,7 +462,7 @@ ${signed() ? '' : '<p class="tiny muted">🔐 Sign in to compare with your saved
     }
     if ('bxmax' in t.dataset) { push(); b.level = cap(); setHash(); draw(); }
     else if ('bxundo' in t.dataset && hist.length) { b = JSON.parse(hist.pop()); setHash(); draw(); }
-    else if ('bxreset' in t.dataset) { push(); b.spent = {}; setHash(); draw(); toast('Points reset. Undo brings them back.', 'ok', '⟲'); }
+    else if ('bxreset' in t.dataset) { push(); b.spent = {}; b.sm = undefined; b.wf = undefined; setHash(); draw(); toast('Points reset. Undo brings them back.', 'ok', '⟲'); }
     else if ('bxshare' in t.dataset) { setHash(); share(code(), cur?.title || `${archName(b.arch)} L${b.level}`); }
     else if ('bxsave' in t.dataset) save(false);
     else if ('bxsavenew' in t.dataset) save(true);

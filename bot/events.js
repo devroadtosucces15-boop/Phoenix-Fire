@@ -226,8 +226,9 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const list = (arr) => (arr.length ? `${arr.slice(0, 25).join(', ')}${arr.length > 25 ? ' …' : ''}` : '–');
   const still = [short && `${short} more player${short > 1 ? 's' : ''}`, ...missing.map(([k, left]) => `${left} ${k}`)].filter(Boolean).join(' · ');
   return message({ ping, mentions, accent: cancelled ? 'steel' : 'red', blocks: [
-    cancelled ? null : cards(bannerUrl(env, 'matchnight')),
+    cards(bannerUrl(env, cancelled ? 'eventcancelled' : 'matchnight')),
     header({ eyebrow: `${orgName(env).toUpperCase()} · ${EVENT_TYPES[e.type][1] ?? 'Match night'}`, title: `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : ''}${heading}${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R> · ${length}` }),
+    cancelled && (e.cancelReason ?? e.cancel_reason) ? text(`**Why** ${String(e.cancelReason ?? e.cancel_reason).slice(0, 300)}`) : null,
     e.notes ? text(`📝 ${String(e.notes).slice(0, 1500)}`) : null,
     sep(),
     facts([['Answers', `✅ ${yes.length} · ❔ ${names('maybe').length} · ❌ ${names('no').length}`]]),
@@ -643,7 +644,7 @@ export const CHECKIN_RE = /^(?:phoenix|norex):ci:\d+$/;
 
 // The "Check in now" post (30 minutes before): who has checked in, who has not, and the Check in button.
 // Players are numbered in the order they FIRST answered.
-export function checkinMessage(env, e, rsvps = [], checkins = [], { ping = null, mentions, roster = null } = {}) {
+export function checkinMessage(env, e, rsvps = [], checkins = [], { ping = null, mentions, roster = null, soon = false } = {}) {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/'), unix = Math.floor(e.start / 1000);
   const on = new Set(checkins.map((c) => c.user_id)), done = e.status === 'cancelled' || e.start + e.duration * MIN < Date.now();
   const keen = rsvps.filter((r) => r.status !== 'no');
@@ -653,7 +654,7 @@ export function checkinMessage(env, e, rsvps = [], checkins = [], { ping = null,
   const row = (r) => `${rank.has(r.user_id) ? `\`${String(rank.get(r.user_id)).padStart(2)}\`` : '` +`'} **${r.name}**${r.status === 'maybe' ? ' · maybe' : r.status === 'walk-in' ? ' · walk-in' : ''}`;
   const list = (arr) => (arr.length ? `${arr.slice(0, 25).map(row).join('\n')}${arr.length > 25 ? `\n+ ${arr.length - 25} more` : ''}` : '–');
   return message({ ping, mentions, accent: 'red', blocks: [
-    cards(roster ? null : bannerUrl(env, 'checkin')),
+    cards(soon ? bannerUrl(env, 'eventsoon') : roster ? null : bannerUrl(env, 'checkin')),
     header({ eyebrow: `${orgName(env).toUpperCase()} · CHECK-IN`, title: `⏰ Check in now · ${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R>` }),
     sep(),
     facts([['Checked in', `✅ ${here.length}`], ['Not yet', `${wait.length}`]]),
@@ -835,7 +836,7 @@ export async function thirtyMinutes(env, now, everyone) {
     await safely(notify(env, ids, { type: 'event', icon: '⏰', title: `Starting in 30 minutes · ${label(e)}`, body: 'You said you are in – get ready.', link: `members.html#schedule-${e.id}`, ref: `event30:${e.id}` }));
     if (everyone && e.discord_channel && env.DISCORD_BOT_TOKEN) {
       const tags = answers.filter((x) => x.status !== 'no').map((x) => x.user_id).slice(0, 50); // everyone who said yes or maybe needs to check in
-      const msg = await checkinPost(env, e, answers, await checkinsOf(env, e.id), { ping: `**⏰ Starting in 30 minutes · ${label(e)} – check in now**\n${tags.map((id) => `<@${id}>`).join(' ')}`, mentions: { users: tags } });
+      const msg = await checkinPost(env, e, answers, await checkinsOf(env, e.id), { soon: true, ping: `**⏰ Starting in 30 minutes · ${label(e)} – check in now**\n${tags.map((id) => `<@${id}>`).join(' ')}`, mentions: { users: tags } });
       const res = await safely(fetch(`https://discord.com/api/v10/channels/${e.discord_channel}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg, 'event')) }));
       const posted = res?.ok ? await res.json().catch(() => null) : null;
       if (posted?.id) await run(env, 'UPDATE events SET checkin_msg = ? WHERE id = ?', posted.id, e.id);

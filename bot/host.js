@@ -5,7 +5,7 @@
 //   when: "tonight 9pm", "tomorrow 20:30", "fri 8:30pm", "oct 14 9pm", "2026-10-14 21:00", "in 2h"
 import { validZone, zonedToUtc, eventsRoute } from './events.js';
 import { parseDuration, getToolSettings } from './servertools.js';
-import { reply, notice } from './ui.js';
+import { reply, pictureNote } from './ui.js';
 
 // Time-zone suggestions for the autocomplete (any valid IANA zone is accepted when typed in full).
 export const ZONES = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Phoenix', 'America/Los_Angeles', 'America/Anchorage', 'Pacific/Honolulu',
@@ -99,8 +99,9 @@ export function hostBody(o, tz, when) {
 }
 
 // Called from botcmds.js with the member (`me`) already resolved. Returns the interaction response.
-export async function hostCommand(i, env, me, o, { log, loadSite }, build = hostBody) {
-  const say = (title, body, accent) => reply(notice(title, body, accent ? { accent } : {}));
+// `doneKey` = the picture of the success reply (/matchday create passes its own). Questions about the time or zone get "One thing to fix", failures "Check and try again".
+export async function hostCommand(i, env, me, o, { log, loadSite }, build = hostBody, doneKey = 'cmd-host-done') {
+  const say = (title, body, accent, key = 'cmd-host-ask') => reply(pictureNote(env, key, title, body, accent ? { accent } : {}));
   const prof = await env.DB.prepare('SELECT tz FROM profiles WHERE user_id = ?').bind(me.u).first().catch(() => null);
   const tz = String(o.timezone || prof?.tz || '').trim();
   if (!tz) return say('Which time zone are you in?', 'Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.');
@@ -115,9 +116,9 @@ export async function hostCommand(i, env, me, o, { log, loadSite }, build = host
   } else body.discord = { channel: o.channel || i.channel_id, role: '' };
   const res = await eventsRoute('/api/events', 'POST', body, me, env, log, loadSite, new URL('https://bot.invalid/'));
   const d = await res.json().catch(() => ({}));
-  if (!res.ok) return say('Couldn’t schedule that', d.error ?? 'Something went wrong – try again or use the Squad Hub.');
+  if (!res.ok) return say('Couldn’t schedule that', d.error ?? 'Something went wrong – try again or use the Squad Hub.', null, 'cmd-problem');
   const at = Math.floor(zonedToUtc(when.date, when.time, tz) / 1000);
   const where = d.discord?.ok ? `Posted in <#${body.discord.channel}> with sign-up buttons.` : `⚠️ Not posted: ${d.discord?.error ?? 'you can post it from the Squad Hub.'}`;
   return say(`✅ Scheduled for <t:${at}:F>`, [`<t:${at}:R> · everyone sees it in their own time zone (you set it in ${tz.replace(/_/g, ' ')}).`, where,
-    d.created > 1 ? `Repeats weekly: ${d.created} dates.` : null, d.notified ? `${d.notified} members told in the Squad Hub.` : null].filter(Boolean).join('\n'), 'win');
+    d.created > 1 ? `Repeats weekly: ${d.created} dates.` : null, d.notified ? `${d.notified} members told in the Squad Hub.` : null].filter(Boolean).join('\n'), 'win', doneKey);
 }

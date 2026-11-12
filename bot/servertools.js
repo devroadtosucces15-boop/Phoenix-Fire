@@ -9,7 +9,7 @@
 //   /setup             managers: the leave-log channel, the welcome channel and the ping-role panel
 // Reading the member list needs "Server Members Intent" switched on (Discord developer portal → Bot).
 import { can, flagOn } from './roles.js';
-import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2, autoBanner } from './ui.js';
+import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2, autoBanner, picture, pictureNote } from './ui.js';
 import { orgName, channelFor, setupMapping, CHANNEL_PURPOSE_INFO } from './orgconfig.js';
 import { facesOf } from './faces.js';
 
@@ -36,10 +36,12 @@ const HELP = {
   'no-members': ['I can’t read the member list', 'Switch on **Server Members Intent**: discord.com/developers → your bot’s app → Bot → Privileged Gateway Intents, then run this again.'],
   'member-list-short': ['Check skipped', 'Discord sent back a half-empty member list, so nobody was reported as gone.'],
 };
-const failed = (e) => notice(...(HELP[e.message] ?? ['Something went wrong', e.message]));
+const failed = (e, env) => pictureNote(env, 'cmd-problem', ...(HELP[e.message] ?? ['Something went wrong', e.message]));
 
 // ---------- small helpers ----------
 const say = (title, body, o) => reply(notice(title, body, o)); // private reply in the design system's compact style
+// The same, opening with a drawn picture: the shared "not available" / "check and try again" / "nothing here" states or this command's own (scripts/cards.mjs SLASH).
+const sayP = (env, key, title, body, o) => reply(pictureNote(env, key, title, body, o));
 export const snowTime = (id) => Number(BigInt(id) >> 22n) + 1420070400000;
 const unix = (ms) => Math.floor(ms / 1000);
 const memberName = (m) => m.nick || m.user.global_name || m.user.username;
@@ -74,7 +76,7 @@ const post = (env, channel, msg) => discord(env, 'POST', `/channels/${channel}/m
 function later(env, i, ctx, work) {
   ctx.waitUntil((async () => {
     let msg;
-    try { const out = await work(); msg = Array.isArray(out) ? notice(...out) : out; } catch (e) { msg = failed(e); }
+    try { const out = await work(); msg = Array.isArray(out) ? notice(...out) : out; } catch (e) { msg = failed(e, env); }
     const { flags, ...body } = msg; // the deferred reply is already private; the edit only needs the V2 flag
     await fetch(`${API}/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...body, flags: IS_V2 }),
@@ -181,6 +183,7 @@ export function welcomeMessage(env, st, r) {
   const ping = (st.welcomeText || DEFAULT_WELCOME).replaceAll('{user}', `<@${r.user_id}>`).replaceAll('{name}', r.name);
   return message({ ping, mentions: { users: [r.user_id] }, blocks: [
     header({ eyebrow: 'Welcome', title: `Welcome to ${orgName(env)}`, sub: `Glad you’re here, ${r.name}`, thumb: r.avatar }),
+    picture(env, 'post-welcome'),
     text(['**Start here**', '📜 Read the rules and say hi in the chat', env.SITE_URL && '🏠 Log in to the **Squad Hub** with Discord and claim your player', env.SITE_URL && '📊 Results, stats and the squad are on the **club site**'].filter(Boolean).join('\n')),
     env.SITE_URL && buttons([{ label: 'Squad Hub', url: `${site}members.html` }, { label: 'Club site', url: site }]),
   ] });
@@ -206,33 +209,33 @@ const tagName = (s) => String(s ?? '').trim().toLowerCase().replace(/\s+/g, '-')
 async function tagCommand(i, env, o) {
   const name = tagName(o.name);
   const t = await env.DB.prepare('SELECT * FROM tags WHERE name = ?').bind(name).first();
-  if (!t) return say(`No tag called ${name}`, '`/tags list` shows every saved answer.');
+  if (!t) return sayP(env, 'cmd-problem', `No tag called ${name}`, '`/tags list` shows every saved answer.');
   await env.DB.prepare('UPDATE tags SET uses = uses + 1 WHERE name = ?').bind(name).run();
   return reply(message({
     ping: o.member ? `<@${o.member}>` : null, mentions: { users: o.member ? [o.member] : [] },
-    blocks: [header({ eyebrow: `${orgName(env).toUpperCase()} · Saved answer`, title: `🏷️ ${t.name}`, size: 3 }), text(t.body), footer(`/tag ${t.name} · posted ${t.uses + 1} time${t.uses ? 's' : ''}`)],
+    blocks: [picture(env, 'cmd-tag-post'), header({ eyebrow: `${orgName(env).toUpperCase()} · Saved answer`, title: `🏷️ ${t.name}`, size: 3 }), text(t.body), footer(`/tag ${t.name} · posted ${t.uses + 1} time${t.uses ? 's' : ''}`)],
   }));
 }
 async function tagsCommand(i, env, who, sub, o) {
   if (sub === 'list') {
     const { results } = await env.DB.prepare('SELECT name, uses FROM tags ORDER BY name').all();
     return results.length
-      ? say(`🏷️ ${results.length} saved answer${results.length === 1 ? '' : 's'}`, `${results.map((t) => `\`${t.name}\` · ${t.uses} use${t.uses === 1 ? '' : 's'}`).join('\n')}\n-# Post one with /tag`)
-      : say('No saved answers yet', 'Managers add them with `/tags set`.');
+      ? sayP(env, 'cmd-tag-list', `🏷️ ${results.length} saved answer${results.length === 1 ? '' : 's'}`, `${results.map((t) => `\`${t.name}\` · ${t.uses} use${t.uses === 1 ? '' : 's'}`).join('\n')}\n-# Post one with /tag`)
+      : sayP(env, 'cmd-empty', 'No saved answers yet', 'Managers add them with `/tags set`.');
   }
-  if (!can(who, 'tags.manage')) return say('Only managers can change tags', 'Anyone can post one with `/tag`.');
+  if (!can(who, 'tags.manage')) return sayP(env, 'cmd-locked', 'Only managers can change tags', 'Anyone can post one with `/tag`.');
   const name = tagName(o.name);
-  if (!TAG_NAME.test(name)) return say('That name won’t work', 'Tag names are 1–32 letters, numbers or dashes, like `rules` or `trial-info`.');
+  if (!TAG_NAME.test(name)) return sayP(env, 'cmd-problem', 'That name won’t work', 'Tag names are 1–32 letters, numbers or dashes, like `rules` or `trial-info`.');
   if (sub === 'delete') {
     const r = await env.DB.prepare('DELETE FROM tags WHERE name = ?').bind(name).run();
-    return r.meta.changes ? say(`🗑️ Deleted ${name}`) : say(`No tag called ${name}`);
+    return r.meta.changes ? sayP(env, 'cmd-tag-list', `🗑️ Deleted ${name}`) : sayP(env, 'cmd-problem', `No tag called ${name}`);
   }
   // Slash-command text can't hold line breaks on mobile, so "\n" (typed as backslash-n) becomes a new line.
   const body = String(o.text ?? '').replaceAll('\\n', '\n').trim().slice(0, 3800);
-  if (!body) return say('The tag needs some text');
+  if (!body) return sayP(env, 'cmd-problem', 'The tag needs some text');
   await env.DB.prepare('INSERT INTO tags (name, body, by_id, uses, at) VALUES (?, ?, ?, 0, ?) ON CONFLICT (name) DO UPDATE SET body = excluded.body, by_id = excluded.by_id, at = excluded.at')
     .bind(name, body, who.u, Date.now()).run();
-  return say(`✅ Saved ${name}`, `Anyone can post it with \`/tag name:${name}\`.`, { accent: 'win' });
+  return sayP(env, 'cmd-tag-saved', `✅ Saved ${name}`, `Anyone can post it with \`/tag name:${name}\`.`, { accent: 'win' });
 }
 export async function tagChoices(env, q) {
   const { results } = await env.DB.prepare('SELECT name FROM tags WHERE name LIKE ? ORDER BY uses DESC, name LIMIT 25').bind(`%${tagName(q)}%`).all();
@@ -250,21 +253,22 @@ export function parseDuration(s) {
 }
 async function remindCommand(i, env, who, o, now) {
   const ms = parseDuration(o.in);
-  if (!ms) return say('I couldn’t read that time', 'Try `10m`, `2h`, `1h30m` or `1d`.');
-  if (ms < MIN || ms > MAX_REMIND) return say('That’s out of range', 'Reminders can be from 1 minute up to 60 days away.');
-  if ((o.channel || o.role) && !can(who, 'remind.channel')) return say('Only managers can pick a channel or ping a role', 'Leave those empty for a reminder right here.');
+  if (!ms) return sayP(env, 'cmd-problem', 'I couldn’t read that time', 'Try `10m`, `2h`, `1h30m` or `1d`.');
+  if (ms < MIN || ms > MAX_REMIND) return sayP(env, 'cmd-problem', 'That’s out of range', 'Reminders can be from 1 minute up to 60 days away.');
+  if ((o.channel || o.role) && !can(who, 'remind.channel')) return sayP(env, 'cmd-locked', 'Only managers can pick a channel or ping a role', 'Leave those empty for a reminder right here.');
   const pending = await env.DB.prepare('SELECT COUNT(*) AS n FROM reminders WHERE user_id = ? AND sent_at IS NULL').bind(who.u).first('n');
-  if (pending >= MAX_PENDING) return say(`You have ${MAX_PENDING} reminders waiting`, 'Cancel some with `/reminders` first.');
+  if (pending >= MAX_PENDING) return sayP(env, 'cmd-problem', `You have ${MAX_PENDING} reminders waiting`, 'Cancel some with `/reminders` first.');
   const channel = o.channel || i.channel_id, due = now + ms;
   const body = String(o.text).trim().slice(0, 1000);
   await env.DB.prepare('INSERT INTO reminders (user_id, channel_id, role_id, body, due_at, at) VALUES (?, ?, ?, ?, ?, ?)').bind(who.u, channel, o.role || null, body, due, now).run();
-  return say(`⏰ Reminder set for <t:${unix(due)}:R>`, `> ${body}\n-# <t:${unix(due)}:f> in <#${channel}>${o.role ? ` · pings <@&${o.role}>` : ''}`, { accent: 'win' });
+  return sayP(env, 'cmd-remind-set', `⏰ Reminder set for <t:${unix(due)}:R>`, `> ${body}\n-# <t:${unix(due)}:f> in <#${channel}>${o.role ? ` · pings <@&${o.role}>` : ''}`, { accent: 'win' });
 }
 async function remindersList(env, who) {
   const { results } = await env.DB.prepare('SELECT id, channel_id, body, due_at FROM reminders WHERE user_id = ? AND sent_at IS NULL ORDER BY due_at LIMIT 25').bind(who.u).all();
-  if (!results.length) return say('No reminders waiting', 'Set one with `/remind`.');
+  if (!results.length) return sayP(env, 'cmd-empty', 'No reminders waiting', 'Set one with `/remind`.');
   // each of the first five gets its own row with a Cancel button on the right
   return reply(message({ accent: 'steel', ephemeral: true, blocks: [
+    picture(env, 'cmd-remind-list'),
     header({ eyebrow: 'Private · Reminders', title: `⏰ Your reminders (${results.length})`, size: 3 }),
     ...results.slice(0, 5).map((r) => side(`<t:${unix(r.due_at)}:R> in <#${r.channel_id}>\n-# ${r.body.slice(0, 120)}`, button({ label: 'Cancel', id: `norex:rm:x:${r.id}`, style: 'no' }))),
     results.length > 5 ? footer(`+${results.length - 5} more – cancel these first to see them`) : null,
@@ -313,12 +317,12 @@ export const pingPanel = (env) => message({ blocks: [
 
 // ---------- /setup ----------
 async function setupCommand(i, env, ctx, who, sub, o) {
-  if (!can(who, 'servertools.setup')) return say('Only managers can use /setup');
+  if (!can(who, 'servertools.setup')) return sayP(env, 'cmd-locked', 'Only managers can use /setup');
   const st = await getToolSettings(env);
   if (sub === 'off') {
     const field = o.feature === 'welcome' ? 'welcomeChannel' : 'leaveChannel';
     await saveToolSettings(env, { ...st, [field]: '' });
-    return say(o.feature === 'welcome' ? '🔕 Welcome posts are off' : '🔕 Leave/join alerts are off', 'Turn them back on with `/setup`.');
+    return sayP(env, 'cmd-setup-done', o.feature === 'welcome' ? '🔕 Welcome posts are off' : '🔕 Leave/join alerts are off', 'Turn them back on with `/setup`.');
   }
   if (sub === 'leavelog' || sub === 'welcome') {
     return later(env, i, ctx, async () => {
@@ -330,17 +334,17 @@ async function setupCommand(i, env, ctx, who, sub, o) {
       await batch(env, [env.DB.prepare('DELETE FROM guild_members'), ...members.filter((m) => m.user && !m.user.bot).map((m) => upsert(env, row(m)))]);
       if (sub === 'leavelog') {
         await post(env, o.channel, message({ accent: 'steel', blocks: [header({ eyebrow: 'Staff · Member log', title: '✅ Leave and join alerts go here', size: 3 }), footer('Checked every 10 minutes')] }));
-        return notice(`✅ Leave/join alerts go to <#${o.channel}>`, `Tracking ${members.filter((m) => !m.user?.bot).length} members.`, { accent: 'win' });
+        return pictureNote(env, 'cmd-setup-done', `✅ Leave/join alerts go to <#${o.channel}>`, `Tracking ${members.filter((m) => !m.user?.bot).length} members.`, { accent: 'win' });
       }
       const preview = welcomeMessage(env, st, { user_id: who.u, name: 'you', avatar: i.member?.user ? avatarUrl(i.member.user) : null });
-      return notice(`✅ New members get welcomed in <#${o.channel}>`, `First line: ${preview.components[0].content}`, { accent: 'win' });
+      return pictureNote(env, 'cmd-setup-done', `✅ New members get welcomed in <#${o.channel}>`, `First line: ${preview.components[0].content}`, { accent: 'win' });
     });
   }
   if (sub === 'channel' || sub === 'role') { // A9: writes the same discord_channels / discord_roles rows the website edits
     const isChan = sub === 'channel';
     const res = await setupMapping(env, who, sub, { guildId: i.guild_id, targetId: isChan ? (o.channel || i.channel_id) : o.role, purpose: o.purpose, group: o.group });
-    if (res.error) return say(res.error);
-    return notice(isChan ? `✅ ${o.purpose.replaceAll('_', ' ')} posts go to <#${res.row.channel_id}>` : `✅ <@&${res.row.role_id}> is now ${o.group.replaceAll('_', ' ')}`,
+    if (res.error) return sayP(env, 'cmd-problem', res.error);
+    return pictureNote(env, 'cmd-setup-done', isChan ? `✅ ${o.purpose.replaceAll('_', ' ')} posts go to <#${res.row.channel_id}>` : `✅ <@&${res.row.role_id}> is now ${o.group.replaceAll('_', ' ')}`,
       isChan ? CHANNEL_PURPOSE_INFO[o.purpose] ?? '' : 'Same setting as Boardroom → Organization.', { accent: 'win' });
   }
   if (sub === 'pingroles') {
@@ -348,16 +352,16 @@ async function setupCommand(i, env, ctx, who, sub, o) {
       st.pingRoles = await ensurePingRoles(env, st);
       await saveToolSettings(env, st);
       await post(env, o.channel, pingPanel(env));
-      return notice(`✅ Ping panel posted in <#${o.channel}>`, `Roles: ${PING_ROLES.map((p) => `<@&${st.pingRoles[p.key]}>`).join(' ')}\nPing them in posts (or set one as the result ping in Bot settings) – only people who opted in get notified.`, { accent: 'win' });
+      return pictureNote(env, 'cmd-setup-done', `✅ Ping panel posted in <#${o.channel}>`, `Roles: ${PING_ROLES.map((p) => `<@&${st.pingRoles[p.key]}>`).join(' ')}\nPing them in posts (or set one as the result ping in Bot settings) – only people who opted in get notified.`, { accent: 'win' });
     });
   }
-  return say('Unknown setup option');
+  return sayP(env, 'cmd-problem', 'Unknown setup option');
 }
 
 // ---------- entry points (called from worker.js) ----------
 export async function serverCommand(i, env, ctx, who, now = Date.now()) {
-  if (!flagOn(env, who, 'serverTools')) return say('This isn’t switched on yet');
-  if (!env.DB) return say('The member database isn’t connected');
+  if (!flagOn(env, who, 'serverTools')) return sayP(env, 'cmd-locked', 'This isn’t switched on yet');
+  if (!env.DB) return sayP(env, 'cmd-problem', 'The member database isn’t connected');
   const { sub, o } = opts(i);
   try {
     switch (i.data.name) {
@@ -373,9 +377,9 @@ export async function serverCommand(i, env, ctx, who, now = Date.now()) {
       case 'reminders': return await remindersList(env, who);
     }
   } catch (e) {
-    return reply(failed(e));
+    return reply(failed(e, env));
   }
-  return say('Unknown command');
+  return sayP(env, 'cmd-problem', 'Unknown command');
 }
 
 export const SERVER_BUTTON = /^norex:(pr|rm):/;
@@ -397,6 +401,6 @@ export async function serverButton(i, env, who) {
     return has ? say(`🔕 ${p.name} pings are off`, 'Tap again any time to turn them back on.')
       : say(`${p.emoji} ${p.name} pings are on`, `${p.blurb}.`, { accent: 'win' });
   } catch (e) {
-    return reply(failed(e));
+    return reply(failed(e, env));
   }
 }

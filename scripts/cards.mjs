@@ -17,7 +17,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 8; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 14; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -521,6 +521,172 @@ const crestUri = (() => { let c = null; return () => (c ??= (() => { try { retur
 const familyBanner = (s) => page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 14px 30px rgba(0,0,0,.6));opacity:.95}`,
   `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[s.icon] ?? ICONS.flame}</svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${s.title.length <= 10 ? 104 : s.title.length <= 14 ? 88 : 72}px">${esc(s.title)}</h1><p>${esc(s.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}<div class="brand">${esc(SITE)}</div>`);
+// ---------- alert pictures: one drawn picture per alert (bot/banners.js ALERT_KEYS), hazard stripes + a big line icon + the crest ----------
+// Warning tone (orange stripes) for things to act on, calm tone (steel) for "back to normal" and "cancelled". The crest comes from phoenix/overlay.
+const ALERT_ART = {
+  siren: `<path d="M5 20h14v-2a7 7 0 0 0-14 0z" fill="${O}" stroke="${G}" stroke-width="1.4" stroke-linejoin="round"/><path d="M3 20h18M12 3v3M4.5 6.5l2 2M19.5 6.5l-2 2M2.5 12h2.5M19 12h2.5" stroke="${G}" stroke-width="1.6" stroke-linecap="round" fill="none"/>`,
+  down: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 6v7" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1.4" fill="${O}"/>`,
+  up: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M7.5 12.5l3 3 6-7" stroke="${O}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+  cancel: `<rect x="3.5" y="5" width="17" height="15" rx="2.5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><path d="M9 13l6 5M15 13l-6 5" stroke="${O}" stroke-width="2.2" stroke-linecap="round"/>`,
+  clock: `<circle cx="12" cy="13" r="8" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 8v5l3 2M9 2.5h6" stroke="${O}" stroke-width="2" stroke-linecap="round" fill="none"/>`,
+  stage: `<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="${G}" stroke-width="1.8"/><path d="M15.5 15.5L21 21" stroke="${G}" stroke-width="2" stroke-linecap="round"/><path d="M7.5 10.5h6M11 8l2.5 2.5L11 13" stroke="${O}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+  caution: `<path d="M12 3l10 17H2z" fill="none" stroke="${G}" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 9.5v5" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17.2" r="1.3" fill="${O}"/>`,
+};
+const ALERTS = {
+  matchalert: { art: 'siren', title: 'Match alert', sub: 'We need to change something', warn: true },
+  'uptime-down': { art: 'down', title: 'Bot is down', sub: 'Something stopped answering', warn: true },
+  'uptime-up': { art: 'up', title: 'Back to normal', sub: 'Everything is answering again' },
+  eventcancelled: { art: 'cancel', title: 'Cancelled', sub: 'This session is off' },
+  eventsoon: { art: 'clock', title: 'Starts in 30', sub: 'Get ready · check in now', warn: true },
+  trialstage: { art: 'stage', title: 'Trial update', sub: 'A trial moved to a new stage' },
+  caution: { art: 'caution', title: 'Caution', sub: 'A player needs a second look', warn: true },
+};
+export function alertPicture(key) {
+  const a = ALERTS[key];
+  const tone = a.warn ? 'repeating-linear-gradient(135deg,#e8651a 0 22px,#0a0705 22px 44px)' : 'repeating-linear-gradient(135deg,#5a6578 0 22px,#0a0705 22px 44px)';
+  return page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.hz{position:absolute;left:0;right:0;height:16px;background:${tone}}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 30px rgba(232,101,26,.5))}`,
+    `<div class="hz" style="top:0"></div><div class="hz" style="bottom:0"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ALERT_ART[a.art]}</svg>
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${a.title.length <= 12 ? 104 : 88}px">${esc(a.title)}</h1><p>${esc(a.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
+}
+for (const k of Object.keys(ALERTS)) BANNERS[k] = () => alertPicture(k);
+// ---------- private-reply pictures (section 5): one drawn picture per stat insight, /me and Club Intelligence ----------
+// Same family look as the alert pictures (stripes, big line icon, crest) plus a small label saying who can see it: "Only you" for a private
+// reply, "Staff only" for Club Intelligence, "Club" for the public /insight. Icons reuse ICONS; the crest comes from phoenix/overlay.
+const PRIVATE = {
+  'insight-club': { art: 'chart', title: 'Club form', sub: 'What the numbers say', tag: 'Club' },
+  'insight-match': { art: 'pitch', title: 'Latest match', sub: 'The one that just finished', tag: 'Club' },
+  'insight-last5': { art: 'calendar', title: 'Last five', sub: 'How the run is going', tag: 'Club' },
+  'insight-goals': { art: 'ball', title: 'Goal leaders', sub: 'Who is putting them away', tag: 'Club' },
+  'insight-assists': { art: 'hand', title: 'Assist leaders', sub: 'Who is setting them up', tag: 'Club' },
+  'insight-rating': { art: 'medal', title: 'Top rated', sub: 'Form on the pitch', tag: 'Club' },
+  'insight-motm': { art: 'trophy', title: 'Man of the match', sub: 'Who keeps winning it', tag: 'Club' },
+  'me-claim': { art: 'id', title: 'Claim your player', sub: 'Link your card to the squad', tag: 'Only you' },
+  'me-hidden': { art: 'search', title: 'Card not found', sub: 'Waiting for the next data refresh', tag: 'Only you' },
+  intel: { art: 'crystal', title: 'Club Intelligence', sub: 'Server, site and team · scores and advice', tag: 'Staff only', calm: true },
+};
+const taggedPicture = (a) => {
+  const tone = a.calm ? 'repeating-linear-gradient(135deg,#5a6578 0 22px,#0a0705 22px 44px)' : 'repeating-linear-gradient(135deg,#e8651a 0 22px,#0a0705 22px 44px)';
+  return page(`${BANNER_CSS}.bn{padding-right:330px}.bn p{white-space:nowrap;font-size:24px;letter-spacing:.18em}.brand{display:none}.hz{position:absolute;left:0;right:0;height:16px;background:${tone}}.wm{position:absolute;right:64px;top:50%;width:200px;height:200px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 30px rgba(232,101,26,.5))}.tag{position:absolute;left:56px;bottom:34px;padding:6px 18px;border:2px solid #e8651a;border-radius:99px;font:700 20px/1 Oswald;letter-spacing:.2em;text-transform:uppercase;color:#e8651a;background:#0a0705}`,
+    `<div class="hz" style="top:0"></div><div class="hz" style="bottom:0"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 24 24">${ICONS[a.art] ?? ALERT_ART[a.art] ?? ICONS.flame}</svg>
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold" style="white-space:nowrap;font-size:${a.title.length <= 12 ? 104 : a.title.length <= 16 ? 88 : 72}px">${esc(a.title)}</h1><p>${esc(a.sub)}</p></div></div><div class="tag">${esc(a.tag)}</div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
+};
+export const privatePicture = (key) => taggedPicture(PRIVATE[key]);
+for (const k of Object.keys(PRIVATE)) BANNERS[k] = () => privatePicture(k);
+// ---------- automated-post pictures (section 6): one drawn picture per public post, same look as the private pictures ----------
+// The tag says what kind of post it is. Posts keep their own pings; the picture only sits under the header (bot/ui.js picture()).
+export const POSTS = {
+  'post-live': { art: 'antenna', title: 'We are live', sub: 'The club is on air right now', tag: 'On air' },
+  'post-memberlive': { art: 'antenna', title: 'Member live', sub: 'One of ours just went on air', tag: 'On air' },
+  'post-hype': { art: 'flame', title: 'Match hype', sub: 'The result, the scorers, the moment', tag: 'Full time' },
+  'post-awards': { art: 'trophy', title: 'Weekly awards', sub: 'Voted by the squad', tag: 'Winners' },
+  'post-hotw': { art: 'film', title: 'Highlight of the week', sub: 'The clip the squad voted for', tag: 'Clip' },
+  'post-birthday': { art: 'cake', title: 'Happy birthday', sub: 'From everyone at the club', tag: 'Today' },
+  'post-welcome': { art: 'door', title: 'Welcome', sub: 'Glad you are here', tag: 'New member' },
+  'post-patch': { art: 'doc', title: 'Patch notes', sub: 'What changed in the game', tag: 'EA update' },
+  'post-media': { art: 'disk', title: 'Storage guard', sub: 'Old feed files were cleared', tag: 'Owner only', calm: true },
+  'post-voice': { art: 'mic', title: 'Quote of the match', sub: 'Best line from voice chat', tag: 'Voice' },
+  'post-burner': { art: 'flame', title: 'Burner report', sub: 'Who we are up against', tag: 'Tracker' },
+  'post-play': { art: 'board', title: 'New play', sub: 'Learn it, then run it', tag: 'Tactics' },
+  'post-squad': { art: 'people', title: 'Rush squads', sub: 'Who plays with who', tag: 'Rush' },
+  'post-doc': { art: 'horn', title: 'Club announcement', sub: 'Read it, then get on with it', tag: 'Club' },
+};
+export const postPicture = (key) => taggedPicture(POSTS[key]);
+for (const k of Object.keys(POSTS)) BANNERS[k] = () => postPicture(k);
+// ---------- slash-reply pictures (section 7): one drawn picture per command result, plus the three states every command shares ----------
+// The tag says who sees it ("Only you", "Managers", "Match night" ...). Same look as the post pictures; `calm` = steel stripes for staff, empty and error states.
+export const SLASH = {
+  'cmd-locked': { art: 'shield', title: 'Not available', sub: 'Switched off, or not for your role', tag: 'Only you', calm: true },
+  'cmd-problem': { art: 'pulse', title: 'Check and try again', sub: 'Nothing was changed', tag: 'Only you', calm: true },
+  'cmd-empty': { art: 'inbox', title: 'Nothing here yet', sub: 'It will show up when there is something', tag: 'Only you', calm: true },
+  'cmd-lineup': { art: 'pitch', title: 'Line-up', sub: 'Who starts, who is on the bench', tag: 'Match night' },
+  'cmd-lineup-none': { art: 'pitch', title: 'No line-up yet', sub: 'Managers publish it before kick-off', tag: 'Match night', calm: true },
+  'cmd-host-done': { art: 'calendar', title: 'Session scheduled', sub: 'Posted with sign-up buttons', tag: 'Managers' },
+  'cmd-host-ask': { art: 'calendar', title: 'One thing to fix', sub: 'The time, the zone or the channel', tag: 'Managers', calm: true },
+  'cmd-matchday-create': { art: 'calendar', title: 'Match day set up', sub: 'Sign-ups are open', tag: 'Managers' },
+  'cmd-matchday-in': { art: 'ball', title: 'You are on', sub: 'Checked in for match day', tag: 'Only you' },
+  'cmd-matchday-none': { art: 'calendar', title: 'Nothing scheduled', sub: 'No match day is set yet', tag: 'Match night', calm: true },
+  'cmd-lfg-post': { art: 'hand', title: 'Available for Rush', sub: 'Tap I\u2019m in to join', tag: 'Rush' },
+  'cmd-lfg-list': { art: 'people', title: 'Who is free', sub: 'Open Rush calls right now', tag: 'Rush' },
+  'cmd-lfg-off': { art: 'hand', title: 'Call taken down', sub: 'Your availability is off', tag: 'Only you', calm: true },
+  'cmd-trial': { art: 'search', title: 'Trial cards', sub: 'Open cards, newest first', tag: 'Staff only', calm: true },
+  'cmd-feedback-sent': { art: 'chat', title: 'Sent anonymously', sub: 'They will never see who sent it', tag: 'Only you' },
+  'cmd-suggest-sent': { art: 'bulb', title: 'On the board', sub: 'Vote it up in the Squad Hub', tag: 'Only you' },
+  'cmd-share-sent': { art: 'spark', title: 'Sent to the managers', sub: 'It shows up once approved', tag: 'Only you' },
+  'cmd-discoveries': { art: 'spark', title: 'Waiting for you', sub: 'Approve or reject each one', tag: 'Staff only', calm: true },
+  'cmd-wheel-error': { art: 'dice', title: 'Wheel not ready', sub: 'Give it at least two options', tag: 'Only you', calm: true },
+  'cmd-tag-post': { art: 'book', title: 'Saved answer', sub: 'The club\u2019s ready-made reply', tag: 'Club' },
+  'cmd-tag-list': { art: 'book', title: 'Saved answers', sub: 'Post one with /tag', tag: 'Only you', calm: true },
+  'cmd-tag-saved': { art: 'book', title: 'Tag saved', sub: 'Anyone can post it now', tag: 'Managers' },
+  'cmd-remind-set': { art: 'bell', title: 'Reminder set', sub: 'We will ping you when it is due', tag: 'Only you' },
+  'cmd-remind-list': { art: 'bell', title: 'Your reminders', sub: 'Waiting to go off', tag: 'Only you', calm: true },
+  'cmd-setup-done': { art: 'gear', title: 'Setup saved', sub: 'Same setting as the Boardroom', tag: 'Managers' },
+  'cmd-announce-sent': { art: 'horn', title: 'Announcement sent', sub: 'Squad Hub bell and Discord DM', tag: 'Managers' },
+};
+export const slashPicture = (key) => taggedPicture(SLASH[key]);
+for (const k of Object.keys(SLASH)) BANNERS[k] = () => slashPicture(k);
+// ---------- DM pictures (section 8): one drawn picture per notification type (bot/notify.js TYPES), same look as the post pictures ----------
+// Types of one kind share a group (personal, social, club, rush, tactics, warning, staff) and the stripe tone, but each has its own title, icon and tag.
+// The tag says why you got it: "Only you" for your own results, "Managers" for staff to-dos, "Warning" for moderation. Art for caution and trial
+// stage comes from the alert pictures (ALERT_ART), storage reuses the storage-guard disk; nothing is redrawn.
+export const DMS = {
+  'dm-announce': { art: 'horn', title: 'Announcement', sub: 'From the managers, to the whole club', tag: 'Club news' },
+  'dm-claim': { art: 'id', title: 'Claim decision', sub: 'Your player card request', tag: 'Only you' },
+  'dm-trial': { art: 'search', title: 'Scouting tip', sub: 'Someone is looking at a trialist', tag: 'Only you' },
+  'dm-trialstage': { art: 'stage', title: 'Trial update', sub: 'A trial moved to a new stage', tag: 'Trials' },
+  'dm-rush': { art: 'bolt', title: 'Rush result', sub: 'Your Rush game is in', tag: 'Only you' },
+  'dm-lfg': { art: 'hand', title: 'Rush call', sub: 'Someone is free to play', tag: 'Rush' },
+  'dm-badge': { art: 'medal', title: 'Badge earned', sub: 'A new one for your locker', tag: 'Only you' },
+  'dm-request': { art: 'doc', title: 'Request update', sub: 'Your club or privacy request', tag: 'Only you' },
+  'dm-idea': { art: 'bulb', title: 'Idea reply', sub: 'The club answered your suggestion', tag: 'Only you' },
+  'dm-event': { art: 'calendar', title: 'Session update', sub: 'A new event, change or report', tag: 'Match night' },
+  'dm-award': { art: 'trophy', title: 'Weekly awards', sub: 'The votes are counted', tag: 'Winners' },
+  'dm-feedback': { art: 'chat', title: 'Feedback for you', sub: 'Sent anonymously by a teammate', tag: 'Only you' },
+  'dm-predict': { art: 'crystal', title: 'Prediction points', sub: 'Your calls just paid off', tag: 'Only you' },
+  'dm-game': { art: 'pad', title: 'Game update', sub: 'New max level or rules', tag: 'EA update' },
+  'dm-mention': { art: 'people', title: 'You were mentioned', sub: 'Someone tagged you in the Hub', tag: 'Social' },
+  'dm-message': { art: 'inbox', title: 'New message', sub: 'A DM or group chat in the Hub', tag: 'Social' },
+  'dm-feed': { art: 'board', title: 'Feed activity', sub: 'Comments, replies and reactions', tag: 'Social' },
+  'dm-storage': { art: 'disk', title: 'Storage guard', sub: 'Old feed files were cleared', tag: 'Owner only', calm: true },
+  'dm-queue': { art: 'shield', title: 'Manager to-do', sub: 'Something is waiting for review', tag: 'Managers', calm: true },
+  'dm-moderation': { art: 'down', title: 'Manager warning', sub: 'Read it and act on it', tag: 'Warning' },
+  'dm-play': { art: 'pitch', title: 'New play', sub: 'Assigned to you to learn', tag: 'Tactics' },
+  'dm-card': { art: 'player', title: 'Card decision', sub: 'Your Card Studio request', tag: 'Only you' },
+  'dm-wave': { art: 'spark', title: 'Wave', sub: 'A teammate said hello', tag: 'Social' },
+  'dm-remind': { art: 'bell', title: 'Reminder', sub: 'A nudge from the club', tag: 'Only you' },
+  'dm-caution': { art: 'caution', title: 'Caution', sub: 'A player needs a second look', tag: 'Warning' },
+  'dm-live': { art: 'antenna', title: 'We are live', sub: 'The club just went on air', tag: 'On air' },
+  'dm-test': { art: 'pulse', title: 'Test alert', sub: 'Your DMs are working', tag: 'Test', calm: true },
+};
+export const dmPicture = (key) => taggedPicture(DMS[key]);
+for (const k of Object.keys(DMS)) BANNERS[k] = () => dmPicture(k);
+// ---------- notice pictures (section 9): a compact strip for button, menu and form replies and every private notice ----------
+// One table for the nine notice kinds (bot/banners.js NOTICE_KINDS says which kind a reply is). The strip is 150 px tall, not a full poster: a coloured
+// edge for the tone, a line icon, the title, one line on what to do, and the Phoenix crest. The words that name a person, channel or time stay in the message text.
+const NOTICE_ART = {
+  ok: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M7.5 12.5l3 3 6-7" stroke="${O}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>`,
+  info: `<circle cx="12" cy="12" r="9" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M12 11v6" stroke="${O}" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.4" fill="${O}"/>`,
+  lock: `<rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="${G}" stroke-width="1.6"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><circle cx="12" cy="15.5" r="1.6" fill="${O}"/>`,
+  hourglass: `<path d="M6 3h12M6 21h12M7 3c0 5 5 6 5 9s-5 4-5 9M17 3c0 5-5 6-5 9s5 4 5 9" fill="none" stroke="${G}" stroke-width="1.6" stroke-linecap="round"/><path d="M9.5 18.5h5L12 16z" fill="${O}"/>`,
+};
+export const NOTICES = {
+  'notice-success': { art: ALERT_ART.up, title: 'Done', sub: 'That went through', tone: 'win' },
+  'notice-info': { art: NOTICE_ART.info, title: 'Good to know', sub: 'Nothing for you to do', tone: 'steel' },
+  'notice-warning': { art: ALERT_ART.caution, title: 'Heads up', sub: 'Read this before you go on', tone: 'warn' },
+  'notice-error': { art: ALERT_ART.down, title: 'That did not work', sub: 'Nothing was changed', tone: 'loss' },
+  'notice-locked': { art: NOTICE_ART.lock, title: 'Not available', sub: 'Switched off, or not for your role', tone: 'steel' },
+  'notice-empty': { art: ICONS.inbox, title: 'Nothing here yet', sub: 'It will show up when there is something', tone: 'steel' },
+  'notice-expired': { art: ALERT_ART.clock, title: 'Too late', sub: 'This one has closed or expired', tone: 'steel' },
+  'notice-cooldown': { art: NOTICE_ART.hourglass, title: 'Slow down', sub: 'Wait a moment, then try again', tone: 'warn' },
+  'notice-notconfigured': { art: ICONS.gear, title: 'Not set up yet', sub: 'A manager sets this in the Boardroom', tone: 'warn' },
+};
+const NOTICE_EDGE = { win: '#4be08a', loss: '#ff7d72', warn: '#e8651a', steel: '#6c7890' };
+export function noticePicture(key) {
+  const n = NOTICES[key];
+  const edge = NOTICE_EDGE[n.tone] ?? NOTICE_EDGE.steel;
+  return page(`body{height:150px}.ns{position:absolute;inset:0;display:flex;align-items:center;gap:34px;padding:0 200px 0 62px}.ns:before{content:"";position:absolute;left:0;top:0;bottom:0;width:18px;background:${edge}}.ns svg{flex:none}.ns h1{font:700 62px/1 Oswald;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;text-shadow:0 6px 30px rgba(232,101,26,.5)}.ns p{margin-top:8px;font:600 22px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);white-space:nowrap}.ns .eyebrow{font-size:16px;margin-bottom:4px}.wm{position:absolute;right:46px;top:50%;width:104px;height:104px;transform:translateY(-50%);object-fit:contain;filter:drop-shadow(0 6px 22px rgba(232,101,26,.5))}.brand{display:none}`,
+    `<div class="ns"><svg width="92" height="92" viewBox="0 0 24 24">${n.art}</svg><div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">${esc(n.title)}</h1><p>${esc(n.sub)}</p></div></div>${crestUri() ? `<img class="wm" src="${crestUri()}">` : ''}`);
+}
+for (const k of Object.keys(NOTICES)) BANNERS[k] = () => noticePicture(k);
 for (const [name, spec] of Object.entries(BANNER_SPEC)) BANNERS[name] ??= () => familyBanner(spec);
 
 // ---------- posters: help (one per bot + the hub) and the Rush queue "how it works" ----------

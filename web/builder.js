@@ -53,7 +53,7 @@
   };
   const archName = (id) => (g.archetypes || []).find((a) => a.id === id)?.name ?? id;
   const outdated = (x) => x.version && x.version !== g.version;
-  const decodeCode = (code) => { const d = M.decode(g, code); return d && { arch: d.arch, level: d.level, spent: d.spent, ps: d.ps, plus: d.plus, sp: d.sp, fa: d.fa, h: d.h, w: d.w }; };
+  const decodeCode = (code) => { const d = M.decode(g, code); return d && { arch: d.arch, level: d.level, spent: d.spent, ps: d.ps, plus: d.plus, sp: d.sp, fa: d.fa, fl: d.fl, sm: d.sm, wf: d.wf, h: d.h, w: d.w }; };
   const open = (x) => {
     const d = decodeCode(x.code);
     if (!d) { toast('That build can’t be read with the current game data', 'error'); return; }
@@ -354,17 +354,21 @@ ${token() ? '' : `<p class="muted small">🔐 Log in to compare with your saved 
     if (tab === 'facilities') {
       const list = g.facilities || [];
       if (!list.length) return none('Facilities');
+      if (ev.facility?.on) {
+        const F = ev.facility, K = (n) => (n >= 1000 ? `${(n / 1000).toFixed(1)} M` : `${n} K`), mx = g.facilityRules.maxLevel || 3;
+        return `<p class="muted small">Facilities cost budget, not AP: <b>${K(Math.max(0, F.left))}</b> left of ${K(F.budget)} at level ${ev.level}.${F.left < 0 ? ' <b>Over budget.</b>' : ''}</p><div class="bd-opts">${list.map((f) => { const l = c.fl[f.id] || 0; return `<div class="bd-opt wide${l ? ' on' : ''}"><span>🏟️</span><b>${esc(f.name)}</b><small class="muted">${esc(f.category)} · ${f.attributes.map(esc).join(' · ')}${l ? ` +${f.boosts[l - 1]}` : ''}</small><span>${Array.from({ length: mx }, (_, i) => i + 1).map((n) => { const cost = M.facCost(g, f, l, n); return `<button type="button" class="bd-star${n <= l ? ' on' : ''}" data-fl="${esc(f.id)}" data-n="${n}"${n <= l || cost <= F.left ? '' : ' disabled'} aria-label="${esc(f.name)} ${n} star" title="${n <= l ? 'Tap to lower' : K(cost)}">★</button>`; }).join('')}</span></div>`; }).join('')}</div>`;
+      }
       return `<p class="muted small">Up to <b>${sl.facilities}</b> Facilities. ${c.fa.length}/${sl.facilities}</p><div class="bd-opts">${list.map((f) => `<button type="button" class="bd-opt wide${c.fa.includes(f.id) ? ' on' : ''}" data-fa="${esc(f.id)}"><span>🏟️</span><b>${esc(f.name)}</b>${f.desc ? `<small class="muted">${esc(f.desc)}</small>` : ''}<span class="bd-fx">${fx(f.bonus)}</span></button>`).join('')}</div>`;
     }
-    const H = M.rangeOf(g, 'height'), Wt = M.rangeOf(g, 'weight');
+    const H = ev.body.height, Wt = ev.body.weight;
     const mods = M.modsOf(g, b);
     const from = (src) => Object.entries(mods).flatMap(([k, l]) => l.filter(([f]) => f === src).map(([, v]) => [k, v]));
     const badge = (src) => { const l = from(src); return l.length ? `<span class="bd-fx">${fx(Object.fromEntries(l))}</span>` : '<span class="muted small">No modifier at this value</span>'; };
-    const noTables = !g.body?.heightMods?.length && !g.body?.weightMods?.length;
+    const noTables = !g.body?.modifier && !g.body?.heightMods?.length && !g.body?.weightMods?.length;
     return `<div class="bd-body">${figure(c)}
 <label><span>📏 Height <b data-bv="h">${c.h}</b> cm</span><input type="range" min="${H.min}" max="${H.max}" value="${c.h}" data-body="h" aria-label="Height">${badge('Height')}</label>
 <label><span>⚖️ Weight <b data-bv="w">${c.w}</b> kg</span><input type="range" min="${Wt.min}" max="${Wt.max}" value="${c.w}" data-body="w" aria-label="Weight">${badge('Weight')}</label>
-${noTables ? '<p class="muted small">🧪 Height/weight modifier tables aren’t entered yet, so body size doesn’t change attributes here. Managers add <code>body.heightMods</code> / <code>weightMods</code> in Game rules.</p>' : ''}</div>`;
+${ev.accel ? `<p class="small">Acceleration type: <b>${esc(ev.accel)}</b></p>` : ''}${noTables ? '<p class="muted small">🧪 Height/weight modifier tables aren’t entered yet, so body size doesn’t change attributes here. Managers add <code>body.heightMods</code> / <code>weightMods</code> in Game rules.</p>' : ''}</div>`;
   }
 
   // Rule-based notes: where this build fits in League (11v11) and what matters more in Rush (small-sided).
@@ -390,6 +394,7 @@ ${noTables ? '<p class="muted small">🧪 Height/weight modifier tables aren’t
     const relevant = (grpId) => (ev.arch.group === 'GK') === (grpId === 'goalkeeping') || grpId === 'physical' || (ev.arch.group === 'GK' && grpId === 'pace');
     const card = (grp) => {
       const rows = rowsBy(grp.id);
+      if (!rows.length) return ''; // Goalkeeping only exists for goalkeeper archetypes
       const avg = Math.round(rows.reduce((s, r) => s + r.value, 0) / (rows.length || 1));
       return `<section class="bd-grp${relevant(grp.id) ? '' : ' dim'}"><header><span>${GICON[grp.id] ?? '•'} ${esc(grp.name)}</span><b>${avg}</b></header>
 ${rows.map((r) => {
@@ -418,6 +423,7 @@ ${levelRing(ev)}
 <span class="row"><input type="range" min="1" max="${ev.cap}" value="${ev.level}" data-level aria-label="Level"><button type="button" class="btn sm${ev.level === ev.cap ? ' ghost' : ''}" data-max>MAX</button></span></label>
 <div class="bd-ap${ev.left === 0 && ev.total ? ' full' : ''}"><div><small>Archetype points left</small><b>${ev.left}</b><span class="muted">/ ${ev.total}</span></div><span class="bd-apbar"><i style="width:${leftPct}%"></i></span></div>
 <div class="bd-face">${ev.face.map(([k, v]) => `<div><small>${k}</small><b class="${v >= 80 ? 'hi' : v >= 65 ? 'mid' : ''}">${v}</b></div>`).join('')}</div>
+<div class="bd-face">${['skillMoves', 'weakFoot'].map((k) => { const r = ev.stars[k]; return `<div><small>${k === 'skillMoves' ? 'Skill Moves' : 'Weak Foot'}${r.cost ? ` · ${r.cost} AP` : ''}</small><span>${[1, 2, 3, 4, 5].map((n) => { const c2 = M.canStar(ev, k, n); return `<button type="button" class="bd-star${n <= r.value ? ' on' : ''}" data-star="${k}" data-n="${n}"${c2 == null ? ' disabled' : ''} aria-label="${n} star" title="${c2 == null ? `This archetype allows ${r.base}–${r.max} stars` : c2 > 0 ? `${c2} AP` : c2 < 0 ? `Refunds ${-c2} AP` : 'Current'}">★</button>`; }).join('')}</span></div>`; }).join('')}</div>
 <div class="bd-fit"><small>📍 Position fit*</small>${ev.fit.map(([pos, v], i) => `<div class="${i ? '' : 'best'}"><b>${esc(pos)}</b><span class="bd-bar"><i class="a" style="width:${pct(v)}%"></i></span><em>${v}</em></div>`).join('')}</div>
 <div class="bd-modes">${notes(ev).map(([ic, t]) => `<p><span>${ic}</span><span>${t}</span></p>`).join('')}</div>
 <div class="bd-acts"><button type="button" class="btn ghost sm" data-undo${hist.length ? '' : ' disabled'}>↶ Undo</button><button type="button" class="btn ghost sm" data-reset${ev.used ? '' : ' disabled'}>⟲ Reset</button><button type="button" class="btn sm" data-share>🔗 Share link</button></div>
@@ -429,7 +435,7 @@ ${(g.masteries || []).some((m) => m.archetype === ev.arch.id) ? `<div class="bd-
   }
 
   // Board 14: a level ring, a turnable 3D body whose height/weight scale follows the sliders (CSS, no WebGL).
-  const figScale = (k, v) => { const r = M.rangeOf(g, k === 'h' ? 'height' : 'weight'), t = (v - r.min) / Math.max(1, r.max - r.min); return k === 'h' ? 0.82 + 0.36 * t : 0.78 + 0.5 * t; };
+  const figScale = (k, v) => { const r = M.rangeOf(g, k === 'h' ? 'height' : 'weight', M.archOf(g, b.arch)), t = (v - r.min) / Math.max(1, r.max - r.min); return k === 'h' ? 0.82 + 0.36 * t : 0.78 + 0.5 * t; };
   const figure = (c) => `<div class="bd-fig" data-fig><div class="bd-fig-body" style="--sy:${figScale('h', c.h).toFixed(3)};--sx:${figScale('w', c.w).toFixed(3)}"><i class="hd"></i><i class="tr"></i><i class="lg"></i></div><small class="muted">Drag to turn · height &amp; weight reshape the body</small></div>`;
   const levelRing = (ev) => { const C = 2 * Math.PI * 52; return `<div class="bd-ring${ev.level === ev.cap ? ' max' : ''}" aria-hidden="true"><svg viewBox="0 0 120 120"><circle class="trk" cx="60" cy="60" r="52"/><circle class="fg" cx="60" cy="60" r="52" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - ev.level / ev.cap)).toFixed(1)}"/></svg><b>${ev.level}</b><small>of ${ev.cap}</small></div>`; };
 
@@ -480,6 +486,12 @@ ${(g.masteries || []).some((m) => m.archetype === ev.arch.id) ? `<div class="bd-
       setHash(); draw(); return;
     }
     if (t.dataset.sp) { push(); b = { ...b, sp: b.sp === t.dataset.sp ? null : t.dataset.sp }; setHash(); draw(); return; }
+    if (t.dataset.star) { const ev = M.evaluate(g, b), n = +t.dataset.n; if (M.canStar(ev, t.dataset.star, n) == null) return; push(); b = { ...b, [t.dataset.star === 'skillMoves' ? 'sm' : 'wf']: n }; setHash(); draw(); return; }
+    if (t.dataset.fl) {
+      const c = M.choices(g, b), id = t.dataset.fl, n = +t.dataset.n, c0 = c.fl[id] || 0, nx = n === c0 ? n - 1 : n, f = (g.facilities || []).find((x) => x.id === id);
+      if (!f || (nx > c0 && M.facCost(g, f, c0, nx) > M.evaluate(g, b).facility.left)) return;
+      push(); const fl = { ...c.fl }; if (nx <= 0) delete fl[id]; else fl[id] = nx; b = { ...b, fl }; setHash(); draw(); return;
+    }
     if (t.dataset.fa) {
       const c = M.choices(g, b), sl = M.slotsOf(g), id = t.dataset.fa;
       if (!c.fa.includes(id) && c.fa.length >= sl.facilities) { toast(`All ${sl.facilities} Facility slots are full – remove one first`, 'error'); return; }
@@ -487,11 +499,11 @@ ${(g.masteries || []).some((m) => m.archetype === ev.arch.id) ? `<div class="bd-
     }
     if (t.dataset.arch) {
       if (t.dataset.arch === b.arch) return;
-      push(); b = { ...b, arch: t.dataset.arch, spent: {}, sp: null }; setHash(); draw();
+      push(); b = { ...b, arch: t.dataset.arch, spent: {}, sp: null, h: undefined, w: undefined, sm: undefined, wf: undefined }; setHash(); draw();
     } else if (t.dataset.d) step(t.closest('[data-attr]').dataset.attr, +t.dataset.d, e.shiftKey ? 5 : 1);
     else if ('max' in t.dataset) { push(); b.level = M.capOf(g); setHash(); draw(); }
     else if ('undo' in t.dataset && hist.length) { b = JSON.parse(hist.pop()); setHash(); draw(); }
-    else if ('reset' in t.dataset) { push(); b.spent = {}; setHash(); draw(); toast('Points reset – Undo brings them back'); }
+    else if ('reset' in t.dataset) { push(); b.spent = {}; b.sm = undefined; b.wf = undefined; setHash(); draw(); toast('Points reset – Undo brings them back'); }
     else if ('save' in t.dataset) save();
     else if ('mine' in t.dataset) myBuilds();
     else if ('compare' in t.dataset) compare();
@@ -547,7 +559,7 @@ ${(g.masteries || []).some((m) => m.archetype === ev.arch.id) ? `<div class="bd-
     try { pending = JSON.parse(sessionStorage.getItem(PENDING) || 'null'); sessionStorage.removeItem(PENDING); } catch {}
     const hash = /[#&]a=/.test(location.hash) ? location.hash : pending?.code || '';
     const shared = hash ? M.decode(g, hash) : null;
-    b = shared ? { arch: shared.arch, level: shared.level, spent: shared.spent, ps: shared.ps, plus: shared.plus, sp: shared.sp, fa: shared.fa, h: shared.h, w: shared.w } : { arch: first.id, level: M.capOf(g), spent: {} };
+    b = shared ? { arch: shared.arch, level: shared.level, spent: shared.spent, ps: shared.ps, plus: shared.plus, sp: shared.sp, fa: shared.fa, fl: shared.fl, sm: shared.sm, wf: shared.wf, h: shared.h, w: shared.w } : { arch: first.id, level: M.capOf(g), spent: {} };
     cur = pending?.cur || null;
     if (shared?.version && shared.version !== g.version && !pending) older(shared.version);
     if (pending) setHash();

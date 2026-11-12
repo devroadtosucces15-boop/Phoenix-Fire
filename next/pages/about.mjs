@@ -16,7 +16,7 @@ export function about() {
  <div class="panel reveal ab-card"><div class="ab-i">🔒</div><h3>Your name on the site</h3><p>Every player on the site comes from EA's public data. If you would rather not appear, or you play for another club that is not showing yet, ask a manager in Discord or use the requests in <a href="hub.html">your locker</a> and it is sorted on the next update.</p></div>
  <div class="panel reveal ab-card"><div class="ab-i">👑</div><h3>Join us</h3><p>${esc(R.headline ?? 'We are always looking for committed players who want to compete.')}</p><p><a class="btn gold" href="join.html">Apply to join</a></p></div>
 </div>
-<p class="muted small" style="margin-top:22px">Looking for the old layout? It is still available at <a href="classic/index.html">the classic site</a>.</p></section></div><script src="crest3d.js" defer></script>`;
+</section></div><script src="crest3d.js" defer></script>`;
   return shell({ group: 'club', page: 'about.html', title: 'About', body, extraHead: `<link rel="stylesheet" href="crest3d.css"><style>.ab-grid{gap:22px}.ab-card h3{margin:6px 0 8px}.ab-card p{margin:0 0 10px;color:var(--soft)}.ab-i{font-size:30px}.ab-ul{margin:0;padding-left:18px;color:var(--soft);display:grid;gap:4px}.ab-ul b{color:#fff}</style>` });
 }
 

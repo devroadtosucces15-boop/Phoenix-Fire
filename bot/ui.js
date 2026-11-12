@@ -5,7 +5,7 @@
 // lives in text blocks.
 //   reply(message({ accent: 'win', blocks: [header({...}), cards(url), text('…'), footer('…'), buttons([...])] }))
 import { it } from './icons.js';
-import { BANNER_SPEC, bannerFromEyebrow } from './banners.js';
+import { BANNER_SPEC, bannerFromEyebrow, noticeKindFor, noticeBanner } from './banners.js';
 export const IS_V2 = 1 << 15;
 export const EPHEMERAL = 1 << 6;
 
@@ -99,8 +99,16 @@ export function cardUrl(manifest, ...key) {
 }
 
 // A fixed banner picture (jail, wheel, discovery, matchnight – drawn by scripts/cards.mjs). Needs no manifest lookup.
-export const BANNER_V = 8; // = TEMPLATE_VERSION in scripts/cards.mjs
+export const BANNER_V = 14; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
+
+// A drawn picture for one output, alt text from BANNER_SPEC (null without SITE_URL, so a post never breaks).
+export const picture = (env, key) => (bannerUrl(env, key) ? cards({ url: bannerUrl(env, key), alt: BANNER_SPEC[key]?.title }) : null);
+
+// A short reply (confirmation, empty state, error) that opens with its own drawn picture: the picture, one bold line, one line on what to do.
+// Private unless { ephemeral: false }. No SITE_URL → no picture, the reply still sends (the family banner fallback skips nothing).
+export const pictureNote = (env, key, title, body = '', { accent = 'steel', ephemeral = true, extra = [] } = {}) =>
+  message({ accent, ephemeral, blocks: [picture(env, key), text(`**${title}**${body ? `\n${body}` : ''}`), ...extra] });
 
 // The empty pitch of a formation (scripts/cards-events.mjs draws one per shape: lineup-<slug>.png).
 export const lineupSlug = (f) => String(f).toLowerCase().replace(/[^0-9a-z]+/g, '-').replace(/^-|-$/g, '');
@@ -170,4 +178,35 @@ export function autoBanner(env, msg, name = null) {
   const first = (panel?.components ?? []).map((b) => (b?.type === 9 ? b.components?.[0] : b)).find((b) => b?.type === 10 && /^-# /.test(b.content ?? ''));
   const fam = name ?? bannerFromEyebrow(String(first?.content ?? '').split('\n')[0].replace(/^-# /, ''));
   return withBanner(msg, bannerUrl(env, fam), BANNER_SPEC[fam]?.title);
+}
+
+// ---------- notices (section 9) ----------
+// A compact private reply (notice(), privateNote(), pictureNote()'s sisters: refusals, errors, confirmations, "not set up") gets one small strip of
+// its own kind (banner-notice-<kind>.png) as the first block. Only a short ephemeral panel with no header and no picture counts as a notice; every
+// component (custom_id, label, select, modal) in the message stays exactly as built. Applied once, in the worker's reply helper, not at each call site.
+const TONE = Object.fromEntries(Object.entries(ACCENT).map(([k, v]) => [v, k]));
+export function noticeKind(msg) {
+  if (!isV2(msg) || !(msg.flags & EPHEMERAL) || !Array.isArray(msg.components)) return null;
+  const panel = msg.components.find((c) => c?.type === 17);
+  const blocks = panel?.components ?? [];
+  let pictured = false, words = 0, headed = false;
+  const walk = (c) => {
+    if (!c || typeof c !== 'object') return;
+    if (Array.isArray(c)) return c.forEach(walk);
+    if (c.type === 12 || c.type === 11) pictured = true;
+    if (c.type === 10) { words += (c.content ?? '').length; if (/^(-# |#{1,3} )/.test(c.content ?? '')) headed = true; }
+    walk(c.components); walk(c.accessory);
+  };
+  walk(blocks);
+  if (!panel || pictured || headed || words > 500) return null;
+  return noticeKindFor(plainText({ components: [panel] }), TONE[panel.accent_color] ?? 'steel');
+}
+export function withNotice(msg, env) {
+  const kind = noticeKind(msg);
+  const pic = kind && picture(env, noticeBanner(kind));
+  if (!pic) return msg;
+  const at = msg.components.findIndex((c) => c?.type === 17);
+  const comps = [...msg.components];
+  comps[at] = { ...comps[at], components: [pic, ...(comps[at].components ?? [])] };
+  return { ...msg, components: comps };
 }

@@ -13,7 +13,7 @@ import { notify, notifyMembers, safely } from './notify.js';
 import { broadcastRoom } from './clubroom.js';
 import { postEmbed } from './docs.js';
 import { getBotSettings } from './settings.js';
-import { message, header, text, sep, facts, footer, buttons } from './ui.js';
+import { message, header, text, sep, facts, footer, buttons, picture } from './ui.js';
 import { orgName, channelFor, mirrorChannel } from './orgconfig.js';
 
 const DAY = 86400e3, WEEK = 7 * DAY;
@@ -164,6 +164,7 @@ async function announce(env, loadSite) {
       const potm = winnersOut(await all(env, "SELECT * FROM award_winners WHERE period = ? AND award = 'potm' AND player != ''", `M${wk.month}`), cats);
       await postEmbed(env, channel, '', message({ accent: 'gold', blocks: [
         header({ eyebrow: `${orgName(env).toUpperCase()} · Weekly awards`, title: `🏆 Week ${wk.week.split('-W')[1]} winners`, sub: 'Voted by the squad' }),
+        picture(env, 'post-awards'),
         text([...byAward.values()].map((a) => `${a.icon} **${a.name}** — ${a.names.join(', ')}${a.stat ? '' : ` (${a.value} vote${a.value === 1 ? '' : 's'})`}`).join('\n')),
         potm.length && wk.month < weekOf(Date.now()).month ? sep() : null,
         potm.length && wk.month < weekOf(Date.now()).month ? facts([[`👑 Player of the Month · ${wk.month}`, potm.map((p) => p.n).join(', ')]]) : null,

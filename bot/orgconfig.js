@@ -9,6 +9,7 @@
 import { sharedKey } from './sharedkey.js';
 import { can } from './roles.js';
 import { settingsKey } from './settings.js';
+import { pictureNote } from './ui.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
@@ -265,6 +266,15 @@ export async function channelsFor(env, purpose, { clubId = null, divisionId = nu
 }
 // The channel a feature posts to for a purpose, or null: callers say "no channel is set" and never substitute another one.
 export const channelFor = async (env, purpose, scope) => (await channelsFor(env, purpose, scope))[0] ?? null;
+// The private notice for a feature whose channel is not set (section 9). It reads the purpose from the Organization config: with no channel it says so and
+// where a manager sets it; with some, it names exactly those channels (never a guess). The words for the purpose are CHANNEL_PURPOSE_INFO, the same text the site shows.
+export async function channelNotice(env, purpose, scope) {
+  const ids = await channelsFor(env, purpose, scope);
+  const what = CHANNEL_PURPOSE_INFO[purpose] ?? purpose;
+  return ids.length
+    ? pictureNote(env, 'notice-info', `A channel is set for ${purpose.replace(/_/g, ' ')}`, `${what}: ${ids.map((id) => `<#${id}>`).join(' ')}`)
+    : pictureNote(env, 'notice-notconfigured', `No channel is set for ${purpose.replace(/_/g, ' ')}`, `${what}. A manager adds one in the Boardroom → Organization, or with \`/setup channel\`.`);
+}
 
 // Dual-write for the older channel commands (the Awards settings and the /docs post), which still keep their meta key so nothing
 // that reads it breaks: they also record the choice here, so the website's Organization section and every config reader agree and

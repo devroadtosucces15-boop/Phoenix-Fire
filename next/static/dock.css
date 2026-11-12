@@ -1,0 +1,103 @@
+/* The dock (dock.js): Phoenix ring bottom-right, dark Staff pill bottom-left beside the issue pill. Replaces the compass, the owner stamp, the gear and the preview toolbar. */
+.pf-dock .nv-fab,.pf-dock .nv-panel,.pf-dock .ofab,.pf-dock .gr-fab,.pf-dock .devbar,.pf-dock .devgear{display:none!important}
+.dk-panel[hidden]{display:none}
+@keyframes dkIn{from{opacity:0;transform:translateY(8px)}}
+.dk-h{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08)}.dk-h b{font:700 14px Oswald,Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#efcf7a}.dk-h small{color:var(--mute,#988a78);flex:1}
+.dk-x{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);color:inherit;cursor:pointer}
+.dk-body{overflow:auto;overscroll-behavior:contain;padding:6px 10px 10px;display:grid;gap:6px}
+.dk-s h3{margin:10px 4px 4px;font:600 11px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--mute,#988a78)}.dk-s h3 a{color:inherit;text-decoration:none}
+.dk-l{list-style:none;margin:0;padding:0;display:grid;gap:2px}.dk-r{display:flex;align-items:center;gap:4px;border-radius:10px}.dk-r:hover{background:rgba(255,255,255,.05)}
+.dk-r a{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:9px 10px;color:inherit;text-decoration:none;font-size:14px}.dk-r a[aria-current="page"]{color:var(--red,#e8651a);font-weight:600}
+.dk-e{width:22px;text-align:center}.dk-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dk-pin{width:34px;height:34px;border:0;background:none;color:rgba(255,255,255,.25);font-size:16px;cursor:pointer;border-radius:50%}.dk-pin:hover{color:#efcf7a}.dk-pin.on{color:#efcf7a}
+.dk-none{padding:8px 10px;color:var(--mute,#988a78);font-size:13px}
+.dk-top{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;margin-top:6px;padding:10px 12px;border-radius:12px;border:1px solid rgba(232,101,26,.4);background:rgba(232,101,26,.1);color:inherit;text-decoration:none}.dk-top span{grid-row:span 2;font-size:20px}.dk-top small{color:var(--soft,#bcae9a)}
+.dk-f,.dk-acts{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px}.dk-f{border-top:1px solid rgba(255,255,255,.08)}.dk-acts{padding:4px}
+.dk-b,.dk-chip{min-height:36px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:inherit;font:600 12px Inter;cursor:pointer}.dk-chip{min-height:30px;text-transform:capitalize}.dk-chip.on{background:var(--red,#e8651a);border-color:var(--red,#e8651a);color:#fff}
+.dk-as{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--soft,#bcae9a)}
+
+/* ---------- the three round badges: nav ring (crest, ember), Staff (crest, gold) and Issue (bug, crimson). One shape, one size, one ring.
+   They are dragged anywhere in the free part of the screen (dock.js sets left/top); the free part stops under the header and sub bar
+   and above the bottom tab bar. ---------- */
+.dk-fab,.pf-dock .nxr-fab{--bg1:#2a160b;--ring:var(--red,#e8651a);--glow:232,101,26;position:fixed;z-index:9976;left:0;top:0;right:auto;bottom:auto;width:60px;height:60px;min-width:0;border-radius:50%;border:0;padding:0;cursor:grab;display:grid;place-items:center;color:var(--text,#f7f1e6);font-size:26px;line-height:1;
+ background:radial-gradient(circle at 50% 35%,var(--bg1),var(--ink,#0a0705) 78%);box-shadow:0 10px 28px rgba(0,0,0,.6),0 0 22px rgba(var(--glow),.28);transition:transform .25s,box-shadow .25s;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.dk-fab:hover,.pf-dock .nxr-fab:hover{transform:scale(1.06)}.dk-fab:active,.pf-dock .nxr-fab:active{transform:scale(.95)}
+.dk-fab.dragging,.pf-dock .nxr-fab.dragging{cursor:grabbing;transform:scale(1.1);transition:none;box-shadow:0 18px 40px rgba(0,0,0,.7),0 0 30px rgba(var(--glow),.45)}
+.dk-fab:focus-visible,.pf-dock .nxr-fab:focus-visible{outline:3px solid #efcf7a;outline-offset:3px}
+.dk-fab svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);pointer-events:none}
+.dk-fab circle,.pf-dock .nxr-fab svg circle{fill:none;stroke-width:4}.dk-trk{stroke:rgba(255,255,255,.12)}.dk-bar{stroke:var(--ring);stroke-linecap:round;stroke-dasharray:calc(var(--p,0)*1) 100;transition:stroke-dasharray .15s linear}
+.dk-fab img{position:relative;width:26px;height:36px;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));pointer-events:none}
+.dk-ring{--p:0}
+.dk-pill{--bg1:#3a2c0e;--ring:#efcf7a;--glow:239,207,122;--p:0}
+
+.dk-n{position:absolute;left:-4px;top:-4px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:999px;font:700 11px/16px Inter,sans-serif;font-style:normal;text-align:center;background:var(--red,#e8651a);color:#fff;border:2px solid var(--ink,#0a0705)}.dk-n[hidden]{display:none}
+/* Issue tool: web/report.js builds the button; these rules give it the same round badge in crimson */
+.pf-dock .nxr-fab{--bg1:#4a1410;--ring:#ff6a5a;--glow:255,59,48;border:0;font-size:26px;box-shadow:0 10px 28px rgba(0,0,0,.6),0 0 22px rgba(var(--glow),.28),inset 0 0 0 3px rgba(255,106,90,.55)}
+.pf-dock .nxr-fab.on{--bg1:#ff3b30}
+.pf-dock .nxr-fab b{left:-4px;top:-4px}
+.dk-panel{position:fixed;z-index:9980;left:12px;top:80px;width:min(340px,calc(100vw - 24px));max-height:min(520px,calc(100dvh - 120px));display:flex;flex-direction:column;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(17,12,8,.97);backdrop-filter:blur(14px);box-shadow:0 20px 50px rgba(0,0,0,.7);color:var(--text,#f7f1e6);animation:dkIn .18s ease-out}
+.dk-panel[hidden]{display:none}
+.dk-staff{background:rgba(6,4,3,.98);border-color:rgba(239,207,122,.45)}
+/* the big menu: opens in the middle of the screen over a scrim */
+.dk-scrim{position:fixed;inset:0;z-index:9978;background:rgba(5,3,2,.62);backdrop-filter:blur(3px);animation:dkFade .18s ease-out}.dk-scrim[hidden]{display:none}
+.dk-panel.dk-big{left:50%;top:50%;transform:translate(-50%,-50%);width:min(1040px,calc(100vw - 24px));max-height:min(86dvh,820px);animation:dkBig .22s ease-out}
+.dk-big .dk-body{padding:12px 16px 16px;gap:14px}.dk-big .dk-s h3{margin:6px 2px 8px}
+@keyframes dkFade{from{opacity:0}}@keyframes dkBig{from{opacity:0;transform:translate(-50%,-47%) scale(.97)}}
+@keyframes dkIn{from{opacity:0;transform:translateY(8px)}}
+/* room map (was the bottom of the Locker): a feature tile plus colour-coded tiles */
+.dk-rooms{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.rm-w{position:relative;display:grid}.rm-w.rm-locker{grid-column:span 2;grid-row:span 2}
+.rm-w .dk-pin{position:absolute;top:8px;right:8px;z-index:2;background:rgba(0,0,0,.35)}
+.rm{--c:232,101,26;position:relative;display:flex;flex-direction:column;gap:6px;min-height:128px;padding:16px 16px 14px;border-radius:18px;overflow:hidden;text-decoration:none;color:inherit;isolation:isolate;
+ background:linear-gradient(155deg,rgba(var(--c),.22),rgba(10,7,5,.92) 62%);border:1px solid rgba(var(--c),.38);transition:transform .35s var(--spring,ease),box-shadow .25s,border-color .25s}
+.rm:hover,.rm:focus-visible{transform:translateY(-4px);border-color:rgba(var(--c),.85);box-shadow:0 16px 32px rgba(0,0,0,.5),0 0 26px rgba(var(--c),.22)}
+.rm[aria-current="page"]{border-color:rgba(var(--c),.9)}
+.rm-ic{position:absolute;right:-6px;bottom:-16px;font-size:84px;line-height:1;opacity:.16;transform:rotate(-8deg);z-index:-1;transition:opacity .25s,transform .35s}
+.rm:hover .rm-ic{opacity:.3;transform:rotate(0) scale(1.08)}
+.rm-no{font:600 12px/1 var(--mono,monospace);letter-spacing:.14em;color:rgba(var(--c),1)}
+.rm-t{font-size:18px;line-height:1.1;letter-spacing:.02em}.rm-d{font-size:12.5px;opacity:.72;max-width:30ch}
+.rm-go{margin-top:auto;align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px;background:rgba(var(--c),.18);border:1px solid rgba(var(--c),.45)}
+.rm-go i{display:inline-block;font-style:normal;transition:transform .25s}.rm:hover .rm-go i{transform:translateX(4px)}
+.rm-w.rm-locker .rm{min-height:268px}.rm-locker .rm-t{font-size:28px}.rm-locker .rm-ic{font-size:170px}
+.rm-night{--c:224,73,63}.rm-squadr{--c:70,200,170}.rm-clubh{--c:110,160,255}.rm-handb{--c:226,196,140}
+.dk-lk{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dk-lk a{display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:inherit;text-decoration:none;font-size:14px}.dk-lk a:hover{border-color:var(--red,#e8651a);background:rgba(232,101,26,.12)}.dk-lk a[aria-current="page"]{background:var(--red,#e8651a);border-color:var(--red,#e8651a);color:#fff}
+.dk-cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+@media(max-width:900px){.dk-rooms{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.dk-panel.dk-big{width:calc(100vw - 16px);max-height:88dvh}.rm{min-height:104px}.rm-w.rm-locker .rm{min-height:150px}.rm-locker .rm-t{font-size:22px}.rm-locker .rm-ic{font-size:110px}}
+@media(prefers-reduced-motion:reduce){.rm,.rm-ic,.rm-go i,.dk-fab{transition:none}.dk-scrim,.dk-panel.dk-big{animation:none}}
+
+/* ---------- round 2: one identity per badge (coloured border + a small icon bottom right) ---------- */
+.dk-fab,.pf-dock .nxr-fab{border:3px solid rgb(var(--glow));box-shadow:0 10px 28px rgba(0,0,0,.6),0 0 22px rgba(var(--glow),.35),inset 0 1px 0 rgba(255,255,255,.18)}
+.dk-fab .dk-chip2,.pf-dock .nxr-fab::before{position:absolute;right:-5px;bottom:-5px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;line-height:1;background:#0a0705;border:2px solid rgb(var(--glow));pointer-events:none;box-shadow:0 2px 6px rgba(0,0,0,.6)}
+.pf-dock .nxr-fab{font-size:0;background:url(crest-sm.png) center/26px 36px no-repeat,radial-gradient(circle at 50% 35%,var(--bg1),var(--ink,#0a0705) 78%)}
+.pf-dock .nxr-fab.on{background:url(crest-sm.png) center/26px 36px no-repeat,#ff3b30}
+.pf-dock .nxr-fab::before{content:'🐞';left:auto;top:auto;display:grid}
+.pf-dock .nxr-fab b{font-size:11px}
+/* ---------- the menu windows: the same glossy glass as the cards, not a flat dark box ---------- */
+.dk-panel{border-radius:26px;border:1px solid rgba(232,101,26,.38);background:radial-gradient(120% 70% at 0% 0%,rgba(232,101,26,.20),transparent 60%),radial-gradient(90% 60% at 100% 100%,rgba(239,207,122,.08),transparent 60%),linear-gradient(165deg,rgba(34,20,10,.94),rgba(10,7,5,.97) 62%);backdrop-filter:blur(18px) saturate(1.2);box-shadow:0 28px 70px rgba(0,0,0,.72),0 0 40px rgba(232,101,26,.14),inset 0 1px 0 rgba(255,255,255,.1)}
+.dk-staff{border-color:rgba(239,207,122,.5);background:radial-gradient(120% 70% at 0% 0%,rgba(239,207,122,.18),transparent 60%),linear-gradient(165deg,rgba(32,24,8,.95),rgba(8,6,3,.98) 62%);box-shadow:0 28px 70px rgba(0,0,0,.72),0 0 40px rgba(239,207,122,.12),inset 0 1px 0 rgba(255,255,255,.1)}
+.dk-h{padding:14px 18px;border-bottom:0;position:relative}
+.dk-h::after{content:'';position:absolute;left:18px;right:18px;bottom:0;height:1px;background:linear-gradient(90deg,rgba(232,101,26,.8),rgba(239,207,122,.35),transparent)}
+.dk-hc{width:22px;height:30px;object-fit:contain;filter:drop-shadow(0 2px 5px rgba(0,0,0,.6))}
+.dk-h b{font-size:15px;letter-spacing:.16em}
+.dk-x{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+.dk-s h3{display:flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.18em}.dk-s h3::before{content:'';width:14px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--red,#e8651a),#efcf7a)}
+/* nothing browser-looking: no scroll bars, no tap flash, no text selection on controls */
+.dk-panel,.dk-panel *{scrollbar-width:none;-ms-overflow-style:none;-webkit-tap-highlight-color:transparent}.dk-panel ::-webkit-scrollbar,.dk-panel::-webkit-scrollbar{display:none;width:0;height:0}
+.dk-panel a,.dk-panel button{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+/* cards share the glass: a faint top highlight and the same corner family */
+.rm{box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 6px 16px rgba(0,0,0,.35)}
+.rm-mini{min-height:60px;flex-direction:row;align-items:center;gap:10px;padding:12px 40px 12px 14px;border-radius:16px}
+.rm-mini .rm-ic{position:absolute;right:-4px;bottom:-12px;font-size:56px}.rm-mini .rm-t{font-size:15px;letter-spacing:.03em}
+.rm-set{--c:170,160,150}.rm-staff{--c:239,207,122}
+.dk-lk{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}.dk-lk .rm-w{display:grid}
+.dk-lk a{display:flex;min-height:0;border:0;background:none}.dk-lk a.rm{border:1px solid rgba(var(--c),.38);background:linear-gradient(155deg,rgba(var(--c),.22),rgba(10,7,5,.92) 62%)}.dk-lk a:hover.rm{background:linear-gradient(155deg,rgba(var(--c),.3),rgba(10,7,5,.9) 62%)}.dk-lk a[aria-current="page"].rm{color:inherit;border-color:rgba(var(--c),.95);box-shadow:0 0 0 1px rgba(var(--c),.6),0 0 22px rgba(var(--c),.3)}
+.dk-card{padding:12px;border-radius:18px;border:1px solid rgba(232,101,26,.3);background:linear-gradient(155deg,rgba(232,101,26,.14),rgba(10,7,5,.9) 65%);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.dk-card h3{margin-top:2px}
+.dk-chips{display:flex;flex-wrap:wrap;gap:8px}.dk-ch{padding:7px 13px;border-radius:999px;border:1px solid rgba(232,101,26,.4);background:linear-gradient(155deg,rgba(232,101,26,.18),rgba(10,7,5,.8));color:inherit;text-decoration:none;font-size:13px}.dk-ch:hover{border-color:var(--red,#e8651a);background:rgba(232,101,26,.28)}
+.dk-f{border-top:0;position:relative}.dk-f::before{content:'';position:absolute;left:18px;right:18px;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(232,101,26,.5),transparent)}
+.dk-b{border:1px solid rgba(232,101,26,.5);background:linear-gradient(155deg,rgba(232,101,26,.3),rgba(10,7,5,.7));box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.dk-top{border-radius:16px;border:1px solid rgba(239,207,122,.5);background:linear-gradient(155deg,rgba(239,207,122,.22),rgba(8,6,3,.9) 65%);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.rm-w .dk-pin{width:30px;height:30px;top:6px;right:6px}.dk-lk .rm-w .dk-pin{top:50%;transform:translateY(-50%);right:6px}
+.dk-lk a.rm{min-height:60px}

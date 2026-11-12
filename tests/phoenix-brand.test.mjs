@@ -16,6 +16,12 @@ for (const f of fs.readdirSync(path.join(root, 'bot')).filter((n) => /\.(js|mjs)
 
 // the legacy-asset replacements must exist and differ from the classic NOREX art when a build is present
 for (const n of ['crest.png', 'crest-ea.png', 'favicon.png']) assert.ok(fs.existsSync(path.join(root, 'phoenix/legacy-assets', n)), `phoenix/legacy-assets/${n} missing`);
+// PWA install-bar icons come from the classic assets (NOREX crest): the overlay must replace each with the Phoenix icon
+for (const n of ['apple-touch-icon', 'icon-192', 'icon-512', 'icon-maskable-512']) {
+  const a = path.join(root, 'phoenix/legacy-assets/icons', n + '.png');
+  assert.ok(fs.existsSync(a), `phoenix/legacy-assets/icons/${n}.png missing: the classic assets/icons crest is NOREX`);
+  assert.ok(fs.readFileSync(a).equals(fs.readFileSync(path.join(root, 'phoenix/overlay', n + '.png'))), `legacy-assets/icons/${n}.png must be the Phoenix overlay icon`);
+}
 const built = path.join(root, 'site/assets/crest.png');
 if (fs.existsSync(built)) {
   const same = fs.readFileSync(built).equals(fs.readFileSync(path.join(root, 'phoenix/legacy-assets/crest.png')));

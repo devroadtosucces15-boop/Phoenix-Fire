@@ -1,0 +1,40 @@
+/* Layout pass (R01-R13, 2026-11): desktop and wide grids, level rows, one container width and one scroll offset.
+   Layout only: no colour, type, radius, shadow, border, icon or copy is set here. Everything for phones stays as it was
+   (the rules sit inside min-width queries); anything under 821px keeps the old stack. */
+:root{--pf-wrap-max:1320px;--pf-gap:18px;--pf-sticky-top:calc(var(--bt,0px) + var(--bh,68px) + var(--pf-sub-h,56px) + 14px)}
+@media(min-width:1100px){:root{--pf-gap:22px}}
+@media(min-width:1600px){:root{--pf-wrap-max:1560px}.wrap{max-width:var(--pf-wrap-max)}}
+/* a jump lands below the sticky bars, not under them */
+[id],h1,h2,h3{scroll-margin-top:var(--pf-sticky-top)}
+/* R01: the global .panel+.panel gap pushed every second card of a row 22px low */
+@media(min-width:821px){:is(.g2,.g3,.g4,.grid)>.panel,:is(.g2,.g3,.g4,.grid)>.panel+.panel{margin-top:0}}
+/* R07 results: the game list runs in columns */
+@media(min-width:1100px){#rl,#rses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--pf-gap);align-items:stretch}}
+@media(min-width:1600px){#rl,#rses{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* R08 tactics: controls left, pitch right */
+@media(min-width:1100px){
+ #league>.txpane:has(#xiPitch){display:grid;grid-template-columns:minmax(300px,420px) minmax(0,1fr);column-gap:var(--pf-gap);align-items:start}
+ #league>.txpane:has(#xiPitch)>#xiPitch,#league>.txpane:has(#xiPitch)>#pop{grid-column:2}
+ #league>.txpane:has(#xiPitch)>#xiPitch{grid-row:1/span 8}
+ #league>.txpane:has(#xiPitch)>:not(#xiPitch):not(#pop){grid-column:1}
+}
+/* R09 match night: two columns with level tops; the star divider between rows is not drawn inside the grid */
+@media(min-width:1100px){
+ .wrap.mn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--pf-gap);align-items:stretch}
+ .wrap.mn>#mnhero,.wrap.mn>.mn-jump,.wrap.mn>#mn-rush{grid-column:1/-1}
+ .wrap.mn>section.sec{margin-top:0}.wrap.mn>section.sec::before{display:none}
+ .wrap.mn>section.sec>.panel{height:100%}
+}
+/* R10 discoveries and watch list */
+#dc-feed{max-width:none}
+@media(min-width:1100px){#dc-feed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--pf-gap)}}
+@media(min-width:1600px){#dc-feed{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:821px){.wrap>.panel.nx-off{max-width:none;margin-inline:auto}}
+/* R11 staff lists */
+@media(min-width:1100px){.ct-list,.sc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--pf-gap);align-items:stretch}.ct-item,.sc-ev{height:100%}}
+@media(min-width:1600px){.ct-list,.sc-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* R12 member profile */
+@media(min-width:1100px){#member-page{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--pf-gap);align-items:start}#member-page>:first-child{grid-column:1/-1}}
+/* R13 dugout */
+@media(min-width:1600px){.split{grid-template-columns:minmax(0,1fr) 440px}}
+.dg-top{align-items:stretch}

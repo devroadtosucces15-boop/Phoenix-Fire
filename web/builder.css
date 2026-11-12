@@ -186,3 +186,4 @@
   .bd-row{grid-template-columns:minmax(0,1fr) 40px 34px 40px 34px}
   .bd-pm{width:34px;height:34px;font-size:18px}
 }
+.bd-star{font-size:20px;line-height:1;padding:4px 2px;min-width:26px;min-height:30px;color:#4a5262;background:none;border:0;cursor:pointer}.bd-star.on{color:var(--gold,#e8651a)}.bd-star:disabled{opacity:.35;cursor:not-allowed}

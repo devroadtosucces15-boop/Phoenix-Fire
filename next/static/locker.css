@@ -1,0 +1,50 @@
+/* My Locker pages (R15-R17). One markup, six pages: the body class (lk-landing, lk-me, lk-stats, lk-medals, lk-cards, lk-alerts) picks
+   what shows. Layout only: sizes, order, columns and visibility. Phone keeps the stack; the card is only enlarged from 821px. */
+.lockplate .lp-in{display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;column-gap:10px;row-gap:2px;text-align:center}
+.lockplate .lp-in small{grid-column:1/-1;margin:0;text-align:center}
+.lk-jump{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--pf-gap,18px);margin-inline:auto}
+.lk-jump a{display:flex;align-items:center;justify-content:center;min-height:56px;text-align:center}
+/* ---------- landing: card in the middle of the stage, two level panels each side, the button grid right under it ---------- */
+.lk-landing .lk-prof,.lk-landing .lk-al2{display:none}
+.lk-landing #artpanel{display:none!important}
+.lk-landing .lockstage{min-height:0;padding-block:var(--pf-gap,18px) 28px;align-items:stretch;gap:var(--pf-gap,18px);max-width:var(--pf-wrap-max,1320px)}
+.lk-landing .lockstage #cardslot{position:relative;left:auto;top:auto;z-index:2;align-self:center;flex:none;margin-inline:auto}
+.lk-landing .lockstage .side{width:auto;display:grid;grid-auto-rows:1fr;align-content:stretch;gap:var(--pf-gap,18px)}
+.lk-landing .lockstage .side>*{margin:0;height:100%;box-sizing:border-box}
+.lk-landing .lk-below{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;gap:var(--pf-gap,18px);padding-bottom:var(--pf-gap,18px)}
+.lk-landing .lk-below>*{margin:0;height:100%;box-sizing:border-box}
+@media(min-width:1100px){
+ .lk-landing .lockstage{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);margin-inline:auto}
+ .lk-landing .lockstage .side.l{grid-column:1;grid-row:1}.lk-landing .lockstage #cardslot{grid-column:2;grid-row:1}.lk-landing .lockstage .side.r{grid-column:3;grid-row:1}
+ .lk-landing .lockstage .lk-jump{grid-column:1/-1;grid-row:2}
+ .lk-landing #mycard{--s:1.85!important}.lk-landing .lockstage #cardslot{width:444px!important;height:622px!important;margin-inline:calc(var(--pf-gap,18px)*.5)}
+}
+@media(min-width:1600px){.lk-landing #mycard{--s:2.1!important}.lk-landing .lockstage #cardslot{width:504px!important;height:706px!important}}
+@media(min-width:821px) and (max-width:1099px){
+ .lk-landing .lockstage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lk-landing .lockstage #cardslot{grid-column:1/-1;grid-row:1;justify-self:center}
+ .lk-landing .lockstage .lk-jump{grid-column:1/-1;grid-row:2}
+ .lk-landing .lockstage .side.l,.lk-landing .lockstage .side.r{grid-row:3}
+ .lk-landing #mycard{--s:1.6!important}.lk-landing .lockstage #cardslot{width:384px!important;height:538px!important}
+}
+@media(max-width:820px){
+ .lk-landing .lockstage{display:flex;flex-direction:column;padding-top:14px}
+ .lk-landing .lockstage #cardslot{order:-2;margin-inline:auto}
+ .lk-landing .lockstage .lk-jump{order:-1;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ .lk-landing .lk-below{grid-template-columns:1fr}
+}
+/* ---------- the five pages behind the buttons: the stage collapses to the button bar, which stays on screen ---------- */
+.hub-page[class*="lk-"]:not(.lk-landing) .lockstage{display:contents}
+.hub-page[class*="lk-"]:not(.lk-landing) .lockstage>:not(.lk-jump){display:none}
+.hub-page[class*="lk-"]:not(.lk-landing) [data-for="member owner"]>:not(#noclaim):not(#lockstage):not(.lk-prof):not(.lk-al2){display:none}
+.hub-page[class*="lk-"]:not(.lk-landing) .lk-jump{position:sticky;top:var(--pf-sticky-top);z-index:25;padding:10px var(--gut,16px);margin-bottom:var(--pf-gap,18px);max-width:var(--pf-wrap-max,1320px);width:100%;box-sizing:border-box;background:rgba(10,7,5,.82);backdrop-filter:blur(10px);border-radius:14px}
+.lk-jump a[aria-current="page"]{background:var(--brand,#e8651a);color:#fff}
+.lk-me .lk-al2,.lk-stats .lk-al2,.lk-medals .lk-al2,.lk-cards .lk-al2,.lk-alerts .lk-prof{display:none}
+.lk-prof>section{display:none;margin-top:0}
+.lk-me #lk-me,.lk-me #lk-streams,.lk-stats #lk-mystats,.lk-medals #lk-medals,.lk-cards #lk-cards{display:block}
+.lk-prof>section::before{display:none}
+@media(min-width:1100px){
+ .lk-alerts .lk-al2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--pf-gap,18px);align-items:start}
+ .lk-alerts .lk-al2 .sec{margin-top:0}.lk-alerts .lk-al2 .sec::before{display:none}
+}
+.lk-landing .lockstage .lk-jump{max-width:none;width:100%;padding:0;margin:0;box-sizing:border-box}

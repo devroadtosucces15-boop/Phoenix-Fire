@@ -14,7 +14,7 @@
 import { kvOf } from './kv.js';
 import { channelFor } from './orgconfig.js';
 import { safely } from './notify.js';
-import { message, header, text, cards, facts, buttons, resultAccent, tagBlock, autoBanner } from './ui.js';
+import { message, header, text, cards, facts, buttons, resultAccent, tagBlock, autoBanner, picture } from './ui.js';
 import { it } from './icons.js';
 
 const RED = 0xe8651a, GREEN = 0x22c55e, GREY = 0x6b7280;
@@ -79,7 +79,7 @@ export async function checkHype(env, loadSite) {
     tagBlock(m.tag, { friendly: 'Friendly', playoff: 'Playoff' }[m.type] ?? 'League'),
     header({ eyebrow: `${club.name} · Match centre`, title: `${club.name} ${m.gf}–${m.ga} ${m.opp}`, sub: { W: 'Win', D: 'Draw', L: 'Defeat' }[m.res] }),
     text(recap ?? fallback),
-    art ? cards('attachment://hype.png') : null,
+    art ? cards('attachment://hype.png') : picture(env, 'post-hype'), // the model's picture when it made one, else the drawn Phoenix one
     facts([[`${it('goal')} Scorers`, (m.scorers ?? []).map((s) => `${s.n}${s.g > 1 ? ` ×${s.g}` : ''}`).join(', ')], [`${it('motm')} Man of the match`, m.motm]]),
     buttons([{ label: 'Match report', url: m.url }]),
   ] });
