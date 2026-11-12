@@ -70,17 +70,17 @@
     const body = rows.map((i) => {
       const on = rowOf(i).enabled, open = S.edit === i.key;
       return `<tr class="${on ? '' : 'cc-off'}" data-key="${esc(i.key)}"><td><b>${esc(i.name)}</b>${customised(i) ? ' <span class="chip gold">set</span>' : ''}<div class="muted small cc-key">${esc(i.key)}${i.summary ? ' · ' + esc(i.summary) : ''}</div></td>
-<td>${esc(S.data.apps[i.app] || i.app)}</td><td class="small">${esc(i.kind === 'scheduled' ? i.schedule : i.trigger || '')}${i.kind !== 'scheduled' && i.schedule ? `<div class="muted">${esc(i.schedule)}</div>` : ''}</td>
-<td><label class="cc-sw"><input type="checkbox" data-sw="${esc(i.key)}"${on ? ' checked' : ''} aria-label="On or off: ${esc(i.name)}"><span></span></label></td>
+<td>${esc(S.data.apps[i.app] || i.app)}</td><td class="small">${esc(i.kind === 'scheduled' ? i.schedule : (i.trigger === i.name ? '' : i.trigger) || '')}${i.kind !== 'scheduled' && i.schedule ? `<div class="muted">${esc(i.schedule)}</div>` : ''}</td>
+<td class="c"><label class="cc-sw"><input type="checkbox" data-sw="${esc(i.key)}"${on ? ' checked' : ''} aria-label="On or off: ${esc(i.name)}"><span></span></label></td>
 <td class="small">${kind === 'scheduled' ? '<span class="muted">its posts follow this switch</span>' : summaryOf(i)}</td><td class="small">${kind === 'scheduled' ? '' : chanSummary(i)}</td>
-<td><button class="chip${open ? ' on' : ''}" data-edit="${esc(i.key)}">${open ? 'Close' : 'Edit'}</button></td></tr>${open ? `<tr class="cc-edit"><td colspan="7">${editor(i)}</td></tr>` : ''}`;
+<td class="r"><button class="chip${open ? ' on' : ''}" data-edit="${esc(i.key)}">${open ? 'Close' : 'Edit'}</button></td></tr>${open ? `<tr class="cc-edit"><td colspan="7">${editor(i)}</td></tr>` : ''}`;
     }).join('');
     const nCustom = all.filter(customised).length;
     return `<div class="cc-filters"><input type="search" data-q placeholder="Search ${all.length} items…" value="${esc(S.q)}" aria-label="Search">
 <select data-app aria-label="App"><option value="">All apps</option>${apps.map((a) => `<option value="${esc(a)}"${S.app === a ? ' selected' : ''}>${esc(S.data.apps[a] || a)}</option>`).join('')}</select>
 <select data-state aria-label="State">${[['', 'On and off'], ['on', 'On'], ['off', 'Off'], ['custom', `Changed (${nCustom})`]].map(([v, l]) => `<option value="${v}"${S.state === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
 <span class="muted small">${rows.length} of ${all.length}</span></div>
-<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>${kind === 'dm' ? 'Notification' : 'Name'}</th><th>App</th><th>${kind === 'scheduled' ? 'Schedule' : 'When'}</th><th>On</th><th>${WHO[kind]}</th><th>Channels</th><th></th></tr></thead><tbody>${body || `<tr><td colspan="7">${empty('🔍', 'Nothing matches', 'Clear a filter to see more.')}</td></tr>`}</tbody></table></div>`;
+<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>${kind === 'dm' ? 'Notification' : 'Name'}</th><th>App</th><th>${kind === 'scheduled' ? 'Schedule' : 'When'}</th><th class="c">On</th><th>${WHO[kind]}</th><th>Channels</th><th></th></tr></thead><tbody>${body || `<tr><td colspan="7">${empty('🔍', 'Nothing matches', 'Clear a filter to see more.')}</td></tr>`}</tbody></table></div>`;
   };
 
   // ---------- the editor: switch, audience (allow + deny), channels (allow + deny + where it posts), methods and windows ----------
@@ -109,7 +109,7 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
   }
 
   // ---------- the frame ----------
-  const auditPanel = () => `<div class="tablewrap"><table class="tbl"><thead><tr><th>When</th><th>Who</th><th>Output</th><th>Change</th></tr></thead><tbody>${S.data.audit.map((a) => { const k = a.after?.key || a.before?.key || ''; const b = a.before, n = a.after; return `<tr><td class="small">${ago(a.at)}</td><td>${esc(a.name || a.user_id)}</td><td class="small">${esc(k)}</td><td class="small">${esc(a.action)}${b && n && b.enabled !== n.enabled ? ` · ${n.enabled ? 'switched on' : 'switched off'}` : ''}</td></tr>`; }).join('') || '<tr><td colspan="4" class="muted">No changes yet.</td></tr>'}</tbody></table></div>`;
+  const auditPanel = () => `<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>When</th><th>Who</th><th>Output</th><th>Change</th></tr></thead><tbody>${S.data.audit.map((a) => { const k = a.after?.key || a.before?.key || ''; const b = a.before, n = a.after; return `<tr><td class="small">${ago(a.at)}</td><td>${esc(a.name || a.user_id)}</td><td class="small">${esc(k)}</td><td class="small">${esc(a.action)}${b && n && b.enabled !== n.enabled ? ` · ${n.enabled ? 'switched on' : 'switched off'}` : ''}</td></tr>`; }).join('') || '<tr><td colspan="4" class="muted">No changes yet.</td></tr>'}</tbody></table></div>`;
   const OP = window.PFOrgPanel ? window.PFOrgPanel({ root, call, toast, esc, ago, empty, skel, act, repaint: () => paint(), active: () => S.panel === 'org' }) : null;
   function paint() {
     if (!root.isConnected) return;
