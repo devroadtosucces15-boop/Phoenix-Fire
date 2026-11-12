@@ -596,7 +596,7 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
       const kind = { friendly: 'Friendly', playoff: 'Playoff' }[m.type] ?? 'League';
       return message({ accent: resultAccent(m.res), blocks: [
         tagBlock(m.tag, kind),
-        header({ eyebrow: brand(`Match centre · ${kind}`), title: `${club.name} ${m.gf}–${m.ga} ${m.opp}`, sub: `<t:${m.ts}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[m.res]}`, thumb: score ? null : m.oppCrest || club.crest }),
+        header({ eyebrow: brand(`Match centre · ${kind}`), title: `${club.name} ${m.gf}–${m.ga} ${m.opp}`, sub: `<t:${m.ts}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[m.res]}`, thumb: score ? null : club.crest }),
         cards(score && { url: score, alt: `${club.name} ${m.gf}–${m.ga} ${m.opp}` }),
         facts([[`${it('goal')} Goals`, goalsLine(m) || 'none'], ['📊 Team rating', avg != null ? r1(avg) : null]]),
         m.motm ? await (async () => { // man of the match gets a row with their face (card if shipped, else Discord picture)

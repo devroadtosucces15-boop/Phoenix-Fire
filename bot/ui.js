@@ -17,7 +17,8 @@ export const ACCENT = {
   loss: 0xff7d72, // losses, jail, warnings
   steel: 0x6c7890, // staff only, private replies, logs, errors
 };
-export const resultAccent = (res) => ({ W: 'win', D: 'gold', L: 'loss' }[res] ?? 'red');
+// A defeat keeps the Phoenix orange stripe (the result words and icon carry the outcome); coral 'loss' is for warnings, jail and alerts.
+export const resultAccent = (res) => ({ W: 'win', D: 'gold', L: 'red' }[res] ?? 'red');
 export const RESULT_ICON = { get W() { return it('win'); }, get D() { return it('draw'); }, get L() { return it('loss'); } };
 
 const clip = (s, n) => (String(s).length > n ? `${String(s).slice(0, n - 1)}…` : String(s));
@@ -36,7 +37,10 @@ export const tagBlock = (tag, kind) => {
 };
 // Header: small grey label · bold title · grey detail line, with an optional picture on the right (crest, avatar, card).
 // Discord only fetches http(s) pictures: a data: URI (an inline fallback crest) is dropped so the row stays valid.
-const webUrl = (u) => (/^(https?|attachment):\/\//i.test(String(u ?? '')) ? u : null); // attachment:// = a file sent with the message itself
+// The club crest on the published site is cached by Discord per URL, so a stale NOREX crest sticks. Our own site crest always carries a version.
+export const CREST_V = 'phoenix2';
+export const freshCrest = (u) => String(u ?? '').replace(/(\/assets\/crest(?:-ea)?\.png)(?!\?)/i, `$1?v=${CREST_V}`);
+const webUrl = (u) => (/^(https?|attachment):\/\//i.test(String(u ?? '')) ? freshCrest(u) : null); // attachment:// = a file sent with the message itself
 export function header({ eyebrow = null, title, sub, thumb, size = 2 }) {
   thumb = webUrl(thumb);
   const t = text([eyebrow && `-# ${String(eyebrow).toUpperCase()}`, `${'#'.repeat(size)} ${title}`, sub && `-# ${sub}`].filter(Boolean).join('\n'));
@@ -45,7 +49,7 @@ export function header({ eyebrow = null, title, sub, thumb, size = 2 }) {
 // A section with a button (or picture) on the right of the text.
 export const side = (content, accessory) => (accessory ? { type: 9, components: [text(content)], accessory } : text(content)); // no picture → plain row
 // A small picture for the right-hand side of a row (a face, a crest).
-export const thumb = (url) => (webUrl(url) ? { type: 11, media: { url } } : null);
+export const thumb = (url) => (webUrl(url) ? { type: 11, media: { url: webUrl(url) } } : null);
 // Drawn cards (or any pictures). Null when there's nothing to show, so callers can fall back to text.
 export function cards(...imgs) {
   const items = imgs.flat().filter(Boolean).map((i) => (typeof i === 'string' ? { media: { url: i } } : { media: { url: i.url }, description: i.alt ? clip(i.alt, 1000) : undefined }));

@@ -47,7 +47,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
   // the published site serves and never changes to the opponent's crest. Brand accent from config.json.
   const crestPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../phoenix/overlay/crest-sm.png');
   const crestFile = fs.existsSync(crestPath) ? { name: 'crest.png', path: crestPath } : null;
-  const crestThumb = crestFile ? 'attachment://crest.png' : site ? `${site}assets/crest.png` : undefined;
+  const crestThumb = crestFile ? 'attachment://crest.png' : site ? `${site}assets/crest.png?v=phoenix2` : undefined;
   const brandHex = /^#[0-9a-f]{6}$/i.test(config.brand?.red ?? '') ? parseInt(config.brand.red.slice(1), 16) : 0xe8651a;
   const hide = new Set([...(config.hiddenPlayers || []), ...hidden].map((h) => String(h).toLowerCase()));
   const items = matches
@@ -115,7 +115,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         url,
         color: brandHex,
         description: res === 'W' ? '✅ **Victory**' : res === 'L' ? '❌ **Defeat**' : '➖ **Draw**',
-        thumbnail: { url: `${site}assets/crest.png` }, // webhook fallback can't carry attachments: the site's Phoenix crest
+        thumbnail: { url: `${site}assets/crest.png?v=phoenix2` }, // webhook fallback can't carry attachments: the site's Phoenix crest
         fields: [
           list('goals') && { name: '⚽ Goals', value: list('goals'), inline: true },
           list('assists') && { name: '🎯 Assists', value: list('assists'), inline: true },
@@ -160,7 +160,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
     // Same design-system panel as the bot's post, minus the buttons and menus (a webhook cannot carry interactive components; with_components
     // lets it send the layout). If Discord refuses that, the result still goes out as the classic embed.
     const url = `${hook}${hook.includes('?') ? '&' : '?'}with_components=true`;
-    const identity = { username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png` : undefined };
+    const identity = { username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png?v=phoenix2` : undefined };
     for (const item of items) {
       const payload = { ...identity, ...staticPanel(item.panel(pingContent, allowedMentions)) };
       let body, headers = {};

@@ -313,7 +313,7 @@ export async function memberCommand(i, env, who, site, h) {
     const nameOf = (k) => v.players.find((p) => p.k === k)?.n ?? k;
     const board = ranked.length ? ranked.map(([k, n], i) => `${[it('first'), it('second'), it('third')][i] ?? `${i + 1}.`} **${nameOf(k)}** — ${n} vote${n === 1 ? '' : 's'}`).join('\n') : 'No votes yet.';
     return reply(message({ accent: 'gold', blocks: [
-      header({ eyebrow: brand('Man of the match vote', env), title: `🌟 MOTM · vs ${m.opp}`, sub: `${m.gf}–${m.ga} · ${ranked.reduce((t, [, n]) => t + n, 0)} votes so far`, thumb: m.oppCrest || null }),
+      header({ eyebrow: brand('Man of the match vote', env), title: `🌟 MOTM · vs ${m.opp}`, sub: `${m.gf}–${m.ga} · ${ranked.reduce((t, [, n]) => t + n, 0)} votes so far`, thumb: club.crest || null }),
       ...(await (async () => { // the top 3 on rows with their faces, the rest as a list
         const faces = await playerFaces(env, ranked.slice(0, 3).map(([k]) => k));
         if (!ranked.length || !faces.size) return [text(board)];

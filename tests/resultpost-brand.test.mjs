@@ -40,6 +40,12 @@ sent.length = 0; delete process.env.DISCORD_BOT_TOKEN;
 await postResults([mk('1', 0, 3)], { config: { ...config, features: {} }, homeId: '100', route, drawn: null });
 const hook = JSON.parse(sent.find((c) => c.url.includes('/webhooks/'))?.init.body ?? '{}');
 t('webhook embed colour is the Phoenix orange', hook.embeds?.[0]?.color === 0xe8651a);
-t('webhook thumbnail is the Phoenix site crest, not the opponent', hook.embeds?.[0]?.thumbnail?.url === 'https://x.test/assets/crest.png');
+t('webhook thumbnail is the Phoenix site crest, not the opponent', hook.embeds?.[0]?.thumbnail?.url === 'https://x.test/assets/crest.png?v=phoenix2');
 globalThis.fetch = realFetch;
+// Bot replies: any crest on our own site is versioned (Discord caches by URL, so an old NOREX crest sticks), and a defeat keeps the orange stripe.
+const { header, thumb, resultAccent, ACCENT } = await import('../bot/ui.js');
+const crestUrls = [header({ title: 'x', thumb: 'https://x.test/assets/crest.png' }).accessory.media.url, thumb('https://x.test/assets/crest.png').media.url];
+t('the site crest in a bot header or thumbnail carries the Phoenix version', crestUrls.every((u) => u === 'https://x.test/assets/crest.png?v=phoenix2'));
+t('an EA crest or an already versioned URL is left alone', header({ title: 'x', thumb: 'https://x.test/assets/crest.png?v=9' }).accessory.media.url.endsWith('?v=9') && header({ title: 'x', thumb: 'https://eafc.test/c/1.png' }).accessory.media.url === 'https://eafc.test/c/1.png');
+t('a defeat stripe is Phoenix orange, not red', ACCENT[resultAccent('L')] === 0xe8651a);
 done();
