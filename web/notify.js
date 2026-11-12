@@ -13,7 +13,7 @@
   const ago = (t) => UI.time(t);
   const href = (l) => (!l ? '' : /^https:/.test(l) ? l : BASE + l);
   const text = (s) => esc(s).replace(/\n/g, '<br>');
-  const MODES = [['dm', '💬 Site + DM'], ['site', '🔔 Site only'], ['off', '🔕 Off']];
+  const METHODS = [['site', '🔔 Site'], ['dm', '💬 Discord DM'], ['push', '📲 Push']]; // independent boxes per type + one All box; everything starts ticked
   const N = { state: null, count: null, listeners: new Set() };
   const emit = () => N.listeners.forEach((f) => f());
 
@@ -140,11 +140,11 @@ ${shown.length ? `<ul class="nt-items">${shown.map((n) => `<li class="nf${n.read
 </section>
 <aside class="nt-side">
 <section class="card" id="alerts-settings"><h3>⚙️ How should we tell you?</h3>
-<p class="muted small">💬 <b>Site + DM</b> also sends a Discord DM from the ${(document.body.dataset.club || 'the club')} bot · 🔔 <b>Site only</b> shows it here · 🔕 <b>Off</b> mutes it.</p>
+<p class="muted small">Tick how you want each alert to reach you: 🔔 the site, 💬 a Discord DM from the ${(document.body.dataset.club || 'the club')} bot, 📲 a push to this device. <b>All</b> ticks everything. Everything starts on.</p>
 ${!s.dmReady ? '<p class="nt-warn">💬 Discord DMs switch on as soon as the bot token is connected – until then everything shows on the site.</p>' : s.dmBlocked ? '<p class="nt-warn">⚠️ Discord refused our last DM. In Discord: right-click the ' + (document.body.dataset.club || 'the club') + ' server → <b>Privacy Settings</b> → turn on <b>Direct Messages</b>, then send a test.</p>' : ''}
-<div class="nt-prefs">${s.types.map((t) => `<div class="nt-pref"><span><i aria-hidden="true">${esc(t.icon)}</i>${esc(t.label)}</span><div class="seg" role="radiogroup" aria-label="${esc(t.label)}">${MODES.filter(([m]) => m !== 'off' || t.mute).map(([m, l]) => `<button type="button" role="radio" aria-checked="${t.mode === m}" class="${t.mode === m ? 'on' : ''}" data-pref="${t.k}" data-mode="${m}">${l}</button>`).join('')}</div></div>`).join('')}</div>
+<div class="nt-prefs">${s.types.map((t) => { const m = t.methods || {}, all = METHODS.every(([k]) => m[k] !== false); return `<div class="nt-pref"><span><i aria-hidden="true">${esc(t.icon)}</i>${esc(t.label)}${t.off ? ' <small class="muted">(switched off by the managers)</small>' : ''}</span><div class="nt-boxes" role="group" aria-label="${esc(t.label)}"><label><input type="checkbox" data-pall="${t.k}"${all ? ' checked' : ''}> All</label>${METHODS.map(([k, l]) => `<label><input type="checkbox" data-pm="${k}" data-pref="${t.k}"${m[k] !== false ? ' checked' : ''}${t.allowed && t.allowed[k] === false ? ' disabled' : ''}> ${l}</label>`).join('')}</div></div>`; }).join('')}</div>
 <button class="btn sm ghost" type="button" data-test>🧪 Send me a test</button>
-${s.push?.key ? `<div class="nt-push"><button class="btn sm" type="button" data-push>🔔 Push to this device</button><p class="muted small">${s.push.devices ? `${s.push.devices} device${s.push.devices === 1 ? '' : 's'} on` : 'Off on this device'} · pushes go out for “Site + DM” types.</p></div>` : ''}</section>
+${s.push?.key ? `<div class="nt-push"><button class="btn sm" type="button" data-push>🔔 Push to this device</button><p class="muted small">${s.push.devices ? `${s.push.devices} device${s.push.devices === 1 ? '' : 's'} on` : 'Off on this device'} · pushes go out for the types with Push ticked.</p></div>` : ''}</section>
 ${s.canAnnounce ? `<section class="card nt-announce"><h3>📣 Send an announcement</h3><p class="muted small">Goes to every member's 🔔 (and Discord DM if they chose it). Tick <b>must acknowledge</b> for rules – it stays on their screen and re-sends a DM daily (up to 3×) until they tap “Got it”.</p>
 <form id="announce-form"><label>Title<input name="title" maxlength="120" required placeholder="New match-night rules"></label>
 <label>Message<textarea name="body" maxlength="1500" rows="4" placeholder="What everyone needs to know…"></textarea></label>
@@ -174,6 +174,16 @@ ${s.canAnnounce ? `<section class="card nt-announce"><h3>📣 Send an announceme
     el.innerHTML = UI.skeleton('rows', 4);
     try { await load(); } catch (e) { el.innerHTML = `<div class="card"><p>⚠️ ${esc(e.message)}</p></div>`; return; }
 
+    el.addEventListener('change', async (e) => { // the method checkboxes (a change, not a click: the box is not a button)
+      const d = e.target.dataset;
+      if (!(d.pref || d.pall)) return;
+        const k = d.pref || d.pall, row = e.target.closest('.nt-boxes'), boxes = [...row.querySelectorAll('[data-pm]')], all = row.querySelector('[data-pall]');
+        if (d.pall) boxes.forEach((x) => { if (!x.disabled) x.checked = e.target.checked; }); else all.checked = boxes.every((x) => x.checked || x.disabled);
+        const tp = N.state.types.find((x) => x.k === k), old = tp.methods;
+        tp.methods = Object.fromEntries(boxes.map((x) => [x.dataset.pm, x.checked]));
+        try { N.state = await ctx.call('/api/notify/prefs', { prefs: { [k]: tp.methods } }); emit(); ctx.toast('Saved'); } catch (er) { tp.methods = old; draw(); ctx.toast(er.message, true); }
+    });
+
     el.onclick = async (e) => {
       const t = e.target.closest('button, a');
       if (!t) return;
@@ -183,11 +193,6 @@ ${s.canAnnounce ? `<section class="card nt-announce"><h3>📣 Send an announceme
       if (d.read) markRead(ctx, { ids: [+d.read] });
       if (d.open) { const n = N.state.items.find((x) => x.id === +d.open); if (n && !n.read) markRead(ctx, { ids: [n.id] }); }
       if (d.ack) ack(ctx, +d.ack);
-      if (d.pref) {
-        const tp = N.state.types.find((x) => x.k === d.pref), old = tp.mode;
-        tp.mode = d.mode; draw(); // optimistic
-        try { N.state = await ctx.call('/api/notify/prefs', { prefs: { [d.pref]: d.mode } }); emit(); ctx.toast('Saved'); } catch (er) { tp.mode = old; draw(); ctx.toast(er.message, true); }
-      }
       if (d.push !== undefined) enablePush(ctx, N.state.push.key);
       if (d.test !== undefined) {
         t.disabled = true;

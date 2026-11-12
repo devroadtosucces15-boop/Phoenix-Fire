@@ -53,6 +53,7 @@ import { routingRoute } from './routing.js';
 import { matchAlertRoute } from './matchalert.js';
 import { orgConfigRoute, orgClubsPublicRoute, orgRoutePublicRoute, orgName } from './orgconfig.js';
 import { botCommandsRoute } from './botcommands.js';
+import { controlCenterRoute } from './controlcenter.js';
 import { crawlRoute } from './crawl.js';
 import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
 import { issueSave } from './issues.js';
@@ -830,6 +831,8 @@ async function route(p, method, body, me, env, loadSite, url) {
   if (rte) return rte;
   const bcm = await botCommandsRoute(p, method, body, me, env, log); // per-command bot control
   if (bcm) return bcm;
+  const ccr = await controlCenterRoute(p, method, body, me, env); // Control Center: every output's switch, audience and channels
+  if (ccr) return ccr;
   const pts = await pointsRoute(p, method, body, me, env); // P11.3 point system
   if (pts) return pts;
 

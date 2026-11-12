@@ -57,3 +57,20 @@ claude plugin install phoenix-bot-studio@phoenix-tools
 Outputs that need live Discord, EA or an image model (hype poster, Card Studio card, avatar card, weekly awards,
 event reminders, leave log and others) are listed with "no offline preview" and the reason. Their dependency map
 still works. Adding a sample for one is a few lines in `tools/bot-audit/capture-auto.mjs`.
+
+## Every new output must register (Control Center)
+
+Every command, button, automated post, scheduled job, DM/notification type and site section is listed in `bot/registry.gen.js`,
+which the website's Control Center and the `/setup output` command read. **Never edit that file by hand.** It is generated:
+
+```
+node tools/bot-studio/studio.mjs capture     # redraw outputs (adds new samples)
+node tools/bot-studio/studio.mjs registry    # rewrite bot/registry.gen.js from the live code
+```
+
+Adding an output = add it where it lives (a `COMMANDS` entry, a `notify.js` TYPES entry, a `job('name', …)` in `scheduled()`, a
+`capture-auto.mjs` sample or an `UNCAPTURED` entry in `tools/bot-audit/registry.mjs`, a `config.json` feature), then run the two
+commands above. `tests/controlcenter.test.mjs` fails when the registry is stale, when something exists without an entry, when a module
+posts to a channel without being a registered source, or when a channel/role name or ID is typed into code. Channels and roles always
+come from the Organization config or a Control Center row (`bot/controls.js`: `postChannels`, `audienceOf`, `gate`), never from code.
+A skill or plugin that drafts a new output (`/bot-new`) must finish with these two commands.

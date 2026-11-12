@@ -254,9 +254,6 @@ const jr = [];
 for (let k = 0; k < 3; k++) { jr.push(T(await press(p3, 'pf:rq:join', {}, T0 + 100 * MIN + k * 5000))); await press(p3, 'pf:rq:leave', {}, T0 + 100 * MIN + k * 5000 + 2500); }
 t('joining is limited per member per hour (join/leave spam)', !/Slow down/.test(jr[0] + jr[1]) && /Slow down/.test(jr[2]));
 await Q.saveSettings(env, Q.settingsOf());
-sqlite.prepare("INSERT OR REPLACE INTO output_controls (key, enabled, rules) VALUES ('slash:/queue', 0, '{}')").run(); C.resetControlsCache();
-t('the Control Center can switch /queue off', /switched off/.test(T(await cmd(mgr, 'status'))));
-sqlite.prepare("DELETE FROM output_controls WHERE key = 'slash:/queue'").run(); C.resetControlsCache();
 t('the board channel can be set in the Control Center (a post channel replaces the Organization purpose)', await (async () => { const OTHER = '1600000000000000055'; sqlite.prepare("INSERT OR REPLACE INTO output_controls (key, enabled, rules) VALUES ('auto:rush-board', 1, ?)").run(JSON.stringify({ post_channels: [OTHER] })); C.resetControlsCache(); calls.length = 0; await Q.refreshBoards(env, { now: T0 + 200 * MIN }); const ok = posts(OTHER).length === 1 && posts(QCH).length === 0; sqlite.prepare("DELETE FROM output_controls WHERE key = 'auto:rush-board'").run(); C.resetControlsCache(); return ok; })());
 
 // ---------- Phoenix look: no NOREX name, colour or crest in anything the queue can say ----------

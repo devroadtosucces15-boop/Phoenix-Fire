@@ -190,6 +190,12 @@ export const COMMANDS = [
         { type: STRING, name: 'group', description: 'Permission group', required: true, choices: PERMISSION_GROUPS.map((g) => ({ name: g.replaceAll('_', ' '), value: g })) },
         { type: ROLE, name: 'role', description: 'The Discord role', required: true },
       ] },
+      { type: SUB, name: 'output', description: 'Switch one command, post or DM on or off, and aim it (same setting as the website Control Center)', options: [
+        { type: STRING, name: 'output', description: 'Which one: start typing its name', required: true, autocomplete: true },
+        { type: STRING, name: 'state', description: 'On, off, or back to the default rules', choices: [{ value: 'on', name: 'On' }, { value: 'off', name: 'Off' }, { value: 'default', name: 'Back to default' }] },
+        { type: CHANNEL, name: 'channel', description: 'Also post it in this channel (added to the list)', channel_types: [0, 5] },
+        { type: ROLE, name: 'role', description: 'Also let this role use it / get it (added to the list)' },
+      ] },
       { type: SUB, name: 'off', description: 'Switch leave/join alerts or welcome posts off', options: [{ type: STRING, name: 'feature', description: 'Which one', required: true, choices: [{ name: 'Leave/join alerts', value: 'leavelog' }, { name: 'Welcome posts', value: 'welcome' }] }] },
     ],
   },

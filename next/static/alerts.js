@@ -1,6 +1,6 @@
 // Hub › My Locker › Alerts inbox + Alert settings (/api/notify). The inbox lists the latest 60 notifications by day with
 // filters, marks one read when it is opened (or all at once) and takes the "Got it" on announcements and rules. Settings
-// pick how each kind of alert reaches you: Discord DM + site, site only, or off (announcements can't be switched off).
+// pick how each kind of alert reaches you: site, Discord DM and push, each on its own (announcements keep at least one).
 // Links written for the live site are pointed at the matching /next/ room when there is one.
 // Web Push: turn pop-ups on or off for this device (the live sw.js at the site root, POST /api/push/subscribe + unsubscribe).
 (() => {
@@ -57,17 +57,18 @@ ${list.length ? `<div class="al-box">${body}</div>` : `<div class="panel sq-empt
   });
 
   // ---------- ⚙️ settings ----------
-  const MODES = [['dm', '📩', 'DM + site', 'Discord DM and here'], ['site', '🖥️', 'Site only', 'Only in your locker'], ['off', '🔕', 'Off', 'Not at all']];
-  const prefsHtml = () => `${!N.dmReady ? '<p class="sq-tonight">📩 Discord DMs are not switched on for the club yet, so “DM + site” shows here only for now.</p>' : N.dmBlocked ? '<p class="sq-tonight">⚠️ Discord would not deliver your last DM. In Discord, open the club server, tap its name, then <b>Privacy settings</b> and allow <b>Direct messages</b>. Then send yourself a test.</p>' : ''}
-<ul class="al-prefs">${N.types.map((t) => `<li><span class="al-ic" aria-hidden="true">${esc(t.icon)}</span><b class="al-pl">${esc(t.label)}</b><div class="seg al-seg" role="radiogroup" aria-label="${esc(t.label)}">${MODES.map(([v, i, l, s]) => `<button type="button" role="radio" aria-checked="${t.mode === v}" class="${t.mode === v ? 'on' : ''}" data-pk="${esc(t.k)}" data-pv="${v}" title="${s}"${v === 'off' && !t.mute ? ' disabled title="This one can’t be switched off"' : ''}><span aria-hidden="true">${i}</span> ${l}</button>`).join('')}</div></li>`).join('')}</ul>
-<div class="sq-acts"><button type="button" class="btn ghost" data-test>🔔 Send me a test alert</button><span class="muted small">Saved as you tap. Same settings as the live Hub.</span></div>${N.push?.key ? '<div class="al-push" id="alpush" aria-live="polite"></div>' : ''}`;
+  // Independent checkboxes per notification type: the site (bell + inbox), a Discord DM, a browser push, plus one "All" box. Everything starts ticked.
+  const METHODS = [['site', '🖥️', 'Site'], ['dm', '📩', 'Discord DM'], ['push', '📲', 'Push']];
+  const prefsHtml = () => `${!N.dmReady ? '<p class="sq-tonight">📩 Discord DMs are not switched on for the club yet, so the DM box only counts once they are.</p>' : N.dmBlocked ? '<p class="sq-tonight">⚠️ Discord would not deliver your last DM. In Discord, open the club server, tap its name, then <b>Privacy settings</b> and allow <b>Direct messages</b>. Then send yourself a test.</p>' : ''}
+<ul class="al-prefs">${N.types.map((t) => { const m = t.methods || {}, all = METHODS.every(([k]) => m[k] !== false); return `<li><span class="al-ic" aria-hidden="true">${esc(t.icon)}</span><b class="al-pl">${esc(t.label)}${t.off ? ' <small class="muted">(switched off by the managers)</small>' : ''}</b><div class="al-boxes" role="group" aria-label="${esc(t.label)}"><label class="al-box al-all"><input type="checkbox" data-pall="${esc(t.k)}"${all ? ' checked' : ''}> All</label>${METHODS.map(([k, i, l]) => `<label class="al-box"><input type="checkbox" data-pk="${esc(t.k)}" data-pm="${k}"${m[k] !== false ? ' checked' : ''}${t.allowed && t.allowed[k] === false ? ' disabled title="The managers have this method off for this alert"' : ''}> <span aria-hidden="true">${i}</span> ${l}</label>`).join('')}</div></li>`; }).join('')}</ul>
+<div class="sq-acts"><button type="button" class="btn ghost" data-test>🔔 Send me a test alert</button><span class="muted small">Saved as you tick. Same settings as the live Hub.</span></div>${N.push?.key ? '<div class="al-push" id="alpush" aria-live="polite"></div>' : ''}`;
   // ---------- 📲 Web Push on this device (the live site's sw.js at the site root receives them) ----------
   const SW = new URL(window.NOREX_SW || '../sw.js', location.href).href;
   const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) && !(navigator.standalone || matchMedia('(display-mode: standalone)').matches);
   const pushState = async () => { if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) return ios ? 'ios' : 'none';
     if (Notification.permission === 'denied') return 'blocked';
     try { const reg = await navigator.serviceWorker.getRegistration(SW); return (await reg?.pushManager.getSubscription()) ? 'on' : 'off'; } catch { return 'off'; } };
-  const PUSH = { on: ['🟢', 'On for this device', 'Alerts set to “DM + site” also pop up here, even with the site closed.'], off: ['⚪', 'Off on this device', 'Turn it on to get a phone or desktop pop-up for alerts set to “DM + site”.'],
+  const PUSH = { on: ['🟢', 'On for this device', 'Alerts with the Push box ticked also pop up here, even with the site closed.'], off: ['⚪', 'Off on this device', 'Turn it on to get a phone or desktop pop-up for alerts with the Push box ticked.'],
     blocked: ['🚫', 'Blocked by the browser', 'Notifications are blocked for this site. Open the browser’s site settings (the 🔒 next to the address), allow Notifications, then reload.'],
     ios: ['📱', 'Add to Home Screen first', 'On iPhone and iPad, pushes only work from the Home Screen app: tap Share, then “Add to Home Screen”, open the app from there and turn this on.'], none: ['⛔', 'Not supported here', 'This browser can’t receive push notifications. Try Chrome, Edge, Firefox or Safari.'] };
   const paintPush = async () => { const box = $('#alpush'); if (!box) return; const st = await pushState(), [i, t, x] = PUSH[st], n = N.push?.devices || 0;
@@ -81,11 +82,12 @@ ${list.length ? `<div class="al-box">${body}</div>` : `<div class="panel sq-empt
   const pushOff = async () => { const reg = await navigator.serviceWorker.getRegistration(SW), sub = await reg?.pushManager.getSubscription(); if (!sub) return;
     await post('/api/push/unsubscribe', { endpoint: sub.endpoint }); await sub.unsubscribe().catch(() => {}); N.push = { ...N.push, devices: Math.max(0, (N.push.devices || 1) - 1) }; };
   prefsEl.addEventListener('click', async (e) => {
-    const b = e.target.closest('[data-pv]');
-    if (b && !b.disabled && b.getAttribute('aria-checked') !== 'true') {
-      const k = b.dataset.pk, v = b.dataset.pv, seg = b.parentElement;
-      seg.querySelectorAll('button').forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); });
-      try { N = await post('/api/notify/prefs', { prefs: { [k]: v } }); M?.pulse(seg); M?.toast(`${N.types.find((t) => t.k === k)?.label || 'Setting'}: ${MODES.find(([m]) => m === v)[2]}`, { kind: 'ok', icon: MODES.find(([m]) => m === v)[1] }); }
+    const cb = e.target.closest('[data-pm],[data-pall]');
+    if (cb && cb.tagName === 'INPUT') {
+      const k = cb.dataset.pk || cb.dataset.pall, row = cb.closest('.al-boxes'), boxes = [...row.querySelectorAll('[data-pm]')], all = row.querySelector('[data-pall]');
+      if (cb.dataset.pall) boxes.forEach((x) => { if (!x.disabled) x.checked = cb.checked; }); else all.checked = boxes.every((x) => x.checked || x.disabled);
+      const methods = Object.fromEntries(boxes.map((x) => [x.dataset.pm, x.checked]));
+      try { N = await post('/api/notify/prefs', { prefs: { [k]: methods } }); M?.pulse(row); M?.toast(`${N.types.find((t) => t.k === k)?.label || 'Setting'}: ${METHODS.filter(([m]) => methods[m]).map(([, , l]) => l).join(' + ') || 'off'}`, { kind: 'ok', icon: '🔔' }); }
       catch (er) { oops(er); prefsEl.innerHTML = prefsHtml(); paintPush(); }
       return;
     }

@@ -1377,7 +1377,7 @@
         },
         {
          "type": 10,
-         "content": "🔥 **Autistic United** · `127801` · we lost 0–3 · League · 3h ago\n🔥 **SV WUERTH** · `2088548` · we won 3–2 · League · 4h ago\n🔥 **FC Alterlaa** · `647478` · we lost 2–4 · League · 4h ago\n🔥 **Fc Dickens** · `196900` · we drew 0–0 · League · 17h ago\n🔥 **FC BöseBreit** · `1741127` · we lost 1–3 · League · 18h ago\n🔥 **StayyHigh** · `2032190` · we won 1–0 · League · 18h ago\n🔥 **Møllestenen IF** · `392771` · we won 3–0 · League · 19h ago\n🔥 **OSIMANA CF** · `542834` · we lost 1–2 · League · 19h ago\n🔥 **BDZOO** · `965335` · we won 4–2 · League · 19h ago\n🔥 **Loacher United** · `372950` · we lost 1–3 · League · 20h ago\n🔥 **Galeti** · `251690` · we lost 1–3 · League · 20h ago\n🔥 **THE N00BS** · `1494621` · we drew 1–1 · League · 40h ago\n🔥 **FC DHIMTA** · `1915439` · we lost 0–2 · League · 40h ago\n🔥 **FC Yamukspor** · `2168708` · we lost 1–4 · League · 41h ago\n🔥 **GUADALAJAMAL** · `1031823` · we won 3–0 · League · 41h ago\n🔥 **Dreieckssystem** · `1401817` · we drew 3–3 · League · 42h ago\n🔥 **CFC Dirty** · `12204` · we lost 0–2 · League · 42h ago\n🔥 **FC107** · `1795370` · we won 2–1 · League · 43h ago\n🔥 **CRIAS SC** · `159604` · we won 3–1 · League · 43h ago\n🔥 **Mortifera** · `520538` · we drew 0–1 · Friendly · 43h ago\n🔥 **FC Jupici** · `95888` · we won 2–1 · League · 44h ago\n🔥 **Bedford FC** · `1366` · we drew 2–0 · Friendly · 44h ago\n🔥 **TREMUPP** · `2166752` · we drew 0–0 · League · 44h ago\n🔥 **Last Empire** · `18396` · we drew 3–4 · Friendly · 44h ago\n🔥 **Massalia   FC** · `2127983` · we won 1–0 · League · 44h ago"
+         "content": "🔥 **Autistic United** · `127801` · we lost 0–3 · League · 4h ago\n🔥 **SV WUERTH** · `2088548` · we won 3–2 · League · 4h ago\n🔥 **FC Alterlaa** · `647478` · we lost 2–4 · League · 4h ago\n🔥 **Fc Dickens** · `196900` · we drew 0–0 · League · 18h ago\n🔥 **FC BöseBreit** · `1741127` · we lost 1–3 · League · 18h ago\n🔥 **StayyHigh** · `2032190` · we won 1–0 · League · 18h ago\n🔥 **Møllestenen IF** · `392771` · we won 3–0 · League · 19h ago\n🔥 **OSIMANA CF** · `542834` · we lost 1–2 · League · 19h ago\n🔥 **BDZOO** · `965335` · we won 4–2 · League · 20h ago\n🔥 **Loacher United** · `372950` · we lost 1–3 · League · 20h ago\n🔥 **Galeti** · `251690` · we lost 1–3 · League · 20h ago\n🔥 **THE N00BS** · `1494621` · we drew 1–1 · League · 40h ago\n🔥 **FC DHIMTA** · `1915439` · we lost 0–2 · League · 41h ago\n🔥 **FC Yamukspor** · `2168708` · we lost 1–4 · League · 41h ago\n🔥 **GUADALAJAMAL** · `1031823` · we won 3–0 · League · 42h ago\n🔥 **Dreieckssystem** · `1401817` · we drew 3–3 · League · 42h ago\n🔥 **CFC Dirty** · `12204` · we lost 0–2 · League · 43h ago\n🔥 **FC107** · `1795370` · we won 2–1 · League · 43h ago\n🔥 **CRIAS SC** · `159604` · we won 3–1 · League · 43h ago\n🔥 **Mortifera** · `520538` · we drew 0–1 · Friendly · 43h ago\n🔥 **FC Jupici** · `95888` · we won 2–1 · League · 44h ago\n🔥 **Bedford FC** · `1366` · we drew 2–0 · Friendly · 44h ago\n🔥 **TREMUPP** · `2166752` · we drew 0–0 · League · 44h ago\n🔥 **Last Empire** · `18396` · we drew 3–4 · Friendly · 44h ago\n🔥 **Massalia   FC** · `2127983` · we won 1–0 · League · 44h ago"
         },
         {
          "type": 10,
@@ -1396,7 +1396,7 @@
             {
              "label": "Autistic United",
              "value": "127801",
-             "description": "127801 · we lost 0–3 · League · 3h ago",
+             "description": "127801 · we lost 0–3 · League · 4h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1420,7 +1420,7 @@
             {
              "label": "Fc Dickens",
              "value": "196900",
-             "description": "196900 · we drew 0–0 · League · 17h ago",
+             "description": "196900 · we drew 0–0 · League · 18h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1460,7 +1460,7 @@
             {
              "label": "BDZOO",
              "value": "965335",
-             "description": "965335 · we won 4–2 · League · 19h ago",
+             "description": "965335 · we won 4–2 · League · 20h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1492,7 +1492,7 @@
             {
              "label": "FC DHIMTA",
              "value": "1915439",
-             "description": "1915439 · we lost 0–2 · League · 40h ago",
+             "description": "1915439 · we lost 0–2 · League · 41h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1508,7 +1508,7 @@
             {
              "label": "GUADALAJAMAL",
              "value": "1031823",
-             "description": "1031823 · we won 3–0 · League · 41h ago",
+             "description": "1031823 · we won 3–0 · League · 42h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1524,7 +1524,7 @@
             {
              "label": "CFC Dirty",
              "value": "12204",
-             "description": "12204 · we lost 0–2 · League · 42h ago",
+             "description": "12204 · we lost 0–2 · League · 43h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1667,7 +1667,7 @@
         },
         {
          "type": 10,
-         "content": "✅ **Autistic United** · `127801` · we lost 0–3 · League · 3h ago\n🔥 **SV WUERTH** · `2088548` · we won 3–2 · League · 4h ago\n🔥 **FC Alterlaa** · `647478` · we lost 2–4 · League · 4h ago\n🔥 **Fc Dickens** · `196900` · we drew 0–0 · League · 17h ago\n🔥 **FC BöseBreit** · `1741127` · we lost 1–3 · League · 18h ago\n🔥 **StayyHigh** · `2032190` · we won 1–0 · League · 18h ago\n🔥 **Møllestenen IF** · `392771` · we won 3–0 · League · 19h ago\n🔥 **OSIMANA CF** · `542834` · we lost 1–2 · League · 19h ago\n🔥 **BDZOO** · `965335` · we won 4–2 · League · 19h ago\n🔥 **Loacher United** · `372950` · we lost 1–3 · League · 20h ago\n🔥 **Galeti** · `251690` · we lost 1–3 · League · 20h ago\n🔥 **THE N00BS** · `1494621` · we drew 1–1 · League · 40h ago\n🔥 **FC DHIMTA** · `1915439` · we lost 0–2 · League · 40h ago\n🔥 **FC Yamukspor** · `2168708` · we lost 1–4 · League · 41h ago\n🔥 **GUADALAJAMAL** · `1031823` · we won 3–0 · League · 41h ago\n🔥 **Dreieckssystem** · `1401817` · we drew 3–3 · League · 42h ago\n🔥 **CFC Dirty** · `12204` · we lost 0–2 · League · 42h ago\n🔥 **FC107** · `1795370` · we won 2–1 · League · 43h ago\n🔥 **CRIAS SC** · `159604` · we won 3–1 · League · 43h ago\n🔥 **Mortifera** · `520538` · we drew 0–1 · Friendly · 43h ago\n🔥 **FC Jupici** · `95888` · we won 2–1 · League · 44h ago\n🔥 **Bedford FC** · `1366` · we drew 2–0 · Friendly · 44h ago\n🔥 **TREMUPP** · `2166752` · we drew 0–0 · League · 44h ago\n🔥 **Last Empire** · `18396` · we drew 3–4 · Friendly · 44h ago\n🔥 **Massalia   FC** · `2127983` · we won 1–0 · League · 44h ago"
+         "content": "✅ **Autistic United** · `127801` · we lost 0–3 · League · 4h ago\n🔥 **SV WUERTH** · `2088548` · we won 3–2 · League · 4h ago\n🔥 **FC Alterlaa** · `647478` · we lost 2–4 · League · 4h ago\n🔥 **Fc Dickens** · `196900` · we drew 0–0 · League · 18h ago\n🔥 **FC BöseBreit** · `1741127` · we lost 1–3 · League · 18h ago\n🔥 **StayyHigh** · `2032190` · we won 1–0 · League · 18h ago\n🔥 **Møllestenen IF** · `392771` · we won 3–0 · League · 19h ago\n🔥 **OSIMANA CF** · `542834` · we lost 1–2 · League · 19h ago\n🔥 **BDZOO** · `965335` · we won 4–2 · League · 20h ago\n🔥 **Loacher United** · `372950` · we lost 1–3 · League · 20h ago\n🔥 **Galeti** · `251690` · we lost 1–3 · League · 20h ago\n🔥 **THE N00BS** · `1494621` · we drew 1–1 · League · 40h ago\n🔥 **FC DHIMTA** · `1915439` · we lost 0–2 · League · 41h ago\n🔥 **FC Yamukspor** · `2168708` · we lost 1–4 · League · 41h ago\n🔥 **GUADALAJAMAL** · `1031823` · we won 3–0 · League · 42h ago\n🔥 **Dreieckssystem** · `1401817` · we drew 3–3 · League · 42h ago\n🔥 **CFC Dirty** · `12204` · we lost 0–2 · League · 43h ago\n🔥 **FC107** · `1795370` · we won 2–1 · League · 43h ago\n🔥 **CRIAS SC** · `159604` · we won 3–1 · League · 43h ago\n🔥 **Mortifera** · `520538` · we drew 0–1 · Friendly · 43h ago\n🔥 **FC Jupici** · `95888` · we won 2–1 · League · 44h ago\n🔥 **Bedford FC** · `1366` · we drew 2–0 · Friendly · 44h ago\n🔥 **TREMUPP** · `2166752` · we drew 0–0 · League · 44h ago\n🔥 **Last Empire** · `18396` · we drew 3–4 · Friendly · 44h ago\n🔥 **Massalia   FC** · `2127983` · we won 1–0 · League · 44h ago"
         },
         {
          "type": 10,
@@ -1686,7 +1686,7 @@
             {
              "label": "Autistic United",
              "value": "127801",
-             "description": "127801 · we lost 0–3 · League · 3h ago",
+             "description": "127801 · we lost 0–3 · League · 4h ago",
              "emoji": {
               "name": "✅"
              }
@@ -1710,7 +1710,7 @@
             {
              "label": "Fc Dickens",
              "value": "196900",
-             "description": "196900 · we drew 0–0 · League · 17h ago",
+             "description": "196900 · we drew 0–0 · League · 18h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1750,7 +1750,7 @@
             {
              "label": "BDZOO",
              "value": "965335",
-             "description": "965335 · we won 4–2 · League · 19h ago",
+             "description": "965335 · we won 4–2 · League · 20h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1782,7 +1782,7 @@
             {
              "label": "FC DHIMTA",
              "value": "1915439",
-             "description": "1915439 · we lost 0–2 · League · 40h ago",
+             "description": "1915439 · we lost 0–2 · League · 41h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1798,7 +1798,7 @@
             {
              "label": "GUADALAJAMAL",
              "value": "1031823",
-             "description": "1031823 · we won 3–0 · League · 41h ago",
+             "description": "1031823 · we won 3–0 · League · 42h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1814,7 +1814,7 @@
             {
              "label": "CFC Dirty",
              "value": "12204",
-             "description": "12204 · we lost 0–2 · League · 42h ago",
+             "description": "12204 · we lost 0–2 · League · 43h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -2204,7 +2204,7 @@
        "components": [
         {
          "type": 10,
-         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 1 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
+         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 0 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
         }
        ]
       }
@@ -2711,7 +2711,7 @@
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1794505554:R>"
+        "content": "**Sentence** 30 min · out <t:1794506489:R>"
        },
        {
         "type": 14,
@@ -2791,7 +2791,7 @@
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1794503754:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1794504689:R>"
        },
        {
         "type": 14,
@@ -2860,7 +2860,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1794503754:d> · 30 min · rage-quitting at 1–0 up · 💸 bailed\n`PHX-0003` <t:1794502754:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794498754:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794494754:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1794504689:d> · 30 min · rage-quitting at 1–0 up · 💸 bailed\n`PHX-0003` <t:1794503689:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794499689:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794495689:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -3024,7 +3024,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794492954:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794493889:R>"
        }
       ]
      }
@@ -3068,7 +3068,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794410154:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793423754:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794411089:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793424689:R>"
        }
       ]
      }
@@ -3112,7 +3112,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794251754:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794252689:R>"
        }
       ]
      }
@@ -3156,7 +3156,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794035754:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794036689:R>"
        }
       ]
      }
@@ -3200,7 +3200,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1793783754:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1793784689:R>"
        }
       ]
      }
@@ -4576,6 +4576,126 @@
  {
   "kind": "slash",
   "command": "setup",
+  "trigger": "/setup output output=sample state=on",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
+          },
+          "description": "Check and try again"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**\"sample\" is not an output in the registry. Pick one from the list that appears as you type.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup output output=sample state=off",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
+          },
+          "description": "Check and try again"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**\"sample\" is not an output in the registry. Pick one from the list that appears as you type.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup output output=sample state=default",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
+          },
+          "description": "Check and try again"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**\"sample\" is not an output in the registry. Pick one from the list that appears as you type.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
   "trigger": "/setup off feature=leavelog",
   "app": "core",
   "status": 200,
@@ -4668,7 +4788,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokusjrrpkayu/messages/@original",
+    "url": "/webhooks/1/tok0qpl3ckpncc/messages/@original",
     "body": {
      "components": [
       {
@@ -5057,7 +5177,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794503755:R> · only you can see this"
+        "content": "-# Updated <t:1794504689:R> · only you can see this"
        },
        {
         "type": 1,
@@ -5131,7 +5251,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794503154:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794504089:R>"
          }
         ],
         "accessory": {
@@ -5415,7 +5535,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794503755:R> · only you can see this"
+        "content": "-# Updated <t:1794504689:R> · only you can see this"
        },
        {
         "type": 1,
@@ -5813,7 +5933,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794503754:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794504689:R>"
          }
         ],
         "accessory": {
@@ -6649,7 +6769,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794507355:t> · <t:1794507355:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794508289:t> · <t:1794508289:R>"
        },
        {
         "type": 14,
@@ -6727,7 +6847,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794507355:t> · <t:1794507355:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794508289:t> · <t:1794508289:R>"
        },
        {
         "type": 14,
@@ -6805,7 +6925,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794507355:t> · <t:1794507355:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794508289:t> · <t:1794508289:R>"
        },
        {
         "type": 14,

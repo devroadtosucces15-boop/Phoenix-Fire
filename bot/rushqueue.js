@@ -8,7 +8,7 @@
 //   Discord      buttons, a member select and modals on the Phoenix Rush app; a 1-minute cron keeps the board last and runs the idle timers
 // Flag `rushQueue` (default owner). Nothing here names a channel or role; pings go to the group's own members only.
 import { can, flagOn } from './roles.js';
-import { audienceOf, gate, postChannels } from './controls.js';
+import { audienceOf, postChannels } from './controls.js';
 import { message, notice, reply, header, text, facts, footer, sep, button, buttons, autoBanner, cards, bannerUrl } from './ui.js';
 import { orgName, channelsFor, channelNotice } from './orgconfig.js';
 import { discord, getToolSettings } from './servertools.js';
@@ -542,8 +542,6 @@ export async function queueCommand(i, env, ctx, me, who, sub, o = {}, now = Date
   if (!env.DB) return say('The member database is not connected');
   if (!flagOn(env, who, 'rushQueue')) return say('The Rush queue is not switched on for you yet', 'Ask a manager.');
   const staff = can(who, 'servertools.setup'); // managers, admins and the owner (roles mapped in the Organization config); never plain members
-  const gated = await gate(env, 'slash:/queue', { userId: me.u, roleIds: i?.member?.roles ?? [], channelId: i?.channel_id, now });
-  if (!gated.ok) return say('That command is switched off for you here', 'A manager sets who can use it in the Control Center.');
   const q = await loadQueue(env), st = await getSettings(env), state = await getState(env);
   if (sub === 'status') {
     const head = state.closed === 'staff' ? 'The queue is stopped by a manager.' : state.closed === 'idle' ? `The queue closed after ${st.idleCloseMin} idle min. Press **Join queue** to start it.` : '';

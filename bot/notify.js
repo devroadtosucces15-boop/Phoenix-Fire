@@ -20,6 +20,7 @@ import { encryptPayload, safeEndpoint, sendPush } from './webpush.js';
 import { message, header, text, footer, buttons, withBanner, bannerUrl } from './ui.js';
 import { BANNER_SPEC, bannerForDm } from './banners.js';
 import { orgName } from './orgconfig.js';
+import { loadControls, decide, METHODS as ALL_METHODS } from './controls.js';
 
 const DAY = 86400e3;
 const KEEP = 200; // notifications kept per member
@@ -58,7 +59,7 @@ export const TYPES = {
   live: { icon: '🔴', label: 'The club goes live on Twitch or YouTube', def: 'site' }, // E2 (flag liveAnnounce)
   test: { icon: '🔔', label: 'Test notifications', def: 'dm', hidden: true },
 };
-const MODES = ['dm', 'site', 'off'];
+const MODES = ['dm', 'site', 'off']; // the OLD per-type setting, still read (and still accepted by POST /api/notify/prefs) so nothing stored breaks
 // Stripe colour of the DM by kind (bot design system): honours gold, good news green, warnings red, staff to-dos steel, the rest club red.
 const DM_ACCENT = { live: 'win', award: 'gold', card: 'gold', predict: 'gold', moderation: 'loss', queue: 'steel', storage: 'steel', test: 'steel' };
 
@@ -84,6 +85,18 @@ const modeOf = (prefs, type) => {
   const m = MODES.includes(prefs[type]) ? prefs[type] : t.def;
   return m === 'off' && t.mute === false ? 'site' : m;
 };
+// Methods (independent checkboxes, one set per notification type): site (the bell and inbox), dm (Discord) and push (browser). Everything is ON for everyone
+// until they change it: no presets, no per-type defaults. A stored old string becomes its matching boxes ('dm' = all three as before, 'site' = site only, 'off' = none).
+export const allOn = () => Object.fromEntries(ALL_METHODS.map((m) => [m, true]));
+export function methodsOf(prefs, type, { force = true } = {}) {
+  const v = prefs?.[type], t = TYPES[type] ?? TYPES.test;
+  let m = allOn();
+  if (v === 'site') m = { site: true, dm: false, push: false };
+  else if (v === 'off') m = { site: false, dm: false, push: false };
+  else if (v && typeof v === 'object') m = Object.fromEntries(ALL_METHODS.map((k) => [k, v[k] === undefined ? true : !!v[k]]));
+  if (force && t.mute === false && !m.site && !m.dm && !m.push) m.site = true; // announcements and rules can't be muted entirely
+  return m;
+}
 
 // ---------- sending ----------
 let kick = false; // a DM was queued during this request → handleMembers sends it right after responding
@@ -96,18 +109,22 @@ export async function notify(env, ids, n) {
   ids = [...new Set((ids ?? []).filter(Boolean).map(String))].slice(0, 1000);
   if (!ids.length || !env.DB) return 0;
   const rows = await all(env, `SELECT u.id, u.role, p.prefs FROM users u LEFT JOIN notify_prefs p ON p.user_id = u.id WHERE u.id IN (${marks(ids.length)})`, ...ids);
-  const at = Date.now();
+  const at = Date.now(), rule = (await loadControls(env)).get(`dm:notify:${n.type}`); // the Control Center row for this type: on/off, who gets it, which methods, time windows
   const stmts = [], told = [], pushTo = [];
   for (const r of rows) {
     if (!flagOn(env, { role: r.role }, 'notifications')) continue;
-    const mode = modeOf(parsePrefs(r.prefs), n.type);
-    if (mode === 'off') continue;
-    const dm = mode === 'dm' ? 'queued' : null;
+    const gate = decide(rule, { userId: r.id, level: r.role, now: at });
+    if (gate.why === 'off' || gate.why === 'denied-member' || gate.why === 'denied-role' || gate.why === 'not-allowed') continue; // switched off, or not in the audience a manager set
+    const mine = methodsOf(parsePrefs(r.prefs), n.type), allowed = rule?.rules.methods ?? allOn();
+    const quiet = gate.why === 'outside-window'; // outside a manager's time window the site still gets it, the DM and the push wait for no one
+    const m = { site: mine.site && allowed.site, dm: mine.dm && allowed.dm && !quiet, push: mine.push && allowed.push && !quiet };
+    if (!m.site && !m.dm && !m.push) continue;
+    const dm = m.dm ? 'queued' : null;
     if (dm) kick = true;
-    if (dm && flagOn(env, { role: r.role }, 'push')) pushTo.push(String(r.id)); // BE0: "dm" is the tier where a member asked to be told – push goes there too
-    stmts.push(env.DB.prepare('INSERT INTO notifications (user_id, type, icon, title, body, link, ack, at, dm, ref) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-      .bind(r.id, n.type, n.icon ?? TYPES[n.type]?.icon ?? '🔔', clean(n.title, 140), n.body ? cleanText(n.body, 1500) : null, safeLink(n.link), n.ack ? 1 : 0, at, dm, n.ref ?? null));
-    told.push(String(r.id));
+    if (m.push && flagOn(env, { role: r.role }, 'push')) pushTo.push(String(r.id)); // BE0
+    stmts.push(env.DB.prepare('INSERT INTO notifications (user_id, type, icon, title, body, link, ack, at, dm, ref, on_site) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(r.id, n.type, n.icon ?? TYPES[n.type]?.icon ?? '🔔', clean(n.title, 140), n.body ? cleanText(n.body, 1500) : null, safeLink(n.link), n.ack ? 1 : 0, at, dm, n.ref ?? null, m.site ? 1 : 0));
+    if (m.site) told.push(String(r.id));
   }
   for (let i = 0; i < stmts.length; i += 50) await env.DB.batch(stmts.slice(i, i + 50));
   if (told.length) await broadcastRoom(env, 'locker', { t: 'locker', why: 'unread', to: told }); // BE2: their 🔔 count changed
@@ -203,7 +220,7 @@ export async function notifyCron(env) {
   if (!env.DB) return;
   const due = await all(env, `SELECT n.id, n.user_id, p.prefs FROM notifications n LEFT JOIN notify_prefs p ON p.user_id = n.user_id
     WHERE n.ack = 1 AND n.ack_at IS NULL AND n.reminders < ? AND COALESCE(n.dm_at, n.at) < ? LIMIT 100`, REMIND_MAX, Date.now() - DAY);
-  const again = due.filter((r) => modeOf(parsePrefs(r.prefs), 'announce') === 'dm').map((r) => r.id);
+  const again = due.filter((r) => methodsOf(parsePrefs(r.prefs), 'announce').dm).map((r) => r.id);
   if (again.length) await run(env, `UPDATE notifications SET dm = 'queued', reminders = reminders + 1 WHERE id IN (${marks(again.length)})`, ...again);
   const res = await deliverDMs(env);
   if (new Date().getUTCMinutes() < 10) { // hourly housekeeping: read + older than 90 days, and over KEEP per member
@@ -220,21 +237,22 @@ const itemOut = (r) => ({
 });
 export async function counts(env, me) {
   const [u, a] = await Promise.all([
-    one(env, 'SELECT COUNT(*) AS n FROM notifications WHERE user_id = ? AND read_at IS NULL', me.u),
-    one(env, 'SELECT id, icon, title FROM notifications WHERE user_id = ? AND ack = 1 AND ack_at IS NULL ORDER BY id LIMIT 1', me.u),
+    one(env, 'SELECT COUNT(*) AS n FROM notifications WHERE user_id = ? AND read_at IS NULL AND on_site = 1', me.u),
+    one(env, 'SELECT id, icon, title FROM notifications WHERE user_id = ? AND ack = 1 AND ack_at IS NULL AND on_site = 1 ORDER BY id LIMIT 1', me.u),
   ]);
   return { unread: u.n, ack: a ? { id: a.id, icon: opt(a.icon), title: a.title } : null };
 }
 async function state(env, me) {
   const [rows, p, c, devices] = await Promise.all([
-    all(env, 'SELECT * FROM notifications WHERE user_id = ? ORDER BY (ack = 1 AND ack_at IS NULL) DESC, id DESC LIMIT 60', me.u),
+    all(env, 'SELECT * FROM notifications WHERE user_id = ? AND on_site = 1 ORDER BY (ack = 1 AND ack_at IS NULL) DESC, id DESC LIMIT 60', me.u),
     one(env, 'SELECT prefs, dm_failed_at FROM notify_prefs WHERE user_id = ?', me.u),
     counts(env, me),
     one(env, 'SELECT COUNT(*) AS n FROM push_subs WHERE user_id = ?', me.u),
   ]);
   const prefs = parsePrefs(p?.prefs);
+  const rules = await loadControls(env);
   const types = Object.entries(TYPES).filter(([, t]) => !t.hidden && (!t.role || can(me, 'portal.view')))
-    .map(([k, t]) => ({ k, icon: t.icon, label: t.label, mode: modeOf(prefs, k), mute: t.mute !== false }));
+    .map(([k, t]) => { const methods = methodsOf(prefs, k), row = rules.get(`dm:notify:${k}`); return { k, icon: t.icon, label: t.label, methods, allowed: row?.rules.methods ?? allOn(), off: row ? !row.enabled : false, mode: methods.dm ? 'dm' : methods.site ? 'site' : 'off', mute: t.mute !== false }; });
   return { items: rows.map(itemOut), ...c, types, dmBlocked: !!p?.dm_failed_at && Date.now() - p.dm_failed_at < 14 * DAY, dmReady: !!env.DISCORD_BOT_TOKEN, canAnnounce: can(me, 'notify.announce'),
     push: { key: env.VAPID_PRIVATE_KEY && env.VAPID_PUBLIC_KEY && flagOn(env, me, 'push') ? env.VAPID_PUBLIC_KEY : null, devices: devices?.n ?? 0 } }; // BE0
 }
@@ -267,9 +285,12 @@ async function notifyRoute(p, method, body, me, env, log) {
   if (p === '/api/notify/prefs') {
     const cur = parsePrefs((await one(env, 'SELECT prefs FROM notify_prefs WHERE user_id = ?', me.u))?.prefs);
     for (const [k, v] of Object.entries(body.prefs ?? {})) {
-      if (!TYPES[k] || TYPES[k].hidden || !MODES.includes(v)) return fail('Unknown setting');
-      if (v === 'off' && TYPES[k].mute === false) return fail(`${TYPES[k].label} can't be muted – pick “Site only” instead.`);
-      cur[k] = v;
+      if (!TYPES[k] || TYPES[k].hidden) return fail('Unknown setting');
+      if (typeof v === 'string' && !MODES.includes(v)) return fail('Unknown setting'); // an older page still sends 'dm' | 'site' | 'off'
+      if (typeof v !== 'string' && (!v || typeof v !== 'object')) return fail('Unknown setting');
+      const m = methodsOf({ [k]: v }, k, { force: false }); // the boxes: { site, dm, push }, each on or off on its own
+      if (!m.site && !m.dm && !m.push && TYPES[k].mute === false) return fail(`${TYPES[k].label} can't be muted – keep at least the site box ticked.`);
+      cur[k] = m;
     }
     await run(env, `INSERT INTO notify_prefs (user_id, prefs, updated) VALUES (?, ?, ?)
       ON CONFLICT (user_id) DO UPDATE SET prefs = excluded.prefs, updated = excluded.updated`, me.u, JSON.stringify(cur), Date.now());

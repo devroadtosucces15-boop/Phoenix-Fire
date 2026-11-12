@@ -21,10 +21,10 @@ const warn = console.warn; console.warn = () => {};
 
 await postResults([m], { config, homeId: '100', alert: async () => ({ ok: true, posted: 1 }) });
 const panel = calls.find((c) => /with_components=true/.test(c.url));
-const body = JSON.parse(panel?.init.body ?? '{}');
+const raw = panel?.init.body, body = JSON.parse(raw instanceof FormData ? (raw.get('payload_json') ?? '{}') : (raw ?? '{}')); // the crest picture goes up as multipart: the panel is its payload_json
 t('the webhook gets the design-system panel (Components V2, with_components)', !!panel && (body.flags & 32768) === 32768 && !body.embeds);
 t('it has no buttons or menus (a webhook cannot carry them)', !/"type":(1|2|3),/.test(JSON.stringify(body.components)) && !/"custom_id"/.test(JSON.stringify(body)));
-t('it is the Phoenix stripe', JSON.stringify(body).includes(String(ACCENT.loss)) && !/c8352c|norex/i.test(JSON.stringify(body)));
+t('it is the Phoenix stripe', JSON.stringify(body).includes(String(ACCENT.red)) && !/c8352c|norex/i.test(JSON.stringify(body)));
 const sp = staticPanel({ components: [{ type: 17, components: [{ type: 10, content: 'x' }, { type: 1, components: [{ type: 2 }] }, { type: 9, components: [{ type: 10, content: 'y' }], accessory: { type: 2 } }] }] });
 t('staticPanel drops action rows and button accessories only', sp.components[0].components.length === 2 && !sp.components[0].components[1].accessory && sp.components[0].components[1].components[0].content === 'y');
 

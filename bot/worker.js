@@ -30,6 +30,8 @@ import { scoreDue } from './predict.js';
 import { eventButton, checkinButton, playButton, memberCommand, memberOf, MEMBER_COMMANDS } from './botcmds.js';
 import { lfgCommand, lfgButton, lfgExpire, LFG_ID } from './lfg.js';
 import { queueCommand, queueInteraction, queueTick, RQ_ID } from './rushqueue.js';
+import { disabledOutputs, controlOf, decide, componentKey } from './controls.js';
+import { outputChoices } from './controlcenter.js';
 import { unalias } from './merged.js';
 import { boardCommand, seasonCardCommand, seasonCardButton, SEASON_BUTTON } from './rushscan.js';
 import { prefPosSelect, PREF_ID } from './prefpos.js';
@@ -70,36 +72,38 @@ export default {
   async scheduled(event, env, ctx) {
     const base = await withOrgEnv(env); // Discord server + role IDs from the Organization config
     env = appEnv(base, 'core'); // cron posts come from core …
+    const off = await disabledOutputs(env, 'job:'); // the Control Center's job switches (bot/controls.js), read on every run: no deploy
+    const job = (name, make) => { if (off.has(`job:${name}`)) return; ctx.waitUntil(make()); };
     useIconApp('core');
     // … except fun posts (birthdays), which go through the fun app when it has a token, so their buttons come back to fun.
     const funEnv = appConfigured(base, 'fun') && appCreds(base, 'fun').token ? appEnv(base, 'fun') : env;
     if (event?.cron === '* * * * *') { // the 1-minute timer sends /remind reminders and runs the Rush queue tick – everything else stays on the 10-minute one
-      ctx.waitUntil(sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
-      ctx.waitUntil(queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
+      job('sendDueReminders', () => sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
+      job('queueTick', () => queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
       return;
     }
-    ctx.waitUntil(updateLive(env).catch((e) => console.log('live check failed', e.message))); // P1.3 live banner
-    ctx.waitUntil(checkUptime(env).catch((e) => console.log('uptime monitor failed', e.message))); // P11.2 24/7 monitor
-    ctx.waitUntil(checkProfanity(env).then(() => cleanBonus(env)).catch((e) => console.log('profanity check failed', e.message))); // P11.4
-    ctx.waitUntil(eventReminders(env).then(() => closeDue(env)).then(() => hotwDue(env)).then(() => scoreDue(env)).then(() => notifyCron(env)).catch((e) => console.log('notify cron failed', e.message))); // P3.3 event reminders, P4.1 awards, P6.2 highlight of the week, P3.8 predictions, then P7.1 DMs + reminders
-    ctx.waitUntil(mediaCron(env).catch((e) => console.log('media guard failed', e.message))); // P6.1b R2 storage guard (hourly)
+    job('updateLive', () => updateLive(env).catch((e) => console.log('live check failed', e.message))); // P1.3 live banner
+    job('checkUptime', () => checkUptime(env).catch((e) => console.log('uptime monitor failed', e.message))); // P11.2 24/7 monitor
+    job('checkProfanity', () => checkProfanity(env).then(() => cleanBonus(env)).catch((e) => console.log('profanity check failed', e.message))); // P11.4
+    job('eventReminders', () => eventReminders(env).then(() => closeDue(env)).then(() => hotwDue(env)).then(() => scoreDue(env)).then(() => notifyCron(env)).catch((e) => console.log('notify cron failed', e.message))); // P3.3 event reminders, P4.1 awards, P6.2 highlight of the week, P3.8 predictions, then P7.1 DMs + reminders
+    job('mediaCron', () => mediaCron(env).catch((e) => console.log('media guard failed', e.message))); // P6.1b R2 storage guard (hourly)
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');
-    ctx.waitUntil(checkHype(env, (file) => load(site, file, ctx)).catch((e) => console.log('hype poster failed', e.message))); // P11.6/P11.7 auto hype poster
-    ctx.waitUntil(checkVoiceRecap(env, (file) => load(site, file, ctx)).catch((e) => console.log('voice recap failed', e.message))); // P11.13 voice clip → quote card
-    if (flagOn(env, { role: 'owner' }, 'insights')) ctx.waitUntil(insightsCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('insights cron failed', e.message))); // weekly Club Intelligence DM
+    job('checkHype', () => checkHype(env, (file) => load(site, file, ctx)).catch((e) => console.log('hype poster failed', e.message))); // P11.6/P11.7 auto hype poster
+    job('checkVoiceRecap', () => checkVoiceRecap(env, (file) => load(site, file, ctx)).catch((e) => console.log('voice recap failed', e.message))); // P11.13 voice clip → quote card
+    if (flagOn(env, { role: 'owner' }, 'insights')) job('insightsCron', () => insightsCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('insights cron failed', e.message))); // weekly Club Intelligence DM
     if (flagOn(env, { role: 'owner' }, 'statInsights')) {
       const loadSite = (file) => load(site, file, ctx);
-      ctx.waitUntil(refreshStatInsights(env, loadSite).then(() => statInsightWeekly(env, postEmbed)).catch((e) => console.log('stat insights cron failed', e.message))); // BE9
+      job('refreshStatInsights', () => refreshStatInsights(env, loadSite).then(() => statInsightWeekly(env, postEmbed)).catch((e) => console.log('stat insights cron failed', e.message))); // BE9
     }
-    if (flagOn(env, { role: 'owner' }, 'reminders')) ctx.waitUntil(remindersCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('reminders failed', e.message))); // E3 gentle nudges
-    if (flagOn(env, { role: 'owner' }, 'rushLfg')) ctx.waitUntil(lfgExpire(env).catch((e) => console.log('rush lfg expiry failed', e.message))); // MB5 calls past their time stop taking answers
-    if (flagOn(env, { role: 'owner' }, 'memberLive')) ctx.waitUntil(memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
-    ctx.waitUntil(streamAlertsCron(env).catch((e) => console.log('stream alerts failed', e.message))); // /streamalerts sources (flag streamAlerts checked inside)
-    if (flagOn(env, { role: 'owner' }, 'watchlist')) ctx.waitUntil(watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
-    if (flagOn(env, { role: 'owner' }, 'fun')) ctx.waitUntil(birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
-    if (flagOn(env, { role: 'owner' }, 'serverTools')) ctx.waitUntil(memberWatch(env).catch((e) => console.log('member watch failed', e.message))); // leave/join alerts + welcome posts
-    if (flagOn(env, { role: 'owner' }, 'cardStudio')) ctx.waitUntil(generateCards(env).catch((e) => console.log('card generation failed', e.message))); // Card Studio – approved requests → AI cards (retries included)
-    if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_REPO) return;
+    if (flagOn(env, { role: 'owner' }, 'reminders')) job('remindersCron', () => remindersCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('reminders failed', e.message))); // E3 gentle nudges
+    if (flagOn(env, { role: 'owner' }, 'rushLfg')) job('lfgExpire', () => lfgExpire(env).catch((e) => console.log('rush lfg expiry failed', e.message))); // MB5 calls past their time stop taking answers
+    if (flagOn(env, { role: 'owner' }, 'memberLive')) job('memberLiveCron', () => memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
+    job('streamAlertsCron', () => streamAlertsCron(env).catch((e) => console.log('stream alerts failed', e.message))); // /streamalerts sources (flag streamAlerts checked inside)
+    if (flagOn(env, { role: 'owner' }, 'watchlist')) job('watchlistCron', () => watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
+    if (flagOn(env, { role: 'owner' }, 'fun')) job('birthdayCheck', () => birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
+    if (flagOn(env, { role: 'owner' }, 'serverTools')) job('memberWatch', () => memberWatch(env).catch((e) => console.log('member watch failed', e.message))); // leave/join alerts + welcome posts
+    if (flagOn(env, { role: 'owner' }, 'cardStudio')) job('generateCards', () => generateCards(env).catch((e) => console.log('card generation failed', e.message))); // Card Studio – approved requests → AI cards (retries included)
+    if (off.has('job:siteUpdate') || !env.GH_DISPATCH_TOKEN || !env.GITHUB_REPO) return;
     const res = await fetch(`https://api.github.com/repos/${env.GITHUB_REPO}/actions/workflows/update.yml/dispatches`, {
       method: 'POST',
       headers: {
@@ -146,6 +150,7 @@ export default {
     }
     env = withFlagOverrides(env, await loadFlagOverrides(env)); // the Boardroom's live flag switches apply to Discord too (they used to reach website requests only)
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');
+    if (i.type === 4 && i.data?.name === 'setup' && flatOptions(i.data.options).find((o) => o.focused)?.name === 'output') return json({ type: 8, data: { choices: outputChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
     if (i.type === 4 && i.data?.name === 'host') return json({ type: 8, data: { choices: zoneChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
     if (i.type === 4 && /^tags?$/.test(i.data?.name) && env.DB) return json({ type: 8, data: { choices: await tagChoices(env, flatOptions(i.data.options).find((o) => o.focused)?.value).catch(() => []) } });
     if (i.type === 4) return json({ type: 8, data: { choices: await autocomplete(i, site, ctx) } });
@@ -153,8 +158,12 @@ export default {
     const cmdName = i.type === 2 ? i.data?.name : null;
     const cmdSettings = cmdName ? await getCommandSettings(env) : null;
     if (cmdName) { // the owner's per-command rules (Boardroom → Bot commands)
-      const msg = await commandBlocked(env, cmdName, who, i.channel_id, cmdSettings);
+      const msg = await commandBlocked(env, cmdName, who, i.channel_id, cmdSettings, { roleIds: i.member?.roles ?? [] });
       if (msg) return json(privateNote(msg));
+    }
+    if ((i.type === 3 || i.type === 5) && who.role !== 'owner') { // the Control Center's switch and audience for a button, menu or form (owners are never locked out)
+      const d = decide(await controlOf(env, componentKey(i.data?.custom_id ?? '')), { userId: who.u, roleIds: i.member?.roles ?? [], level: who.role, channelId: i.channel_id });
+      if (!d.ok) return json(privateNote(d.why === 'off' ? 'That button is switched off right now.' : 'That button is not available to you here.'));
     }
     if (i.type === 2 && i.data) i.data = unalias(i.data); // merged commands (bot/merged.js) → the shape their handlers know
     const respond = async () => {
