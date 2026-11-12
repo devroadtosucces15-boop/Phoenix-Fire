@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { ROOT, env, send, base, resetCalls } from './harness.mjs';
 import * as H from './harness.mjs';
 import { COMMANDS } from '../../bot/commanddefs.js';
+import { appOf } from '../../bot/apps.js';
 import { seedBotSample } from '../../tests/botfeat-sample.mjs';
 const OUT = fileURLToPath(new URL('./out/', import.meta.url));
 fs.mkdirSync(OUT, { recursive: true });
@@ -29,7 +30,7 @@ const norm = (id) => String(id).replace(/\d{3,}/g, 'N');
 const compFlat = (cs = [], out = []) => { for (const c of cs) { out.push(c); if (c.components) compFlat(c.components, out); if (c.accessory) out.push(c.accessory); } return out; };
 async function fire(payload, meta) {
   resetCalls();
-  const r = await send(payload);
+  const r = await send(payload, meta.app ?? 'core');
   const rec = { ...meta, status: r.status, response: r.d, calls: H.calls.slice() };
   captured.push(rec);
   return rec;
@@ -44,14 +45,14 @@ async function crawl(rec, depth) { // click every button / pick the first option
       if (seen.has(key)) continue; seen.add(key);
       const data = c.type === 3 || c.type === 2 ? { custom_id: id, component_type: c.type, ...(c.type === 3 ? { values: [c.options?.[0]?.value ?? 'x'] } : {}) } : null;
       if (!data) continue;
-      const r2 = await fire({ ...base(), type: 3, data, message: { id: 'M0', channel_id: 'C1', flags: m.flags ?? 0, components: m.components, embeds: m.embeds ?? [], content: m.content ?? '' } }, { kind: 'component', trigger: `${c.type === 3 ? 'select' : 'button'} ${id}`, parent: rec.trigger, label: c.label ?? null });
+      const r2 = await fire({ ...base(), type: 3, data, message: { id: 'M0', channel_id: 'C1', flags: m.flags ?? 0, components: m.components, embeds: m.embeds ?? [], content: m.content ?? '' } }, { kind: 'component', trigger: `${c.type === 3 ? 'select' : 'button'} ${id}`, parent: rec.trigger, label: c.label ?? null, app: rec.app, command: rec.command ?? null });
       await crawl(r2, depth + 1);
     }
   }
   if (rec.response?.type === 9) { // modal: submit it with sample text
     const cid = rec.response.data?.custom_id;
     const rows = (rec.response.data?.components ?? []).map((r) => ({ type: 1, components: (r.components ?? []).map((c) => ({ type: 4, custom_id: c.custom_id, value: c.value ?? c.placeholder ?? 'Sample text' })) }));
-    if (cid) await fire({ ...base(), type: 5, data: { custom_id: cid, components: rows } }, { kind: 'modal-submit', trigger: `modal ${cid}`, parent: rec.trigger });
+    if (cid) await fire({ ...base(), type: 5, data: { custom_id: cid, components: rows } }, { kind: 'modal-submit', trigger: `modal ${cid}`, parent: rec.trigger, app: rec.app, command: rec.command ?? null });
   }
 }
 
@@ -59,7 +60,7 @@ await seedBotSample().catch((e) => console.log('seed:', e.message));
 for (const def of COMMANDS) {
   for (const options of optionSets(def)) {
     const label = '/' + def.name + options.map((o) => ' ' + o.name + (o.options ? ' ' + o.options.map((x) => x.name + '=' + x.value).join(' ') : '=' + o.value)).join('');
-    const rec = await fire({ ...base(), type: 2, data: { id: '1', name: def.name, type: 1, options } }, { kind: 'slash', command: def.name, trigger: label });
+    const rec = await fire({ ...base(), type: 2, data: { id: '1', name: def.name, type: 1, options } }, { kind: 'slash', command: def.name, trigger: label, app: appOf(def.name) ?? 'core' });
     await crawl(rec, 0);
   }
 }
