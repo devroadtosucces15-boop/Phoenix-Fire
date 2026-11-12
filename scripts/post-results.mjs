@@ -16,7 +16,7 @@ const config = loadConfig();
 const manifest = readJson('site/api/cards.json', null);
 // Same club list the fetch used (Worker → snapshot → config.homeClubId); the destination of each post is resolved per source club.
 const org = await resolveOrgClubs(config, { dataDir: DATA, live: true });
-const result = await postResults(matches, { config, homeId: org.primary, orgIds: org.ids, org, hidden, drawn: manifest ? { dir: 'site/cards', manifest } : null });
+const result = await postResults(matches, { config, homeId: org.primary, orgIds: org.ids, org, hidden, drawn: manifest ? { dir: 'site/cards', manifest } : null, noAlert: repost }); // a manual repost never re-alerts
 fs.rmSync(FILE, { force: true });
 const n = result?.posted ?? 0;
 console.log(`Posted ${n} result${n === 1 ? '' : 's'}${manifest ? ' with cards' : ' without cards'}`);

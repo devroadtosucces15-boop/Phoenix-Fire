@@ -4,7 +4,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { loadBotSettings, num } from '../lib.mjs';
-import { resolveRoute } from './org.mjs';
+import { resolveRoute, requestMatchAlert } from './org.mjs';
+import { alertLine, loseByOf } from '../../bot/matchalert.js';
 import { matchComponents } from '../../bot/matchcard.js';
 import { message, header, facts, footer, resultAccent, cards, label, tagBlock } from '../../bot/ui.js';
 import { clubTag } from './clubtag.mjs';
@@ -14,7 +15,7 @@ import { it } from '../../bot/icons.js';
 // posted by the bot into the webhook's channel with the P7.2 "Show my match" menu (plain webhooks can't carry
 // interactive components); if that fails, or otherwise, it goes through the webhook as before.
 // matches: raw EA matches (newest last). drawn: { dir, manifest } of site/cards + site/api/cards.json, or null.
-export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute, org = null }) {
+export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute, org = null, alert = requestMatchAlert, noAlert = [] }) {
   const hook = process.env.DISCORD_WEBHOOK;
   const token = process.env.DISCORD_BOT_TOKEN;
   if (!matches.length) return;
@@ -92,7 +93,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         footer(mergedImg ? 'Pick your name below to see your own match' : fieldImg ? 'Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match' : 'Pick your name below to see your own match'),
         ...components,
       ] });
-      return { src, matchId: m.matchId, components, files, panel, review: reviewImg ? { panel: reviewPanel, files: reviewFiles } : null, embed: {
+      return { src, matchId: m.matchId, us: num(us.goals), them: num(opp.goals), oppName, ts: m.timestamp, components, files, panel, review: reviewImg ? { panel: reviewPanel, files: reviewFiles } : null, embed: {
         author: { name: `${tag.important ? '🚨 ' : ''}${tag.label} · ${kind.toUpperCase()}` },
         title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
         url,
@@ -121,8 +122,8 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
     for (const item of items) {
       if (!cache.has(item.src)) cache.set(item.src, await route(config, 'match_results', item.src));
       const dest = cache.get(item.src);
-      if (!dest.ok) { report(item.src, `destination lookup failed (${dest.error})`); continue; }
-      if (!dest.channelId) { report(item.src, 'no match_results channel configured (club, division or organization scope) – set one in Boardroom → Organization'); continue; }
+      if (!dest.ok) { item.failed = true; report(item.src, `destination lookup failed (${dest.error})`); continue; }
+      if (!dest.channelId) { item.failed = true; report(item.src, 'no match_results channel configured (club, division or organization scope) – set one in Boardroom → Organization'); continue; }
       const send = (card, ping, mentions) => {
         const payload = card.panel(ping, mentions);
         let body, headers = { Authorization: `Bot ${token}` };
@@ -135,7 +136,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       };
       const r = await send(item, pingContent, allowedMentions);
       console.log(`Result ${item.matchId} (club ${item.src}) → channel ${dest.channelId} [scope ${dest.scope ?? '?'}, guild ${dest.guildId ?? '?'}] → Discord ${r.status}`);
-      if (!r.ok) { report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`); continue; }
+      if (!r.ok) { item.failed = true; report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`); continue; }
       if (item.review) await send(item.review, undefined, { parse: [] }); // the review goes right after its result, same channel, no ping
     }
   } else {
@@ -145,6 +146,16 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png` : undefined, content: pingContent, embeds: items.map((x) => x.embed), allowed_mentions: allowedMentions }),
     }).catch((e) => console.warn('Discord post failed:', e.message));
+  }
+  // Match alert: a result that trips the rule (default: a defeat by 3 or more, config.matchAlert.loseBy) asks the Worker for the alert,
+  // right after the result and its review. Only results that really went out; a manual repost never alerts twice.
+  const loseBy = loseByOf(config);
+  for (const item of items) {
+    if (noAlert.includes(String(item.matchId)) || item.failed || !alertLine(item.us, item.them, loseBy)) continue;
+    const when = new Date(item.ts * 1000).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+    const r = await alert(config, { opponent: item.oppName, us: item.us, them: item.them, when, loseBy });
+    console.log(`Match alert ${item.matchId} (${item.us}–${item.them}) → ${r.ok ? `posted ${r.posted}${r.reason ? ` (${r.reason})` : ''}` : `NOT sent: ${r.reason}`}`);
+    if (!r.ok || !r.posted) console.warn(`::warning title=Match alert::not posted for ${item.matchId}: ${r.reason ?? 'no match_results channel set in the Organization config'}`);
   }
   if (missing.length) {
     fs.mkdirSync('.outbox', { recursive: true });
