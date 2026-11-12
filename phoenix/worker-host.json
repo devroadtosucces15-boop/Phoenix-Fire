@@ -1,0 +1,4 @@
+{
+  "current": "https://phoenix-bot.norexunited.workers.dev",
+  "note": "The one place that names the Worker host. Everything else follows it: node phoenix/worker-host.mjs check | flip <https://new-host>. See PLANNING/WORKER-HOST.md."
+}

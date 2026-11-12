@@ -1,7 +1,7 @@
 # Disaster recovery – restoring a backup (BE7)
 
 A runbook for a future session (Claude Code, or anyone comfortable with `wrangler`) to follow when the
-live D1 database (`norex`) needs to be rolled back – accidental bad migration, a bug that corrupted data,
+live D1 database (`phoenix`) needs to be rolled back – accidental bad migration, a bug that corrupted data,
 a bucket/database deleted by mistake, etc.
 
 **For the user:** if something looks badly wrong with the club data (members, claims, events, points…),
@@ -12,14 +12,14 @@ uses, which only GitHub Actions / a sandboxed session has.
 ## What exists
 
 - **Nightly export**: `.github/workflows/backup.yml`, runs once a day (`workflow_dispatch` also works for
-  an on-demand backup before a risky change). Exports the whole `norex` D1 database to SQL
+  an on-demand backup before a risky change). Exports the whole `phoenix` D1 database to SQL
   (`wrangler d1 export`), gzips it, uploads to the R2 bucket the bot already uses for feed media
-  (`norex-media`, binding `MEDIA`) under `backups/norex-<YYYY-MM-DD>.sql.gz` – no new bucket needed.
+  (`phoenix-media`, binding `MEDIA`) under `backups/phoenix-<YYYY-MM-DD>.sql.gz` – no new bucket needed.
 - **Retention**: the bucket's existing 365-day lifecycle rule (set by `bot/ensure-resources.mjs`) deletes
   objects after a year – the same backstop already used for feed photos/clips. Daily SQL dumps of this
   club's data are a few MB at most, nowhere near the 10 GB free tier even at a year of history.
-- List what's available: `npx wrangler@4 r2 object get norex-media/backups/<key> --remote --pipe` to peek,
-  or check the bucket in the Cloudflare dashboard (R2 → norex-media → backups/).
+- List what's available: `npx wrangler@4 r2 object get phoenix-media/backups/<key> --remote --pipe` to peek,
+  or check the bucket in the Cloudflare dashboard (R2 → phoenix-media → backups/).
 
 ## Restoring
 
@@ -28,7 +28,7 @@ uses, which only GitHub Actions / a sandboxed session has.
 2. Download and decompress it:
    ```
    cd bot
-   npx --yes wrangler@4 r2 object get norex-media/backups/norex-<date>.sql.gz --remote --file=restore.sql.gz
+   npx --yes wrangler@4 r2 object get phoenix-media/backups/phoenix-<date>.sql.gz --remote --file=restore.sql.gz
    gunzip restore.sql.gz
    ```
 3. **This export is a full schema + data dump** (`wrangler d1 export` includes `CREATE TABLE` statements).
@@ -36,16 +36,16 @@ uses, which only GitHub Actions / a sandboxed session has.
    to apply it, pick based on the situation:
    - **Database is gone / being rebuilt from scratch** (e.g. recreated via `ensure-resources.mjs`, empty
      schema from migrations only): clear it first so the dump's `CREATE TABLE`s don't collide – drop the
-     tables the migrations created, or recreate the D1 database entirely (`wrangler d1 delete norex` then
+     tables the migrations created, or recreate the D1 database entirely (`wrangler d1 delete phoenix` then
      let the next bot deploy's `ensure-resources.mjs` + migrations recreate it empty) – then:
      ```
-     npx --yes wrangler@4 d1 execute norex --remote --file=restore.sql
+     npx --yes wrangler@4 d1 execute phoenix --remote --file=restore.sql
      ```
    - **Database exists and only specific rows need rolling back**: don't run the whole dump. Open
      `restore.sql`, pull out the `INSERT INTO <table> ...` lines for just the affected table(s), wrap them
      in a transaction that deletes the current rows first, and run that smaller script instead – much
      safer than a full overwrite.
-4. **Verify**: `npx --yes wrangler@4 d1 execute norex --remote --command "SELECT COUNT(*) FROM users"` (and
+4. **Verify**: `npx --yes wrangler@4 d1 execute phoenix --remote --command "SELECT COUNT(*) FROM users"` (and
    a couple of the other core tables – `events`, `builds`, `claims`) – compare counts against what's
    expected before telling the user it's done.
 5. Tell the user plainly what was restored and from which date, and that anything written to the live site
@@ -56,10 +56,10 @@ uses, which only GitHub Actions / a sandboxed session has.
 
 - `data/` (EA stats archive) – already a committed git history, not a D1 concern; `git revert`/`git
   checkout` handles that independently.
-- KV (`norex-members`, only the `public` badge cache + `rush` confirmed-results cache since the P0.3
+- KV (`phoenix-members`, only the `public` badge cache + `rush` confirmed-results cache since the P0.3
   migration) – disposable, rebuilds itself from D1/the next fetch; not backed up on purpose.
 - R2 media itself (feed photos/clips, avatar cards, report posters) – not backed up; losing the bucket
   loses those files. Out of scope for BE7 (the roadmap item is specifically the D1/R2 *database* backup);
   revisit if club media turns out to need its own backup too.
 
-> Resource names: the D1 database (`norex`), R2 bucket (`norex-media`) and KV namespace (`norex-members`) keep their original Cloudflare names because renaming a live resource is a migration. They belong to the Phoenix deployment; the names are not shown to members. Rename only together with the Worker host decision (PLANNING/PHOENIX-NEXT.md B1).
+> Resource names: the live resources are the Phoenix ones (D1 `phoenix`, R2 `phoenix-media`, KV `phoenix-members`, Queue `phoenix-jobs`), the same names `bot/ensure-resources.mjs`, `bot/wrangler.toml` and `bot.yml` use. Nothing is named after NOREX, so there is nothing to rename or migrate.

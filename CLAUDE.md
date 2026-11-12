@@ -51,7 +51,7 @@ The build is guarded: `phoenix/leakcheck.mjs` runs at the end of `phoenix/build.
 
 ### Known leftovers (audit 2026-11-10)
 
-- The Worker host is `phoenix-bot.norexunited.workers.dev` (config, wrangler `PUBLIC_URL`, `live.json`, secrets registry). Owner decision: keep the account host or move it.
+- The Worker host is `phoenix-bot.norexunited.workers.dev` (config, wrangler `PUBLIC_URL`, `live.json`, secrets registry). The repo side of the move is prepared: `phoenix/worker-host.json` holds the host and `node phoenix/worker-host.mjs flip <https://host>` switches every place at once (`PLANNING/WORKER-HOST.md`). Owner decision: keep the account host or move it.
 - A2 (2026-11-10) moved the active identifiers to Phoenix names with the old ones still read: `phoenix_session` (+ `norex_session`), `X-Phoenix-Key` (+ `X-Norex-Key`, `bot/sharedkey.js`), `phoenix.*` / `phoenix_*` storage keys (one-time copy from `norex.*`, flag `phoenix.migrated`), `PHOENIX_KV` (+ `NOREX_KV` on the same namespace, `bot/kv.js`). New code uses only the Phoenix names; `tests/identifiers.test.mjs` guards both. `window.Norex*` namespaces stay (reusable class in `PLANNING/PHASE1-NOREX-AUDIT.md`).
 - `site/` in a working copy may be an old classic build from `tests/run.mjs`; the published site comes from `phoenix/build.mjs`.
 

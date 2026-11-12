@@ -1,0 +1,85 @@
+name: Backup database
+
+# Nightly export of the whole D1 database (`phoenix`) to SQL, gzipped, into the R2 bucket the bot already uses
+# (`phoenix-media`, binding MEDIA) under backups/phoenix-<date>.sql.gz. Restore steps: bot/RESTORE.md.
+# Retention: the bucket's 365-day lifecycle rule (bot/ensure-resources.mjs). Run it by hand before a risky change (workflow_dispatch).
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # 03:17 UTC every day
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      D1_NAME: phoenix
+      R2_BUCKET: phoenix-media
+    steps:
+      - name: Check setup
+        if: env.CLOUDFLARE_API_TOKEN == ''
+        run: |
+          echo "::error::CLOUDFLARE_API_TOKEN is not set, so no backup was made (bot/SECRETS-REGISTRY.md)."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Export the database
+        working-directory: bot
+        run: |
+          set -euo pipefail
+          DAY=$(date -u +%Y-%m-%d)
+          echo "KEY=backups/phoenix-${DAY}.sql.gz" >> "$GITHUB_ENV"
+          npx --yes wrangler@4 d1 export "$D1_NAME" --remote --output="$RUNNER_TEMP/phoenix.sql"
+          # A real dump has the schema and rows; an empty or error-only file must fail the run, not become a "backup".
+          grep -q "CREATE TABLE" "$RUNNER_TEMP/phoenix.sql" || { echo "::error::The export has no CREATE TABLE, refusing to upload it."; exit 1; }
+          gzip -9 -c "$RUNNER_TEMP/phoenix.sql" > "$RUNNER_TEMP/phoenix.sql.gz"
+          echo "Dump: $(wc -c < "$RUNNER_TEMP/phoenix.sql") bytes, gzipped $(wc -c < "$RUNNER_TEMP/phoenix.sql.gz") bytes"
+
+      - name: Upload to R2
+        working-directory: bot
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4 r2 object put "$R2_BUCKET/$KEY" --file="$RUNNER_TEMP/phoenix.sql.gz" --content-type=application/gzip --remote
+          echo "Uploaded $R2_BUCKET/$KEY"
+
+      - name: Check the upload is readable
+        working-directory: bot
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@4 r2 object get "$R2_BUCKET/$KEY" --file="$RUNNER_TEMP/check.sql.gz" --remote
+          gunzip -t "$RUNNER_TEMP/check.sql.gz"
+          [ "$(wc -c < "$RUNNER_TEMP/check.sql.gz")" = "$(wc -c < "$RUNNER_TEMP/phoenix.sql.gz")" ] || { echo "::error::Uploaded size differs from the local file."; exit 1; }
+          echo "Backup verified: $KEY"
+
+      - name: DM the owner on failure
+        if: failure()
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          OWNER_ID: "1322770005535756290"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          [ -z "$DISCORD_BOT_TOKEN" ] && exit 0
+          node -e '
+            const h = { Authorization: "Bot " + process.env.DISCORD_BOT_TOKEN, "Content-Type": "application/json" };
+            const api = (p, b) => fetch("https://discord.com/api/v10" + p, { method: "POST", headers: h, body: JSON.stringify(b) }).then((r) => r.json());
+            (async () => {
+              const dm = await api("/users/@me/channels", { recipient_id: process.env.OWNER_ID });
+              if (!dm.id) return console.warn("DM failed", dm);
+              await api("/channels/" + dm.id + "/messages", { content: "⚠️ Nightly database backup failed: <" + process.env.RUN_URL + ">" });
+            })();
+          ' || true

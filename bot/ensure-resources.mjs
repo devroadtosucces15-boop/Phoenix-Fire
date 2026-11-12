@@ -1,6 +1,6 @@
 // Creates the Cloudflare resources the Worker needs (once) and binds them in wrangler.toml for this deploy:
-// KV namespace `norex-members` (public cache), D1 database `norex` (member data, migrations in bot/migrations), the
-// R2 bucket `norex-media` (feed photos/clips) and the `norex-jobs` Queue (BE0 – background jobs: BE9's insight
+// KV namespace `phoenix-members` (public cache), D1 database `phoenix` (member data, migrations in bot/migrations), the
+// R2 bucket `phoenix-media` (feed photos/clips) and the `phoenix-jobs` Queue (BE0 – background jobs: BE9's insight
 // writer calls, BE8's presence "wave" ping). All free tier; Queue needs the API token to have "Workers Queues: Edit".
 import fs from 'node:fs';
 const { CLOUDFLARE_API_TOKEN: token, CLOUDFLARE_ACCOUNT_ID: account } = process.env;
