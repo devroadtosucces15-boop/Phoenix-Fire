@@ -61,7 +61,7 @@ export function home() {
 
 // ---------- SQUAD ----------
 export function squad() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:34px"><header><div><div class="eyebrow">${players.length} players</div><h2>The squad</h2></div>
+  const body = `<div class="wrap"><section class="sec" id="squad" style="margin-top:34px"><header><div><div class="eyebrow">${players.length} players</div><h2>The squad</h2></div>
   <div class="chips" id="lines"><button class="chip on" data-l="">All</button>${Object.entries(L).map(([k, v]) => `<button class="chip" data-l="${k}">${v}</button>`).join('')}</div></header>
   <div class="chips" id="sort" style="margin-bottom:22px"><span class="muted small">Sort</span><button class="chip on" data-s="gp">Games</button><button class="chip" data-s="ovr">Rating</button><button class="chip" data-s="goals">Goals</button><button class="chip" data-s="assists">Assists</button></div>
   <div class="cards" id="grid" data-stagger>${players.map((p) => `<div class="cardwrap" data-line="${p.line}" data-gp="${p.gp}" data-ovr="${p.ovr ?? 0}" data-goals="${p.goals}" data-assists="${p.assists}">${card(p)}<div class="cmp"><button class="cmpbtn" data-k="${esc(p.k)}" aria-label="Compare ${esc(p.n)}" aria-pressed="false">+</button></div><div class="meta">${esc(p.arch || lineLabel(p))} · ${p.gp} games</div></div>`).join('')}</div>

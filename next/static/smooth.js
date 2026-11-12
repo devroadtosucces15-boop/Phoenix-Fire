@@ -8,7 +8,7 @@
   const G = window.gsap && window.ScrollTrigger ? (gsap.registerPlugin(ScrollTrigger), true) : false; // GSAP is only loaded on pages that use scrubbed motion
   // nested scrollers (menus, chat lists, tables, sheets) keep their own native scrolling
   const nested = (n) => { for (let e = n; e && e !== document.body && e !== H; e = e.parentElement) { if (e.hasAttribute && e.hasAttribute('data-lenis-prevent')) return true; const o = getComputedStyle(e); if (/(auto|scroll)/.test(o.overflowY) && e.scrollHeight > e.clientHeight + 1) return true; if (/(auto|scroll)/.test(o.overflowX) && e.scrollWidth > e.clientWidth + 1) return true; } return false; };
-  const lenis = new Lenis({ duration: 1.1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, anchors: true, prevent: nested, autoRaf: !G });
+  const lenis = new Lenis({ duration: 1.1, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true, anchors: false, prevent: nested, autoRaf: !G });
   window.NorexLenis = lenis;
   if (G) { lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add((t) => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
   H.classList.add('sm-on');

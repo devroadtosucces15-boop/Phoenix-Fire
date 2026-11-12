@@ -5,6 +5,7 @@
 //   4. overlay (badge crest, 3D crest, theme layer, small design touches)   5. build the preview flavour (toolbar, noindex)
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { execFileSync } from 'node:child_process'; import { fileURLToPath, pathToFileURL } from 'node:url';
 import { assertNoLeaks } from './leakcheck.mjs';
+import { HASH_MAP } from '../next/lib/redirects.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url)), repo = path.resolve(here, '..');
 const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : null; };
 const out = path.resolve(arg('--out') || path.join(repo, 'site', 'phoenix'));
@@ -122,7 +123,7 @@ try {
   } else warn('classic assets were not generated; assets/ will not be published');
   const claimTemplate = path.join(here, 'claim.html');
   if (fs.existsSync(claimTemplate)) {
-    let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', API);
+    let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', API).replace('__PHOENIX_HASHES__', JSON.stringify(HASH_MAP));
     if (MOCK) claim = claim.replace('<head>', '<head><script src="phoenix-mock.js"></script>');
     fs.writeFileSync(path.join(out, 'members.html'), claim);
   } else warn('Phoenix claim page template missing; members.html will not be published');

@@ -17,7 +17,14 @@ export const ROOT_MAP = {
   'hub/index.html': 'hub.html',
 };
 // members.html#fragment → page (the bot's Discord embeds link to these)
-export const HASH_MAP = { schedule: 'hub-matchnight.html', events: 'hub-matchnight.html', squads: 'hub-squad.html', awards: 'hub-squad.html', handbook: 'hub-handbook.html', clubhouse: 'hub-clubhouse.html' };
+// Targets are pages and ids that exist in the built site today (locker items use the split pages, as the hub.html forwarder does).
+export const HASH_MAP = {
+  locker: 'hub.html', me: 'hub-profile.html#lk-me', achievements: 'hub-medals.html#lk-medals', alerts: 'hub-alerts.html#lk-alerts', 'alerts-settings': 'hub-alerts.html#lk-alertset',
+  schedule: 'hub-matchnight.html#mn-week', events: 'hub-matchnight.html#mn-week', rsvp: 'hub-matchnight.html#mn-week', motm: 'hub-matchnight.html#mn-motm', rush: 'hub-matchnight.html#mn-rush',
+  awards: 'hub-squad.html#sq-awards', predict: 'hub-squad.html#sq-predict', squads: 'hub-squad.html#sq-squads', teamup: 'hub-squad.html#sq-team', recs: 'hub-squad.html#sq-team', scout: 'hub-squad.html#sq-scout',
+  ideas: 'hub-clubhouse.html#ch-ideas', feedback: 'hub-clubhouse.html#ch-feedback', clubhouse: 'hub-clubhouse.html',
+  docs: 'hub-handbook.html#hb-docs', handbook: 'hub-handbook.html', manager: 'staff.html',
+};
 
 const walk = (dir, base = dir, acc = []) => {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -54,7 +61,7 @@ export function stubHtml(file, target) {
   const to = up + page + (frag ? '#' + frag : '');
   const hashes = file === 'members.html' ? JSON.stringify(Object.fromEntries(Object.entries(HASH_MAP).map(([k, v]) => [k, up + v]))) : 'null';
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(cfg.siteTitle)}</title><meta http-equiv="refresh" content="0;url=${esc(to)}"><link rel="canonical" href="${esc(to)}">
-<script>(function(){var t=${JSON.stringify(to)},m=${hashes},h=location.hash.slice(1).split('?')[0],i=t.indexOf('#'),base=i<0?t:t.slice(0,i),f=i<0?'':t.slice(i);if(m&&m[h]){base=m[h];f=''}else if(!f)f=location.hash;location.replace(base+location.search+f)})()</script></head>
+<script>(function(){var t=${JSON.stringify(to)},m=${hashes},h=location.hash.slice(1).split('?')[0],i=t.indexOf('#'),base=i<0?t:t.slice(0,i),f=i<0?'':t.slice(i);if(m&&Object.prototype.hasOwnProperty.call(m,h)){var j=m[h].indexOf('#');base=j<0?m[h]:m[h].slice(0,j);f=j<0?'':m[h].slice(j)}else if(!f)f=location.hash;location.replace(base+location.search+f)})()</script></head>
 <body style="background:#0b0f16;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:40px"><p>Taking you to the new page… <a style="color:#c8352c" href="${esc(to)}">continue</a></p></body></html>
 `;
 }

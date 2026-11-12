@@ -61,9 +61,9 @@ const setPiecePanel = (mode) => `<div class="panel reveal tx-sp" style="margin-t
 // ---------- TACTICS TABLE ----------
 export function tactics() {
   const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow" id="eb">The usual XI · from the club archive</div><h2>Tactics table</h2></div>
-   <div class="chips" id="mode"><button class="chip on" data-mode="league">🏆 League · 11v11</button><button class="chip" data-mode="rush">⚡ Rush · 5v5</button></div></header>
+   <div class="chips" id="mode"><button class="chip on" data-mode="league">🏆 League · 11v11</button><button class="chip" data-mode="rush" data-dl="rush" data-dl-to="#rush">⚡ Rush · 5v5</button></div></header>
   <div id="league">
-   <div class="chips" id="tabs"><button class="chip on" data-tab="xi">Our XI</button><button class="chip" data-tab="forms">All formations <span id="fc"></span></button><button class="chip" data-tab="roles">Roles per position</button></div>
+   <div class="chips" id="tabs"><button class="chip on" data-tab="xi" data-dl="xi" data-dl-to="[data-pane=xi]">Our XI</button><button class="chip" data-tab="forms" data-dl="forms" data-dl-to="[data-pane=forms]">All formations <span id="fc"></span></button><button class="chip" data-tab="roles" data-dl="roles" data-dl-to="[data-pane=roles]">Roles per position</button></div>
    <div data-pane="xi" class="txpane">${pfin()}<div class="chips"><span class="muted small">Camera</span><button class="chip on" data-cam="3d">3D broadcast</button><button class="chip" data-cam="flat">Flat tactical</button><span style="flex:1"></span><span class="muted small" id="xiHint">Tap a player for their card · tap two to swap them</span></div>
     <div class="chips" style="margin-top:8px"><label class="muted small" for="xiForm">Formation</label><select id="xiForm" class="chip" style="padding:8px 12px" aria-label="Formation for the XI"></select><button class="chip" id="xiBest" type="button">⭐ Best XI from stats</button><button class="chip" id="xiReset" type="button">↺ Usual XI</button></div>
     <div id="xiPitch" style="margin-top:24px"></div><div id="pop" class="reveal in" style="display:grid;place-items:center;margin-top:10px"></div>
