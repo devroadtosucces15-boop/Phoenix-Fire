@@ -11,7 +11,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 5; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 6; // bump to redraw every card after a template change
 const W = 1200;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -25,15 +25,15 @@ const fontFaces = () => (FONTS ??= `@font-face{font-family:Oswald;font-weight:20
 
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const BASE = `
-:root{--ink:#080b11;--p1:#111722;--p2:#171f2d;--p3:#1f2a3c;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);--red:#c8352c;--red2:#e0493f;
+:root{--ink:#0a0705;--p1:#111722;--p2:#171f2d;--p3:#1f2a3c;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);--red:#e8651a;--red2:#ff8a3d;
 --text:#eef2f9;--soft:#9ba7bd;--mute:#6c7890;--g1:#fff1c2;--g2:#efcf7a;--g3:#c9993a;--g4:#8a6a1c;--gold:linear-gradient(135deg,var(--g1),var(--g2) 40%,var(--g3) 75%,var(--g4));
 --win:#4be08a;--winbg:#12331f;--draw:#efcf7a;--drawbg:#332b12;--loss:#ff7d72;--lossbg:#3a1613}
 *{box-sizing:border-box;margin:0}
 html,body{background:var(--ink);color:var(--text);font:500 26px/1.35 Inter,sans-serif;-webkit-font-smoothing:antialiased}
 body{width:${W}px;position:relative;overflow:hidden;isolation:isolate}
-body:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(900px 420px at 80% -10%,rgba(200,53,44,.32),transparent 65%),radial-gradient(700px 400px at 0% 110%,rgba(200,53,44,.12),transparent 60%),linear-gradient(180deg,#0d121b,#06080c)}
+body:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(900px 420px at 80% -10%,rgba(232,101,26,.32),transparent 65%),radial-gradient(700px 400px at 0% 110%,rgba(232,101,26,.12),transparent 60%),linear-gradient(180deg,#140c07,#070403)}
 .osw{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.03em}
-.eyebrow{font:700 20px Inter;letter-spacing:.3em;text-transform:uppercase;color:#f08f87}
+.eyebrow{font:700 20px Inter;letter-spacing:.3em;text-transform:uppercase;color:#ffb27a}
 .gold{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent}
 .brand{position:absolute;right:34px;bottom:24px;font:600 17px Inter;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.32)}
 .tag{display:inline-block;font:800 21px Inter;letter-spacing:.2em;padding:5px 18px;margin-right:14px;border-radius:999px;border:2px solid var(--red2);color:#fff;background:rgba(255,255,255,.06);vertical-align:1px}.tag.hot{background:var(--gold);color:#2d1f06;border-color:var(--g1);box-shadow:0 0 28px rgba(239,207,122,.6)}
@@ -49,7 +49,7 @@ const page = (css, body) => `<!doctype html><html><head><meta charset="utf-8"><s
 const SHIELD = (fill, stroke, letter) => `<svg viewBox="0 0 40 46" width="100%" height="100%"><path d="M20 1 38 7v15c0 11-8 19-18 23C10 41 2 33 2 22V7z" fill="${fill}" stroke="${stroke}" stroke-width="2"/><text x="20" y="29" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="16" fill="#fff">${esc(letter)}</text></svg>`;
 // a crest <img> that falls back to a drawn shield if the picture can't load
 const crest = (src, name, size, home) => {
-  const fb = SHIELD(home ? '#c8352c' : '#2a3446', home ? '#efcf7a' : '#9ba7bd', String(name || '?').trim()[0]?.toUpperCase() ?? '?').replace(/"/g, "'");
+  const fb = SHIELD(home ? '#e8651a' : '#2a3446', home ? '#efcf7a' : '#9ba7bd', String(name || '?').trim()[0]?.toUpperCase() ?? '?').replace(/"/g, "'");
   return src
     ? `<span style="display:inline-block;width:${size}px;height:${size}px"><img src="${esc(src)}" width="${size}" height="${size}" style="object-fit:contain;filter:drop-shadow(0 14px 24px rgba(0,0,0,.6))" onerror="this.outerHTML=&quot;${fb.replace(/&/g, '&amp;')}&quot;"></span>`
     : `<span style="display:inline-block;width:${size}px;height:${size}px">${fb}</span>`;
@@ -69,7 +69,7 @@ body{height:500px}
 .row{position:absolute;left:50px;right:50px;top:96px;display:grid;grid-template-columns:1fr 420px 1fr;align-items:center}
 .side{display:grid;justify-items:center;gap:14px;text-align:center}
 .side b{font:600 34px/1.1 Oswald;letter-spacing:.06em;text-transform:uppercase;max-width:330px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.score{text-align:center}.score b{display:block;font:700 190px/1 Oswald;letter-spacing:.01em;text-shadow:0 10px 50px rgba(200,53,44,.55)}
+.score{text-align:center}.score b{display:block;font:700 190px/1 Oswald;letter-spacing:.01em;text-shadow:0 10px 50px rgba(232,101,26,.55)}
 .foot{position:absolute;left:60px;right:60px;bottom:40px;display:flex;justify-content:center;gap:36px;font-size:24px;color:#cfd8e8;white-space:nowrap;overflow:hidden}
 .foot i{font-style:normal;color:var(--soft);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:18px;margin-right:10px}`,
   `<div class="top eyebrow">${m.tag?.label ? `<span class="tag${m.tag.important ? ' hot' : ''}">${esc(m.tag.label)}</span>` : `${esc(club.name)} · `}${m.mode === 'rush' ? 'Rush' : { friendly: 'Friendly', playoff: 'Playoff' }[m.type] ?? 'League'} · ${esc(when(m.ts))}</div>
@@ -125,9 +125,9 @@ export function ratingGraph(tr, { w = 1080, h = 270 } = {}) {
   const line = pts.map((r, i) => `${X(i).toFixed(1)},${Y(r).toFixed(1)}`).join(' ');
   const best = pts.indexOf(Math.max(...pts)), last = pts.length - 1;
   const grid = Array.from({ length: hi - lo + 1 }, (_, k) => lo + k).map((v) => `<line x1="${L}" x2="${R}" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(255,255,255,.07)"/><text x="${L - 14}" y="${Y(v) + 8}" text-anchor="end" font-family="Inter" font-weight="600" font-size="22" fill="#6c7890">${v}</text>`).join('');
-  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0493f" stop-opacity=".42"/><stop offset="1" stop-color="#e0493f" stop-opacity="0"/></linearGradient></defs>
+  return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a3d" stop-opacity=".42"/><stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/></linearGradient></defs>
 ${grid}<path d="M${X(0)} ${B} L${line.replace(/ /g, ' L')} L${X(last)} ${B} Z" fill="url(#ar)"/>
-<polyline points="${line}" fill="none" stroke="#e0493f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="${line}" fill="none" stroke="#ff8a3d" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 ${pts.map((r, i) => `<circle cx="${X(i)}" cy="${Y(r)}" r="${i === last ? 11 : 6}" fill="${i === last ? '#efcf7a' : BAND[band(r)]}" stroke="#0b0f16" stroke-width="3"/>`).join('')}
 <text x="${X(best)}" y="${Y(pts[best]) - 18}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="26" fill="#efcf7a">${r1(pts[best])}</text>
 ${best !== last ? `<text x="${X(last)}" y="${Y(pts[last]) - 18}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="26" fill="#fff">${r1(pts[last])}</text>` : ''}</svg>`;
@@ -287,15 +287,19 @@ const hash = (x) => crypto.createHash('sha1').update(JSON.stringify([TEMPLATE_VE
 // ---------- banners (fixed pictures for the fun, discovery and match-night messages) ----------
 // The bot can't draw a picture per member on the fly, so these are drawn once at build time: a wide banner that sets the
 // scene, with the names, reasons and times left to the message text. Stable file names (the ?v= in the URL busts Discord's cache).
-const BANNER_CSS = 'body{height:300px}.bn{position:absolute;inset:0;display:flex;align-items:center;gap:56px;padding:0 76px}.bn h1{font:700 104px/.95 Oswald;text-transform:uppercase;letter-spacing:.03em;text-shadow:0 8px 40px rgba(200,53,44,.55)}.bn p{margin-top:16px;font:600 26px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}.art{flex:none}';
+const BANNER_CSS = 'body{height:300px}.bn{position:absolute;inset:0;display:flex;align-items:center;gap:56px;padding:0 76px}.bn h1{font:700 104px/.95 Oswald;text-transform:uppercase;letter-spacing:.03em;text-shadow:0 8px 40px rgba(232,101,26,.55)}.bn p{margin-top:16px;font:600 26px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}.art{flex:none}';
 export const BANNERS = {
   jail: () => page(`${BANNER_CSS}.bars{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 78px,rgba(255,255,255,.07) 78px 90px)}`,
-    `<div class="bars"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><rect x="4" y="3" width="32" height="34" rx="3" fill="#0b0f16" stroke="#efcf7a" stroke-width="1.6"/><g stroke="#efcf7a" stroke-width="1.6"><path d="M12 3v34M20 3v34M28 3v34"/></g><circle cx="20" cy="20" r="3.2" fill="#c8352c" stroke="#0b0f16" stroke-width="1"/></svg>
+    `<div class="bars"></div><div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><rect x="4" y="3" width="32" height="34" rx="3" fill="#0b0f16" stroke="#efcf7a" stroke-width="1.6"/><g stroke="#efcf7a" stroke-width="1.6"><path d="M12 3v34M20 3v34M28 3v34"/></g><circle cx="20" cy="20" r="3.2" fill="#e8651a" stroke="#0b0f16" stroke-width="1"/></svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">County Jail</h1><p>Just for fun · bail is one tap</p></div></div><div class="brand">${esc(SITE)}</div>`),
-  wheel: () => page(`${BANNER_CSS}`, `<div class="bn"><svg class="art" width="210" height="210" viewBox="-50 -50 100 100"><g transform="rotate(-20)"><circle r="44" fill="#c9993a"/><path d="M0 0L0-40A40 40 0 0 1 40 0Z" fill="#c8352c"/><path d="M0 0L40 0A40 40 0 0 1 0 40Z" fill="#1f2a3c"/><path d="M0 0L0 40A40 40 0 0 1-40 0Z" fill="#a82820"/><path d="M0 0L-40 0A40 40 0 0 1 0-40Z" fill="#2a3446"/><circle r="12" fill="#efcf7a"/></g><path d="M0-52L7-42H-7Z" fill="#fff1c2"/></svg>
+  wheel: () => page(`${BANNER_CSS}`, `<div class="bn"><svg class="art" width="210" height="210" viewBox="-50 -50 100 100"><g transform="rotate(-20)"><circle r="44" fill="#c9993a"/><path d="M0 0L0-40A40 40 0 0 1 40 0Z" fill="#e8651a"/><path d="M0 0L40 0A40 40 0 0 1 0 40Z" fill="#1f2a3c"/><path d="M0 0L0 40A40 40 0 0 1-40 0Z" fill="#b8470c"/><path d="M0 0L-40 0A40 40 0 0 1 0-40Z" fill="#2a3446"/><circle r="12" fill="#efcf7a"/></g><path d="M0-52L7-42H-7Z" fill="#fff1c2"/></svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Spin the wheel</h1><p>Let fate pick</p></div></div><div class="brand">${esc(SITE)}</div>`),
-  discovery: () => page(BANNER_CSS, `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><circle cx="17" cy="17" r="10.5" fill="none" stroke="#efcf7a" stroke-width="2.6"/><path d="M25 25l10 10" stroke="#efcf7a" stroke-width="3.4" stroke-linecap="round"/><path d="M17 11.5l1.6 3.4 3.7.4-2.8 2.5.8 3.7-3.3-1.9-3.3 1.9.8-3.7-2.8-2.5 3.7-.4z" fill="#c8352c"/></svg>
+  discovery: () => page(BANNER_CSS, `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><circle cx="17" cy="17" r="10.5" fill="none" stroke="#efcf7a" stroke-width="2.6"/><path d="M25 25l10 10" stroke="#efcf7a" stroke-width="3.4" stroke-linecap="round"/><path d="M17 11.5l1.6 3.4 3.7.4-2.8 2.5.8 3.7-3.3-1.9-3.3 1.9.8-3.7-2.8-2.5 3.7-.4z" fill="#e8651a"/></svg>
 <div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Discovery</h1><p>Worth knowing · shared by a teammate</p></div></div><div class="brand">${esc(SITE)}</div>`),
+  channel: () => page(BANNER_CSS, `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><rect x="3" y="8" width="34" height="22" rx="3" fill="#0b0f16" stroke="#efcf7a" stroke-width="2"/><path d="M15 14l11 5-11 5z" fill="#e8651a"/><path d="M13 34h14" stroke="#efcf7a" stroke-width="2.4" stroke-linecap="round"/></svg>
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Not live</h1><p>Back on air soon · follow the channel</p></div></div><div class="brand">${esc(SITE)}</div>`),
+  onair: () => page(BANNER_CSS, `<div class="bn"><svg class="art" width="170" height="170" viewBox="0 0 40 40"><circle cx="20" cy="20" r="6" fill="#e8651a"/><g fill="none" stroke="#efcf7a" stroke-width="2.4" stroke-linecap="round"><path d="M11 11a13 13 0 0 0 0 18M29 11a13 13 0 0 1 0 18"/><path d="M6 6a20 20 0 0 0 0 28M34 6a20 20 0 0 1 0 28"/></g></svg>
+<div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">On air</h1><p>Live now · come and watch</p></div></div><div class="brand">${esc(SITE)}</div>`),
   matchnight: () => page(`${BANNER_CSS}.ln{position:absolute;inset:34px 60px;border:3px solid rgba(255,255,255,.14);border-radius:10px}.ln:before{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:3px solid rgba(255,255,255,.14)}.ln:after{content:"";position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px;border:3px solid rgba(255,255,255,.14);border-radius:50%}`,
     `<div class="ln"></div><div class="bn" style="justify-content:center;text-align:center"><div><div class="eyebrow">${esc(SITE)}</div><h1 class="gold">Match night</h1><p>Be there · tell us if you can play</p></div></div><div class="brand">${esc(SITE)}</div>`),
 };

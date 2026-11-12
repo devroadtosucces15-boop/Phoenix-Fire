@@ -34,14 +34,17 @@ export const tagBlock = (tag, kind) => {
   return text(`${tag.important ? '🚨 ' : ''}**\`${tag.label}\`**${k}${tag.important ? ' 🚨' : ''}`);
 };
 // Header: small grey label · bold title · grey detail line, with an optional picture on the right (crest, avatar, card).
+// Discord only fetches http(s) pictures: a data: URI (an inline fallback crest) is dropped so the row stays valid.
+const webUrl = (u) => (/^https?:\/\//i.test(String(u ?? '')) ? u : null);
 export function header({ eyebrow = null, title, sub, thumb, size = 2 }) {
+  thumb = webUrl(thumb);
   const t = text([eyebrow && `-# ${String(eyebrow).toUpperCase()}`, `${'#'.repeat(size)} ${title}`, sub && `-# ${sub}`].filter(Boolean).join('\n'));
   return thumb ? { type: 9, components: [t], accessory: { type: 11, media: { url: thumb } } } : t;
 }
 // A section with a button (or picture) on the right of the text.
 export const side = (content, accessory) => (accessory ? { type: 9, components: [text(content)], accessory } : text(content)); // no picture → plain row
 // A small picture for the right-hand side of a row (a face, a crest).
-export const thumb = (url) => (url ? { type: 11, media: { url } } : null);
+export const thumb = (url) => (webUrl(url) ? { type: 11, media: { url } } : null);
 // Drawn cards (or any pictures). Null when there's nothing to show, so callers can fall back to text.
 export function cards(...imgs) {
   const items = imgs.flat().filter(Boolean).map((i) => (typeof i === 'string' ? { media: { url: i } } : { media: { url: i.url }, description: i.alt ? clip(i.alt, 1000) : undefined }));
@@ -95,7 +98,7 @@ export function cardUrl(manifest, ...key) {
 }
 
 // A fixed banner picture (jail, wheel, discovery, matchnight – drawn by scripts/cards.mjs). Needs no manifest lookup.
-export const BANNER_V = 4; // = TEMPLATE_VERSION in scripts/cards.mjs
+export const BANNER_V = 6; // = TEMPLATE_VERSION in scripts/cards.mjs
 export const bannerUrl = (env, name) => (env?.SITE_URL ? `${String(env.SITE_URL).replace(/\/?$/, '/')}cards/banner-${name}.png?v=${BANNER_V}` : null);
 
 // Every piece of text in a message, flattened – for tests and for logging.
