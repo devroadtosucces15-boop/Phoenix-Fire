@@ -1,0 +1,242 @@
+<title>Phoenix Discord Gallery</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=Noto+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a filter bar on top, then one row per output: the Discord message as it renders on the left, what it is wired to on the right. */
+/* One deliberate look: Discord's dark theme is the subject, framed in Phoenix ink and orange (config.json brand). */
+:root{
+  color-scheme:dark;
+  --ink:#0a0705; --panel:#14100c; --panel2:#1b1510; --line:#2c231b; --txt:#efe8df; --mute:#9a9186;
+  --acc:#e8651a; --gold:#efcf7a; --ok:#4be08a; --bad:#ff7d72; --steel:#8c97ad;
+  --d-bg:#313338; --d-box:#2b2d31; --d-deep:#1e1f22; --d-line:#3f4147; --d-txt:#dbdee1; --d-head:#f2f3f5; --d-mute:#949ba4; --d-link:#00a8fc; --d-blurple:#5865f2;
+  --display:'Barlow Condensed','Arial Narrow',sans-serif; --ui:Inter,system-ui,sans-serif; --dc:'gg sans','Noto Sans','Helvetica Neue',Arial,sans-serif; --mono:ui-monospace,'SF Mono',Consolas,'Liberation Mono',monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--txt);font:14px/1.5 var(--ui)}
+.wrap{max-width:1320px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+header.top img{width:52px;height:52px;object-fit:contain;flex:none}
+h1{font:700 30px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;margin:0;text-wrap:balance}
+h1 em{font-style:normal;color:var(--acc)}
+.lede{color:var(--mute);margin:4px 0 0;max-width:70ch}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--ink);padding:12px 0;margin-top:14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.bar .r{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+input[type=search]{flex:1 1 220px;min-width:0;padding:8px 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--txt);font:inherit}
+.chip{font:500 12.5px var(--ui);padding:6px 11px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--txt);cursor:pointer;white-space:nowrap}
+.chip b{font-weight:500;color:var(--mute);margin-left:5px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#1a0d04;font-weight:600}.chip[aria-pressed=true] b{color:#4a2408}
+.chip:focus-visible,input:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.lab{font:600 11px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-right:4px}
+.repo{margin-top:16px;background:#22110c;border:1px solid #6b2a1f;border-radius:10px;padding:12px 14px}
+.repo summary{cursor:pointer;font-weight:600}.repo li{margin:6px 0;color:#ffcfc8}.repo code{color:var(--gold)}
+.count{color:var(--mute);margin:14px 0 8px;font-variant-numeric:tabular-nums}
+.entry{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:18px;background:var(--panel);content-visibility:auto;contain-intrinsic-size:auto 420px}
+@media(max-width:900px){.entry{grid-template-columns:minmax(0,1fr)}}
+.eh{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--panel2)}
+.eh h2{font:700 21px/1.1 var(--display);letter-spacing:.03em;margin:0 4px 0 0;overflow-wrap:anywhere}
+.eh p{flex-basis:100%;margin:0;color:var(--mute);font-size:13px;overflow-wrap:anywhere}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute);white-space:nowrap}
+.tag.live{color:var(--ok);border-color:#2c6b47}.tag.owner{color:var(--gold);border-color:#7a6a3a}.tag.staff{color:#a9c4ff;border-color:#3d5486}.tag.off{color:var(--bad);border-color:#7a3a33}.tag.err{background:#3a1410;color:#ffb3aa;border-color:#7a3a33}.tag.wrn{color:var(--gold);border-color:#7a6a3a}
+.idc{font:12px var(--mono);background:#000;border:1px solid var(--line);color:var(--gold);padding:3px 8px;border-radius:6px;cursor:pointer}
+.idc:hover{border-color:var(--gold)}
+/* ---------- the Discord side ---------- */
+.dis{background:var(--d-bg);padding:0;min-width:0;font-family:var(--dc);color:var(--d-txt)}
+.vars{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;border-bottom:1px solid var(--d-deep);scrollbar-width:thin}
+.var{font:500 12px var(--dc);padding:4px 10px;border-radius:6px;border:0;background:var(--d-box);color:var(--d-mute);cursor:pointer;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis;flex:none}
+.var[aria-pressed=true]{background:var(--d-blurple);color:#fff}
+.chan{display:flex;gap:8px;align-items:center;padding:9px 14px;border-bottom:1px solid #26272b;font-weight:600;color:var(--d-head);font-size:14px}
+.chan i{font-style:normal;color:var(--d-mute);font-size:18px;line-height:1}.chan span{color:var(--d-mute);font-weight:400;font-size:12px;margin-left:auto;text-align:right}
+.thread{padding:14px 14px 18px;display:flex;flex-direction:column;gap:16px}
+.used{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--d-mute);margin:0 0 2px 20px;position:relative}
+.used:before{content:"";position:absolute;left:-2px;top:9px;width:22px;height:10px;border-left:2px solid #4e5058;border-top:2px solid #4e5058;border-top-left-radius:6px}
+.used u{text-decoration:none;margin-left:26px;color:var(--d-head);font-weight:500}.used code{background:rgba(88,101,242,.3);color:#c9cdfb;border-radius:3px;padding:0 3px;font:500 13px var(--dc)}
+.msg{display:flex;gap:14px;min-width:0}
+.av{width:40px;height:40px;border-radius:50%;flex:none;background:#0a0705 center/cover no-repeat}
+.mb{min-width:0;flex:1}
+.who{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.who b{font-weight:600;color:var(--d-head);font-size:16px}
+.app{background:var(--d-blurple);color:#fff;font:600 10px var(--dc);padding:1px 5px;border-radius:4px}
+.who time{font-size:12px;color:var(--d-mute)}
+.cv2{display:flex;flex-direction:column;gap:8px;margin-top:4px;max-width:600px}
+.box{background:var(--d-box);border:1px solid var(--d-line);border-left:4px solid var(--stripe,var(--d-line));border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.md{font-size:15px;line-height:1.4;overflow-wrap:anywhere;min-width:0}
+.md .ln{min-height:1.4em}.md .h1{font-size:24px;font-weight:700;color:var(--d-head);line-height:1.25;margin:4px 0}.md .h2{font-size:20px;font-weight:700;color:var(--d-head);line-height:1.25;margin:4px 0}.md .h3{font-size:16px;font-weight:700;color:var(--d-head);margin:4px 0}
+.md .sub{font-size:12px;color:var(--d-mute);line-height:1.35}
+.md code{font:13px var(--mono);background:var(--d-deep);border:1px solid #26272b;border-radius:4px;padding:0 4px}
+.md pre{margin:4px 0;background:var(--d-deep);border:1px solid #26272b;border-radius:4px;padding:8px;overflow-x:auto;font:13px/1.35 var(--mono);white-space:pre}
+.md .q{border-left:4px solid #4e5058;padding-left:10px}.md .li{padding-left:18px;position:relative}.md .li:before{content:"•";position:absolute;left:5px}.md .li.n:before{content:attr(data-n)".";left:0}
+.md a{color:var(--d-link);text-decoration:none}.md b{color:var(--d-head);font-weight:700}
+.mn{background:rgba(88,101,242,.3);color:#c9cdfb;border-radius:3px;padding:0 2px;font-weight:500}.ts{background:rgba(255,255,255,.07);border-radius:3px;padding:0 2px}
+.emo{display:inline-block;width:1.3em;height:1.3em;border-radius:4px;background:var(--acc);vertical-align:-4px}
+.hr{height:1px;background:var(--d-line);margin:4px 0}.hr.big{margin:12px 0}.hr.gap{background:none}
+.sec{display:flex;gap:14px;justify-content:space-between;align-items:flex-start}.sec>div{min-width:0;flex:1;display:flex;flex-direction:column;gap:6px}
+.th{width:84px;height:84px;border-radius:8px;object-fit:cover;flex:none;background:var(--d-deep)}
+.gal{display:grid;gap:4px;border-radius:8px;overflow:hidden}.gal.n2{grid-template-columns:1fr 1fr}.gal.n3{grid-template-columns:1fr 1fr 1fr}
+.gal img{display:block;width:100%;height:auto;max-width:100%}
+.ph{background:var(--d-deep);border:1px dashed #5a5d66;color:var(--d-mute);border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:12px;line-height:1.3;min-height:110px}
+.ph.th{min-height:0;font-size:10px;padding:4px;border-radius:8px}.ph.bad{border-color:var(--bad);color:#ffb3aa}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:4px 14px;border-radius:8px;font:500 14px var(--dc);color:#fff;background:#4e5058;max-width:100%;overflow-wrap:anywhere}
+.btn.s1{background:var(--d-blurple)}.btn.s3{background:#248046}.btn.s4{background:#da373c}.btn.s5:after{content:"↗";font-size:12px;opacity:.8}.btn.off{opacity:.5}
+.sel{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--d-deep);border:1px solid #17181a;border-radius:8px;padding:9px 12px;color:var(--d-mute);font-size:15px;width:100%}
+.sel:after{content:"";width:8px;height:8px;border-right:2px solid var(--d-mute);border-bottom:2px solid var(--d-mute);transform:rotate(45deg) translateY(-3px);flex:none}
+.opts{font-size:12px;color:var(--d-mute);margin-top:-4px}
+.only{font-size:12px;color:var(--d-mute);margin-top:6px}.only span{color:var(--d-link)}
+.emb{background:var(--d-box);border-left:4px solid var(--stripe,#4e5058);border-radius:4px;padding:10px 14px 14px;margin-top:4px;max-width:520px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px}
+.emb>*{grid-column:1}.emb .ethumb{grid-column:2;grid-row:1/span 3}.emb .au{font-size:14px;font-weight:600;color:var(--d-head)}.emb .ti{font-size:16px;font-weight:600;color:var(--d-head)}.emb .ti.l{color:var(--d-link)}
+.emb .flds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.emb .flds .w{grid-column:1/-1}.emb .fn{font-size:14px;font-weight:600;color:var(--d-head)}.emb .big{grid-column:1/-1;border-radius:4px;max-width:100%}.emb .ft{font-size:12px;color:var(--d-mute);grid-column:1/-1}.emb .site{font-size:12px;color:var(--d-mute)}
+.modal{background:var(--d-bg);border:1px solid #4a4d55;border-radius:12px;max-width:440px;margin:6px auto;box-shadow:0 8px 30px rgba(0,0,0,.5);overflow:hidden}
+.modal h3{margin:0;padding:18px 18px 4px;font:600 20px var(--dc);color:var(--d-head)}.modal .flds{padding:8px 18px 16px;display:flex;flex-direction:column;gap:14px}
+.modal label{display:block;font:700 12px var(--dc);text-transform:uppercase;letter-spacing:.02em;color:#b5bac1;margin-bottom:6px}.modal label i{color:#f23f42;font-style:normal}
+.modal .in{background:var(--d-deep);border-radius:6px;padding:10px;color:var(--d-mute);font-size:15px;min-height:42px}.modal .in.p{min-height:90px}
+.modal .ft{background:var(--d-box);padding:14px 18px;display:flex;justify-content:flex-end;gap:10px;align-items:center}.modal .ft span{color:var(--d-head);font-size:14px}
+.none{padding:22px 16px;color:var(--d-mute);font-size:14px}.none b{color:var(--d-head);display:block;margin-bottom:4px}
+.files{font-size:12px;color:var(--d-mute);margin-top:4px}
+/* ---------- the wiring side ---------- */
+.meta{padding:14px 16px;border-left:1px solid var(--line);min-width:0;display:flex;flex-direction:column;gap:12px}
+@media(max-width:900px){.meta{border-left:0;border-top:1px solid var(--line)}}
+dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px}
+dt{font:600 11px var(--ui);letter-spacing:.09em;text-transform:uppercase;color:var(--mute);padding-top:2px}dd{margin:0;overflow-wrap:anywhere}
+.meta code{font:12px var(--mono);background:#000;padding:1px 5px;border-radius:4px;color:#f3d9c4}
+.iss{display:flex;flex-direction:column;gap:6px}.iss div{font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid #6b5a2c;background:#221c0d;color:#f1dfa8}.iss .e{border-color:#7a3a33;background:#2a110d;color:#ffcfc8}
+details.dep{border:1px solid var(--line);border-radius:8px;background:var(--panel2)}
+details.dep summary{cursor:pointer;padding:8px 12px;font-weight:600}details.dep summary span{color:var(--mute);font-weight:400}
+details.dep ul{margin:0;padding:0 12px 10px 28px}details.dep li{margin:5px 0;font-size:13px}details.dep li span{color:var(--mute)}
+details.dep ol{margin:0;padding:0 12px 12px 30px}details.dep ol li{color:var(--txt)}
+.rel{display:flex;flex-wrap:wrap;gap:6px}.rel a{font:12px var(--mono);color:var(--gold);text-decoration:none;border-bottom:1px dotted var(--gold);cursor:pointer}
+.empty{padding:40px 0;color:var(--mute)}
+footer.end{color:var(--mute);font-size:12px;margin-top:26px;max-width:80ch}
+@media(prefers-reduced-motion:no-preference){.chip,.var,.idc{transition:background .12s,border-color .12s}}
+</style>
+
+<div class="wrap">
+  <header class="top"><img id="crest" alt="Phoenix Fire crest"><div><h1>Phoenix Fire <em>Discord Gallery</em></h1><p class="lede" id="lede"></p></div></header>
+  <div class="bar">
+    <div class="r"><input type="search" id="q" placeholder="Search a command, a button, a channel or any text in a message" aria-label="Search outputs"><button class="chip" id="onlyIss" aria-pressed="false">Needs attention<b id="issN"></b></button></div>
+    <div class="r" id="cats"><span class="lab">Kind</span></div>
+    <div class="r" id="apps"><span class="lab">App</span></div>
+  </div>
+  <details class="repo" id="repo" hidden></details>
+  <div class="count" id="count"></div>
+  <div id="list"></div>
+  <footer class="end" id="foot"></footer>
+</div>
+
+<script>
+const D=/*DATA*/null;
+const $=(s,r=document)=>r.querySelector(s);
+const esc=(s)=>String(s??'').replace(/[&<>"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const CAT={slash:'Slash commands',component:'Buttons and menus',form:'Forms',automated:'Automated posts',dm:'Direct messages',image:'Images'};
+const NAMES={'111':'Zub','222':'Mike','333':'Jez','444':'Kruger','555':'Rio','666':'Tay'};
+const NOW=D.at;
+
+// ---------- Discord markdown ----------
+function when(t,f){const d=new Date(t*1000),p=(n)=>String(n).padStart(2,'0');
+  if(f==='R'){const s=Math.round((t*1000-NOW)/1000),a=Math.abs(s),u=a<90?[Math.max(1,a),'second']:a<5400?[Math.round(a/60),'minute']:a<129600?[Math.round(a/3600),'hour']:[Math.round(a/86400),'day'];const w=u[0]+' '+u[1]+(u[0]===1?'':'s');return s>=0?'in '+w:w+' ago'}
+  const day=d.getUTCDate()+' '+['January','February','March','April','May','June','July','August','September','October','November','December'][d.getUTCMonth()]+' '+d.getUTCFullYear(),tm=p(d.getUTCHours())+':'+p(d.getUTCMinutes());
+  return f==='t'?tm:f==='D'||f==='d'?day:day+' '+tm}
+function inline(s){const keep=[];const hold=(h)=>{keep.push(h);return '\u0001'+(keep.length-1)+'\u0002'};
+  s=esc(s);
+  s=s.replace(/`([^`\n]+)`/g,(m,c)=>hold('<code>'+c+'</code>'));
+  s=s.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,(m,t,u)=>hold('<a href="'+u+'" target="_blank" rel="noopener">')+t+hold('</a>'));
+  s=s.replace(/&lt;@&amp;(\w+)&gt;/g,(m,id)=>hold('<span class="mn">@'+(id==='R1'?'Rush':'role')+'</span>')).replace(/&lt;@!?(\w+)&gt;/g,(m,id)=>hold('<span class="mn">@'+(NAMES[id]||'member')+'</span>')).replace(/&lt;#(\w+)&gt;/g,(m,id)=>hold('<span class="mn"># '+String(id).replace(/^CH-/,'').replace(/^C1$/,'channel')+'</span>'))
+   .replace(/&lt;t:(\d+)(?::(\w))?&gt;/g,(m,t,f)=>hold('<span class="ts">'+when(+t,f)+'</span>')).replace(/&lt;a?:(\w+):\d+&gt;/g,(m,n)=>hold('<span class="emo" title=":'+n+':"></span>')).replace(/(^|\s)@(here|everyone)\b/g,(m,a,w)=>a+hold('<span class="mn">@'+w+'</span>'));
+  s=s.replace(/\*\*\*([^*]+)\*\*\*/g,'<b><i>$1</i></b>').replace(/\*\*([^*]+(?:\*(?!\*)[^*]*)*)\*\*/g,'<b>$1</b>').replace(/__([^_]+)__/g,'<u>$1</u>').replace(/~~([^~]+)~~/g,'<s>$1</s>').replace(/(^|[^\w*])\*([^*\n]+)\*(?![\w*])/g,'$1<i>$2</i>').replace(/(^|[^\w_])_([^_\n]+)_(?![\w_])/g,'$1<i>$2</i>');
+  return s.replace(/\u0001(\d+)\u0002/g,(m,i)=>keep[+i])}
+function md(src){const out=[];const lines=String(src??'').split('\n');
+  for(let i=0;i<lines.length;i++){const l=lines[i];
+    if(/^```/.test(l)){const buf=[];if(l.length>3&&!/^```\w*$/.test(l))buf.push(l.slice(3));i++;while(i<lines.length&&!/```\s*$/.test(lines[i]))buf.push(lines[i++]);if(i<lines.length&&lines[i].replace(/```\s*$/,''))buf.push(lines[i].replace(/```\s*$/,''));out.push('<pre>'+esc(buf.join('\n'))+'</pre>');continue}
+    let m;
+    if((m=/^(#{1,3}) (.*)$/.exec(l)))out.push('<div class="h'+m[1].length+'">'+inline(m[2])+'</div>');
+    else if((m=/^-# (.*)$/.exec(l)))out.push('<div class="sub">'+inline(m[1])+'</div>');
+    else if((m=/^> ?(.*)$/.exec(l)))out.push('<div class="ln q">'+inline(m[1])+'</div>');
+    else if((m=/^\s*[-*] (.*)$/.exec(l)))out.push('<div class="li">'+inline(m[1])+'</div>');
+    else if((m=/^\s*(\d+)\. (.*)$/.exec(l)))out.push('<div class="li n" data-n="'+m[1]+'">'+inline(m[2])+'</div>');
+    else out.push('<div class="ln">'+inline(l)+'</div>')}
+  return '<div class="md">'+out.join('')+'</div>'}
+
+// ---------- pictures ----------
+function pic(url,cls){const p=D.pics[url];
+  if(p&&p.src)return '<img class="'+(cls||'')+'" loading="lazy" src="'+D.img[p.src]+'" alt="'+esc(p.alt||'')+'">';
+  return '<div class="ph '+(cls||'')+(p&&p.bad?' bad':'')+'">'+esc(p?p.ph:'Picture')+'</div>'}
+
+// ---------- components ----------
+const colour=(n)=>n==null?null:'#'+Number(n).toString(16).padStart(6,'0');
+function comp(c){if(!c)return'';switch(c.type){
+  case 17:return '<div class="box"'+(c.accent_color!=null?' style="--stripe:'+colour(c.accent_color)+'"':'')+'>'+(c.components||[]).map(comp).join('')+'</div>';
+  case 10:return md(c.content);
+  case 9:return '<div class="sec"><div>'+(c.components||[]).map(comp).join('')+'</div>'+(c.accessory?(c.accessory.type===11?pic(c.accessory.media&&c.accessory.media.url,'th'):comp(c.accessory)):'')+'</div>';
+  case 11:return pic(c.media&&c.media.url,'th');
+  case 12:{const it=c.items||[];return '<div class="gal'+(it.length===2?' n2':it.length>2?' n3':'')+'">'+it.map((i)=>pic(i.media&&i.media.url)).join('')+'</div>'}
+  case 14:return '<div class="hr'+(c.spacing===2?' big':'')+(c.divider===false?' gap':'')+'"></div>';
+  case 1:return '<div class="row">'+(c.components||[]).map(comp).join('')+'</div>';
+  case 2:return '<span class="btn s'+c.style+(c.disabled?' off':'')+'">'+(c.emoji&&c.emoji.name?'<span>'+esc(c.emoji.name)+'</span>':'')+(c.label?'<span>'+esc(c.label)+'</span>':'')+'</span>';
+  case 3:return '<div style="width:100%"><div class="sel"><span>'+esc(c.placeholder||'Make a selection')+'</span></div>'+((c.options||[]).length?'<div class="opts" style="margin-top:4px">'+(c.options.length)+' options: '+esc(c.options.slice(0,4).map((o)=>(o.emoji&&o.emoji.name?o.emoji.name+' ':'')+o.label).join(' · '))+(c.options.length>4?' …':'')+'</div>':'')+'</div>';
+  case 5:case 6:case 7:case 8:return '<div class="sel"><span>'+esc(c.placeholder||({5:'Pick a member',6:'Pick a role',7:'Pick a member or role',8:'Pick a channel'})[c.type])+'</span></div>';
+  default:return '<div class="md"><div class="sub">[component type '+esc(c.type)+']</div></div>'}}
+function embed(e){return '<div class="emb"'+(e.color!=null?' style="--stripe:'+colour(e.color)+'"':'')+'>'+(e.site?'<div class="site">'+esc(e.site)+'</div>':'')+(e.author?'<div class="au">'+esc(e.author.name)+'</div>':'')+(e.title?'<div class="ti'+(e.url?' l':'')+'">'+inline(e.title)+'</div>':'')+(e.description?md(e.description):'')
+  +((e.fields||[]).length?'<div class="flds">'+e.fields.map((f)=>'<div class="'+(f.inline?'':'w')+'"><div class="fn">'+inline(f.name)+'</div>'+md(f.value)+'</div>').join('')+'</div>':'')+(e.thumbnail?'<div class="ethumb">'+pic(e.thumbnail.url,'th')+'</div>':'')+(e.image?pic(e.image.url,'big'):'')+(e.footer?'<div class="ft">'+esc(e.footer.text)+'</div>':'')+'</div>'}
+function modal(b){const f=(b.components||[]).flatMap((r)=>r.type===18?[Object.assign({},r.component,{label:r.label})]:(r.components||[]));
+  return '<div class="modal"><h3>'+esc(b.title||'Form')+'</h3><div class="flds">'+f.map((c)=>'<div><label>'+esc(c.label||c.custom_id)+(c.required===false?'':' <i>*</i>')+'</label><div class="in'+(c.style===2?' p':'')+'">'+esc(c.value||c.placeholder||'')+'</div></div>').join('')+'</div><div class="ft"><span>Cancel</span><span class="btn s1">Submit</span></div></div>'}
+
+function place(e,m){if(m.kind==='dm')return ['@',D.apps[e.app]||'Phoenix','direct message'];
+  if(m.kind==='webhook')return ['#',(m.dest&&m.dest!=='webhook'?m.dest:'results').replace(/_/g,'-'),'webhook post'];
+  if(m.kind==='channel')return ['#',String(m.dest||(e.destinations[0]||'channel')).replace(/^#/,'').replace(/ \(.*$/,'').replace(/[_ ]+/g,'-').toLowerCase().slice(0,32),m.via||''];
+  return ['#','any-channel',m.kind==='private'?'private reply':m.via||'']}
+function message(e,m){const b=m.body||{},app=D.apps[e.app]||'Phoenix',name=b.username||app;
+  if(m.kind==='modal')return modal(b);
+  const inner=(b.content?md(b.content):'')+(b.embeds||[]).map(embed).join('')+((b.components||[]).length?'<div class="cv2">'+b.components.map(comp).join('')+'</div>':'')+(m.files&&m.files.length?'<div class="files">📎 '+m.files.length+' picture'+(m.files.length>1?'s':'')+' uploaded with the message</div>':'');
+  const used=(e.category==='slash'&&m.label)?'<div class="used"><u>Zub</u> used <code>'+esc(m.label.split(' ')[0])+'</code>'+esc(m.label.split(' ').slice(1).join(' ')?' '+m.label.split(' ').slice(1).join(' '):'')+'</div>':'';
+  return used+'<div class="msg"><div class="av" style="background-image:url('+(D.img[D.avatars[e.app]||D.avatars.core])+')"></div><div class="mb"><div class="who"><b>'+esc(name)+'</b><span class="app">APP</span><time>Today at 20:14</time></div>'+inner+(m.kind==='private'?'<div class="only">👁 Only you can see this · <span>Dismiss message</span></div>':'')+'</div></div>'}
+function imageMsg(e){
+  if(e.unfurl)return '<div class="msg"><div class="av" style="background:#5865f2"></div><div class="mb"><div class="who"><b>Zub</b><time>Today at 20:14</time></div>'+md(D.site)+embed({site:D.brand.name,title:'Home · '+D.brand.name,url:D.site,description:D.brand.name+': Pro Clubs stats, results, squad and rankings. '+D.brand.motto,image:{url:e.image},color:parseInt(D.brand.red.slice(1),16)})+'</div></div>';
+  return '<div class="msg"><div class="av" style="background-image:url('+D.img[D.avatars.core]+')"></div><div class="mb"><div class="who"><b>'+esc(D.apps.core)+'</b><span class="app">APP</span><time>Today at 20:14</time></div><div class="cv2"><div class="gal">'+pic(e.image)+'</div></div></div></div>'}
+
+// ---------- entries ----------
+const stCls=(s)=>/not config|fallback/.test(s)?'off':/owner/.test(s)?'owner':/staff/.test(s)?'staff':/live/.test(s)?'live':'';
+function discordSide(e,k){
+  if(e.category==='image'&&e.image)return '<div class="chan"><i>#</i>any-channel<span>'+(e.unfurl?'link preview':'attached picture')+'</span></div><div class="thread">'+imageMsg(e)+'</div>';
+  if(!e.messages.length)return '<div class="none"><b>No offline preview yet</b>'+esc(e.uncaptured||'This output needs live data to render.')+'</div>';
+  const m=e.messages[k]||e.messages[0],p=place(e,m);
+  const tabs=e.messages.length>1?'<div class="vars" role="group" aria-label="Variants">'+e.messages.map((x,i)=>'<button class="var" data-v="'+i+'" aria-pressed="'+(i===k)+'" title="'+esc((x.label||'')+' · '+(x.via||''))+'">'+esc((x.label||('variant '+(i+1)))+(x.kind==='private'?' · private':x.kind==='modal'?' · form':x.kind==='dm'?' · DM':''))+'</button>').join('')+'</div>':'';
+  return tabs+'<div class="chan"><i>'+p[0]+'</i>'+esc(p[1])+'<span>'+esc(p[2])+'</span></div><div class="thread">'+message(e,m)+'</div>'}
+function metaSide(e){const d=e.deps||{},iss=e.issues||[];
+  const rows=[['Sent when',esc(e.trigger)+(e.schedule?'<br><span style="color:var(--mute)">'+esc(e.schedule)+'</span>':'')],['Lands in',esc((e.destinations||[]).join(' · ')||'n/a')],['Who',(e.flag?'<code>'+esc(e.flag)+'</code> flag · ':'')+esc(e.level||'public')],['Built by',d.source?'<code>'+esc(d.source)+'</code>'+(d.builder?' <span style="color:var(--mute)">'+esc(d.builder)+'()</span>':''):'n/a']];
+  if(e.note)rows.push(['Note',esc(e.note)]);
+  if((e.related||[]).length)rows.push(['Related','<span class="rel">'+e.related.map((r)=>'<a data-go="'+esc(r)+'">'+esc(r)+'</a>').join('')+'</span>']);
+  return '<dl>'+rows.map((r)=>'<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>').join('')+'</dl>'
+   +(iss.length?'<div class="iss">'+iss.map((i)=>'<div class="'+(i.level==='error'?'e':'')+'">'+(i.level==='error'?'Fix: ':'Off the design system: ')+esc(i.msg)+'</div>').join('')+'</div>':'')
+   +((d.files||[]).length?'<details class="dep"><summary>Changes with it <span>· '+d.files.length+' file'+(d.files.length>1?'s':'')+((d.tests||[]).length?', '+d.tests.length+' test file'+(d.tests.length>1?'s':''):'')+'</span></summary><ul>'+d.files.map((f)=>'<li><code>'+esc(f.file)+'</code> <span>'+esc(f.why)+'</span></li>').join('')+(d.tests||[]).map((t)=>'<li><code>'+esc(t)+'</code> <span>guards it</span></li>').join('')+'</ul></details>':'')
+   +((d.checklist||[]).length?'<details class="dep"><summary>Redesign checklist <span>· '+d.checklist.length+' steps</span></summary><ol>'+d.checklist.map((c)=>'<li>'+esc(c)+'</li>').join('')+'</ol></details>':'')}
+function entry(e){const errs=(e.issues||[]).filter((i)=>i.level==='error').length,warns=(e.issues||[]).length-errs;
+  return '<section class="entry" id="e-'+esc(e.key)+'" data-key="'+esc(e.key)+'"><div class="eh"><h2>'+esc(e.name)+'</h2><button class="idc" data-copy="'+esc(e.id)+'" title="Copy this ID for the studio tool">'+esc(e.id)+'</button><span class="tag">'+esc(CAT[e.category])+'</span><span class="tag">'+esc(D.apps[e.app]||e.app)+'</span><span class="tag '+stCls(e.status||'')+'">'+esc(e.status||'')+'</span>'+(errs?'<span class="tag err">'+errs+' to fix</span>':'')+(warns?'<span class="tag wrn">'+warns+' off-system</span>':'')+(e.summary?'<p>'+esc(e.summary)+'</p>':'')+'</div><div class="dis">'+discordSide(e,0)+'</div><div class="meta">'+metaSide(e)+'</div></section>'}
+
+// ---------- filters ----------
+const S={cat:'',app:'',q:'',iss:false};
+D.entries.forEach((e,i)=>{e.key=String(i);e.hay=(e.id+' '+e.name+' '+(e.summary||'')+' '+e.trigger+' '+(e.destinations||[]).join(' ')+' '+((e.deps||{}).source||'')+' '+JSON.stringify(e.messages.map((m)=>m.body))).toLowerCase()});
+const match=(e,skip)=>(skip==='cat'||!S.cat||e.category===S.cat)&&(skip==='app'||!S.app||e.app===S.app)&&(!S.q||e.hay.includes(S.q))&&(!S.iss||(e.issues||[]).length>0);
+function chips(host,key,labels,order){const n={};for(const e of D.entries)if(match(e,key))n[e[key==='cat'?'category':'app']]=(n[e[key==='cat'?'category':'app']]||0)+1;
+  host.querySelectorAll('.chip').forEach((c)=>c.remove());
+  const all=Object.values(n).reduce((a,b)=>a+b,0);
+  [['','All',all]].concat(order.filter((k)=>n[k]||S[key]===k).map((k)=>[k,labels[k]||k,n[k]||0])).forEach((x)=>{const b=document.createElement('button');b.className='chip';b.dataset.k=key;b.dataset.v=x[0];b.setAttribute('aria-pressed',String(S[key]===x[0]));b.innerHTML=esc(x[1])+'<b>'+x[2]+'</b>';host.appendChild(b)})}
+function draw(){const list=D.entries.filter((e)=>match(e));
+  $('#list').innerHTML=list.map(entry).join('')||'<p class="empty">Nothing matches. Clear the search or pick another kind.</p>';
+  chips($('#cats'),'cat',CAT,Object.keys(CAT));chips($('#apps'),'app',D.apps,Object.keys(D.apps).concat(['dj']));
+  $('#count').textContent=list.length+' of '+D.entries.length+' outputs';
+  $('#onlyIss').setAttribute('aria-pressed',String(S.iss))}
+document.addEventListener('click',(ev)=>{const t=ev.target;
+  const chip=t.closest('.chip[data-k]');if(chip){S[chip.dataset.k]=chip.dataset.v;draw();return}
+  if(t.closest('#onlyIss')){S.iss=!S.iss;draw();return}
+  const v=t.closest('.var');if(v){const sec=v.closest('.entry'),e=D.entries[+sec.dataset.key];const sc=$('.vars',sec).scrollLeft;$('.dis',sec).innerHTML=discordSide(e,+v.dataset.v);$('.vars',sec).scrollLeft=sc;return}
+  const c=t.closest('[data-copy]');if(c){const id=c.dataset.copy,done=()=>{c.textContent='Copied';setTimeout(()=>{c.textContent=id},900)};try{navigator.clipboard.writeText(id).then(done,()=>sel(c))}catch(x){sel(c)}return}
+  const go=t.closest('[data-go]');if(go){const e=D.entries.find((x)=>x.id===go.dataset.go);if(e){S.cat='';S.app='';S.q='';S.iss=false;$('#q').value='';draw();const el=document.getElementById('e-'+e.key);if(el)el.scrollIntoView({block:'start'})}}});
+function sel(el){const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+$('#q').addEventListener('input',(e)=>{S.q=e.target.value.trim().toLowerCase();draw()});
+
+$('#crest').src=D.img[D.crest];
+const withIss=D.entries.filter((e)=>(e.issues||[]).length).length;
+$('#issN').textContent=withIss;
+$('#lede').textContent='Every message and picture the '+D.brand.name+' apps put into Discord, drawn the way Discord shows it. '+D.entries.filter((e)=>e.messages.length||e.image).length+' outputs captured from the real bot code on '+D.generated+'. '+D.brand.motto;
+if(D.repo.length){const r=$('#repo');r.hidden=false;r.open=true;r.innerHTML='<summary>'+D.repo.length+' cross-file problem'+(D.repo.length>1?'s':'')+' found: places that must change together are out of step</summary><ul>'+D.repo.map((i)=>'<li>'+esc(i.msg)+'</li>').join('')+'</ul>'}
+$('#foot').textContent='Pictures from outside the repo (stream previews, video thumbnails, EA crests, member avatars) are shown as labelled boxes. Sample names and numbers come from the test fixtures. Rebuild with: node tools/bot-studio/studio.mjs gallery';
+draw();
+</script>

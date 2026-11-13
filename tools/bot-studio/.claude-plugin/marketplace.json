@@ -1,0 +1,7 @@
+{
+  "name": "phoenix-tools",
+  "owner": { "name": "Phoenix Fire" },
+  "plugins": [
+    { "name": "phoenix-bot-studio", "source": "./plugin", "description": "See, check, redesign and add Discord outputs of the Phoenix Fire apps without breaking what they are wired to." }
+  ]
+}

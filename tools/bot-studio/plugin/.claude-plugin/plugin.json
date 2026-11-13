@@ -1,0 +1,5 @@
+{
+  "name": "phoenix-bot-studio",
+  "version": "1.0.0",
+  "description": "See, check, redesign and add Discord outputs of the Phoenix Fire apps (slash replies, buttons, forms, automated posts, DMs, card images) without breaking what they are wired to."
+}
