@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-13T23:30:41.648Z",
+ "fetchedAt": "2026-11-13T23:40:39.745Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1603,12 +1603,12 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "158",
-   "goals": "22",
+   "gamesPlayed": "159",
+   "goals": "24",
    "assists": "63",
    "manOfTheMatch": "18",
    "ratingAve": "7.7",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "defender"
   },
   {
@@ -1669,7 +1669,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "5",
-   "gamesPlayed": "35",
+   "gamesPlayed": "36",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -1823,8 +1823,8 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "172",
-   "goals": "205",
+   "gamesPlayed": "173",
+   "goals": "207",
    "assists": "89",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
@@ -1933,12 +1933,12 @@
   {
    "name": "MS-05-05",
    "proPos": "25",
-   "gamesPlayed": "54",
+   "gamesPlayed": "55",
    "goals": "37",
    "assists": "15",
    "manOfTheMatch": "11",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
