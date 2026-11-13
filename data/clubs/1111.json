@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T22:00:39.798Z",
+ "fetchedAt": "2026-11-13T22:10:43.930Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1855,7 +1855,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "155",
+   "gamesPlayed": "156",
    "goals": "22",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1866,10 +1866,10 @@
   {
    "name": "rubNiyo",
    "proPos": "5",
-   "gamesPlayed": "98",
+   "gamesPlayed": "99",
    "goals": "81",
-   "assists": "32",
-   "manOfTheMatch": "10",
+   "assists": "33",
+   "manOfTheMatch": "11",
    "ratingAve": "7.8",
    "prevGoals": "0",
    "favoritePosition": "defender"
@@ -1932,7 +1932,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "14",
-   "gamesPlayed": "32",
+   "gamesPlayed": "33",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -1954,7 +1954,7 @@
   {
    "name": "MV33xChris",
    "proPos": "5",
-   "gamesPlayed": "184",
+   "gamesPlayed": "185",
    "goals": "161",
    "assists": "110",
    "manOfTheMatch": "36",
@@ -2031,12 +2031,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "102",
+   "gamesPlayed": "103",
    "goals": "50",
    "assists": "39",
    "manOfTheMatch": "15",
    "ratingAve": "7.5",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2086,7 +2086,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "76",
+   "gamesPlayed": "77",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
@@ -2185,7 +2185,7 @@
   {
    "name": "leo77romano",
    "proPos": "14",
-   "gamesPlayed": "163",
+   "gamesPlayed": "164",
    "goals": "35",
    "assists": "24",
    "manOfTheMatch": "8",
@@ -2196,7 +2196,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "101",
+   "gamesPlayed": "102",
    "goals": "38",
    "assists": "50",
    "manOfTheMatch": "5",
@@ -2229,12 +2229,12 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "239",
+   "gamesPlayed": "240",
    "goals": "160",
    "assists": "205",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
