@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-13T18:40:43.939Z",
+ "fetchedAt": "2026-11-13T18:50:42.303Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -559,7 +559,7 @@
   {
    "name": "DavidSwede",
    "proPos": "14",
-   "gamesPlayed": "165",
+   "gamesPlayed": "166",
    "goals": "7",
    "assists": "17",
    "manOfTheMatch": "13",
@@ -581,12 +581,12 @@
   {
    "name": "Milli0nkniv3s",
    "proPos": "25",
-   "gamesPlayed": "54",
-   "goals": "16",
+   "gamesPlayed": "55",
+   "goals": "18",
    "assists": "26",
    "manOfTheMatch": "1",
    "ratingAve": "7.0",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -647,7 +647,7 @@
   {
    "name": "Ritzeltod",
    "proPos": "14",
-   "gamesPlayed": "269",
+   "gamesPlayed": "270",
    "goals": "19",
    "assists": "28",
    "manOfTheMatch": "16",
