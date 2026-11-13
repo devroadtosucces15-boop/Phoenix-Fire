@@ -10,7 +10,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), repo = path.resolve(h
 const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : null; };
 const out = path.resolve(arg('--out') || path.join(repo, 'site', 'phoenix'));
 const LIVE = process.argv.includes('--live');
-const LAUNCH = process.argv.includes('--launch') || JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).launch?.public === true; // go-live switch (PLANNING/LAUNCH.md): false keeps the site hidden from search engines
+const LAUNCH = !process.argv.includes('--closed') && (process.argv.includes('--launch') || JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).launch?.public === true); // --closed forces the hidden state for tests; go-live switch (PLANNING/LAUNCH.md): false keeps the site hidden from search engines
 const liveCfg = LIVE ? JSON.parse(fs.readFileSync(path.join(here, 'live.json'), 'utf8')) : null;
 const API = arg('--api') || (LIVE ? liveCfg.api : '') || 'https://phoenix.mock', MOCK = API === 'https://phoenix.mock';
 if (LIVE && MOCK) { console.error('phoenix: --live needs the Worker URL: set "api" in phoenix/live.json or pass --api <url>'); process.exit(1); } // recording builds point at a local Worker; the published build points at the in-page mock (phoenix-mock.js)

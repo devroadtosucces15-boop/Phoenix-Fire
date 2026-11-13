@@ -1,6 +1,6 @@
 # B8: Go-live checklist
 
-Status (2026-11-10): the site is **closed**. Every page carries `noindex,nofollow` and `robots.txt` says `Disallow: /`.
+Status (2026-11-13): the site is **OPEN** (`launch.public` is `true`, flipped by the owner's go-ahead). Original closed-state notes below; to close again set `false`.
 Opening it is one config change plus the items below. The owner says when.
 
 ## The switch

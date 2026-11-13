@@ -5,7 +5,8 @@ import { t, done } from './lib.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
-t('config.json has launch.public and it is false until the owner opens the site', cfg.launch && cfg.launch.public === false);
+t('config.json has a boolean launch.public switch', cfg.launch && typeof cfg.launch.public === 'boolean');
+const PUBLIC_NOW = cfg.launch.public;
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'launch-'));
 const build = (name, extra = []) => {
@@ -18,8 +19,8 @@ const noindex = (d, f) => /<meta name="robots" content="[^"]*noindex/.test(fs.re
 const HIDDEN = /^(hub|staff|lookbook|canvas|playstyle|offline|404|members)/; // members = player-claim page (squad.html is the public redesigned Squad page)
 
 try {
-  // ---------- closed (the config as committed) ----------
-  const closed = build('closed');
+  // ---------- closed (--closed forces the hidden state whatever config.json says) ----------
+  const closed = build('closed', ['--closed']);
   t('closed: every built page is noindex', pages(closed).every((f) => noindex(closed, f)));
   t('closed: robots.txt blocks everything, exactly as before', fs.readFileSync(path.join(closed, 'robots.txt'), 'utf8') === 'User-agent: *\nDisallow: /\n');
   t('closed: no sitemap.xml', !fs.existsSync(path.join(closed, 'sitemap.xml')));
@@ -38,6 +39,6 @@ try {
   t('open: sitemap.xml lists every public page and the home page', locs.length === pub.length && locs.includes(site) && pub.every((f) => f === 'index.html' || locs.includes(site + f)));
   t('open: sitemap.xml lists no hidden page', locs.every((u) => !HIDDEN.test(u.replace(site, ''))));
   t('open: the built output still passes the brand guard (no NOREX name)', !/NOREX UNITED/.test(fs.readFileSync(path.join(open, 'index.html'), 'utf8')));
-  t('config.json was not changed by the open build', JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).launch.public === false);
+  t('config.json was not changed by the open build', JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).launch.public === PUBLIC_NOW);
 } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
 done();
