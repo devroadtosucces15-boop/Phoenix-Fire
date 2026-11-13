@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-12T02:31:50.488Z",
+ "fetchedAt": "2026-11-13T00:20:47.484Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1089,6 +1089,42 @@
    "prevGoals10": "0"
   },
   {
+   "name": "Lucus1997",
+   "gamesPlayed": "0",
+   "favoritePosition": "",
+   "winRate": "0",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "0",
+   "passSuccessRate": "0",
+   "ratingAve": "0.0",
+   "tacklesMade": "0",
+   "tackleSuccessRate": "0",
+   "proName": "",
+   "proPos": "",
+   "proStyle": "",
+   "proHeight": "",
+   "proNationality": "",
+   "proOverall": "0",
+   "proOverallStr": "",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0"
+  },
+  {
    "name": "YAMI-_-77",
    "gamesPlayed": "0",
    "favoritePosition": "",
@@ -1558,42 +1594,6 @@
   },
   {
    "name": "Rafid_Sx07",
-   "gamesPlayed": "0",
-   "favoritePosition": "",
-   "winRate": "0",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "0",
-   "passSuccessRate": "0",
-   "ratingAve": "0.0",
-   "tacklesMade": "0",
-   "tackleSuccessRate": "0",
-   "proName": "",
-   "proPos": "",
-   "proStyle": "",
-   "proHeight": "",
-   "proNationality": "",
-   "proOverall": "0",
-   "proOverallStr": "",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0"
-  },
-  {
-   "name": "LightHazee_",
    "gamesPlayed": "0",
    "favoritePosition": "",
    "winRate": "0",
@@ -1842,14 +1842,14 @@
   },
   {
    "name": "claudio__1996",
-   "proPos": "",
-   "gamesPlayed": "0",
-   "goals": "0",
-   "assists": "0",
-   "manOfTheMatch": "0",
-   "ratingAve": "0.0",
+   "proPos": "25",
+   "gamesPlayed": "4",
+   "goals": "2",
+   "assists": "7",
+   "manOfTheMatch": "2",
+   "ratingAve": "8.3",
    "prevGoals": "0",
-   "favoritePosition": ""
+   "favoritePosition": "forward"
   },
   {
    "name": "Hargravee123",
@@ -1864,14 +1864,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "14",
-   "gamesPlayed": "69",
+   "proPos": "25",
+   "gamesPlayed": "72",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
    "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "Ana Montana8022",
@@ -1951,15 +1951,26 @@
    "favoritePosition": ""
   },
   {
+   "name": "Lucus1997",
+   "proPos": "25",
+   "gamesPlayed": "165",
+   "goals": "200",
+   "assists": "87",
+   "manOfTheMatch": "1",
+   "ratingAve": "7.1",
+   "prevGoals": "0",
+   "favoritePosition": "forward"
+  },
+  {
    "name": "YAMI-_-77",
-   "proPos": "5",
-   "gamesPlayed": "261",
+   "proPos": "14",
+   "gamesPlayed": "268",
    "goals": "125",
    "assists": "88",
    "manOfTheMatch": "37",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "CanerAKC",
@@ -1985,14 +1996,14 @@
   },
   {
    "name": "Froezer",
-   "proPos": "25",
-   "gamesPlayed": "160",
-   "goals": "110",
-   "assists": "155",
-   "manOfTheMatch": "17",
+   "proPos": "5",
+   "gamesPlayed": "172",
+   "goals": "124",
+   "assists": "163",
+   "manOfTheMatch": "20",
    "ratingAve": "8.2",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
+   "prevGoals": "1",
+   "favoritePosition": "defender"
   },
   {
    "name": "stramm-King0",
@@ -2074,10 +2085,10 @@
   {
    "name": "Ghostz_x12",
    "proPos": "25",
-   "gamesPlayed": "21",
-   "goals": "23",
+   "gamesPlayed": "24",
+   "goals": "27",
    "assists": "15",
-   "manOfTheMatch": "0",
+   "manOfTheMatch": "1",
    "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "forward"
@@ -2160,17 +2171,6 @@
    "favoritePosition": "midfielder"
   },
   {
-   "name": "LightHazee_",
-   "proPos": "0",
-   "gamesPlayed": "1",
-   "goals": "0",
-   "assists": "0",
-   "manOfTheMatch": "0",
-   "ratingAve": "6.3",
-   "prevGoals": "0",
-   "favoritePosition": "goalkeeper"
-  },
-  {
    "name": "alicerce-sulista",
    "proPos": "25",
    "gamesPlayed": "18",
@@ -2184,11 +2184,11 @@
   {
    "name": "Rinconkelvin95",
    "proPos": "0",
-   "gamesPlayed": "42",
+   "gamesPlayed": "44",
    "goals": "3",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "6.1",
+   "ratingAve": "6.2",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
