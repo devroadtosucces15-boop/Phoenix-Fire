@@ -10,7 +10,7 @@ Motto: **Rise. Burn. Repeat.** Phoenix is its own project; NOREX data and compat
 - **Cron fun posts.** The daily birthday post goes out through the fun app when it is configured, so its buttons come back to fun. Core is the fallback.
 - **Live-site polish (one club, five matches).** Friendly Phoenix-voice states for the Rush log, the news feed, the channels list and the trophy cabinet. Form wave hidden under two games. No horizontal scroll on mobile on the pages checked.
 
-- **0053 docs seed.** Rewritten for Phoenix (`bot/migrations/0053_club_docs_content.sql`): welcome, philosophy, 14 rules, requirements and FAQ in Phoenix voice, no NOREX text and no invented club facts. Still on the release hold (nothing pinned, notified or posted until the owner releases the docs). Test: `tests/docsseed.test.mjs`. A database that already ran the old 0053 keeps its rows; apply the new content by re-running the file or editing the docs in the app.
+- **0053 docs seed.** Rewritten for Phoenix (`bot/migrations/0053_club_docs_content.sql`): welcome, philosophy, 14 rules, requirements and FAQ in Phoenix voice, no NOREX text and no invented club facts. Complete (2026-11-13); the owner releases the docs from the site when they choose. Not a launch hold. Test: `tests/docsseed.test.mjs`. A database that already ran the old 0053 keeps its rows; apply the new content by re-running the file or editing the docs in the app.
 
 - **Matchday and Rush plumbing.** `matchday` and `rush` are known apps (no commands yet), `bot.yml` and `set-tokens.sh` carry their tokens, icons exist. Design and waves: `PLANNING/BOT-SPLIT.md`. Secrets (VAPID, dispatch, analytics) set 2026-11-10; invite link and guild ID filled in.
 
@@ -22,7 +22,7 @@ Motto: **Rise. Burn. Repeat.** Phoenix is its own project; NOREX data and compat
 
 - **Match-night go-live (owner, in this order).** After PR #1 is merged: (1) apply `bot/migrations/0061_event_answers.sql` to D1; (2) confirm the `IMAGES` and `MEDIA` bindings in `bot/wrangler.toml`; (3) publish the site so `static/crest-sm.png`, `cards/lineup-*.png` and `cards/banner-checkin.png` exist; (4) deploy the Worker and register commands; (5) switch the `rosterPicture` flag on. Nothing posts to Discord until then.
 - **Match-night follow-ups (code).** Fix `auto:watchlist-video` (picture block without a url, `bot/watchlist.js`); add offline captures in `tools/bot-audit/capture-auto.mjs` for the check-in post, line-up post (suggested and final), event post with and without the roster picture, and the Check-in button reply, so `bot-studio verify` covers them; get all of `tools/bot-studio/` tracked on main (only `lib/lint.mjs` is today) and rerun `studio.mjs check` for 0 FIX; the design test "score card 1200 × 500 PNG" fails only where Chrome cannot launch (sandbox).
-- **DJ bots on separate hosting.** The music bots cannot run on the Worker; they need their own host.
+- **DJ bots:** running on the owner PC (`dj/`), optional move to a VPS later.
 - **Worker URL.** `phoenix-bot.norexunited.workers.dev` answers (2026-11-10: root 200, `/api/rush`, `/api/feed/public` and `/api/live` return empty-but-valid JSON, CORS allows only the Pages origin). Rush, News and Watch render their Phoenix empty states against those real responses. Still decide before the public launch whether it keeps the `norexunited` account host. From any origin other than the Pages site, the browser blocks its API calls (CORS), so the Rush log, news feed and live banner stay in their fallback state when previewed on localhost.
 - **Matchday and Rush apps: live.** Both are configured and switched on (commit `3134c06`, 2026-11-10); MB1, MB2, MB4 and MB5 are live with them, and the old apps carry a "moved" pointer until 2026-11-24. Still to build: MB6 (queue manager, `PLANNING/RUSH-QUEUE.md`) and config-driven channels (A9) first.
 
@@ -30,6 +30,5 @@ Motto: **Rise. Burn. Repeat.** Phoenix is its own project; NOREX data and compat
 
 | Item | Where it goes |
 |---|---|
-| Founded date | `config.json` `brand.founded`, `phoenix/live.json` `founded` |
 
 Phoenix has no YouTube channel (Twitch is set). The founded date is left blank on purpose. No club facts are invented.

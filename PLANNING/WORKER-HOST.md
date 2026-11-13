@@ -1,5 +1,7 @@
 # B1: Move the Worker off `norexunited.workers.dev`
 
+Decision 2026-11-13: owner keeps the host as is (option D). Nothing to do. Original plan below.
+
 Status: plan only (2026-11-10). Nothing here has been changed. The host is still `https://phoenix-bot.norexunited.workers.dev`.
 Owner decision needed: which target (see Recommendation). Cloudflare and Discord Developer Portal steps are the owner's.
 

@@ -1,5 +1,7 @@
 # B5: Where the DJ (music) bots run
 
+**Update 2026-11-13: built and running.** The DJ bots live in `dj/` (see `dj/DEPLOY.md`), run on the owner's PC as `phoenix-dj.service` with the shared Lavalink engine. Six Discord apps exist (controller + 5 helpers). B5 is no longer an open item; a VPS (below) is only an option if the PC cannot stay on. The plan below is kept for that case.
+
 Status: plan only (2026-11-10). Owner decision: pick the host and open the account. Prices below are from memory of public
 pricing and drift; confirm on each provider's page before signing up.
 

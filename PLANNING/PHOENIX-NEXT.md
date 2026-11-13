@@ -24,8 +24,8 @@ Phoenix is its own project (`CLAUDE.md`): no NOREX text, crest or red in any out
 | B2 | **Founded date.** | Not stated anywhere; no invented facts | `config.json` `brand.founded`, `phoenix/live.json` |
 | B3 | ✅ **Done 2026-11-10** (`3134c06`; only the tokens' presence could not be checked from here). **Create the "Phoenix Matchday" and "Phoenix Rush" apps** in the Developer Portal, set tokens (`bash bot/set-tokens.sh MATCHDAY RUSH`), add app IDs and public keys to `wrangler.toml`. | Portal login and secrets are the owner's | Switches on A7 |
 | B4 | ~~Queue manager source~~ **Resolved 2026-11-10**: the owner described it; spec is `PLANNING/RUSH-QUEUE.md`. Still needs B3 (the Rush app) to go live; confirm the queue and staff-report channel names. | – | MB6 live |
-| B5 | **DJ bots host.** Pick a place to run the music bots (they cannot run on the Worker). | Hosting account and cost | DJ bots |
-| B6 | **Release the club docs** (0053 seed is on hold: nothing pinned or posted). | Announcing to members is the owner's call | Docs live |
+| B5 | ✅ **Running on the owner PC (2026-11-13)**, `dj/DEPLOY.md`. A VPS is optional. | – | – |
+| B6 | ✅ **Complete 2026-11-13.** Docs seed is done; the owner releases them from the site when they choose. Not a launch hold. | – | – |
 | B7 | **Uncommitted bot icon work** (`bot/icons/make_phoenix_icons_v2.py`, `bot/icons/phoenix/v2/*-sheet.png`): commit or discard. | The owner's in-progress art | Clean working tree |
 | B8 | **Public launch go-ahead**: the site is `noindex` and `robots.txt` blocks all. Say when to open it. | Launch timing | Search visibility |
 
