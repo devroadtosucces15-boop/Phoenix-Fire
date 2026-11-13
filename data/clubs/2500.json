@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-13T00:57:20.754Z",
+ "fetchedAt": "2026-11-13T05:10:48.063Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -28,7 +28,7 @@
    "kitThrdColor2": "592653",
    "kitThrdColor3": "16696614",
    "kitThrdColor4": "15921906",
-   "dCustomKit": "3",
+   "dCustomKit": "0",
    "customKeeperKitId": "5007",
    "crestColor": "16495884",
    "crestAssetId": "99160802"
@@ -1843,12 +1843,12 @@
   {
    "name": "claudio__1996",
    "proPos": "25",
-   "gamesPlayed": "6",
+   "gamesPlayed": "7",
    "goals": "4",
-   "assists": "9",
+   "assists": "11",
    "manOfTheMatch": "3",
    "ratingAve": "8.2",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
