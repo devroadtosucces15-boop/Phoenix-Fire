@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1200 630" width="1200" height="630">
+<title>PHOENIX FIRE. Rise. Burn. Repeat.</title>
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0705"/><stop offset=".55" stop-color="#3b1407"/><stop offset="1" stop-color="#e8651a"/></linearGradient>
+<radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffb45a" stop-opacity=".95"/><stop offset=".5" stop-color="#e8651a" stop-opacity=".45"/><stop offset="1" stop-color="#e8651a" stop-opacity="0"/></radialGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a8"/><stop offset=".5" stop-color="#f5b82e"/><stop offset="1" stop-color="#c77d0c"/></linearGradient>
+<linearGradient id="flame" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e8651a"/><stop offset=".6" stop-color="#ff9a2e"/><stop offset="1" stop-color="#ffe27a"/></linearGradient>
+<linearGradient id="beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2c4" stop-opacity=".55"/><stop offset="1" stop-color="#fff2c4" stop-opacity="0"/></linearGradient>
+<g id="fl"><path d="M0 0C-26 -10 -30 -44 -8 -70C-6 -52 4 -48 8 -58C22 -40 28 -14 0 0Z" fill="url(#flame)" stroke="#0a0705" stroke-width="5" stroke-linejoin="round"/><path d="M0 -6C-10 -14 -10 -28 -2 -38C2 -30 8 -26 8 -18C8 -10 4 -6 0 -6Z" fill="#ffe27a"/></g>
+<g id="star"><path d="M0 -16L5 -5L17 -4L8 4L11 16L0 10L-11 16L-8 4L-17 -4L-5 -5Z" fill="url(#gold)" stroke="#0a0705" stroke-width="3.5" stroke-linejoin="round"/></g>
+<g id="ball"><circle r="22" fill="#fff8ec" stroke="#0a0705" stroke-width="4.5"/><path d="M0 -9L9 -3L5 8L-5 8L-9 -3Z" fill="#0a0705"/><path d="M0 -9V-22M9 -3L21 -7M5 8L13 18M-5 8L-13 18M-9 -3L-21 -7" stroke="#0a0705" stroke-width="3.5" fill="none"/></g>
+<g id="trophy"><path d="M-46 -78C-82 -78 -82 -24 -36 -22" fill="none" stroke="#0a0705" stroke-width="16" stroke-linecap="round"/><path d="M46 -78C82 -78 82 -24 36 -22" fill="none" stroke="#0a0705" stroke-width="16" stroke-linecap="round"/><path d="M-46 -78C-82 -78 -82 -24 -36 -22M46 -78C82 -78 82 -24 36 -22" fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="round"/><path d="M-52 -96H52C52 -40 34 -14 8 -8V20H30V38H-30V20H-8V-8C-34 -14 -52 -40 -52 -96Z" fill="url(#gold)" stroke="#0a0705" stroke-width="6" stroke-linejoin="round"/><path d="M-38 -86C-38 -50 -28 -30 -14 -20" fill="none" stroke="#fff7cf" stroke-width="7" stroke-linecap="round" opacity=".8"/><rect x="-40" y="38" width="80" height="20" rx="4" fill="#7a3b0a" stroke="#0a0705" stroke-width="6"/><use href="#star" y="-52" transform="scale(1.1)"/></g>
+</defs>
+<style>
+.fl1{transform-box:fill-box;transform-origin:50% 100%;animation:flick 1.1s ease-in-out infinite alternate}
+.fl2{transform-box:fill-box;transform-origin:50% 100%;animation:flick 0.8s ease-in-out infinite alternate-reverse}
+@keyframes flick{from{transform:scale(1,.88) rotate(-3deg)}to{transform:scale(1.06,1.1) rotate(3deg)}}
+.pulse{transform-box:fill-box;transform-origin:50% 50%;animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(.94);opacity:.8}50%{transform:scale(1.08);opacity:1}}
+.tw{animation:tw 2.4s ease-in-out infinite}.tw2{animation:tw 3.1s ease-in-out infinite .7s}
+@keyframes tw{0%,100%{opacity:.2}50%{opacity:1}}
+.bob{animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.bounce{animation:bounce 1.6s cubic-bezier(.3,0,.7,1) infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-70px)}}
+.spin{transform-box:fill-box;transform-origin:50% 50%;animation:spin 2.2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fly{animation:fly 9s linear infinite}
+@keyframes fly{from{transform:translate(-160px,120px)}to{transform:translate(1360px,50px)}}
+.fall{animation:fall 6s linear infinite}
+@keyframes fall{from{transform:translateY(-30px) rotate(0)}to{transform:translateY(660px) rotate(540deg)}}
+.crowd{animation:crowd 1.2s ease-in-out infinite alternate}
+@keyframes crowd{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+.egg{transform-box:fill-box;transform-origin:50% 100%;animation:wob 3.4s ease-in-out infinite}
+@keyframes wob{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-8deg)}90%{transform:rotate(8deg)}95%{transform:rotate(-5deg)}}
+.blink{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+
+<!-- sky -->
+<rect width="1200" height="630" fill="url(#sky)"/>
+<g fill="#fff2c4"><circle class="tw" cx="90" cy="60" r="2.5"/><circle class="tw2" cx="210" cy="30" r="2"/><circle class="tw" cx="330" cy="86" r="2.5"/><circle class="tw2" cx="520" cy="40" r="2"/><circle class="tw" cx="700" cy="24" r="2.5"/><circle class="tw2" cx="860" cy="70" r="2"/><circle class="tw" cx="1010" cy="34" r="2.5"/><circle class="tw2" cx="1130" cy="96" r="2"/><circle class="tw" cx="430" cy="130" r="2"/><circle class="tw2" cx="960" cy="150" r="2"/></g>
+<!-- floodlights -->
+<g><path d="M70 120L-60 470H260Z" fill="url(#beam)"/><path d="M1130 120L940 470H1260Z" fill="url(#beam)"/>
+<g stroke="#0a0705" stroke-width="6" stroke-linejoin="round"><rect x="62" y="120" width="16" height="320" fill="#2a1a12"/><rect x="40" y="86" width="60" height="38" rx="6" fill="#3a2418"/><rect x="1122" y="120" width="16" height="320" fill="#2a1a12"/><rect x="1100" y="86" width="60" height="38" rx="6" fill="#3a2418"/></g>
+<g fill="#fff6d0"><circle cx="54" cy="105" r="7"/><circle cx="70" cy="105" r="7"/><circle cx="86" cy="105" r="7"/><circle cx="1114" cy="105" r="7"/><circle cx="1130" cy="105" r="7"/><circle cx="1146" cy="105" r="7"/></g></g>
+<!-- big sun glow behind crest and title -->
+<circle class="pulse" cx="300" cy="300" r="300" fill="url(#glow)"/>
+<!-- scoreboard easter egg -->
+<g transform="translate(985 285) rotate(4) scale(.85)"><rect x="-6" y="40" width="10" height="80" fill="#2a1a12" stroke="#0a0705" stroke-width="5"/><rect x="104" y="40" width="10" height="80" fill="#2a1a12" stroke="#0a0705" stroke-width="5"/><rect width="108" height="58" rx="8" fill="#0a0705" stroke="#e8651a" stroke-width="5"/><text x="54" y="26" text-anchor="middle" font-family="Oswald,Impact,sans-serif" font-weight="700" font-size="14" fill="#ffd27a" letter-spacing="2">FIRE FC</text><text x="54" y="49" text-anchor="middle" font-family="Oswald,Impact,sans-serif" font-weight="700" font-size="22" fill="#ff9a2e" letter-spacing="3" class="blink">1111</text></g>
+<!-- flying cartoon phoenix -->
+<g class="fly" style="animation-delay:-4.3s"><g class="bob"><path d="M-70 8C-110 -4 -128 22 -150 14C-134 30 -116 38 -92 30C-100 44 -88 52 -70 44Z" fill="url(#flame)" stroke="#0a0705" stroke-width="5" stroke-linejoin="round"/><path d="M-60 -6C-86 -48 -52 -84 -18 -92C-30 -66 -14 -52 4 -50Z" fill="#ff9a2e" stroke="#0a0705" stroke-width="5" stroke-linejoin="round"/><ellipse cx="-6" cy="14" rx="48" ry="30" fill="#e8651a" stroke="#0a0705" stroke-width="5"/><path d="M-50 8C-30 -30 6 -34 30 -10C10 -2 -10 6 -50 8Z" fill="#ffd27a" stroke="#0a0705" stroke-width="4" stroke-linejoin="round" class="fl1"/><circle cx="46" cy="-8" r="22" fill="#e8651a" stroke="#0a0705" stroke-width="5"/><path d="M40 -28C44 -48 56 -52 62 -42C56 -40 54 -34 56 -28Z" fill="#ffe27a" stroke="#0a0705" stroke-width="4" stroke-linejoin="round"/><path d="M64 -6L92 2L64 8Z" fill="#ffd27a" stroke="#0a0705" stroke-width="4" stroke-linejoin="round"/><circle cx="54" cy="-12" r="6.5" fill="#fff"/><circle cx="56" cy="-12" r="3.4" fill="#0a0705"/></g></g>
+<!-- crowd -->
+<g fill="#1a0e08" stroke="#0a0705" stroke-width="3"><g class="crowd"><path d="M0 440V410Q20 396 40 410Q60 396 80 410Q100 396 120 410Q140 396 160 410Q180 396 200 410Q220 396 240 410Q260 396 280 410Q300 396 320 410Q340 396 360 410Q380 396 400 410Q420 396 440 410Q460 396 480 410Q500 396 520 410Q540 396 560 410Q580 396 600 410Q620 396 640 410Q660 396 680 410Q700 396 720 410Q740 396 760 410Q780 396 800 410Q820 396 840 410Q860 396 880 410Q900 396 920 410Q940 396 960 410Q980 396 1000 410Q1020 396 1040 410Q1060 396 1080 410Q1100 396 1120 410Q1140 396 1160 410Q1180 396 1200 410V440Z"/></g></g>
+<g class="crowd" fill="#ffb45a"><circle cx="140" cy="404" r="5"/><circle cx="372" cy="400" r="5"/><circle cx="610" cy="404" r="5"/><circle cx="846" cy="400" r="5"/><circle cx="1070" cy="404" r="5"/></g>
+<!-- pitch -->
+<path d="M0 436H1200V630H0Z" fill="#1f5a30" stroke="#0a0705" stroke-width="6"/>
+<g fill="#26703b"><path d="M0 436H150L60 630H0Z"/><path d="M300 436H450L440 630H260Z"/><path d="M600 436H750L820 630H620Z"/><path d="M900 436H1050L1200 630H1000Z"/></g>
+<path d="M0 520H1200" stroke="#e9f7e0" stroke-width="5" opacity=".7"/>
+<ellipse cx="600" cy="596" rx="200" ry="26" fill="none" stroke="#e9f7e0" stroke-width="5" opacity=".7"/>
+<!-- goal right -->
+<g transform="translate(1000 440)"><path d="M0 0H170V86H0Z" fill="#0a0705" fill-opacity=".35"/><path d="M0 0V86M30 0V86M60 0V86M90 0V86M120 0V86M150 0V86M0 22H170M0 44H170M0 66H170" stroke="#fff" stroke-opacity=".55" stroke-width="2"/><path d="M-4 90V-4H174V90" fill="none" stroke="#fff8ec" stroke-width="9" stroke-linejoin="round"/><path d="M-4 90V-4H174V90" fill="none" stroke="#0a0705" stroke-width="2.5"/></g>
+<!-- corner flag -->
+<g transform="translate(36 540)"><path d="M0 0V-96" stroke="#fff8ec" stroke-width="7" stroke-linecap="round"/><path d="M0 -96V0" stroke="#0a0705" stroke-width="2"/><g transform="translate(5 -90)"><path d="M0 0L52 18L0 36Z" fill="#e8651a" stroke="#0a0705" stroke-width="4" stroke-linejoin="round" class="fl1"/></g></g>
+<!-- trophies -->
+<g transform="translate(118 470) scale(.9)"><use href="#trophy"/></g>
+<g transform="translate(1075 492) scale(.62)"><use href="#trophy"/></g>
+<!-- flames along horizon around crest -->
+<g class="fl1"><use href="#fl" transform="translate(138 352) scale(1.5)"/></g><g class="fl2"><use href="#fl" transform="translate(478 400) scale(1.6)"/></g>
+<!-- crest -->
+<g class="bob"><image href="CREST" x="120" y="100" width="360" height="330" preserveAspectRatio="xMidYMid meet"/></g>
+<!-- title -->
+<g font-family="Oswald,Impact,'Arial Black',sans-serif" font-weight="900" text-anchor="start" stroke-linejoin="round" paint-order="stroke" transform="rotate(-3 700 300)">
+<text x="540" y="238" font-size="124" fill="#fff4e0" stroke="#0a0705" stroke-width="18" letter-spacing="2">PHOENIX</text>
+<text x="542" y="346" font-size="136" fill="#e8651a" stroke="#0a0705" stroke-width="18" letter-spacing="6">FIRE</text>
+</g>
+<!-- ribbon tagline -->
+<g transform="translate(548 366) rotate(-3)"><path d="M0 0H430L452 24L430 48H0L22 24Z" fill="#0a0705" stroke="#ffd27a" stroke-width="3"/><text x="226" y="34" text-anchor="middle" font-family="Oswald,Impact,sans-serif" font-weight="700" font-size="28" letter-spacing="6" fill="#ffd27a">RISE. BURN. REPEAT.</text></g>
+<!-- balls -->
+<g class="bounce"><g transform="translate(800 480)"><g class="spin"><use href="#ball"/></g></g></g>
+<use href="#ball" transform="translate(880 590) scale(.8)"/><use href="#ball" transform="translate(930 600) scale(.65)"/><use href="#ball" transform="translate(330 604) scale(.7)"/>
+<!-- egg easter egg -->
+<g transform="translate(640 596)"><g class="egg"><path d="M0 -62C-30 -62 -36 -22 -34 -8C-32 8 -20 14 0 14C20 14 32 8 34 -8C36 -22 30 -62 0 -62Z" fill="#fff4e0" stroke="#0a0705" stroke-width="5"/><path d="M-30 -22L-14 -34L-4 -20L8 -36L20 -24L34 -30" fill="none" stroke="#0a0705" stroke-width="4" stroke-linejoin="round"/><g class="fl2"><use href="#fl" transform="translate(2 -34) scale(.55)"/></g><circle cx="-12" cy="-6" r="3.5" fill="#0a0705"/><circle cx="12" cy="-6" r="3.5" fill="#0a0705"/></g></g>
+<!-- controller easter egg -->
+<g transform="translate(420 596)"><path d="M-34 -10C-46 -10 -54 14 -46 20C-38 24 -30 14 -22 10H22C30 14 38 24 46 20C54 14 46 -10 34 -10Z" fill="#2c2320" stroke="#0a0705" stroke-width="4"/><path d="M-26 -2V8M-31 3H-21" stroke="#ffd27a" stroke-width="3"/><circle cx="24" cy="0" r="3" fill="#e8651a"/><circle cx="32" cy="5" r="3" fill="#ffd27a"/></g>
+<!-- confetti -->
+<g><rect class="fall" x="240" y="0" width="9" height="14" fill="#ffd27a" style="animation-delay:-1s"/><rect class="fall" x="480" y="0" width="9" height="14" fill="#e8651a" style="animation-delay:-3s"/><rect class="fall" x="760" y="0" width="9" height="14" fill="#fff4e0" style="animation-delay:-2s"/><rect class="fall" x="980" y="0" width="9" height="14" fill="#ffd27a" style="animation-delay:-4.5s"/><rect class="fall" x="620" y="0" width="9" height="14" fill="#e8651a" style="animation-delay:-5.2s"/><rect class="fall" x="1100" y="0" width="9" height="14" fill="#fff4e0" style="animation-delay:-.4s"/></g>
+<rect y="618" width="1200" height="12" fill="#e8651a"/>
+</svg>
