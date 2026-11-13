@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T08:30:46.672Z",
+ "fetchedAt": "2026-11-13T08:40:47.582Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2353,12 +2353,12 @@
   {
    "name": "x_MrMike_x",
    "proPos": "25",
-   "gamesPlayed": "106",
+   "gamesPlayed": "107",
    "goals": "58",
    "assists": "44",
    "manOfTheMatch": "13",
    "ratingAve": "7.6",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
