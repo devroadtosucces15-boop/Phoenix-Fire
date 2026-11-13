@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T09:50:45.378Z",
+ "fetchedAt": "2026-11-13T10:00:46.372Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2352,14 +2352,14 @@
   },
   {
    "name": "x_MrMike_x",
-   "proPos": "5",
-   "gamesPlayed": "109",
+   "proPos": "25",
+   "gamesPlayed": "110",
    "goals": "59",
    "assists": "44",
    "manOfTheMatch": "13",
    "ratingAve": "7.6",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "forward"
   },
   {
    "name": "Azodarg888",
