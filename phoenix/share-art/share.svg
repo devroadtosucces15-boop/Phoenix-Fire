@@ -79,11 +79,10 @@
 <g transform="translate(548 366) rotate(-3)"><path d="M0 0H430L452 24L430 48H0L22 24Z" fill="#0a0705" stroke="#ffd27a" stroke-width="3"/><text x="226" y="34" text-anchor="middle" font-family="Oswald,Impact,sans-serif" font-weight="700" font-size="28" letter-spacing="6" fill="#ffd27a">RISE. BURN. REPEAT.</text></g>
 <!-- balls -->
 <g class="bounce"><g transform="translate(800 480)"><g class="spin"><use href="#ball"/></g></g></g>
-<use href="#ball" transform="translate(880 590) scale(.8)"/><use href="#ball" transform="translate(930 600) scale(.65)"/><use href="#ball" transform="translate(330 604) scale(.7)"/>
+
 <!-- egg easter egg -->
-<g transform="translate(640 596)"><g class="egg"><path d="M0 -62C-30 -62 -36 -22 -34 -8C-32 8 -20 14 0 14C20 14 32 8 34 -8C36 -22 30 -62 0 -62Z" fill="#fff4e0" stroke="#0a0705" stroke-width="5"/><path d="M-30 -22L-14 -34L-4 -20L8 -36L20 -24L34 -30" fill="none" stroke="#0a0705" stroke-width="4" stroke-linejoin="round"/><g class="fl2"><use href="#fl" transform="translate(2 -34) scale(.55)"/></g><circle cx="-12" cy="-6" r="3.5" fill="#0a0705"/><circle cx="12" cy="-6" r="3.5" fill="#0a0705"/></g></g>
-<!-- controller easter egg -->
-<g transform="translate(420 596)"><path d="M-34 -10C-46 -10 -54 14 -46 20C-38 24 -30 14 -22 10H22C30 14 38 24 46 20C54 14 46 -10 34 -10Z" fill="#2c2320" stroke="#0a0705" stroke-width="4"/><path d="M-26 -2V8M-31 3H-21" stroke="#ffd27a" stroke-width="3"/><circle cx="24" cy="0" r="3" fill="#e8651a"/><circle cx="32" cy="5" r="3" fill="#ffd27a"/></g>
+<g transform="translate(1090 612) scale(.8)"><g class="egg"><path d="M0 -62C-30 -62 -36 -22 -34 -8C-32 8 -20 14 0 14C20 14 32 8 34 -8C36 -22 30 -62 0 -62Z" fill="#fff4e0" stroke="#0a0705" stroke-width="5"/><path d="M-30 -22L-14 -34L-4 -20L8 -36L20 -24L34 -30" fill="none" stroke="#0a0705" stroke-width="4" stroke-linejoin="round"/><g class="fl2"><use href="#fl" transform="translate(2 -34) scale(.55)"/></g><circle cx="-12" cy="-6" r="3.5" fill="#0a0705"/><circle cx="12" cy="-6" r="3.5" fill="#0a0705"/></g></g>
+<!--PEOPLE-->
 <!-- confetti -->
 <g><rect class="fall" x="240" y="0" width="9" height="14" fill="#ffd27a" style="animation-delay:-1s"/><rect class="fall" x="480" y="0" width="9" height="14" fill="#e8651a" style="animation-delay:-3s"/><rect class="fall" x="760" y="0" width="9" height="14" fill="#fff4e0" style="animation-delay:-2s"/><rect class="fall" x="980" y="0" width="9" height="14" fill="#ffd27a" style="animation-delay:-4.5s"/><rect class="fall" x="620" y="0" width="9" height="14" fill="#e8651a" style="animation-delay:-5.2s"/><rect class="fall" x="1100" y="0" width="9" height="14" fill="#fff4e0" style="animation-delay:-.4s"/></g>
 <rect y="618" width="1200" height="12" fill="#e8651a"/>
