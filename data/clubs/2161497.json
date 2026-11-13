@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-13T21:30:43.019Z",
+ "fetchedAt": "2026-11-13T21:40:40.885Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -559,10 +559,10 @@
   {
    "name": "DavidSwede",
    "proPos": "14",
-   "gamesPlayed": "172",
+   "gamesPlayed": "173",
    "goals": "7",
    "assists": "17",
-   "manOfTheMatch": "13",
+   "manOfTheMatch": "14",
    "ratingAve": "7.3",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
@@ -570,7 +570,7 @@
   {
    "name": "rubNiyo",
    "proPos": "5",
-   "gamesPlayed": "97",
+   "gamesPlayed": "98",
    "goals": "81",
    "assists": "32",
    "manOfTheMatch": "10",
@@ -636,7 +636,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "75",
+   "gamesPlayed": "76",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
@@ -647,7 +647,7 @@
   {
    "name": "Ritzeltod",
    "proPos": "14",
-   "gamesPlayed": "275",
+   "gamesPlayed": "276",
    "goals": "19",
    "assists": "28",
    "manOfTheMatch": "16",
@@ -658,7 +658,7 @@
   {
    "name": "leo77romano",
    "proPos": "14",
-   "gamesPlayed": "162",
+   "gamesPlayed": "163",
    "goals": "35",
    "assists": "24",
    "manOfTheMatch": "8",
@@ -669,9 +669,9 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "100",
+   "gamesPlayed": "101",
    "goals": "38",
-   "assists": "49",
+   "assists": "50",
    "manOfTheMatch": "5",
    "ratingAve": "7.5",
    "prevGoals": "0",
