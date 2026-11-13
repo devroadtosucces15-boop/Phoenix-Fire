@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T05:40:45.616Z",
+ "fetchedAt": "2026-11-13T05:50:48.303Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2221,7 +2221,7 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "222",
+   "gamesPlayed": "223",
    "goals": "36",
    "assists": "29",
    "manOfTheMatch": "41",
