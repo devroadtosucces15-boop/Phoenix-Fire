@@ -163,7 +163,7 @@ ${S.rdraft.length ? `<div class="panel" style="overflow-x:auto"><table class="tb
   function paint() {
     if (!root.isConnected) return;
     const focus = d.activeElement?.name ? { n: d.activeElement.name } : null;
-    root.innerHTML = `<div class="chips dk-tabs">${TABS.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" type="button" data-tab="${k}">${n}${k === 'reports' && S.reports?.length ? ` <span class="dk-n">${S.reports.length}</span>` : ''}</button>`).join('')}</div><div class="dk-pane">${{ subm, reports, game, bot, awards }[S.tab]()}</div>`;
+    root.innerHTML = `<div class="chips dk-tabs">${TABS.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" type="button" data-tab="${k}" data-dl="${k}" data-dl-to=".dk-pane">${n}${k === 'reports' && S.reports?.length ? ` <span class="dk-n">${S.reports.length}</span>` : ''}</button>`).join('')}</div><div class="dk-pane">${{ subm, reports, game, bot, awards }[S.tab]()}</div>`;
     if (focus) root.querySelector(`[name="${focus.n}"]`)?.focus({ preventScroll: true });
   }
   const guard = async (k, fn) => { try { const r = await fn(); S.err[k] = null; return r; } catch (e) { S.err[k] = e.message; return null; } };

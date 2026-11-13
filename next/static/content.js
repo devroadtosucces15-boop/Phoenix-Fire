@@ -97,7 +97,7 @@ ${rows.length ? `<div class="ct-list">${rows.map((x) => `<form class="panel ct-i
   function paint() {
     if (!root.isConnected) return;
     const focus = d.activeElement?.name ? { n: d.activeElement.name } : null;
-    root.innerHTML = `<div class="chips dk-tabs">${TABS().map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" type="button" data-tab="${k}">${n}</button>`).join('')}</div><div class="ct-body">${{ docs, ideas, week, store }[S.tab]()}</div>`;
+    root.innerHTML = `<div class="chips dk-tabs">${TABS().map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" type="button" data-tab="${k}" data-dl="${k}" data-dl-to=".ct-body">${n}</button>`).join('')}</div><div class="ct-body">${{ docs, ideas, week, store }[S.tab]()}</div>`;
     if (focus) root.querySelector(`[name="${focus.n}"]`)?.focus({ preventScroll: true });
   }
   const guard = async (k, fn) => { try { const r = await fn(); S.err[k] = null; return r; } catch (e) { S.err[k] = e.message; return null; } };

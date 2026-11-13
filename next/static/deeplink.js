@@ -4,7 +4,7 @@
 // A user who scrolls, touches or presses a key first is never pulled back. Reduced motion lands without animation.
 (() => {
   const H = document.documentElement, D = document;
-  const STABLE_MS = 250, CAP_MS = 6000;
+  const STABLE_MS = 250, CAP_MS = 6000, LIVE_MS = 1500; // the live strip stays hidden unless someone is on air, so it gives up sooner
   const reduced = () => H.dataset.motion === 'calm' || H.dataset.motion === 'off' || /[?&]still/.test(location.search) || matchMedia('(prefers-reduced-motion: reduce)').matches;
   const esc = (s) => (window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/[^\w-]/g, '\\$&'));
   let probe = null;
@@ -60,9 +60,10 @@
         const sig = Math.round(t.getBoundingClientRect().top + scrollY) + ':' + H.scrollHeight;
         if (sig !== last) { last = sig; since = now; } else if (now - since >= STABLE_MS) { land(t); return end(); }
       } else last = null;
-      if (now - t0 > CAP_MS) {
-        // never became visible: nearest visible ancestor, else leave the page where it is
-        let a = t && t.parentElement; while (a && !shown(a)) a = a.parentElement;
+      if (now - t0 > (el && el.hasAttribute('data-live-strip') ? LIVE_MS : CAP_MS)) {
+        // never became visible: the next visible section after it (the live strip sits between sections), else the nearest visible ancestor, else stay
+        let a = null; for (let n = t && t.nextElementSibling; n && !a; n = n.nextElementSibling) if (shown(n)) a = n;
+        if (!a) { a = t && t.parentElement; while (a && !shown(a)) a = a.parentElement; }
         if (a && a !== D.body && a !== H) land(a);
         return end();
       }

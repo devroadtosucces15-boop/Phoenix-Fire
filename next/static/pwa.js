@@ -10,7 +10,7 @@
 
   // ---------- zoom + scroll drift: the view must never stay zoomed or jumped after typing/submitting ----------
   const meta = d.querySelector('meta[name=viewport]'), base = meta?.getAttribute('content') || '';
-  // the viewport already locks zoom (maximum-scale=1, zn11); this is the fallback when iOS still leaves the view zoomed:
+  // pinch zoom is allowed (R22); this is the fallback when iOS still leaves the view zoomed:
   // a different content string makes Safari re-apply the scale, then the base string goes back
   const resetZoom = () => { if (!meta) return; meta.setAttribute('content', 'width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,viewport-fit=cover'); requestAnimationFrame(() => meta.setAttribute('content', base)); };
   let saved = null, typing = false;

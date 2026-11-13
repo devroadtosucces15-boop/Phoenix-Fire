@@ -6,7 +6,9 @@
 // progress (new unlocks are marked seen once shown) and community badges from teammates (you can take one off your profile).
 (() => {
   const d = document, $ = (s, r = d) => r.querySelector(s), $$ = (s, r = d) => [...r.querySelectorAll(s)];
-  const meEl = $('#lkme'), stEl = $('#lkstats'), mdEl = $('#lkmedals'); if (!meEl || !stEl || !mdEl) return;
+  // each page mounts only its own section (hub-profile, hub-stats, hub-medals); a missing mount is skipped, never an error
+  const has = { me: !!$('#lkme'), st: !!$('#lkstats'), md: !!$('#lkmedals') }; if (!has.me && !has.st && !has.md) return;
+  const meEl = $('#lkme') || d.createElement('div'), stEl = $('#lkstats') || d.createElement('div'), mdEl = $('#lkmedals') || d.createElement('div');
   const A = window.NorexAuth, M = window.NorexMotion, API = window.NOREX_API, N = window.NOREX || {};
   if (!API || !A?.token) return;
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -200,7 +202,7 @@ ${BG.canRemove && b.givers.some((g) => g.rid) ? `<details class="bd-x"><summary>
   // ---------- go ----------
   const load = () => { M?.skeleton(meEl, 5); M?.skeleton(stEl, 5); M?.skeleton(mdEl, 6);
     A.call('/api/me').then((m) => { const claim = m.claim?.status === 'approved' ? m.claim.player : null; if (m.user?.features) A.features = m.user.features;
-      startMe(m.profile); loadStats(claim); loadMedals(); })
+      if (has.me) startMe(m.profile); if (has.st) loadStats(claim); if (has.md) loadMedals(); })
       .catch((e) => { [meEl, stEl, mdEl].forEach((el) => fail(el, el === meEl ? 'your profile' : el === stEl ? 'your stats' : 'your medals', e)); });
   };
   d.addEventListener('click', (e) => { if (e.target.closest('[data-lmretry]')) { achP = null; load(); } });

@@ -121,7 +121,7 @@ ${results}${sug}`;
   function paint() {
     if (!root.isConnected) return;
     const keep = d.activeElement?.matches?.('input[name="q"]');
-    root.innerHTML = `<div class="chips dk-tabs">${TABS.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}">${n}</button>`).join('')}</div><div class="dk-pane">${{ intel, notes, burners }[S.tab]()}</div>`;
+    root.innerHTML = `<div class="chips dk-tabs">${TABS.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}" data-dl="${k}" data-dl-to=".dk-pane">${n}</button>`).join('')}</div><div class="dk-pane">${{ intel, notes, burners }[S.tab]()}</div>`;
     if (keep) { const i = root.querySelector('input[name="q"]'); if (i) { i.focus(); const n = i.value.length; i.setSelectionRange(n, n); } }
   }
   const openTab = (k) => { S.tab = k; paint(); if (k === 'notes') loadNotes(); if (k === 'burners' && S.bn.list === undefined) loadBurners(); };

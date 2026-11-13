@@ -64,7 +64,7 @@ ${r.mvp ? `<p class="small">⭐ MVP <b>${esc(r.mvp.n)}</b> ${r.mvp.avg != null ?
     const now = Date.now(), all = S.ev.events.slice().sort((a, b) => a.start - b.start);
     const soon = all.filter((e) => e.status === 'scheduled' && e.end + 2 * 3600e3 >= now), past = all.filter((e) => e.status === 'scheduled' && e.end + 2 * 3600e3 < now).reverse(), off = all.filter((e) => e.status !== 'scheduled').reverse();
     const list = S.tab === 'soon' ? soon : S.tab === 'past' ? past : off;
-    root.innerHTML = `<div class="sc"><div class="sc-head"><div class="chips" data-tabs>${[['soon', `Upcoming ${soon.length}`], ['past', `Played ${past.length}`], ['off', `Cancelled ${off.length}`]].map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}">${n}</button>`).join('')}</div><button class="btn" data-sc="new">➕ New match night</button></div>
+    root.innerHTML = `<div class="sc"><div class="sc-head"><div class="chips" data-tabs>${[['soon', `Upcoming ${soon.length}`], ['past', `Played ${past.length}`], ['off', `Cancelled ${off.length}`]].map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}" data-dl="${k}" data-dl-to=".sc-list">${n}</button>`).join('')}</div><button class="btn" data-sc="new">➕ New match night</button></div>
 ${formHtml()}<div class="sc-list">${list.length ? list.map((e) => card(e, S.tab === 'past')).join('') : `<div class="panel sq-empty"><span>🗓️</span><div><b>${S.tab === 'soon' ? 'Nothing scheduled' : 'Nothing here'}</b><p class="muted small">${S.tab === 'soon' ? 'Create a match night – everyone gets the answer buttons in the Locker and on Discord.' : ''}</p></div></div>`}</div></div>`;
   }
   async function reload() { S.ev = await call('/api/events'); paint(); }

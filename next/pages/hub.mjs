@@ -72,7 +72,7 @@ export function music() {
   <div class="wrap" data-for="member owner" hidden data-music>${flagOff('Music', 'data-mu-off')}
    <div data-mu-on hidden>
     <p class="mu-note" data-mu-note hidden><span class="sample">SAMPLE</span><span data-mu-msg>The music bot isn’t connected yet. These rooms are made-up examples, but every button really works on them so you can try the player.</span></p>
-    <div class="mu-grid"><div class="mu-rooms" id="mu-rooms" role="list" aria-label="Music rooms" aria-busy="true"></div><div class="mu-room" id="mu-room" aria-live="polite"></div></div>
+    <div class="mu-grid"><div class="mu-rooms" id="mu-rooms" role="group" aria-label="Music rooms" aria-busy="true"></div><div class="mu-room" id="mu-room" aria-live="polite"></div></div>
    </div></div>`;
   return hubShell('hub-music.html', 'Music', body, { extraHead: '<link rel="stylesheet" href="music.css"><script src="musicmodel.js" defer></script><script src="music.js" defer></script>' });
 }

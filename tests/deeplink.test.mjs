@@ -22,4 +22,15 @@ t('tactics.html: roles, forms, xi and rush resolve through data-dl to a pane tha
 t('squad.html has id="squad" (join.html links squad.html#squad)', has('squad.html', /<section class="sec" id="squad"/) && has('join.html', /href="squad\.html#squad"/));
 t('tactics.html links the two handbook set-piece anchors, and the handbook script creates ids league-setpieces and rush-setpieces', has('tactics.html', /hub-handbook\.html#league-setpieces/) && has('tactics.html', /hub-handbook\.html#rush-setpieces/) && read('handbook.js').includes('id="${mode}-${k}"') && read('handbook.js').includes("['setpieces'"));
 t('stats.html links leaders.html#goals, #assists and #rating', ['goals', 'assists', 'rating'].every((k) => has('stats.html', new RegExp(`leaders\\.html#${k}"`))));
+// R20: staff tab buttons carry data-dl (the tab key) and data-dl-to (the pane), so staff-<page>.html#<tab> opens the tab and scrolls to it
+const STAFF = { 'desk.js': ['claims', 'members', 'requests', 'rush', 'trials', 'notes'], 'tools.js': ['subm', 'reports', 'game', 'bot', 'awards'], 'content.js': ['docs', 'ideas', 'week', 'store'], 'intel.js': ['intel', 'notes', 'burners'], 'schedule.js': ['soon', 'past', 'off'] };
+for (const [f, keys] of Object.entries(STAFF)) {
+  const src = read(f);
+  t(`${f}: tab buttons have data-dl="\${k}" and a data-dl-to pane, and every tab key still exists`, /data-tab="\$\{k\}" data-dl="\$\{k\}" data-dl-to="[^"]+"/.test(src) && keys.every((k) => src.includes(`'${k}'`)));
+}
+t('a hidden live strip falls back to the next visible section after 1.5 s', js.includes('LIVE_MS') && js.includes('nextElementSibling') && js.includes('data-live-strip'));
+// R21: the split locker pages mount one section each; mylocker.js draws only the sections whose mount exists
+const ml = read('mylocker.js');
+t('mylocker.js guards each mount (no all-or-nothing return) and loads only the sections that exist', ml.includes('has.me') && ml.includes('has.st') && ml.includes('has.md') && !/if \(!meEl \|\| !stEl \|\| !mdEl\) return/.test(ml) && /if \(has\.me\) startMe/.test(ml) && /if \(has\.st\) loadStats/.test(ml) && /if \(has\.md\) loadMedals/.test(ml));
+t('each split page mounts its own section: hub-profile lkme, hub-stats lkstats, hub-medals lkmedals', [['hub-profile.html', 'lkme'], ['hub-stats.html', 'lkstats'], ['hub-medals.html', 'lkmedals']].every(([f, id]) => read(f).includes(`id="${id}"`)));
 done();

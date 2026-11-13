@@ -23,7 +23,7 @@
     offline: 'Lost touch with the music bot. Showing the last known state while we retry.',
   };
 
-  const paintList = (s) => { list.innerHTML = s.rooms.map((r) => `<button type="button" role="listitem" class="panel mu-r${r.id === s.sel ? ' on' : ''}" aria-pressed="${r.id === s.sel}" data-room="${esc(r.id)}"><span class="mu-t"><b>${esc(r.name)}</b><small class="muted">${r.nowPlaying ? esc(r.nowPlaying.title) : 'Nothing playing'}</small></span><span class="mu-l" title="Listening now"><span aria-hidden="true">🎧</span><b class="num">${r.listeners}</b></span></button>`).join(''); list.setAttribute('aria-busy', 'false'); };
+  const paintList = (s) => { list.innerHTML = s.rooms.map((r) => `<button type="button" class="panel mu-r${r.id === s.sel ? ' on' : ''}" aria-pressed="${r.id === s.sel}" data-room="${esc(r.id)}"><span class="mu-t"><b>${esc(r.name)}</b><small class="muted">${r.nowPlaying ? esc(r.nowPlaying.title) : 'Nothing playing'}</small></span><span class="mu-l" title="Listening now"><span aria-hidden="true">🎧</span><b class="num">${r.listeners}</b></span></button>`).join(''); list.setAttribute('aria-busy', 'false'); };
   // built once per picked room so the search box keeps focus while the state changes under it
   const build = () => {
     room.innerHTML = `<article class="panel mu-np" data-mu-np></article>

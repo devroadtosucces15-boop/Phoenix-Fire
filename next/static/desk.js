@@ -118,7 +118,7 @@ ${r.status === 'pending' ? (ask === 'reject' ? `<form class="dm-form" data-rq-fo
   function paint() {
     if (!root.isConnected) return;
     const c = counts(), tabs = [['claims', '🪪 Claims'], ['members', '👥 Members'], ['requests', '📨 Requests'], ['rush', '⚡ Rush results'], ['trials', '🧭 Trials'], ['notes', '📝 Notes']];
-    root.innerHTML = `<div class="chips dk-tabs">${tabs.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}">${n}${c[k] ? ` <span class="dk-n">${c[k]}</span>` : ''}</button>`).join('')}</div><div class="dk-pane">${{ claims, members, requests, rush, trials, notes }[S.tab]()}</div>`;
+    root.innerHTML = `<div class="chips dk-tabs">${tabs.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}" data-dl="${k}" data-dl-to=".dk-pane">${n}${c[k] ? ` <span class="dk-n">${c[k]}</span>` : ''}</button>`).join('')}</div><div class="dk-pane">${{ claims, members, requests, rush, trials, notes }[S.tab]()}</div>`;
   }
   const act = async (fn) => { try { await fn(); } catch (er) { toast(er.message, true); } };
   root.addEventListener('click', (ev) => {
