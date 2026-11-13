@@ -126,7 +126,7 @@ export const kpi = () => {
 <div class="kc k-rec"><div class="kh"><u>🎮 Season record</u><span><b class="cnt" data-n="${C.gp}">0</b> played</span></div>
 <div class="rbar" role="img" aria-label="${C.w} wins, ${C.d} draws, ${C.l} losses"><i class="w" style="flex:${C.w}"><b>${C.w}</b></i><i class="d" style="flex:${Math.max(C.d, .001)}"><b>${C.d}</b></i><i class="l" style="flex:${Math.max(C.l, .001)}"><b>${C.l}</b></i></div>
 <div class="rleg"><span class="w">🏆 ${C.w} wins · ${pc(C.w)}%</span><span class="d">🤝 ${C.d} draws</span><span class="l">💔 ${C.l} losses</span></div>
-<div class="mosaic" role="img" aria-label="Result of each of the last ${old.length} games, oldest first">${old.map((m, i) => `<a href="match-${m.id}.html" class="${m.res}${m.ga === 0 ? ' cs' : ''}" style="--i:${i}" title="${esc(m.opp)} ${m.gf}–${m.ga}"></a>`).join('')}</div>
+<div class="mosaic" role="group" aria-label="Result of each of the last ${old.length} games, oldest first">${old.map((m, i) => `<a href="match-${m.id}.html" class="${m.res}${m.ga === 0 ? ' cs' : ''}" style="--i:${i}" title="${esc(m.opp)} ${m.gf}–${m.ga}"></a>`).join('')}</div>
 <i class="cap">Every game as a tile, oldest to newest · a dot marks a clean sheet</i></div>
 <div class="kc k-bal"><div class="kh"><u>⚽ Goals for and against</u><span class="gdv">${gdv >= 0 ? '+' : ''}${gdv}</span></div>
 <div class="tug" role="img" aria-label="${C.gf} scored, ${C.ga} conceded"><i class="f" style="width:${forPct}%"><b class="cnt" data-n="${C.gf}">0</b></i><i class="a" style="width:${(100 - forPct).toFixed(1)}%"><b class="cnt" data-n="${C.ga}">0</b></i></div>

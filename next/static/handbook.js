@@ -46,7 +46,10 @@
     const h = location.hash.slice(1); if (!h) return;
     const m = /^(league|rush)-/.exec(h); if (m && P && m[1] !== mode) { mode = m[1]; psEl.innerHTML = psHtml(); }
     const el = d.getElementById(h) || d.getElementById('hb-' + h); if (!el || el.tagName !== 'DETAILS') return;
-    el.open = true; el.classList.add('flash'); setTimeout(() => el.scrollIntoView({ block: 'start', behavior: M?.mode === 'full' ? 'smooth' : 'auto' }), 120);
+    el.open = true; el.classList.add('flash');
+    // one scroll only: PhoenixDeeplink lands at the sticky offset; a second smooth scrollIntoView here restarted the first and left the audit short of the target
+    if (window.PhoenixDeeplink) { window.PhoenixDeeplink.go('#' + el.id); return; }
+    setTimeout(() => el.scrollIntoView({ block: 'start', behavior: M?.mode === 'full' ? 'smooth' : 'auto' }), 120);
   }
   addEventListener('hashchange', openHash);
   d.addEventListener('click', (e) => { if (!e.target.closest('[data-hbretry]')) return; const box = e.target.closest('#hbdocs,#hbps'); box === docsEl ? loadDocs() : loadPs(); });

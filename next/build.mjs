@@ -21,7 +21,12 @@ fs.writeFileSync(path.join(out, 'manifest.webmanifest'), JSON.stringify({ id: PU
 fs.writeFileSync(path.join(out, 'game.json'), JSON.stringify((await import('./lib/data.mjs')).game));
 // Phase E post-pass on every page: one h1 per page (the page's first heading becomes level 1 for assistive tech, no visual change), a small crest for the 22–86 px logo spots instead of the 180 KB original
 const finalize = (h) => {
-  if (!/<h1[ >]/.test(h)) h = h.replace(/(<main id="main">[\s\S]*?)<(h[23])(?![^>]*aria-level)/, '$1<$2 aria-level="1"');
+  if (!/<h1[ >]|aria-level="1"/.test(h)) h = h.replace(/(<main id="main">[\s\S]*?)<(h[23])(?![^>]*aria-level)/, '$1<$2 aria-level="1"');
+  // R36: no heading skips a level: walking the headings of <main> in order, one that would jump more than one level below the previous reads as the next level (aria-level only, no visual change); a scrolling box can take the keyboard
+  { const i = h.indexOf('<main id="main">'); if (i >= 0) { const j = h.indexOf('</main>', i), m = h.slice(i, j < 0 ? undefined : j); let prev = 0;
+    const fixed = m.replace(/<(h[1-6])((?:\s[^>]*)?)>|<b((?:\s[^>]*)?role="heading"[^>]*)>/g, (all, tag, attrs, battrs) => { const at = attrs ?? battrs ?? '', lv = /aria-level="(\d)"/.exec(at), cur = lv ? +lv[1] : +tag[1]; if (cur > prev + 1 && !lv) { prev += 1; return tag ? `<${tag}${at} aria-level="${prev}">` : all; } prev = cur; return all; });
+    h = h.slice(0, i) + fixed + (j < 0 ? '' : h.slice(j)); } }
+  h = h.replace(/<div class="tscroll"(?![^>]*tabindex)>/g, '<div class="tscroll" tabindex="0">').replace(/<div class="panel flat([^"]*)"(?![^>]*tabindex)([^>]*overflow-x:auto[^>]*)>/g, '<div class="panel flat$1" tabindex="0"$2>');
   // three sizes: the 41 KB small crest for logo-sized spots (header logo, width <= 48 or unsized), the sharp 892 px crest for the big hero crests, the regular one up to 118 px
   h = h.replace('<a class="lg" href="index.html"><img src="crest.png"', '<a class="lg" href="index.html"><img src="crest-sm.png"')
     .replace(/(<div class="crestwrap[^>]*>(?:<span class="halo"><\/span>)?<img) src="crest\.png"/g, '$1 src="crest-lg.png"')

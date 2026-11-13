@@ -201,3 +201,17 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
   };
   d.readyState === 'loading' ? d.addEventListener('DOMContentLoaded', () => setTimeout(find, 300)) : setTimeout(find, 300);
 })();
+// R36: headings that script mounts after load (rooms, staff panels) never skip a level for assistive tech: walked in order inside <main>, a heading that would
+// jump more than one level gets aria-level = previous + 1. Attribute only, no visual change; runs after load and after the first mounts.
+(() => {
+  const d = document, fix = () => {
+    const m = d.getElementById('main'); if (!m) return; let prev = 0;
+    for (const h of m.querySelectorAll('h1,h2,h3,h4,h5,h6,[role="heading"]')) {
+      if (h.closest('[hidden]')) continue;
+      const a = parseInt(h.getAttribute('aria-level') || '', 10), cur = a || (/^H[1-6]$/.test(h.tagName) ? +h.tagName[1] : 2);
+      if (!a && cur > prev + 1) { h.setAttribute('aria-level', String(prev + 1)); prev += 1; } else prev = cur;
+    }
+  };
+  d.readyState === 'loading' ? d.addEventListener('DOMContentLoaded', () => setTimeout(fix, 400)) : setTimeout(fix, 400);
+  for (const t of [1500, 4000]) setTimeout(fix, t);
+})();

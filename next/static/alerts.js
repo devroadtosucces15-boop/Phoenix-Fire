@@ -30,8 +30,8 @@
     const cnt = (k) => k === 'all' ? N.items.length : k === 'unread' ? N.items.filter((n) => !n.read || n.ack === 'due').length : N.items.filter((n) => GROUPS.find(([g]) => g === k)[3].includes(n.type)).length;
     // announcements waiting for a "Got it" sit on top in their own group, the rest run newest first by day
     const due = list.filter((n) => n.ack === 'due'), rest = list.filter((n) => n.ack !== 'due').sort((a, b) => b.at - a.at);
-    let last = '', body = due.length ? `<h4 class="al-day due">📌 Needs your OK</h4><ul class="al-list">${due.map(item).join('')}</ul>` : '';
-    for (const n of rest) { const dd = day(n.at); if (dd !== last) { if (last) body += '</ul>'; body += `<h4 class="al-day">${dd}</h4><ul class="al-list">`; last = dd; } body += item(n); }
+    let last = '', body = due.length ? `<h4 class="al-day due" role="heading" aria-level="2">📌 Needs your OK</h4><ul class="al-list">${due.map(item).join('')}</ul>` : '';
+    for (const n of rest) { const dd = day(n.at); if (dd !== last) { if (last) body += '</ul>'; body += `<h4 class="al-day" role="heading" aria-level="2">${dd}</h4><ul class="al-list">`; last = dd; } body += item(n); }
     if (last) body += '</ul>';
     return `<div class="sq-bar"><div class="chips ch-filters" role="tablist" aria-label="Show">${GROUPS.map(([k, i, l]) => `<button type="button" role="tab" class="chip${k === f ? ' on' : ''}" aria-selected="${k === f}" data-af="${k}">${i} ${l} <small class="muted">${cnt(k)}</small></button>`).join('')}</div>
 ${N.unread ? `<button type="button" class="btn ghost" data-readall>✓ Mark all read <span class="lk-badge num" data-unr>${N.unread}</span></button>` : '<span class="muted small">✅ All caught up</span>'}</div>
