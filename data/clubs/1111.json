@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T13:00:51.810Z",
+ "fetchedAt": "2026-11-13T13:10:45.581Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1979,10 +1979,10 @@
   {
    "name": "zouz94230",
    "proPos": "25",
-   "gamesPlayed": "180",
-   "goals": "78",
+   "gamesPlayed": "181",
+   "goals": "79",
    "assists": "56",
-   "manOfTheMatch": "21",
+   "manOfTheMatch": "22",
    "ratingAve": "7.4",
    "prevGoals": "1",
    "favoritePosition": "forward"
