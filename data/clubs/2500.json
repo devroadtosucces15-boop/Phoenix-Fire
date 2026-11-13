@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-13T01:30:51.830Z",
+ "fetchedAt": "2026-11-13T01:40:45.305Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -28,7 +28,7 @@
    "kitThrdColor2": "592653",
    "kitThrdColor3": "16696614",
    "kitThrdColor4": "15921906",
-   "dCustomKit": "3",
+   "dCustomKit": "0",
    "customKeeperKitId": "5007",
    "crestColor": "16495884",
    "crestAssetId": "99160802"

@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T01:30:51.830Z",
+ "fetchedAt": "2026-11-13T01:40:45.305Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -28,7 +28,7 @@
    "kitThrdColor2": "1485447",
    "kitThrdColor3": "16696614",
    "kitThrdColor4": "16696614",
-   "dCustomKit": "0",
+   "dCustomKit": "1",
    "customKeeperKitId": "5007",
    "crestColor": "16495884",
    "crestAssetId": "99160802"
