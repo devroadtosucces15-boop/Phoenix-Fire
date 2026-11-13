@@ -74,7 +74,7 @@ t('flag off (the default): only the result is posted', (await run({})).length ==
 const two = await run({ matchReview: 'members' });
 t('flag on: the review is a second post right after the result', two.length === 2);
 const review = JSON.parse(two[1].init.body.get('payload_json'));
-t('… carrying the review picture as an attachment, with a title and no ping', images(review).filter((u) => u.startsWith('attachment://')).join() === 'attachment://review-900.png' && two[1].init.body.get('files[0]') && /vs Poundin P\./.test(plainText(review)) && !/@everyone|<@&/.test(JSON.stringify(review)));
+t('… carrying the review picture as an attachment, with a title and no ping', images(review).filter((u) => u.startsWith('attachment://') && !u.endsWith('crest.png')).join() === 'attachment://review-900.png' && two[1].init.body.get('files[1]') && /vs Poundin P\./.test(plainText(review)) && !/@everyone|<@&/.test(JSON.stringify(review)));
 const noPic = await (async () => { calls.length = 0; await postResults([match()], { config: { siteUrl: 'https://x.test/', features: { discordMatch: 'members', matchReview: 'members' }, hiddenPlayers: [] }, homeId: '100', route: async () => ({ ok: true, channelId: 'chan-1' }), drawn: { dir: out, manifest: { match: { 900: { score: 'score-900.png', field: 'field-900.png' } } } } }); return posts(); })();
 t('no review picture drawn (abandoned match, or the draw failed): no second post, the result still goes out', noPic.length === 1);
 

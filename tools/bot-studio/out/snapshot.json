@@ -1,0 +1,4680 @@
+{
+ "at": "2026-11-11T21:48:46.293Z",
+ "outputs": {
+  "slash:/club": {
+   "hash": "8aaebace485e",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/club",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · CLUB",
+      "text: ## PHOENIX FIRE",
+      "text: -# Division 2 · Skill rating 1886",
+      "picture: http://localhost:4321/cards/club-H.png",
+      "text: -# Updates every 10 min · newest result on the right",
+      "button[link]: Club site  → https://example.invalid/phoenix-fire/",
+      "button[link]: Trials  → https://example.invalid/phoenix-fire/apply.html"
+     ]
+    }
+   ]
+  },
+  "slash:/last": {
+   "hash": "665467d877c1",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/last",
+     "outline": [
+      "stripe #4be08a",
+      "text: **`PHOENIX FIRE`** · LEAGUE",
+      "text: -# PHOENIX FIRE · MATCH CENTRE · LEAGUE",
+      "text: ## PHOENIX FIRE 3–2 Iron Harbor",
+      "text: -# <t:T:f> · Win",
+      "picture: http://localhost:4321/cards/score-N-H.png",
+      "text: **⚽ Goals** Ignis77, Helios_10, NovaCrest",
+      "text: **📊 Team rating** 7.2",
+      "text: **⭐ Man of the match** Ignis77",
+      "---",
+      "text: -# **FIELD VIEW · RATINGS**",
+      "picture: http://localhost:4321/cards/field-N-H.png",
+      "text: -# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · Updates every 10 min",
+      "menu: 📊 Show my match – pick your player [11 options]  (norex:mm:N)",
+      "button[grey]: 🙋 My match  (norex:mme:N)",
+      "button[grey]: 📊 Box score  (norex:box:N)",
+      "button[link]: Match report  → https://example.invalid/phoenix-fire/matches/N.html"
+     ]
+    }
+   ]
+  },
+  "slash:/results": {
+   "hash": "b927939afdef",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/results",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · RESULTS",
+      "text: ## Last 5 results",
+      "text: -# 4W 0D 1L",
+      "picture: http://localhost:4321/cards/results-H.png",
+      "text: -# Updates every 10 min",
+      "button[link]: All results  → https://example.invalid/phoenix-fire/results.html"
+     ]
+    }
+   ]
+  },
+  "slash:/player": {
+   "hash": "c5eb2b5a4215",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/player gamertag=SolarGlove",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · PLAYER CARD",
+      "text: ## SolarGlove · 84 OVR",
+      "text: -# GK · PHOENIX FIRE",
+      "thumb: https://example.invalid/phoenix-fire/assets/crest.png",
+      "picture: http://localhost:4321/cards/player-N-H.png",
+      "text: **🌍 Career** 90 games · 0 goals · 0 assists · rating 7.1",
+      "text: **📈 Last 5** 🟠 6.1  🟡 7.6  🟡 8.0  🟠 6.9  🟠 6.7  → newest",
+      "text: -# Updates every 10 min · career covers every club",
+      "button[link]: Full profile  → http://localhost:4321/players/N.html"
+     ]
+    }
+   ]
+  },
+  "slash:/compare": {
+   "hash": "8d1b4d833ae6",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/compare player1=SolarGlove player2=CinderRock",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · COMPARE",
+      "text: ## SolarGlove vs CinderRock",
+      "text: -# GK vs CB · club stats this season",
+      "picture: http://localhost:4321/cards/cmp-N-N-H.png",
+      "text: -# ◀ marks the better number · the site has the radar chart",
+      "button[link]: Compare on the site  → http://localhost:4321/compare.html?a=N&b=N"
+     ]
+    }
+   ]
+  },
+  "slash:/site": {
+   "hash": "2291aa7a70be",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/site",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · LINKS",
+      "text: ## The club site",
+      "text: -# Results, stats, the squad, the Squad Hub and trials",
+      "thumb: https://example.invalid/phoenix-fire/assets/crest.png",
+      "button[link]: Website  → https://example.invalid/phoenix-fire/",
+      "button[link]: Squad Hub  → https://example.invalid/phoenix-fire/members.html",
+      "button[link]: Trials  → https://example.invalid/phoenix-fire/apply.html"
+     ]
+    }
+   ]
+  },
+  "slash:/ask": {
+   "hash": "99a492694f33",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/ask question=who has the most assists this season?",
+     "outline": [
+      "stripe #e8651a",
+      "text: {\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}"
+     ]
+    }
+   ]
+  },
+  "slash:/insight": {
+   "hash": "df8feb3937be",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/insight stat=club",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No insight for that yet – it appears after the next data refresh.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/insight stat=match",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No insight for that yet – it appears after the next data refresh.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/insight stat=last5",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No insight for that yet – it appears after the next data refresh.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/insight stat=goals",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No insight for that yet – it appears after the next data refresh.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/insight stat=assists",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No insight for that yet – it appears after the next data refresh.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/insight stat=rating",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No insight for that yet – it appears after the next data refresh.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/insight stat=motm",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No insight for that yet – it appears after the next data refresh.**",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/lineup": {
+   "hash": "f8471b2f5087",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/lineup",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🗓️ Nothing scheduled yet."
+     ]
+    }
+   ]
+  },
+  "slash:/rush": {
+   "hash": "ed7a7b28facc",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/rush log opponent=1 for=1 against=1",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🪪 Claim your player in the Squad Hub first (http://localhost:4321/members.html) – then /rush log fills you in automatically.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/me": {
+   "hash": "e60f9f5e2f62",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/me",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🪪 You haven’t got a verified player yet – claim yours in the Squad Hub: http://localhost:4321/members.html",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/leaderboard": {
+   "hash": "140f869b5cde",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/leaderboard mode=league stat=goals",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · LEADERBOARD",
+      "text: ## Top scorers",
+      "text: -# FlareKing leads with 21",
+      "picture: http://localhost:4321/cards/top-goals-H.png",
+      "text: -# Updates every 10 min",
+      "button[link]: All leaderboards  → https://example.invalid/phoenix-fire/stats.html"
+     ]
+    },
+    {
+     "kind": "reply",
+     "label": "/leaderboard mode=rush stat=goals",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · RUSH LEADERBOARD",
+      "text: ## ⚡ Top scorers",
+      "text: -# No confirmed Rush results yet",
+      "text: -# From Rush results logged by members and confirmed by a manager",
+      "button[link]: All leaderboards  → http://localhost:4321/stats.html"
+     ]
+    }
+   ]
+  },
+  "slash:/profile": {
+   "hash": "d4d5b2db7500",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/profile",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · MEMBER PROFILE",
+      "text: ## Zub (owner)",
+      "text: -# No verified player yet",
+      "thumb: https://cdn.discordapp.com/embed/avatars/0.png",
+      "text: -# Full profile on the site",
+      "button[link]: Full profile  → http://localhost:4321/member.html?u=111"
+     ]
+    }
+   ]
+  },
+  "slash:/awards": {
+   "hash": "fce624b23b84",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/awards",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · WEEKLY AWARDS",
+      "text: ## 🏆 Weekly awards · 2026-W46",
+      "text: -# Voting closes <t:T:F> · <t:T:R>",
+      "text: -# **VOTE NOW**",
+      "text: ⚽ **Best Striker**",
+      "text: 🎯 **Best Midfielder**",
+      "text: 🛡️ **Best Defender**",
+      "text: 🧤 **Best Keeper**",
+      "text: -# **DECIDED AUTOMATICALLY**",
+      "text: 👟 **Golden Boot** – most goals",
+      "text: 🎩 **Playmaker** – most assists + second assists",
+      "text: 🦾 **Iron Man** – most appearances",
+      "text: 🌱 **Rising Star** – best rating among newer players (2+ games)",
+      "---",
+      "text: -# **LAST WEEK’S WINNERS · 2026-W45**",
+      "text: 👟 **Golden Boot** — [NovaCrest](http://localhost:4321/players/N.html)",
+      "text: 🦾 **Iron Man** — [Helios_10](http://localhost:4321/players/N.html)",
+      "text: 🦾 **Iron Man** — [Vesper_X](http://localhost:4321/players/N.html)",
+      "text: 🎩 **Playmaker** — [PyraMind](http://localhost:4321/players/N.html)",
+      "text: 🎩 **Playmaker** — [GoldenLoom](http://localhost:4321/players/N.html)",
+      "text: 🌱 **Rising Star** — [FlareKing](http://localhost:4321/players/N.html)",
+      "button[link]: Vote in the Squad Hub  → http://localhost:4321/members.html#awards"
+     ]
+    }
+   ]
+  },
+  "slash:/points": {
+   "hash": "b5632ecc8882",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/points",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · MY POINTS",
+      "text: ## ⭐ 0 points",
+      "text: -# #1 on the club leaderboard",
+      "thumb: https://cdn.discordapp.com/embed/avatars/0.png",
+      "text: **🎮 Match performance** 0",
+      "text: **🗓️ Attendance** 0",
+      "text: **💬 Community** 0",
+      "text: **🤝 Behaviour** 0",
+      "text: -# Only you can see this",
+      "button[link]: Full breakdown  → http://localhost:4321/members.html#points",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/avatarcard": {
+   "hash": "5cbc2080105c",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/avatarcard image=sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Attach an image.**",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/intel": {
+   "hash": "3726c9163884",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/intel",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Could not build the report**",
+      "text: channels.map is not a function"
+     ]
+    }
+   ]
+  },
+  "slash:/burner": {
+   "hash": "9f61adbe4df9",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/burner recent",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · BURNER CLUBS",
+      "text: ### 🕘 14 clubs Phoenix Fire played lately",
+      "text: 🔥 **Iron Harbor** · `1115838` · we won 3–2 · League · Nd ago",
+      "text: 🔥 **Night Owls** · `1107919` · we lost 1–2 · League · Nd ago",
+      "text: 🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · Nd ago",
+      "text: 🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · Nd ago",
+      "text: 🔥 **Coastline United** · `1123757` · we won 3–1 · League · Nd ago",
+      "text: 🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · Nd ago",
+      "text: 🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · Nd ago",
+      "text: 🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · Nd ago",
+      "text: 🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · Nd ago",
+      "text: 🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · Nd ago",
+      "text: 🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · Nd ago",
+      "text: 🔥 **Static Noise** · `1187109` · we lost 1–4 · League · Nd ago",
+      "text: 🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · Nd ago",
+      "text: 🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · Nd ago",
+      "text: -# Pick the burner below – ✅ = already tracked",
+      "menu: 🔥 Pick the burner to track [14 options]  (norex:bn:pick)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/burner search",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · BURNER CLUBS",
+      "text: ### 🕘 14 clubs Phoenix Fire played lately",
+      "text: ✅ **Iron Harbor** · `1115838` · we won 3–2 · League · Nd ago",
+      "text: 🔥 **Night Owls** · `1107919` · we lost 1–2 · League · Nd ago",
+      "text: 🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · Nd ago",
+      "text: 🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · Nd ago",
+      "text: 🔥 **Coastline United** · `1123757` · we won 3–1 · League · Nd ago",
+      "text: 🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · Nd ago",
+      "text: 🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · Nd ago",
+      "text: 🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · Nd ago",
+      "text: 🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · Nd ago",
+      "text: 🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · Nd ago",
+      "text: 🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · Nd ago",
+      "text: 🔥 **Static Noise** · `1187109` · we lost 1–4 · League · Nd ago",
+      "text: 🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · Nd ago",
+      "text: 🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · Nd ago",
+      "text: -# Pick the burner below – ✅ = already tracked",
+      "menu: 🔥 Pick the burner to track [14 options]  (norex:bn:pick)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/burner track club=sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🔍 EA has no club matching **sample** yet. Names only match clubs Phoenix Fire has played – for any other club paste its **club ID** (`/burner track 1234567`), or try again after their first game."
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/burner list",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · BURNER CLUBS",
+      "text: ### 🔥 Burner clubs (1/20)",
+      "text: 🔥 **Iron Harbor** · `1115838` · ⏳ first collection pending",
+      "text: -# Full stats on the Burner clubs page · /burner remove to stop tracking",
+      "button[link]: Burner clubs page  → http://localhost:4321/burners.html",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/burner remove",
+     "outline": [
+      "stripe #6c7890",
+      "text: Which club should I stop tracking? (Its history stays on file.)",
+      "menu: 🗑️ Stop tracking… [1 options]  (norex:bn:rm)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/syncroles": {
+   "hash": "c78a8a627c4c",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/syncroles",
+     "outline": [
+      "stripe #6c7890",
+      "text: Role sync failed.",
+      "text: roles.map is not a function"
+     ]
+    }
+   ]
+  },
+  "slash:/exportcontent": {
+   "hash": "216da52acd18",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/exportcontent mode=next type=all",
+     "outline": [
+      "stripe #6c7890",
+      "text: Invalid channel."
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/exportcontent mode=reset type=all",
+     "outline": [
+      "stripe #6c7890",
+      "text: Invalid channel."
+     ]
+    }
+   ]
+  },
+  "slash:/aispike": {
+   "hash": "b5b7cd450503",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/aispike",
+     "outline": [
+      "stripe #e8651a",
+      "text: ✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 0 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"",
+      "text: ❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
+     ]
+    }
+   ]
+  },
+  "slash:/profanitysetup": {
+   "hash": "40ca223886e2",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/profanitysetup channel=C1",
+     "outline": [
+      "stripe #6c7890",
+      "text: rules.find is not a function"
+     ]
+    }
+   ]
+  },
+  "slash:/feedback": {
+   "hash": "c84eda651d98",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/feedback to=222 kind=praise text=Sample text",
+     "outline": [
+      "stripe #6c7890",
+      "text: ⚠️ Only verified players can send feedback – claim your player first.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/feedback to=222 kind=tip text=Sample text",
+     "outline": [
+      "stripe #6c7890",
+      "text: ⚠️ Only verified players can send feedback – claim your player first.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/feedback to=222 kind=concern text=Sample text",
+     "outline": [
+      "stripe #6c7890",
+      "text: ⚠️ Only verified players can send feedback – claim your player first.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/suggest": {
+   "hash": "f2784a307547",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/suggest title=Sample title",
+     "outline": [
+      "stripe #4be08a",
+      "text: **💡 Added to the board: Sample title**",
+      "text: Vote it up in the Squad Hub: http://localhost:4321/members.html#suggestions",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/announce": {
+   "hash": "67d9962d699f",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/announce title=Sample title audience=all",
+     "outline": [
+      "stripe #4be08a",
+      "text: **📣 Sent: Sample title**",
+      "text: Delivered to 4 members (Squad Hub bell + Discord DM).",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/announce title=Sample title audience=managers",
+     "outline": [
+      "stripe #4be08a",
+      "text: **📣 Sent: Sample title**",
+      "text: Delivered to 1 member (Squad Hub bell + Discord DM).",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/trial": {
+   "hash": "c7d9da084964",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/trial gamertag=SolarGlove",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🤷 No trial cards match \"SolarGlove\".",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/motm": {
+   "hash": "58291583b6b3",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/motm",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · MAN OF THE MATCH VOTE",
+      "text: ## 🌟 MOTM · vs Iron Harbor",
+      "text: -# 3–2 · 2 votes so far",
+      "thumb: data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M20%202%2036%208v12c0%209-7%2015-16%2018C11%2035%204%2029%204%2020V8z%22%20fill%3D%22%23333%22%20stroke%3D%22%23999%22%20stroke-width%3D%222.5%22%2F%3E%3Ctext%20x%3D%2220%22%20y%3D%2224%22%20text-anchor%3D%22middle%22%20font-size%3D%2211%22%20font-weight%3D%22800%22%20fill%3D%22%23fff%22%20font-family%3D%22sans-serif%22%3EIH%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "text: 🥇 **SolarGlove** — 1 vote",
+      "text: 🥈 **IronTalon** — 1 vote",
+      "button[link]: Vote in the Squad Hub  → http://localhost:4321/members.html#vote",
+      "button[link]: Match report  → https://example.invalid/phoenix-fire/matches/N.html"
+     ]
+    }
+   ]
+  },
+  "slash:/history": {
+   "hash": "a32104b53ecb",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/history opponent=1",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🤷 No matches found against \"1\"."
+     ]
+    }
+   ]
+  },
+  "slash:/jail": {
+   "hash": "989d72c7a987",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/jail member=222",
+     "outline": [
+      "stripe #ff7d72",
+      "picture: http://localhost:4321/cards/banner-jail.png?v=N",
+      "text: -# PHOENIX FIRE · JAIL",
+      "text: ## ⛓️ a member",
+      "text: -# Phoenix Fire County Jail · PHX-0004",
+      "text: Charged with leaving the pitch for a snack mid-match.",
+      "text: **Sentence** 30 min · out <t:T:R>",
+      "---",
+      "text: -# Locked up by <@111> · 4th offence this month · just for fun",
+      "button[grey]: 💸 Post bail  (norex:fun:bail:4)",
+      "button[grey]: 📜 Rap sheet  (norex:fun:sheet:222)"
+     ]
+    }
+   ]
+  },
+  "slash:/wheel": {
+   "hash": "7745ea3ce128",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/wheel options=sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: **The wheel needs at least two options**",
+      "text: Separate them with commas: /wheel options:Jez, Kruger, Davey",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/share": {
+   "hash": "71db4ffb7e97",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/share title=Sample title tip=sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Add a bit more**",
+      "text: A short title and a tip of at least a sentence.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/discoveries": {
+   "hash": "ad22d3c4c8aa",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/discoveries",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Nothing waiting**",
+      "text: Every discovery has been looked at.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/watch": {
+   "hash": "8d0148836a49",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/watch latest topic=builds",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · WATCH LIST",
+      "text: ### 🛠️ Builds",
+      "text: -# Pro Clubs creators the squad follows",
+      "text: 🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)",
+      "text: -# SAMPLE Channel · <t:T:R>",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/watch latest topic=tactics",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · WATCH LIST",
+      "text: ### 📐 Tactics",
+      "text: -# Pro Clubs creators the squad follows",
+      "text: 📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)",
+      "text: -# SAMPLE Channel · <t:T:R>",
+      "text: ",
+      "text: 📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)",
+      "text: -# SAMPLE Channel · <t:T:R>",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/watch latest topic=tips",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · WATCH LIST",
+      "text: ### 💡 Tips",
+      "text: -# Pro Clubs creators the squad follows",
+      "text: 💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)",
+      "text: -# SAMPLE Channel · <t:T:R>",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/watch latest topic=meta",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · WATCH LIST",
+      "text: ### 🔥 Meta",
+      "text: -# Pro Clubs creators the squad follows",
+      "text: 🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)",
+      "text: -# SAMPLE Channel · <t:T:R>",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/watch latest topic=news",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · WATCH LIST",
+      "text: ### 📰 News",
+      "text: -# Pro Clubs creators the squad follows",
+      "text: 📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)",
+      "text: -# SAMPLE Channel · <t:T:R>",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/watch add channel=C1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **That isn’t a channel ID**",
+      "text: It starts with UC and is 24 characters – on the channel page: About → Share channel → Copy channel ID.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/watch remove channel=C1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Not found**",
+      "text: Use the channel ID or the name shown in /watchlist list.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/watch list",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · WATCH LIST",
+      "text: ### 🎬 0 creators",
+      "text: None yet – /watchlist add",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/streamalerts": {
+   "hash": "9bb7babf1f54",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/streamalerts add source=main link=sample what=both",
+     "outline": [
+      "stripe #6c7890",
+      "text: **I can’t read that link**",
+      "text: Paste a Twitch, YouTube (@handle or /channel/UC…) or Kick channel link.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/streamalerts add source=contributor link=sample what=both",
+     "outline": [
+      "stripe #6c7890",
+      "text: **I can’t read that link**",
+      "text: Paste a Twitch, YouTube (@handle or /channel/UC…) or Kick channel link.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/streamalerts list",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · STREAM ALERTS",
+      "text: ### 📡 0 sources",
+      "text: -# Alerts are on",
+      "text: Nothing yet. Add one with `/streamalerts add`.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/streamalerts remove id=1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Not found**",
+      "text: Use the number shown in /streamalerts list.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/streamalerts push id=1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Not found**",
+      "text: Use the number shown in /streamalerts list.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/streamalerts test id=1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Not found**",
+      "text: Use the number shown in /streamalerts list.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/trivia": {
+   "hash": "eeabd3e91f0e",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/trivia play",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · TRIVIA",
+      "text: ### 🧠 Which club is nicknamed “The Gunners”?",
+      "text: **A** · West Ham",
+      "text: **B** · Tottenham",
+      "text: **C** · Arsenal",
+      "text: **D** · Millwall",
+      "text: -# Answer privately with a button · 10 points for a right answer · one go each",
+      "button[grey]: A  (norex:fun:tq:1:0)",
+      "button[grey]: B  (norex:fun:tq:1:1)",
+      "button[grey]: C  (norex:fun:tq:1:2)",
+      "button[grey]: D  (norex:fun:tq:1:3)"
+     ]
+    },
+    {
+     "kind": "reply",
+     "label": "/trivia board",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · TRIVIA",
+      "text: ### 🏆 Trivia table",
+      "text: -# 1 player on the board",
+      "text: 🥇 **Mike** · 120 pts · 9/12 right"
+     ]
+    }
+   ]
+  },
+  "slash:/setup": {
+   "hash": "9f50f2bc0109",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/setup leavelog channel=C1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Something went wrong**",
+      "text: Spread syntax requires ...iterable[Symbol.iterator] to be a function"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup welcome channel=C1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Something went wrong**",
+      "text: Spread syntax requires ...iterable[Symbol.iterator] to be a function"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup pingroles channel=C1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Something went wrong**",
+      "text: roles.map is not a function"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=announcements",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=match_results",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=match_notifications",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=recruitment",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=claims",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=manager_alerts",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=logs",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup channel purpose=welcome",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup role group=owner role=R1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup role group=administrator role=R1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup role group=manager role=R1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup role group=division_manager role=R1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup role group=club_manager role=R1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup role group=player role=R1",
+     "outline": [
+      "stripe #6c7890",
+      "text: **This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup off feature=leavelog",
+     "outline": [
+      "stripe #6c7890",
+      "text: **🔕 Leave/join alerts are off**",
+      "text: Turn them back on with `/setup`.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/setup off feature=welcome",
+     "outline": [
+      "stripe #6c7890",
+      "text: **🔕 Welcome posts are off**",
+      "text: Turn them back on with `/setup`.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/purge": {
+   "hash": "dc77d164fa64",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/purge count=3",
+     "outline": [
+      "stripe #6c7890",
+      "text: **🧹 Deleted 0 messages**"
+     ]
+    }
+   ]
+  },
+  "slash:/tag": {
+   "hash": "056602e02f10",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/tag post name=Sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No tag called sample**",
+      "text: `/tags list` shows every saved answer.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/tag list",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No saved answers yet**",
+      "text: Managers add them with `/tags set`.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/tag set name=Sample text=Sample text",
+     "outline": [
+      "stripe #4be08a",
+      "text: **✅ Saved sample**",
+      "text: Anyone can post it with `/tag name:sample`.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/tag delete name=Sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: **🗑️ Deleted sample**",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/remind": {
+   "hash": "0ab8dd742a68",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/remind add in=sample text=Sample text",
+     "outline": [
+      "stripe #6c7890",
+      "text: **I couldn’t read that time**",
+      "text: Try `10m`, `2h`, `1h30m` or `1d`.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/remind list",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No reminders waiting**",
+      "text: Set one with `/remind`.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/panel": {
+   "hash": "3eed26abaa7f",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/panel",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 🗂️ Manager panel",
+      "text: -# 2 waiting for a decision",
+      "---",
+      "text: 🪪 **Player claims**",
+      "text: -# 1 waiting",
+      "button[grey]: Open · 1  (norex:mp:q:claims)",
+      "text: 🎨 **Card Studio**",
+      "text: -# All clear",
+      "button[grey]: Open  (norex:mp:q:cards)",
+      "text: ⚡ **Rush results**",
+      "text: -# All clear",
+      "button[grey]: Open  (norex:mp:q:rush)",
+      "text: 📨 **Requests**",
+      "text: -# All clear",
+      "button[grey]: Open  (norex:mp:q:requests)",
+      "text: 💡 **New ideas**",
+      "text: -# 1 waiting",
+      "button[grey]: Open · 1  (norex:mp:q:ideas)",
+      "text: 🚩 **Reported content**",
+      "text: -# Nothing reported",
+      "button[link]: Review in the portal  → http://localhost:4321/members.html#portal-reports",
+      "text: -# Updated <t:T:R> · only you can see this",
+      "button[grey]: 🔄 Refresh  (norex:mp:home)",
+      "button[link]: Manager portal  → http://localhost:4321/members.html#portal",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/host": {
+   "hash": "8ec2a86dd058",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/host mode=league kind=session when=in 2 hours",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Which time zone are you in?**",
+      "text: Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/host mode=rush kind=session when=in 2 hours",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Which time zone are you in?**",
+      "text: Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/matchday": {
+   "hash": "d4c0b3bc5243",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/matchday create kind=league when=in 2 hours",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Which time zone are you in?**",
+      "text: Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/matchday create kind=playoffs when=in 2 hours",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Which time zone are you in?**",
+      "text: Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/matchday create kind=friendly when=in 2 hours",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Which time zone are you in?**",
+      "text: Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/matchday create kind=tournament when=in 2 hours",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Which time zone are you in?**",
+      "text: Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/matchday create kind=vpg when=in 2 hours",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Which time zone are you in?**",
+      "text: Add `timezone:` (start typing your city), or set it once in your Squad Hub profile and I’ll remember it.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/matchday checkin",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Nothing to check in to**",
+      "text: No match day is scheduled right now.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/matchday status",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Nothing scheduled yet**",
+      "text: Managers add match days with /matchday create.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "reply",
+     "label": "/matchday schedule",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🗓️ Nothing scheduled yet – managers add match nights in the Squad Hub."
+     ]
+    },
+    {
+     "kind": "reply",
+     "label": "/matchday next",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🗓️ Nothing scheduled yet."
+     ]
+    },
+    {
+     "kind": "reply",
+     "label": "/matchday who",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🗓️ Nothing scheduled yet."
+     ]
+    }
+   ]
+  },
+  "slash:/lfg": {
+   "hash": "8dac72fcbaa0",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "/lfg now",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · RUSH",
+      "text: ## ⚡ Zub (owner) is available for Rush",
+      "text: -# Until <t:T:t> · <t:T:R>",
+      "---",
+      "text: **✅ In** –",
+      "text: **⏰ Later** –",
+      "text: -# Tap a button to answer",
+      "button[green]: ✅ I’m in  (pf:lfg:1:in)",
+      "button[grey]: ⏰ Later  (pf:lfg:1:later)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/lfg cancel",
+     "outline": [
+      "stripe #4be08a",
+      "text: **Taken down**",
+      "text: Your Rush availability is off.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/lfg list",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Nobody is available right now**",
+      "text: Post with /lfg now and the Rush role is tagged.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/queue": {
+   "hash": "880bcb5b4f73",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/queue status",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Nobody is in the queue**",
+      "text: Press **Join queue** on the board to go first.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/queue board",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No queue channel is set**",
+      "text: No queue channel is set. A manager runs `/setup channel purpose:rush_queue` in the channel that should hold the board (or sets it under Boardroom → Organization).",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/queue clear",
+     "outline": [
+      "stripe #4be08a",
+      "text: **🧹 Queue cleared**",
+      "text: Everyone presses **Join queue** again.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/queue remove member=222",
+     "outline": [
+      "stripe #6c7890",
+      "text: **That member is not in the queue**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/queue settings failed_policy=next",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Queue settings**",
+      "text: Failed match: **goes next**",
+      "text: Green light warning: **1 min**, removed after **2 min**",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/queue settings failed_policy=bottom",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Queue settings**",
+      "text: Failed match: **goes to the bottom**",
+      "text: Green light warning: **1 min**, removed after **2 min**",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/rushladder": {
+   "hash": "cfc6ec4b9562",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/rushladder scan image=sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Attach the photo**",
+      "text: Add the leaderboard image to the command.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/rushladder latest",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No leaderboard photo yet**",
+      "text: Use /rushladder scan with a photo of the Rush leaderboard.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/seasoncard": {
+   "hash": "cddd74bba2c7",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/seasoncard scan image=sample",
+     "outline": [
+      "stripe #6c7890",
+      "text: **Attach the screenshot**",
+      "text: Add your end-of-season Rush stats image to the command.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "/seasoncard mine",
+     "outline": [
+      "stripe #6c7890",
+      "text: **No season card yet**",
+      "text: Use /seasoncard scan with the screenshot of your end-of-season Rush stats.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/corehelp": {
+   "hash": "4e1e0c45e97a",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/corehelp",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## 🛠️ How Phoenix Core works",
+      "text: -# Runs the server and the site: channels and roles, approvals, announcements, stream alerts.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*",
+      "text: `/aispike` – one-off test of the Workers AI image + text models *(owner only)*",
+      "text: `/panel` – everything waiting for a decision – approve or reject right here *(managers)*",
+      "text: `/announce` – send an announcement to every member (Squad Hub bell + Discord DM) *(managers)*",
+      "text: `/trial` – current trial cards, or search by gamertag *(managers)*",
+      "text: `/setup` – channels, roles, leave/join alerts, welcome posts and the ping-role p… *(managers)*",
+      "text: `/purge` – delete recent messages in this channel *(managers)*",
+      "text: `/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*",
+      "text: `/exportcontent` – incremental channel history export to DMs *(owner only)*",
+      "text: `/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*",
+      "---",
+      "text: -# Page 1 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/statshelp": {
+   "hash": "544a4b98874a",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/statshelp",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## 📊 How Phoenix Stats works",
+      "text: -# Everything that reads numbers: results, players, leaderboards, awards, points and the Rush photo scans.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/seasoncard` – Your end-of-season Rush stats card: scan a screenshot, or see yours",
+      "text: `/club` – Club record, division and form",
+      "text: `/last` – The latest result",
+      "text: `/results` – Recent results",
+      "text: `/player` – A player's stats card",
+      "text: `/compare` – Compare two players",
+      "text: `/leaderboard` – League or Rush leaderboards",
+      "text: `/history` – Our record against a past opponent",
+      "text: `/insight` – The club's latest stat insight",
+      "text: `/ask` – Ask the club chatbot a question about our stats",
+      "text: `/me` – My verified player card (only you see it)",
+      "text: `/profile` – A member's profile – player, positions, platforms",
+      "text: `/awards` – This week's award ballot and last week's winners",
+      "text: `/points` – Your total points + breakdown by category",
+      "text: `/motm` – Current Man of the Match vote standing for the latest match",
+      "text: `/burner` – track burner clubs – search EA, pick one, get stats after every game *(managers)*",
+      "text: `/rushladder` – Club Rush ladder: scan a photo, or show the latest",
+      "---",
+      "text: -# Page 1 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/toolshelp": {
+   "hash": "bdb9540604db",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/toolshelp",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## 🧰 How Phoenix Tools works",
+      "text: -# Helpers: feedback, tips, saved answers, reminders, the watch list, plus a few fun ones.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*",
+      "text: `/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…",
+      "text: `/suggest` – Drop an idea in the suggestion box",
+      "text: `/share` – Share something worth knowing with the club – a manager approves it f…",
+      "text: `/discoveries` – shared tips waiting for approval *(managers)*",
+      "text: `/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…",
+      "text: `/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…",
+      "text: `/remind` – Reminders: set one, or see and cancel the ones waiting",
+      "text: `/site` – Link to the club website",
+      "text: `/avatarcard` – Upload your avatar for an AI-styled club background",
+      "text: `/jail` – Lock a mate up for a daft offence (just for fun)",
+      "text: `/wheel` – Spin a wheel to pick one option",
+      "text: `/trivia` – A football trivia question – points for right answers",
+      "---",
+      "text: -# Page 1 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/matchdayhelp": {
+   "hash": "2089ce59959d",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/matchdayhelp",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## 📅 How Phoenix Matchday works",
+      "text: -# Running a match night: schedule, sign-ups, check-in and the lineup.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/host` – schedule a League or Rush session or friendly – posted with sign-up b… *(managers)*",
+      "text: `/lineup` – The lineup for the next event",
+      "text: `/matchday` – Match days: create one, check in, and see the schedule or who is in",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "slash:/rushhelp": {
+   "hash": "dc77e15a18a0",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "/rushhelp",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## ⚡ How Phoenix Rush works",
+      "text: -# Five-v-five: log results, find a game, and run the queue.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/rush` – Rush results",
+      "text: `/lfg` – Looking for Rush players: say you are available, or see who is",
+      "text: `/queue` – The Rush queue: see the line, or (managers) post the board and set it…",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mm:N": {
+   "hash": "049e482d3c28",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# PHOENIX FIRE · PLAYER MATCH",
+      "text: ## Ignis77 · 3–2 Iron Harbor",
+      "text: -# ✅ Win · Defender · <t:T:R>",
+      "thumb: data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2040%2040%22%3E%3Cpath%20d%3D%22M20%202%2036%208v12c0%209-7%2015-16%2018C11%2035%204%2029%204%2020V8z%22%20fill%3D%22%23333%22%20stroke%3D%22%23999%22%20stroke-width%3D%222.5%22%2F%3E%3Ctext%20x%3D%2220%22%20y%3D%2224%22%20text-anchor%3D%22middle%22%20font-size%3D%2211%22%20font-weight%3D%22800%22%20fill%3D%22%23fff%22%20font-family%3D%22sans-serif%22%3EIH%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "text: **🟢 Rating**",
+      "text: **8.2** · avg 6.9 ▲",
+      "text: ⭐ **Man of the match**",
+      "text: ",
+      "text: **⚽ Goals · 🎯 Assists**",
+      "text: **1** · **0**",
+      "text: avg 0.04 · 0.00 per game",
+      "text: ",
+      "text: **🅿️ Passes**",
+      "text: **37/44** (84%) · avg 82% ▲",
+      "text: ",
+      "text: **🛡️ Tackles**",
+      "text: **6/10** (60%) · avg 60% ＝",
+      "text: ",
+      "text: **📈 Last 10 ratings (oldest → newest)**",
+      "text: 🟠🟠🟡🟠🟡🟡🟡🟠🔴🟢",
+      "text: 6.3 · 6.8 · 7.5 · 6.6 · 7.5 · 7.2 · 7.3 · 6.7 · 5.8 · 8.2",
+      "text: Best **8.2** · season avg **6.9**",
+      "---",
+      "text: -# 🟢 8+  🟡 7+  🟠 6+  🔴 under 6 · only you can see this",
+      "button[link]: Match page  → https://example.invalid/phoenix-fire/matches/N.html",
+      "button[link]: Player page  → http://localhost:4321/players/N.html",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mme:N": {
+   "hash": "4b8794796a20",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“My match”",
+     "outline": [
+      "stripe #6c7890",
+      "text: **You haven't linked your player yet. Claim it in the Squad Hub (http://localhost:4321/members.html#me) – until then, pick your name in the 📊 Show my match menu.**",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:box:N": {
+   "hash": "84f39038e3ff",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Box score”",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# PHOENIX FIRE · BOX SCORE",
+      "text: ## PHOENIX FIRE 3–2 Iron Harbor",
+      "text: -# <t:T:f>",
+      "picture: http://localhost:4321/cards/box-N-H.png",
+      "button[link]: Match report  → https://example.invalid/phoenix-fire/matches/N.html",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:bn:pick": {
+   "hash": "314272d19c89",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🔥 Now tracking **Iron Harbor** (club 1115838).",
+      "text: The first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.",
+      "text: 📋 http://localhost:4321/burners.html#c1115838"
+     ]
+    }
+   ]
+  },
+  "comp:norex:bn:rm": {
+   "hash": "2c7a26223a67",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: 🗑️ Stopped tracking **Iron Harbor**. Its history stays on the page until the next cleanup – /burner search brings it back."
+     ]
+    }
+   ]
+  },
+  "comp:norex:fun:bail:#": {
+   "hash": "385673283fc9",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Post bail”",
+     "outline": [
+      "stripe #4be08a",
+      "picture: http://localhost:4321/cards/banner-jail.png?v=N",
+      "text: -# PHOENIX FIRE · JAIL",
+      "text: ## ⛓️ a member",
+      "text: -# Phoenix Fire County Jail · PHX-0004",
+      "text: Charged with leaving the pitch for a snack mid-match.",
+      "text: **Released** on bail from Zub (owner) <t:T:R>",
+      "---",
+      "text: -# Locked up by <@111> · 4th offence this month · just for fun",
+      "button[grey]: 📜 Rap sheet  (norex:fun:sheet:222)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:fun:sheet:N": {
+   "hash": "f8cadd4dd12d",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Rap sheet”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX FIRE · JAIL",
+      "text: ### 📜 Rap sheet · a member",
+      "text: -# 4 offences on file",
+      "text: `PHX-0004` <t:T:d> · 30 min · leaving the pitch for a snack mid-match · 💸 bailed",
+      "text: `PHX-0003` <t:T:d> · 5 min · SAMPLE · again",
+      "text: `PHX-0002` <t:T:d> · 5 min · SAMPLE · late",
+      "text: `PHX-0001` <t:T:d> · 5 min · SAMPLE · own goal",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:fun:tq:#:#": {
+   "hash": "f3d0e0054297",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“A”",
+     "outline": [
+      "stripe #ff7d72",
+      "text: **❌ Not this time – it was C · Arsenal**",
+      "text: From the Royal Arsenal armaments factory. You have 0 points.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“B”",
+     "outline": [
+      "stripe #6c7890",
+      "text: **You’ve already answered**",
+      "text: One go each per question.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“C”",
+     "outline": [
+      "stripe #6c7890",
+      "text: **You’ve already answered**",
+      "text: One go each per question.",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“D”",
+     "outline": [
+      "stripe #6c7890",
+      "text: **You’ve already answered**",
+      "text: One go each per question.",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:q:claims": {
+   "hash": "5d5d2d991e12",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Open · 1”",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 🪪 Player claims",
+      "text: -# 1 waiting",
+      "---",
+      "text: **Mike** says they play as **x_MrMike_x**",
+      "text: -# asked <t:T:R>",
+      "thumb: https://cdn.discordapp.com/embed/avatars/0.png",
+      "button[green]: Approve  (norex:mp:a:claims:222:approve)",
+      "button[red]: Reject  (norex:mp:a:claims:222:reject)",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:claims)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:a:claims:N:approve": {
+   "hash": "a9dd00c2c002",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Approve”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 🪪 Player claims",
+      "text: -# All clear",
+      "text: ✅ Claim approved – they get the Verified role and a notification",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:claims)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:home": {
+   "hash": "6a7aa1b03838",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Back”",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 🗂️ Manager panel",
+      "text: -# 1 waiting for a decision",
+      "---",
+      "text: 🪪 **Player claims**",
+      "text: -# All clear",
+      "button[grey]: Open  (norex:mp:q:claims)",
+      "text: 🎨 **Card Studio**",
+      "text: -# All clear",
+      "button[grey]: Open  (norex:mp:q:cards)",
+      "text: ⚡ **Rush results**",
+      "text: -# All clear",
+      "button[grey]: Open  (norex:mp:q:rush)",
+      "text: 📨 **Requests**",
+      "text: -# All clear",
+      "button[grey]: Open  (norex:mp:q:requests)",
+      "text: 💡 **New ideas**",
+      "text: -# 1 waiting",
+      "button[grey]: Open · 1  (norex:mp:q:ideas)",
+      "text: 🚩 **Reported content**",
+      "text: -# Nothing reported",
+      "button[link]: Review in the portal  → http://localhost:4321/members.html#portal-reports",
+      "text: -# Updated <t:T:R> · only you can see this",
+      "button[grey]: 🔄 Refresh  (norex:mp:home)",
+      "button[link]: Manager portal  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:a:claims:N:reject": {
+   "hash": "f86ec480d42e",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Reject”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 🪪 Player claims",
+      "text: -# All clear",
+      "text: ❌ Claim rejected – they’ve been told",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:claims)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:q:cards": {
+   "hash": "0bb1a83ceea5",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Open”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 🎨 Card Studio",
+      "text: -# All clear",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:cards)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:q:rush": {
+   "hash": "e2ff53672092",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Open”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## ⚡ Rush results",
+      "text: -# All clear",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:rush)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:q:requests": {
+   "hash": "0c4dcb751620",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Open”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 📨 Requests",
+      "text: -# All clear",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:requests)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:q:ideas": {
+   "hash": "4533c4dcde39",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Open · 1”",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 💡 New ideas",
+      "text: -# 1 waiting",
+      "---",
+      "text: **Sample title** · 👍 0",
+      "text: -# from Zub (owner) <t:T:R>",
+      "thumb: https://cdn.discordapp.com/embed/avatars/0.png",
+      "button[green]: Planned  (norex:mp:a:ideas:1:planned)",
+      "button[grey]: Done  (norex:mp:a:ideas:1:done)",
+      "button[red]: Not for now…  (norex:mp:r:ideas:1:declined)",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:ideas)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:a:ideas:#:planned": {
+   "hash": "143e5292f170",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Planned”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 💡 New ideas",
+      "text: -# All clear",
+      "text: 🗓️ Marked planned – they’ve been told",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:ideas)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:a:ideas:#:done": {
+   "hash": "fc1912478039",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Done”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 💡 New ideas",
+      "text: -# All clear",
+      "text: ✅ Marked done",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:ideas)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:norex:mp:r:ideas:#:declined": {
+   "hash": "e39c5802f4c4",
+   "messages": [
+    {
+     "kind": "modal",
+     "label": "“Not for now…”",
+     "outline": [
+      "form: New ideas: not for now",
+      "field: A short reply (optional – they’ll see it)"
+     ]
+    },
+    {
+     "kind": "reply",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# STAFF · MANAGER PANEL",
+      "text: ## 💡 New ideas",
+      "text: -# All clear",
+      "text: 🚫 Marked not for now",
+      "text: Nothing waiting here. 🎉",
+      "---",
+      "button[grey]: ⬅️ Back  (norex:mp:home)",
+      "button[grey]: 🔄 Refresh  (norex:mp:q:ideas)",
+      "button[link]: Open in the Squad Hub  → http://localhost:4321/members.html#portal"
+     ]
+    }
+   ]
+  },
+  "comp:pf:lfg:#:in": {
+   "hash": "b1ccfeb2825c",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“I’m in”",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · RUSH",
+      "text: ## ⚡ Zub (owner) is available for Rush",
+      "text: -# Until <t:T:t> · <t:T:R>",
+      "---",
+      "text: **✅ In** Zub (owner)",
+      "text: **⏰ Later** –",
+      "text: -# Tap a button to answer",
+      "button[green]: ✅ I’m in  (pf:lfg:1:in)",
+      "button[grey]: ⏰ Later  (pf:lfg:1:later)"
+     ]
+    }
+   ]
+  },
+  "comp:pf:lfg:#:later": {
+   "hash": "f2ff115b071d",
+   "messages": [
+    {
+     "kind": "reply",
+     "label": "“Later”",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · RUSH",
+      "text: ## ⚡ Zub (owner) is available for Rush",
+      "text: -# Until <t:T:t> · <t:T:R>",
+      "---",
+      "text: **✅ In** –",
+      "text: **⏰ Later** Zub (owner)",
+      "text: -# Tap a button to answer",
+      "button[green]: ✅ I’m in  (pf:lfg:1:in)",
+      "button[grey]: ⏰ Later  (pf:lfg:1:later)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:core:#:n": {
+   "hash": "279b659f0bc3",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Set the server up (managers)**",
+      "text: **1.** `/setup channel` – Pick a purpose (announcements, results, reminders…) and the channel it uses.",
+      "text: **2.** `/setup role` – Say which Discord role is which group (managers, players…).",
+      "text: **3.** `/setup welcome · leavelog` – Optional: a welcome post, and a log of people leaving.",
+      "text: **4.** `/setup pingroles` – Posts the ping-role panel so members pick what they get pinged for.",
+      "text: **5.** `/syncroles` – Gives the ✅ Verified role to every player with an approved claim.",
+      "---",
+      "text: **Stream and post alerts (owner)**",
+      "text: **1.** `/streamalerts add` – Choose the platform, paste the channel link, pick the Discord channel (or a member).",
+      "text: **2.** `/streamalerts test` – Shows you, privately, what the alert will look like. Nothing is posted.",
+      "text: **3.** `/streamalerts list` – Shows every source with its number.",
+      "text: **4.** `/streamalerts push` – Posts right now: the live card if they are on air, otherwise the channel card.",
+      "text: **5.** `/streamalerts remove` – Stops a source for good. Use the number from the list.",
+      "---",
+      "text: **Clear what is waiting (managers)**",
+      "text: **1.** `/panel` – Everything waiting for a decision. Approve or reject right in the message.",
+      "text: **2.** `/trial` – Look at current trial cards, or search one by gamertag.",
+      "---",
+      "text: -# Page 2 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## /syncroles",
+      "text: -# Managers · give/remove the ✅ Verified role for every player claim",
+      "text: Just run it, there is nothing to fill in.",
+      "---",
+      "text: **Good to know**",
+      "text: Run it after players claim their gamertag. It is safe to repeat.",
+      "text: -# Part of: Set the server up (managers) (🪜 Step by step)",
+      "---",
+      "text: -# Page 3 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:1:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:3:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## /aispike",
+      "text: -# Owner only · one-off test of the Workers AI image + text models",
+      "text: Just run it, there is nothing to fill in.",
+      "---",
+      "text: **Good to know**",
+      "text: Owner only. A one-off check that the AI models answer.",
+      "---",
+      "text: -# Page 4 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:2:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:4:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:core:#:b": {
+   "hash": "a6c3b3eab0b8",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## 🛠️ How Phoenix Core works",
+      "text: -# Runs the server and the site: channels and roles, approvals, announcements, stream alerts.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*",
+      "text: `/aispike` – one-off test of the Workers AI image + text models *(owner only)*",
+      "text: `/panel` – everything waiting for a decision – approve or reject right here *(managers)*",
+      "text: `/announce` – send an announcement to every member (Squad Hub bell + Discord DM) *(managers)*",
+      "text: `/trial` – current trial cards, or search by gamertag *(managers)*",
+      "text: `/setup` – channels, roles, leave/join alerts, welcome posts and the ping-role p… *(managers)*",
+      "text: `/purge` – delete recent messages in this channel *(managers)*",
+      "text: `/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*",
+      "text: `/exportcontent` – incremental channel history export to DMs *(owner only)*",
+      "text: `/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*",
+      "---",
+      "text: -# Page 1 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Set the server up (managers)**",
+      "text: **1.** `/setup channel` – Pick a purpose (announcements, results, reminders…) and the channel it uses.",
+      "text: **2.** `/setup role` – Say which Discord role is which group (managers, players…).",
+      "text: **3.** `/setup welcome · leavelog` – Optional: a welcome post, and a log of people leaving.",
+      "text: **4.** `/setup pingroles` – Posts the ping-role panel so members pick what they get pinged for.",
+      "text: **5.** `/syncroles` – Gives the ✅ Verified role to every player with an approved claim.",
+      "---",
+      "text: **Stream and post alerts (owner)**",
+      "text: **1.** `/streamalerts add` – Choose the platform, paste the channel link, pick the Discord channel (or a member).",
+      "text: **2.** `/streamalerts test` – Shows you, privately, what the alert will look like. Nothing is posted.",
+      "text: **3.** `/streamalerts list` – Shows every source with its number.",
+      "text: **4.** `/streamalerts push` – Posts right now: the live card if they are on air, otherwise the channel card.",
+      "text: **5.** `/streamalerts remove` – Stops a source for good. Use the number from the list.",
+      "---",
+      "text: **Clear what is waiting (managers)**",
+      "text: **1.** `/panel` – Everything waiting for a decision. Approve or reject right in the message.",
+      "text: **2.** `/trial` – Look at current trial cards, or search one by gamertag.",
+      "---",
+      "text: -# Page 2 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:core:#:f": {
+   "hash": "50b3f5f3ac12",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Step by step”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Set the server up (managers)**",
+      "text: **1.** `/setup channel` – Pick a purpose (announcements, results, reminders…) and the channel it uses.",
+      "text: **2.** `/setup role` – Say which Discord role is which group (managers, players…).",
+      "text: **3.** `/setup welcome · leavelog` – Optional: a welcome post, and a log of people leaving.",
+      "text: **4.** `/setup pingroles` – Posts the ping-role panel so members pick what they get pinged for.",
+      "text: **5.** `/syncroles` – Gives the ✅ Verified role to every player with an approved claim.",
+      "---",
+      "text: **Stream and post alerts (owner)**",
+      "text: **1.** `/streamalerts add` – Choose the platform, paste the channel link, pick the Discord channel (or a member).",
+      "text: **2.** `/streamalerts test` – Shows you, privately, what the alert will look like. Nothing is posted.",
+      "text: **3.** `/streamalerts list` – Shows every source with its number.",
+      "text: **4.** `/streamalerts push` – Posts right now: the live card if they are on air, otherwise the channel card.",
+      "text: **5.** `/streamalerts remove` – Stops a source for good. Use the number from the list.",
+      "---",
+      "text: **Clear what is waiting (managers)**",
+      "text: **1.** `/panel` – Everything waiting for a decision. Approve or reject right in the message.",
+      "text: **2.** `/trial` – Look at current trial cards, or search one by gamertag.",
+      "---",
+      "text: -# Page 2 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:hub:#:o": {
+   "hash": "4831dadc7343",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Other bots”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX HELP",
+      "text: ## 🤖 Which bot do you need?",
+      "text: -# Phoenix is five bots. Each has its own help command, and you can open any of them here.",
+      "text: 🛠️ **Phoenix Core** – Runs the server and the site: channels and roles, approvals, announcements, stream alerts.",
+      "text:    `/corehelp`",
+      "text: 📊 **Phoenix Stats** – Everything that reads numbers: results, players, leaderboards, awards, points and the Rush photo scans.",
+      "text:    `/statshelp`",
+      "text: 🧰 **Phoenix Tools** – Helpers: feedback, tips, saved answers, reminders, the watch list, plus a few fun ones.",
+      "text:    `/toolshelp`",
+      "text: 📅 **Phoenix Matchday** – Running a match night: schedule, sign-ups, check-in and the lineup.",
+      "text:    `/matchdayhelp`",
+      "text: ⚡ **Phoenix Rush** – Five-v-five: log results, find a game, and run the queue.",
+      "text:    `/rushhelp`",
+      "---",
+      "text: -# Pick a bot",
+      "button[grey]: 🛠️ Core  (norex:help:core:0)",
+      "button[grey]: 📊 Stats  (norex:help:stats:0)",
+      "button[grey]: 🧰 Tools  (norex:help:tools:0)",
+      "button[grey]: 📅 Matchday  (norex:help:matchday:0)",
+      "button[grey]: ⚡ Rush  (norex:help:rush:0)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:core:j": {
+   "hash": "4e1e0c45e97a",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## 🛠️ How Phoenix Core works",
+      "text: -# Runs the server and the site: channels and roles, approvals, announcements, stream alerts.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*",
+      "text: `/aispike` – one-off test of the Workers AI image + text models *(owner only)*",
+      "text: `/panel` – everything waiting for a decision – approve or reject right here *(managers)*",
+      "text: `/announce` – send an announcement to every member (Squad Hub bell + Discord DM) *(managers)*",
+      "text: `/trial` – current trial cards, or search by gamertag *(managers)*",
+      "text: `/setup` – channels, roles, leave/join alerts, welcome posts and the ping-role p… *(managers)*",
+      "text: `/purge` – delete recent messages in this channel *(managers)*",
+      "text: `/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*",
+      "text: `/exportcontent` – incremental channel history export to DMs *(owner only)*",
+      "text: `/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*",
+      "---",
+      "text: -# Page 1 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:core:#:c": {
+   "hash": "4e1e0c45e97a",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Contents”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX CORE · HELP",
+      "text: ## 🛠️ How Phoenix Core works",
+      "text: -# Runs the server and the site: channels and roles, approvals, announcements, stream alerts.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*",
+      "text: `/aispike` – one-off test of the Workers AI image + text models *(owner only)*",
+      "text: `/panel` – everything waiting for a decision – approve or reject right here *(managers)*",
+      "text: `/announce` – send an announcement to every member (Squad Hub bell + Discord DM) *(managers)*",
+      "text: `/trial` – current trial cards, or search by gamertag *(managers)*",
+      "text: `/setup` – channels, roles, leave/join alerts, welcome posts and the ping-role p… *(managers)*",
+      "text: `/purge` – delete recent messages in this channel *(managers)*",
+      "text: `/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*",
+      "text: `/exportcontent` – incremental channel history export to DMs *(owner only)*",
+      "text: `/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*",
+      "---",
+      "text: -# Page 1 of 12 · Managers and the owner can use these",
+      "button[grey]: ◀ Back  (norex:help:core:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:core:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:core:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:core:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [12 options]  (norex:help:core:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:stats:#:n": {
+   "hash": "d32230bb83ac",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Your end-of-season Rush card**",
+      "text: **1.** `/seasoncard scan` – Attach a screenshot of your Rush season stats.",
+      "text: **2.** `Check the reading` – The bot shows what it read. Wrong numbers? Press Edit on the site instead.",
+      "text: **3.** `Save my card` – Saves it and posts it in the season channel. You have 15 minutes, or press Discard.",
+      "text: **4.** `/seasoncard mine` – Shows your saved card and where you rank.",
+      "---",
+      "text: **The club Rush ladder (managers)**",
+      "text: **1.** `/rushladder scan` – Attach a photo of the Rush leaderboard.",
+      "text: **2.** `It reads and saves` – If the photo is clear it saves and posts. If not, it says what to fix and sends you to the site.",
+      "text: **3.** `/rushladder latest` – Shows the most recent ladder.",
+      "---",
+      "text: **Find a player**",
+      "text: **1.** `/player` – Start typing a gamertag, pick it, get the stats card.",
+      "text: **2.** `/compare` – Put two players side by side.",
+      "text: **3.** `/profile` – A member’s positions, platforms and claim.",
+      "---",
+      "text: **Awards and points**",
+      "text: **1.** `/awards` – This week’s ballot and last week’s winners.",
+      "text: **2.** `/motm` – The Man of the Match vote for the latest game.",
+      "text: **3.** `/points` – Your total and where it came from.",
+      "---",
+      "text: **Track a burner club (managers)**",
+      "text: **1.** `/burner recent` – Pick from clubs our players also play in, no typing.",
+      "text: **2.** `/burner search` – Or search EA by name or club ID.",
+      "text: **3.** `/burner track` – Start tracking, stats arrive after every game.",
+      "text: **4.** `/burner list · remove` – See what you track, or stop.",
+      "---",
+      "text: -# Page 2 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## /seasoncard",
+      "text: -# Everyone · Your end-of-season Rush stats card: scan a screenshot, or see yours",
+      "text: **Choose one**",
+      "text: • `/seasoncard scan` – Read your end-of-season Rush stats screenshot – you check it before it is saved",
+      "text:    `image` (needed) – Screenshot of your whole season stats screen",
+      "text: • `/seasoncard mine` – Your saved season card and where you rank",
+      "---",
+      "text: **Good to know**",
+      "text: Members scan their own card. It is saved only when you press Save.",
+      "text: -# Part of: Your end-of-season Rush card (🪜 Step by step)",
+      "---",
+      "text: -# Page 3 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:1:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:3:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## /club",
+      "text: -# Everyone · Club record, division and form",
+      "text: Just run it, there is nothing to fill in.",
+      "---",
+      "text: -# Page 4 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:2:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:4:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:stats:#:b": {
+   "hash": "0fafe0985771",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## 📊 How Phoenix Stats works",
+      "text: -# Everything that reads numbers: results, players, leaderboards, awards, points and the Rush photo scans.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/seasoncard` – Your end-of-season Rush stats card: scan a screenshot, or see yours",
+      "text: `/club` – Club record, division and form",
+      "text: `/last` – The latest result",
+      "text: `/results` – Recent results",
+      "text: `/player` – A player's stats card",
+      "text: `/compare` – Compare two players",
+      "text: `/leaderboard` – League or Rush leaderboards",
+      "text: `/history` – Our record against a past opponent",
+      "text: `/insight` – The club's latest stat insight",
+      "text: `/ask` – Ask the club chatbot a question about our stats",
+      "text: `/me` – My verified player card (only you see it)",
+      "text: `/profile` – A member's profile – player, positions, platforms",
+      "text: `/awards` – This week's award ballot and last week's winners",
+      "text: `/points` – Your total points + breakdown by category",
+      "text: `/motm` – Current Man of the Match vote standing for the latest match",
+      "text: `/burner` – track burner clubs – search EA, pick one, get stats after every game *(managers)*",
+      "text: `/rushladder` – Club Rush ladder: scan a photo, or show the latest",
+      "---",
+      "text: -# Page 1 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Your end-of-season Rush card**",
+      "text: **1.** `/seasoncard scan` – Attach a screenshot of your Rush season stats.",
+      "text: **2.** `Check the reading` – The bot shows what it read. Wrong numbers? Press Edit on the site instead.",
+      "text: **3.** `Save my card` – Saves it and posts it in the season channel. You have 15 minutes, or press Discard.",
+      "text: **4.** `/seasoncard mine` – Shows your saved card and where you rank.",
+      "---",
+      "text: **The club Rush ladder (managers)**",
+      "text: **1.** `/rushladder scan` – Attach a photo of the Rush leaderboard.",
+      "text: **2.** `It reads and saves` – If the photo is clear it saves and posts. If not, it says what to fix and sends you to the site.",
+      "text: **3.** `/rushladder latest` – Shows the most recent ladder.",
+      "---",
+      "text: **Find a player**",
+      "text: **1.** `/player` – Start typing a gamertag, pick it, get the stats card.",
+      "text: **2.** `/compare` – Put two players side by side.",
+      "text: **3.** `/profile` – A member’s positions, platforms and claim.",
+      "---",
+      "text: **Awards and points**",
+      "text: **1.** `/awards` – This week’s ballot and last week’s winners.",
+      "text: **2.** `/motm` – The Man of the Match vote for the latest game.",
+      "text: **3.** `/points` – Your total and where it came from.",
+      "---",
+      "text: **Track a burner club (managers)**",
+      "text: **1.** `/burner recent` – Pick from clubs our players also play in, no typing.",
+      "text: **2.** `/burner search` – Or search EA by name or club ID.",
+      "text: **3.** `/burner track` – Start tracking, stats arrive after every game.",
+      "text: **4.** `/burner list · remove` – See what you track, or stop.",
+      "---",
+      "text: -# Page 2 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:stats:#:f": {
+   "hash": "497e4d3cc957",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Step by step”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Your end-of-season Rush card**",
+      "text: **1.** `/seasoncard scan` – Attach a screenshot of your Rush season stats.",
+      "text: **2.** `Check the reading` – The bot shows what it read. Wrong numbers? Press Edit on the site instead.",
+      "text: **3.** `Save my card` – Saves it and posts it in the season channel. You have 15 minutes, or press Discard.",
+      "text: **4.** `/seasoncard mine` – Shows your saved card and where you rank.",
+      "---",
+      "text: **The club Rush ladder (managers)**",
+      "text: **1.** `/rushladder scan` – Attach a photo of the Rush leaderboard.",
+      "text: **2.** `It reads and saves` – If the photo is clear it saves and posts. If not, it says what to fix and sends you to the site.",
+      "text: **3.** `/rushladder latest` – Shows the most recent ladder.",
+      "---",
+      "text: **Find a player**",
+      "text: **1.** `/player` – Start typing a gamertag, pick it, get the stats card.",
+      "text: **2.** `/compare` – Put two players side by side.",
+      "text: **3.** `/profile` – A member’s positions, platforms and claim.",
+      "---",
+      "text: **Awards and points**",
+      "text: **1.** `/awards` – This week’s ballot and last week’s winners.",
+      "text: **2.** `/motm` – The Man of the Match vote for the latest game.",
+      "text: **3.** `/points` – Your total and where it came from.",
+      "---",
+      "text: **Track a burner club (managers)**",
+      "text: **1.** `/burner recent` – Pick from clubs our players also play in, no typing.",
+      "text: **2.** `/burner search` – Or search EA by name or club ID.",
+      "text: **3.** `/burner track` – Start tracking, stats arrive after every game.",
+      "text: **4.** `/burner list · remove` – See what you track, or stop.",
+      "---",
+      "text: -# Page 2 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:stats:j": {
+   "hash": "544a4b98874a",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## 📊 How Phoenix Stats works",
+      "text: -# Everything that reads numbers: results, players, leaderboards, awards, points and the Rush photo scans.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/seasoncard` – Your end-of-season Rush stats card: scan a screenshot, or see yours",
+      "text: `/club` – Club record, division and form",
+      "text: `/last` – The latest result",
+      "text: `/results` – Recent results",
+      "text: `/player` – A player's stats card",
+      "text: `/compare` – Compare two players",
+      "text: `/leaderboard` – League or Rush leaderboards",
+      "text: `/history` – Our record against a past opponent",
+      "text: `/insight` – The club's latest stat insight",
+      "text: `/ask` – Ask the club chatbot a question about our stats",
+      "text: `/me` – My verified player card (only you see it)",
+      "text: `/profile` – A member's profile – player, positions, platforms",
+      "text: `/awards` – This week's award ballot and last week's winners",
+      "text: `/points` – Your total points + breakdown by category",
+      "text: `/motm` – Current Man of the Match vote standing for the latest match",
+      "text: `/burner` – track burner clubs – search EA, pick one, get stats after every game *(managers)*",
+      "text: `/rushladder` – Club Rush ladder: scan a photo, or show the latest",
+      "---",
+      "text: -# Page 1 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:stats:#:c": {
+   "hash": "544a4b98874a",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Contents”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX STATS · HELP",
+      "text: ## 📊 How Phoenix Stats works",
+      "text: -# Everything that reads numbers: results, players, leaderboards, awards, points and the Rush photo scans.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/seasoncard` – Your end-of-season Rush stats card: scan a screenshot, or see yours",
+      "text: `/club` – Club record, division and form",
+      "text: `/last` – The latest result",
+      "text: `/results` – Recent results",
+      "text: `/player` – A player's stats card",
+      "text: `/compare` – Compare two players",
+      "text: `/leaderboard` – League or Rush leaderboards",
+      "text: `/history` – Our record against a past opponent",
+      "text: `/insight` – The club's latest stat insight",
+      "text: `/ask` – Ask the club chatbot a question about our stats",
+      "text: `/me` – My verified player card (only you see it)",
+      "text: `/profile` – A member's profile – player, positions, platforms",
+      "text: `/awards` – This week's award ballot and last week's winners",
+      "text: `/points` – Your total points + breakdown by category",
+      "text: `/motm` – Current Man of the Match vote standing for the latest match",
+      "text: `/burner` – track burner clubs – search EA, pick one, get stats after every game *(managers)*",
+      "text: `/rushladder` – Club Rush ladder: scan a photo, or show the latest",
+      "---",
+      "text: -# Page 1 of 19 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:stats:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:stats:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:stats:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:stats:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [19 options]  (norex:help:stats:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:tools:#:n": {
+   "hash": "ee6cb952c65b",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Share something useful**",
+      "text: **1.** `/share` – Give it a title, the tip and an optional link.",
+      "text: **2.** `/discoveries` – A manager reviews what is waiting and approves it.",
+      "text: **3.** `Approved` – It shows up for the whole club.",
+      "---",
+      "text: **Saved answers (rules, trial info…)**",
+      "text: **1.** `/tag set` – Managers save an answer under a short name.",
+      "text: **2.** `/tag post` – Anyone posts it, and can aim it at a member.",
+      "text: **3.** `/tag list · delete` – Managers see and tidy the list.",
+      "---",
+      "text: **Reminders**",
+      "text: **1.** `/remind add` – Say when (in how long), what, and optionally where and who to ping.",
+      "text: **2.** `/remind list` – See the ones waiting and cancel any.",
+      "---",
+      "text: **The watch list**",
+      "text: **1.** `/watch add` – Managers add a YouTube channel to follow.",
+      "text: **2.** `/watch latest` – Anyone sees the newest videos, newest first. Filter by topic.",
+      "text: **3.** `/watch list · remove` – Managers see who is followed, or drop one.",
+      "---",
+      "text: -# Page 2 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## /intel",
+      "text: -# Managers · Club Intelligence – server + club analysis with recommendations",
+      "text: Just run it, there is nothing to fill in.",
+      "---",
+      "text: **Good to know**",
+      "text: Managers only. Takes a moment, then a private report with recommendations.",
+      "---",
+      "text: -# Page 3 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:1:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:3:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## /feedback",
+      "text: -# Everyone · Send praise, a tip or a concern to a verified teammate (they never see who sent it)",
+      "text: **What you can fill in**",
+      "text: • `to` (needed) – A verified teammate",
+      "text: • `kind` (needed) – What kind of message",
+      "text: • `text` (needed) – Your message (10+ characters, kept clean)",
+      "---",
+      "text: **Good to know**",
+      "text: The teammate never sees who sent it.",
+      "---",
+      "text: -# Page 4 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:2:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:4:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:tools:#:b": {
+   "hash": "b6f95798b95b",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## 🧰 How Phoenix Tools works",
+      "text: -# Helpers: feedback, tips, saved answers, reminders, the watch list, plus a few fun ones.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*",
+      "text: `/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…",
+      "text: `/suggest` – Drop an idea in the suggestion box",
+      "text: `/share` – Share something worth knowing with the club – a manager approves it f…",
+      "text: `/discoveries` – shared tips waiting for approval *(managers)*",
+      "text: `/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…",
+      "text: `/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…",
+      "text: `/remind` – Reminders: set one, or see and cancel the ones waiting",
+      "text: `/site` – Link to the club website",
+      "text: `/avatarcard` – Upload your avatar for an AI-styled club background",
+      "text: `/jail` – Lock a mate up for a daft offence (just for fun)",
+      "text: `/wheel` – Spin a wheel to pick one option",
+      "text: `/trivia` – A football trivia question – points for right answers",
+      "---",
+      "text: -# Page 1 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Share something useful**",
+      "text: **1.** `/share` – Give it a title, the tip and an optional link.",
+      "text: **2.** `/discoveries` – A manager reviews what is waiting and approves it.",
+      "text: **3.** `Approved` – It shows up for the whole club.",
+      "---",
+      "text: **Saved answers (rules, trial info…)**",
+      "text: **1.** `/tag set` – Managers save an answer under a short name.",
+      "text: **2.** `/tag post` – Anyone posts it, and can aim it at a member.",
+      "text: **3.** `/tag list · delete` – Managers see and tidy the list.",
+      "---",
+      "text: **Reminders**",
+      "text: **1.** `/remind add` – Say when (in how long), what, and optionally where and who to ping.",
+      "text: **2.** `/remind list` – See the ones waiting and cancel any.",
+      "---",
+      "text: **The watch list**",
+      "text: **1.** `/watch add` – Managers add a YouTube channel to follow.",
+      "text: **2.** `/watch latest` – Anyone sees the newest videos, newest first. Filter by topic.",
+      "text: **3.** `/watch list · remove` – Managers see who is followed, or drop one.",
+      "---",
+      "text: -# Page 2 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:tools:#:f": {
+   "hash": "fe7f28110b1e",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Step by step”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Share something useful**",
+      "text: **1.** `/share` – Give it a title, the tip and an optional link.",
+      "text: **2.** `/discoveries` – A manager reviews what is waiting and approves it.",
+      "text: **3.** `Approved` – It shows up for the whole club.",
+      "---",
+      "text: **Saved answers (rules, trial info…)**",
+      "text: **1.** `/tag set` – Managers save an answer under a short name.",
+      "text: **2.** `/tag post` – Anyone posts it, and can aim it at a member.",
+      "text: **3.** `/tag list · delete` – Managers see and tidy the list.",
+      "---",
+      "text: **Reminders**",
+      "text: **1.** `/remind add` – Say when (in how long), what, and optionally where and who to ping.",
+      "text: **2.** `/remind list` – See the ones waiting and cancel any.",
+      "---",
+      "text: **The watch list**",
+      "text: **1.** `/watch add` – Managers add a YouTube channel to follow.",
+      "text: **2.** `/watch latest` – Anyone sees the newest videos, newest first. Filter by topic.",
+      "text: **3.** `/watch list · remove` – Managers see who is followed, or drop one.",
+      "---",
+      "text: -# Page 2 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:tools:j": {
+   "hash": "bdb9540604db",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## 🧰 How Phoenix Tools works",
+      "text: -# Helpers: feedback, tips, saved answers, reminders, the watch list, plus a few fun ones.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*",
+      "text: `/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…",
+      "text: `/suggest` – Drop an idea in the suggestion box",
+      "text: `/share` – Share something worth knowing with the club – a manager approves it f…",
+      "text: `/discoveries` – shared tips waiting for approval *(managers)*",
+      "text: `/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…",
+      "text: `/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…",
+      "text: `/remind` – Reminders: set one, or see and cancel the ones waiting",
+      "text: `/site` – Link to the club website",
+      "text: `/avatarcard` – Upload your avatar for an AI-styled club background",
+      "text: `/jail` – Lock a mate up for a daft offence (just for fun)",
+      "text: `/wheel` – Spin a wheel to pick one option",
+      "text: `/trivia` – A football trivia question – points for right answers",
+      "---",
+      "text: -# Page 1 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:tools:#:c": {
+   "hash": "bdb9540604db",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Contents”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX TOOLS · HELP",
+      "text: ## 🧰 How Phoenix Tools works",
+      "text: -# Helpers: feedback, tips, saved answers, reminders, the watch list, plus a few fun ones.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*",
+      "text: `/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…",
+      "text: `/suggest` – Drop an idea in the suggestion box",
+      "text: `/share` – Share something worth knowing with the club – a manager approves it f…",
+      "text: `/discoveries` – shared tips waiting for approval *(managers)*",
+      "text: `/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…",
+      "text: `/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…",
+      "text: `/remind` – Reminders: set one, or see and cancel the ones waiting",
+      "text: `/site` – Link to the club website",
+      "text: `/avatarcard` – Upload your avatar for an AI-styled club background",
+      "text: `/jail` – Lock a mate up for a daft offence (just for fun)",
+      "text: `/wheel` – Spin a wheel to pick one option",
+      "text: `/trivia` – A football trivia question – points for right answers",
+      "---",
+      "text: -# Page 1 of 15 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:tools:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:tools:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:tools:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:tools:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [15 options]  (norex:help:tools:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:matchday:#:n": {
+   "hash": "2f96144beea9",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Run a match night (managers)**",
+      "text: **1.** `/matchday create` – Pick the kind (league, playoffs, friendly, tournament, VPG) and when. It posts with sign-up buttons. For a League or Rush session with a mode, use /host.",
+      "text: **2.** `Players answer` – Everyone presses ✅ ❔ ❌ on the post, and can add a preferred position.",
+      "text: **3.** `/matchday who` – See who is in, maybe or out, and which positions are missing.",
+      "text: **4.** `/lineup` – The lineup for the next event, with a suggested read.",
+      "text: **5.** `/matchday checkin` – On the night players check in. Managers see who showed.",
+      "---",
+      "text: **As a player**",
+      "text: **1.** `/matchday next` – The next match night, with your answer buttons right there.",
+      "text: **2.** `/matchday schedule` – The ones after that.",
+      "text: **3.** `/matchday checkin` – Check in when the window opens.",
+      "text: **4.** `/lineup` – See where you are playing.",
+      "---",
+      "text: -# Page 2 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## /host",
+      "text: -# Managers · schedule a League or Rush session or friendly – posted with sign-up buttons",
+      "text: **What you can fill in**",
+      "text: • `mode` (needed) – League or Rush",
+      "text: • `kind` (needed) – A session for us, or a friendly against another club",
+      "text: • `when` (needed) – tonight 9pm · tomorrow H:MM · fri 8:30pm · oct 14 9pm · in 2h",
+      "text: • `timezone` – Your time zone (default: the one in your Squad Hub profile)",
+      "text: • `players` – Players needed (default 11 League, 5 Rush)",
+      "text: • `length` – How long, in minutes (default 120 League, 90 Rush)",
+      "text: • `opponent` – Friendly: the club we play",
+      "text: • `notes` – Lobby info, kit, anything else",
+      "text: • `weekly` – Repeat every week for 4 weeks",
+      "text: • `channel` – Where to post it (default: here)",
+      "text: • `ping` – Role to ping (default: the Match night / Rush LFG ping role)",
+      "text: • `silent` – Post without pinging anyone",
+      "---",
+      "text: **Good to know**",
+      "text: Managers only. Times show in everyone’s own time zone. Choose League or Rush as the mode.",
+      "---",
+      "text: -# Page 3 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:1:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:3:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## /lineup",
+      "text: -# Everyone · The lineup for the next event",
+      "text: Just run it, there is nothing to fill in.",
+      "---",
+      "text: **Good to know**",
+      "text: Shows the lineup for the next event.",
+      "text: -# Part of: Run a match night (managers) · As a player (🪜 Step by step)",
+      "---",
+      "text: -# Page 4 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:2:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:4:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:matchday:#:b": {
+   "hash": "0497b71c47b4",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## 📅 How Phoenix Matchday works",
+      "text: -# Running a match night: schedule, sign-ups, check-in and the lineup.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/host` – schedule a League or Rush session or friendly – posted with sign-up b… *(managers)*",
+      "text: `/lineup` – The lineup for the next event",
+      "text: `/matchday` – Match days: create one, check in, and see the schedule or who is in",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Run a match night (managers)**",
+      "text: **1.** `/matchday create` – Pick the kind (league, playoffs, friendly, tournament, VPG) and when. It posts with sign-up buttons. For a League or Rush session with a mode, use /host.",
+      "text: **2.** `Players answer` – Everyone presses ✅ ❔ ❌ on the post, and can add a preferred position.",
+      "text: **3.** `/matchday who` – See who is in, maybe or out, and which positions are missing.",
+      "text: **4.** `/lineup` – The lineup for the next event, with a suggested read.",
+      "text: **5.** `/matchday checkin` – On the night players check in. Managers see who showed.",
+      "---",
+      "text: **As a player**",
+      "text: **1.** `/matchday next` – The next match night, with your answer buttons right there.",
+      "text: **2.** `/matchday schedule` – The ones after that.",
+      "text: **3.** `/matchday checkin` – Check in when the window opens.",
+      "text: **4.** `/lineup` – See where you are playing.",
+      "---",
+      "text: -# Page 2 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:matchday:#:f": {
+   "hash": "6d07e4b1f74f",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Step by step”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Run a match night (managers)**",
+      "text: **1.** `/matchday create` – Pick the kind (league, playoffs, friendly, tournament, VPG) and when. It posts with sign-up buttons. For a League or Rush session with a mode, use /host.",
+      "text: **2.** `Players answer` – Everyone presses ✅ ❔ ❌ on the post, and can add a preferred position.",
+      "text: **3.** `/matchday who` – See who is in, maybe or out, and which positions are missing.",
+      "text: **4.** `/lineup` – The lineup for the next event, with a suggested read.",
+      "text: **5.** `/matchday checkin` – On the night players check in. Managers see who showed.",
+      "---",
+      "text: **As a player**",
+      "text: **1.** `/matchday next` – The next match night, with your answer buttons right there.",
+      "text: **2.** `/matchday schedule` – The ones after that.",
+      "text: **3.** `/matchday checkin` – Check in when the window opens.",
+      "text: **4.** `/lineup` – See where you are playing.",
+      "---",
+      "text: -# Page 2 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:matchday:j": {
+   "hash": "2089ce59959d",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## 📅 How Phoenix Matchday works",
+      "text: -# Running a match night: schedule, sign-ups, check-in and the lineup.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/host` – schedule a League or Rush session or friendly – posted with sign-up b… *(managers)*",
+      "text: `/lineup` – The lineup for the next event",
+      "text: `/matchday` – Match days: create one, check in, and see the schedule or who is in",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:matchday:#:c": {
+   "hash": "2089ce59959d",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Contents”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX MATCHDAY · HELP",
+      "text: ## 📅 How Phoenix Matchday works",
+      "text: -# Running a match night: schedule, sign-ups, check-in and the lineup.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/host` – schedule a League or Rush session or friendly – posted with sign-up b… *(managers)*",
+      "text: `/lineup` – The lineup for the next event",
+      "text: `/matchday` – Match days: create one, check in, and see the schedule or who is in",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers to create) can use these",
+      "button[grey]: ◀ Back  (norex:help:matchday:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:matchday:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:matchday:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:matchday:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:matchday:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:rush:#:n": {
+   "hash": "deb9ba8f36fe",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Log a Rush result**",
+      "text: **1.** `/rush log` – Opponent and score. Optional goals, assists and date.",
+      "text: **2.** `A manager confirms` – Managers’ own logs count straight away; everyone else waits for a manager.",
+      "text: **3.** `Add detail in the Squad Hub` – Teammates, ratings and a screenshot go on the site.",
+      "text: **4.** `/leaderboard mode:rush` – Confirmed results feed the Rush leaderboard (Stats bot).",
+      "---",
+      "text: **Find a game**",
+      "text: **1.** `/lfg now` – Say you are free, for how long, with an optional note.",
+      "text: **2.** `/lfg list` – See who else is looking.",
+      "text: **3.** `/lfg cancel` – Take yourself off when you are done.",
+      "---",
+      "text: **Run the queue (managers)**",
+      "text: **1.** `/queue settings` – Set what happens to players who fail to show.",
+      "text: **2.** `/queue board` – Posts the live queue board in the configured channel.",
+      "text: **3.** `/queue status` – Anyone can see the line.",
+      "text: **4.** `/queue remove · clear` – Take one player off, or empty the queue.",
+      "---",
+      "text: -# Page 2 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## /rush",
+      "text: -# Everyone · Rush results",
+      "text: **Choose one**",
+      "text: • `/rush log` – Log a Rush result – a manager confirms it",
+      "text:    `opponent` (needed) – Opponent club",
+      "text:    `for` (needed) – Our goals",
+      "text:    `against` (needed) – Their goals",
+      "text:    `goals` – Your goals",
+      "text:    `assists` – Your assists",
+      "text:    `date` – YYYY-MM-DD (default: today)",
+      "---",
+      "text: **Good to know**",
+      "text: Today the command has `log`. Season scans live in the Stats bot (/seasoncard, /rushladder).",
+      "text: -# Part of: Log a Rush result (🪜 Step by step)",
+      "---",
+      "text: -# Page 3 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:1:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:3:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Next”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## /lfg",
+      "text: -# Everyone · Looking for Rush players: say you are available, or see who is",
+      "text: **Choose one**",
+      "text: • `/lfg now` – Post that you are available for Rush",
+      "text:    `minutes` – How long you are around (default 60, max 180)",
+      "text:    `note` – Position, mode, anything else",
+      "text: • `/lfg cancel` – Take your availability down",
+      "text: • `/lfg list` – Who is available for Rush right now",
+      "---",
+      "text: **Good to know**",
+      "text: Your answer expires. Use `cancel` to leave sooner.",
+      "text: -# Part of: Find a game (🪜 Step by step)",
+      "---",
+      "text: -# Page 4 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:2:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:4:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:rush:#:b": {
+   "hash": "6e4a87650cc1",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## ⚡ How Phoenix Rush works",
+      "text: -# Five-v-five: log results, find a game, and run the queue.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/rush` – Rush results",
+      "text: `/lfg` – Looking for Rush players: say you are available, or see who is",
+      "text: `/queue` – The Rush queue: see the line, or (managers) post the board and set it…",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    },
+    {
+     "kind": "private",
+     "label": "“Back”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Log a Rush result**",
+      "text: **1.** `/rush log` – Opponent and score. Optional goals, assists and date.",
+      "text: **2.** `A manager confirms` – Managers’ own logs count straight away; everyone else waits for a manager.",
+      "text: **3.** `Add detail in the Squad Hub` – Teammates, ratings and a screenshot go on the site.",
+      "text: **4.** `/leaderboard mode:rush` – Confirmed results feed the Rush leaderboard (Stats bot).",
+      "---",
+      "text: **Find a game**",
+      "text: **1.** `/lfg now` – Say you are free, for how long, with an optional note.",
+      "text: **2.** `/lfg list` – See who else is looking.",
+      "text: **3.** `/lfg cancel` – Take yourself off when you are done.",
+      "---",
+      "text: **Run the queue (managers)**",
+      "text: **1.** `/queue settings` – Set what happens to players who fail to show.",
+      "text: **2.** `/queue board` – Posts the live queue board in the configured channel.",
+      "text: **3.** `/queue status` – Anyone can see the line.",
+      "text: **4.** `/queue remove · clear` – Take one player off, or empty the queue.",
+      "---",
+      "text: -# Page 2 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:rush:#:f": {
+   "hash": "02d46093bca1",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Step by step”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## Step by step",
+      "text: -# Some jobs need more than one command. Do them in this order.",
+      "text: **Log a Rush result**",
+      "text: **1.** `/rush log` – Opponent and score. Optional goals, assists and date.",
+      "text: **2.** `A manager confirms` – Managers’ own logs count straight away; everyone else waits for a manager.",
+      "text: **3.** `Add detail in the Squad Hub` – Teammates, ratings and a screenshot go on the site.",
+      "text: **4.** `/leaderboard mode:rush` – Confirmed results feed the Rush leaderboard (Stats bot).",
+      "---",
+      "text: **Find a game**",
+      "text: **1.** `/lfg now` – Say you are free, for how long, with an optional note.",
+      "text: **2.** `/lfg list` – See who else is looking.",
+      "text: **3.** `/lfg cancel` – Take yourself off when you are done.",
+      "---",
+      "text: **Run the queue (managers)**",
+      "text: **1.** `/queue settings` – Set what happens to players who fail to show.",
+      "text: **2.** `/queue board` – Posts the live queue board in the configured channel.",
+      "text: **3.** `/queue status` – Anyone can see the line.",
+      "text: **4.** `/queue remove · clear` – Take one player off, or empty the queue.",
+      "---",
+      "text: -# Page 2 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:2:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:rush:j": {
+   "hash": "dc77e15a18a0",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## ⚡ How Phoenix Rush works",
+      "text: -# Five-v-five: log results, find a game, and run the queue.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/rush` – Rush results",
+      "text: `/lfg` – Looking for Rush players: say you are available, or see who is",
+      "text: `/queue` – The Rush queue: see the line, or (managers) post the board and set it…",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "comp:norex:help:rush:#:c": {
+   "hash": "dc77e15a18a0",
+   "messages": [
+    {
+     "kind": "private",
+     "label": "“Contents”",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX RUSH · HELP",
+      "text: ## ⚡ How Phoenix Rush works",
+      "text: -# Five-v-five: log results, find a game, and run the queue.",
+      "text: **Getting around**",
+      "text: ◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.",
+      "---",
+      "text: **Commands**",
+      "text: `/rush` – Rush results",
+      "text: `/lfg` – Looking for Rush players: say you are available, or see who is",
+      "text: `/queue` – The Rush queue: see the line, or (managers) post the board and set it…",
+      "---",
+      "text: -# Page 1 of 5 · Everyone (managers for a few) can use these",
+      "button[grey]: ◀ Back  (norex:help:rush:0:b)",
+      "button[blurple]: ▶ Next  (norex:help:rush:1:n)",
+      "button[grey]: 📖 Contents  (norex:help:rush:0:c)",
+      "button[grey]: 🪜 Step by step  (norex:help:rush:1:f)",
+      "button[grey]: 🤖 Other bots  (norex:help:hub:0:o)",
+      "menu: Jump to a command… [5 options]  (norex:help:rush:j)",
+      "(only you can see this)"
+     ]
+    }
+   ]
+  },
+  "dm:notify:announce": {
+   "hash": "97b13f12e28f",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 📣 Sample Announcements & rules",
+      "text: Sample notification text, as a member would receive it.",
+      "text: ",
+      "text: **Please open the site and tap “Got it” to acknowledge.**",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:claim": {
+   "hash": "9eb46a355e5c",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🪪 Sample Player claim decisions",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:trial": {
+   "hash": "065f8a8347c7",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🔭 Sample My scouting tips",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:trialstage": {
+   "hash": "5bbd90e49090",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🏟️ Sample Trial stage changes – my trial and the Dugout board",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:rush": {
+   "hash": "9aad2b4e7e66",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### ⚡ Sample My Rush results",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:lfg": {
+   "hash": "a0a52f6d50c6",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🙋 Sample Rush calls – someone is available to play",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:badge": {
+   "hash": "c16d6a110d45",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🎖️ Sample Badges & achievements I get",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:request": {
+   "hash": "7d0e58622ca1",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 📨 Sample My club & privacy requests",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:idea": {
+   "hash": "33092e8596cd",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 💡 Sample Replies to my suggestions",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:event": {
+   "hash": "c4a2626add52",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 📅 Sample New events, changes and session reports",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:award": {
+   "hash": "9b39618d74ae",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🏆 Sample Weekly awards – results and my wins",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:feedback": {
+   "hash": "165f44c9589a",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 💌 Sample Anonymous feedback from teammates",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:predict": {
+   "hash": "f46469cbd15f",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🔮 Sample My prediction points",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:game": {
+   "hash": "ece3916f1d13",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🎮 Sample Game updates – new max level & rules",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:mention": {
+   "hash": "c4a81b046e08",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 📣 Sample When someone @mentions me",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:message": {
+   "hash": "c69b8ab6e752",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 💬 Sample New DMs and group chat messages",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:feed": {
+   "hash": "b7d2cd833c14",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 💬 Sample Comments, replies and reactions on my feed posts",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:storage": {
+   "hash": "1cfc46366e2f",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 💾 Sample Media storage clean-ups (feed photos & clips)",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:queue": {
+   "hash": "ab26551bc97f",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🛡️ Sample Manager to-dos (new claims, trials, Rush results, requests)",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:moderation": {
+   "hash": "4ade6b329d03",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #ff7d72",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🛡️ Sample Warnings and mutes from the managers",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:play": {
+   "hash": "563ca24970f1",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 📋 Sample New plays assigned to me",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:card": {
+   "hash": "765067d84325",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🪪 Sample Card Studio – decisions on my card request",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:wave": {
+   "hash": "6d47e3f032d7",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 👋 Sample Waves from teammates in the Hub",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:remind": {
+   "hash": "4a0949b96a22",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### ⏰ Sample Reminders – feedback waiting for you, and the odd nudge to use it",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:caution": {
+   "hash": "9278b87ce213",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### ⚠️ Sample Caution – a player disagrees with or is confused by feedback",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:live": {
+   "hash": "2464d415239c",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🔴 Sample The club goes live on Twitch or YouTube",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "dm:notify:test": {
+   "hash": "b862f0b90d55",
+   "messages": [
+    {
+     "kind": "dm",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX FIRE · ALERT",
+      "text: ### 🔔 Sample Test notifications",
+      "text: Sample notification text, as a member would receive it.",
+      "text: -# Sent <t:T:R> · change DM settings: Squad Hub → 🔔 Alerts",
+      "button[link]: Open on the site  → http://localhost:4321/members.html#alerts"
+     ]
+    }
+   ]
+  },
+  "auto:live": {
+   "hash": "a900450f30ae",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# PHOENIX FIRE · LIVE · TWITCH",
+      "text: ### 🔴 Phoenix Fire is live",
+      "text: -# Sample · Pro Clubs night",
+      "text: We just went on air – drop in, watch along and say hello in the chat.",
+      "---",
+      "text: -# Watch from the club site or straight on the platform",
+      "button[link]: Watch on the site  → http://localhost:4321/watch.html",
+      "button[link]: Open Twitch  → https://twitch.tv/sample"
+     ]
+    }
+   ]
+  },
+  "auto:memberlive": {
+   "hash": "d5851158e9a0",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# PHOENIX FIRE · LIVE · TWITCH",
+      "text: ### 🔴 Mike is live",
+      "text: -# Sample · Ranked grind",
+      "text: <@222> just went on air – drop in and say hello.",
+      "---",
+      "text: -# Streaming from their profile on the site",
+      "button[link]: Watch live  → https://twitch.tv/sample"
+     ]
+    }
+   ]
+  },
+  "auto:uptime-down": {
+   "hash": "c8c742daade4",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #ff7d72",
+      "text: -# STAFF · UPTIME MONITOR",
+      "text: ### Phoenix bot: something's down",
+      "text: • Worker: EA relay timed out",
+      "text: -# Checked every 10 minutes · you only hear about changes"
+     ]
+    }
+   ]
+  },
+  "auto:uptime-up": {
+   "hash": "5bfd7538fe60",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# STAFF · UPTIME MONITOR",
+      "text: ### Phoenix bot: back to normal (was down since 2026-11-11 H:MM UTC)",
+      "text: -# Checked every 10 minutes · you only hear about changes"
+     ]
+    }
+   ]
+  },
+  "auto:burner-report": {
+   "hash": "284b8b3a108d",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# BURNER TRACKER · LEAGUE",
+      "text: ## 🔥 Burner FC 3–1 Sample FC",
+      "text: -# ✅ Win · <t:T:f> · burner club report",
+      "text: **⚽ Goals** Niko-the-Great ×2, kingmitch93",
+      "text: **🎯 Assists** kingmitch93, Sample Three",
+      "text: **⭐ Man of the match** Niko-the-Great (8.4)",
+      "---",
+      "text: -# **LINEUP (3)**",
+      "text: `8.4` Niko-the-Great ⚽2",
+      "text: `7.6` kingmitch93 ⚽ 🎯",
+      "text: `6.9` Sample Three 🎯",
+      "---",
+      "text: **📊 Season so far** 5W 1D 2L · 18–9 · 63% wins · 3W streak",
+      "text: -# Burner tracker · club 42",
+      "button[link]: Burner card  → http://localhost:4321/burners.html#c42"
+     ]
+    }
+   ]
+  },
+  "auto:watchlist-video": {
+   "hash": "e557d0bb5d69",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · NEW VIDEO · 🛠️ BUILDS",
+      "text: ### Sample · Best CAM build for FC 27 Pro Clubs",
+      "text: -# SAMPLE Channel",
+      "picture: https://i.ytimg.com/vi/sampleVid001/hqdefault.jpg",
+      "---",
+      "button[grey]: 👍 Useful · 3  (norex:wl:useful:sampleVid001)",
+      "button[link]: Watch  → https://www.youtube.com/watch?v=sampleVid001"
+     ]
+    }
+   ]
+  },
+  "auto:discovery": {
+   "hash": "11d71c2918cc",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #efcf7a",
+      "picture: http://localhost:4321/cards/banner-discovery.png?v=N",
+      "text: -# PHOENIX FIRE · DISCOVERY",
+      "text: ### Sample · Jockey without fouling",
+      "text: -# Shared by <@333> · approved by <@111>",
+      "text: Hold L1 and a direction.",
+      "---",
+      "button[grey]: 👍 Useful · 2  (norex:dc:useful:1)",
+      "button[link]: Open link  → https://example.com",
+      "button[link]: On the site  → http://localhost:4321/members.html#discoveries"
+     ]
+    }
+   ]
+  },
+  "auto:birthday": {
+   "hash": "0002dac807eb",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #efcf7a",
+      "text: -# PHOENIX FIRE · BIRTHDAYS",
+      "text: ## 🎂 Happy birthday!",
+      "text: 🎉 <@222>",
+      "text: -# From everyone at the club – have a good one"
+     ]
+    }
+   ]
+  },
+  "auto:welcome": {
+   "hash": "68dede6fbc1f",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: Welcome to the crew, <@222>! 👋",
+      "text: -# WELCOME",
+      "text: ## Welcome to Phoenix Fire",
+      "text: -# Glad you’re here, Mike",
+      "text: **Start here**",
+      "text: 📜 Read the rules and say hi in the chat",
+      "text: 🏠 Log in to the **Squad Hub** with Discord and claim your player",
+      "text: 📊 Results, stats and the squad are on the **club site**",
+      "button[link]: Squad Hub  → http://localhost:4321/members.html",
+      "button[link]: Club site  → http://localhost:4321/"
+     ]
+    }
+   ]
+  },
+  "auto:pingroles": {
+   "hash": "4bddbcb68a60",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · PINGS",
+      "text: ## 🔔 Pick your pings",
+      "text: -# Tap to turn one on, tap again to turn it off. Only you see the answer.",
+      "text: ⚽ **Match night**",
+      "text: -# League and match-night call-ups",
+      "button[grey]: On / off  (norex:pr:match)",
+      "text: 🎮 **Rush LFG**",
+      "text: -# Someone is looking for a Rush squad",
+      "button[grey]: On / off  (norex:pr:rush)",
+      "text: 🔴 **Stream alerts**",
+      "text: -# A member or the club goes live",
+      "button[grey]: On / off  (norex:pr:streams)",
+      "text: 🎬 **New videos**",
+      "text: -# New FC Clubs videos worth watching",
+      "button[grey]: On / off  (norex:pr:videos)",
+      "text: -# Only people who switch a ping on get notified"
+     ]
+    }
+   ]
+  },
+  "auto:lfg-open": {
+   "hash": "69ef45483f9d",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: <@&R1>",
+      "text: -# PHOENIX FIRE · RUSH",
+      "text: ## ⚡ Mike is available for Rush",
+      "text: -# Until <t:T:t> · <t:T:R>",
+      "text: 📝 Rush 5v5 anyone?",
+      "---",
+      "text: **✅ In** Jez",
+      "text: **⏰ Later** Kruger",
+      "text: -# Tap a button to answer",
+      "button[green]: ✅ I’m in  (pf:lfg:7:in)",
+      "button[grey]: ⏰ Later  (pf:lfg:7:later)"
+     ]
+    }
+   ]
+  },
+  "auto:lfg-expired": {
+   "hash": "48ccf0456c9c",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX FIRE · RUSH",
+      "text: ## ⚡ Mike is available for Rush",
+      "text: -# This call is over",
+      "text: 📝 Rush 5v5 anyone?",
+      "---",
+      "text: **✅ In** –",
+      "text: **⏰ Later** –",
+      "text: -# Expired or taken down"
+     ]
+    }
+   ]
+  },
+  "auto:event-league": {
+   "hash": "4af4d2abf265",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "picture: http://localhost:4321/cards/banner-matchnight.png?v=N",
+      "text: -# PHOENIX FIRE · LEAGUE NIGHT",
+      "text: ## 🏆 League night",
+      "text: -# <t:T:F> · <t:T:R> · 1 h 30 min",
+      "text: 📝 Be on 10 minutes early.",
+      "---",
+      "text: **Answers** ✅ 1 · ❔ 1 · ❌ 1",
+      "text: **In** Mike",
+      "text: **❔ Maybe (1)** Jez",
+      "text: **❌ Out (1)** Kruger",
+      "text: **🧩 Still needed** 10 more players · 1 GK · 1 ST",
+      "text: -# Tap a button to answer · only you see the confirmation",
+      "button[green]: ✅ I’m in  (norex:ev:1:yes)",
+      "button[grey]: ❔ Maybe  (norex:ev:1:maybe)",
+      "button[red]: ❌ Can’t make it  (norex:ev:1:no)",
+      "button[link]: Squad Hub  → http://localhost:4321/members.html#schedule-1"
+     ]
+    }
+   ]
+  },
+  "auto:event-rush": {
+   "hash": "cc24ad041848",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "picture: http://localhost:4321/cards/banner-matchnight.png?v=N",
+      "text: -# PHOENIX FIRE · RUSH SESSION",
+      "text: ## ⚡ Rush night",
+      "text: -# <t:T:F> · <t:T:R> · 1 h 30 min",
+      "text: 📝 Be on 10 minutes early.",
+      "---",
+      "text: **Answers** ✅ 1 · ❔ 1 · ❌ 1",
+      "text: **In** Mike",
+      "text: **🧩 Still needed** 10 more players · 1 GK · 2 ST",
+      "text: -# Tap a button to answer · only you see the confirmation",
+      "button[green]: ✅ I’m in  (norex:ev:2:yes)",
+      "button[grey]: ❔ Maybe  (norex:ev:2:maybe)",
+      "button[red]: ❌ Can’t make it  (norex:ev:2:no)",
+      "button[link]: Squad Hub  → http://localhost:4321/members.html#schedule-2"
+     ]
+    }
+   ]
+  },
+  "auto:event-cancelled": {
+   "hash": "9a5c2d6e821d",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #6c7890",
+      "text: -# PHOENIX FIRE · LEAGUE NIGHT",
+      "text: ## 🏆 🚫 Cancelled · League night",
+      "text: -# <t:T:F> · <t:T:R> · 1 h 30 min",
+      "text: 📝 Be on 10 minutes early.",
+      "---",
+      "text: **Answers** ✅ 1 · ❔ 1 · ❌ 1",
+      "text: **In** Mike",
+      "text: **🧩 Still needed** 10 more players · 1 GK · 1 ST",
+      "text: -# This event is closed",
+      "button[link]: Squad Hub  → http://localhost:4321/members.html#schedule-3"
+     ]
+    }
+   ]
+  },
+  "auto:rushqueue-busy": {
+   "hash": "1a0c72cc11ca",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · RUSH",
+      "text: ## 🔥 Rush queue",
+      "text: -# One group searches at a time, in click order",
+      "---",
+      "text: **SEARCHING NOW**  <@222>, <@333>  · since H:MM",
+      "text: ",
+      "text: **NEXT**",
+      "text: 1. <@444> · needs 1 player · ~5 min",
+      "text: 2. <@111>, <@555>, <@666> · ⏸ paused · ~10 min",
+      "---",
+      "text: -# 3 groups in line · captain presses the buttons, the rest of the crew just waits for the ping",
+      "button[green]: ➕ Join queue  (pf:rq:join)",
+      "button[grey]: 🚪 Leave  (pf:rq:leave)",
+      "button[grey]: 👥 Edit my crew  (pf:rq:crew)",
+      "button[blurple]: 🔎 Searching now  (pf:rq:search)",
+      "button[green]: ✅ Match found  (pf:rq:found)",
+      "button[grey]: ⚠️ Match failed  (pf:rq:failed)",
+      "button[grey]: 🙋 Need a player  (pf:rq:need)",
+      "button[grey]: ⏸ Pause  (pf:rq:pause)",
+      "button[red]: 📢 Report  (pf:rq:report)"
+     ]
+    }
+   ]
+  },
+  "auto:rushqueue-empty": {
+   "hash": "c78264af5c15",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · RUSH",
+      "text: ## 🔥 Rush queue",
+      "text: -# One group searches at a time, in click order",
+      "---",
+      "text: **Nobody is searching.** Press **Join queue** to go first.",
+      "---",
+      "text: -# 0 groups in line · captain presses the buttons, the rest of the crew just waits for the ping",
+      "button[green]: ➕ Join queue  (pf:rq:join)",
+      "button[grey]: 🚪 Leave  (pf:rq:leave)",
+      "button[grey]: 👥 Edit my crew  (pf:rq:crew)",
+      "button[blurple]: 🔎 Searching now  (pf:rq:search)",
+      "button[green]: ✅ Match found  (pf:rq:found)",
+      "button[grey]: ⚠️ Match failed  (pf:rq:failed)",
+      "button[grey]: 🙋 Need a player  (pf:rq:need)",
+      "button[grey]: ⏸ Pause  (pf:rq:pause)",
+      "button[red]: 📢 Report  (pf:rq:report)"
+     ]
+    }
+   ]
+  },
+  "auto:rushladder": {
+   "hash": "575ed655a0ec",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# PHOENIX FIRE · RUSH LEADERBOARD",
+      "text: ## #2 ▲1 · 60,950 VP",
+      "text: -# Season 2 · Day 21/42 · photo <t:T:R>",
+      "text: ```",
+      "text:  #  Club                  VP    AVG     Δ",
+      "text:  1  Sample United     63,100   38.0  +700",
+      "text:  2▶ Phoenix Fire      60,950   40.6+2,050",
+      "text:  3  Rivals FC         60,700   39.3  +800",
+      "text:  4  Night Owls        59,200   41.9  +600",
+      "text: ```",
+      "---",
+      "text: **To #1** 2,150 VP behind Sample United (+1,350 since the last photo)",
+      "text: **Behind us** Rivals FC −250 VP (+1,250)",
+      "text: **Since the last photo (12h)** +2,050 VP · 0 matches",
+      "text: **VP trend** `▁▄█`   **Rank** #4 → #3 → #2",
+      "text: **Pace** 160.4 VP/h · Sample United: 79.2 · Rivals FC: 79.2",
+      "text: **Projected finish** ~142,177 VP at this pace (21.1 days left)",
+      "---",
+      "text: • Up 1 place since the last photo. 🔥",
+      "text: • At the current pace we pass Sample United in about 27h. Keep the tempo.",
+      "text: • To finish ahead of Sample United we need about 2,003 VP a day for the remaining 21.1 days.",
+      "text: -# Photo by Mike · Numbers are read from the photo and checked",
+      "button[link]: Full leaderboard and charts  → http://localhost:4321/rushboard.html"
+     ]
+    }
+   ]
+  },
+  "auto:seasoncard": {
+   "hash": "00fa3adcc8ed",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: @here <@222>",
+      "text: -# PHOENIX FIRE · SEASON 2 RUSH CARD",
+      "text: ## Mike",
+      "text: -# Elite · Phoenix Fire",
+      "text: **🎮 Matches** 184",
+      "text: **🏆 Wins** 121 (66%)",
+      "text: **⚽ Goals** 263 (1.43 per match)",
+      "text: **🔥 Contribution** 7,420 VP · 12.2% of the club's VP",
+      "---",
+      "text: **#2** by VP · **#1** by win rate · **#3** by goals — of 9 cards in",
+      "text: -# Read from the member’s own screenshot and checked",
+      "button[link]: Season rankings  → http://localhost:4321/seasoncards.html"
+     ]
+    }
+   ]
+  },
+  "auto:stream-live": {
+   "hash": "a7ae68eb5a58",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #4be08a",
+      "text: -# PHOENIX FIRE · LIVE · TWITCH",
+      "text: ### 🔴 Phoenix Fire is live",
+      "text: -# Sample · Division rivals night",
+      "picture: https://static-cdn.jtvnw.net/previews-ttv/live_user_kingmitch93-1280x720.jpg?t=N",
+      "text: **Where** Twitch",
+      "text: **Channel** kingmitch93",
+      "text: **Status** 🟢 On air",
+      "text: **Playing** EA SPORTS FC",
+      "text: **Viewers** 42 when posted",
+      "---",
+      "text: -# Picture and viewers are a snapshot from when this was posted · drop in and say hello",
+      "button[link]: Watch on the site  → http://localhost:4321/watch.html",
+      "button[link]: Open Twitch  → https://www.twitch.tv/kingmitch93"
+     ]
+    }
+   ]
+  },
+  "auto:stream-offline": {
+   "hash": "2e022e055788",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · CHANNEL · TWITCH",
+      "text: ### 🔴 Phoenix Fire on Twitch",
+      "text: -# Not live right now",
+      "picture: http://localhost:4321/cards/banner-channel.png?v=N",
+      "text: **Where** Twitch",
+      "text: **Channel** kingmitch93",
+      "text: **Status** ⚪ Offline",
+      "---",
+      "text: -# Follow the channel to catch the next stream",
+      "button[link]: Watch on the site  → http://localhost:4321/watch.html",
+      "button[link]: Open Twitch  → https://www.twitch.tv/kingmitch93"
+     ]
+    }
+   ]
+  },
+  "auto:stream-video": {
+   "hash": "6f95c0cf82d5",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "",
+     "outline": [
+      "stripe #e8651a",
+      "text: -# PHOENIX FIRE · NEW VIDEO · CONTRIBUTOR",
+      "text: ### Sample · Best CAM build for FC 27 Pro Clubs",
+      "text: -# A contributor",
+      "picture: https://i.ytimg.com/vi/sampleVid001/hqdefault.jpg",
+      "text: **Where** YouTube",
+      "text: **Type** Video",
+      "---",
+      "button[link]: Watch  → https://www.youtube.com/watch?v=sampleVid001",
+      "button[link]: Channel  → https://www.youtube.com/@sample"
+     ]
+    }
+   ]
+  },
+  "auto:result-panel": {
+   "hash": "a5715fb203d7",
+   "messages": [
+    {
+     "kind": "channel",
+     "label": "sample 1",
+     "outline": [
+      "stripe #4be08a",
+      "text: **`PHOENIX FIRE`** · PLAYOFF",
+      "text: -# PHOENIX FIIRE · MATCH CENTRE · PLAYOFF",
+      "text: ## ⚽ Phoenix FIIre 1–0 Joga Bokito",
+      "text: -# <t:T:f> · Win",
+      "thumb: https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png",
+      "text: **⚽ Goals** ShIzZq-",
+      "text: **🎯 Assists** kingmitch93",
+      "text: **⭐ Man of the match** JayenStyle20 (9.2)",
+      "text: **📈 Top rated** Goff915 (7.9)",
+      "text: -# Pick your name below to see your own match",
+      "menu: 📊 Show my match – pick your player [11 options]  (norex:mm:N)",
+      "button[blurple]: 🙋 My match  (norex:mme:N)",
+      "button[link]: 📋 Match page  → https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/N.html"
+     ]
+    },
+    {
+     "kind": "channel",
+     "label": "sample 2",
+     "outline": [
+      "stripe #4be08a",
+      "text: **`PHOENIX FIRE`** · PLAYOFF",
+      "text: -# PHOENIX FIIRE · MATCH CENTRE · PLAYOFF",
+      "text: ## ⚽ Phoenix FIIre 3–0 EL FetjeCorp",
+      "text: -# <t:T:f> · Win",
+      "thumb: https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png",
+      "text: **⚽ Goals** Goff915, kingmitch93, ShIzZq-",
+      "text: **🎯 Assists** rubNiyo, WelshJordyy-",
+      "text: **⭐ Man of the match** WelshJordyy- (8.0)",
+      "text: **📈 Top rated** WelshJordyy- (8.0)",
+      "text: -# Pick your name below to see your own match",
+      "menu: 📊 Show my match – pick your player [11 options]  (norex:mm:N)",
+      "button[blurple]: 🙋 My match  (norex:mme:N)",
+      "button[link]: 📋 Match page  → https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/N.html"
+     ]
+    },
+    {
+     "kind": "channel",
+     "label": "sample 3",
+     "outline": [
+      "stripe #ff7d72",
+      "text: **`PHOENIX FIRE`** · PLAYOFF",
+      "text: -# PHOENIX FIIRE · MATCH CENTRE · PLAYOFF",
+      "text: ## ⚽ Phoenix FIIre 1–2 Xiclibics FC",
+      "text: -# <t:T:f> · Defeat",
+      "thumb: https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png",
+      "text: **⚽ Goals** rubNiyo",
+      "text: **🎯 Assists** HristoNL",
+      "text: **⭐ Man of the match** yangKNG (8.4)",
+      "text: **📈 Top rated** Pain11x (8.0)",
+      "text: -# Pick your name below to see your own match",
+      "menu: 📊 Show my match – pick your player [11 options]  (norex:mm:N)",
+      "button[blurple]: 🙋 My match  (norex:mme:N)",
+      "button[link]: 📋 Match page  → https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/N.html"
+     ]
+    }
+   ]
+  },
+  "auto:result-webhook": {
+   "hash": "2dbed7e7c1a8",
+   "messages": [
+    {
+     "kind": "webhook",
+     "label": "",
+     "outline": [
+      "embed: PHOENIX FIRE · PLAYOFF / ⚽ Phoenix FIIre 1–0 Joga Bokito / ✅ **Victory** / ⚽ Goals ShIzZq- / 🎯 Assists kingmitch93 / ⭐ Man of the match JayenStyle20 (9.2) / 📈 Our top rated Goff915 (7.9) / PHOENIX FIRE · Playoff match",
+      "embed: PHOENIX FIRE · PLAYOFF / ⚽ Phoenix FIIre 3–0 EL FetjeCorp / ✅ **Victory** / ⚽ Goals Goff915 / kingmitch93 / ShIzZq- / 🎯 Assists rubNiyo / WelshJordyy- / ⭐ Man of the match WelshJordyy- (8.0) / 📈 Our top rated WelshJordyy- (8.0) / PHOENIX FIRE · Playoff match",
+      "embed: PHOENIX FIRE · PLAYOFF / ⚽ Phoenix FIIre 1–2 Xiclibics FC / ❌ **Defeat** / ⚽ Goals rubNiyo / 🎯 Assists HristoNL / ⭐ Man of the match yangKNG (8.4) / 📈 Our top rated Pain11x (8.0) / PHOENIX FIRE · Playoff match"
+     ]
+    }
+   ]
+  }
+ }
+}

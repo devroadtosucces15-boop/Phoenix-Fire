@@ -154,7 +154,7 @@ async function postToDiscord(entries) {
     await fetch(`${hook}${hook.includes('?') ? '&' : '?'}with_components=true`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: loadConfig().siteTitle ?? 'Club', avatar_url: site ? `${site}assets/crest.png` : undefined, ...updatePanel(e, site, loadConfig().siteTitle ?? 'Club') }),
+      body: JSON.stringify({ username: loadConfig().siteTitle ?? 'Club', avatar_url: site ? `${site}assets/crest.png?v=phoenix2` : undefined, ...updatePanel(e, site, loadConfig().siteTitle ?? 'Club') }),
     }).catch((err) => console.warn('Discord post failed:', err.message));
   }
 }

@@ -61,6 +61,9 @@
   "voiceRecap": {
     "channel": ""
   },
+  "matchAlert": {
+    "loseBy": 3
+  },
   "features": {
     "rushLog": "members",
     "rushLfg": "owner",

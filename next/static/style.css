@@ -1029,3 +1029,5 @@ body:not(.hub-page):after{content:"";position:fixed;inset:0;z-index:-1;pointer-e
 .fb-foot{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
 .fb-match{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width:480px){.fb-r{width:calc((100% - 40px)/5);min-width:44px}.fb-foot .btn{width:100%}}
+.al-boxes{display:flex;flex-wrap:wrap;gap:6px 14px;font:500 12.5px Inter}.al-box{display:inline-flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap}.al-box input{accent-color:#e8651a;width:16px;height:16px}.al-all{font-weight:700}
+@media(max-width:640px){.al-boxes{grid-column:1/-1}}

@@ -99,14 +99,14 @@ export function loadModel() {
     const app = isDm ? 'core' : /lfg|rush|season/.test(a.id) ? 'rush' : /event/.test(a.id) ? 'matchday' : /birthday/.test(a.id) ? 'fun' : 'core';
     const [file, fn] = String(a.source ?? '').split(' ');
     push({ id: a.id, name: a.name, summary: '', category: isDm ? 'dm' : 'automated', app, trigger: a.trigger, schedule: a.schedule ?? '', destinations: a.destination ?? [], flag: a.flag ?? null, level: level ?? 'public',
-      status: a.status ?? statusOf(level, false), source: file || null, builder: fn?.replace(/\(\)$/, '') ?? null, related: a.related ?? [], how: a.how,
+      status: a.status ?? statusOf(level, false), source: file || null, builder: fn?.replace(/\(\)$/, '') ?? null, related: a.related ?? [], how: a.how, control: a.control ?? null,
       messages: a.bodies.map((b, k) => ({ kind: isDm ? 'dm' : b.username || b.avatar_url ? 'webhook' : 'channel', via: isDm ? 'direct message' : 'posted by the bot', body: b, files: b.files, label: a.bodies.length > 1 ? `sample ${k + 1}` : '' })) });
   }
   // ---- known outputs with no offline capture (needs live Discord, EA or an AI model) ----
   for (const u of UNCAPTURED) {
     const [file, fn] = String(u.source ?? '').split(' ');
     push({ id: u.id, name: u.name, summary: '', category: 'automated', app: /dj/.test(u.id) ? 'dj' : /event|lineup/.test(u.id) ? 'matchday' : 'core', trigger: u.trigger, schedule: u.schedule ?? '', destinations: u.destination ?? [], flag: u.flag ?? null,
-      level: u.level ?? 'public', status: u.status ?? statusOf(u.level, false), source: file?.replace(/,$/, '') || null, builder: fn?.replace(/\(\)$/, '') ?? null, related: u.related ?? [], uncaptured: u.why, messages: [] });
+      level: u.level ?? 'public', status: u.status ?? statusOf(u.level, false), source: file?.replace(/,$/, '') || null, builder: fn?.replace(/\(\)$/, '') ?? null, related: u.related ?? [], uncaptured: u.why, control: u.control ?? null, messages: [] });
   }
   // ---- images: one sample of every picture the apps and the site put into Discord ----
   const img = (id, name, file, extra) => push({ id: `image:${id}`, name, category: 'image', app: 'core', trigger: 'drawn at site build (scripts/cards.mjs)', schedule: 'redrawn when the data or TEMPLATE_VERSION changes', destinations: ['attached to the messages listed'], level: 'public', status: 'live', source: 'scripts/cards.mjs', image: file, messages: [], ...extra });

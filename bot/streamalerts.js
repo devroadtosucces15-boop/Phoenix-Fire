@@ -10,7 +10,7 @@ import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, sep, facts, footer, buttons, cards, bannerUrl } from './ui.js';
 import { it } from './icons.js';
 import { postEmbed } from './docs.js';
-import { orgName, channelFor } from './orgconfig.js';
+import { orgName, channelFor, channelNotice } from './orgconfig.js';
 import { liveOf } from './memberlive.js';
 import { parseFeed } from './watchlist.js';
 
@@ -148,7 +148,7 @@ export async function streamCommand(i, env, ctx, me) {
       const link = parseLink(o.link);
       if (!link) return say('I can’t read that link', 'Paste a Twitch, YouTube (@handle or /channel/UC…) or Kick channel link.');
       const channel = ID.test(String(o.channel ?? '')) ? String(o.channel) : await channelFor(env, 'live_alerts');
-      if (!ID.test(String(channel))) return say('Pick a channel', 'Choose a channel in the command, or set an Alerts channel in Boardroom → Organization (live_alerts).');
+      if (!ID.test(String(channel))) return reply(await channelNotice(env, 'live_alerts'));
       if ((await one(env, 'SELECT COUNT(*) AS n FROM stream_sources WHERE active = 1'))?.n >= MAX_SOURCES) return say(`That’s ${MAX_SOURCES} sources`, 'Remove one first.');
       const scope = o.source === 'contributor' ? 'contributor' : 'main';
       const what = ['live', 'posts'].includes(o.what) ? o.what : 'both';

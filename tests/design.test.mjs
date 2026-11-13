@@ -24,7 +24,7 @@ t('buttons wrap 5 to a row', buttons(Array.from({ length: 7 }, (_, k) => ({ labe
 const n = notice('Only managers can use /purge', 'Ask a manager.');
 t('notice: private, steel, bold line + how to fix', n.flags === (IS_V2 | EPHEMERAL) && n.components[0].accent_color === ACCENT.steel && plainText(n) === '**Only managers can use /purge**\nAsk a manager.');
 t('ping line sits above the panel, mentions locked down by default', message({ ping: '<@1>', blocks: [] }).components[0].content === '<@1>' && message({ blocks: [] }).allowed_mentions.parse.length === 0);
-t('result colours: W green, D gold, L red', resultAccent('W') === 'win' && resultAccent('D') === 'gold' && resultAccent('L') === 'loss');
+t('result colours: W green, D gold, L Phoenix orange (not red)', resultAccent('W') === 'win' && resultAccent('D') === 'gold' && resultAccent('L') === 'red');
 t('cardUrl reads the manifest, missing → null', cardUrl({ base: 'https://s/cards/', club: 'c.png' }, 'club') === 'https://s/cards/c.png' && cardUrl({ base: 'b/' }, 'match', '1', 'score') === null && cardUrl(null, 'club') === null);
 
 // ---------- templates ----------

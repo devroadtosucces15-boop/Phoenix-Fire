@@ -16,7 +16,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · CLUB\n## PHOENIX FIRE\n-# Division 2 · Skill rating 1886"
+        "content": "-# PHOENIX FIRE · CLUB\n## Phoenix Fire\n-# Division 6 · Skill rating 2153 · 🔥 2 win streak"
        },
        {
         "type": 12,
@@ -25,7 +25,7 @@
           "media": {
            "url": "http://localhost:4321/cards/club-a85b449ea3.png"
           },
-          "description": "43 wins, 10 draws, 11 losses"
+          "description": "179 wins, 12 draws, 27 losses"
          }
         ]
        },
@@ -39,13 +39,13 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
           "label": "Club site"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/apply.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
           "label": "Trials"
          }
         ]
@@ -73,34 +73,45 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 4972682,
+      "accent_color": 15716218,
       "components": [
        {
         "type": 10,
-        "content": "**`PHOENIX FIRE`** · LEAGUE"
+        "content": "🚨 **`PHOENIX XI VPG`** · **FRIENDLY** 🚨"
        },
        {
-        "type": 10,
-        "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## PHOENIX FIRE 3–2 Iron Harbor\n-# <t:1794169239:f> · Win"
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · MATCH CENTRE · FRIENDLY\n## Phoenix Fire 2–1 Bayern Bru\n-# <t:1794519219:f> · Draw"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+         }
+        }
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/score-100030000000000-41b88e9d34.png"
+           "url": "http://localhost:4321/cards/banner-match.png?v=15"
           },
-          "description": "PHOENIX FIRE 3–2 Iron Harbor"
+          "description": "Match centre"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**⚽ Goals** Ignis77, Helios_10, NovaCrest\n**📊 Team rating** 7.2"
+        "content": "**⚽ Goals** Dimantu_, Voro2rt\n**📊 Team rating** 7.4"
        },
        {
         "type": 10,
-        "content": "**⭐ Man of the match** Ignis77"
+        "content": "**⭐ Man of the match** Damlaaa61"
        },
        {
         "type": 14,
@@ -109,18 +120,7 @@
        },
        {
         "type": 10,
-        "content": "-# **FIELD VIEW · RATINGS**"
-       },
-       {
-        "type": 12,
-        "items": [
-         {
-          "media": {
-           "url": "http://localhost:4321/cards/field-100030000000000-a59236dca5.png"
-          },
-          "description": "Our players on the pitch with their match ratings"
-         }
-        ]
+        "content": "`8.6` Damlaaa61\n`8.4` Dimantu_\n`7.8` Marlo7bk\n`7.7` Voro2rt\n`7.7` HristoNL\n`7.1` kingmitch93\n`7.1` Bergkamp6317\n`7.0` MV33xChris\n`6.9` Glekke-93\n`6.8` SamESKO4\n`6.3` Panorave"
        },
        {
         "type": 10,
@@ -131,98 +131,98 @@
         "components": [
          {
           "type": 3,
-          "custom_id": "norex:mm:100030000000000",
+          "custom_id": "norex:mm:187134300650419",
           "placeholder": "📊 Show my match – pick your player",
           "min_values": 1,
           "max_values": 1,
           "options": [
            {
-            "label": "Ignis77",
-            "value": "700188022",
+            "label": "Damlaaa61",
+            "value": "1007626573954",
             "emoji": {
              "name": "🟢"
             },
-            "description": "Rating 8.2 · ⚽ 1"
+            "description": "Rating 8.6"
            },
            {
-            "label": "Vesper_X",
-            "value": "700344707",
+            "label": "Dimantu_",
+            "value": "1827145830",
+            "emoji": {
+             "name": "🟢"
+            },
+            "description": "Rating 8.4 · ⚽ 1"
+           },
+           {
+            "label": "Marlo7bk",
+            "value": "1007930234696",
             "emoji": {
              "name": "🟡"
             },
-            "description": "Rating 8.0 · 🎯 1"
+            "description": "Rating 7.8"
            },
            {
-            "label": "Helios_10",
-            "value": "700313370",
+            "label": "Voro2rt",
+            "value": "1005717067455",
             "emoji": {
              "name": "🟡"
             },
-            "description": "Rating 7.5 · ⚽ 1"
+            "description": "Rating 7.7 · ⚽ 1"
            },
            {
-            "label": "IronTalon",
-            "value": "700094011",
+            "label": "HristoNL",
+            "value": "1006208965101",
             "emoji": {
              "name": "🟡"
             },
-            "description": "Rating 7.4"
+            "description": "Rating 7.7"
            },
            {
-            "label": "NovaCrest",
-            "value": "700438718",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.4 · ⚽ 1"
-           },
-           {
-            "label": "BlazeGuard",
-            "value": "700156685",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.2"
-           },
-           {
-            "label": "TalonStrike",
-            "value": "700564066",
+            "label": "kingmitch93",
+            "value": "182169169",
             "emoji": {
              "name": "🟡"
             },
             "description": "Rating 7.1 · 🎯 1"
            },
            {
-            "label": "GoldenLoom",
-            "value": "700376044",
+            "label": "Bergkamp6317",
+            "value": "1007796036245",
             "emoji": {
-             "name": "🟠"
+             "name": "🟡"
+            },
+            "description": "Rating 7.1"
+           },
+           {
+            "label": "MV33xChris",
+            "value": "1640851384",
+            "emoji": {
+             "name": "🟡"
             },
             "description": "Rating 7.0"
            },
            {
-            "label": "Rekindle",
-            "value": "700407381",
+            "label": "Glekke-93",
+            "value": "1008655888440",
             "emoji": {
              "name": "🟠"
             },
-            "description": "Rating 6.8"
+            "description": "Rating 6.9"
            },
            {
-            "label": "SolarGlove",
-            "value": "700000000",
+            "label": "SamESKO4",
+            "value": "1006486784243",
             "emoji": {
              "name": "🟠"
             },
-            "description": "Rating 6.7"
+            "description": "Rating 6.8 · 🎯 1"
            },
            {
-            "label": "Wildfire_J",
-            "value": "700626740",
+            "label": "Panorave",
+            "value": "1010051541951",
             "emoji": {
              "name": "🟠"
             },
-            "description": "Rating 6.5"
+            "description": "Rating 6.3"
            }
           ]
          }
@@ -234,7 +234,7 @@
          {
           "type": 2,
           "style": 2,
-          "custom_id": "norex:mme:100030000000000",
+          "custom_id": "norex:mme:187134300650419",
           "label": "My match",
           "emoji": {
            "name": "🙋"
@@ -242,17 +242,8 @@
          },
          {
           "type": 2,
-          "style": 2,
-          "custom_id": "norex:box:100030000000000",
-          "label": "Box score",
-          "emoji": {
-           "name": "📊"
-          }
-         },
-         {
-          "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/187134300650419.html",
           "label": "Match report"
          }
         ]
@@ -269,7 +260,7 @@
  },
  {
   "kind": "component",
-  "trigger": "select norex:mm:100030000000000",
+  "trigger": "select norex:mm:187134300650419",
   "parent": "/last",
   "label": null,
   "app": "stats",
@@ -282,18 +273,29 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 4972682,
+      "accent_color": 15716218,
       "components": [
        {
-        "type": 10,
-        "content": "-# PHOENIX FIRE · PLAYER MATCH\n## Ignis77 · 3–2 Iron Harbor\n-# ✅ Win · Defender · <t:1794169239:R>"
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · PLAYER MATCH\n## Damlaaa61 · 2–1 Bayern Bru\n-# ➖ Draw · Defender · <t:1794519219:R>"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+         }
+        }
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-match.png?v=14"
+           "url": "http://localhost:4321/cards/banner-match.png?v=15"
           },
           "description": "Match centre"
          }
@@ -301,7 +303,7 @@
        },
        {
         "type": 10,
-        "content": "**🟢 Rating**\n**8.2** · avg 6.9 ▲\n⭐ **Man of the match**\n\n**⚽ Goals · 🎯 Assists**\n**1** · **0**\navg 0.04 · 0.00 per game\n\n**🅿️ Passes**\n**37/44** (84%) · avg 82% ▲\n\n**🛡️ Tackles**\n**6/10** (60%) · avg 60% ＝\n\n**📈 Last 10 ratings (oldest → newest)**\n🟠🟠🟡🟠🟡🟡🟡🟠🔴🟢\n6.3 · 6.8 · 7.5 · 6.6 · 7.5 · 7.2 · 7.3 · 6.7 · 5.8 · 8.2\nBest **8.2** · season avg **6.9**"
+        "content": "**🟢 Rating**\n**8.6**\n⭐ **Man of the match**\n\n**⚽ Goals · 🎯 Assists**\n**0** · **0**\n\n**🅿️ Passes**\n**9/13** (69%)\n\n**🛡️ Tackles**\n**2/4** (50%)\n\n**🥅 Shots**\n**1**"
        },
        {
         "type": 14,
@@ -318,13 +320,13 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/187134300650419.html",
           "label": "Match page"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players/700188022.html",
+          "url": "http://localhost:4321/players/1007626573954.html",
           "label": "Player page"
          }
         ]
@@ -341,7 +343,7 @@
  },
  {
   "kind": "component",
-  "trigger": "button norex:mme:100030000000000",
+  "trigger": "button norex:mme:187134300650419",
   "parent": "/last",
   "label": "My match",
   "app": "stats",
@@ -361,7 +363,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -370,59 +372,6 @@
        {
         "type": 10,
         "content": "**You haven't linked your player yet. Claim it in the Squad Hub (http://localhost:4321/members.html#me) – until then, pick your name in the 📊 Show my match menu.**"
-       }
-      ]
-     }
-    ],
-    "allowed_mentions": {
-     "parse": []
-    }
-   }
-  },
-  "calls": []
- },
- {
-  "kind": "component",
-  "trigger": "button norex:box:100030000000000",
-  "parent": "/last",
-  "label": "Box score",
-  "app": "stats",
-  "command": "last",
-  "status": 200,
-  "response": {
-   "type": 4,
-   "data": {
-    "flags": 32832,
-    "components": [
-     {
-      "type": 17,
-      "accent_color": 4972682,
-      "components": [
-       {
-        "type": 10,
-        "content": "-# PHOENIX FIRE · BOX SCORE\n## PHOENIX FIRE 3–2 Iron Harbor\n-# <t:1794169239:f>"
-       },
-       {
-        "type": 12,
-        "items": [
-         {
-          "media": {
-           "url": "http://localhost:4321/cards/box-100030000000000-4f6974f0ca.png"
-          },
-          "description": "Every player: rating, goals, assists, passes, tackles and shots"
-         }
-        ]
-       },
-       {
-        "type": 1,
-        "components": [
-         {
-          "type": 2,
-          "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
-          "label": "Match report"
-         }
-        ]
        }
       ]
      }
@@ -451,7 +400,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RESULTS\n## Last 5 results\n-# 4W 0D 1L"
+        "content": "-# PHOENIX FIRE · RESULTS\n## Last 5 results\n-# 0W 5D 0L"
        },
        {
         "type": 12,
@@ -474,7 +423,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/results.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/results.html",
           "label": "All results"
          }
         ]
@@ -492,7 +441,7 @@
  {
   "kind": "slash",
   "command": "player",
-  "trigger": "/player gamertag=SolarGlove",
+  "trigger": "/player gamertag=Niko-the-Great",
   "app": "stats",
   "status": 200,
   "response": {
@@ -509,13 +458,13 @@
         "components": [
          {
           "type": 10,
-          "content": "-# PHOENIX FIRE · PLAYER CARD\n## SolarGlove · 84 OVR\n-# GK · PHOENIX FIRE"
+          "content": "-# PHOENIX FIRE · PLAYER CARD\n## Niko-the-Great\n-# DEF · Phoenix Fire"
          }
         ],
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://example.invalid/phoenix-fire/assets/crest.png"
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -524,15 +473,19 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/player-700000000-5049c11d3b.png"
+           "url": "http://localhost:4321/cards/banner-player.png?v=15"
           },
-          "description": "SolarGlove: season stats and match ratings"
+          "description": "Player"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**🌍 Career** 90 games · 0 goals · 0 assists · rating 7.1\n**📈 Last 5** 🟠 6.1  🟡 7.6  🟡 8.0  🟠 6.9  🟠 6.7  → newest"
+        "content": "**Phoenix Fire (archived matches)** 11 games · 1 goals · 0 assists · rating 7.4 · MOTM 1"
+       },
+       {
+        "type": 10,
+        "content": "**📈 Last 5** 🟡 7.3  🟠 6.4  🟢 8.1  🟠 6.8  🟢 9.8  → newest"
        },
        {
         "type": 10,
@@ -544,7 +497,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players/700000000.html",
+          "url": "http://localhost:4321/players/179113036.html",
           "label": "Full profile"
          }
         ]
@@ -562,7 +515,7 @@
  {
   "kind": "slash",
   "command": "compare",
-  "trigger": "/compare player1=SolarGlove player2=CinderRock",
+  "trigger": "/compare player1=Niko-the-Great player2=Goff915",
   "app": "stats",
   "status": 200,
   "response": {
@@ -576,18 +529,22 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · COMPARE\n## SolarGlove vs CinderRock\n-# GK vs CB · club stats this season"
+        "content": "-# PHOENIX FIRE · COMPARE\n## Niko-the-Great vs Goff915\n-# DEF vs MID · club stats this season"
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/cmp-700000000-700062674-8aea6986ed.png"
+           "url": "http://localhost:4321/cards/banner-stats.png?v=15"
           },
-          "description": "SolarGlove and CinderRock compared stat by stat"
+          "description": "Stats"
          }
         ]
+       },
+       {
+        "type": 10,
+        "content": "```\nSTAT        Niko-the-Great         Goff915\nOVR                    0               0  \nGames                 11 ◀             2  \nGoals                  1               1  \nAssists                0               0  \nRating               7.4             7.9 ◀\nMOTM                   1 ◀             0  \nPass %                82              89 ◀\nTackle %              56             100 ◀\nWin %                 64             100 ◀\n```"
        },
        {
         "type": 10,
@@ -599,7 +556,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/compare.html?a=700000000&b=700062674",
+          "url": "http://localhost:4321/compare.html?a=179113036&b=180231353",
           "label": "Compare on the site"
          }
         ]
@@ -640,7 +597,7 @@
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://example.invalid/phoenix-fire/assets/crest.png"
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -649,7 +606,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-general.png?v=14"
+           "url": "http://localhost:4321/cards/banner-general.png?v=15"
           },
           "description": "Phoenix Fire"
          }
@@ -661,19 +618,19 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
           "label": "Website"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/members.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/members.html",
           "label": "Squad Hub"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/apply.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
           "label": "Trials"
          }
         ]
@@ -703,7 +660,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokekyva0n7gq/messages/@original",
+    "url": "/webhooks/2/tokieki6f80hg/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -948,7 +905,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lineup-none.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-lineup-none.png?v=15"
           },
           "description": "No line-up yet"
          }
@@ -956,7 +913,15 @@
        },
        {
         "type": 10,
+        "content": "-# PHOENIX FIRE · /lineup"
+       },
+       {
+        "type": 10,
         "content": "🗓️ Nothing scheduled yet."
+       },
+       {
+        "type": 10,
+        "content": "-# Visible to everyone in this channel"
        }
       ]
      }
@@ -988,11 +953,15 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
         ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · /rush"
        },
        {
         "type": 10,
@@ -1028,7 +997,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-me-claim.png?v=14"
+           "url": "http://localhost:4321/cards/banner-me-claim.png?v=15"
           },
           "description": "No verified player yet"
          }
@@ -1080,7 +1049,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# FlareKing leads with 21"
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# ed44ed leads with 61"
        },
        {
         "type": 12,
@@ -1103,7 +1072,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/stats.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
           "label": "All leaderboards"
          }
         ]
@@ -1142,7 +1111,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-stats.png?v=14"
+           "url": "http://localhost:4321/cards/banner-stats.png?v=15"
           },
           "description": "Stats"
          }
@@ -1208,7 +1177,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-player.png?v=14"
+           "url": "http://localhost:4321/cards/banner-player.png?v=15"
           },
           "description": "Player"
          }
@@ -1263,7 +1232,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-award.png?v=14"
+           "url": "http://localhost:4321/cards/banner-award.png?v=15"
           },
           "description": "Awards"
          }
@@ -1296,7 +1265,7 @@
        },
        {
         "type": 10,
-        "content": "👟 **Golden Boot** — [NovaCrest](http://localhost:4321/players/700438718.html)\n🦾 **Iron Man** — [Helios_10](http://localhost:4321/players/700313370.html)\n🦾 **Iron Man** — [Vesper_X](http://localhost:4321/players/700344707.html)\n🎩 **Playmaker** — [PyraMind](http://localhost:4321/players/700282033.html)\n🎩 **Playmaker** — [GoldenLoom](http://localhost:4321/players/700376044.html)\n🌱 **Rising Star** — [FlareKing](http://localhost:4321/players/700532729.html)"
+        "content": "👟 **Golden Boot** — [Dimantu_](http://localhost:4321/players/1827145830.html)\n🦾 **Iron Man** — [leo77romano](http://localhost:4321/players/1005706168629.html)\n🦾 **Iron Man** — [HristoNL](http://localhost:4321/players/1006208965101.html)\n🦾 **Iron Man** — [Bantu Vikng](http://localhost:4321/players/1205881367.html)\n🦾 **Iron Man** — [kingmitch93](http://localhost:4321/players/182169169.html)\n🎩 **Playmaker** — [HristoNL](http://localhost:4321/players/1006208965101.html)\n🎩 **Playmaker** — [kingmitch93](http://localhost:4321/players/182169169.html)\n🌱 **Rising Star** — [Niko-the-Great](http://localhost:4321/players/179113036.html)\n🌱 **Rising Star** — [Dimantu_](http://localhost:4321/players/1827145830.html)"
        },
        {
         "type": 1,
@@ -1354,7 +1323,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-predict.png?v=14"
+           "url": "http://localhost:4321/cards/banner-predict.png?v=15"
           },
           "description": "Predictions"
          }
@@ -1433,7 +1402,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok4qxvfu4d28s/messages/@original",
+    "url": "/webhooks/3/tokclsxv83g80s/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1470,7 +1439,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok8yut3g6v16p/messages/@original",
+    "url": "/webhooks/2/tok4qxvfu4d28s/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1480,11 +1449,11 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · BURNER CLUBS\n### 🕘 14 clubs Phoenix Fire played lately"
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 25 clubs Phoenix Fire played lately"
         },
         {
          "type": 10,
-         "content": "🔥 **Iron Harbor** · `1115838` · we won 3–2 · League · 4d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 5d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 6d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 8d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 9d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 11d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 12d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 14d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 20d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 25d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 27d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 28d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 30d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 39d ago"
+         "content": "🔥 **Bayern Bru** · `28097` · we drew 2–1 · Friendly · 26h ago\n🔥 **LA1 Ballerz** · `7161` · we drew 3–0 · Friendly · 26h ago\n🔥 **Royal AcademyX** · `32485` · we drew 1–0 · Friendly · 26h ago\n🔥 **MaskerLit Espor** · `33705` · we drew 1–0 · Friendly · 27h ago\n🔥 **TheGoldenEffect** · `100369` · we drew 3–0 · Friendly · 27h ago\n🔥 **Nifty Academy** · `390569` · we drew 3–0 · Friendly · 27h ago\n🔥 **Autistic United** · `127801` · we lost 0–3 · League · 33h ago\n🔥 **SV WUERTH** · `2088548` · we won 3–2 · League · 34h ago\n🔥 **FC Alterlaa** · `647478` · we lost 2–4 · League · 34h ago\n🔥 **Fc Dickens** · `196900` · we drew 0–0 · League · 47h ago\n🔥 **FC BöseBreit** · `1741127` · we lost 1–3 · League · 2d ago\n🔥 **StayyHigh** · `2032190` · we won 1–0 · League · 2d ago\n🔥 **Møllestenen IF** · `392771` · we won 3–0 · League · 2d ago\n🔥 **OSIMANA CF** · `542834` · we lost 1–2 · League · 2d ago\n🔥 **BDZOO** · `965335` · we won 4–2 · League · 2d ago\n🔥 **Loacher United** · `372950` · we lost 1–3 · League · 2d ago\n🔥 **Galeti** · `251690` · we lost 1–3 · League · 2d ago\n🔥 **THE N00BS** · `1494621` · we drew 1–1 · League · 3d ago\n🔥 **FC DHIMTA** · `1915439` · we lost 0–2 · League · 3d ago\n🔥 **FC Yamukspor** · `2168708` · we lost 1–4 · League · 3d ago\n🔥 **GUADALAJAMAL** · `1031823` · we won 3–0 · League · 3d ago\n🔥 **Dreieckssystem** · `1401817` · we drew 3–3 · League · 3d ago\n🔥 **CFC Dirty** · `12204` · we lost 0–2 · League · 3d ago\n🔥 **FC107** · `1795370` · we won 2–1 · League · 3d ago\n🔥 **CRIAS SC** · `159604` · we won 3–1 · League · 3d ago"
         },
         {
          "type": 10,
@@ -1501,113 +1470,201 @@
            "max_values": 1,
            "options": [
             {
-             "label": "Iron Harbor",
-             "value": "1115838",
-             "description": "1115838 · we won 3–2 · League · 4d ago",
+             "label": "Bayern Bru",
+             "value": "28097",
+             "description": "28097 · we drew 2–1 · Friendly · 26h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Night Owls",
-             "value": "1107919",
-             "description": "1107919 · we lost 1–2 · League · 5d ago",
+             "label": "LA1 Ballerz",
+             "value": "7161",
+             "description": "7161 · we drew 3–0 · Friendly · 26h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Copperhead FC",
-             "value": "1171271",
-             "description": "1171271 · we won 2–1 · League · 6d ago",
+             "label": "Royal AcademyX",
+             "value": "32485",
+             "description": "32485 · we drew 1–0 · Friendly · 26h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Velvet Thunder",
-             "value": "1147514",
-             "description": "1147514 · we won 4–0 · League · 8d ago",
+             "label": "MaskerLit Espor",
+             "value": "33705",
+             "description": "33705 · we drew 1–0 · Friendly · 27h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Coastline United",
-             "value": "1123757",
-             "description": "1123757 · we won 3–1 · League · 9d ago",
+             "label": "TheGoldenEffect",
+             "value": "100369",
+             "description": "100369 · we drew 3–0 · Friendly · 27h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Northgate Elite",
-             "value": "1155433",
-             "description": "1155433 · we drew 0–0 · League · 11d ago",
+             "label": "Nifty Academy",
+             "value": "390569",
+             "description": "390569 · we drew 3–0 · Friendly · 27h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Silent Wolves",
-             "value": "1139595",
-             "description": "1139595 · we drew 1–1 · League · 12d ago",
+             "label": "Autistic United",
+             "value": "127801",
+             "description": "127801 · we lost 0–3 · League · 33h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Red Mesa Rovers",
-             "value": "1131676",
-             "description": "1131676 · we won 3–1 · League · 14d ago",
+             "label": "SV WUERTH",
+             "value": "2088548",
+             "description": "2088548 · we won 3–2 · League · 34h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Frostbite FC",
-             "value": "1100000",
-             "description": "1100000 · we won 5–1 · League · 20d ago",
+             "label": "FC Alterlaa",
+             "value": "647478",
+             "description": "647478 · we lost 2–4 · League · 34h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Glass Cannons",
-             "value": "1202947",
-             "description": "1202947 · we won 3–0 · League · 25d ago",
+             "label": "Fc Dickens",
+             "value": "196900",
+             "description": "196900 · we drew 0–0 · League · 47h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Lunar Drift",
-             "value": "1163352",
-             "description": "1163352 · we lost 1–2 · League · 27d ago",
+             "label": "FC BöseBreit",
+             "value": "1741127",
+             "description": "1741127 · we lost 1–3 · League · 2d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Static Noise",
-             "value": "1187109",
-             "description": "1187109 · we lost 1–4 · League · 28d ago",
+             "label": "StayyHigh",
+             "value": "2032190",
+             "description": "2032190 · we won 1–0 · League · 2d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Bluefin Athletic",
-             "value": "1179190",
-             "description": "1179190 · we won 1–0 · League · 30d ago",
+             "label": "Møllestenen IF",
+             "value": "392771",
+             "description": "392771 · we won 3–0 · League · 2d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Rustbelt Kings",
-             "value": "1195028",
-             "description": "1195028 · we won 2–0 · League · 39d ago",
+             "label": "OSIMANA CF",
+             "value": "542834",
+             "description": "542834 · we lost 1–2 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "BDZOO",
+             "value": "965335",
+             "description": "965335 · we won 4–2 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Loacher United",
+             "value": "372950",
+             "description": "372950 · we lost 1–3 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Galeti",
+             "value": "251690",
+             "description": "251690 · we lost 1–3 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "THE N00BS",
+             "value": "1494621",
+             "description": "1494621 · we drew 1–1 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FC DHIMTA",
+             "value": "1915439",
+             "description": "1915439 · we lost 0–2 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FC Yamukspor",
+             "value": "2168708",
+             "description": "2168708 · we lost 1–4 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "GUADALAJAMAL",
+             "value": "1031823",
+             "description": "1031823 · we won 3–0 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Dreieckssystem",
+             "value": "1401817",
+             "description": "1401817 · we drew 3–3 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "CFC Dirty",
+             "value": "12204",
+             "description": "12204 · we lost 0–2 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FC107",
+             "value": "1795370",
+             "description": "1795370 · we won 2–1 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "CRIAS SC",
+             "value": "159604",
+             "description": "159604 · we won 3–1 · League · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1645,7 +1702,7 @@
       "components": [
        {
         "type": 10,
-        "content": "🔥 Now tracking **Iron Harbor** (club 1115838).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c1115838"
+        "content": "🔥 Now tracking **Bayern Bru** (club 28097).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c28097"
        }
       ]
      }
@@ -1672,7 +1729,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/toklj57olylqg/messages/@original",
+    "url": "/webhooks/2/tok43xjt3xzwrf/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1682,11 +1739,11 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · BURNER CLUBS\n### 🕘 14 clubs Phoenix Fire played lately"
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 25 clubs Phoenix Fire played lately"
         },
         {
          "type": 10,
-         "content": "✅ **Iron Harbor** · `1115838` · we won 3–2 · League · 4d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 5d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 6d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 8d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 9d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 11d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 12d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 14d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 20d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 25d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 27d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 28d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 30d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 39d ago"
+         "content": "✅ **Bayern Bru** · `28097` · we drew 2–1 · Friendly · 26h ago\n🔥 **LA1 Ballerz** · `7161` · we drew 3–0 · Friendly · 26h ago\n🔥 **Royal AcademyX** · `32485` · we drew 1–0 · Friendly · 26h ago\n🔥 **MaskerLit Espor** · `33705` · we drew 1–0 · Friendly · 27h ago\n🔥 **TheGoldenEffect** · `100369` · we drew 3–0 · Friendly · 27h ago\n🔥 **Nifty Academy** · `390569` · we drew 3–0 · Friendly · 27h ago\n🔥 **Autistic United** · `127801` · we lost 0–3 · League · 33h ago\n🔥 **SV WUERTH** · `2088548` · we won 3–2 · League · 34h ago\n🔥 **FC Alterlaa** · `647478` · we lost 2–4 · League · 34h ago\n🔥 **Fc Dickens** · `196900` · we drew 0–0 · League · 47h ago\n🔥 **FC BöseBreit** · `1741127` · we lost 1–3 · League · 2d ago\n🔥 **StayyHigh** · `2032190` · we won 1–0 · League · 2d ago\n🔥 **Møllestenen IF** · `392771` · we won 3–0 · League · 2d ago\n🔥 **OSIMANA CF** · `542834` · we lost 1–2 · League · 2d ago\n🔥 **BDZOO** · `965335` · we won 4–2 · League · 2d ago\n🔥 **Loacher United** · `372950` · we lost 1–3 · League · 2d ago\n🔥 **Galeti** · `251690` · we lost 1–3 · League · 2d ago\n🔥 **THE N00BS** · `1494621` · we drew 1–1 · League · 3d ago\n🔥 **FC DHIMTA** · `1915439` · we lost 0–2 · League · 3d ago\n🔥 **FC Yamukspor** · `2168708` · we lost 1–4 · League · 3d ago\n🔥 **GUADALAJAMAL** · `1031823` · we won 3–0 · League · 3d ago\n🔥 **Dreieckssystem** · `1401817` · we drew 3–3 · League · 3d ago\n🔥 **CFC Dirty** · `12204` · we lost 0–2 · League · 3d ago\n🔥 **FC107** · `1795370` · we won 2–1 · League · 3d ago\n🔥 **CRIAS SC** · `159604` · we won 3–1 · League · 3d ago"
         },
         {
          "type": 10,
@@ -1703,113 +1760,201 @@
            "max_values": 1,
            "options": [
             {
-             "label": "Iron Harbor",
-             "value": "1115838",
-             "description": "1115838 · we won 3–2 · League · 4d ago",
+             "label": "Bayern Bru",
+             "value": "28097",
+             "description": "28097 · we drew 2–1 · Friendly · 26h ago",
              "emoji": {
               "name": "✅"
              }
             },
             {
-             "label": "Night Owls",
-             "value": "1107919",
-             "description": "1107919 · we lost 1–2 · League · 5d ago",
+             "label": "LA1 Ballerz",
+             "value": "7161",
+             "description": "7161 · we drew 3–0 · Friendly · 26h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Copperhead FC",
-             "value": "1171271",
-             "description": "1171271 · we won 2–1 · League · 6d ago",
+             "label": "Royal AcademyX",
+             "value": "32485",
+             "description": "32485 · we drew 1–0 · Friendly · 26h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Velvet Thunder",
-             "value": "1147514",
-             "description": "1147514 · we won 4–0 · League · 8d ago",
+             "label": "MaskerLit Espor",
+             "value": "33705",
+             "description": "33705 · we drew 1–0 · Friendly · 27h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Coastline United",
-             "value": "1123757",
-             "description": "1123757 · we won 3–1 · League · 9d ago",
+             "label": "TheGoldenEffect",
+             "value": "100369",
+             "description": "100369 · we drew 3–0 · Friendly · 27h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Northgate Elite",
-             "value": "1155433",
-             "description": "1155433 · we drew 0–0 · League · 11d ago",
+             "label": "Nifty Academy",
+             "value": "390569",
+             "description": "390569 · we drew 3–0 · Friendly · 27h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Silent Wolves",
-             "value": "1139595",
-             "description": "1139595 · we drew 1–1 · League · 12d ago",
+             "label": "Autistic United",
+             "value": "127801",
+             "description": "127801 · we lost 0–3 · League · 33h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Red Mesa Rovers",
-             "value": "1131676",
-             "description": "1131676 · we won 3–1 · League · 14d ago",
+             "label": "SV WUERTH",
+             "value": "2088548",
+             "description": "2088548 · we won 3–2 · League · 34h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Frostbite FC",
-             "value": "1100000",
-             "description": "1100000 · we won 5–1 · League · 20d ago",
+             "label": "FC Alterlaa",
+             "value": "647478",
+             "description": "647478 · we lost 2–4 · League · 34h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Glass Cannons",
-             "value": "1202947",
-             "description": "1202947 · we won 3–0 · League · 25d ago",
+             "label": "Fc Dickens",
+             "value": "196900",
+             "description": "196900 · we drew 0–0 · League · 47h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Lunar Drift",
-             "value": "1163352",
-             "description": "1163352 · we lost 1–2 · League · 27d ago",
+             "label": "FC BöseBreit",
+             "value": "1741127",
+             "description": "1741127 · we lost 1–3 · League · 2d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Static Noise",
-             "value": "1187109",
-             "description": "1187109 · we lost 1–4 · League · 28d ago",
+             "label": "StayyHigh",
+             "value": "2032190",
+             "description": "2032190 · we won 1–0 · League · 2d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Bluefin Athletic",
-             "value": "1179190",
-             "description": "1179190 · we won 1–0 · League · 30d ago",
+             "label": "Møllestenen IF",
+             "value": "392771",
+             "description": "392771 · we won 3–0 · League · 2d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Rustbelt Kings",
-             "value": "1195028",
-             "description": "1195028 · we won 2–0 · League · 39d ago",
+             "label": "OSIMANA CF",
+             "value": "542834",
+             "description": "542834 · we lost 1–2 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "BDZOO",
+             "value": "965335",
+             "description": "965335 · we won 4–2 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Loacher United",
+             "value": "372950",
+             "description": "372950 · we lost 1–3 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Galeti",
+             "value": "251690",
+             "description": "251690 · we lost 1–3 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "THE N00BS",
+             "value": "1494621",
+             "description": "1494621 · we drew 1–1 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FC DHIMTA",
+             "value": "1915439",
+             "description": "1915439 · we lost 0–2 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FC Yamukspor",
+             "value": "2168708",
+             "description": "2168708 · we lost 1–4 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "GUADALAJAMAL",
+             "value": "1031823",
+             "description": "1031823 · we won 3–0 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Dreieckssystem",
+             "value": "1401817",
+             "description": "1401817 · we drew 3–3 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "CFC Dirty",
+             "value": "12204",
+             "description": "12204 · we lost 0–2 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FC107",
+             "value": "1795370",
+             "description": "1795370 · we won 2–1 · League · 3d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "CRIAS SC",
+             "value": "159604",
+             "description": "159604 · we won 3–1 · League · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -1843,7 +1988,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokemgwjyf7fs7/messages/@original",
+    "url": "/webhooks/2/toklj57olylqg/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1853,7 +1998,7 @@
        "components": [
         {
          "type": 10,
-         "content": "🔥 Now tracking **Sample** (club 872273).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c872273"
+         "content": "🔍 EA has no club matching **sample** yet. Names only match clubs Phoenix Fire has played – for any other club paste its **club ID** (`/burner track 1234567`), or try again after their first game."
         }
        ]
       }
@@ -1882,11 +2027,11 @@
       "components": [
        {
         "type": 10,
-        "content": "-# STAFF · BURNER CLUBS\n### 🔥 Burner clubs (2/20)"
+        "content": "-# STAFF · BURNER CLUBS\n### 🔥 Burner clubs (1/20)"
        },
        {
         "type": 10,
-        "content": "🔥 **Iron Harbor** · `1115838` · ⏳ first collection pending\n🔥 **Sample** · `872273` · ⏳ first collection pending"
+        "content": "🔥 **Bayern Bru** · `28097` · ⏳ first collection pending"
        },
        {
         "type": 10,
@@ -1930,6 +2075,10 @@
       "components": [
        {
         "type": 10,
+        "content": "-# STAFF · BURNER CLUBS\n### Stop tracking a club"
+       },
+       {
+        "type": 10,
         "content": "Which club should I stop tracking? (Its history stays on file.)"
        },
        {
@@ -1943,17 +2092,9 @@
           "max_values": 1,
           "options": [
            {
-            "label": "Iron Harbor",
-            "value": "1115838",
-            "description": "club 1115838",
-            "emoji": {
-             "name": "🗑️"
-            }
-           },
-           {
-            "label": "Sample",
-            "value": "872273",
-            "description": "club 872273",
+            "label": "Bayern Bru",
+            "value": "28097",
+            "description": "club 28097",
             "emoji": {
              "name": "🗑️"
             }
@@ -1991,7 +2132,7 @@
       "components": [
        {
         "type": 10,
-        "content": "🗑️ Stopped tracking **Iron Harbor**. Its history stays on the page until the next cleanup – /burner search brings it back."
+        "content": "🗑️ Stopped tracking **Bayern Bru**. Its history stays on the page until the next cleanup – /burner search brings it back."
        }
       ]
      }
@@ -2018,7 +2159,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokg1cqv0v1ul7/messages/@original",
+    "url": "/webhooks/1/tokfc4pwg0nmij/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -2055,7 +2196,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokkws2qfpnug/messages/@original",
+    "url": "/webhooks/1/tokg1cqv0v1ul7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -2092,7 +2233,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokp0benat70i/messages/@original",
+    "url": "/webhooks/1/tokkws2qfpnug/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -2129,7 +2270,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok1wz6d4ee0q/messages/@original",
+    "url": "/webhooks/1/tokp0benat70i/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -2139,7 +2280,7 @@
        "components": [
         {
          "type": 10,
-         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 1 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
+         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 0 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
         }
        ]
       }
@@ -2166,7 +2307,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokal1ljdvxf5r/messages/@original",
+    "url": "/webhooks/1/tok1wz6d4ee0q/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -2208,11 +2349,15 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
         ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · /feedback"
        },
        {
         "type": 10,
@@ -2248,11 +2393,15 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
         ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · /feedback"
        },
        {
         "type": 10,
@@ -2288,11 +2437,15 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
         ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · /feedback"
        },
        {
         "type": 10,
@@ -2328,7 +2481,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-suggest-sent.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-suggest-sent.png?v=15"
           },
           "description": "On the board"
          }
@@ -2368,7 +2521,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-announce-sent.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-announce-sent.png?v=15"
           },
           "description": "Announcement sent"
          }
@@ -2408,7 +2561,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-announce-sent.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-announce-sent.png?v=15"
           },
           "description": "Announcement sent"
          }
@@ -2431,7 +2584,7 @@
  {
   "kind": "slash",
   "command": "trial",
-  "trigger": "/trial gamertag=SolarGlove",
+  "trigger": "/trial gamertag=Niko-the-Great",
   "app": "core",
   "status": 200,
   "response": {
@@ -2448,7 +2601,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=15"
           },
           "description": "Nothing here yet"
          }
@@ -2456,7 +2609,11 @@
        },
        {
         "type": 10,
-        "content": "🤷 No trial cards match \"SolarGlove\"."
+        "content": "-# PHOENIX FIRE · /trial"
+       },
+       {
+        "type": 10,
+        "content": "🤷 No trial cards match \"Niko-the-Great\"."
        }
       ]
      }
@@ -2484,15 +2641,26 @@
       "accent_color": 15716218,
       "components": [
        {
-        "type": 10,
-        "content": "-# PHOENIX FIRE · MAN OF THE MATCH VOTE\n## 🌟 MOTM · vs Iron Harbor\n-# 3–2 · 2 votes so far"
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · MAN OF THE MATCH VOTE\n## 🌟 MOTM · vs Bayern Bru\n-# 2–1 · 2 votes so far"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+         }
+        }
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-award.png?v=14"
+           "url": "http://localhost:4321/cards/banner-award.png?v=15"
           },
           "description": "Awards"
          }
@@ -2500,7 +2668,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **SolarGlove** — 1 vote\n🥈 **IronTalon** — 1 vote"
+        "content": "🥇 **kingmitch93** — 1 vote\n🥈 **MV33xChris** — 1 vote"
        },
        {
         "type": 1,
@@ -2514,7 +2682,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/187134300650419.html",
           "label": "Match report"
          }
         ]
@@ -2542,11 +2710,37 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 7108752,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 10,
-        "content": "🤷 No matches found against \"1\"."
+        "content": "-# PHOENIX FIRE · HEAD TO HEAD\n## ⚔️ Phoenix Fire vs FC107\n-# 1 game · 1W 0D 0L"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-stats.png?v=15"
+          },
+          "description": "Stats"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Goals** 2–1 (+1)\n**Win rate** 100%\n**Last meeting** W 2–1"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/stats.html#h2h",
+          "label": "Head to head on the site"
+         }
+        ]
        }
       ]
      }
@@ -2578,7 +2772,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-jail.png?v=14"
+           "url": "http://localhost:4321/cards/banner-jail.png?v=15"
           }
          }
         ]
@@ -2589,11 +2783,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with leaving the pitch for a snack mid-match."
+        "content": "Charged with rage-quitting at 1–0 up."
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1794497456:R>"
+        "content": "**Sentence** 30 min · out <t:1794613585:R>"
        },
        {
         "type": 14,
@@ -2658,7 +2852,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-jail.png?v=14"
+           "url": "http://localhost:4321/cards/banner-jail.png?v=15"
           }
          }
         ]
@@ -2669,11 +2863,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with leaving the pitch for a snack mid-match."
+        "content": "Charged with rage-quitting at 1–0 up."
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1794495656:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1794611785:R>"
        },
        {
         "type": 14,
@@ -2734,7 +2928,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-fun.png?v=14"
+           "url": "http://localhost:4321/cards/banner-fun.png?v=15"
           },
           "description": "Phoenix Fun"
          }
@@ -2742,7 +2936,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1794495656:d> · 30 min · leaving the pitch for a snack mid-match · 💸 bailed\n`PHX-0003` <t:1794494654:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794490654:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794486654:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1794611785:d> · 30 min · rage-quitting at 1–0 up · 💸 bailed\n`PHX-0003` <t:1794610785:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794606785:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794602785:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -2774,7 +2968,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-wheel-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-wheel-error.png?v=15"
           },
           "description": "Wheel not ready"
          }
@@ -2814,7 +3008,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -2854,7 +3048,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=15"
           },
           "description": "Nothing here yet"
          }
@@ -2898,7 +3092,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-live.png?v=14"
+           "url": "http://localhost:4321/cards/banner-live.png?v=15"
           },
           "description": "Live"
          }
@@ -2906,7 +3100,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794484854:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794600985:R>"
        }
       ]
      }
@@ -2942,7 +3136,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-live.png?v=14"
+           "url": "http://localhost:4321/cards/banner-live.png?v=15"
           },
           "description": "Live"
          }
@@ -2950,7 +3144,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794402054:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793415654:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794518185:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793531785:R>"
        }
       ]
      }
@@ -2986,7 +3180,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-live.png?v=14"
+           "url": "http://localhost:4321/cards/banner-live.png?v=15"
           },
           "description": "Live"
          }
@@ -2994,7 +3188,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794243654:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794359785:R>"
        }
       ]
      }
@@ -3030,7 +3224,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-live.png?v=14"
+           "url": "http://localhost:4321/cards/banner-live.png?v=15"
           },
           "description": "Live"
          }
@@ -3038,7 +3232,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794027654:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794143785:R>"
        }
       ]
      }
@@ -3074,7 +3268,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-live.png?v=14"
+           "url": "http://localhost:4321/cards/banner-live.png?v=15"
           },
           "description": "Live"
          }
@@ -3082,7 +3276,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1793775654:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1793891785:R>"
        }
       ]
      }
@@ -3114,7 +3308,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -3154,7 +3348,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=15"
           },
           "description": "That did not work"
          }
@@ -3198,7 +3392,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-general.png?v=14"
+           "url": "http://localhost:4321/cards/banner-general.png?v=15"
           },
           "description": "Phoenix Fire"
          }
@@ -3238,7 +3432,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=15"
           },
           "description": "That did not work"
          }
@@ -3278,7 +3472,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=15"
           },
           "description": "That did not work"
          }
@@ -3322,7 +3516,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-live.png?v=14"
+           "url": "http://localhost:4321/cards/banner-live.png?v=15"
           },
           "description": "Live"
          }
@@ -3362,7 +3556,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=15"
           },
           "description": "That did not work"
          }
@@ -3402,7 +3596,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=15"
           },
           "description": "That did not work"
          }
@@ -3442,7 +3636,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=15"
           },
           "description": "That did not work"
          }
@@ -3479,14 +3673,14 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which club is nicknamed “The Gunners”?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Who is the Premier League’s all-time top scorer?"
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-fun.png?v=14"
+           "url": "http://localhost:4321/cards/banner-fun.png?v=15"
           },
           "description": "Phoenix Fun"
          }
@@ -3494,7 +3688,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · West Ham\n**B** · Tottenham\n**C** · Arsenal\n**D** · Millwall"
+        "content": "**A** · Alan Shearer\n**B** · Wayne Rooney\n**C** · Harry Kane\n**D** · Andy Cole"
        },
        {
         "type": 10,
@@ -3554,22 +3748,22 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 16743794,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=15"
           },
-          "description": "That did not work"
+          "description": "Done"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**❌ Not this time – it was C · Arsenal**\nFrom the Royal Arsenal armaments factory. You have 0 points."
+        "content": "**✅ Right! +10 points**\nShearer scored 260. You have 10 points."
        }
       ]
      }
@@ -3603,7 +3797,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -3645,7 +3839,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -3687,7 +3881,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -3724,14 +3918,14 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 1 player on the board"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 2 players on the board"
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-fun.png?v=14"
+           "url": "http://localhost:4321/cards/banner-fun.png?v=15"
           },
           "description": "Phoenix Fun"
          }
@@ -3739,7 +3933,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **Mike** · 120 pts · 9/12 right"
+        "content": "🥇 **Mike** · 120 pts · 9/12 right\n🥈 **Zub (owner)** · 10 pts · 1/1 right"
        }
       ]
      }
@@ -3766,7 +3960,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok18ok9zljmvd/messages/@original",
+    "url": "/webhooks/1/tok6xw5w0xkoa/messages/@original",
     "body": {
      "components": [
       {
@@ -3778,7 +3972,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+            "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
            },
            "description": "Check and try again"
           }
@@ -3814,7 +4008,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokbt174nkwra/messages/@original",
+    "url": "/webhooks/1/tok18ok9zljmvd/messages/@original",
     "body": {
      "components": [
       {
@@ -3826,7 +4020,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+            "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
            },
            "description": "Check and try again"
           }
@@ -3862,7 +4056,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/toknkq9irufwi/messages/@original",
+    "url": "/webhooks/1/tokbt174nkwra/messages/@original",
     "body": {
      "components": [
       {
@@ -3874,7 +4068,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+            "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
            },
            "description": "Check and try again"
           }
@@ -3915,7 +4109,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -3955,7 +4149,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -3995,7 +4189,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4035,7 +4229,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4075,7 +4269,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4115,7 +4309,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4155,7 +4349,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4195,7 +4389,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4235,7 +4429,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4275,7 +4469,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4315,7 +4509,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4355,7 +4549,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4395,7 +4589,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4435,7 +4629,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4444,6 +4638,126 @@
        {
         "type": 10,
         "content": "**This server is not in the Organization config yet. Add it under Boardroom → Organization → Discord servers first.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup output output=sample state=on",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
+          },
+          "description": "Check and try again"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**\"sample\" is not an output in the registry. Pick one from the list that appears as you type.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup output output=sample state=off",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
+          },
+          "description": "Check and try again"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**\"sample\" is not an output in the registry. Pick one from the list that appears as you type.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "setup",
+  "trigger": "/setup output output=sample state=default",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
+          },
+          "description": "Check and try again"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**\"sample\" is not an output in the registry. Pick one from the list that appears as you type.**"
        }
       ]
      }
@@ -4475,7 +4789,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-setup-done.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-setup-done.png?v=15"
           },
           "description": "Setup saved"
          }
@@ -4515,7 +4829,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-setup-done.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-setup-done.png?v=15"
           },
           "description": "Setup saved"
          }
@@ -4550,7 +4864,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok88hbca0n3yl/messages/@original",
+    "url": "/webhooks/1/tok0qpl3ckpncc/messages/@original",
     "body": {
      "components": [
       {
@@ -4592,7 +4906,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4632,7 +4946,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=15"
           },
           "description": "Nothing here yet"
          }
@@ -4672,7 +4986,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-tag-saved.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-tag-saved.png?v=15"
           },
           "description": "Tag saved"
          }
@@ -4712,7 +5026,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-tag-list.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-tag-list.png?v=15"
           },
           "description": "Saved answers"
          }
@@ -4752,7 +5066,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=15"
           },
           "description": "Check and try again"
          }
@@ -4792,7 +5106,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=15"
           },
           "description": "Nothing here yet"
          }
@@ -4836,7 +5150,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-staff.png?v=14"
+           "url": "http://localhost:4321/cards/banner-staff.png?v=15"
           },
           "description": "Staff"
          }
@@ -4939,7 +5253,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794495656:R> · only you can see this"
+        "content": "-# Updated <t:1794611785:R> · only you can see this"
        },
        {
         "type": 1,
@@ -4997,7 +5311,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-staff.png?v=14"
+           "url": "http://localhost:4321/cards/banner-staff.png?v=15"
           },
           "description": "Staff"
          }
@@ -5013,7 +5327,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794495054:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794611185:R>"
          }
         ],
         "accessory": {
@@ -5110,7 +5424,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-claim.png?v=14"
+           "url": "http://localhost:4321/cards/banner-claim.png?v=15"
           },
           "description": "Player claim"
          }
@@ -5194,7 +5508,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-staff.png?v=14"
+           "url": "http://localhost:4321/cards/banner-staff.png?v=15"
           },
           "description": "Staff"
          }
@@ -5297,7 +5611,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794495656:R> · only you can see this"
+        "content": "-# Updated <t:1794611785:R> · only you can see this"
        },
        {
         "type": 1,
@@ -5355,7 +5669,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-claim.png?v=14"
+           "url": "http://localhost:4321/cards/banner-claim.png?v=15"
           },
           "description": "Player claim"
          }
@@ -5439,7 +5753,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-card.png?v=14"
+           "url": "http://localhost:4321/cards/banner-card.png?v=15"
           },
           "description": "Card Studio"
          }
@@ -5519,7 +5833,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-rush.png?v=14"
+           "url": "http://localhost:4321/cards/banner-rush.png?v=15"
           },
           "description": "Rush"
          }
@@ -5599,7 +5913,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-request.png?v=14"
+           "url": "http://localhost:4321/cards/banner-request.png?v=15"
           },
           "description": "Requests"
          }
@@ -5679,7 +5993,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-staff.png?v=14"
+           "url": "http://localhost:4321/cards/banner-staff.png?v=15"
           },
           "description": "Staff"
          }
@@ -5695,7 +6009,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794495656:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794611785:R>"
          }
         ],
         "accessory": {
@@ -5798,7 +6112,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-idea.png?v=14"
+           "url": "http://localhost:4321/cards/banner-idea.png?v=15"
           },
           "description": "Ideas"
          }
@@ -5882,7 +6196,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-idea.png?v=14"
+           "url": "http://localhost:4321/cards/banner-idea.png?v=15"
           },
           "description": "Ideas"
          }
@@ -5998,7 +6312,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-idea.png?v=14"
+           "url": "http://localhost:4321/cards/banner-idea.png?v=15"
           },
           "description": "Ideas"
          }
@@ -6076,7 +6390,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=15"
           },
           "description": "One thing to fix"
          }
@@ -6116,7 +6430,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=15"
           },
           "description": "One thing to fix"
          }
@@ -6156,7 +6470,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=15"
           },
           "description": "One thing to fix"
          }
@@ -6196,7 +6510,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=15"
           },
           "description": "One thing to fix"
          }
@@ -6236,7 +6550,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=15"
           },
           "description": "One thing to fix"
          }
@@ -6276,7 +6590,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=15"
           },
           "description": "One thing to fix"
          }
@@ -6316,7 +6630,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-host-ask.png?v=15"
           },
           "description": "One thing to fix"
          }
@@ -6356,7 +6670,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-matchday-none.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-matchday-none.png?v=15"
           },
           "description": "Nothing scheduled"
          }
@@ -6396,7 +6710,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-matchday-none.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-matchday-none.png?v=15"
           },
           "description": "Nothing scheduled"
          }
@@ -6523,7 +6837,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=15"
           },
           "description": "Available for Rush"
          }
@@ -6531,7 +6845,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794499256:t> · <t:1794499256:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794615385:t> · <t:1794615385:R>"
        },
        {
         "type": 14,
@@ -6601,7 +6915,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=15"
           },
           "description": "Available for Rush"
          }
@@ -6609,7 +6923,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794499256:t> · <t:1794499256:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794615385:t> · <t:1794615385:R>"
        },
        {
         "type": 14,
@@ -6679,7 +6993,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=15"
           },
           "description": "Available for Rush"
          }
@@ -6687,7 +7001,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794499256:t> · <t:1794499256:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794615385:t> · <t:1794615385:R>"
        },
        {
         "type": 14,
@@ -6755,7 +7069,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lfg-off.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-lfg-off.png?v=15"
           },
           "description": "Call taken down"
          }
@@ -6795,7 +7109,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=14"
+           "url": "http://localhost:4321/cards/banner-cmd-empty.png?v=15"
           },
           "description": "Nothing here yet"
          }
@@ -6835,7 +7149,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -6875,7 +7189,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=15"
           },
           "description": "Not set up yet"
          }
@@ -6883,7 +7197,7 @@
        },
        {
         "type": 10,
-        "content": "**No queue channel is set**\nNo queue channel is set. A manager runs `/setup channel purpose:rush_queue` in the channel that should hold the board (or sets it under Boardroom → Organization)."
+        "content": "**No channel is set for rush queue**\nThe Rush queue board (the bot keeps one always-latest board here). A manager adds one in the Boardroom → Organization, or with `/setup channel`."
        }
       ]
      }
@@ -6915,7 +7229,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-success.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=15"
           },
           "description": "Done"
          }
@@ -6924,6 +7238,86 @@
        {
         "type": 10,
         "content": "**🧹 Queue cleared**\nEveryone presses **Join queue** again."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "queue",
+  "trigger": "/queue stop ",
+  "app": "rush",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=15"
+          },
+          "description": "That did not work"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**⏹ Queue stopped**\nEveryone in line was cleared. Members cannot start it again: use `/queue start`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "queue",
+  "trigger": "/queue start ",
+  "app": "rush",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=15"
+          },
+          "description": "Done"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**▶️ Queue started**\nMembers can join again."
        }
       ]
      }
@@ -6955,7 +7349,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -6988,22 +7382,22 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 7108752,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=15"
           },
-          "description": "That did not work"
+          "description": "Done"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**Queue settings**\nFailed match: **goes next**\nGreen light warning: **1 min**, removed after **2 min**"
+        "content": "**Queue settings saved**\nA match that falls through: **goes next**\nGreen light warning: **1 min**, removed after **2 min**\nThe empty queue closes after **60 min idle**"
        }
       ]
      }
@@ -7028,22 +7422,22 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 7108752,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=15"
           },
-          "description": "That did not work"
+          "description": "Done"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**Queue settings**\nFailed match: **goes to the bottom**\nGreen light warning: **1 min**, removed after **2 min**"
+        "content": "**Queue settings saved**\nA match that falls through: **goes to the bottom**\nGreen light warning: **1 min**, removed after **2 min**\nThe empty queue closes after **60 min idle**"
        }
       ]
      }
@@ -7075,7 +7469,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -7115,7 +7509,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-empty.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-empty.png?v=15"
           },
           "description": "Nothing here yet"
          }
@@ -7155,7 +7549,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-info.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=15"
           },
           "description": "Good to know"
          }
@@ -7195,7 +7589,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-empty.png?v=14"
+           "url": "http://localhost:4321/cards/banner-notice-empty.png?v=15"
           },
           "description": "Nothing here yet"
          }
@@ -7239,7 +7633,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-core.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-core.png?v=15"
           },
           "description": "Phoenix Core: every command at a glance"
          }
@@ -7437,7 +7831,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -7643,7 +8037,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-core.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-core.png?v=15"
           },
           "description": "Phoenix Core: every command at a glance"
          }
@@ -7841,7 +8235,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -8047,7 +8441,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-hub.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-hub.png?v=15"
           },
           "description": "The Phoenix bots: every command at a glance"
          }
@@ -8152,7 +8546,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-core.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-core.png?v=15"
           },
           "description": "Phoenix Core: every command at a glance"
          }
@@ -8350,7 +8744,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -8550,7 +8944,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -8756,7 +9150,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -8952,7 +9346,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-core.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-core.png?v=15"
           },
           "description": "Phoenix Core: every command at a glance"
          }
@@ -9148,7 +9542,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-stats.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-stats.png?v=15"
           },
           "description": "Phoenix Stats: every command at a glance"
          }
@@ -9388,7 +9782,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -9654,7 +10048,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-stats.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-stats.png?v=15"
           },
           "description": "Phoenix Stats: every command at a glance"
          }
@@ -9894,7 +10288,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -10160,7 +10554,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-stats.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-stats.png?v=15"
           },
           "description": "Phoenix Stats: every command at a glance"
          }
@@ -10400,7 +10794,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -10642,7 +11036,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -10908,7 +11302,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -11137,7 +11531,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-stats.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-stats.png?v=15"
           },
           "description": "Phoenix Stats: every command at a glance"
          }
@@ -11375,7 +11769,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-tools.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-tools.png?v=15"
           },
           "description": "Phoenix Tools: every command at a glance"
          }
@@ -11591,7 +11985,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -11824,7 +12218,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-tools.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-tools.png?v=15"
           },
           "description": "Phoenix Tools: every command at a glance"
          }
@@ -12040,7 +12434,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -12273,7 +12667,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-tools.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-tools.png?v=15"
           },
           "description": "Phoenix Tools: every command at a glance"
          }
@@ -12489,7 +12883,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -12703,7 +13097,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -12936,7 +13330,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -13150,7 +13544,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-tools.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-tools.png?v=15"
           },
           "description": "Phoenix Tools: every command at a glance"
          }
@@ -13364,7 +13758,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=15"
           },
           "description": "Phoenix Matchday: every command at a glance"
          }
@@ -13520,7 +13914,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -13675,7 +14069,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=15"
           },
           "description": "Phoenix Matchday: every command at a glance"
          }
@@ -13831,7 +14225,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -13986,7 +14380,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=15"
           },
           "description": "Phoenix Matchday: every command at a glance"
          }
@@ -14142,7 +14536,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -14296,7 +14690,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -14451,7 +14845,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -14609,7 +15003,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-matchday.png?v=15"
           },
           "description": "Phoenix Matchday: every command at a glance"
          }
@@ -14763,7 +15157,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-rush.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-rush.png?v=15"
           },
           "description": "Phoenix Rush: every command at a glance"
          }
@@ -14919,7 +15313,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -15083,7 +15477,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-rush.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-rush.png?v=15"
           },
           "description": "Phoenix Rush: every command at a glance"
          }
@@ -15239,7 +15633,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -15403,7 +15797,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-rush.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-rush.png?v=15"
           },
           "description": "Phoenix Rush: every command at a glance"
          }
@@ -15559,7 +15953,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -15717,7 +16111,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -15881,7 +16275,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help.png?v=15"
           },
           "description": "Help"
          }
@@ -16039,7 +16433,7 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-help-rush.png?v=14"
+           "url": "http://localhost:4321/cards/banner-help-rush.png?v=15"
           },
           "description": "Phoenix Rush: every command at a glance"
          }

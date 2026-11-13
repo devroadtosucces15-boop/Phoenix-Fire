@@ -156,6 +156,7 @@ export const STAFF_GROUPS = [
   ['👥', 'People', 'Everyone who needs a decision', [['staff-desk.html', '🗂️', 'Desk', 'Claims, members, requests, Rush results, trials and private notes']]],
   ['📄', 'Club content', 'What members read', [['staff-content.html', '📄', 'Content', 'Club docs and rules, ideas board, squad week, media storage']]],
   ['🛡️', 'Moderation and tools', 'Keep the club tidy', [['staff-tools.html', '🛠️', 'Tools', 'Submissions, reported content, game data, bot settings, awards']]],
+  ['🎛️', 'Control Center', 'Switch, aim and restrict every output', [['staff-controlcenter.html', '🎛️', 'Control Center', 'Every command, button, automated post, scheduled job, DM and site section: on or off, who gets it, which channels']]],
   ['🩺', 'Club health', 'How the club is doing', [['staff-insights.html', '🧭', 'Insights', 'Club Intelligence, written club notes, burner-club tracker']]],
 ];
 // owner-only: the Boardroom, one page per tab, and the artwork studio
@@ -206,7 +207,13 @@ export function boardroom(tab = '') {
   <div class="panel"><h3>Feature switches · ${flags.length}</h3><p class="muted small">Who can see each feature on the live site (from the club config). Sign in as the owner to change them.</p><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${flags.map(([k, v]) => `<span class="pill ${v === 'public' ? 'w' : v === 'owner' ? 's' : ''}">${esc(k)} · ${esc(v)}</span>`).join('')}</div></div></div>`;
   const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">${tab ? '<a href="staff.html" style="color:inherit">‹ Staff hub</a> · owner' : 'Staff · owner'}</div><h2>${tab ? BR_TABS[tab][2] : 'Boardroom'}</h2></div></header>${staffGate}<div data-for="owner" hidden>
   <div id="brLive" hidden data-committed="${esc(JSON.stringify(features))}"></div><div id="brLocal">${stub}</div></div></section></div>`;
-  return hubShell('staff-boardroom.html', tab ? BR_TABS[tab][2] : 'Boardroom', body, { bodyExtra: tab ? 'br-solo' : '', extraHead: (tab ? `<meta name="pf-br-tab" content="${tab}"><link rel="stylesheet" href="staffhub.css"><script src="staffhub.js" defer></script>` : '') + '<script src="trophy.js" defer></script><script src="boardroom.js" defer></script>' });
+  return hubShell('staff-boardroom.html', tab ? BR_TABS[tab][2] : 'Boardroom', body, { bodyExtra: tab ? 'br-solo' : '', extraHead: (tab ? `<meta name="pf-br-tab" content="${tab}"><link rel="stylesheet" href="staffhub.css"><script src="staffhub.js" defer></script>` : '') + '<script src="trophy.js" defer></script><script src="orgpanel.js" defer></script><script src="boardroom.js" defer></script>' });
+}
+// managers and the owner: the Control Center (next/static/controlcenter.js) switches, aims and restricts every output; its Site access and Organization panels are the Boardroom's Switches and Organization
+export function controlCenter() {
+  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow"><a href="staff.html" style="color:inherit">‹ Staff hub</a> · managers and owner</div><h2>Control Center</h2><p class="muted small" style="margin:6px 0 0">Switch, aim and restrict every command, button, automated post, scheduled job, DM and site section in one place. Changes apply at once: no deploy, no code change. The <code>/setup output</code> command writes the same settings.</p></div></header>${staffGate}<div data-for="owner" hidden>
+  <div id="ccLive" hidden></div><div id="ccLocal" class="panel sq-empty"><span>🎛️</span><div><b>Sign in to the live Hub</b><p class="muted small">The Control Center works on the live bot, so it opens when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
+  return hubShell('staff-controlcenter.html', 'Control Center', body, { extraHead: '<link rel="stylesheet" href="controlcenter.css"><script src="orgpanel.js" defer></script><script src="controlcenter.js" defer></script>' });
 }
 export function artwork() {
   const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · owner</div><h2>Artwork studio</h2></div></header>${staffGate}<div data-for="owner" hidden>
@@ -218,5 +225,5 @@ export function artwork() {
 
 export default function (P) {
   P('hub.html', locker()); P('hub-profile.html', locker('me')); P('hub-stats.html', locker('stats')); P('hub-medals.html', locker('medals')); P('hub-cardstudio.html', locker('cards')); P('hub-alerts.html', locker('alerts')); P('hub-matchnight.html', matchNight()); P('hub-squad.html', squadRoom()); P('hub-clubhouse.html', clubhouse()); P('hub-handbook.html', handbook()); P('hub-watchlist.html', watchlist()); P('hub-music.html', music()); P('hub-discoveries.html', discoveries());
-  P('staff.html', staff()); P('staff-dugout.html', dugout()); P('staff-schedule.html', schedule()); P('staff-desk.html', desk()); P('staff-tools.html', tools()); P('staff-content.html', content()); P('staff-boardroom.html', boardroom()); for (const k of Object.keys(BR_TABS)) P(`staff-${k === 'hof' ? 'halloffame' : k === 'org' ? 'organization' : k}.html`, boardroom(k)); P('staff-insights.html', insights()); P('staff-artwork.html', artwork());
+  P('staff.html', staff()); P('staff-dugout.html', dugout()); P('staff-schedule.html', schedule()); P('staff-desk.html', desk()); P('staff-tools.html', tools()); P('staff-content.html', content()); P('staff-boardroom.html', boardroom()); P('staff-controlcenter.html', controlCenter()); for (const k of Object.keys(BR_TABS)) P(`staff-${k === 'hof' ? 'halloffame' : k === 'org' ? 'organization' : k}.html`, boardroom(k)); P('staff-insights.html', insights()); P('staff-artwork.html', artwork());
 }

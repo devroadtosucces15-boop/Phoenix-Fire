@@ -104,15 +104,20 @@ await guard('events', async () => {
 
 // ---- Rush: queue board, global leaderboard post, season card post (the code's own builders, sample data) ----
 await guard('rushqueue', async () => {
-  const { boardMessage } = await import('../../bot/rushqueue.js');
+  const { boardMessage, needMessage, stateOf } = await import('../../bot/rushqueue.js');
   const q = [
-    { captain: '222', members: ['333'], status: 'searching', ord: 0, joined_at: now - 9e5, searching_since: now - 95e3, needs: 0 },
-    { captain: '444', members: [], status: 'waiting', ord: 1, joined_at: now - 6e5, needs: 1 },
-    { captain: '111', members: ['555', '666'], status: 'waiting', ord: 2, joined_at: now - 3e5, paused_until: now + 3e5, needs: 0 },
+    { captain: '222', members: ['333'], status: 'searching', ord: 0, joined_at: now - 9e5, status_since: now - 95e3, searching_since: now - 95e3, needs: 0 },
+    { captain: '444', members: [], status: 'waiting', ord: 1, joined_at: now - 6e5, status_since: now - 6e5, attempts: 1, needs: 1 },
+    { captain: '111', members: ['555', '666'], status: 'waiting', ord: 2, joined_at: now - 3e5, status_since: now - 3e5, paused_until: now + 3e5, needs: 0 },
   ];
-  const rq = (id, name, trig, extra = {}) => ({ id, name, category: 'automated', trigger: trig, schedule: 'kept as the newest message by the 1-minute cron', destination: ['rush_queue (Organization channel purpose)'], flag: 'rushQueue', level: 'owner', source: 'bot/rushqueue.js boardMessage()', related: ['slash:/queue'], ...extra });
-  add(rq('auto:rushqueue-busy', 'Rush queue board: groups in line', '/queue board, then every button press'), boardMessage(q, { now }));
+  const state = { openedAt: now - 12 * 6e4, last: now, closed: null };
+  const rq = (id, name, trig, extra = {}) => ({ id, name, category: 'automated', trigger: trig, schedule: 'kept as the newest message by the 1-minute cron', destination: ['rush_queue (Organization channel purpose; the Control Center can pick others)'], flag: 'rushQueue', level: 'owner', source: 'bot/rushqueue.js boardMessage()', control: 'auto:rush-board', related: ['slash:/queue'], ...extra });
+  add(rq('auto:rushqueue-busy', 'Rush queue board: groups in line', '/queue board, then every button press and the 1-minute cron'), boardMessage(q, { now, state }));
   add(rq('auto:rushqueue-empty', 'Rush queue board: empty', 'nobody in the queue', { related: ['auto:rushqueue-busy'] }), boardMessage([], { now, env }));
+  add(rq('auto:rushqueue-closed', 'Rush queue board: closed after an idle hour', 'the empty queue was idle for the idle hour (setting)', { related: ['auto:rushqueue-busy'] }), boardMessage([], { now, state: stateOf({ closed: 'idle' }) }));
+  add(rq('auto:rushqueue-stopped', 'Rush queue board: stopped by a manager', '/queue stop', { related: ['auto:rushqueue-busy'] }), boardMessage([], { now, state: stateOf({ closed: 'staff' }) }));
+  add({ id: 'auto:rush-need', name: 'Rush "Need a player" call', category: 'automated', trigger: 'the Need a player button on the queue board', schedule: 'on action; closes by itself after the need window (setting)', destination: ['rush_need (Organization channel purpose, falls back to rush_queue)'], flag: 'rushQueue', level: 'owner', source: 'bot/rushqueue.js needMessage()', control: 'auto:rush-need', related: ['auto:rushqueue-busy'] },
+    needMessage(q[1], { positions: ['CB', 'ST'], roleIds: ['90001'], userIds: ['555'], answers: [{ user: '666', answer: 'in' }], now, queuePos: 1 }));
 });
 await guard('rushscan', async () => {
   const { boardMessage, seasonCardMessage, DEFAULT_SEASON } = await import('../../bot/rushscan.js');

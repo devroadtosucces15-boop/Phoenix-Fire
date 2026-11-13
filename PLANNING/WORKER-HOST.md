@@ -3,6 +3,7 @@
 Decision 2026-11-13: owner keeps the host as is (option D). Nothing to do. Original plan below.
 
 Status: plan only (2026-11-10). Nothing here has been changed. The host is still `https://phoenix-bot.norexunited.workers.dev`.
+Status (2026-11-12): the repo side is prepared. The host is still `https://phoenix-bot.norexunited.workers.dev`; it moves with ONE command once the new host answers (see "The flip"). The host is recorded in `phoenix/worker-host.json`, and `tests/worker-host.test.mjs` fails if config, live.json, wrangler or the docs disagree with it.
 Owner decision needed: which target (see Recommendation). Cloudflare and Discord Developer Portal steps are the owner's.
 
 ## Why it matters
@@ -78,7 +79,14 @@ Discord verifies an endpoint by sending a signed PING when you save; it only sav
 caught at once. Matchday and Rush are created straight onto the new host, so they never need a second edit.
 Only the core app uses OAuth (website login), so only core needs a redirect.
 
-### 3. Repo (separate commit, after the bot lane lands; `wrangler.toml` is theirs)
+### 3. Repo: the flip (prepared, one command)
+```bash
+node phoenix/worker-host.mjs flip https://api.example-phoenix.com
+node phoenix/worker-host.mjs check
+```
+`flip` rewrites `config.json` `members.api`, `phoenix/live.json` `api`, `bot/wrangler.toml` `PUBLIC_URL` (and adds the `[[routes]]` custom-domain entry), the host in `bot/SECRETS-REGISTRY.md` and `CLAUDE.md`, and `phoenix/worker-host.json`. The manual list below is what it does.
+
+Old note: (separate commit, after the bot lane lands; `wrangler.toml` is theirs)
 Change the same string in: `config.json` `members.api`, `phoenix/live.json` `api`, `bot/wrangler.toml` `PUBLIC_URL`, then the docs
 (`bot/SECRETS-REGISTRY.md`, `CLAUDE.md`, status lines in `PLANNING/`). Optionally add the route in `wrangler.toml`:
 ```toml
@@ -121,3 +129,11 @@ first; otherwise every member API call fails CORS. That is a separate change wit
 
 ## Handover
 `bot/wrangler.toml` and `bot/SECRETS-REGISTRY.md` belong to the bot lane. Do step 3 only after that lane has landed, or message it.
+
+## What the owner must do (and nothing more)
+Only after a host exists (custom domain on this Cloudflare account, or accept the current host):
+1. Cloudflare: Workers & Pages, `phoenix-bot`, Settings, Domains & Routes, add the custom domain. Check the new host's `/` answers 200.
+2. Discord Developer Portal, each of the six apps: set **Interactions Endpoint URL** to `<new host>/interactions/<core|stats|tools|fun|matchday|rush>`.
+3. Discord Developer Portal, core app, OAuth2: add `<new host>/auth/callback` as a redirect (keep the old one until retired).
+4. Tell the session the host; it runs the flip, pushes, and confirms `bot.yml` is green.
+Database, KV, R2 and Queue are already named `phoenix`, `phoenix-members`, `phoenix-media`, `phoenix-jobs`; no resource is renamed.
