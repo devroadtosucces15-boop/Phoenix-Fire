@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T22:20:40.154Z",
+ "fetchedAt": "2026-11-13T22:30:42.235Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1855,7 +1855,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "156",
+   "gamesPlayed": "157",
    "goals": "22",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1866,7 +1866,7 @@
   {
    "name": "rubNiyo",
    "proPos": "5",
-   "gamesPlayed": "99",
+   "gamesPlayed": "100",
    "goals": "81",
    "assists": "33",
    "manOfTheMatch": "11",
@@ -1932,7 +1932,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "14",
-   "gamesPlayed": "33",
+   "gamesPlayed": "34",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -1954,7 +1954,7 @@
   {
    "name": "MV33xChris",
    "proPos": "5",
-   "gamesPlayed": "185",
+   "gamesPlayed": "186",
    "goals": "161",
    "assists": "110",
    "manOfTheMatch": "36",
@@ -2031,12 +2031,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "103",
-   "goals": "50",
+   "gamesPlayed": "104",
+   "goals": "51",
    "assists": "39",
    "manOfTheMatch": "15",
    "ratingAve": "7.5",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2086,7 +2086,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "77",
+   "gamesPlayed": "78",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
@@ -2185,9 +2185,9 @@
   {
    "name": "leo77romano",
    "proPos": "14",
-   "gamesPlayed": "164",
+   "gamesPlayed": "165",
    "goals": "35",
-   "assists": "24",
+   "assists": "25",
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
    "prevGoals": "0",
@@ -2196,7 +2196,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "102",
+   "gamesPlayed": "103",
    "goals": "38",
    "assists": "50",
    "manOfTheMatch": "5",
@@ -2229,7 +2229,7 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "240",
+   "gamesPlayed": "241",
    "goals": "160",
    "assists": "205",
    "manOfTheMatch": "9",
