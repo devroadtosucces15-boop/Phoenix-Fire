@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-13T00:20:47.484Z",
+ "fetchedAt": "2026-11-13T00:30:47.078Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1843,12 +1843,12 @@
   {
    "name": "claudio__1996",
    "proPos": "25",
-   "gamesPlayed": "4",
-   "goals": "2",
+   "gamesPlayed": "5",
+   "goals": "3",
    "assists": "7",
    "manOfTheMatch": "2",
-   "ratingAve": "8.3",
-   "prevGoals": "0",
+   "ratingAve": "8.1",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
