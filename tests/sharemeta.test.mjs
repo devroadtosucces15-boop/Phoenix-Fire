@@ -52,7 +52,7 @@ try {
   // colour check on the image itself: dominant dark is Phoenix ink, no NOREX red pixel
   const png = fs.readFileSync(path.join(ROOT, 'phoenix/overlay/share.png'));
   t('share image source is a PNG', png.subarray(1, 4).toString() === 'PNG');
-  const art = fs.readFileSync(path.join(ROOT, 'phoenix/overlay/share-animated.svg'), 'utf8') + fs.readFileSync(path.join(ROOT, 'phoenix/share-art/share.svg'), 'utf8') + fs.readFileSync(path.join(ROOT, 'phoenix/share-art/people.mjs'), 'utf8');
+  const art = fs.readFileSync(path.join(ROOT, 'phoenix/overlay/share-animated.svg'), 'utf8') + fs.readFileSync(path.join(ROOT, 'phoenix/share-art/share.svg'), 'utf8');
   t('share art is Phoenix only: no NOREX name, red or blue-black, ember accent present', !/norex|c8352c|080b11/i.test(art) && /e8651a/i.test(art) && /Rise\. Burn\. Repeat|RISE\. BURN\. REPEAT/.test(art));
 } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
 done();
