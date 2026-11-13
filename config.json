@@ -64,7 +64,7 @@
   "features": {
     "rushLog": "members",
     "rushLfg": "owner",
-    "rushQueue": "owner",
+    "rushQueue": "members",
     "rushBoard": "owner",
     "seasonCards": "owner",
     "gameRules": "public",
