@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-13T07:40:45.610Z",
+ "fetchedAt": "2026-11-13T07:50:48.661Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2221,7 +2221,7 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "227",
+   "gamesPlayed": "228",
    "goals": "36",
    "assists": "30",
    "manOfTheMatch": "41",
@@ -2352,14 +2352,14 @@
   },
   {
    "name": "x_MrMike_x",
-   "proPos": "25",
-   "gamesPlayed": "103",
+   "proPos": "5",
+   "gamesPlayed": "104",
    "goals": "56",
    "assists": "43",
    "manOfTheMatch": "13",
    "ratingAve": "7.6",
-   "prevGoals": "1",
-   "favoritePosition": "forward"
+   "prevGoals": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "Azodarg888",
