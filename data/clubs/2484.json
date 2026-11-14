@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-14T22:40:41.181Z",
+ "fetchedAt": "2026-11-14T22:50:45.777Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1305,42 +1305,6 @@
    "favoritePosition": "defender"
   },
   {
-   "name": "Pain11x",
-   "gamesPlayed": "6",
-   "winRate": "83",
-   "goals": "0",
-   "assists": "2",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "98",
-   "passSuccessRate": "77",
-   "ratingAve": "7.2",
-   "tacklesMade": "3",
-   "tackleSuccessRate": "23",
-   "proName": "iam toxic",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "97",
-   "proOverall": "79",
-   "proOverallStr": "79",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "Glekke-93",
    "gamesPlayed": "1",
    "winRate": "100",
@@ -1560,7 +1524,7 @@
  "positionCount": {
   "midfielder": 7,
   "goalkeeper": 5,
-  "forward": 16,
+  "forward": 15,
   "defender": 11
  },
  "career": [
@@ -1948,17 +1912,6 @@
    "ratingAve": "7.1",
    "prevGoals": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "Pain11x",
-   "proPos": "25",
-   "gamesPlayed": "33",
-   "goals": "2",
-   "assists": "5",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.2",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
   },
   {
    "name": "Glekke-93",
