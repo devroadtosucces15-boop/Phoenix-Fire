@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-14T01:00:39.924Z",
+ "fetchedAt": "2026-11-14T01:10:42.730Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -570,7 +570,7 @@
   {
    "name": "rubNiyo",
    "proPos": "14",
-   "gamesPlayed": "104",
+   "gamesPlayed": "105",
    "goals": "81",
    "assists": "35",
    "manOfTheMatch": "14",
@@ -636,11 +636,11 @@
   {
    "name": "KOEN WIE",
    "proPos": "25",
-   "gamesPlayed": "82",
+   "gamesPlayed": "83",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.1",
+   "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -658,7 +658,7 @@
   {
    "name": "leo77romano",
    "proPos": "14",
-   "gamesPlayed": "167",
+   "gamesPlayed": "168",
    "goals": "35",
    "assists": "25",
    "manOfTheMatch": "8",

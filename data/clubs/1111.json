@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T01:00:39.924Z",
+ "fetchedAt": "2026-11-14T01:10:42.730Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,7 +1891,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "161",
+   "gamesPlayed": "162",
    "goals": "24",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1902,7 +1902,7 @@
   {
    "name": "rubNiyo",
    "proPos": "14",
-   "gamesPlayed": "104",
+   "gamesPlayed": "105",
    "goals": "81",
    "assists": "35",
    "manOfTheMatch": "14",
@@ -1968,7 +1968,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "14",
-   "gamesPlayed": "38",
+   "gamesPlayed": "39",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -2067,7 +2067,7 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "108",
+   "gamesPlayed": "109",
    "goals": "53",
    "assists": "41",
    "manOfTheMatch": "15",
@@ -2122,11 +2122,11 @@
   {
    "name": "KOEN WIE",
    "proPos": "25",
-   "gamesPlayed": "82",
+   "gamesPlayed": "83",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
-   "ratingAve": "7.1",
+   "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2177,12 +2177,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "175",
+   "gamesPlayed": "176",
    "goals": "208",
    "assists": "89",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2210,7 +2210,7 @@
   {
    "name": "CapoGroot",
    "proPos": "0",
-   "gamesPlayed": "29",
+   "gamesPlayed": "30",
    "goals": "3",
    "assists": "5",
    "manOfTheMatch": "1",
@@ -2221,10 +2221,10 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "229",
+   "gamesPlayed": "230",
    "goals": "36",
    "assists": "30",
-   "manOfTheMatch": "41",
+   "manOfTheMatch": "42",
    "ratingAve": "7.8",
    "prevGoals": "0",
    "favoritePosition": "defender"
@@ -2232,7 +2232,7 @@
   {
    "name": "leo77romano",
    "proPos": "14",
-   "gamesPlayed": "167",
+   "gamesPlayed": "168",
    "goals": "35",
    "assists": "25",
    "manOfTheMatch": "8",
@@ -2276,7 +2276,7 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "245",
+   "gamesPlayed": "246",
    "goals": "160",
    "assists": "208",
    "manOfTheMatch": "9",
