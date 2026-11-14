@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T14:55:26.099Z",
+ "fetchedAt": "2026-11-14T15:00:44.155Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2122,12 +2122,12 @@
   {
    "name": "KOEN WIE",
    "proPos": "25",
-   "gamesPlayed": "88",
-   "goals": "9",
-   "assists": "3",
+   "gamesPlayed": "89",
+   "goals": "10",
+   "assists": "4",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2155,12 +2155,12 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "38",
-   "goals": "5",
+   "gamesPlayed": "39",
+   "goals": "7",
    "assists": "16",
    "manOfTheMatch": "1",
    "ratingAve": "7.2",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {

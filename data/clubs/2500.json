@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-14T14:55:26.099Z",
+ "fetchedAt": "2026-11-14T15:00:44.155Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1746,12 +1746,12 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "38",
-   "goals": "5",
+   "gamesPlayed": "39",
+   "goals": "7",
    "assists": "16",
    "manOfTheMatch": "1",
    "ratingAve": "7.2",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -1955,12 +1955,12 @@
   {
    "name": "Ghostz_x12",
    "proPos": "25",
-   "gamesPlayed": "26",
+   "gamesPlayed": "27",
    "goals": "30",
-   "assists": "15",
+   "assists": "17",
    "manOfTheMatch": "2",
    "ratingAve": "7.8",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1999,7 +1999,7 @@
   {
    "name": "Two_K_Two",
    "proPos": "5",
-   "gamesPlayed": "73",
+   "gamesPlayed": "74",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "2",
