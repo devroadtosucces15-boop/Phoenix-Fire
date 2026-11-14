@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-14T23:20:44.945Z",
+ "fetchedAt": "2026-11-14T23:30:41.252Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -677,14 +677,14 @@
   },
   {
    "name": "rubNiyo",
-   "proPos": "25",
-   "gamesPlayed": "108",
+   "proPos": "14",
+   "gamesPlayed": "109",
    "goals": "82",
    "assists": "35",
    "manOfTheMatch": "14",
    "ratingAve": "7.8",
-   "prevGoals": "1",
-   "favoritePosition": "forward"
+   "prevGoals": "0",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Milli0nkniv3s",
@@ -710,14 +710,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "0",
-   "gamesPlayed": "199",
+   "proPos": "14",
+   "gamesPlayed": "200",
    "goals": "164",
-   "assists": "114",
+   "assists": "115",
    "manOfTheMatch": "37",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "goalkeeper"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "ImWizardJr",
@@ -733,7 +733,7 @@
   {
    "name": "Der_Synnlos",
    "proPos": "25",
-   "gamesPlayed": "141",
+   "gamesPlayed": "142",
    "goals": "10",
    "assists": "9",
    "manOfTheMatch": "4",
@@ -832,11 +832,11 @@
   {
    "name": "ManiManolo88",
    "proPos": "14",
-   "gamesPlayed": "22",
+   "gamesPlayed": "23",
    "goals": "5",
    "assists": "3",
    "manOfTheMatch": "4",
-   "ratingAve": "7.5",
+   "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   }
