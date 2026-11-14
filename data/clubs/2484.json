@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-14T01:30:46.386Z",
+ "fetchedAt": "2026-11-14T01:40:41.470Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -475,6 +475,42 @@
    "prevGoals9": "2",
    "prevGoals10": "0",
    "favoritePosition": "forward"
+  },
+  {
+   "name": "Hargravee123",
+   "gamesPlayed": "23",
+   "winRate": "91",
+   "goals": "1",
+   "assists": "1",
+   "cleanSheetsDef": "6",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "25",
+   "passesMade": "232",
+   "passSuccessRate": "81",
+   "ratingAve": "7.7",
+   "tacklesMade": "28",
+   "tackleSuccessRate": "62",
+   "proName": "Greaves",
+   "proPos": "5",
+   "proStyle": "0",
+   "proHeight": "186",
+   "proNationality": "14",
+   "proOverall": "81",
+   "proOverallStr": "81",
+   "manOfTheMatch": "1",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "1",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "KOEN WIE",
@@ -1345,7 +1381,7 @@
   "midfielder": 8,
   "goalkeeper": 4,
   "forward": 12,
-  "defender": 9
+  "defender": 10
  },
  "career": [
   {
@@ -1468,6 +1504,17 @@
    "ratingAve": "7.5",
    "prevGoals": "1",
    "favoritePosition": "forward"
+  },
+  {
+   "name": "Hargravee123",
+   "proPos": "5",
+   "gamesPlayed": "37",
+   "goals": "1",
+   "assists": "3",
+   "manOfTheMatch": "2",
+   "ratingAve": "7.5",
+   "prevGoals": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "Clutch_byrner_",
