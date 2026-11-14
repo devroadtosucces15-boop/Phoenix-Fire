@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-14T19:40:47.696Z",
+ "fetchedAt": "2026-11-14T19:50:18.115Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2032,12 +2032,12 @@
   {
    "name": "alicerce-sulista",
    "proPos": "25",
-   "gamesPlayed": "18",
-   "goals": "8",
-   "assists": "7",
+   "gamesPlayed": "19",
+   "goals": "10",
+   "assists": "9",
    "manOfTheMatch": "2",
-   "ratingAve": "7.0",
-   "prevGoals": "0",
+   "ratingAve": "7.1",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
