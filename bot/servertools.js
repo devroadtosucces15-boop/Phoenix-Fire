@@ -68,7 +68,7 @@ export async function discord(env, method, path, body, reason) {
   const r = await fetch(API + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   if (r.status === 204) return null;
   const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(r.status === 403 || d.code === 50001 || d.code === 50013 ? 'no-access' : d.message || `discord-${r.status}`);
+  if (!r.ok) throw Object.assign(new Error(r.status === 403 || d.code === 50001 || d.code === 50013 ? 'no-access' : d.message || `discord-${r.status}`), { status: r.status, code: d.code ?? null }); // status/code: callers can say why Discord refused
   return d;
 }
 const post = (env, channel, msg) => discord(env, 'POST', `/channels/${channel}/messages`, autoBanner(env, msg));

@@ -12,7 +12,7 @@ import { audienceOf, postChannels } from './controls.js';
 import { message, notice, reply, header, text, facts, footer, sep, button, buttons, autoBanner, cards, bannerUrl } from './ui.js';
 import { orgName, channelsFor, channelNotice } from './orgconfig.js';
 import { discord, getToolSettings } from './servertools.js';
-import { appEnv, appConfigured } from './apps.js';
+import { appEnv, appConfigured, APP_LABEL } from './apps.js';
 import { kvOf } from './kv.js';
 
 export const MAX_CREW = 5; // including the captain
@@ -274,17 +274,56 @@ const noChannel = async (env, purpose) => reply(await channelNotice(env, purpose
 const rushEnv = (env) => (appConfigured(env, 'rush') && env.BOT_APP !== 'rush' ? appEnv(env, 'rush') : env); // buttons only work on messages the Rush app posted
 const BOARD_KEY = 'rq:board:';
 
+// Why a Rush post did not land (owner report 2026-11-13: "Board posted" with nothing in the channel). One failure per channel:
+//   token    the app's bot token is empty: nothing is sent to Discord (the Rush app never borrows the core token)
+//   access   403 / Missing Access / Missing Permissions: the bot cannot see or post in that channel
+//   rejected 401: Discord refused the token      notfound 404: the channel is gone      rate 429      other: anything else
+const appOfEnv = (e) => e.BOT_APP || 'core';
+const tokenSecret = (app) => (app === 'core' ? 'DISCORD_BOT_TOKEN' : `DISCORD_BOT_TOKEN_${app.toUpperCase()}`);
+const tokenMissing = (e) => (String(e.DISCORD_BOT_TOKEN ?? '').trim() ? null : { why: 'token', status: null, app: appOfEnv(e), secret: tokenSecret(appOfEnv(e)) });
+const whyOf = (err) => { const s = err?.status ?? null; return s === 401 ? 'rejected' : s === 403 || err?.message === 'no-access' ? 'access' : s === 404 ? 'notfound' : s === 429 ? 'rate' : 'other'; };
+const failureOf = (e, ch, err) => ({ ch, why: whyOf(err), status: err?.status ?? null, code: err?.code ?? null, message: String(err?.message ?? err), app: appOfEnv(e), secret: tokenSecret(appOfEnv(e)) });
+const logFailure = (kind, f) => console.log(`rush ${kind} failed`, f.ch ?? '-', f.why, f.status ?? '-', f.why === 'token' ? `${f.secret} is empty` : f.message);
+// Post one message to each channel; never throws. Returns the messages Discord took and one failure per channel it refused.
+async function postAll(e, channels, msg, kind) {
+  const noToken = tokenMissing(e), sent = [], failures = [];
+  for (const ch of channels) {
+    if (noToken) { failures.push({ ...noToken, ch }); logFailure(kind, { ...noToken, ch }); continue; }
+    try { const m = await discord(e, 'POST', `/channels/${ch}/messages`, msg); if (m?.id) sent.push({ ch, id: m.id }); else throw Object.assign(new Error('Discord returned no message id'), { status: null }); }
+    catch (err) { const f = failureOf(e, ch, err); failures.push(f); logFailure(kind, f); }
+  }
+  return { sent, failures };
+}
+// The private line for one failure, Phoenix wording. `retry` = the command to run once it is fixed.
+export function failureText(f, { retry = '' } = {}) {
+  const bot = `${APP_LABEL[f.app] ?? APP_LABEL.core} bot`;
+  if (f.why === 'token') return `The ${bot} token is missing: set the \`${f.secret}\` secret on the Worker in Cloudflare, then try again.`;
+  if (f.why === 'access') return `No permission in <#${f.ch}>: give the ${bot} View Channel, Send Messages, Embed Links and Attach Files there${retry ? `, then run ${retry}` : ''}.`;
+  if (f.why === 'rejected') return `Discord rejected the ${bot} token (401): copy a new token from the Discord Developer Portal into the \`${f.secret}\` secret.`;
+  if (f.why === 'notfound') return `<#${f.ch}> was not found (deleted, or the bot is not in that server): pick another channel in the Control Center.`;
+  if (f.why === 'rate') return `Discord is limiting posts in <#${f.ch}> (429): try again in a minute.`;
+  return `Discord refused the post in <#${f.ch}>${f.status ? ` (${f.status})` : ''}: ${f.message}.`;
+}
+const failureLines = (failures, opts) => [...new Set(failures.map((f) => failureText(f, opts)))].join('\n');
+
 // Delete the old board in each queue channel and post a fresh one at the bottom. `pings` = messages posted first (green light, warnings).
 // Debounce (Discord allows about 5 posts per 5 seconds in a channel): a second refresh inside BOARD_GAP_MS with nothing to ping edits the
 // board in place instead of deleting and posting again; the next click or the minute tick puts it back at the bottom.
 export const BOARD_GAP_MS = 1500;
 export async function refreshBoards(env, { now = Date.now(), pings = [], force = false } = {}) {
   const channels = await postChannels(env, 'auto:rush-board', 'rush_queue');
-  if (!channels.length) return { channels: 0 };
+  if (!channels.length) return { channels: 0, posted: 0, edited: 0, failures: [] };
   const e = rushEnv(env), kv = kvOf(env);
+  const noToken = tokenMissing(e);
+  if (noToken) { // no Discord call at all: say which secret is empty
+    const failures = channels.map((ch) => ({ ...noToken, ch }));
+    for (const f of failures) logFailure('queue board', f);
+    return { channels: channels.length, posted: 0, edited: 0, failures };
+  }
   const q = await loadQueue(env), st = await getSettings(env), avgSec = await avgSearchSeconds(env), state = await getState(env);
   const msg = autoBanner(env, boardMessage(q, { now, org: orgName(env), st, avgSec, state, poster: bannerUrl(env, 'queueflow') }), 'queue');
-  let edited = 0;
+  let edited = 0, posted = 0;
+  const failures = [];
   for (const ch of channels) {
     const old = await kv?.get(BOARD_KEY + ch, 'json').catch(() => null);
     if (old?.id && !force && !pings.length && now - (old.at ?? 0) < BOARD_GAP_MS && now >= (old.at ?? 0)) {
@@ -293,10 +332,18 @@ export async function refreshBoards(env, { now = Date.now(), pings = [], force =
     }
     if (old?.id) await discord(e, 'DELETE', `/channels/${ch}/messages/${old.id}`).catch(() => null);
     for (const p of pings) await discord(e, 'POST', `/channels/${ch}/messages`, p).catch((err) => console.log('rush queue ping failed', err.message));
-    const sent = await discord(e, 'POST', `/channels/${ch}/messages`, msg).catch((err) => { console.log('rush queue board failed', err.message); return null; });
-    if (sent?.id) await kv?.put(BOARD_KEY + ch, JSON.stringify({ id: sent.id, at: now }));
+    const r = await postAll(e, [ch], msg, 'queue board');
+    failures.push(...r.failures);
+    if (r.sent[0]) { await kv?.put(BOARD_KEY + ch, JSON.stringify({ id: r.sent[0].id, at: now })); posted++; } // only a board Discord took is remembered
   }
-  return { channels: channels.length, edited };
+  return { channels: channels.length, posted, edited, failures };
+}
+// The /queue board answer: "Board posted" only for boards that landed; otherwise what went wrong in each channel.
+function boardAnswer(r) {
+  const landed = r.posted + r.edited, why = failureLines(r.failures, { retry: '`/queue board`' });
+  if (landed && !why) return say('✅ Board posted', `${landed} channel${landed === 1 ? '' : 's'}.`, 'win');
+  if (landed) return say('✅ Board posted', `${landed} of ${r.channels} channels. The rest did not post:\n${why}`, 'win');
+  return say('The board did not post', why);
 }
 // A short ping: the mentions sit above a small steel panel (the only text allowed outside a panel), only those members can be notified.
 const ping = (users, line, accent = 'steel') => message({ accent, ping: users.map(mention).join(' '), mentions: { parse: [], users: users.map(String) }, blocks: [text(line)] });
@@ -322,7 +369,7 @@ export async function queueTick(env, now = Date.now()) {
   ];
   const channels = await postChannels(env, 'auto:rush-board', 'rush_queue');
   if (!channels.length) return { skipped: true, noChannel: true };
-  let stale = pings.length > 0 || closedNow !== state0;
+  let stale = pings.length > 0 || closedNow !== state0 || !!tokenMissing(rushEnv(env)); // no token: refreshBoards records the failure without calling Discord
   if (!stale) {
     const kv = kvOf(env);
     for (const ch of channels) {
@@ -331,8 +378,9 @@ export async function queueTick(env, now = Date.now()) {
       if (!have?.id || (last?.last_message_id && last.last_message_id !== have.id)) { stale = true; break; }
     }
   }
-  if (stale) await refreshBoards(env, { now, pings });
-  return { reposted: stale, warned: sw.warn.length, removed: sw.removed.length, closed: closedNow.closed };
+  const r = stale ? await refreshBoards(env, { now, pings }) : null; // refreshBoards logs each failure: channel, reason, status
+  const failures = r?.failures ?? [];
+  return { reposted: !!r && r.posted + r.edited > 0, failed: failures.length, failures, warned: sw.warn.length, removed: sw.removed.length, closed: closedNow.closed };
 }
 
 // ---------- interactions ----------
@@ -486,15 +534,13 @@ async function finishNeed(env, ctx, q, uid, positions, now) {
   if (!aud.enabled) return say(`🙋 ${NEED[e.needs]}`, 'It shows on the board. The public call is switched off in the Control Center.', 'win');
   if (!channels.length) return say(`🙋 ${NEED[e.needs]}`, 'It shows on the board. No channel is set for the Rush calls: a manager adds one in the Control Center.', 'steel');
   const expires = now + st.needMin * MIN, post = needMessage(e, { positions, roleIds: aud.roles, userIds: aud.users, now, expires, org: orgName(env), queuePos: positionOf(q, uid), status: e.status });
-  const sent = [];
-  for (const ch of channels) {
-    const m = await discord(rushEnv(env), 'POST', `/channels/${ch}/messages`, autoBanner(env, post, 'queue')).catch((err) => { console.log('rush need post failed', err.message); return null; });
-    if (m?.id) sent.push({ ch, id: m.id });
-  }
+  const { sent, failures } = await postAll(rushEnv(env), channels, autoBanner(env, post, 'queue'), 'need post');
   await kvOf(env)?.put(NEED_KEY + uid, JSON.stringify({ posts: sent, positions, answers: [], expires, lobby: e.members, needs: e.needs }), { expirationTtl: st.needMin * 60 + 600 });
   await after(env, ctx, () => refreshBoards(env, { now, force: true })); // the call is posted first, then the board goes back to the bottom
   const who = aud.roles.length + aud.users.length;
-  return say(`🙋 ${NEED[e.needs]}`, sent.length ? `Posted${who ? `, ${who} ${who === 1 ? 'audience' : 'audiences'} pinged` : ', nobody is set to be pinged (a manager picks the audience in the Control Center)'}. It closes in ${st.needMin} min.` : 'It shows on the board, but the post failed.', 'win');
+  if (!sent.length) return say(`🙋 ${NEED[e.needs]}`, `It shows on the board, but the call did not post:\n${failureLines(failures)}`);
+  const missed = failures.length ? `\nIt did not post in every channel:\n${failureLines(failures)}` : '';
+  return say(`🙋 ${NEED[e.needs]}`, `Posted${who ? `, ${who} ${who === 1 ? 'audience' : 'audiences'} pinged` : ', nobody is set to be pinged (a manager picks the audience in the Control Center)'}. It closes in ${st.needMin} min.${missed}`, 'win');
 }
 // "I'm in" / "Later" on the call: the post lists the answer, the captain is pinged once, the answerer gets a private note.
 async function needAnswer(env, ctx, captain, uid, answer, q, now) {
@@ -533,7 +579,8 @@ export async function report(i, env, me, now) {
   if (used >= REPORT_LIMIT) return say('Too many reports', `You can send ${REPORT_LIMIT} an hour. Staff have seen yours.`);
   await kv?.put(key, String(used + 1), { expirationTtl: REPORT_TTL });
   const msg = autoBanner(env, message({ accent: 'gold', mentions: { parse: [] }, blocks: [header({ eyebrow: `${orgName(env)} · Rush queue`, title: '📢 Anonymous report', sub: `<t:${Math.floor(now / 1000)}:f>` }), text(`**Group:** ${group}${note ? `\n**Note:** ${note}` : ''}`), footer('Sent anonymously. Staff can message the group.')] }), 'queue');
-  for (const ch of targets) await discord(rushEnv(env), 'POST', `/channels/${ch}/messages`, msg).catch((e) => console.log('rush report post failed', e.message));
+  const { sent, failures } = await postAll(rushEnv(env), targets, msg, 'report post');
+  if (!sent.length) return say('Your report did not reach staff', `Tell a manager it did not arrive:\n${failureLines(failures)}`);
   return say('✅ Report sent', 'Staff got it. Your name is not attached.', 'win');
 }
 
@@ -551,7 +598,7 @@ export async function queueCommand(i, env, ctx, me, who, sub, o = {}, now = Date
   if (!staff) return say('Only managers can use that', '`/queue status` shows the line for everyone.');
   if (sub === 'board') {
     const r = await refreshBoards(env, { now });
-    return r.channels ? say('✅ Board posted', `${r.channels} channel${r.channels === 1 ? '' : 's'}.`, 'win') : noChannel(env, 'rush_queue');
+    return r.channels ? boardAnswer(r) : noChannel(env, 'rush_queue');
   }
   if (sub === 'stop') {
     await saveState(env, { ...touchState(state, [], now), closed: 'staff' });

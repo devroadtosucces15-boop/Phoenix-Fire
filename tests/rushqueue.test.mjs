@@ -81,12 +81,14 @@ t('the new settings are clamped', Q.settingsOf({ idleCloseMin: 99999 }).idleClos
 env.DISCORD_BOT_TOKEN = 'bot-token';
 env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), rushQueue: 'members', rushLfg: 'owner' });
 const calls = []; let msgN = 0; const chanLast = {};
+let failPost = null; // 401 | 403 | 404: Discord refuses every POST with that status (tests of the failure replies)
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (url, init = {}) => {
   url = String(url);
   if (!url.startsWith('https://discord.com/api/v10')) return realFetch(url, init);
   const path = url.slice('https://discord.com/api/v10'.length), method = init.method ?? 'GET', body = init.body ? JSON.parse(init.body) : undefined;
-  calls.push({ method, path, body });
+  calls.push({ method, path, body, auth: init.headers?.Authorization });
+  if (failPost && method === 'POST') return Response.json({ 401: { message: '401: Unauthorized', code: 0 }, 403: { message: 'Missing Access', code: 50001 }, 404: { message: 'Unknown Channel', code: 10003 } }[failPost], { status: failPost });
   if (method === 'POST' && /^\/channels\/\d+\/messages$/.test(path)) { const id = `m${++msgN}`; chanLast[path.split('/')[2]] = id; return Response.json({ id }); }
   if (method === 'DELETE') return new Response(null, { status: 204 });
   if (method === 'PATCH') return Response.json({ id: path.split('/').pop() });
@@ -255,6 +257,62 @@ for (let k = 0; k < 3; k++) { jr.push(T(await press(p3, 'pf:rq:join', {}, T0 + 1
 t('joining is limited per member per hour (join/leave spam)', !/Slow down/.test(jr[0] + jr[1]) && /Slow down/.test(jr[2]));
 await Q.saveSettings(env, Q.settingsOf());
 t('the board channel can be set in the Control Center (a post channel replaces the Organization purpose)', await (async () => { const OTHER = '1600000000000000055'; sqlite.prepare("INSERT OR REPLACE INTO output_controls (key, enabled, rules) VALUES ('auto:rush-board', 1, ?)").run(JSON.stringify({ post_channels: [OTHER] })); C.resetControlsCache(); calls.length = 0; await Q.refreshBoards(env, { now: T0 + 200 * MIN }); const ok = posts(OTHER).length === 1 && posts(QCH).length === 0; sqlite.prepare("DELETE FROM output_controls WHERE key = 'auto:rush-board'").run(); C.resetControlsCache(); return ok; })());
+
+// ---------- a board that did not land is never "Board posted" (owner report 2026-11-13: the reply said posted, nothing arrived) ----------
+const cmdIn = (e, sub, at) => Q.queueCommand({ channel_id: QCH, data: {} }, e, null, mgr, mgr, sub, {}, at);
+calls.length = 0;
+res = await cmd(mgr, 'board', {}, T0 + 300 * MIN);
+t('/queue board success: says Board posted, posts one board and remembers its id', /Board posted/.test(T(res)) && boardCalls().length === 1 && JSON.parse(await KV.get(`rq:board:${QCH}`)).id === `m${msgN}` && noticeKind(res.data ?? res) === 'success');
+const r0 = await Q.refreshBoards(env, { now: T0 + 302 * MIN });
+t('refreshBoards counts the boards Discord took, not the channels configured', r0.channels === 1 && r0.posted === 1 && r0.edited === 0 && r0.failures.length === 0);
+calls.length = 0;
+res = await cmdIn({ ...env, DISCORD_BOT_TOKEN: '' }, 'board', T0 + 304 * MIN);
+t('empty bot token: not "Board posted", names the missing secret, calls Discord not at all', !/Board posted/.test(T(res)) && /did not post/.test(T(res)) && /token is missing/.test(T(res)) && /`DISCORD_BOT_TOKEN`/.test(T(res)) && calls.length === 0 && noticeKind(res.data ?? res) !== 'success');
+const rushNoToken = { ...env, DISCORD_APP_ID_RUSH: '1111', DISCORD_PUBLIC_KEY_RUSH: 'rush-key', DISCORD_BOT_TOKEN_RUSH: '' };
+calls.length = 0;
+res = await cmdIn(rushNoToken, 'board', T0 + 306 * MIN);
+t('Rush app set up without its token: fails clearly with DISCORD_BOT_TOKEN_RUSH, never borrows the core token', !/Board posted/.test(T(res)) && /Phoenix Rush bot token is missing/.test(T(res)) && /DISCORD_BOT_TOKEN_RUSH/.test(T(res)) && calls.length === 0);
+calls.length = 0;
+res = await cmdIn({ ...rushNoToken, DISCORD_BOT_TOKEN_RUSH: 'rush-token' }, 'board', T0 + 308 * MIN);
+t('with its token the Rush app posts the board itself', /Board posted/.test(T(res)) && boardCalls().length === 1 && calls.every((c) => c.auth === 'Bot rush-token'));
+const keptId = JSON.parse(await KV.get(`rq:board:${QCH}`)).id;
+failPost = 403; calls.length = 0;
+res = await cmd(mgr, 'board', {}, T0 + 310 * MIN);
+t('403 (bot not in the channel / no permission): not "Board posted", names the channel and the permissions', !/Board posted/.test(T(res)) && new RegExp(`No permission in <#${QCH}>`).test(T(res)) && /View Channel, Send Messages/.test(T(res)) && /\/queue board/.test(T(res)) && boardCalls().length === 1);
+t('…and no board id is stored for a post that failed', JSON.parse(await KV.get(`rq:board:${QCH}`)).id === keptId);
+t('…refreshBoards reports the failure with the Discord status', await (async () => { const r = await Q.refreshBoards(env, { now: T0 + 312 * MIN }); return r.posted === 0 && r.failures.length === 1 && r.failures[0].ch === QCH && r.failures[0].why === 'access' && r.failures[0].status === 403; })());
+failPost = 401;
+res = await cmd(mgr, 'board', {}, T0 + 314 * MIN);
+t('401 (bad token): not "Board posted", says Discord rejected the token and where to replace it', !/Board posted/.test(T(res)) && /rejected the Phoenix bot token \(401\)/.test(T(res)) && /Developer Portal/.test(T(res)));
+failPost = 404;
+res = await cmd(mgr, 'board', {}, T0 + 316 * MIN);
+t('404 (channel deleted): says the channel was not found and where to pick another', !/Board posted/.test(T(res)) && new RegExp(`<#${QCH}> was not found`).test(T(res)) && /Control Center/.test(T(res)));
+// the minute tick logs each failure (channel, reason, status) and does not count it as reposted
+failPost = null;
+await press(p2, 'pf:rq:solo:first', {}, T0 + 320 * MIN);
+failPost = 403; chanLast[QCH] = 'someone-chatted-again';
+const logs = [], realLog = console.log; console.log = (...a) => logs.push(a.join(' '));
+const tf = await Q.queueTick(env, T0 + 320 * MIN + 10e3);
+console.log = realLog;
+t('tick: a board Discord refused is logged with channel, reason and status, not reported as reposted', !tf.reposted && tf.failed === 1 && logs.some((l) => l.startsWith('rush queue board failed') && l.includes(QCH) && l.includes('access') && l.includes('403')));
+console.log = () => {};
+const tn = await Q.queueTick({ ...env, DISCORD_BOT_TOKEN: '' }, T0 + 320 * MIN + 20e3);
+console.log = realLog;
+t('tick: with no token it records the failure without calling Discord', tf && tn.failed === 1 && tn.failures[0].why === 'token' && !tn.reposted);
+// the other Rush posts say so too
+console.log = () => {};
+res = await press(p2, 'pf:rq:need:pick', { values: ['9'] }, T0 + 321 * MIN);
+const rep403 = await modal(p4, 'The 403 lobby', '', T0 + 321 * MIN);
+console.log = realLog;
+t('"Need a player" that Discord refused: shows on the board but says the call did not post and why', /did not post/.test(T(res)) && /No permission/.test(T(res)));
+t('a report Discord refused is not "Report sent"', !/Report sent/.test(T(rep403)) && /did not reach staff/.test(T(rep403)) && /No permission/.test(T(rep403)));
+failPost = null;
+await press(p2, 'pf:rq:leave', {}, T0 + 322 * MIN);
+sqlite.prepare("UPDATE discord_channels SET active = 0 WHERE purpose = 'rush_queue'").run();
+calls.length = 0;
+res = await cmd(mgr, 'board', {}, T0 + 330 * MIN);
+t('no queue channel set: /queue board still says so and calls Discord not at all', /No channel is set for rush queue\b/.test(T(res)) && !/Board posted/.test(T(res)) && calls.length === 0);
+sqlite.prepare("UPDATE discord_channels SET active = 1 WHERE purpose = 'rush_queue'").run();
 
 // ---------- Phoenix look: no NOREX name, colour or crest in anything the queue can say ----------
 const everything = JSON.stringify([board, calls.map((c) => c.body), plainText(board)]) + [...Object.values(Q)].filter((v) => typeof v === 'string').join();
