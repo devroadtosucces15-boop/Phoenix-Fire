@@ -61,6 +61,7 @@
   "voiceRecap": {
     "channel": ""
   },
+  "sessionRecap": { "enabled": true, "idleGapMinutes": 45, "minMatches": 2, "maxAgeHours": 6 },
   "matchAlert": {
     "loseBy": 3
   },

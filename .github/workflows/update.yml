@@ -95,9 +95,10 @@ jobs:
         if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
         run: node scripts/check-cards.mjs
 
-      # New results go to Discord once their cards exist. Runs even if the build or the cards failed (then without pictures).
+      # New results go to Discord once their cards exist. Runs even if the build or the cards failed (then without pictures), but NOT when
+      # the data commit failed: a match counts as new only because its file is absent, so an uncommitted match would be posted again next run.
       - name: Post new results to Discord
-        if: always() && (hashFiles('.outbox/results.json') != '' || inputs.repost != '')
+        if: always() && steps.commit.outcome != 'failure' && (hashFiles('.outbox/results.json') != '' || inputs.repost != '')
         continue-on-error: true
         run: node scripts/post-results.mjs
         env:
@@ -105,6 +106,15 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+
+      # One recap per playing session, once it has ended (config.json sessionRecap). Safe to run every time: the Worker claims the session key
+      # before posting, so repeated, overlapping or re-run jobs post it once. Channel from Organization config (purpose session_recaps).
+      - name: Post session recaps to Discord
+        if: always() && steps.commit.outcome != 'failure'
+        continue-on-error: true
+        run: node scripts/session-recap.mjs
+        env:
+          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
 
       - uses: actions/configure-pages@v5
         if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'

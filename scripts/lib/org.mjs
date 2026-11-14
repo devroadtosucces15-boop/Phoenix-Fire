@@ -216,3 +216,18 @@ export async function requestMatchAlert(config, payload, { fetchFn = fetch, secr
     return { ok: false, posted: 0, reason: e.message };
   }
 }
+
+// Sends one ended session to the Worker (bot/sessionrecap.js): it claims the session key, reads the channel from the Organization config and
+// posts once. A second call for the same session is answered with posted 0. Returns { ok, posted, claimed, reason }.
+export async function requestSessionRecap(config, recap, { fetchFn = fetch, secret = process.env.DISCORD_CLIENT_SECRET } = {}) {
+  const api = config.members?.api;
+  if (!api || !secret) return { ok: false, posted: 0, claimed: false, reason: 'members API or DISCORD_CLIENT_SECRET not set' };
+  try {
+    const res = await fetchFn(`${api}/api/org/session-recap`, { method: 'POST', signal: AbortSignal.timeout(15000), headers: { 'X-Phoenix-Key': orgKey(secret), 'Content-Type': 'application/json' }, body: JSON.stringify({ recap }) });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return { ok: true, posted: body.posted ?? 0, claimed: !!body.claimed, reason: body.reason };
+  } catch (e) {
+    return { ok: false, posted: 0, claimed: false, reason: e.message };
+  }
+}
