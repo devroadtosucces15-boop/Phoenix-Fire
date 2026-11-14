@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T01:50:42.669Z",
+ "fetchedAt": "2026-11-14T02:00:41.450Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,8 +1891,8 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "163",
-   "goals": "25",
+   "gamesPlayed": "164",
+   "goals": "26",
    "assists": "63",
    "manOfTheMatch": "18",
    "ratingAve": "7.7",
@@ -1901,14 +1901,14 @@
   },
   {
    "name": "rubNiyo",
-   "proPos": "14",
-   "gamesPlayed": "106",
+   "proPos": "25",
+   "gamesPlayed": "107",
    "goals": "81",
    "assists": "35",
    "manOfTheMatch": "14",
    "ratingAve": "7.8",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "OH-912",
@@ -2067,12 +2067,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "110",
+   "gamesPlayed": "111",
    "goals": "54",
    "assists": "42",
    "manOfTheMatch": "16",
    "ratingAve": "7.5",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2122,7 +2122,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "84",
+   "gamesPlayed": "85",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
@@ -2210,7 +2210,7 @@
   {
    "name": "CapoGroot",
    "proPos": "0",
-   "gamesPlayed": "31",
+   "gamesPlayed": "32",
    "goals": "3",
    "assists": "5",
    "manOfTheMatch": "1",
@@ -2221,7 +2221,7 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "231",
+   "gamesPlayed": "232",
    "goals": "36",
    "assists": "30",
    "manOfTheMatch": "42",
@@ -2232,7 +2232,7 @@
   {
    "name": "leo77romano",
    "proPos": "25",
-   "gamesPlayed": "169",
+   "gamesPlayed": "170",
    "goals": "35",
    "assists": "25",
    "manOfTheMatch": "8",
@@ -2276,9 +2276,9 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "247",
+   "gamesPlayed": "248",
    "goals": "160",
-   "assists": "209",
+   "assists": "210",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
    "prevGoals": "0",
