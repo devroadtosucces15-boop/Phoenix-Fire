@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-14T20:20:41.865Z",
+ "fetchedAt": "2026-11-14T20:30:39.916Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -710,14 +710,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "14",
-   "gamesPlayed": "193",
+   "proPos": "0",
+   "gamesPlayed": "194",
    "goals": "164",
    "assists": "114",
    "manOfTheMatch": "37",
    "ratingAve": "7.8",
-   "prevGoals": "2",
-   "favoritePosition": "midfielder"
+   "prevGoals": "0",
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "ImWizardJr",
@@ -732,14 +732,14 @@
   },
   {
    "name": "Der_Synnlos",
-   "proPos": "5",
-   "gamesPlayed": "134",
+   "proPos": "14",
+   "gamesPlayed": "135",
    "goals": "10",
    "assists": "8",
    "manOfTheMatch": "4",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "xEthxnH-_-",
@@ -831,14 +831,14 @@
   },
   {
    "name": "ManiManolo88",
-   "proPos": "25",
-   "gamesPlayed": "16",
+   "proPos": "14",
+   "gamesPlayed": "17",
    "goals": "5",
    "assists": "2",
    "manOfTheMatch": "4",
    "ratingAve": "7.4",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   }
  ],
  "leaderboard": {

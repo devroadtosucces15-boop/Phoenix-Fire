@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T20:20:41.865Z",
+ "fetchedAt": "2026-11-14T20:30:39.916Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,7 +1891,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "165",
+   "gamesPlayed": "166",
    "goals": "26",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1989,14 +1989,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "14",
-   "gamesPlayed": "193",
+   "proPos": "0",
+   "gamesPlayed": "194",
    "goals": "164",
    "assists": "114",
    "manOfTheMatch": "37",
    "ratingAve": "7.8",
-   "prevGoals": "2",
-   "favoritePosition": "midfielder"
+   "prevGoals": "0",
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "Ibekayne",
@@ -2045,7 +2045,7 @@
   {
    "name": "ed44ed",
    "proPos": "25",
-   "gamesPlayed": "208",
+   "gamesPlayed": "209",
    "goals": "249",
    "assists": "147",
    "manOfTheMatch": "43",
@@ -2067,11 +2067,11 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "111",
+   "gamesPlayed": "112",
    "goals": "54",
    "assists": "42",
    "manOfTheMatch": "16",
-   "ratingAve": "7.5",
+   "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2188,12 +2188,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "177",
-   "goals": "209",
+   "gamesPlayed": "178",
+   "goals": "211",
    "assists": "90",
-   "manOfTheMatch": "2",
+   "manOfTheMatch": "3",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2286,14 +2286,14 @@
   },
   {
    "name": "HristoNL",
-   "proPos": "25",
-   "gamesPlayed": "249",
-   "goals": "160",
-   "assists": "210",
+   "proPos": "14",
+   "gamesPlayed": "250",
+   "goals": "162",
+   "assists": "214",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
+   "prevGoals": "2",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "GUYR-1999",
@@ -2396,14 +2396,14 @@
   },
   {
    "name": "Pain11x",
-   "proPos": "14",
-   "gamesPlayed": "27",
+   "proPos": "25",
+   "gamesPlayed": "28",
    "goals": "2",
-   "assists": "3",
+   "assists": "4",
    "manOfTheMatch": "0",
-   "ratingAve": "7.1",
+   "ratingAve": "7.2",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "Superdaddysi",

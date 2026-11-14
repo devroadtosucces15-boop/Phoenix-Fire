@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-14T20:20:41.865Z",
+ "fetchedAt": "2026-11-14T20:30:39.916Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1603,7 +1603,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "165",
+   "gamesPlayed": "166",
    "goals": "26",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1779,11 +1779,11 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "2",
+   "gamesPlayed": "3",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "7.2",
+   "ratingAve": "7.3",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -1823,12 +1823,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "177",
-   "goals": "209",
+   "gamesPlayed": "178",
+   "goals": "211",
    "assists": "90",
-   "manOfTheMatch": "2",
+   "manOfTheMatch": "3",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -1855,14 +1855,14 @@
   },
   {
    "name": "iTry_Clutxh",
-   "proPos": "25",
-   "gamesPlayed": "12",
+   "proPos": "5",
+   "gamesPlayed": "13",
    "goals": "6",
    "assists": "6",
    "manOfTheMatch": "0",
-   "ratingAve": "7.6",
+   "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "defender"
   },
   {
    "name": "Froezer",
@@ -1889,7 +1889,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "201",
+   "gamesPlayed": "202",
    "goals": "60",
    "assists": "54",
    "manOfTheMatch": "19",
@@ -1976,14 +1976,14 @@
   },
   {
    "name": "ManiManolo88",
-   "proPos": "25",
-   "gamesPlayed": "16",
+   "proPos": "14",
+   "gamesPlayed": "17",
    "goals": "5",
    "assists": "2",
    "manOfTheMatch": "4",
    "ratingAve": "7.4",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Loove__Princess",
@@ -1999,7 +1999,7 @@
   {
    "name": "Two_K_Two",
    "proPos": "5",
-   "gamesPlayed": "75",
+   "gamesPlayed": "76",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "2",
@@ -2032,12 +2032,12 @@
   {
    "name": "alicerce-sulista",
    "proPos": "25",
-   "gamesPlayed": "20",
+   "gamesPlayed": "21",
    "goals": "11",
-   "assists": "10",
+   "assists": "11",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
