@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T17:20:40.306Z",
+ "fetchedAt": "2026-11-14T17:30:41.049Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2045,7 +2045,7 @@
   {
    "name": "ed44ed",
    "proPos": "25",
-   "gamesPlayed": "206",
+   "gamesPlayed": "207",
    "goals": "249",
    "assists": "147",
    "manOfTheMatch": "43",
