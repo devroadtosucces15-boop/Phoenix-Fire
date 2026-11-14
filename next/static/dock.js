@@ -50,10 +50,11 @@
     ['People', [['staff-desk.html', '🗂️', 'Desk']]],
     ['Club content', [['staff-content.html', '📄', 'Content']]],
     ['Moderation and tools', [['staff-tools.html', '🛠️', 'Tools']]],
-    ['Club health', [['staff-insights.html', '🧭', 'Insights']]]];
+    ['Club health', [['staff-insights.html', '🧭', 'Insights']]],
+    ['Control Center', [['staff-controlcenter.html', '🎛️', 'Control Center']]]];
   const OWNER = [
     ['Artwork', [['staff-artwork.html', '🎨', 'Artwork studio']]],
-    ['Owner controls', [['staff-boardroom.html', '👑', 'Boardroom'], ['staff-switches.html', '🎛️', 'Feature switches'], ['staff-health.html', '🩺', 'Health'], ['staff-announce.html', '📣', 'Announce'], ['staff-audit.html', '🛡️', 'Audit log'], ['staff-halloffame.html', '🏛️', 'Hall of Fame'], ['staff-medals.html', '🏅', 'Medals'], ['staff-backup.html', '💾', 'Backup'], ['staff-organization.html', '🏢', 'Organization']]]];
+    ['Owner controls', [['staff-boardroom.html', '👑', 'Boardroom'], ['staff-controlcenter.html', '🎛️', 'Control Center'], ['staff-switches.html', '🎛️', 'Feature switches'], ['staff-health.html', '🩺', 'Health'], ['staff-announce.html', '📣', 'Announce'], ['staff-audit.html', '🛡️', 'Audit log'], ['staff-halloffame.html', '🏛️', 'Hall of Fame'], ['staff-medals.html', '🏅', 'Medals'], ['staff-backup.html', '💾', 'Backup'], ['staff-organization.html', '🏢', 'Organization']]]];
 
   // ---------- panel plumbing ----------
   const mk = (cls, html) => { const e = d.createElement('div'); e.className = cls; e.innerHTML = html; return e; };

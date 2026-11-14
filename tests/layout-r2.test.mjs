@@ -49,4 +49,10 @@ t('R36: header.js repairs headings mounted by script (previous level + 1, aria-l
 t('R37: body copy is capped at 72ch from 821px (md p, burner intro, muted paragraphs), centred panels excluded', /@media\(min-width:821px\)\{\.md p,\.bn-intro>p,#main :is\(\.wrap,\.sec,\.panel,\.ps-doc\):not\(\[style\*="center"\]\)>p\.muted\{max-width:72ch\}\}/.test(lay));
 t('R37: handbook docs share rows from 1100px (auto-fit 480px, align start); phone and tablet stay one column', /@media\(min-width:1100px\)\{\.hb-accs,\.hb-body\{grid-template-columns:repeat\(auto-fit,minmax\(480px,1fr\)\);align-items:start\}/.test(lay));
 t('R37: studio.html skips layout.css on purpose, so its caption is capped in tactics.css', /@media\(min-width:821px\)\{#board~p\.muted\.small\{max-width:72ch\}\}/.test(strip(read('tactics.css'))));
+
+// ---------- R45 ----------
+const ccss = strip(read('controlcenter.css'));
+t('R45: Control Center panel switches fill two even rows of four from 900px with 40px targets, inside min-width', /@media\(min-width:900px\)\{\.cc-slicer\{display:grid;grid-template-columns:repeat\(4,minmax\(0,1fr\)\)\}[^}]*min-height:40px/.test(ccss));
+t('R45: Control Center hint line keeps a readable measure from 700px and the back link gets a 24px target', /@media\(min-width:700px\)\{\.cc-panel>p\.muted\{max-width:90ch\}[^@]*min-height:24px/.test(ccss));
+t('R45: Boardroom tiles fill the row from 821px, eight tiles go two rows of four, closing note spaced, dead band under staff pages removed', lay.includes('@media(min-width:821px){.br-tools{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}.br-tools:has(>:nth-child(8):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}.br-tools+p.muted{margin-top:16px}body.room-staff main{padding-bottom:56px}}'));
 done();

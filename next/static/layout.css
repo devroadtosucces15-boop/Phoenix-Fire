@@ -10,6 +10,8 @@
 @media(min-width:821px){:is(.g2,.g3,.g4,.grid)>.panel,:is(.g2,.g3,.g4,.grid)>.panel+.panel{margin-top:0}}
 /* R30 (from 700px, because the grids go two-up at tablet width 820): the same 22px came from .panel+.panel (motion.css) on the named grids, so rows start level. The :is() list repeats the sibling selector to beat its specificity. */
 @media(min-width:700px){:is(.bx-grps,.nw-posts,.pb-top,.ct-list,.ix-cards,.sc-list,.adm-grid)>*,:is(.bx-grps,.nw-posts,.pb-top,.ct-list,.ix-cards,.sc-list,.adm-grid)>.panel+.panel{margin-top:0}}
+/* R45 Boardroom (desktop and up): tiles fill the row (auto-fit drops the empty tracks, so 6 tiles use the full width); eight tiles go two even rows of four; the closing note gets space from the last row and the staff pages lose the dead band under their content (the tab bar that needs the 110px is phone-only) */
+@media(min-width:821px){.br-tools{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}.br-tools:has(>:nth-child(8):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}.br-tools+p.muted{margin-top:16px}body.room-staff main{padding-bottom:56px}}
 /* R34: room for a hash target near the end of a short page (set only by deeplink.js) */
 #main::after{content:"";display:block;height:var(--pf-tail,0)}
 /* R35 tap targets (phone and up, explicit spec item): bigger boxes only, no font, colour or icon change */

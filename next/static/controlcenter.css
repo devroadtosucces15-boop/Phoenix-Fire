@@ -32,3 +32,7 @@
 .cc-win{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0;font:400 12.5px Inter}.cc-win label{margin-right:4px}
 .cc-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
 @media(max-width:720px){.cc-tbl td,.cc-tbl th:first-child,.cc-tbl td:first-child,.cc-tbl td:last-child{border-bottom:0;text-align:left!important;padding-left:16px!important;padding-right:16px!important}.cc-tbl thead{display:none}.cc-tbl tr{display:grid;gap:6px;padding:10px 0;border-bottom:1px solid var(--line2,#3a2f28)}.cc-tbl td{padding:2px 0!important}.cc-edit>td{display:block}.cc-slicer{overflow-x:auto;flex-wrap:nowrap}.cc-slicer .chip{white-space:nowrap}}
+/* R45 (layout only, min-width so the phone output is unchanged): the eight panel switches fill two even rows of four instead of leaving "Audit log" alone on a second row;
+   switches get a 40px target; the hint line keeps a readable measure; the back link reaches the 24px target size without moving the title. */
+@media(min-width:900px){.cc-slicer{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}.cc-slicer .chip{display:flex;align-items:center;justify-content:center;min-height:40px}}
+@media(min-width:700px){.cc-panel>p.muted{max-width:90ch}#ccLive .cc-filters{align-items:stretch}.sec>header .eyebrow a{display:inline-flex;align-items:center;min-height:24px;margin:-5px 0}}
