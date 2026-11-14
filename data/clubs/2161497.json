@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-14T18:10:40.379Z",
+ "fetchedAt": "2026-11-14T18:20:39.423Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -621,42 +621,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Two_K_Two",
-   "gamesPlayed": "2",
-   "winRate": "100",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "25",
-   "passSuccessRate": "89",
-   "ratingAve": "7.6",
-   "tacklesMade": "1",
-   "tackleSuccessRate": "33",
-   "proName": "S. Sansara",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "196",
-   "proNationality": "40",
-   "proOverall": "85",
-   "proOverallStr": "85",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "defender"
-  },
-  {
    "name": "ImWizardJr",
    "gamesPlayed": "0",
    "favoritePosition": "",
@@ -733,7 +697,7 @@
   "midfielder": 3,
   "goalkeeper": 0,
   "forward": 11,
-  "defender": 2
+  "defender": 1
  },
  "career": [
   {
@@ -805,7 +769,7 @@
   {
    "name": "Der_Synnlos",
    "proPos": "5",
-   "gamesPlayed": "133",
+   "gamesPlayed": "134",
    "goals": "10",
    "assists": "8",
    "manOfTheMatch": "4",
@@ -922,17 +886,6 @@
    "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "forward"
-  },
-  {
-   "name": "Two_K_Two",
-   "proPos": "5",
-   "gamesPlayed": "75",
-   "goals": "8",
-   "assists": "9",
-   "manOfTheMatch": "2",
-   "ratingAve": "7.1",
-   "prevGoals": "0",
-   "favoritePosition": "defender"
   }
  ],
  "leaderboard": {
