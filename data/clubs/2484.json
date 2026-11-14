@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-14T15:20:51.740Z",
+ "fetchedAt": "2026-11-14T15:30:41.643Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1452,14 +1452,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "5",
-   "gamesPlayed": "190",
+   "proPos": "14",
+   "gamesPlayed": "191",
    "goals": "161",
-   "assists": "110",
+   "assists": "112",
    "manOfTheMatch": "36",
    "ratingAve": "7.8",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Ibekayne",
@@ -1530,12 +1530,12 @@
   {
    "name": "KOEN WIE",
    "proPos": "25",
-   "gamesPlayed": "89",
-   "goals": "10",
-   "assists": "4",
+   "gamesPlayed": "90",
+   "goals": "13",
+   "assists": "5",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "3",
    "favoritePosition": "forward"
   },
   {
@@ -1717,7 +1717,7 @@
   {
    "name": "Two_K_Two",
    "proPos": "5",
-   "gamesPlayed": "74",
+   "gamesPlayed": "75",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "2",
