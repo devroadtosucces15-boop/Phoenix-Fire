@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T03:30:40.782Z",
+ "fetchedAt": "2026-11-14T03:40:42.025Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1053,42 +1053,6 @@
    "favoritePosition": "midfielder"
   },
   {
-   "name": "Glekke-93",
-   "gamesPlayed": "10",
-   "winRate": "100",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "7",
-   "shotSuccessRate": "0",
-   "passesMade": "30",
-   "passSuccessRate": "88",
-   "ratingAve": "6.5",
-   "tacklesMade": "0",
-   "tackleSuccessRate": "0",
-   "proName": "G. WantButCant",
-   "proPos": "0",
-   "proStyle": "0",
-   "proHeight": "192",
-   "proNationality": "7",
-   "proOverall": "90",
-   "proOverallStr": "90",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "goalkeeper"
-  },
-  {
    "name": "Superdaddysi",
    "gamesPlayed": "8",
    "winRate": "62",
@@ -1883,7 +1847,7 @@
  ],
  "positionCount": {
   "midfielder": 7,
-  "goalkeeper": 3,
+  "goalkeeper": 2,
   "forward": 13,
   "defender": 6
  },
@@ -2393,17 +2357,6 @@
    "ratingAve": "7.1",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
-  },
-  {
-   "name": "Glekke-93",
-   "proPos": "25",
-   "gamesPlayed": "102",
-   "goals": "93",
-   "assists": "44",
-   "manOfTheMatch": "21",
-   "ratingAve": "7.4",
-   "prevGoals": "3",
-   "favoritePosition": "forward"
   },
   {
    "name": "Superdaddysi",
