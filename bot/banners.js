@@ -54,6 +54,7 @@ export const BANNER_SPEC = {
   fun: { icon: 'dice', title: 'Phoenix Fun', sub: 'Just for fun' },
   music: { icon: 'note', title: 'Music', sub: 'Now playing' },
   burner: { icon: 'flame', title: 'Burner report', sub: 'Who we are up against' },
+  recap: { icon: 'board', title: 'Session recap', sub: 'The night, in one post' },
   // Alert pictures (drawn by scripts/cards.mjs alertPicture; the title is the picture's alt text).
   matchalert: { icon: 'flame', title: 'Match alert', sub: 'We need to change something' },
   'uptime-down': { icon: 'flame', title: 'Bot is down', sub: 'Something stopped answering' },

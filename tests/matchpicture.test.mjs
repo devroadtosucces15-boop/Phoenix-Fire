@@ -24,7 +24,8 @@ t('goals and assists per player, most first; the man of the match is ours', mp.c
 t('a hidden player is in no list, but the totals still count them', !JSON.stringify(mp.players).includes('Hidden') && !JSON.stringify(mp.contrib).includes('Hidden') && mp.rows[0].a === 4);
 t('no club data → no model', buildMatchPicture({ clubs: {}, players: {} }, '100') === null);
 
-const html = matchPicture(mp, { name: 'PHOENIX FIRE FC' }, new Map([['12', 'data:image/png;base64,AAAA']]));
+const faces12 = new Map([['12', 'data:image/png;base64,AAAA']]);
+const html = matchPicture(mp, { name: 'PHOENIX FIRE FC' }, faces12) + matchPicture(mp, { name: 'PHOENIX FIRE FC' }, faces12, 'pitch'); // board + pitch picture
 t('the picture has the scoreboard, goals, man of the match, stats, lines and field view', ['3–1', 'Man of', 'Shots', 'Tackle success', 'Rating by line', 'Field view'].every((x) => html.includes(x)));
 t('a face is used when there is one, and a drawn avatar when there is not', html.includes('data:image/png;base64,AAAA') && /Ke<\/span>/.test(html) && /Mi<\/span>/.test(html));
 t('names are escaped', !matchPicture({ ...mp, opp: '<i>x</i>' }, {}, new Map()).includes('<i>x</i>'));

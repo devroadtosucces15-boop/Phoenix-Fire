@@ -20,6 +20,7 @@ import { lfgMessage } from '../../bot/lfg.js';
 import { eventMessage, checkinMessage, lineupEmbed } from '../../bot/events.js';
 import { checkinDone } from '../../bot/botcmds.js';
 import { cards } from '../../bot/ui.js';
+import { recapMessage, cleanRecap } from '../../bot/sessionrecap.js';
 import { autoBanner } from '../../bot/ui.js';
 
 const OUT = fileURLToPath(new URL('./out/', import.meta.url));
@@ -79,6 +80,15 @@ await guard('lfg', async () => {
   const post = { id: 7, name: 'Mike', status: 'open', expires: now + 36e5, note: 'Rush 5v5 anyone?' };
   add({ id: 'auto:lfg-open', name: 'Rush LFG call (open)', category: 'automated', trigger: '/lfg now', schedule: 'on command, expires in 60 min', destination: ['Rush channel + Rush role ping'], flag: 'rushLfg', level: 'owner', source: 'bot/lfg.js lfgMessage()', status: 'owner testing', related: ['slash:/lfg now'] }, lfgMessage(post, [{ answer: 'in', name: 'Jez' }, { answer: 'later', name: 'Kruger' }], { roleId: 'R1', now, env }));
   add({ id: 'auto:lfg-expired', name: 'Rush LFG call (expired)', category: 'automated', trigger: 'cron: call passes its time', schedule: 'every 10 min', destination: ['edits the original post'], flag: 'rushLfg', level: 'owner', source: 'bot/lfg.js lfgMessage()', status: 'owner testing', related: ['auto:lfg-open'] }, lfgMessage({ ...post, status: 'expired', expires: now - 6e4 }, [], { now, env }));
+});
+await guard('session-recap', async () => {
+  const t0 = unix - 7200;
+  const recap = cleanRecap({ key: 'session-recap:1111:900', tag: { label: 'Phoenix Fire 1' }, start: t0, end: t0 + 5400, count: 3, w: 2, d: 0, l: 1, gf: 7, ga: 3, cs: 1, modes: ['League'],
+    matches: [{ id: '1', opp: 'Grassbox V2', gf: 2, ga: 0, res: 'W', mode: 'League' }, { id: '2', opp: 'Upyerpaw', gf: 4, ga: 1, res: 'W', mode: 'League' }, { id: '3', opp: 'Rivals FC', gf: 1, ga: 2, res: 'L', mode: 'League' }],
+    scorers: [{ n: 'Lucus1997', g: 5, a: 1 }, { n: 'Pain11x', g: 1, a: 2 }], best: [{ n: 'Lucus1997', avg: 9.1, apps: 3 }], motms: [{ n: 'Lucus1997', c: 2 }],
+    standout: { matches: 3, of: 3, positioning: 91, lines: [{ k: 'Interceptions', n: 'iTry_Clutxh', v: 9, u: '' }, { k: 'Best positioning', n: 'kingmitch93', v: 96, u: '%' }] },
+    work: ['Defending: 3 conceded in 3 matches, 1.0 a game.', 'Passing: 84% against their 88%.'] });
+  add({ id: 'auto:session-recap', name: 'Session recap (a playing session has ended)', category: 'automated', trigger: 'GitHub Action: no new match for the idle gap after a run of matches', schedule: 'every update run (session-recap.mjs), once per session', destination: ['session recaps channel (session_recaps, falls back to match_results)'], flag: 'always on when channel set', level: 'members', source: 'bot/sessionrecap.js postSessionRecap()', status: 'live' }, recapMessage(env, recap));
 });
 await guard('events', async () => {
   const e = { id: 1, type: 'league', title: 'League night', start: now + 864e5, duration: 90, notes: 'Be on 10 minutes early.', needs: JSON.stringify({ players: 11, GK: 1, ST: 2 }), status: 'scheduled' };

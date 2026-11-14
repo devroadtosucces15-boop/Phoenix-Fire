@@ -15,6 +15,8 @@ export const EVENT_STATS = [
   ['shotsOnTargetInsideBox', 13], ['shotsOnTargetOutsideBox', 18], ['shotsOffTargetInsideBox', 14], ['shotsOffTargetOutsideBox', 19],
   ['shotsSaved', 202], ['goalsFirstTime', 128], ['goalsWeakFoot', 131], ['goalsOffPost', 136],
   ['secondAssists', 115], ['throughBallAssists', 118],
+  // ids 214 and 11 agree with EA's own goals/assists on every row of the 2026-11-14 live check (3 and 5 non-zero rows) and equal the "undecoded duplicates" of the earlier recon
+  ['goalsEvent', 214], ['assistsEvent', 11],
   // dribbling
   ['dribblesCompleted', 174], ['dribblesCarried', 97], ['dribblesSkillMoveBeat', 38],
   // defending and goalkeeping

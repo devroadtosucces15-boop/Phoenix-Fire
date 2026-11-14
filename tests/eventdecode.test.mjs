@@ -82,6 +82,23 @@ try {
   }
 } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
 
+
+// validation against EA's own named fields (scripts/lib/validate.mjs)
+{
+  const { validateDecoder, formatReport } = await import('../scripts/lib/validate.mjs');
+  const rows = [
+    { playername: 'a', passesmade: '3', passattempts: '4', shots: '1', goals: '1', assists: '0', saves: '0', tacklesmade: '1', tackleattempts: '2', evraw: '215:3,216:1,217:1,214:1,0:1,1:1,121:4' },
+    { playername: 'b', passesmade: '2', passattempts: '2', shots: '0', goals: '0', assists: '1', saves: '2', tacklesmade: '0', tackleattempts: '0', evraw: '215:1,11:1,267:2' },
+    { playername: 'noev', passesmade: '9' },
+  ];
+  const r = validateDecoder([{ players: { 1: { x: rows[0], y: rows[1], z: rows[2] } } }]);
+  const by = (label) => r.checks.find((c) => c.label.startsWith(label));
+  t('validation counts only rows with event data', r.rows === 2);
+  t('goals and assists ids 214 and 11 agree with EA', by('goals').agree === 2 && by('assists').agree === 2 && by('saves (id 267)').agree === 2);
+  t('a disagreement is listed with both numbers', by('passes completed').agree === 1 && /b: EA 2, decoded 1/.test(by('passes completed').differs[0]));
+  t('ids with no name are reported, never dropped', r.unknown['121'] === 4 && /121×4/.test(formatReport(r)));
+}
+
 // Phoenix identity: nothing the decoder files ship names another club
-for (const f of ['scripts/lib/events.mjs', 'scripts/lib/intel.mjs', 'scripts/lib/schema.mjs']) t(`${f} carries no other club's name`, !/norex/i.test(fs.readFileSync(path.join(ROOT, f), 'utf8')));
+for (const f of ['scripts/lib/events.mjs', 'scripts/lib/intel.mjs', 'scripts/lib/schema.mjs', 'scripts/lib/validate.mjs']) t(`${f} carries no other club's name`, !/norex/i.test(fs.readFileSync(path.join(ROOT, f), 'utf8')));
 done();
