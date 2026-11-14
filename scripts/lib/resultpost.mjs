@@ -81,7 +81,8 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       };
       // The merged match picture (flag matchPicture) replaces the score card and the field view with one picture.
       const mergedFile = matchPictureOn ? drawn?.manifest?.match?.[m.matchId]?.picture : null;
-      const mergedImg = mergedFile && fs.existsSync(path.join(drawn.dir, mergedFile)) ? pic('picture', `${clubName} ${us.goals}–${opp.goals} ${oppName}: scoreboard, goals and assists, man of the match, team stats, rating by line and the field view with every player's rating`) : null;
+      const mergedImg = mergedFile && fs.existsSync(path.join(drawn.dir, mergedFile)) ? pic('picture', `${clubName} ${us.goals}–${opp.goals} ${oppName}: scoreboard, goals and assists, man of the match and team stats with every player's rating`) : null;
+      const pitchImg = mergedImg ? pic('pitch', 'Rating by line, our players on the pitch with their match ratings, and every rating') : null; // same size as the board and the review (POST in scripts/cards.mjs)
       const scoreImg = mergedImg ? null : pic('score', `${clubName} ${us.goals}–${opp.goals} ${oppName}`);
       const fieldImg = mergedImg ? null : pic('field', 'Our players on the pitch with their match ratings');
       // Message 2: the match review picture, posted right after the result (flag matchReview; skipped when the picture was not drawn).
@@ -102,7 +103,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
           sub: `<t:${m.timestamp}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[res]}`,
           thumb: crestThumb,
         }),
-        cards(mergedImg ?? scoreImg),
+        cards(mergedImg ?? scoreImg, pitchImg),
         mergedImg ? null : facts([[`${it('goal')} Goals`, list('goals').replace(/\n/g, ', ')], [`${it('assist')} Assists`, list('assists').replace(/\n/g, ', ')], [`${it('motm')} Man of the match`, motm ? `${motm.playername} (${num(motm.rating).toFixed(1)})` : ''], ['📈 Top rated', best ? `${best.playername} (${num(best.rating).toFixed(1)})` : '']]),
         fieldImg ? label('Field view · ratings') : null,
         cards(fieldImg),

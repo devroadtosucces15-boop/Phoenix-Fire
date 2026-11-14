@@ -6,6 +6,8 @@
 // problems name a line (keeper, defenders, midfielders, forwards) and never a person; never claim more than the number supports.
 import fs from 'node:fs';
 import path from 'node:path';
+import { decodeEvents } from './events.mjs';
+import { sumEvents, ratesOf } from './intel.mjs';
 
 const n = (v) => +v || 0;
 const GROUP = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
@@ -28,6 +30,18 @@ export function loadHistory(dir, homeId, beforeTs, limit = 30) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => { try { return JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); } catch { return null; } })
     .filter((m) => m && n(m.timestamp) < beforeTs && isFullMatch(m, homeId)).sort((a, b) => n(b.timestamp) - n(a.timestamp)).slice(0, limit);
+}
+
+
+// Decoded EA event counters (scripts/lib/events.mjs) summed per side. null when nobody on that side carries them: matches archived before event
+// data was kept have none, and EA serves only the last 10 matches per type, so nothing is backfilled. Everything here is a sum of real counters.
+export function eventSide(players) {
+  const evs = players.filter((p) => p.evraw).map((p) => decodeEvents(p.evraw));
+  if (!evs.length) return null;
+  const { apps, totals: t } = sumEvents(evs);
+  const g = (k) => t[k] || 0;
+  return { apps, t, rates: ratesOf(t), insideBox: g('shotsOnTargetInsideBox') + g('shotsOffTargetInsideBox'), forward: g('passesCompletedForward'),
+    wonHigh: g('possessionWonAttackingThird'), lostLow: g('possessionLostDefensiveThird'), ints: g('interceptions'), aerial: g('aerialDuelsWonAttacking') + g('aerialDuelsWonDefending') };
 }
 
 const lineOf = (players, g) => players.filter((p) => GROUP[p.pos] === g);
@@ -100,6 +114,23 @@ export function buildReview(m, homeId, { history = [], hide = new Set() } = {}) 
     const rated = Object.entries(L).filter(([, v]) => v.n && v.r != null).sort((a, b) => a[1].r - b[1].r)[0];
     if (rated) work.push({ s: 1, kind: 'low', icon: 'team', lead: `${LINE_NAME[rated[0]]}: the quietest line.`, text: `Rated ${rated[1].r.toFixed(1)}, the lowest of the night. Nothing to fix, keep the standard.` });
   }
+  // ---- from the decoded event counters (only where EA sent them; clean fallback otherwise) ----
+  const E = eventSide(all), EO = eventSide(theirs);
+  let ev = null;
+  if (E) {
+    const o = EO ?? { insideBox: 0, forward: 0, wonHigh: 0, lostLow: 0, ints: 0, aerial: 0, rates: {} };
+    ev = { apps: E.apps, of: all.length, rows: [
+      { k: 'Won in the attacking third', a: E.wonHigh, b: EO ? o.wonHigh : null },
+      { k: 'Lost in our own third', a: E.lostLow, b: EO ? o.lostLow : null, lower: true },
+      { k: 'Forward passes completed', a: E.forward, b: EO ? o.forward : null },
+      { k: 'Shots inside the box', a: E.insideBox, b: EO ? o.insideBox : null },
+      { k: 'Interceptions', a: E.ints, b: EO ? o.ints : null },
+      { k: 'Players in position', a: E.rates.positioning, b: EO ? o.rates.positioning ?? null : null, u: '%' },
+    ] };
+    if (EO && E.wonHigh - o.wonHigh >= 3) good.push({ s: 6.5, icon: 'flow', lead: 'We won it high up the pitch.', text: `${E.wonHigh} balls won in their third to ${o.wonHigh}.` });
+    if (E.rates.positioning != null && E.apps >= 6 && E.rates.positioning < 70) work.push({ s: 6, kind: 'position', icon: 'team', lead: 'Team: hold your positions.', text: `In position ${E.rates.positioning}% of the time (event data, ${E.apps} players).` });
+    if (EO && E.lostLow >= 10 && E.lostLow - o.lostLow >= 4) work.push({ s: 6.5, kind: 'lostLow', icon: 'shield', lead: 'Defenders and keeper: stop giving it away at the back.', text: `${E.lostLow} balls lost in our own third, they lost ${o.lostLow}.` });
+  }
   good.sort((a, b) => b.s - a.s); work.sort((a, b) => b.s - a.s);
   if (!good.length) good.push({ s: 1, icon: 'team', lead: res === 'W' ? 'We got the win.' : 'We played it out.', text: `${ours.length} players on the pitch, team rating ${(T.r ?? 0).toFixed(1)}.` });
 
@@ -130,6 +161,7 @@ export function buildReview(m, homeId, { history = [], hide = new Set() } = {}) 
   return {
     id: String(m.matchId), res, title, sub, opp: them.name ?? 'Opponent',
     shape: { label: `${L.GK.n ? '1-' : ''}${shape.join('-')}`, humans, ai, line: { GK: L.GK.n, DEF: L.DEF.n, MID: L.MID.n, FWD: L.FWD.n }, players: all.map((p) => ({ g: GROUP[p.pos], r: n(p.rating) })) },
+    ev,
     good: good.slice(0, 5).map(({ s, ...x }) => x), work: work.slice(0, 4).map(({ s, kind, ...x }) => x), next: next.slice(0, 3), recs: recs.slice(0, 4),
   };
 }

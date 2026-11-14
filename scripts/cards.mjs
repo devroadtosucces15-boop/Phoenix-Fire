@@ -17,8 +17,12 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 15; // bump to redraw every card after a template change
-const W = 1200;
+export const TEMPLATE_VERSION = 16; // bump to redraw every card after a template change
+// ONE format for every picture in a match post sequence (the match board, the field view, the review): same width, same height, same margins, same
+// header. Discord scales a tall picture down to fit, so pictures of different heights come out at different widths and look misaligned; a fixed canvas
+// keeps them identical in the post. Bump TEMPLATE_VERSION (and BANNER_V in bot/ui.js) with any change here.
+export const POST = { W: 1200, H: 1700, PAD: 40 };
+const W = POST.W;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
 const COMPARE_PAIRS = 12; // busiest players whose every pairing gets a /compare picture (12 → 66 cards)
@@ -52,6 +56,11 @@ body:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gr
 .tile span{display:block;margin-top:10px;font:700 18px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}
 `;
 export const page = (css, body) => `<!doctype html><html><head><meta charset="utf-8"><style>${fontFaces()}${BASE}${css}</style></head><body>${body}</body></html>`;
+// A picture of the match post sequence: the fixed canvas, the Phoenix top bar and the shared header/section/meter styles.
+const POST_CSS = `body{min-height:${POST.H}px;display:flex;flex-direction:column;border-top:8px solid var(--red)}body>*{flex:none}body>.fill{flex:1 1 auto}
+.ph{padding:26px ${POST.PAD}px 0}.ph .eyebrow{font-size:20px;display:block}
+.mt2{display:grid;justify-items:center;gap:8px;width:100%}.mt2 b{font:700 44px/1 Oswald;color:#fff}.bar{display:block;width:250px;height:14px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}.bar u{display:block;height:100%;border-radius:5px}.mt2.tr{width:auto}.mt2.tr .bar{width:120px}`;
+export const postPage = (css, body) => page(POST_CSS + css, body);
 const SHIELD = (fill, stroke, letter) => `<svg viewBox="0 0 40 46" width="100%" height="100%"><path d="M20 1 38 7v15c0 11-8 19-18 23C10 41 2 33 2 22V7z" fill="${fill}" stroke="${stroke}" stroke-width="2"/><text x="20" y="29" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="16" fill="#fff">${esc(letter)}</text></svg>`;
 // a crest <img> that falls back to a drawn shield if the picture can't load
 const crest = (src, name, size, home) => {
@@ -64,6 +73,7 @@ const r1 = (v) => (+v || 0).toFixed(1);
 const band = (r, motm) => (motm ? 'gold' : r >= 7 ? 'win' : r >= 6 ? 'draw' : 'loss');
 const BAND = { gold: '#efcf7a', win: '#4be08a', draw: '#ff9f43', loss: '#ff7d72' }; // 6–6.9 is orange, so it never reads as MOTM gold
 const RESULT = { W: 'Win', D: 'Draw', L: 'Loss' };
+const POSLABEL = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
 const when = (ts) => new Date(ts * 1000).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
 
 // ---------- score card (top of every match message) ----------
@@ -322,28 +332,35 @@ export function reviewCard(model, club) {
   const row = (r, label) => `<div class="rw"><span class="ri">${rvIcon(r.icon, '#fff', 26)}</span><div><b>${esc(r.lead ?? r.t)}</b><p>${label ? `<i>${label}</i>` : ''}${esc(r.text ?? r.tr)}</p>${r.why ? `<p class="wy">${esc(r.why)}</p>` : ''}</div></div>`;
   const ring = (t) => { const frac = t.lower ? Math.min(1, t.b / Math.max(1, t.a)) : Math.min(1, t.a / Math.max(1, t.b)); return `<div class="mt2"><b>${t.a}${t.u}</b><i class="bar"><u style="width:${Math.round(Math.max(0.03, frac) * 100)}%;background:#ff8a3d"></u></i></div>`; };
   const next = model.next.map((t) => `<div class="nx">${ring(t)}<span>${esc(t.k)}</span><b class="osw">${t.lower ? 'Under' : 'Target'} ${t.b}${t.u}</b></div>`).join('');
+  const evv = (v, u) => (v == null ? '–' : `${v}${u ?? ''}`);
+  const evHtml = model.ev
+    ? `<div class="sec">${head('flow', 'From the event data')}<div class="evg">${model.ev.rows.map((r) => `<div class="evt"><span>${esc(r.k)}</span><b class="osw">${evv(r.a, r.u)}<em>${r.b == null ? '' : ` vs ${evv(r.b, r.u)}`}</em></b></div>`).join('')}</div><p class="evn">EA's event counters for ${model.ev.apps} of ${model.ev.of} of our players. Us first, then ${esc(model.opp)}.</p></div>`
+    : `<div class="sec">${head('flow', 'Event data')}<p class="evn">No event counters for this match. EA keeps them only for recent matches and serves just the last 10 per type, so earlier games cannot be filled in.</p></div>`;
   const sh = model.shape;
-  return page(`
+  return postPage(`
 body:before{background:radial-gradient(900px 340px at 50% -12%,rgba(232,101,26,.26),transparent 65%),linear-gradient(180deg,#140c07,#0a0705)}
-.top{padding:26px 40px 6px;border-top:8px solid var(--red)}.top .eyebrow{font-size:19px;display:block}
+.top{padding-bottom:6px}
 .big{font:700 70px/1.05 Oswald;letter-spacing:.03em;margin-top:4px;display:block;text-transform:uppercase}
 .sub{font:600 25px/1.3 Inter;color:var(--soft);margin-top:2px}
 .sec{margin:22px 40px 0}.two{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin:0 40px}.two .sec{margin:22px 0 0}
 .sh{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--line);padding-bottom:9px;margin-bottom:4px}.sh b{font:600 31px/1 Oswald;letter-spacing:.08em}.si{display:inline-flex;width:40px;height:40px;border-radius:11px;background:var(--red);align-items:center;justify-content:center}
 .lu{display:grid;grid-template-columns:600px 1fr;gap:28px;align-items:center;margin-top:12px}.lf{display:grid;gap:4px}.lf b{font:700 76px/1 Oswald;letter-spacing:.04em}.lf span{font:700 26px/1.2 Inter;color:#e1e8f5}.lf em{font:500 21px/1.3 Inter;color:var(--mute);font-style:normal;margin-top:6px}
-.rw{display:grid;grid-template-columns:46px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);align-items:start}.rw:last-child{border-bottom:0}
+.rw{display:grid;grid-template-columns:46px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);align-items:start}.rw:last-child{border-bottom:0}
 .ri{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid var(--line);display:grid;place-items:center}
 .rw b{font:800 25px/1.2 Inter;color:#fff;display:block}.rw p{font:500 22px/1.3 Inter;color:#cfd8e8;margin-top:3px}.rw p.wy{font-size:20px;color:var(--mute)}.rw i{font:800 17px Inter;letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:var(--red2);margin-right:10px}
 .mt2{display:grid;justify-items:center;gap:8px;width:100%}.mt2 b{font:700 44px/1 Oswald;color:#fff}.bar{display:block;width:250px;height:14px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}.bar u{display:block;height:100%;border-radius:5px}.mt2.tr{width:auto}.mt2.tr .bar{width:120px}
 .nxh{margin-top:18px}.nxs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:10px}.nxs .mt2{width:auto}.nxs .bar{width:150px}.nx{display:grid;justify-items:center;gap:2px;text-align:center}.nx span{font:700 20px Inter;color:#cfd8e8}.nx b{font:600 24px/1 Oswald;letter-spacing:.04em}
+.evg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 24px;margin-top:10px}.evt{display:grid;gap:2px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line)}.evt span{font:700 18px Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}.evt b{font:700 40px/1.1 Oswald;color:#fff}.evt em{font:600 26px Oswald;font-style:normal;color:var(--mute)}.evn{font:500 20px/1.35 Inter;color:var(--mute);margin-top:10px}
 .last{padding-bottom:34px}.rg{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}`,
-  `<div class="top"><div class="eyebrow">${esc(club?.name ?? SITE)} · Match review · vs ${esc(model.opp)}</div><div class="big">${esc(model.title)}</div><div class="sub">${esc(model.sub)}</div></div>
-<div class="sec">${head('me', 'How we lined up')}<div class="lu"><div>${shapeDiagram(model)}</div><div class="lf"><b class="osw">${esc(sh.label)}</b><span>${sh.humans} player${sh.humans === 1 ? '' : 's'}${sh.ai ? ` and ${sh.ai} AI slot${sh.ai === 1 ? '' : 's'}` : ''}</span><em>Shape from where the players lined up. EA does not record which slot the AI took.</em></div></div></div>
+  `<div class="top ph"><div class="eyebrow">${esc(club?.name ?? SITE)} · Match review · vs ${esc(model.opp)}</div><div class="big">${esc(model.title)}</div><div class="sub">${esc(model.sub)}</div></div>
+<div class="sec">${head('me', 'How we lined up')}<div class="lu"><div>${shapeDiagram(model, 600, 190)}</div><div class="lf"><b class="osw">${esc(sh.label)}</b><span>${sh.humans} player${sh.humans === 1 ? '' : 's'}${sh.ai ? ` and ${sh.ai} AI slot${sh.ai === 1 ? '' : 's'}` : ''}</span><em>Shape from where the players lined up. EA does not record which slot the AI took.</em></div></div></div>
 <div class="two">
-  <div class="sec">${head('check', 'What went well')}${model.good.map((g) => row(g)).join('')}</div>
+  <div class="sec">${head('check', 'What went well')}${model.good.slice(0, 4).map((g) => row(g)).join('')}</div>
   <div class="sec">${head('assist', 'What to work on')}${model.work.map((g) => row(g)).join('')}${next ? `<div class="nxh">${head('goal', 'Next match')}<div class="nxs">${next}</div></div>` : ''}</div>
 </div>
-${model.recs.length ? `<div class="sec last">${head('swap', 'Recommendations for the squad')}<div class="rg">${model.recs.map((r) => row(r, 'Try')).join('')}</div></div>` : '<div style="height:34px"></div>'}`);
+${evHtml}
+${model.recs.length ? `<div class="sec last">${head('swap', 'Recommendations for the squad')}<div class="rg">${model.recs.map((r) => row(r, 'Try')).join('')}</div></div>` : '<div style="height:34px"></div>'}
+<div class="fill"></div>`);
 }
 
 
@@ -360,7 +377,8 @@ const avatar = (p, faces, size, ring = null, ringW = 0) => {
     : `<span style="display:grid;place-items:center;width:100%;height:100%;font:700 ${Math.round(size * 0.4)}px Oswald;letter-spacing:.04em;color:#cfd8e8;text-transform:uppercase">${esc(initials(p.n))}</span>`}</span>`;
 };
 const GENERIC_BUST = (h = 200) => `<svg viewBox="0 0 200 232" width="${Math.round(h * 0.86)}" height="${h}" style="display:block"><defs><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a8aa6"/><stop offset="1" stop-color="#4a5973"/></linearGradient></defs><path d="M4 232c0-46 38-70 96-70s96 24 96 70z" fill="url(#gb)"/><ellipse cx="100" cy="86" rx="42" ry="50" fill="url(#gb)"/><rect x="82" y="124" width="36" height="44" rx="14" fill="url(#gb)"/></svg>`;
-export function matchPicture(mp, club, faces = new Map()) {
+// part 'board' = scoreboard, goals and assists, man of the match, the stats; part 'pitch' = rating by line, field view, every rating. Both on the POST canvas.
+export function matchPicture(mp, club, faces = new Map(), part = 'board') {
   const TONE = { good: '#4be08a', even: '#efcf7a', bad: '#ff7d72' };
   // Stat meter: the number, big, over a flat bar (no circles in this design).
   const donut = (frac, color, label) => `<div class="mt2"><b>${label}</b><i class="bar"><u style="width:${Math.round(Math.max(0.03, Math.min(1, frac)) * 100)}%;background:${color}"></u></i></div>`;
@@ -392,10 +410,10 @@ export function matchPicture(mp, club, faces = new Map()) {
   }).join('');
   const ring = `<div class="mt2 tr"><b>${r1(mp.avg)}</b><i class="bar"><u style="width:${Math.round(Math.max(0.03, Math.min(1, mp.avg / 10)) * 100)}%;background:#efcf7a"></u></i></div>`;
   const opp = String(mp.opp);
-  return page(`
+  const css = `
 body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.3),transparent 65%),linear-gradient(180deg,#140c07,#0a0705)}
 .lab{font:700 18px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}
-.sb{padding:30px 40px 0;text-align:center;position:relative}.sb .eyebrow{font-size:20px}
+.sb{padding-bottom:0;text-align:center;position:relative}.rl{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;margin:6px 40px 0;padding-bottom:10px}.rr{display:grid;grid-template-columns:70px 1fr 64px 76px;align-items:center;gap:10px;height:58px;border-bottom:1px solid rgba(255,255,255,.07)}.rr b{font:700 30px/1 Oswald}.rr .nm2{font:700 25px Inter;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rr .ps{font:700 18px Inter;letter-spacing:.18em;color:var(--soft)}.rr .ge{font:700 22px Oswald;color:#ffb27a;text-align:right}.ph.pt .big{font:700 52px/1.05 Oswald;letter-spacing:.03em;text-transform:uppercase;margin-top:4px;display:block}
 .srow{display:grid;grid-template-columns:1fr 420px 1fr;align-items:center;margin-top:14px}
 .team{display:grid;justify-items:center;gap:6px}.team b{font:600 40px/1.1 Oswald;letter-spacing:.06em;text-transform:uppercase;max-width:330px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mid b{display:block;font:700 176px/1 Oswald;text-shadow:0 10px 50px rgba(232,101,26,.6)}.mid .pill{margin-top:-6px}
@@ -408,8 +426,7 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
 .bw{position:absolute;right:30px;top:50%;height:70%;max-height:168px;aspect-ratio:200/232;line-height:0;z-index:1;transform:translateY(-50%)}.bw svg{width:100%;height:100%}
 .mb{position:absolute;left:-14px;bottom:6px;line-height:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.55))}
 .glow{position:absolute;right:-30px;top:-10px;bottom:-30px;aspect-ratio:1;background:radial-gradient(closest-side,rgba(239,207,122,.13),rgba(239,207,122,.05) 55%,rgba(239,207,122,0));z-index:0}
-.st{margin:18px 40px 0;border-top:2px solid rgba(255,255,255,.1)}
-.mt2{display:grid;justify-items:center;gap:8px;width:100%}.mt2 b{font:700 44px/1 Oswald;color:#fff}.bar{display:block;width:250px;height:14px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}.bar u{display:block;height:100%;border-radius:5px}.mt2.tr{width:auto}.mt2.tr .bar{width:120px}
+.st{margin:18px 40px 0;border-top:2px solid rgba(255,255,255,.1);flex:1 1 auto;display:flex;flex-direction:column}.st .sr{flex:1 1 120px;max-height:196px}
 .sr,.sh{display:grid;grid-template-columns:340px 1fr 340px;align-items:center}.sr{height:132px;border-bottom:1px solid rgba(255,255,255,.07)}
 .dc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.dc svg{display:block}
 .sh{height:84px}.sh .dc{flex-direction:row;gap:14px}.sh .lab{font-size:26px;color:#e1e8f5}
@@ -430,8 +447,8 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
 .crown{position:absolute;right:-12px;top:-14px;width:46px;height:46px;border-radius:50%;background:var(--gold);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.55)}
 .hud{position:absolute;display:flex;align-items:center;gap:14px}.hud.l{left:26px;top:22px}.hud.r{right:26px;top:16px;flex-direction:column;gap:2px}
 .eb{font:800 21px Inter;letter-spacing:.3em;text-transform:uppercase;color:#ffffffb8;text-shadow:0 2px 6px #0b0f16}
-.fkey{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 0 34px;font:600 22px Inter;color:#b9c4d9}.fkey i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:9px}`,
-  `<div class="sb">
+.fkey{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 0 34px;font:600 22px Inter;color:#b9c4d9}.fkey i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:9px}`;
+  const boardHtml = `<div class="sb ph">
   <div class="eyebrow">${esc(club?.name ?? SITE)} · ${mp.mode} · ${esc(when(mp.ts))}</div>
   <div class="srow">
     <div class="team">${crest(club?.crest, club?.name ?? SITE, 150, true)}<b class="osw">${esc(String(club?.name ?? SITE).replace(/\s+FC$/i, ''))}</b></div>
@@ -447,12 +464,16 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
   <div class="sh"><div class="dc">${crest(club?.crest, club?.name ?? SITE, 54, true)}<span class="lab">${esc(String(club?.name ?? SITE).replace(/\s+FC$/i, '').split(' ')[0])}</span></div><div class="sm"></div><div class="dc">${crest(mp.oppCrest, opp, 54, false)}<span class="lab">${esc(opp.length > 12 ? `${opp.slice(0, 11)}…` : opp)}</span></div></div>
   ${mp.rows.map(row).join('')}
   <div class="key"><span><i style="background:#4be08a"></i>Ahead</span><span><i style="background:#efcf7a"></i>Level</span><span><i style="background:#ff7d72"></i>Behind</span></div>
-</div>
-<div class="ln4">${mp.lines.map((l) => { const c = BAND[band(l.r)]; return `<div class="ln"><b class="osw" style="color:${c}">${r1(l.r)}</b><div class="lb"><i style="height:${Math.max(20, Math.min(100, Math.round(((l.r - 6) / 2) * 100)))}%;background:${c}"></i></div><span class="lab">${l.t}</span></div>`; }).join('')}<span class="lab cap">Rating by line</span></div>
-<div class="fv"><div class="pitch"><svg viewBox="0 0 105 68" style="position:absolute;inset:0;width:100%;height:100%"><defs><radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></radialGradient></defs>
+</div>`;
+  const linesHtml = `<div class="ln4">${mp.lines.map((l) => { const c = BAND[band(l.r)]; return `<div class="ln"><b class="osw" style="color:${c}">${r1(l.r)}</b><div class="lb"><i style="height:${Math.max(20, Math.min(100, Math.round(((l.r - 6) / 2) * 100)))}%;background:${c}"></i></div><span class="lab">${l.t}</span></div>`; }).join('')}<span class="lab cap">Rating by line</span></div>`;
+  const fvHtml = `<div class="fv"><div class="pitch"><svg viewBox="0 0 105 68" style="position:absolute;inset:0;width:100%;height:100%"><defs><radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></radialGradient></defs>
 <rect width="105" height="68" fill="#14502e"/>${stripes}<g fill="none" stroke="#ffffffb0" stroke-width=".3"><rect x="1" y="1" width="103" height="66"/><line x1="52.5" y1="1" x2="52.5" y2="67"/><circle cx="52.5" cy="34" r="9.15"/><rect x="1" y="13.84" width="16.5" height="40.32"/><rect x="1" y="24.84" width="5.5" height="18.32"/><rect x="87.5" y="13.84" width="16.5" height="40.32"/><rect x="98.5" y="24.84" width="5.5" height="18.32"/></g><rect width="105" height="68" fill="url(#vig)"/></svg>
 <div class="hud l"><span class="eb">Field view</span></div><div class="hud r">${ring}<span class="eb">Team rating</span></div>${marks}</div>
-<div class="fkey"><span><i style="background:#efcf7a"></i>Man of the match</span><span><i style="background:#4be08a"></i>7 and up</span><span><i style="background:#ff9f43"></i>6 to 6.9</span><span><i style="background:#ff7d72"></i>Under 6</span></div></div>`);
+<div class="fkey"><span><i style="background:#efcf7a"></i>Man of the match</span><span><i style="background:#4be08a"></i>7 and up</span><span><i style="background:#ff9f43"></i>6 to 6.9</span><span><i style="background:#ff7d72"></i>Under 6</span></div></div>`;
+  const rank = [...mp.players].sort((a, b) => b.r - a.r || String(a.n).localeCompare(String(b.n)));
+  const ratings = `<div class="sec" style="margin:14px 40px 0"><div class="lab" style="border-bottom:2px solid var(--line);padding-bottom:8px">Every rating</div></div><div class="rl">${rank.map((p) => { const c = BAND[band(p.r, p.mom)]; return `<div class="rr"><b style="color:${c}">${r1(p.r)}</b><span class="nm2">${esc(p.n)}</span><span class="ps">${esc(POSLABEL[p.pos] ?? '')}</span><span class="ge">${p.g ? `${p.g}G ` : ''}${p.a ? `${p.a}A` : ''}</span></div>`; }).join('')}</div>`;
+  const pitchHead = `<div class="ph pt"><div class="eyebrow">${esc(club?.name ?? SITE)} · Field view · vs ${esc(opp)}</div><div class="big">${mp.gf}–${mp.ga} · ${RESULT[mp.res] ?? ''}</div></div>`;
+  return postPage(css, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${boardHtml}<div class="fill"></div>`);
 }
 
 // ---------- what gets drawn, and the manifest the bot reads ----------
@@ -728,6 +749,7 @@ export function cardJobs(club, players, { matches = 10, review = null, picture =
     const model = review && i < REVIEW_MATCHES ? review(m.id) : null;
     const pic = picture && i < REVIEW_MATCHES ? picture(m.id) : null;
     if (pic) jobs.push({ key: ['match', m.id, 'picture'], file: `picture-${m.id}-${hash([pic.model, club.name, club.crest, m.oppCrest, [...pic.faces.keys()]])}.png`, html: () => matchPicture({ ...pic.model, oppCrest: m.oppCrest }, club, pic.faces) });
+    if (pic) jobs.push({ key: ['match', m.id, 'pitch'], file: `pitch-${m.id}-${hash([pic.model, club.name, club.crest, [...pic.faces.keys()]])}.png`, html: () => matchPicture({ ...pic.model, oppCrest: m.oppCrest }, club, pic.faces, 'pitch') });
     if (model) jobs.push({ key: ['match', m.id, 'review'], file: `review-${m.id}-${hash([model, club.name, club.crest])}.png`, html: () => reviewCard(model, club) });
     jobs.push({ key: ['match', m.id, 'score'], file: `score-${m.id}-${hash([m, club.name, club.crest])}.png`, html: () => scoreCard(m, club) });
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'field'], file: `field-${m.id}-${hash(m.ps)}.png`, html: () => fieldCard(m) });
@@ -812,7 +834,9 @@ async function main() {
       const html = j.html();
       if (process.argv.includes('--html')) fs.writeFileSync(path.join(outDir, j.file.replace(/\.png$/, '.html')), html);
       try {
-        fs.writeFileSync(path.join(outDir, j.file), await chrome.shot(html, W));
+        const png = await chrome.shot(html, W);
+        if (/^(picture|pitch|review)-/.test(j.file) && png.readUInt32BE(20) !== POST.H) console.log(`::warning title=Post picture size::${j.file} is ${png.readUInt32BE(16)}x${png.readUInt32BE(20)}, not ${POST.W}x${POST.H}: content too long for the shared canvas`);
+        fs.writeFileSync(path.join(outDir, j.file), png);
         setIn(manifest, j.key, j.file);
         drawn++;
       } catch (e) { console.log(`::warning title=Card failed::${j.file}: ${e.message}`); }
