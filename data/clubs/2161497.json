@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-14T21:30:39.770Z",
+ "fetchedAt": "2026-11-14T21:40:40.490Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -711,11 +711,11 @@
   {
    "name": "MV33xChris",
    "proPos": "0",
-   "gamesPlayed": "196",
+   "gamesPlayed": "197",
    "goals": "164",
    "assists": "114",
    "manOfTheMatch": "37",
-   "ratingAve": "7.8",
+   "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
@@ -832,11 +832,11 @@
   {
    "name": "ManiManolo88",
    "proPos": "14",
-   "gamesPlayed": "19",
+   "gamesPlayed": "20",
    "goals": "5",
-   "assists": "2",
+   "assists": "3",
    "manOfTheMatch": "4",
-   "ratingAve": "7.4",
+   "ratingAve": "7.5",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   }

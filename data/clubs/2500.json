@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-14T21:30:39.770Z",
+ "fetchedAt": "2026-11-14T21:40:40.490Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1603,7 +1603,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "168",
+   "gamesPlayed": "169",
    "goals": "26",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1779,11 +1779,11 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "5",
+   "gamesPlayed": "6",
    "goals": "0",
    "assists": "2",
    "manOfTheMatch": "1",
-   "ratingAve": "7.7",
+   "ratingAve": "7.8",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -1823,12 +1823,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "180",
+   "gamesPlayed": "181",
    "goals": "216",
    "assists": "91",
    "manOfTheMatch": "4",
    "ratingAve": "7.2",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1856,7 +1856,7 @@
   {
    "name": "iTry_Clutxh",
    "proPos": "5",
-   "gamesPlayed": "15",
+   "gamesPlayed": "16",
    "goals": "6",
    "assists": "6",
    "manOfTheMatch": "0",
@@ -1889,7 +1889,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "204",
+   "gamesPlayed": "205",
    "goals": "60",
    "assists": "54",
    "manOfTheMatch": "19",
@@ -1977,11 +1977,11 @@
   {
    "name": "ManiManolo88",
    "proPos": "14",
-   "gamesPlayed": "19",
+   "gamesPlayed": "20",
    "goals": "5",
-   "assists": "2",
+   "assists": "3",
    "manOfTheMatch": "4",
-   "ratingAve": "7.4",
+   "ratingAve": "7.5",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
@@ -1999,7 +1999,7 @@
   {
    "name": "Two_K_Two",
    "proPos": "5",
-   "gamesPlayed": "78",
+   "gamesPlayed": "79",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "2",
@@ -2032,11 +2032,11 @@
   {
    "name": "alicerce-sulista",
    "proPos": "25",
-   "gamesPlayed": "23",
-   "goals": "12",
-   "assists": "11",
+   "gamesPlayed": "24",
+   "goals": "13",
+   "assists": "13",
    "manOfTheMatch": "2",
-   "ratingAve": "7.0",
+   "ratingAve": "7.1",
    "prevGoals": "1",
    "favoritePosition": "forward"
   },
