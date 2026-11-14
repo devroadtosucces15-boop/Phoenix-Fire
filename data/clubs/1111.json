@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T02:40:39.816Z",
+ "fetchedAt": "2026-11-14T02:50:45.579Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,23 +1891,23 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "164",
+   "gamesPlayed": "165",
    "goals": "26",
    "assists": "63",
    "manOfTheMatch": "18",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "defender"
   },
   {
    "name": "rubNiyo",
    "proPos": "25",
-   "gamesPlayed": "107",
-   "goals": "81",
+   "gamesPlayed": "108",
+   "goals": "82",
    "assists": "35",
    "manOfTheMatch": "14",
    "ratingAve": "7.8",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2122,7 +2122,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "85",
+   "gamesPlayed": "86",
    "goals": "9",
    "assists": "3",
    "manOfTheMatch": "2",
@@ -2210,18 +2210,18 @@
   {
    "name": "CapoGroot",
    "proPos": "0",
-   "gamesPlayed": "32",
+   "gamesPlayed": "33",
    "goals": "3",
    "assists": "5",
    "manOfTheMatch": "1",
-   "ratingAve": "6.8",
+   "ratingAve": "6.7",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "232",
+   "gamesPlayed": "233",
    "goals": "36",
    "assists": "30",
    "manOfTheMatch": "42",
@@ -2232,7 +2232,7 @@
   {
    "name": "leo77romano",
    "proPos": "25",
-   "gamesPlayed": "170",
+   "gamesPlayed": "171",
    "goals": "35",
    "assists": "25",
    "manOfTheMatch": "8",
@@ -2275,14 +2275,14 @@
   },
   {
    "name": "HristoNL",
-   "proPos": "14",
-   "gamesPlayed": "248",
+   "proPos": "25",
+   "gamesPlayed": "249",
    "goals": "160",
    "assists": "210",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "GUYR-1999",
