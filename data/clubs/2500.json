@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-14T15:40:39.690Z",
+ "fetchedAt": "2026-11-14T15:50:39.879Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1955,12 +1955,12 @@
   {
    "name": "Ghostz_x12",
    "proPos": "25",
-   "gamesPlayed": "28",
-   "goals": "33",
+   "gamesPlayed": "29",
+   "goals": "34",
    "assists": "19",
    "manOfTheMatch": "3",
    "ratingAve": "7.8",
-   "prevGoals": "3",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
