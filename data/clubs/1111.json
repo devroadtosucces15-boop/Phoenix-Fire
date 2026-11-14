@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T22:10:44.523Z",
+ "fetchedAt": "2026-11-14T22:20:45.937Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,7 +1891,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "170",
+   "gamesPlayed": "171",
    "goals": "26",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1990,7 +1990,7 @@
   {
    "name": "MV33xChris",
    "proPos": "0",
-   "gamesPlayed": "198",
+   "gamesPlayed": "199",
    "goals": "164",
    "assists": "114",
    "manOfTheMatch": "37",
@@ -2045,12 +2045,12 @@
   {
    "name": "ed44ed",
    "proPos": "25",
-   "gamesPlayed": "213",
+   "gamesPlayed": "214",
    "goals": "252",
-   "assists": "148",
+   "assists": "149",
    "manOfTheMatch": "43",
    "ratingAve": "7.8",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2067,11 +2067,11 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "116",
+   "gamesPlayed": "117",
    "goals": "55",
-   "assists": "44",
-   "manOfTheMatch": "16",
-   "ratingAve": "7.4",
+   "assists": "45",
+   "manOfTheMatch": "17",
+   "ratingAve": "7.5",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2188,8 +2188,8 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "182",
-   "goals": "217",
+   "gamesPlayed": "183",
+   "goals": "218",
    "assists": "91",
    "manOfTheMatch": "4",
    "ratingAve": "7.2",
@@ -2397,7 +2397,7 @@
   {
    "name": "Pain11x",
    "proPos": "25",
-   "gamesPlayed": "32",
+   "gamesPlayed": "33",
    "goals": "2",
    "assists": "5",
    "manOfTheMatch": "0",
