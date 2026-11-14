@@ -62,7 +62,7 @@ export function personalEmbed(m, line, p, club, site, { mine = false } = {}) {
       eyebrow: mine ? `${club.name} · ✅ Your verified player` : `${club.name} · Player match`,
       title: `${line.n} · ${m.gf}–${m.ga} ${m.opp}`.slice(0, 250),
       sub: `${RES_WORD[m.res] ?? ''}${line.pos ? ` · ${line.pos[0].toUpperCase()}${line.pos.slice(1)}` : ''} · <t:${m.ts}:R>`,
-      thumb: m.oppCrest,
+      thumb: club.crest,
     }),
     text(fields.map((f) => `**${f.name}**\n${f.value}`).join('\n\n')),
     sep(),

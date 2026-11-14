@@ -35,7 +35,7 @@ await tt('/nextevent shows just the one event (no "after that" section)', async 
 });
 
 // ---------- /feedback ----------
-await tt('/feedback rejects a non-verified target', async () => (await slash('feedback', [{ name: 'to', value: '999' }, { name: 'kind', value: 'praise' }, { name: 'text', value: 'Great game out there' }])).data.text.startsWith('⚠️'));
+await tt('/feedback rejects a non-verified target', async () => (await slash('feedback', [{ name: 'to', value: '999' }, { name: 'kind', value: 'praise' }, { name: 'text', value: 'Great game out there' }])).data.text.includes('⚠️ Pick a verified teammate'));
 await tt('/feedback sends to a verified teammate', async () => {
   const d = (await slash('feedback', [{ name: 'to', value: '601' }, { name: 'kind', value: 'praise' }, { name: 'text', value: 'Great game out there' }])).data;
   return d.text.includes('Sent anonymously') && !d.text.startsWith('⚠️');

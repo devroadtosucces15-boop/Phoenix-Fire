@@ -38,7 +38,12 @@ const parse = (s, fb) => { try { return JSON.parse(s) ?? fb; } catch { return fb
 // Short replies in the design system's compact style (bot/ui.js): private unless { flags: 0 }.
 const say = (content, extra = {}) => reply(message({ accent: 'steel', ephemeral: (extra.flags ?? 64) === 64, blocks: [text(content)] }));
 // A short private reply (or public with { flags: 0 }) that opens with a drawn picture: key = a SLASH entry of scripts/cards.mjs.
-const sayPic = (env, key, content, extra = {}) => reply(message({ accent: 'steel', ephemeral: (extra.flags ?? 64) === 64, blocks: [picture(env, key), text(content)] }));
+// A short reply that opens with its drawn picture. `cmd` adds the eyebrow line (the club name and the command) above the text; a public reply
+// (flags 0) also gets a small footer, as every public message does. Both come from the org name, nothing is hardcoded.
+const sayPicAs = (env, key, content, extra = {}) => {
+  const priv = (extra.flags ?? 64) === 64;
+  return reply(message({ accent: 'steel', ephemeral: priv, blocks: [picture(env, key), extra.cmd ? text(`-# ${orgName(env).toUpperCase()} · /${extra.cmd}`) : null, text(content), !priv && extra.cmd ? text(`-# Visible to everyone in this channel`) : null] }));
+};
 const donePic = (env, key, title, body) => reply(pictureNote(env, key, title, body, { accent: 'win' }));
 const brand = (s, env) => `${orgName(env)} · ${s}`;
 const label = (e) => e.title || EVENT_TYPES[e.type]?.[1] || 'Event';
@@ -114,6 +119,7 @@ export async function playButton(i, env, who) {
 // helpers from worker.js: load(file) → site JSON, playerMessage(p) → the /player card (design system), top(stat) → the /top reply
 export async function memberCommand(i, env, who, site, h) {
   const name = i.data.name, opts = Object.fromEntries(flatOptions(i.data.options).map((o) => [o.name, o.value]));
+  const sayPic = (e, key, content, extra = {}) => sayPicAs(e, key, content, { cmd: name, ...extra }); // every picture reply here carries this command's eyebrow
   if (!env.DB) return sayPic(env, 'cmd-problem', '⚠️ The member database is not connected.');
   const me = await memberOf(i, who, env);
   const events = ['schedule', 'availability', 'lineup', 'host', 'matchday'].includes(name);
@@ -161,7 +167,7 @@ export async function memberCommand(i, env, who, site, h) {
   if (name === 'rush') {
     if (!flagOn(env, who, 'rushLog')) return say('🔒 Rush logging is not switched on for you yet.');
     const claim = await one(env, "SELECT player, player_name FROM claims WHERE user_id = ? AND status = 'approved'", me.u);
-    if (!claim) return say(`🪪 Claim your player in the Squad Hub first (${site}members.html) – then /rush log fills you in automatically.`);
+    if (!claim) return sayPic(env, 'notice-info', `🪪 Claim your player in the Squad Hub first (${site}members.html) – then /rush log fills you in automatically.`);
     const today = new Date().toISOString().slice(0, 10);
     const res = await submitRush(env, me, {
       date: opts.date || today, opponent: opts.opponent, gf: opts.for, ga: opts.against,
@@ -307,7 +313,7 @@ export async function memberCommand(i, env, who, site, h) {
     const nameOf = (k) => v.players.find((p) => p.k === k)?.n ?? k;
     const board = ranked.length ? ranked.map(([k, n], i) => `${[it('first'), it('second'), it('third')][i] ?? `${i + 1}.`} **${nameOf(k)}** — ${n} vote${n === 1 ? '' : 's'}`).join('\n') : 'No votes yet.';
     return reply(message({ accent: 'gold', blocks: [
-      header({ eyebrow: brand('Man of the match vote', env), title: `🌟 MOTM · vs ${m.opp}`, sub: `${m.gf}–${m.ga} · ${ranked.reduce((t, [, n]) => t + n, 0)} votes so far`, thumb: m.oppCrest || null }),
+      header({ eyebrow: brand('Man of the match vote', env), title: `🌟 MOTM · vs ${m.opp}`, sub: `${m.gf}–${m.ga} · ${ranked.reduce((t, [, n]) => t + n, 0)} votes so far`, thumb: club.crest || null }),
       ...(await (async () => { // the top 3 on rows with their faces, the rest as a list
         const faces = await playerFaces(env, ranked.slice(0, 3).map(([k]) => k));
         if (!ranked.length || !faces.size) return [text(board)];

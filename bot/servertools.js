@@ -11,6 +11,7 @@
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, facts, footer, side, button, buttons, IS_V2, autoBanner, picture, pictureNote } from './ui.js';
 import { orgName, channelFor, setupMapping, CHANNEL_PURPOSE_INFO } from './orgconfig.js';
+import { setOutput } from './controlcenter.js';
 import { facesOf } from './faces.js';
 
 const API = 'https://discord.com/api/v10';
@@ -67,7 +68,7 @@ export async function discord(env, method, path, body, reason) {
   const r = await fetch(API + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   if (r.status === 204) return null;
   const d = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(r.status === 403 || d.code === 50001 || d.code === 50013 ? 'no-access' : d.message || `discord-${r.status}`);
+  if (!r.ok) throw Object.assign(new Error(r.status === 403 || d.code === 50001 || d.code === 50013 ? 'no-access' : d.message || `discord-${r.status}`), { status: r.status, code: d.code ?? null }); // status/code: callers can say why Discord refused
   return d;
 }
 const post = (env, channel, msg) => discord(env, 'POST', `/channels/${channel}/messages`, autoBanner(env, msg));
@@ -346,6 +347,12 @@ async function setupCommand(i, env, ctx, who, sub, o) {
     if (res.error) return sayP(env, 'cmd-problem', res.error);
     return pictureNote(env, 'cmd-setup-done', isChan ? `✅ ${o.purpose.replaceAll('_', ' ')} posts go to <#${res.row.channel_id}>` : `✅ <@&${res.row.role_id}> is now ${o.group.replaceAll('_', ' ')}`,
       isChan ? CHANNEL_PURPOSE_INFO[o.purpose] ?? '' : 'Same setting as Boardroom → Organization.', { accent: 'win' });
+  }
+  if (sub === 'output') { // the Control Center's rows: the same ones the website writes (bot/controlcenter.js saveControl)
+    const res = await setOutput(env, who, { output: o.output, state: o.state, channel: o.channel, role: o.role });
+    if (res.error) return sayP(env, 'cmd-problem', res.error);
+    const r = res.row;
+    return pictureNote(env, 'cmd-setup-done', `✅ ${o.output} is ${r.enabled ? 'on' : 'off'}${res.unchanged ? ' (no change)' : ''}`, `Posts to: ${r.rules?.post_channels?.length ? r.rules.post_channels.map((c) => `<#${c}>`).join(' ') : 'its default channel'}\nFor: ${r.rules?.allow_roles?.length ? r.rules.allow_roles.map((c) => `<@&${c}>`).join(' ') : 'default rules'}\nSame setting as the website Control Center.`, { accent: 'win' });
   }
   if (sub === 'pingroles') {
     return later(env, i, ctx, async () => {

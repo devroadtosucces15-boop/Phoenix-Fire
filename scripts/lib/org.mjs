@@ -201,3 +201,18 @@ export async function resolveRoute(config, purpose, clubId, { fetchFn = fetch, s
     return { ok: false, channelId: null, error: e.message };
   }
 }
+
+// Asks the Worker to post the match alert for a result that tripped the rule (bot/matchalert.js matchAlertRoute). The Worker reads the
+// channel and roles from the Organization config; nothing here names one. Returns { ok, posted, reason }.
+export async function requestMatchAlert(config, payload, { fetchFn = fetch, secret = process.env.DISCORD_CLIENT_SECRET } = {}) {
+  const api = config.members?.api;
+  if (!api || !secret) return { ok: false, posted: 0, reason: 'members API or DISCORD_CLIENT_SECRET not set' };
+  try {
+    const res = await fetchFn(`${api}/api/org/match-alert`, { method: 'POST', signal: AbortSignal.timeout(15000), headers: { 'X-Phoenix-Key': orgKey(secret), 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return { ok: true, posted: body.posted ?? 0, reason: body.reason };
+  } catch (e) {
+    return { ok: false, posted: 0, reason: e.message };
+  }
+}

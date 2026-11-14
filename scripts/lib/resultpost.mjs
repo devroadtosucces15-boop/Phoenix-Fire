@@ -3,18 +3,31 @@
 // calls it straight away only when posts aren't deferred (no cards then – the same layout without the pictures).
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadBotSettings, num } from '../lib.mjs';
-import { resolveRoute } from './org.mjs';
+import { resolveRoute, requestMatchAlert } from './org.mjs';
+import { alertLine, loseByOf } from '../../bot/matchalert.js';
 import { matchComponents } from '../../bot/matchcard.js';
-import { message, header, facts, footer, resultAccent, cards, label, tagBlock } from '../../bot/ui.js';
+import { message, header, facts, footer, resultAccent, cards, label, tagBlock, ACCENT } from '../../bot/ui.js';
 import { clubTag } from './clubtag.mjs';
 import { it } from '../../bot/icons.js';
+
+// A panel without its buttons and menus, for the plain-webhook path (a webhook can send the layout but not interactive components).
+export function staticPanel(data) {
+  const strip = (cs) => (cs ?? []).filter((c) => c?.type !== 1).map((c) => {
+    const o = { ...c };
+    if (o.accessory?.type === 2 || o.accessory?.type === 3) delete o.accessory;
+    if (o.components) o.components = strip(o.components);
+    return o;
+  }).filter((c) => !(c.type === 9 && !c.accessory && !(c.components ?? []).length));
+  return { ...data, components: strip(data.components) };
+}
 
 // New home results → Discord. With the bot token and the discordMatch flag on for members/public, each result is
 // posted by the bot into the webhook's channel with the P7.2 "Show my match" menu (plain webhooks can't carry
 // interactive components); if that fails, or otherwise, it goes through the webhook as before.
 // matches: raw EA matches (newest last). drawn: { dir, manifest } of site/cards + site/api/cards.json, or null.
-export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute, org = null }) {
+export async function postResults(matches, { config, homeId, orgIds = [homeId], hidden = [], drawn = null, route = resolveRoute, org = null, alert = requestMatchAlert, noAlert = [] }) {
   const hook = process.env.DISCORD_WEBHOOK;
   const token = process.env.DISCORD_BOT_TOKEN;
   if (!matches.length) return;
@@ -30,7 +43,12 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
   const flagOn = (k) => ['members', 'public'].includes(settings.flags?.[k] ?? config.features?.[k]);
   const matchPictureOn = flagOn('matchPicture'), reviewOn = flagOn('matchReview');
   const site = config.siteUrl?.replace(/\/?$/, '/') ?? '';
-  const crestCdn = 'https://eafc24.content.easports.com/fifa/fltOnlineAssets/24B23FDE-7835-41C2-87A2-F453DFDB2E82/2024/fcweb/crests/256x256/l';
+  // The crest beside the title is ALWAYS ours: the Phoenix crest from phoenix/overlay, sent with the post itself so it never depends on what
+  // the published site serves and never changes to the opponent's crest. Brand accent from config.json.
+  const crestPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '../../phoenix/overlay/crest-sm.png');
+  const crestFile = fs.existsSync(crestPath) ? { name: 'crest.png', path: crestPath } : null;
+  const crestThumb = crestFile ? 'attachment://crest.png' : site ? `${site}assets/crest.png?v=phoenix2` : undefined;
+  const brandHex = /^#[0-9a-f]{6}$/i.test(config.brand?.red ?? '') ? parseInt(config.brand.red.slice(1), 16) : 0xe8651a;
   const hide = new Set([...(config.hiddenPlayers || []), ...hidden].map((h) => String(h).toLowerCase()));
   const items = matches
     .sort((a, b) => a.timestamp - b.timestamp)
@@ -50,12 +68,11 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const list = (f) => ours.filter((p) => num(p[f]) > 0).map((p) => `${p.playername}${num(p[f]) > 1 ? ` ×${p[f]}` : ''}`).join('\n');
       const motm = Object.values(m.players || {}).flatMap((l) => Object.values(l)).find((p) => p.mom === '1');
       const best = [...ours].sort((a, b) => num(b.rating) - num(a.rating))[0];
-      const oppCrest = opp.details?.customKit?.crestAssetId;
       const url = site ? `${site}matches/${m.matchId}.html` : undefined;
       const components = matchComponents(m.matchId, ourIds.map(([k, p]) => ({ k, n: p.playername, r: num(p.rating), g: num(p.goals), a: num(p.assists) })), url);
-      const clubName = us.details?.name ?? us.name ?? config.siteTitle ?? 'Club';
+      const clubName = config.siteTitle ?? us.details?.name ?? us.name ?? 'Club'; // our name comes from config (EA's spelling of it can differ)
       // Drawn pictures are attached to the post itself (attachment://), so nothing has to be deployed before Discord can show them.
-      const files = [];
+      const files = crestFile ? [crestFile] : [];
       const pic = (kind, alt) => {
         const file = drawn?.manifest?.match?.[m.matchId]?.[kind];
         if (!file || !fs.existsSync(path.join(drawn.dir, file))) return null;
@@ -68,22 +85,22 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const scoreImg = mergedImg ? null : pic('score', `${clubName} ${us.goals}–${opp.goals} ${oppName}`);
       const fieldImg = mergedImg ? null : pic('field', 'Our players on the pitch with their match ratings');
       // Message 2: the match review picture, posted right after the result (flag matchReview; skipped when the picture was not drawn).
-      const reviewFiles = [];
+      const reviewFiles = crestFile ? [crestFile] : [];
       const reviewFile = drawn?.manifest?.match?.[m.matchId]?.review;
       const reviewImg = reviewOn && reviewFile && fs.existsSync(path.join(drawn.dir, reviewFile)) ? (reviewFiles.push({ name: `review-${m.matchId}.png`, path: path.join(drawn.dir, reviewFile) }), { url: `attachment://review-${m.matchId}.png`, alt: 'Match review: what went well, what to work on, next match targets and recommendations for the squad' }) : null;
-      const reviewPanel = () => message({ accent: 'steel', blocks: [
+      const reviewPanel = () => message({ accent: 'red', blocks: [
         tagBlock(tag, kind),
-        header({ eyebrow: `${clubName} · Match review`, title: `${clubName} vs ${oppName}`, sub: `Insights and recommendations · <t:${m.timestamp}:f>`, thumb: site ? `${site}assets/crest.png` : undefined }),
+        header({ eyebrow: `${clubName} · Match review`, title: `${clubName} vs ${oppName}`, sub: `Insights and recommendations · <t:${m.timestamp}:f>`, thumb: crestThumb }),
         cards(reviewImg),
         footer('Written from the match numbers'),
       ] });
-      const panel = (ping, mentions) => message({ accent: resultAccent(res), ping, mentions, blocks: [
+      const panel = (ping, mentions) => message({ accent: 'red', ping, mentions, blocks: [
         tagBlock(tag, kind),
         header({
           eyebrow: `${clubName} · Match centre · ${kind}`,
           title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${mergedImg ? 'vs' : `${us.goals}–${opp.goals}`} ${oppName}`, // the score is in the merged picture
           sub: `<t:${m.timestamp}:f> · ${{ W: 'Win', D: 'Draw', L: 'Defeat' }[res]}`,
-          thumb: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : site ? `${site}assets/crest.png` : undefined,
+          thumb: crestThumb,
         }),
         cards(mergedImg ?? scoreImg),
         mergedImg ? null : facts([[`${it('goal')} Goals`, list('goals').replace(/\n/g, ', ')], [`${it('assist')} Assists`, list('assists').replace(/\n/g, ', ')], [`${it('motm')} Man of the match`, motm ? `${motm.playername} (${num(motm.rating).toFixed(1)})` : ''], ['📈 Top rated', best ? `${best.playername} (${num(best.rating).toFixed(1)})` : '']]),
@@ -92,13 +109,13 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         footer(mergedImg ? 'Pick your name below to see your own match' : fieldImg ? 'Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match' : 'Pick your name below to see your own match'),
         ...components,
       ] });
-      return { src, matchId: m.matchId, components, files, panel, review: reviewImg ? { panel: reviewPanel, files: reviewFiles } : null, embed: {
+      return { src, matchId: m.matchId, us: num(us.goals), them: num(opp.goals), oppName, ts: m.timestamp, components, files, panel, review: reviewImg ? { panel: reviewPanel, files: reviewFiles } : null, embed: {
         author: { name: `${tag.important ? '🚨 ' : ''}${tag.label} · ${kind.toUpperCase()}` },
         title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
         url,
-        color: { W: 0x22c55e, D: 0xeab308, L: 0xef4444 }[res],
+        color: brandHex,
         description: res === 'W' ? '✅ **Victory**' : res === 'L' ? '❌ **Defeat**' : '➖ **Draw**',
-        thumbnail: { url: res === 'L' && oppCrest ? `${crestCdn}${oppCrest}.png` : `${site}assets/crest.png` },
+        thumbnail: { url: `${site}assets/crest.png?v=phoenix2` }, // webhook fallback can't carry attachments: the site's Phoenix crest
         fields: [
           list('goals') && { name: '⚽ Goals', value: list('goals'), inline: true },
           list('assists') && { name: '🎯 Assists', value: list('assists'), inline: true },
@@ -121,8 +138,8 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
     for (const item of items) {
       if (!cache.has(item.src)) cache.set(item.src, await route(config, 'match_results', item.src));
       const dest = cache.get(item.src);
-      if (!dest.ok) { report(item.src, `destination lookup failed (${dest.error})`); continue; }
-      if (!dest.channelId) { report(item.src, 'no match_results channel configured (club, division or organization scope) – set one in Boardroom → Organization'); continue; }
+      if (!dest.ok) { item.failed = true; report(item.src, `destination lookup failed (${dest.error})`); continue; }
+      if (!dest.channelId) { item.failed = true; report(item.src, 'no match_results channel configured (club, division or organization scope) – set one in Boardroom → Organization'); continue; }
       const send = (card, ping, mentions) => {
         const payload = card.panel(ping, mentions);
         let body, headers = { Authorization: `Bot ${token}` };
@@ -135,16 +152,39 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       };
       const r = await send(item, pingContent, allowedMentions);
       console.log(`Result ${item.matchId} (club ${item.src}) → channel ${dest.channelId} [scope ${dest.scope ?? '?'}, guild ${dest.guildId ?? '?'}] → Discord ${r.status}`);
-      if (!r.ok) { report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`); continue; }
+      if (!r.ok) { item.failed = true; report(item.src, `Discord refused the post (${r.status}) – the bot needs View Channel + Send Messages + Embed Links in <#${dest.channelId}>`); continue; }
       if (item.review) await send(item.review, undefined, { parse: [] }); // the review goes right after its result, same channel, no ping
     }
   } else {
     // No bot token / flag off: the plain webhook IS the configured destination (the deployment's own DISCORD_WEBHOOK secret), as before.
-    await fetch(hook, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png` : undefined, content: pingContent, embeds: items.map((x) => x.embed), allowed_mentions: allowedMentions }),
-    }).catch((e) => console.warn('Discord post failed:', e.message));
+    // Same design-system panel as the bot's post, minus the buttons and menus (a webhook cannot carry interactive components; with_components
+    // lets it send the layout). If Discord refuses that, the result still goes out as the classic embed.
+    const url = `${hook}${hook.includes('?') ? '&' : '?'}with_components=true`;
+    const identity = { username: config.siteTitle ?? 'Phoenix Fire', avatar_url: site ? `${site}assets/crest.png?v=phoenix2` : undefined };
+    for (const item of items) {
+      const payload = { ...identity, ...staticPanel(item.panel(pingContent, allowedMentions)) };
+      let body, headers = {};
+      if (item.files.length) {
+        body = new FormData();
+        body.set('payload_json', JSON.stringify(payload));
+        item.files.forEach((f, k) => body.set(`files[${k}]`, new Blob([fs.readFileSync(f.path)], { type: 'image/png' }), f.name));
+      } else { body = JSON.stringify(payload); headers = { 'Content-Type': 'application/json' }; }
+      let r = await fetch(url, { method: 'POST', headers, body }).catch((e) => ({ ok: false, status: e.message }));
+      if (!r?.ok) {
+        console.warn(`Webhook panel refused (${r?.status}), posting the classic embed instead`);
+        r = await fetch(hook, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...identity, content: pingContent, embeds: [item.embed], allowed_mentions: allowedMentions }) }).catch((e) => console.warn('Discord post failed:', e.message));
+      }
+    }
+  }
+  // Match alert: a result that trips the rule (default: a defeat by 3 or more, config.matchAlert.loseBy) asks the Worker for the alert,
+  // right after the result and its review. Only results that really went out; a manual repost never alerts twice.
+  const loseBy = loseByOf(config);
+  for (const item of items) {
+    if (noAlert.includes(String(item.matchId)) || item.failed || !alertLine(item.us, item.them, loseBy)) continue;
+    const when = new Date(item.ts * 1000).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+    const r = await alert(config, { opponent: item.oppName, us: item.us, them: item.them, when, loseBy });
+    console.log(`Match alert ${item.matchId} (${item.us}–${item.them}) → ${r.ok ? `posted ${r.posted}${r.reason ? ` (${r.reason})` : ''}` : `NOT sent: ${r.reason}`}`);
+    if (!r.ok || !r.posted) console.warn(`::warning title=Match alert::not posted for ${item.matchId}: ${r.reason ?? 'no match_results channel set in the Organization config'}`);
   }
   if (missing.length) {
     fs.mkdirSync('.outbox', { recursive: true });

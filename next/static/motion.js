@@ -54,6 +54,7 @@
     $$('.rv-g', el).forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty('--gi', Math.min(i, 12))));
   }
   const settle = (el) => setTimeout(() => { $$('.rv-g', el).forEach((g) => g.classList.add('in')); el.classList.remove('reveal', 'in'); $$(':scope>.rv-c', el).forEach((c) => c.classList.remove('rv-c')); el.dataset.rvd = 1; }, 2400);
+  const counted = new WeakSet(); // declared before first use: watch() runs show() -> countIn() at load when motion is off (TDZ error otherwise)
   const show = (el) => { if (el.classList.contains('in')) return; el.classList.add('in'); io.unobserve(el); countIn(el); dispatchEvent(new CustomEvent('norex:revealed', { detail: el })); settle(el); };
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) show(e.target); }), { threshold: 0, rootMargin: '0px 0px -12% 0px' });
   function watch(root = d) {
@@ -83,7 +84,6 @@
     const f = (t) => { const k = Math.min(1, (t - t0) / dur), v = from + (to - from) * (1 - Math.pow(1 - k, 3)); el.textContent = (dec ? v.toFixed(dec) : Math.round(v).toLocaleString()) + suf; if (k < 1) requestAnimationFrame(f); else done(); };
     requestAnimationFrame(f);
   }
-  const counted = new WeakSet();
   function countIn(root) { $$('[data-count]', root).forEach((el) => { if (counted.has(el)) return; counted.add(el); el.textContent = '0'; count(el); }); }
   // counters outside any reveal block start when they scroll into view
   const co = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { co.unobserve(e.target); if (!counted.has(e.target)) { counted.add(e.target); count(e.target); } } }), { threshold: .4 });

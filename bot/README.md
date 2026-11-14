@@ -8,10 +8,10 @@ The map lives in `bot/commanddefs.js` (`APP_COMMANDS`); routing helpers are in `
 |---|---|---|
 | `core`  | Member login (OAuth), role sync, result + notification posts, AutoMod, every cron/background post | `<PUBLIC_URL>/interactions/core` (or the old `<PUBLIC_URL>/`) |
 | `stats` | Club and player records | `<PUBLIC_URL>/interactions/stats` |
-| `tools` | Management and member tools (setup, purge, announce, trial, host, tags, remind, events…) | `<PUBLIC_URL>/interactions/tools` |
-| `fun`   | Engagement (jail, wheel, trivia, share, awards, points…) | `<PUBLIC_URL>/interactions/fun` |
-| `matchday` | *Planned.* Setting up and running one 11v11 match day (see `PLANNING/BOT-SPLIT.md`) | `<PUBLIC_URL>/interactions/matchday` |
-| `rush` | *Planned.* 5v5 Rush: member-logged games, LFG, queue | `<PUBLIC_URL>/interactions/rush` |
+| `tools` | Member and manager helpers (feedback, suggest, share, discoveries, tags, remind, site, avatar card, jail, wheel, trivia) | `<PUBLIC_URL>/interactions/tools` |
+| `fun`   | The old Fun app. It maps **0 commands** now (`APP_COMMANDS.fun` is empty); its commands moved to Tools and Stats and `MOVED_FROM` points people there during the transition. Kept so old messages and buttons still answer | `<PUBLIC_URL>/interactions/fun` |
+| `matchday` | Live. Setting up and running one 11v11 match day: `/host`, `/lineup`, `/matchday`, `/matchdayhelp` (see `PLANNING/BOT-SPLIT.md`) | `<PUBLIC_URL>/interactions/matchday` |
+| `rush` | Live. 5v5 Rush: `/rush`, `/lfg`, `/queue`, `/rushhelp` (member-logged games, LFG, the queue board) | `<PUBLIC_URL>/interactions/rush` |
 
 Music/DJ bots are out of scope (they need voice hosting outside the Worker).
 

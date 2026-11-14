@@ -129,7 +129,8 @@ try {
   await notify(flagOff, [who], { type: 'claim', title: 'Flag off' });
   t('push flag off (owner-only) → no push sent', sent.length === beforeOff);
 
-  // 'badge' defaults to site-only → nothing pushed.
+  // A type the member ticked site-only (Push box off) → nothing pushed. (Everything is on by default.)
+  sqlite.prepare('INSERT OR REPLACE INTO notify_prefs (user_id, prefs, updated) VALUES (?, ?, ?)').run(who, JSON.stringify({ badge: { site: true, dm: false, push: false } }), Date.now());
   const before = sent.length;
   await notify(pushEnv, [who], { type: 'badge', title: 'New badge', link: 'members.html#badges' });
   t('site-only type is not pushed', sent.length === before);

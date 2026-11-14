@@ -133,7 +133,7 @@ const NOW=D.at;
 function when(t,f){const d=new Date(t*1000),p=(n)=>String(n).padStart(2,'0');
   if(f==='R'){const s=Math.round((t*1000-NOW)/1000),a=Math.abs(s),u=a<90?[Math.max(1,a),'second']:a<5400?[Math.round(a/60),'minute']:a<129600?[Math.round(a/3600),'hour']:[Math.round(a/86400),'day'];const w=u[0]+' '+u[1]+(u[0]===1?'':'s');return s>=0?'in '+w:w+' ago'}
   const day=d.getUTCDate()+' '+['January','February','March','April','May','June','July','August','September','October','November','December'][d.getUTCMonth()]+' '+d.getUTCFullYear(),tm=p(d.getUTCHours())+':'+p(d.getUTCMinutes());
-  return f==='t'?tm:f==='D'||f==='d'?day:day+' '+tm}
+  return f==='T'?tm+':'+p(d.getUTCSeconds()):f==='t'?tm:f==='D'||f==='d'?day:day+' '+tm}
 function inline(s){const keep=[];const hold=(h)=>{keep.push(h);return '\u0001'+(keep.length-1)+'\u0002'};
   s=esc(s);
   s=s.replace(/`([^`\n]+)`/g,(m,c)=>hold('<code>'+c+'</code>'));

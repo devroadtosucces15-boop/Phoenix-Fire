@@ -8,6 +8,30 @@
 [id],h1,h2,h3{scroll-margin-top:var(--pf-sticky-top)}
 /* R01: the global .panel+.panel gap pushed every second card of a row 22px low */
 @media(min-width:821px){:is(.g2,.g3,.g4,.grid)>.panel,:is(.g2,.g3,.g4,.grid)>.panel+.panel{margin-top:0}}
+/* R30 (from 700px, because the grids go two-up at tablet width 820): the same 22px came from .panel+.panel (motion.css) on the named grids, so rows start level. The :is() list repeats the sibling selector to beat its specificity. */
+@media(min-width:700px){:is(.bx-grps,.nw-posts,.pb-top,.ct-list,.ix-cards,.sc-list,.adm-grid)>*,:is(.bx-grps,.nw-posts,.pb-top,.ct-list,.ix-cards,.sc-list,.adm-grid)>.panel+.panel{margin-top:0}}
+/* R45 Boardroom (desktop and up): tiles fill the row (auto-fit drops the empty tracks, so 6 tiles use the full width); eight tiles go two even rows of four; the closing note gets space from the last row and the staff pages lose the dead band under their content (the tab bar that needs the 110px is phone-only) */
+@media(min-width:821px){.br-tools{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}.br-tools:has(>:nth-child(8):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}.br-tools+p.muted{margin-top:16px}body.room-staff main{padding-bottom:56px}}
+/* R34: room for a hash target near the end of a short page (set only by deeplink.js) */
+#main::after{content:"";display:block;height:var(--pf-tail,0)}
+/* R35 tap targets (phone and up, explicit spec item): bigger boxes only, no font, colour or icon change */
+.sub a{display:inline-flex;align-items:center;min-height:40px}
+.skip{display:inline-flex;align-items:center;min-height:40px}
+.sq-only,.bx-lvl label,.mu-search label.eyebrow,#league>.txpane>.chips>label.muted.small{min-height:40px}
+.mu-search label.eyebrow,#league>.txpane>.chips>label.muted.small{display:flex;align-items:center}
+#main>.wrap>a.muted.small{display:inline-flex;align-items:center;min-height:40px}
+#tlLive form.chips.dk-row>select{min-height:40px}
+.sq-only input{width:24px;height:24px}.bx-lvl input[type=range]{min-height:40px}
+@media(min-width:821px){.sub a{min-height:44px}}
+.bar .lg{min-height:40px}.ft .ftb{min-height:40px}
+/* R37 text measure: body copy stops at about 72 characters from 821px; centred panels are left alone so their text does not shift */
+@media(min-width:821px){.md p,.bn-intro>p,#main :is(.wrap,.sec,.panel,.ps-doc):not([style*="center"])>p.muted{max-width:72ch}}
+/* R37 handbook docs: open sections and their documents share rows from 1100px */
+@media(min-width:1100px){.hb-accs,.hb-body{grid-template-columns:repeat(auto-fit,minmax(480px,1fr));align-items:start}.hb-body{display:grid;column-gap:var(--pf-gap)}.hb-body>:not(.hb-item){grid-column:1/-1}.hb-accs>.hb-acc[open]{grid-column:1/-1}}
+/* R37 fix: insight cards share one row height (the box stretches; the content inside still starts at the top) */
+@media(min-width:900px){.ix-cards{align-items:stretch}}
+/* R35 fix: calendar day cells stay 24px wide on a phone (the row scrolls sideways instead of shrinking the cells) */
+@media(max-width:560px){.wx .ccol{min-width:24px}}
 /* R07 results: the game list runs in columns */
 @media(min-width:1100px){#rl,#rses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--pf-gap);align-items:stretch}}
 @media(min-width:1600px){#rl,#rses{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -38,3 +62,5 @@
 /* R13 dugout */
 @media(min-width:1600px){.split{grid-template-columns:minmax(0,1fr) 440px}}
 .dg-top{align-items:stretch}
+/* Alert settings (alerts.js): each Site / Discord DM / Push / All checkbox label is a 40px tap row, the box itself is 24px (WCAG 2.5.8; the audit measures the input) */
+label.al-box{min-height:40px;padding:0 2px}label.al-box input{width:24px;height:24px;margin:0;flex:none}.al-boxes{gap:0 10px}

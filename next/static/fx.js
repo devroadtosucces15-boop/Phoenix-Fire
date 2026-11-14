@@ -123,7 +123,8 @@
   const cinematic = () => ['full', 'short'].includes(ls.get('phoenix.entrance', 'skip'));
   const internal = (a) => { if (!a || a.target || a.hasAttribute('download') || (a.dataset.hub !== undefined && cinematic())) return false; const h = a.getAttribute('href'); if (!h || h[0] === '#' || /^(mailto:|tel:|javascript:)/.test(h)) return false; try { const u = new URL(a.href, location.href); return u.origin === location.origin && u.pathname !== location.pathname && /\.html$|\/$/.test(u.pathname); } catch { return false; } };
   async function go(a) {
-    if (busy) return; busy = true; const kind = pick(a), href = a.href;
+    if (busy) { location.assign(a.href); return; }   // R32: a second tap during a transition goes straight there (fragment kept); the click was already default-prevented
+    busy = true; const kind = pick(a), href = a.href;
     ss.set('phoenix.t', JSON.stringify({ kind, t: Date.now() })); H.classList.add('fx-busy');
     const guard = setTimeout(() => location.assign(href), 1400);
     setTimeout(() => { busy = false; H.classList.remove('fx-busy'); if (tov) tov.innerHTML = ''; }, 4500);   // a navigation that never happens (offline, blocked) must not leave the page dead

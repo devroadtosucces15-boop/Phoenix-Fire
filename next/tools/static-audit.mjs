@@ -29,7 +29,7 @@ export function audit(dir, { skip = /^(canvas|lookbook)\.html$/ } = {}) {
     if (/user-scalable=(no|0)/.test(h)) add('pinch-zoom blocked', f);
     if (!/<main[ >]/.test(h)) add('no main landmark', f);
     if (!/class="skip"/.test(h)) add('no skip link', f);
-    const h1 = (body.match(/<h1[ >]/g) || []).length + (body.match(/<h[23][^>]*aria-level="1"/g) || []).length; if (h1 !== 1) add(h1 ? 'several h1' : 'no h1', f);
+    const h1 = (body.match(/<h1[ >]/g) || []).length + (body.match(/<(?:h[23]|b)[^>]*aria-level="1"/g) || []).length; if (h1 !== 1) add(h1 ? 'several h1' : 'no h1', f);
     for (const m of body.matchAll(/<img\b[^>]*>/g)) if (!/\balt=/.test(m[0])) add('img without alt', f);
     for (const m of body.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button>/g)) { const txt = m[2].replace(/<[^>]+>/g, '').trim(); if (!txt && !/aria-label=|title=/.test(m[1]) && !/\bid="/.test(m[1])) add('button without a name', f); }
     for (const m of body.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)) { const txt = m[2].replace(/<(?!img)[^>]+>/g, '').trim(); if (!txt && !/aria-label=|title=/.test(m[1]) && !/<img[^>]+alt="[^"]+"/.test(m[2])) add('link without a name', f); }

@@ -41,6 +41,16 @@
       if (n.classList && n.classList.contains('lp') && n.hidden && n.dataset.p) { const c = D.querySelector('[data-t="' + esc(n.dataset.p) + '"]'); if (c) c.click(); }
     }
   };
+  // R34: a target near the end of a short page cannot reach the sticky offset; --pf-tail on #main adds just the missing space (only ever set by a hash jump)
+  const tail = (y) => {
+    const m = D.getElementById('main'); if (!m) return;
+    const cur = parseFloat(m.style.getPropertyValue('--pf-tail')) || 0, need = Math.ceil(y - (H.scrollHeight - innerHeight));
+    if (need > 0) m.style.setProperty('--pf-tail', cur + need + 'px');
+  };
+  // R2-verify: a page opened on a #hash arrives AT it (the browser's own anchor jump is instant); only later jumps (same-page clicks, hashchange) glide
+  let arriving = !!location.hash;
+  const settleArrival = () => { arriving = false; };
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((e) => addEventListener(e, settleArrival, { capture: true, passive: true }));
   let run = 0;
   const go = (hash) => {
     const my = ++run; if (!hash || hash === '#') return;
@@ -49,7 +59,11 @@
     const end = () => { stop = true; EV.forEach((e) => removeEventListener(e, end, true)); };
     EV.forEach((e) => addEventListener(e, end, { capture: true, passive: true }));
     const land = (el) => {
-      const y = Math.max(0, el.getBoundingClientRect().top + scrollY - stickyTop()), L = window.NorexLenis, imm = reduced();
+      const y = Math.max(0, el.getBoundingClientRect().top + scrollY - stickyTop()), L = window.NorexLenis, imm = reduced() || arriving;
+      arriving = false;
+      tail(y);
+      // Lenis caches the scroll limit; the page just grew (late content, --pf-tail), so refresh it or the jump stops at the old limit (hub-matchnight#mn-rush)
+      if (L && typeof L.resize === 'function') L.resize();
       if (L && typeof L.scrollTo === 'function' && !L.isStopped) L.scrollTo(y, { immediate: imm, force: true }); else scrollTo({ top: y, behavior: imm ? 'auto' : 'smooth' });
     };
     const tick = (now) => {
@@ -61,9 +75,11 @@
         if (sig !== last) { last = sig; since = now; } else if (now - since >= STABLE_MS) { land(t); return end(); }
       } else last = null;
       if (now - t0 > (el && el.hasAttribute('data-live-strip') ? LIVE_MS : CAP_MS)) {
-        // never became visible: the next visible section after it (the live strip sits between sections), else the nearest visible ancestor, else stay
-        let a = null; for (let n = t && t.nextElementSibling; n && !a; n = n.nextElementSibling) if (shown(n)) a = n;
-        if (!a) { a = t && t.parentElement; while (a && !shown(a)) a = a.parentElement; }
+        // never became visible: the next visible section after it, else the nearest visible ancestor, else stay (live strip and locker pages stay at the top)
+        // a hidden live strip (nobody is on air) is hidden by design: stay at the top (R34)
+        let a = null; if (!(el && el.hasAttribute('data-live-strip'))) for (let n = t && t.nextElementSibling; n && !a; n = n.nextElementSibling) if (shown(n)) a = n;
+        // locker pages hide whole sections by body class (R31): an id that this page hides stays at the top, it does not jump to a random neighbour
+        if (!a && !(el && el.hasAttribute('data-live-strip')) && !/(^|\s)lk-/.test(D.body.className)) { a = t && t.parentElement; while (a && !shown(a)) a = a.parentElement; }
         if (a && a !== D.body && a !== H) land(a);
         return end();
       }
@@ -72,12 +88,12 @@
     requestAnimationFrame(tick);
   };
   const here = () => location.hash;
-  addEventListener('hashchange', () => go(here()));
+  addEventListener('hashchange', () => { arriving = false; go(here()); });
   // a click on the link to the hash we are already on fires no hashchange
   D.addEventListener('click', (e) => {
     const a = e.target.closest && e.target.closest('a[href*="#"]'); if (!a || e.defaultPrevented) return;
     const u = new URL(a.getAttribute('href'), location.href);
-    if (u.origin === location.origin && u.pathname === location.pathname && u.hash && u.hash === here()) go(u.hash);
+    if (u.origin === location.origin && u.pathname === location.pathname && u.hash && u.hash === here()) { arriving = false; go(u.hash); }
   });
   const boot = () => { syncSub(); if (here()) go(here()); };
   if (D.readyState === 'loading') D.addEventListener('DOMContentLoaded', boot); else boot();

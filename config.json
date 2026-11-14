@@ -61,10 +61,13 @@
   "voiceRecap": {
     "channel": ""
   },
+  "matchAlert": {
+    "loseBy": 3
+  },
   "features": {
     "rushLog": "members",
     "rushLfg": "owner",
-    "rushQueue": "owner",
+    "rushQueue": "members",
     "rushBoard": "owner",
     "seasonCards": "owner",
     "gameRules": "public",

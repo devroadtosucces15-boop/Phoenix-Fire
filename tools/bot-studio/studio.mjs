@@ -55,6 +55,7 @@ const COMMANDS = {
     verify <id>          after an edit: recapture → check → diff → run the tests tied to that output
 
   ${C.b}Design${C.x}
+    registry [--check]   write bot/registry.gen.js: every output the Control Center manages (--check only compares)
     new <name>           start a draft message in tools/bot-studio/drafts/<name>.mjs (built with bot/ui.js)
     render <draft.mjs>   draw a draft the way Discord shows it → tools/bot-studio/out/draft.html
     capture [--cards]    refresh the captures from the bot code (--cards also redraws the card images)
@@ -167,6 +168,13 @@ const COMMANDS = {
        · add it to tools/bot-audit/capture-auto.mjs so the gallery and the snapshot cover it
        · add a test in tests/ that it reads its channel from config and carries no NOREX name, colour or crest
   3. node tools/bot-studio/studio.mjs capture && node tools/bot-studio/studio.mjs check ${name}`);
+  },
+  async registry() {
+    const { buildRegistry, renderRegistryFile, REGISTRY_FILE } = await import('./lib/registry.mjs');
+    const reg = buildRegistry(), next = renderRegistryFile(reg), cur = fs.existsSync(REGISTRY_FILE) ? fs.readFileSync(REGISTRY_FILE, 'utf8') : '';
+    const kinds = Object.entries(reg.items.reduce((a, i) => ({ ...a, [i.kind]: (a[i.kind] ?? 0) + 1 }), {})).map(([k, n]) => `${n} ${k}`).join(' · ');
+    if (process.argv.includes('--check')) { say(cur === next ? `${C.g}registry is current${C.x}: ${reg.items.length} outputs (${kinds})` : `${C.r}bot/registry.gen.js is stale${C.x}: run node tools/bot-studio/studio.mjs registry`); process.exitCode = cur === next ? 0 : 1; return; }
+    fs.writeFileSync(REGISTRY_FILE, next); say(`registry written: ${reg.items.length} outputs (${kinds}) → bot/registry.gen.js`);
   },
   async render() {
     if (!args[0]) { say('render needs a draft file. Example: node tools/bot-studio/studio.mjs render tools/bot-studio/drafts/transfer-news.mjs'); process.exitCode = 2; return; }

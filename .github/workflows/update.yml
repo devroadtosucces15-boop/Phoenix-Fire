@@ -89,6 +89,12 @@ jobs:
         continue-on-error: true
         run: node scripts/cards.mjs
 
+      # Loud check: the draw step above may not block the site, but a run with no manifest or no banners must go red (and DM the owner).
+      # The manifest is site/api/cards.json (what the bot reads); the pictures are site/cards/*.png.
+      - name: Check the card manifest was written
+        if: steps.commit.outputs.changed == 'true' || github.event_name != 'schedule'
+        run: node scripts/check-cards.mjs
+
       # New results go to Discord once their cards exist. Runs even if the build or the cards failed (then without pictures).
       - name: Post new results to Discord
         if: always() && (hashFiles('.outbox/results.json') != '' || inputs.repost != '')

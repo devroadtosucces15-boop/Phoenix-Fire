@@ -13,7 +13,7 @@ const ann = { u: '801', n: 'Ann', a: null, role: 'member' }, bo = { u: '802', n:
 const i = { channel_id: '700200', data: {} };
 const now = (sub, o, me = ann, at = T0) => lfgCommand(i, env, me, me, sub, o, at);
 
-t('flag rushLfg and rushQueue ship as owner-only', JSON.parse(JSON.stringify(await import('../config.json', { with: { type: 'json' } }).then((m) => m.default.features))).rushLfg === 'owner' && (await import('../config.json', { with: { type: 'json' } })).default.features.rushQueue === 'owner');
+t('flag rushLfg ships owner-only and rushQueue ships to members', JSON.parse(JSON.stringify(await import('../config.json', { with: { type: 'json' } }).then((m) => m.default.features))).rushLfg === 'owner' && (await import('../config.json', { with: { type: 'json' } })).default.features.rushQueue === 'members');
 t('notification registry has an lfg row so members can mute it', TYPES.lfg && TYPES.lfg.mute !== false);
 const off = { ...env, FEATURES: JSON.stringify({ ...JSON.parse(env.FEATURES), rushLfg: 'owner' }) };
 t('off for members while the flag is owner-only', /not switched on/.test(plainText((await lfgCommand(i, off, ann, ann, 'now', {}, T0)).data)));

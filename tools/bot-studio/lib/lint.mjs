@@ -76,7 +76,7 @@ export function lintMessage(body, { kind = 'reply', palette = [] } = {}) {
     if (box && box.accent_color != null && palette.length && !palette.includes(box.accent_color)) (NOREX_COLOURS.includes(box.accent_color) ? err : warn)('accent', `Stripe colour ${hex(box.accent_color)} is not in the Phoenix palette (bot/ui.js ACCENT).`);
     const texts = flat(box?.components ?? body.components).filter((c) => c.type === 10).map((c) => c.content ?? ''); // the ping line above the panel does not count
     const full = texts.length > 1 || cs.some((c) => c.type === 1 || c.type === 12); // one-line notices are exempt by design
-    if (full && texts[0] && !/^(-# |#{1,3} |\*\*`)/.test(texts[0]) && !(kind === 'private' && /^\*\*/.test(texts[0]))) warn('no-header', 'Does not open with an eyebrow line or a heading.');
+    if (full && texts[0] && !/^(-# |#{1,3} |(?:🚨 )?\*\*`)/.test(texts[0]) && !(kind === 'private' && /^\*\*/.test(texts[0]))) warn('no-header', 'Does not open with an eyebrow line or a heading.');
     if (full && kind !== 'private' && !texts.some((t) => /(^|\n)-# /.test(t))) warn('no-footer', 'No small footer or eyebrow line.');
     const rows = cs.filter((c) => c.type === 1 && (c.components ?? []).every((k) => k.type === 2));
     const all = rows.flatMap((r) => r.components);

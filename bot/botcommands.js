@@ -11,16 +11,32 @@ import { COMMANDS } from './commanddefs.js';
 import { answeringApp, putCommands, registrationPlan } from './apps.js';
 import { discordTargets } from './docs.js';
 import { IS_V2, privateNote } from './ui.js';
+import { loadControls, decide } from './controls.js';
+import { saveCommandSettings } from './controlcenter.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
 const ID = /^\d{5,25}$/;
 const REPLIES = ['default', 'private', 'public'];
 
+// One store now: the Control Center rows (`output_controls`, key slash:/<name>). A row replaces whatever the old `bot_commands` blob said for that
+// command; the blob is only read for commands nobody has touched since the Control Center (it keeps working until the owner saves them once).
 export async function getCommandSettings(env) {
   if (!env.DB) return {};
-  const row = await env.DB.prepare("SELECT value FROM meta WHERE key = 'bot_commands'").first();
-  try { return row?.value ? JSON.parse(row.value) : {}; } catch { return {}; }
+  const row = await env.DB.prepare("SELECT value FROM meta WHERE key = 'bot_commands'").first().catch(() => null);
+  let out = {};
+  try { out = row?.value ? JSON.parse(row.value) : {}; } catch { out = {}; }
+  for (const [key, c] of await loadControls(env)) {
+    if (!key.startsWith('slash:/')) continue;
+    const s = {};
+    if (!c.enabled) s.enabled = false;
+    if (c.rules.min) s.min = c.rules.min;
+    if (c.rules.allow_channels.length) s.channels = c.rules.allow_channels;
+    if (c.rules.reply) s.reply = c.rules.reply;
+    if (c.rules.post_channels[0]) s.postTo = c.rules.post_channels[0];
+    if (Object.keys(s).length) out[key.slice(7)] = s; else delete out[key.slice(7)];
+  }
+  return out;
 }
 
 // Keep only known commands and valid values; drop entries equal to the defaults.
@@ -43,9 +59,8 @@ export function cleanCommandSettings(input) {
 
 // → null when the person may run it, else the ephemeral message to show.
 // Owners are never blocked; managers ignore channel limits (so they can always fix a bad setting).
-export async function commandBlocked(env, name, who, channelId, settings) {
-  const s = (settings ?? await getCommandSettings(env))[name];
-  if (!s) return null;
+export async function commandBlocked(env, name, who, channelId, settings, ctx = {}) {
+  const s = (settings ?? await getCommandSettings(env))[name] ?? {};
   if (who.role === 'owner') return null;
   if (s.enabled === false) return '🔕 That command is switched off right now.';
   if (s.min && s.min !== 'guest') {
@@ -54,6 +69,12 @@ export async function commandBlocked(env, name, who, channelId, settings) {
     if (!ok) return `🔒 /${name} is for ${s.min === 'claimed' ? 'verified players' : s.min + 's'} and up.`;
   }
   if (s.channels?.length && !atLeast(who.role, 'manager') && !s.channels.includes(channelId)) return `📍 Use /${name} in ${s.channels.map((c) => `<#${c}>`).join(' or ')}.`;
+  // The rest of the Control Center row: allow and deny lists for roles and members, channels it must not be used in, time windows.
+  const c = (await loadControls(env)).get(`slash:/${name}`);
+  if (c) {
+    const d = decide({ enabled: true, rules: { ...c.rules, allow_channels: [] } }, { userId: who.u, roleIds: ctx.roleIds ?? [], level: who.role, channelId, now: ctx.now });
+    if (!d.ok) return { 'denied-member': `🔒 You cannot use /${name}.`, 'denied-role': `🔒 /${name} is not available to your role.`, 'not-allowed': `🔒 /${name} is only for the people a manager picked.`, 'denied-channel': `📍 /${name} cannot be used in this channel.`, 'outside-window': `🕒 /${name} is only available at certain times.` }[d.why] ?? `🔒 /${name} is off for you right now.`;
+  }
   return null;
 }
 
@@ -110,7 +131,8 @@ export async function botCommandsRoute(p, method, body, me, env, log) {
   }
   if (method !== 'POST') return fail('Not found', 404);
   const clean = cleanCommandSettings(body.commands);
-  await env.DB.prepare("INSERT INTO meta (key, value) VALUES ('bot_commands', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(JSON.stringify(clean)).run();
+  await saveCommandSettings(env, me, clean); // the old panel writes the Control Center rows; the blob is retired (cleared) so nothing lives in two places
+  await env.DB.prepare("DELETE FROM meta WHERE key = 'bot_commands'").run();
   await log?.(env, me, 'bot-commands', 'Updated per-command bot settings');
   return json({ ok: true, saved: Object.keys(clean).length });
 }

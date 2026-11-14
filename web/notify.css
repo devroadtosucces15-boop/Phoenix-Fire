@@ -57,3 +57,4 @@
 .prose .req-grid{margin:16px 0}
 .prose .req-card{background:var(--panel2)}
 .prose .req-card h3{text-decoration:none}
+.nt-boxes{display:flex;flex-wrap:wrap;gap:6px 14px;font:500 12.5px var(--body);color:var(--muted)}.nt-boxes label{display:inline-flex;align-items:center;gap:5px;cursor:pointer}.nt-boxes input{accent-color:var(--red,#e8651a)}
