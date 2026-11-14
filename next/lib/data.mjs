@@ -25,6 +25,8 @@ export const ARCH = ['Shot Stopper', 'Sweeper Keeper', 'Progressor', 'Boss', 'En
 
 // ---- matches (club perspective) ----
 export const matches = []; const arch = new Map(); const pidBy = new Map(); // EA player id by gamer tag (same key the live site and the Card Studio use)
+// a match counts as played to the end when nobody quit (EA's winnerByDnf) and someone was on the pitch for the full 80 minutes; abandoned games carry numbers that are not real play
+const isFull = (m, lines) => !Object.values(m.clubs ?? {}).some((c) => c.winnerByDnf === '1') && Math.max(0, ...lines.map((l) => l.secs)) >= 4800;
 for (const m of combined.matches) {
   const f = `${m.matchId}.json`; const me = m.src ? m.clubs?.[CLUB] : null; if (!me) continue;
   const oppId = Object.keys(m.clubs).find((k) => k !== CLUB); const opp = m.clubs[oppId] ?? {};
@@ -32,11 +34,11 @@ for (const m of combined.matches) {
   // every per-player number EA sends for a match (both sides); no possession, no event timeline exist in the feed
   // ev = EA's event counters decoded into named stats (scripts/lib/events.mjs); null for games archived before they were kept
   const toLine = (p) => ({ n: p.playername, ev: p.evraw ? decodeEvents(p.evraw) : null, line: LINE[p.pos] ?? 'MID', goals: num(p.goals), assists: num(p.assists), sa: num(p.secondassists), rating: num(p.rating), mom: num(p.mom), saves: num(p.saves),
-    shots: num(p.shots), pm: num(p.passesmade), pa: num(p.passattempts), tm: num(p.tacklesmade), ta: num(p.tackleattempts), drb: num(p.dribbles), red: num(p.redcards), secs: num(p.secondsPlayed), arch: ARCH[num(p.archetypeid) - 1] ?? '' });
+    shots: num(p.shots), pm: num(p.passesmade), pa: num(p.passattempts), tm: num(p.tacklesmade), ta: num(p.tackleattempts), drb: num(p.dribbles), red: num(p.redcards), secs: num(p.secondsPlayed), gc: num(p.goalsconceded), cs: num(p.cleansheetsany), gk: { dive: num(p.ballDiveSaves), parry: num(p.parrySaves), punch: num(p.punchSaves), reflex: num(p.reflexSaves), cross: num(p.crossSaves), dir: num(p.goodDirectionSaves) }, result: num(p.userResult), arch: ARCH[num(p.archetypeid) - 1] ?? '' });
   for (const [pid, p] of Object.entries(m.players?.[CLUB] ?? {})) if (p.playername) pidBy.set(p.playername.toLowerCase(), pid);
   const lines = Object.values(m.players?.[CLUB] ?? {}).map(toLine), olines = Object.values(m.players?.[oppId] ?? {}).map(toLine);
   for (const l of lines) { const a = arch.get(l.n) ?? {}; a[l.arch] = (a[l.arch] || 0) + 1; arch.set(l.n, a); }
-  matches.push({ id: m.matchId ?? f.replace('.json', ''), t: num(m.timestamp), type: m.matchType, src: m.src, sources: m.sources, internal: m.internal, oppId, crest: opp.kit?.crestAssetId ? String(opp.kit.crestAssetId) : '', opp: opp.name ?? `Club ${oppId}`, gf, ga, res: gf > ga ? 'W' : gf < ga ? 'L' : 'D', lines, olines, intel: { us: summarize(lines.map((l) => l.ev)), opp: summarize(olines.map((l) => l.ev)) } });
+  matches.push({ id: m.matchId ?? f.replace('.json', ''), t: num(m.timestamp), type: m.matchType, src: m.src, sources: m.sources, internal: m.internal, oppId, crest: opp.kit?.crestAssetId ? String(opp.kit.crestAssetId) : '', opp: opp.name ?? `Club ${oppId}`, gf, ga, res: gf > ga ? 'W' : gf < ga ? 'L' : 'D', dnf: Object.values(m.clubs).some((c) => c.winnerByDnf === '1'), full: isFull(m, lines), lines, olines, intel: { us: summarize(lines.map((l) => l.ev)), opp: summarize(olines.map((l) => l.ev)) } });
 }
 matches.sort((a, b) => b.t - a.t);
 // team totals for the comparison bars (only fields EA sends)

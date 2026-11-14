@@ -1,4 +1,4 @@
-import { clubStats as C, players, matches, opponents, fmtDate, teamTotals } from '../lib/data.mjs';
+import { clubStats as C, players, matches, opponents, fmtDate, teamTotals, intel } from '../lib/data.mjs';
 import * as W from '../lib/widgets.mjs';
 import { oppCrest, ownCrest, tagChips, matchTags, shell, esc, chip, card, pillRes, sbt, sample, slug, lineLabel } from '../lib/ui.mjs';
 
@@ -71,6 +71,31 @@ function compare(a, b) {
   return `<div class="cmp rv-g">${CMP.map(([k, l, suf = '']) => { const x = a[k] ?? 0, y = b[k] ?? 0, t = (+x) + (+y) || 1, win = k === 'red' ? (x < y ? 'l' : x > y ? 'r' : '') : (x > y ? 'l' : x < y ? 'r' : '');
     return `<div class="crow ${win}"><b class="cv">${x ?? '–'}${x != null ? suf : ''}</b><span class="cl">${l}</span><b class="cv">${y ?? '–'}${y != null ? suf : ''}</b><span class="cbar l"><i style="--v:${(+x / t).toFixed(3)}"></i></span><span class="cbar r"><i style="--v:${(+y / t).toFixed(3)}"></i></span></div>`; }).join('')}</div>`;
 }
+// Decoded EA event counters, team against team. Only for matches that carry them (EA's event counters have been archived since intel.coverage.since;
+// EA serves just the last 10 matches per type, so earlier games cannot be filled in). Every value is a sum of real counters, nothing estimated.
+const EVROWS = [
+  ['↗️ Forward passes completed', (t, r) => t.passesCompletedForward || 0],
+  ['🚀 Long passes and crosses completed', (t) => (t.passesCompletedLong || 0) + (t.passesCompletedCross || 0)],
+  ['🧲 Possession won', (t, r) => r.possessionWon],
+  ['💨 Possession lost', (t, r) => r.possessionLost, true],
+  ['🎯 Shots inside the box', (t) => (t.shotsOnTargetInsideBox || 0) + (t.shotsOffTargetInsideBox || 0)],
+  ['✂️ Interceptions', (t) => t.interceptions || 0],
+  ['🛫 Aerial duels won', (t) => (t.aerialDuelsWonAttacking || 0) + (t.aerialDuelsWonDefending || 0)],
+  ['📍 In position', (t, r) => r.positioning ?? 0, false, '%'],
+];
+export function evCompare(m) {
+  const a = m.intel?.us, b = m.intel?.opp;
+  if (!a) {
+    const since = intel.coverage.since;
+    return `<div class="panel reveal"><h3>🔬 Event data</h3><p class="muted small" style="margin:0">No event counters for this match. EA's detailed counters (pass direction, possession won by third, positioning) have been archived${since ? ` since ${esc(fmtDate(since, { day: 'numeric', month: 'short', year: 'numeric' }))}` : ' only for newer matches'}; EA serves just the last 10 matches per type, so earlier games cannot be filled in.</p></div>`;
+  }
+  const rows = EVROWS.map(([label, f, lower = false, suf = '']) => {
+    const x = f(a.totals, a.rates), y = b ? f(b.totals, b.rates) : null, t = (+x) + (+(y ?? 0)) || 1;
+    const win = y == null ? '' : lower ? (x < y ? 'l' : x > y ? 'r' : '') : (x > y ? 'l' : x < y ? 'r' : '');
+    return `<div class="crow ${win}"><b class="cv">${x}${suf}</b><span class="cl">${label}</span><b class="cv">${y == null ? '–' : y + suf}</b><span class="cbar l"><i style="--v:${(+x / t).toFixed(3)}"></i></span><span class="cbar r"><i style="--v:${(+(y ?? 0) / t).toFixed(3)}"></i></span></div>`;
+  }).join('');
+  return `<div class="panel reveal"><h3>🔬 Event data</h3><div class="cmp rv-g">${rows}</div><p class="muted tiny" style="margin:10px 0 0">From EA's event counters, ${a.apps} of ${m.lines.length} players${b ? ` and ${b.apps} of ${m.olines.length} on their side` : ''}. Counters are community-decoded, see the decoder notes.</p></div>`;
+}
 function motmCard(l, p) {
   const st = [[l.goals, 'Goals'], [l.assists, 'Assists'], [l.shots, 'Shots'], [l.pa ? `${pct(l.pm, l.pa)}%` : '–', 'Passing'], [l.drb, 'Dribbles'], [l.ta ? `${l.tm}/${l.ta}` : '0', 'Tackles']];
   return `<div class="mcard"><div class="mc-top"><span class="mc-lab">🏅 Man of the match</span><b class="mc-r ${rcls(l.rating)}">${l.rating.toFixed(1)}</b></div>
@@ -108,13 +133,14 @@ export function match(m) {
      <p class="muted tiny mp-note">Tap a player for their numbers. Ring colour = rating (green 8+, gold 7+, grey 6+, red below).</p></div>
     <div class="mside">
      <div class="panel reveal"><h3>📊 Team comparison</h3><div class="cmp-h"><span><img src="crest.png" alt="" width="20" height="20"> Us</span><span>${esc(m.opp)} ${oppCrest(m.crest, m.opp, 20)}</span></div>${compare(us, them)}</div>
+     ${evCompare(m)}
      <div data-insight="${matches[0] === m ? 'match.latest' : 'match.' + esc(m.id)}" hidden></div><div data-insight="h2h.${esc(m.oppId)}" hidden></div>
      ${motm ? `<div class="panel reveal">${motmCard(motm, mp)}</div>` : omotm ? `<div class="panel reveal"><p class="muted" style="margin:0">🏅 Man of the match went to <b>${esc(omotm.n)}</b> (${esc(m.opp)}), rated ${omotm.rating.toFixed(1)}.</p></div>` : ''}
     </div></div></div>
   <div id="mv-table" class="mv" hidden>
    <div class="panel flat reveal"><h3><img src="crest.png" alt="" width="22" height="22" style="vertical-align:-5px"> ${esc(C.name)}</h3>${table(m.lines, true)}</div>
    <div class="panel flat reveal" style="margin-top:22px"><h3>${oppCrest(m.crest, m.opp, 22)} ${esc(m.opp)}</h3>${table(m.olines || [], false)}</div></div>
-  <p class="muted small" style="margin:14px 0 0">Every number comes from EA's match record. EA lists each player as GK, DEF, MID or FWD (not an exact spot) and does not publish possession or a goal timeline, so those are not shown. AI teammates are not recorded by EA.</p></div>`;
+  <p class="muted small" style="margin:14px 0 0">Every number comes from EA's match record. EA lists each player as GK, DEF, MID or FWD (not an exact spot) and does not publish a possession percentage or a goal timeline, so those are not shown (the event data panel counts possession won and lost by third where EA sent it). AI teammates are not recorded by EA.</p></div>`;
   return shell({ group: 'matches', page: 'results.html', title: `${C.name} ${m.gf}-${m.ga} ${m.opp}`, body });
 }
 
