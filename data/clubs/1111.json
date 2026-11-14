@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T21:50:39.134Z",
+ "fetchedAt": "2026-11-14T22:00:40.636Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,7 +1891,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "169",
+   "gamesPlayed": "170",
    "goals": "26",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1990,7 +1990,7 @@
   {
    "name": "MV33xChris",
    "proPos": "0",
-   "gamesPlayed": "197",
+   "gamesPlayed": "198",
    "goals": "164",
    "assists": "114",
    "manOfTheMatch": "37",
@@ -2045,8 +2045,8 @@
   {
    "name": "ed44ed",
    "proPos": "25",
-   "gamesPlayed": "212",
-   "goals": "251",
+   "gamesPlayed": "213",
+   "goals": "252",
    "assists": "148",
    "manOfTheMatch": "43",
    "ratingAve": "7.8",
@@ -2067,11 +2067,11 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "115",
+   "gamesPlayed": "116",
    "goals": "55",
    "assists": "44",
    "manOfTheMatch": "16",
-   "ratingAve": "7.5",
+   "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2188,12 +2188,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "181",
-   "goals": "216",
+   "gamesPlayed": "182",
+   "goals": "217",
    "assists": "91",
    "manOfTheMatch": "4",
    "ratingAve": "7.2",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2287,12 +2287,12 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "254",
-   "goals": "167",
-   "assists": "222",
+   "gamesPlayed": "255",
+   "goals": "168",
+   "assists": "226",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
-   "prevGoals": "2",
+   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
@@ -2397,11 +2397,11 @@
   {
    "name": "Pain11x",
    "proPos": "25",
-   "gamesPlayed": "31",
+   "gamesPlayed": "32",
    "goals": "2",
    "assists": "5",
    "manOfTheMatch": "0",
-   "ratingAve": "7.1",
+   "ratingAve": "7.2",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
