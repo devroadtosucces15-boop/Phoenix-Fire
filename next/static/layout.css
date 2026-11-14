@@ -62,3 +62,5 @@
 /* R13 dugout */
 @media(min-width:1600px){.split{grid-template-columns:minmax(0,1fr) 440px}}
 .dg-top{align-items:stretch}
+/* Alert settings (alerts.js): each Site / Discord DM / Push / All checkbox label is a 40px tap row, the box itself is 24px (WCAG 2.5.8; the audit measures the input) */
+label.al-box{min-height:40px;padding:0 2px}label.al-box input{width:24px;height:24px;margin:0;flex:none}.al-boxes{gap:0 10px}

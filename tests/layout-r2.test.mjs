@@ -55,4 +55,8 @@ const ccss = strip(read('controlcenter.css'));
 t('R45: Control Center panel switches fill two even rows of four from 900px with 40px targets, inside min-width', /@media\(min-width:900px\)\{\.cc-slicer\{display:grid;grid-template-columns:repeat\(4,minmax\(0,1fr\)\)\}[^}]*min-height:40px/.test(ccss));
 t('R45: Control Center hint line keeps a readable measure from 700px and the back link gets a 24px target', /@media\(min-width:700px\)\{\.cc-panel>p\.muted\{max-width:90ch\}[^@]*min-height:24px/.test(ccss));
 t('R45: Boardroom tiles fill the row from 821px, eight tiles go two rows of four, closing note spaced, dead band under staff pages removed', lay.includes('@media(min-width:821px){.br-tools{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}.br-tools:has(>:nth-child(8):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}.br-tools+p.muted{margin-top:16px}body.room-staff main{padding-bottom:56px}}'));
+// ---------- alert settings checkboxes (owner approved 2026-11-14) ----------
+t('Alerts: Site / DM / Push / All checkbox labels get a 40px tap row (label.al-box min-height:40px, input 24px)', /label\.al-box\{min-height:40px;/.test(lay) && /label\.al-box input\{width:24px;height:24px/.test(lay));
+t('Alerts: the inbox .al-box grid rule is scoped to div.al-box so it no longer applies to the checkbox labels', /(^|[};\s])div\.al-box\{max-width:820px;display:grid/.test(css) && !/(^|[};\s,])\.al-box\{max-width:820px/.test(css) && !/\.lk-al2 \.al-box/.test(css));
+t('Alerts: the checkbox labels are label.al-box and the inbox wrapper is div.al-box in alerts.js (class not renamed)', /<label class="al-box al-all">/.test(read('alerts.js')) && /<div class="al-box">\$\{body\}/.test(read('alerts.js')));
 done();
