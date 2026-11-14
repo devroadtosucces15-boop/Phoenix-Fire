@@ -20,6 +20,8 @@ import { DATA, readJson, writeJson, loadConfig, loadOverrides, loadBotSettings, 
 import { MAX_BURNERS, burnerStats, mergeMatches, reportMessage, slimBurnerMatch, updateRoster } from '../bot/burnerstats.js';
 import { postResults } from './lib/resultpost.mjs';
 import { resolveOrgClubs } from './lib/org.mjs';
+import { rawEvents } from './lib/events.mjs';
+import { missingKeys, platformProblem } from './lib/schema.mjs';
 
 const API = 'https://proclubs.ea.com/api/fc/';
 const HEADERS = {
@@ -46,6 +48,9 @@ state.scanned ??= {};
 const now = new Date().toISOString();
 let requests = 0;
 let blocked = 0;
+const drift = {}; // endpoint -> missing keys, reported once per run (scripts/lib/schema.mjs)
+const platformIssue = platformProblem(platform);
+if (platformIssue) console.warn(`Config: ${platformIssue}`);
 
 async function api(endpoint, params) {
   const qs = new URLSearchParams({ platform, ...params });
@@ -57,7 +62,12 @@ async function api(endpoint, params) {
       const res = await fetch(url, { headers: HEADERS, signal: AbortSignal.timeout(20000) });
       if (res.ok) {
         const text = await res.text();
-        return text ? JSON.parse(text) : null;
+        const body = text ? JSON.parse(text) : null;
+        if (!(endpoint in drift)) {
+          const gone = missingKeys(endpoint, body);
+          if (gone.length) { drift[endpoint] = gone; console.warn(`  schema drift: ${endpoint} no longer returns ${gone.join(', ')}`); }
+        }
+        return body;
       }
       if (res.status === 403) blocked++;
       if (res.status === 404) return null;
@@ -92,7 +102,9 @@ function slimMatch(m, matchType, fetchedFrom = null) {
     for (const [pid, p] of Object.entries(list)) {
       const { match_event_aggregate_0, match_event_aggregate_1, match_event_aggregate_2,
         match_event_aggregate_3, vproattr, vprohackreason, ...keep } = p;
-      players[clubId][pid] = { ...keep, ...eventCounts(match_event_aggregate_0) };
+      // dribbles/secondassists kept for older readers; evraw = every non-zero counter of all four buckets (every id, named or not), decoded by scripts/lib/events.mjs
+      const evraw = rawEvents(p);
+      players[clubId][pid] = { ...keep, ...eventCounts(match_event_aggregate_0), ...(evraw ? { evraw } : {}) };
     }
   }
   const clubs = {};
