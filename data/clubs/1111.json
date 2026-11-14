@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-14T22:00:40.636Z",
+ "fetchedAt": "2026-11-14T22:10:44.523Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2287,12 +2287,12 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "255",
+   "gamesPlayed": "256",
    "goals": "168",
    "assists": "226",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
