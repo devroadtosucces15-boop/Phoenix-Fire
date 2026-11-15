@@ -31,6 +31,10 @@ Core OAuth redirect: `https://phoenix-bot.norexunited.workers.dev/auth/callback`
 | `VAPID_PRIVATE_KEY` | web push | keypair generated once | set 2026-11-10 | set 2026-11-10 |
 | `CLOUDFLARE_ANALYTICS_TOKEN` | health page | Cloudflare token, Account Analytics read | set 2026-11-10 | set 2026-11-10 |
 | `CLOUDFLARE_ACCOUNT_ID` | health page and CI | c84cd49d2e12a5dca30af9abbb35ce9e (not secret) | set 2026-11-10 | set 2026-11-10 |
+| `DISCORD_WEBHOOK` | site update posts (`update.yml`) | Discord channel, Integrations, Webhooks | n/a | not verified (read by `update.yml`) |
+| `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET` | optional: live check via Twitch API; without them the bot reads public pages (`bot/live.js`) | Twitch developer console | not set (optional) | n/a |
+| `BOARD_OCR_URL`, `BOARD_OCR_KEY` | optional: offline board reader (`bot/scanocr.js`, `tools/board-ocr`); dark until both set | your own host | not set (optional) | n/a |
+| `RUSH_REPORT_SALT` | optional: salt for Rush report rate limit keys (`bot/rushqueue.js`); falls back to the public key | any random string | not set (optional) | n/a |
 | `CLOUDFLARE_API_TOKEN` | CI deploy | Cloudflare, API tokens, "phoenix-bot CI deploy v2" | n/a | set 2026-11-10 |
 
 CI: `bot.yml` run 42778501358 (2026-11-10) passed every step, including slash command registration. All four endpoints answer 401 to unsigned requests.

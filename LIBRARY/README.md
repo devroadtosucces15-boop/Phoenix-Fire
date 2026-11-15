@@ -16,7 +16,9 @@ given, and nothing else. Rules for using and updating it: `PLANNING/SESSION-HAND
 | `DESIGN.md` | Brand tokens, theme layer, image rules, card and dock design choices. | hand | `config.json`, `phoenix/live.json`, `CLAUDE.md` |
 | `BOT.md` | Bot apps, output rules, settings and where each message is drawn. | hand | `bot/apps.js`, `bot/README.md`, `tools/bot-studio/` |
 | `BOT-COMMANDS.md` | Every slash command by app, with options. | generated | `bot/commanddefs.js` |
-| `SITEMAP.md` | Every site page, who may see it, and the source that builds it. | hand | `next/pages/`, `phoenix/build.mjs` |
+| `FLAGS-INDEX.md` | Every feature flag and the level that may use it. | generated | `config.json` `features` |
+| `SITEMAP.md` | What each page group is for, audience rules and the rules for adding a page. | hand | `next/pages/`, `phoenix/build.mjs` |
+| `SITEMAP-INDEX.md` | Every built page, its title, audience and source module. | generated | a fresh `phoenix/build.mjs` build |
 
 Generated files are rewritten by `node tools/library/sync.mjs`. `node tests/library.test.mjs` fails when a generated file is stale, a
 hand file lost its "Last verified" date, the roadmap has no single `NEXT` item, or anything in this folder looks like a secret value.
