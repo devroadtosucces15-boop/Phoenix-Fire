@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-15T04:10:40.549Z",
+ "fetchedAt": "2026-11-15T04:20:40.564Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -763,7 +763,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "114",
+   "gamesPlayed": "115",
    "goals": "38",
    "assists": "51",
    "manOfTheMatch": "6",

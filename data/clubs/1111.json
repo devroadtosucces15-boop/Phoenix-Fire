@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T04:10:40.549Z",
+ "fetchedAt": "2026-11-15T04:20:40.564Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1855,12 +1855,12 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "183",
-   "goals": "28",
+   "gamesPlayed": "184",
+   "goals": "29",
    "assists": "64",
-   "manOfTheMatch": "18",
+   "manOfTheMatch": "19",
    "ratingAve": "7.7",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
@@ -1921,7 +1921,7 @@
   {
    "name": "RealMinato7",
    "proPos": "5",
-   "gamesPlayed": "345",
+   "gamesPlayed": "346",
    "goals": "150",
    "assists": "162",
    "manOfTheMatch": "29",
@@ -2031,8 +2031,8 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "129",
-   "goals": "67",
+   "gamesPlayed": "130",
+   "goals": "69",
    "assists": "51",
    "manOfTheMatch": "20",
    "ratingAve": "7.5",
@@ -2185,7 +2185,7 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "237",
+   "gamesPlayed": "238",
    "goals": "36",
    "assists": "30",
    "manOfTheMatch": "42",
@@ -2207,7 +2207,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "114",
+   "gamesPlayed": "115",
    "goals": "38",
    "assists": "51",
    "manOfTheMatch": "6",
@@ -2229,7 +2229,7 @@
   {
    "name": "Usman4518",
    "proPos": "14",
-   "gamesPlayed": "283",
+   "gamesPlayed": "284",
    "goals": "212",
    "assists": "235",
    "manOfTheMatch": "46",
