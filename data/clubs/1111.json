@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T02:37:58.585Z",
+ "fetchedAt": "2026-11-15T02:40:48.911Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1979,7 +1979,7 @@
   {
    "name": "zouz94230",
    "proPos": "5",
-   "gamesPlayed": "196",
+   "gamesPlayed": "197",
    "goals": "88",
    "assists": "64",
    "manOfTheMatch": "26",
@@ -2133,12 +2133,12 @@
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "172",
-   "goals": "161",
-   "assists": "126",
+   "gamesPlayed": "173",
+   "goals": "162",
+   "assists": "128",
    "manOfTheMatch": "30",
    "ratingAve": "7.9",
-   "prevGoals": "3",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2155,12 +2155,12 @@
   {
    "name": "Ana Montana8022",
    "proPos": "14",
-   "gamesPlayed": "40",
-   "goals": "7",
+   "gamesPlayed": "41",
+   "goals": "8",
    "assists": "16",
    "manOfTheMatch": "1",
    "ratingAve": "7.2",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
