@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-15T00:50:55.546Z",
+ "fetchedAt": "2026-11-15T01:00:39.667Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1603,7 +1603,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "176",
+   "gamesPlayed": "177",
    "goals": "27",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1779,9 +1779,9 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "13",
+   "gamesPlayed": "14",
    "goals": "2",
-   "assists": "2",
+   "assists": "3",
    "manOfTheMatch": "1",
    "ratingAve": "7.5",
    "prevGoals": "0",
@@ -1823,12 +1823,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "188",
-   "goals": "218",
+   "gamesPlayed": "189",
+   "goals": "220",
    "assists": "95",
    "manOfTheMatch": "4",
    "ratingAve": "7.2",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -1856,11 +1856,11 @@
   {
    "name": "iTry_Clutxh",
    "proPos": "5",
-   "gamesPlayed": "23",
+   "gamesPlayed": "24",
    "goals": "6",
    "assists": "6",
    "manOfTheMatch": "1",
-   "ratingAve": "7.3",
+   "ratingAve": "7.2",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
@@ -1889,7 +1889,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "212",
+   "gamesPlayed": "213",
    "goals": "60",
    "assists": "54",
    "manOfTheMatch": "19",
