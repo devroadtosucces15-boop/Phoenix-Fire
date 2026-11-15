@@ -15,7 +15,7 @@ for (const n of HAND) {
 t('README lists every hand and generated library file', [...HAND.filter((n) => n !== 'README'), 'ROADMAP', 'roadmap', 'BOT-COMMANDS', 'ASSETS-INDEX', 'SITEMAP-INDEX', 'FLAGS-INDEX'].every((n) => read('LIBRARY/README.md').includes(`\`${n}.${n === 'roadmap' ? 'json' : 'md'}\``)));
 
 const road = read('LIBRARY/ROADMAP.md');
-t('the roadmap has exactly one NEXT item', (road.match(/^\| PF-\d+ \|.*\| NEXT \|/gm) || []).length === 1);
+t('the roadmap has exactly one NEXT item', (road.match(/^\| PF-\d+ \|.*\| NEXT( \(verify\))? \|/gm) || []).length === 1);
 const ids = [...road.matchAll(/^\| (PF-\d+) \|/gm)].map((m) => m[1]);
 t('roadmap item ids are unique', new Set(ids).size === ids.length && ids.length > 0);
 
