@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-15T02:20:44.365Z",
+ "fetchedAt": "2026-11-15T02:30:41.358Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1745,14 +1745,14 @@
   },
   {
    "name": "Ana Montana8022",
-   "proPos": "25",
-   "gamesPlayed": "39",
+   "proPos": "14",
+   "gamesPlayed": "40",
    "goals": "7",
    "assists": "16",
    "manOfTheMatch": "1",
    "ratingAve": "7.2",
-   "prevGoals": "2",
-   "favoritePosition": "forward"
+   "prevGoals": "0",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "MsEfilism",
