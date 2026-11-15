@@ -3,6 +3,7 @@ import { orgName } from './orgconfig.js';
 import { hex } from './media.js';
 import { notify, notifyManagers, safely } from './notify.js';
 import { cutoutGreen } from './cutout.js';
+import { kvOf } from './kv.js';
 
 export const CARD_MODEL = '@cf/black-forest-labs/flux-2-klein-9b';
 export const MAX_ATTEMPTS = 3;
@@ -13,6 +14,9 @@ const flagged = (e) => /\b3030\b|flagged/i.test(String(e?.message || e)); // Wor
 const STALE_AFTER = 10 * 60e3; // a "generating" row older than this was abandoned by a dead Worker run
 const REF_MAX = 500; // FLUX.2 wants reference images under 512×512
 
+export const CARD_RUN_LIMIT = 2; // cards drawn per cron run
+export const CARD_CRON_MINUTES = 10; // how often the cron runs (bot/wrangler.toml)
+export const SUBMITS_PER_HOUR = 10; // per member, so a stuck button cannot burn the shared AI allowance
 export const CARD_SIZE = 1024;
 export const TEMPLATE_MAX = 5e6;
 export const COST_MAX = 100000;
@@ -98,11 +102,33 @@ const reqView = (r, extra = {}) => ({
 const REQ_SQL = `SELECT r.*, b.name AS bg_name, p.name AS pose_name FROM card_requests r
   LEFT JOIN card_templates b ON b.id = r.bg_id LEFT JOIN card_templates p ON p.id = r.pose_id`;
 
+// Same shape as spendScan (bot/rushscan.js): a small per-member, per-hour counter in KV. No KV bound = no limit.
+async function spendSubmit(env, me) {
+  const kv = kvOf(env);
+  if (!kv) return true;
+  const key = `cardrl:${me.u}:${Math.floor(Date.now() / 3600e3)}`;
+  const n = Number(await kv.get(key)) || 0;
+  if (n >= SUBMITS_PER_HOUR) return false;
+  await kv.put(key, String(n + 1), { expirationTtl: 2 * 3600 });
+  return true;
+}
+
+// Where a request stands in the drawing queue and a rough wait. Managers' check comes first, then the cron draws CARD_RUN_LIMIT per run.
+export async function queueInfo(env, r) {
+  if (!r || !['pending', 'approved', 'generating'].includes(r.status)) return null;
+  const waiting = r.status === 'pending'
+    ? await one(env, "SELECT COUNT(*) AS n FROM card_requests WHERE (status IN ('approved', 'generating')) OR (status = 'pending' AND created_at < ?)", r.created_at)
+    : await one(env, "SELECT COUNT(*) AS n FROM card_requests WHERE status IN ('approved', 'generating') AND id <> ? AND COALESCE(decided_at, created_at) <= COALESCE(?, ?)", r.id, r.decided_at, r.created_at);
+  const ahead = waiting?.n ?? 0;
+  return { ahead, position: ahead + 1, etaMinutes: Math.ceil((ahead + 1) / CARD_RUN_LIMIT) * CARD_CRON_MINUTES, needsApproval: r.status === 'pending' };
+}
+
 // One request, however it arrives (website upload or the /avatarcard panel). `o` = { targetPlayer, avatar, portrait, kitNumber (raw string or null),
 // kit ('male'|'female'), bg, pose, bytes }. Returns { error, status } or { ok: true }.
 export async function submitCardRequest(me, env, o, log, loadSite) {
   const blocked = gate(me, env);
   if (blocked) return { error: 'Not available yet.', status: 404 };
+  if (!(await spendSubmit(env, me))) return { error: 'Too many tries this hour – wait a little and try again.', status: 429 };
   if (!env.MEDIA) return { error: 'Media storage is not connected.', status: 503 };
   const targetPlayer = o.targetPlayer ?? null;
   let targetUser = me.u;
@@ -163,7 +189,7 @@ export async function cardRequestUpload(request, me, env, url, log, loadSite) {
 
 async function mine(env, me) {
   const r = await one(env, `${REQ_SQL} WHERE r.user_id = ? ORDER BY r.created_at DESC LIMIT 1`, me.u);
-  return { month: monthKey(), request: r ? reqView(r) : null };
+  return { month: monthKey(), request: r ? reqView(r, { queue: await queueInfo(env, r) }) : null };
 }
 
 // GET /api/cards/photo/<id> – Bearer-authenticated: the requester or a manager.
@@ -558,7 +584,7 @@ async function generateOne(env, r, now) {
 }
 
 // Called from the cron and, right after an approval, from the request itself. Never throws.
-export async function generateCards(env, { limit = 2, now = Date.now() } = {}) {
+export async function generateCards(env, { limit = CARD_RUN_LIMIT, now = Date.now() } = {}) {
   if (!env.DB || !env.MEDIA) return [];
   await run(env, "UPDATE card_requests SET status = 'failed' WHERE status = 'generating' AND attempts >= ? AND started_at < ?", MAX_ATTEMPTS, now - STALE_AFTER); // died on the last try
   const rows = await all(env, `SELECT * FROM card_requests WHERE attempts < ? AND ((status = 'approved' AND (started_at IS NULL OR started_at < ?)) OR (status = 'generating' AND started_at < ?))

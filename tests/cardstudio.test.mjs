@@ -368,6 +368,24 @@ t('4c: kit_variant column exists, defaults male, prompts take the per-variant te
   if (!col || !/male/.test(col.d)) throw new Error('column missing');
   if (kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'female') !== 'b' || kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'male') !== 'a') throw new Error('text pair');
 });
+t('4d: queue position and wait come from the real queue', async () => {
+  const { queueInfo, CARD_RUN_LIMIT, CARD_CRON_MINUTES } = await import('../bot/cardstudio.js');
+  const mk = async (u, st, at) => (await env.DB.prepare("INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, decided_at) VALUES (?, '2099-01', 0, 0, 'k', ?, ?, ?)").bind(u, st, at, at).run()).meta.last_row_id;
+  const a = await mk('q1', 'approved', 1000), b = await mk('q2', 'approved', 2000), c = await mk('q3', 'approved', 3000);
+  const row = (id) => env.DB.prepare('SELECT * FROM card_requests WHERE id = ?').bind(id).first();
+  const qa = await queueInfo(env, await row(a)), qc = await queueInfo(env, await row(c));
+  const out = qa.position === 1 && qc.position === 3 && qc.etaMinutes === Math.ceil(3 / CARD_RUN_LIMIT) * CARD_CRON_MINUTES && (await queueInfo(env, { status: 'done' })) === null;
+  await env.DB.prepare("DELETE FROM card_requests WHERE month = '2099-01'").run();
+  if (!out) throw new Error(JSON.stringify([qa, qc]));
+});
+t('4d: a member can only submit so many times an hour', async () => {
+  const { submitCardRequest, SUBMITS_PER_HOUR } = await import('../bot/cardstudio.js');
+  const store = new Map(); const kv = { get: async (k) => store.get(k) ?? null, put: async (k, v) => { store.set(k, v); } };
+  const e2 = Object.assign(Object.create(env), { PHOENIX_KV: kv });
+  let last;
+  for (let n = 0; n <= SUBMITS_PER_HOUR; n++) last = await submitCardRequest({ u: 'spam', n: 'Spam', role: 'member' }, e2, { avatar: false, portrait: true, bytes: new Uint8Array(0) }, async () => {}, async () => []);
+  if (last.status !== 429) throw new Error(JSON.stringify(last));
+});
 import { readFileSync } from 'node:fs';
 t('4b: no pre-approval preview in the member page or the classic page', () => {
   const nx = readFileSync(new URL('../next/static/cardstudio.js', import.meta.url), 'utf8'), wb = readFileSync(new URL('../web/cardstudio.js', import.meta.url), 'utf8');

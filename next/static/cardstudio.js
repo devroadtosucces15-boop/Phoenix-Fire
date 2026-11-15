@@ -86,7 +86,7 @@ ${s && s !== 'rejected' ? stepper(s) : ''}
 ${r?.note ? `<p class="cs-note${s === 'rejected' ? ' bad' : ''}">💬 “${esc(r.note)}”</p>` : ''}
 ${s === 'rejected' ? '<p class="small">Fix what the manager asked and send a new photo below. It does not use up your month.</p>' : ''}
 ${s === 'failed' ? '<p class="small">A manager has been told and can try again. You do not need to send anything.</p>' : ''}
-${s === 'approved' || s === 'generating' ? '<p class="small muted">⏱️ Usually a few minutes. This page checks again by itself.</p>' : ''}
+${s === 'approved' || s === 'generating' || s === 'pending' ? `<p class="small muted">⏱️ ${r?.queue ? `Place ${r.queue.position} in line, about ${r.queue.etaMinutes} min once a manager approves it.` : 'Usually a few minutes.'}${s === 'pending' ? '' : ' This page checks again by itself.'}</p>` : ''}
 ${!open && s === 'done' ? `<p class="small muted">Your next request opens on ${esc(nextFirst())}.</p>` : ''}
 ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto ? `<div class="cs-mine">${fig('photo', r.id, 'The photo you sent')}</div>` : ''}
 <div class="sq-acts">${s === 'pending' ? '<button type="button" class="btn ghost" data-cscancel>✖ Cancel request</button>' : ''}${waiting ? `<a class="btn ghost" href="staff-artwork.html">📥 ${waiting} waiting for staff ›</a>` : ''}</div></div>`; };
