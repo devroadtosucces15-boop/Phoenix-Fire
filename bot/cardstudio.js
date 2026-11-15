@@ -355,13 +355,15 @@ export async function cardResult(request, me, env, id) {
 }
 
 // level > 0 = plainer wording for the retry after the AI safety filter flagged the result.
-export const cardPrompt = (poseFragment, level = 0) => level >= 2
+export const cardPrompt = (poseFragment, level = 0, kit = KIT_TEXT, number = null) => level >= 2
   ? 'Place the person from image 1 in the centre of image 0.'
   : level === 1
     ? `Image 0 is the background. Image 1 is the player. Place the player in the centre of the background, ${poseFragment}.`
     : 'Image 0 is the card background: keep its colours, framing and empty centre exactly. '
       + `Image 1 is the player: keep their real face, hair and skin tone. Place the player from image 1 in the centre of image 0, ${poseFragment}. `
-      + 'Show the player chest up only (head, neck, shoulders, chest), large in the frame with a clear margin from every card edge, and the shirt number big and clear on the chest. Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
+      + `Dress the player in the club kit: ${kit}. `
+      + 'Show the player chest up only (head, neck, shoulders, chest), large in the frame with a clear margin from every card edge, and the shirt number '
+      + (number == null ? '' : `${number} `) + 'big and clear on the chest. Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
 
 // FLUX.2 rejects references of 512×512 or more; shrink with the Images binding when it is bound.
 async function reference(env, bytes, type) {
@@ -373,12 +375,14 @@ async function reference(env, bytes, type) {
 // The club kit every player wears. A manager can upload a photo/render of it (POST /api/cards/kit) and it is sent to the
 // model as an extra reference; without one, the written description below is used on its own.
 export const KIT_KEY = 'cardkit/reference';
-export const KIT_TEXT = 'a white football shirt with broken red vertical stripes, a red collar, a small gold club crest on the chest and a small swoosh-style mark, red shorts with a small crest, white tape on the wrists';
+// Default wording is Phoenix orange and ink; a deploy can override it with the CARD_KIT_TEXT var (CARD_KIT_TEXT_MALE / _FEMALE per variant).
+export const KIT_TEXT = 'an orange football shirt with black trim, a black collar and a small phoenix crest on the chest, black shorts with a small crest, black tape on the wrists';
+export const kitText = (env, variant = '') => String(env?.[`CARD_KIT_TEXT_${String(variant).toUpperCase()}`] || env?.CARD_KIT_TEXT || KIT_TEXT).slice(0, 400);
 // level 0 = full prompt + kit picture; later tries (after the AI's safety filter, error 3030, flagged the result) send fewer
 // and plainer inputs: level 1 drops the kit picture and body details, level 2 is the bare minimum.
-export const portraitPrompt = (hasKit, level = 0) =>
+export const portraitPrompt = (hasKit, level = 0, kit = KIT_TEXT) =>
   (level >= 2 ? 'Image 0 is the person: keep their face, hairstyle and beard. ' : 'Image 0 is the person: preserve their face, hairstyle and hair colour, beard, skin tone and expression. ')
-  + (hasKit && level === 0 ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${KIT_TEXT}. `)
+  + (hasKit && level === 0 ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${kit}. `)
   + 'Draw it as a flat 2D cartoon illustration: clean cel shading, bold uniform black outlines, simple solid colour fills with a few soft shadow shapes, realistic proportions, detailed expressive face with eyebrows, eyes, nose and beard drawn crisply, no gradients, no painterly texture, no 3D render look. '
   + 'Chest-up portrait: crop at mid-chest, so only head, neck, shoulders, chest and upper arms show, with no waist, shorts or legs. The figure fills most of the frame width but never touches the edges, with a clear margin on both sides, straight-on camera, neutral confident expression, centred. '
   + 'No text, no frame, no scenery. The whole background must be one flat, uniform, pure bright green (#00FF00) with no shadow, gradient or floor, so it can be cut out automatically.';
@@ -424,11 +428,17 @@ export async function cutPortrait(env, picture) {
   return { ...picture, cut: false };
 }
 
-async function render(env, bg, pose, photo, portrait = false, kit = null, level = 0) {
+export async function resizeSquare(env, bytes) {
+  const size = pngSize(bytes);
+  if (!env.IMAGES?.input || !size || size.w < 256 || size.h < 256 || Math.abs(size.w / size.h - 1) > 0.02) return null; // only near-square pictures are safe to scale
+  try { const out = await env.IMAGES.input(new Blob([bytes]).stream()).transform({ width: CARD_SIZE, height: CARD_SIZE, fit: 'cover' }).output({ format: 'image/png' }); return new Uint8Array(await out.response().arrayBuffer()); } catch { return null; }
+}
+
+async function render(env, bg, pose, photo, portrait = false, kit = null, level = 0, opts = {}) {
   if (!env.AI) throw new Error('The AI binding is not connected.');
   if (level > 0) kit = null; // a second picture of a person is the likeliest thing for the safety filter to trip on
   const form = new FormData();
-  form.append('prompt', portrait ? portraitPrompt(!!kit, level) : cardPrompt(pose.prompt, level));
+  form.append('prompt', portrait ? portraitPrompt(!!kit, level, opts.kitText) : cardPrompt(pose.prompt, level, opts.kitText, opts.number));
   form.append('width', String(CARD_SIZE));
   form.append('height', String(CARD_SIZE));
   if (!portrait) form.append('input_image_0', await reference(env, bg.bytes, bg.type), 'background.png');
@@ -437,11 +447,16 @@ async function render(env, bg, pose, photo, portrait = false, kit = null, level 
   const packed = new Response(form);
   const out = await env.AI.run(CARD_MODEL, { multipart: { body: packed.body, contentType: packed.headers.get('content-type') } });
   if (typeof out?.image !== 'string') throw new Error('The image model returned no picture.');
-  const bytes = Uint8Array.from(atob(out.image), (c) => c.charCodeAt(0));
-  const type = photoType(bytes);
+  let bytes = Uint8Array.from(atob(out.image), (c) => c.charCodeAt(0));
+  let type = photoType(bytes);
   if (bytes.length < 1000 || !type) throw new Error('The image model returned an unusable picture.');
   const dimensions = type[1] === 'png' ? pngSize(bytes) : null;
-  if (dimensions && dimensions.w && dimensions.h && (dimensions.w !== CARD_SIZE || dimensions.h !== CARD_SIZE)) throw new Error('AI artwork must be exactly 1024 × 1024 pixels.');
+  if (dimensions && dimensions.w && dimensions.h && (dimensions.w !== CARD_SIZE || dimensions.h !== CARD_SIZE)) {
+    // A model answering at another size is not worth a failed try: scale it to the card size when the Images binding is there.
+    const fixed = await resizeSquare(env, bytes);
+    if (!fixed) throw new Error('AI artwork must be exactly 1024 × 1024 pixels.');
+    bytes = fixed; type = ['image/png', 'png'];
+  }
   return { bytes, type };
 }
 
@@ -487,12 +502,12 @@ async function generateOne(env, r, now) {
     };
     if (wantP && !portraitKey) {
       const kit = await readAsset(env, KIT_KEY);
-      portraitKey = await attemptEach('portrait', async (level) => store('portrait_key', await cutPortrait(env, await render(env, bg, poseT, photo, true, kit, level))));
+      portraitKey = await attemptEach('portrait', async (level) => store('portrait_key', await cutPortrait(env, await render(env, bg, poseT, photo, true, kit, level, { kitText: kitText(env) }))));
     }
     if (wantA && !resultKey) {
       resultKey = await attemptEach('cinematic', async (level) => {
         if (!bg || !poseT) throw new Error('The chosen background or pose is gone.');
-        return store('result_key', await render(env, bg, poseT, photo, false, null, level));
+        return store('result_key', await render(env, bg, poseT, photo, false, null, level, { kitText: kitText(env), number: r.kit_number }));
       });
     }
     const complete = (!wantP || portraitKey) && (!wantA || resultKey);

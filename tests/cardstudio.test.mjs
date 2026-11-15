@@ -1,6 +1,6 @@
 import { call, env, login, r2objects, W } from './mock.mjs';
 import { t, done } from './lib.mjs';
-import { canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, portraitPrompt, CARD_MODEL } from '../bot/cardstudio.js';
+import { canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, portraitPrompt, CARD_MODEL, KIT_TEXT, kitText, resizeSquare } from '../bot/cardstudio.js';
 
 const setFlags = (o) => { env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), ...o }); };
 const owner = await login('111', [], 'Boss');
@@ -341,6 +341,21 @@ t('image prompts: chest up, margin from the edges', () => {
     if (!/chest up/i.test(cardPrompt('standing', lvl))) throw new Error('card prompt must say chest up');
   }
   if (!/no waist, shorts or legs/.test(portraitPrompt(false, 0))) throw new Error('portrait prompt must exclude legs');
+});
+t('4a: cinematic prompt carries kit and shirt number, still chest up', () => {
+  const p = cardPrompt('standing', 0, kitText({}), 9);
+  if (!p.includes(KIT_TEXT) || !/number 9 big/.test(p) || !/chest up/i.test(p)) throw new Error(p);
+});
+t('4a: kit text is Phoenix, config-overridable, no NOREX words or red', () => {
+  if (/norex|red\b|crest red/i.test(KIT_TEXT) || !/orange/.test(KIT_TEXT)) throw new Error(KIT_TEXT);
+  if (kitText({ CARD_KIT_TEXT: 'a blue shirt' }) !== 'a blue shirt' || kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'female') !== 'b') throw new Error('override');
+});
+t('4a: no Images binding means no resize, never a crash', (await resizeSquare({}, PNG(1000, 1000))) === null);
+t('4a: wrong-size model answer is scaled when Images is bound', async () => {
+  const fake = { IMAGES: { input: () => ({ transform: () => ({ output: async () => ({ response: () => new Response(PNG(CARD_SIZE, CARD_SIZE)) }) }) }) } };
+  const out = await resizeSquare(fake, PNG(1000, 1000));
+  if (!out || pngSize(out).w !== CARD_SIZE) throw new Error('not scaled');
+  if ((await resizeSquare(fake, PNG(1000, 500))) !== null) throw new Error('non-square must be refused');
 });
 
 done();
