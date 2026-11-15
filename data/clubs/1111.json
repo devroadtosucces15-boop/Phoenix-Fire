@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T22:50:42.832Z",
+ "fetchedAt": "2026-11-15T23:00:41.889Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1943,12 +1943,12 @@
   {
    "name": "zouz94230",
    "proPos": "25",
-   "gamesPlayed": "209",
+   "gamesPlayed": "210",
    "goals": "102",
-   "assists": "83",
+   "assists": "86",
    "manOfTheMatch": "30",
    "ratingAve": "7.5",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2097,10 +2097,10 @@
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "184",
-   "goals": "186",
+   "gamesPlayed": "185",
+   "goals": "188",
    "assists": "137",
-   "manOfTheMatch": "31",
+   "manOfTheMatch": "32",
    "ratingAve": "7.8",
    "prevGoals": "2",
    "favoritePosition": "forward"
