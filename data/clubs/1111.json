@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T05:20:44.896Z",
+ "fetchedAt": "2026-11-15T05:30:41.392Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -583,6 +583,42 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "defender"
+  },
+  {
+   "name": "SevnAliasX",
+   "gamesPlayed": "2",
+   "winRate": "100",
+   "goals": "7",
+   "assists": "1",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "77",
+   "passesMade": "43",
+   "passSuccessRate": "84",
+   "ratingAve": "10.0",
+   "tacklesMade": "2",
+   "tackleSuccessRate": "22",
+   "proName": "OMERTA",
+   "proPos": "25",
+   "proStyle": "0",
+   "proHeight": "162",
+   "proNationality": "129",
+   "proOverall": "82",
+   "proOverallStr": "82",
+   "manOfTheMatch": "2",
+   "redCards": "0",
+   "prevGoals": "3",
+   "prevGoals1": "3",
+   "prevGoals2": "4",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "forward"
   },
   {
    "name": "leo77romano",
@@ -1848,7 +1884,7 @@
  "positionCount": {
   "midfielder": 7,
   "goalkeeper": 2,
-  "forward": 12,
+  "forward": 13,
   "defender": 6
  },
  "career": [
@@ -2158,6 +2194,17 @@
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
    "prevGoals": "2",
+   "favoritePosition": "forward"
+  },
+  {
+   "name": "SevnAliasX",
+   "proPos": "25",
+   "gamesPlayed": "361",
+   "goals": "428",
+   "assists": "242",
+   "manOfTheMatch": "37",
+   "ratingAve": "7.6",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
