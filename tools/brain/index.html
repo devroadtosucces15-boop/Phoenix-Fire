@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phoenix Fire Brain</title>
+<link rel="icon" href="/crest.png">
+<style>
+:root{color-scheme:dark;--ink:#0a0705;--panel:#14100c;--panel2:#1b1510;--line:#2c231b;--txt:#efe8df;--mute:#9a9186;--acc:#e8651a;--gold:#efcf7a;--ok:#4be08a;--bad:#ff7d72;--steel:#8c97ad;
+--display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;--ui:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;--mono:ui-monospace,'SF Mono',Consolas,'Liberation Mono',monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--txt);font:14px/1.5 var(--ui)}
+.wrap{max-width:1320px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-right,0px)) 60px max(16px,env(safe-area-inset-left,0px))}
+header.top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+header.top img{width:52px;height:52px;object-fit:contain}
+h1{font:700 30px/1 var(--display);letter-spacing:.05em;text-transform:uppercase;margin:0}h1 em{font-style:normal;color:var(--acc)}
+.lede{color:var(--mute);margin:4px 0 0}
+.live{margin-left:auto;font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:center}.live i{width:8px;height:8px;border-radius:50%;background:var(--bad);display:inline-block}.live.on i{background:var(--ok)}
+.bar{position:sticky;top:0;z-index:5;background:var(--ink);padding:12px 0;margin-top:14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.r{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{font:500 12.5px var(--ui);padding:6px 11px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--txt);cursor:pointer;white-space:nowrap}
+.chip b{font-weight:500;color:var(--mute);margin-left:5px}
+.chip[aria-pressed=true],.tab[aria-selected=true]{background:var(--acc);border-color:var(--acc);color:#1a0d04;font-weight:600}.chip[aria-pressed=true] b{color:#4a2408}
+.tab{font:700 15px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:7px 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--txt);cursor:pointer}
+.chip:focus-visible,.tab:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(max-width:700px){.bar{position:static}}
+input[type=search]{flex:1 1 220px;min-width:0;padding:8px 12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;color:var(--txt);font:inherit}
+.lab{font:600 11px var(--ui);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-right:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-top:16px}
+.big{font:700 54px/1 var(--display);color:var(--acc)}.big small{font-size:24px;color:var(--mute)}
+h2{font:700 21px/1.1 var(--display);letter-spacing:.03em;margin:22px 0 8px}h3,h4{font:700 17px var(--display);letter-spacing:.03em;margin:14px 0 6px}
+.meter{height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:6px 0}.meter span{display:block;height:100%;background:var(--acc)}
+.tag{font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute);white-space:nowrap;display:inline-block}
+.tag.NEXT{color:#1a0d04;background:var(--gold);border-color:var(--gold);font-weight:600}.tag.DONE,.tag.set{color:var(--ok);border-color:#2c6b47}.tag.BLOCKED,.tag.PAUSED,.tag.not\ set{color:var(--bad);border-color:#7a3a33}.tag.OPEN{color:var(--steel);border-color:#3d4a66}.tag.unverified{color:var(--gold);border-color:#7a6a3a}
+.item{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:6px 12px;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px;margin-bottom:10px}
+.item.isnext{border-color:var(--gold)}
+.item .id{font:700 18px var(--display);color:var(--acc)}.item .ti{overflow-wrap:anywhere}.item .meta{grid-column:2/-1;display:flex;gap:6px;flex-wrap:wrap;color:var(--mute);font-size:12px}
+.item details{grid-column:1/-1}.item summary{cursor:pointer;color:var(--mute);font-size:12px}.item details p,.item details li{color:var(--txt);margin:4px 0}
+@media(max-width:700px){.item{grid-template-columns:minmax(0,1fr)}.item .meta{grid-column:1}}
+.tw{overflow-x:auto;margin:8px 0}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mute);font:600 11px var(--ui);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+code{font:12px var(--mono);background:#000;color:var(--gold);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}pre{background:#000;border:1px solid var(--line);border-radius:8px;padding:10px;overflow-x:auto}
+a{color:var(--gold)}.mute{color:var(--mute)}.doc h2{font-size:18px}.doc p,.doc li{max-width:90ch}
+details.lib{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:10px}details.lib>summary{cursor:pointer;padding:12px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font:700 19px var(--display);letter-spacing:.03em}details.lib>.doc{padding:0 16px 14px;border-top:1px solid var(--line)}
+.banner{background:#22110c;border:1px solid #6b2a1f;border-radius:10px;padding:10px 14px;margin-top:14px;color:#ffcfc8}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><img src="/crest.png" alt=""><div><h1>Phoenix Fire <em>Brain</em></h1><p class="lede" id="lede">Rise. Burn. Repeat.</p></div><div class="live" id="live"><i></i><span>connecting</span></div></header>
+<nav class="bar"><div class="r" role="tablist" id="tabs"></div><div class="r" id="tools"></div></nav>
+<main id="main"></main>
+</div>
+<script>
+const TABS=[['roadmap','Roadmap'],['libraries','Libraries'],['references','References'],['credentials','Credentials']];
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let M=null,tab=(location.hash||'#roadmap').slice(1),fStatus='ALL',fPhase='ALL',q='';const openLib=new Set();
+const tabOk=()=>TABS.some(t=>t[0]===tab)||(tab='roadmap');
+const chip=(label,n,on,attr)=>`<button class="chip" aria-pressed="${on}" ${attr}>${E(label)}${n==null?'':`<b>${n}</b>`}</button>`;
+const meter=p=>`<div class="meter" role="img" aria-label="${p}%"><span style="width:${p}%"></span></div>`;
+function head(){document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<button class="tab" role="tab" aria-selected="${k===tab}" data-tab="${k}">${l}</button>`).join('');
+ const t=document.getElementById('tools');
+ if(tab==='roadmap'&&M){const it=M.roadmap.items,st=['ALL','NEXT','OPEN','BLOCKED','PAUSED','DONE'];
+  t.innerHTML=`<span class="lab">Status</span>`+st.map(s=>chip(s,s==='ALL'?it.length:it.filter(i=>i.status===s).length,fStatus===s,`data-st="${s}"`)).join('')+`<span class="lab" style="margin-left:10px">Phase</span>`+['ALL',...M.roadmap.metrics.phases.map(p=>p.phase)].map(p=>chip(p,null,fPhase===p,`data-ph="${E(p)}"`)).join('')+`<input type="search" id="q" placeholder="Search items" value="${E(q)}">`;
+ }else if(tab==='libraries'||tab==='references'){t.innerHTML=`<input type="search" id="q" placeholder="Search" value="${E(q)}">`}else t.innerHTML='';}
+function roadmap(){const R=M.roadmap,m=R.metrics,nx=R.items.find(i=>i.id===R.next);
+ let h=`<div class="grid"><div class="card"><div class="lab">Project</div><div class="big">${m.project}<small>%</small></div>${meter(m.project)}<span class="mute">${R.items.filter(i=>i.status==='DONE').length} of ${R.items.length} items done · updated ${E(R.updated)}</span></div>`;
+ h+=`<div class="card"><div class="lab">Next session</div>${nx?`<div class="id" style="font:700 26px var(--display);color:var(--gold)">${nx.id}</div><div>${E(nx.title)}</div><div class="mute" style="margin-top:6px">model ${nx.model} · size ${nx.size} · about ${nx.estMinutes} min</div>`:'<div class="mute">No NEXT item.</div>'}</div>`;
+ h+=`<div class="card"><div class="lab">Phases</div>${m.phases.map(p=>`<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;gap:8px"><span>${E(p.phase)}</span><span class="mute">${p.done}/${p.items} · ${p.percent}%</span></div>${meter(p.percent)}</div>`).join('')}</div></div>`;
+ const f=R.items.filter(i=>(fStatus==='ALL'||i.status===fStatus)&&(fPhase==='ALL'||i.phase===fPhase)&&(!q||JSON.stringify(i).toLowerCase().includes(q.toLowerCase())));
+ h+=`<h2>Items <span class="mute" style="font:400 14px var(--ui)">${f.length} shown</span></h2>`;
+ h+=f.map(i=>`<div class="item${i.id===R.next?' isnext':''}"><div class="id">${i.id}</div><div class="ti">${E(i.title)}</div><div><span class="tag ${i.status}">${i.status}${i.verify?' (verify)':''}</span></div>
+ <div class="meta"><span>${E(i.phase)}</span><span>size ${i.size}</span><span>effort ${i.effort}/5</span><span>importance ${i.importance}/5</span><span>~${i.estMinutes} min</span><span>model ${i.model}</span>${i.lowHanging?'<span>low hanging</span>':''}<span>${i.percent}%</span>${i.blockedBy.length?`<span style="color:var(--bad)">waits for ${i.blockedBy.join(', ')}</span>`:''}</div>
+ <details><summary>Details${i.doneLog.length?` · done ${E(i.doneLog[i.doneLog.length-1].date)}`:''}</summary>${meter(i.percent)}<p><b>Area:</b> ${E(i.area)} · <b>File lane:</b> ${E(i.fileLane)} · <b>Depends on:</b> ${i.dependsOn.join(', ')||'none'}</p>${i.notes?`<p>${E(i.notes)}</p>`:''}${i.doneLog.length?`<ul>${i.doneLog.map(l=>`<li>${E(l.date)} ${E(l.ref||'')}: ${E(l.what||'')}</li>`).join('')}</ul>`:''}${i.plans.length?`<p>Plans: ${i.plans.map(E).join(', ')}</p>`:''}</details></div>`).join('')||'<p class="mute">Nothing matches.</p>';
+ h+=`<h2>Inbox</h2><div class="card">${R.inbox.length?`<ul style="margin:0;padding-left:18px">${R.inbox.map(x=>`<li><span class="mute">${E(x.date)}</span> ${E(x.text)}</li>`).join('')}</ul>`:'<span class="mute">Empty.</span>'}</div>`;return h;}
+function libs(){const L=M.libraries.filter(l=>!q||(l.title+l.html).toLowerCase().includes(q.toLowerCase()));
+ return `<p class="lede" style="margin-top:14px">One card per library file. Generated files say so; the hand files carry their last verified date.</p>`+L.map(l=>`<details class="lib" data-lib="${l.file}" ${openLib.has(l.file)?'open':''}><summary>${E(l.title)} <span class="tag">${l.generated?'generated':'hand'}</span> <span class="tag">${l.verified?'verified '+E(l.verified):'no date'}</span> <span class="tag">${l.lines} lines</span> <code>LIBRARY/${l.file}</code></summary><div class="doc">${l.html}</div></details>`).join('')||'<p class="mute">Nothing matches.</p>';}
+function refs(){const R=M.references,m=s=>!q||s.toLowerCase().includes(q.toLowerCase());
+ let h=`<h2>Library groups</h2><div class="tw"><table><thead><tr><th>Group</th><th>Where</th><th>Use</th></tr></thead><tbody>${R.table.filter(r=>m(r.group+r.where+r.use)).map(r=>`<tr><td>${E(r.group)}</td><td><code>${E(r.where)}</code></td><td>${E(r.use)}</td></tr>`).join('')}</tbody></table></div>`;
+ h+=`<h2>Saved links</h2>`+R.groups.map(g=>({t:g.title,l:g.links.filter(m)})).filter(g=>g.l.length).map(g=>`<div class="card" style="margin-bottom:10px"><div class="lab">${E(g.t)}</div>${g.l.map(u=>`<div><a href="${E(u)}" target="_blank" rel="noopener">${E(u.replace(/^https?:\/\//,''))}</a></div>`).join('')}</div>`).join('');return h;}
+function creds(){const C=M.credentials;
+ return `<div class="banner">Names and places only. This page never stores or shows a value. Registry checked ${E(C.checked)}; whether a secret is really set cannot be verified from here, so "set" means the registry says so.</div>
+ <h2>Discord apps</h2><div class="tw"><table><thead><tr><th>App</th><th>Public key</th><th>Endpoint</th><th>Intents</th></tr></thead><tbody>${C.apps.map(a=>`<tr><td>${E(a.app)}</td><td>${E(a.publicKey)}</td><td><code>${E(a.endpoint)}</code></td><td>${E(a.intents)}</td></tr>`).join('')}</tbody></table></div>
+ <h2>Secrets <span class="mute" style="font:400 14px var(--ui)">${C.secrets.length} rows</span></h2><div class="tw"><table><thead><tr><th>Name</th><th>Needed for</th><th>Where it comes from</th><th>Worker</th><th>GitHub</th></tr></thead><tbody>${C.secrets.map(s=>`<tr><td>${s.names.map(n=>`<code>${E(n)}</code>`).join(' ')}</td><td>${E(s.purpose)}</td><td>${E(s.source)}</td><td><span class="tag ${s.worker}" title="${E(s.workerNote)}">${s.worker}</span></td><td><span class="tag ${s.github}" title="${E(s.githubNote)}">${s.github}</span></td></tr>`).join('')}</tbody></table></div>
+ <p class="mute">Source: <code>bot/SECRETS-REGISTRY.md</code> and <code>LIBRARY/CREDENTIALS.md</code>. Owner-only steps (Dev Portal, Cloudflare) are never done by a session.</p>`;}
+function render(){if(!M)return;tabOk();head();document.getElementById('lede').textContent='Rise. Burn. Repeat. · '+M.roadmap.metrics.project+'% done · refreshed '+new Date(M.generated).toLocaleTimeString();
+ document.getElementById('main').innerHTML=({roadmap,libraries:libs,references:refs,credentials:creds})[tab]();}
+async function load(){try{M=await (await fetch('/api/model')).json();if(M.error)throw new Error(M.error);render()}catch(e){document.getElementById('main').innerHTML=`<div class="banner">Could not read the library: ${E(e.message)}</div>`}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tab],[data-st],[data-ph]');if(!b)return;if(b.dataset.tab){tab=b.dataset.tab;q='';location.hash=tab}if(b.dataset.st)fStatus=b.dataset.st;if(b.dataset.ph)fPhase=b.dataset.ph;render()});
+document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;document.getElementById('main').innerHTML=({roadmap,libraries:libs,references:refs,credentials:creds})[tab]();}});
+document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.lib){d.open?openLib.add(d.dataset.lib):openLib.delete(d.dataset.lib)}},true);
+window.addEventListener('hashchange',()=>{tab=(location.hash||'#roadmap').slice(1);render()});
+function live(){const el=document.getElementById('live'),es=new EventSource('/events');es.onopen=()=>{el.className='live on';el.lastChild.textContent='live'};es.onerror=()=>{el.className='live';el.lastChild.textContent='reconnecting'};es.addEventListener('change',load)}
+load();live();
+</script>
+</body>
+</html>
