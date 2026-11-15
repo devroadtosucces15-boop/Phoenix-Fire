@@ -63,7 +63,7 @@ async function bumpRules(env, me, title) {
   await run(env, "INSERT INTO meta (key, value) VALUES ('rules_at', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value", String(Date.now()));
   // The person who changed the rules has obviously read them.
   await run(env, 'INSERT OR IGNORE INTO doc_acks (user_id, version, name, avatar, at) VALUES (?, ?, ?, ?, ?)', me.u, v, me.n, me.a ?? null, Date.now());
-  await safely(notifyMembers(env, { type: 'announce', icon: '📜', title: 'Club rules updated – please read and acknowledge', body: `Changed: ${title}`, link: 'docs.html#rules', ack: true, ref: `rules:${v}` }));
+  await safely(notifyMembers(env, { type: 'announce', icon: '📜', title: 'Club rules updated – please read and acknowledge', body: `Changed: ${title}`, link: 'hub-handbook.html#hb-rules', ack: true, ref: `rules:${v}` }));
   return v;
 }
 
@@ -118,7 +118,7 @@ async function saveDoc(body, me, env, log) {
   if (area === 'rules' && body.ack && (changed || !row)) out.rulesVersion = await bumpRules(env, me, title);
   if (hold) out.held = true;
   if (area === 'announce' && body.notify && !hold) {
-    out.notified = await safely(notifyMembers(env, { type: 'announce', title, body: plain(text).slice(0, 600) || null, link: `docs.html#d-${id}`, ack: !!body.ack })) ?? 0;
+    out.notified = await safely(notifyMembers(env, { type: 'announce', title, body: plain(text).slice(0, 600) || null, link: `hub-handbook.html#hb-docs`, ack: !!body.ack })) ?? 0;
   }
   if (body.discord?.channel && !hold) out.discord = await postDoc(env, me, id, body.discord, log);
   return json({ ...out, ...(await docsList(env, me)) });
@@ -193,11 +193,11 @@ function docEmbed(env, me, d) {
     embeds: [{
       title: `${{ announce: '📣', rules: '📜', requirements: '✅', faq: '❓', glossary: '📖', playstyle: '🧠' }[d.area] ?? '📣'} ${d.title}`.slice(0, 250),
       description: plain(d.body, true).slice(0, 3900) || undefined,
-      url: `${site}docs.html#d-${d.id}`, color: RED, timestamp: new Date(d.edited_at ?? d.at).toISOString(),
+      url: `${site}hub-handbook.html#hb-docs`, color: RED, timestamp: new Date(d.edited_at ?? d.at).toISOString(),
       ...(img ? { image: { url: img } } : {}),
       author: { name: me.n }, footer: { text: `${orgName(env)} · club announcements` },
     }],
-    components: [{ type: 1, components: [{ type: 2, style: 5, label: 'Open on the site', url: `${site}docs.html#d-${d.id}` }] }],
+    components: [{ type: 1, components: [{ type: 2, style: 5, label: 'Open on the site', url: `${site}hub-handbook.html#hb-docs` }] }],
   };
 }
 // The design-system panel for the same item: this is what actually gets posted.
@@ -211,7 +211,7 @@ function docMessage(env, me, d) {
     text(plain(d.body, true)),
     img ? cards(img) : null,
     footer(`Updated <t:${Math.floor((d.edited_at ?? d.at) / 1000)}:R>`),
-    buttons([{ label: 'Open on the site', url: `${site}docs.html#d-${d.id}` }]),
+    buttons([{ label: 'Open on the site', url: `${site}hub-handbook.html#hb-docs` }]),
   ] });
 }
 // Posts one docs item as a rich embed. Never throws – returns { ok } or { ok: false, error } for the UI.
@@ -249,7 +249,7 @@ async function docsRoute(p, method, body, me, env, log, url) {
     await run(env, "UPDATE docs SET pinned = 1 WHERE removed_at IS NULL AND area = 'announce' AND title = 'A message from the founder'");
     const founder = await one(env, "SELECT id, body FROM docs WHERE removed_at IS NULL AND area = 'announce' AND title = 'A message from the founder'");
     const version = await bumpRules(env, me, 'Club philosophy, rules and expectations');
-    if (founder) await safely(notifyMembers(env, { type: 'announce', title: 'A message from the founder', body: plain(founder.body).slice(0, 600) || null, link: `docs.html#d-${founder.id}`, ack: false }));
+    if (founder) await safely(notifyMembers(env, { type: 'announce', title: 'A message from the founder', body: plain(founder.body).slice(0, 600) || null, link: `hub-handbook.html#hb-docs`, ack: false }));
     await log(env, me, 'docs-release', `rules version ${version}`);
     return json({ released: true, version, ...(await docsList(env, me)) });
   }
@@ -283,7 +283,7 @@ async function docsRoute(p, method, body, me, env, log, url) {
     if (Date.now() - last < DAY / 2) return fail('A reminder already went out in the last 12 hours.', 429);
     const a = await ackList(env);
     if (!a.version) return fail('There are no rules to acknowledge yet.', 409);
-    const sent = a.missing.length ? await notify(env, a.missing.map((m) => m.id), { type: 'announce', icon: '📜', title: 'Reminder: please read and acknowledge the club rules', link: 'docs.html#rules', ack: true, ref: `rules:${a.version}` }) : 0;
+    const sent = a.missing.length ? await notify(env, a.missing.map((m) => m.id), { type: 'announce', icon: '📜', title: 'Reminder: please read and acknowledge the club rules', link: 'hub-handbook.html#hb-rules', ack: true, ref: `rules:${a.version}` }) : 0;
     await run(env, "INSERT INTO meta (key, value) VALUES ('rules_remind_at', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value", String(Date.now()));
     await log(env, me, 'rules-remind', `${sent} members`);
     return json({ ...a, sent });

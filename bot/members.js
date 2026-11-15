@@ -220,9 +220,9 @@ async function reportsQueue(env) {
       JOIN chats c ON c.id = m.chat_id WHERE m.reported_at IS NOT NULL AND m.removed = 0 ORDER BY m.reported_at DESC LIMIT 100`),
   ]);
   return [
-    ...posts.map((p) => ({ source: 'post', id: p.id, at: p.reported_at, author: p.name, reason: opt(p.reported_reason), excerpt: (p.body || '').slice(0, 140), link: `feed.html#p${p.id}` })),
+    ...posts.map((p) => ({ source: 'post', id: p.id, at: p.reported_at, author: p.name, reason: opt(p.reported_reason), excerpt: (p.body || '').slice(0, 140), link: `hub-clubhouse.html#p${p.id}` })),
     ...fb.map((f) => ({ source: 'feedback', id: f.id, at: f.reported_at, author: `${f.from_name} → ${f.to_name}`, reason: opt(f.report), excerpt: (f.body || '').slice(0, 140), link: 'members.html#feedback' })),
-    ...msgs.map((m) => ({ source: 'message', id: m.id, at: m.reported_at, author: m.name, reason: opt(m.reported_reason), excerpt: (m.text || '').slice(0, 140), link: `messages.html#c${m.chat_id}` })),
+    ...msgs.map((m) => ({ source: 'message', id: m.id, at: m.reported_at, author: m.name, reason: opt(m.reported_reason), excerpt: (m.text || '').slice(0, 140), link: `hub-clubhouse.html#c${m.chat_id}` })),
   ].sort((a, b) => b.at - a.at);
 }
 

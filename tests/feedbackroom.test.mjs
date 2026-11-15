@@ -17,7 +17,7 @@ t('"tell the managers why" appears only after ❌ / 😕', /const whyBlock[\s\S]
 t('sent list shows the reaction the server returned (the server drops ❌ / 😕)', js.includes('f.reaction ?') && !/disagree[\s\S]{0,40}sent/.test(js));
 t('moderation tab only for canModerate, caution items first', js.includes('S.canModerate ? [[\'mod\'') && /needsLook\(b\) - needsLook\(a\)/.test(js));
 t('match picker reads api/club.json and sends the match id', js.includes("'api/club.json'") && /match: f\.match\.value \|\| undefined/.test(js));
-t('notification links reach the room', /members\\\.html#feedback\$\/, \(\) => 'hub-clubhouse\.html#ch-feedback'/.test(rd('next/static/alerts.js')) && rd('next/static/header.js').includes("hub-clubhouse.html#ch-feedback"));
+t('notification links reach the room', rd('next/lib/linkmap.mjs').includes("feedback: 'hub-clubhouse.html#ch-feedback'") && rd('next/static/alerts.js').includes('PhoenixLinks') && rd('next/static/header.js').includes('PhoenixLinks'));
 t('styles exist, 22px rhythm and a 430px rule', css.includes('.fb-list{display:grid;gap:22px') && /@media \(max-width:480px\)\{\.fb-r/.test(css));
 
 // ---------- run it against a fake DOM ----------

@@ -3,7 +3,7 @@
 // Everyone fits in one picture, so a full squad no longer makes the post long. Drawn in the Worker because the roster
 // changes with every tap: a model → SVG (pure, tested) → PNG through the Images binding, stored in R2 under a hash of
 // the roster so an unchanged roster is never drawn twice. Any failure returns null and the post keeps its text rows.
-// Phoenix look: ember accent, warm ink panel, the Phoenix crest (static/crest-sm.png on the site) and the org name from config.
+// Phoenix look: ember accent, warm ink panel, the Phoenix crest (crest-sm.png on the site) and the org name from config.
 //   Flag `rosterPicture` (off by default). GET /api/events/roster-test?id= (owner) says why a draw failed.
 import { flagOn } from './roles.js';
 import { facesOf } from './faces.js';
@@ -91,12 +91,12 @@ async function imageData(url, limit) {
   } catch { return null; }
 }
 const faceData = (url) => imageData(/^https:\/\/cdn\.discordapp\.com\//.test(url) && !url.includes('?') ? `${url}?size=64` : url, FACE_BYTES);
-// The Phoenix crest from the published site (phoenix/overlay/crest-sm.png → static/crest-sm.png); null if the site is not reachable.
+// The Phoenix crest from the published site (phoenix/overlay/crest-sm.png → crest-sm.png); null if the site is not reachable.
 let crestMemo = null;
 export const crestData = async (env) => {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
   if (!env.SITE_URL) return null;
-  if (crestMemo?.site !== site || (!crestMemo.uri && Date.now() - crestMemo.at > 6e4)) crestMemo = { site, at: Date.now(), uri: await imageData(`${site}static/crest-sm.png`, CREST_BYTES) };
+  if (crestMemo?.site !== site || (!crestMemo.uri && Date.now() - crestMemo.at > 6e4)) crestMemo = { site, at: Date.now(), uri: await imageData(`${site}crest-sm.png`, CREST_BYTES) };
   return crestMemo.uri;
 };
 const sha = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].slice(0, 8).map((b) => b.toString(16).padStart(2, '0')).join('');

@@ -79,7 +79,7 @@ const KINDS = {
     flag: 'feed', perm: 'feed.view', what: 'comment',
     target: (env, id) => one(env, `SELECT c.user_id, c.post_id FROM post_comments c JOIN posts p ON p.id = c.post_id
       WHERE c.id = ? AND c.removed = 0 AND p.removed = 0`, id),
-    link: (t) => `feed.html#p${t.post_id}`,
+    link: (t) => `hub-clubhouse.html#p${t.post_id}`,
   },
 };
 // ids → { id: { reacts: {emoji: n}, who: {emoji: [names ≤12]}, mine: [emoji] } } – same shape as feed posts.

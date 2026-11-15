@@ -654,7 +654,7 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
         cmpCard ? cards({ url: cmpCard, alt: `${a.n} and ${b.n} compared stat by stat` }) : cards(cardUrl(deck, 'player', a.k), cardUrl(deck, 'player', b.k)),
         cmpCard ? null : text(`\`\`\`\n${table}\n\`\`\``),
         footer('◀ marks the better number · the site has the radar chart'),
-        buttons([{ label: 'Compare on the site', url: `${site}compare.html?a=${encodeURIComponent(a.k)}&b=${encodeURIComponent(b.k)}` }]),
+        buttons([{ label: 'Compare on the site', url: `${site}players.html#compare=${encodeURIComponent(a.k)},${encodeURIComponent(b.k)}` }]),
       ] });
     }
     case 'top': {

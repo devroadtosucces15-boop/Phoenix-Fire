@@ -333,7 +333,7 @@ export async function memberCommand(i, env, who, site, h) {
     return reply(message({ accent: e.w > e.l ? 'win' : e.l > e.w ? 'loss' : 'gold', blocks: [
       header({ eyebrow: brand('Head to head', env), title: `⚔️ ${orgName(env)} vs ${e.n}`, sub: `${e.p} game${e.p === 1 ? '' : 's'} · ${e.w}W ${e.d}D ${e.l}L` }),
       facts([['Goals', `${e.gf}–${e.ga} (${gd >= 0 ? '+' : ''}${gd})`], ['Win rate', `${Math.round(100 * e.w / Math.max(1, e.p))}%`], ['Last meeting', `${e.lastRes} ${e.lastScore}`]]),
-      buttons([{ label: 'Head to head on the site', url: `${site}stats.html#h2h` }]),
+      buttons([{ label: 'Head to head on the site', url: `${site}stats.html` }]),
     ] }));
   }
   return say('Unknown command.');

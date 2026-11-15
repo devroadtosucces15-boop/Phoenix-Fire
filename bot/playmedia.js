@@ -110,7 +110,7 @@ async function shareMedia(env, me, id, mid, body, log) {
   if (!row.published) return fail('Publish the play before sharing its recording.', 400);
   const channel = String(body.channel ?? ''), role = String(body.role ?? '');
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
-  const link = `${site}tactics.html#play${id}`;
+  const link = `${site}playbook.html#play${id}`;
   const label = row.kind === 'video' ? '🎬 Video' : '🎙 Voice-over';
   const panelOf = (note, { file, ping } = {}) => message({ ping, blocks: [header({ eyebrow: `${orgName(env).toUpperCase()} · Tactics Studio`, title: `${label} · ${row.title}`.slice(0, 250), size: 3 }), note ? text(note) : null, file ? { type: 13, file: { url: `attachment://${file}` } } : null, buttons([{ label: 'Open in Studio', url: link }])] });
   if (row.size > DISCORD_ATTACH_MAX) {

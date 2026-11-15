@@ -2,7 +2,7 @@
 // author edit/delete, manager pin/remove; (b) photos and clips from R2 – upload, storage guard and owner dashboard in media.js.
 // Sharing/public posts follow as P6.1c.
 //   GET  /api/feed?f=all|highlight|league|rush|mine&before=<id>   members: a page of posts (pinned first on page one)
-//   GET  /api/feed/post?id=                                       members: one post (permalink feed.html#p<id>)
+//   GET  /api/feed/post?id=                                       members: one post (permalink hub-clubhouse.html#p<id>)
 //   POST /api/feed/post      { text, tag, media? }                members: new post – POSTS_DAY per day (media = uploaded keys)
 //   POST /api/feed/edit      { id, text, tag }                    author: edit
 //   POST /api/feed/delete    { id }                               author or managers: remove (kept for the record)
@@ -154,7 +154,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     if (!ins.meta?.changes) return fail(`That’s ${POSTS_DAY} posts today – post again tomorrow.`, 429);
     await attach(env, me, ins.meta.last_row_id, m.keys);
     await log(env, me, 'post', `${TAGS[v.tag][0]} ${m.keys.length ? '📎 ' : ''}${excerpt(v.text || 'photo/clip', 60)}`);
-    await notifyMentions(env, me, { text: v.text, flag: 'feed', where: 'in a feed post', link: `feed.html#p${ins.meta.last_row_id}`, ref: `feed:${ins.meta.last_row_id}` }); // P6.5
+    await notifyMentions(env, me, { text: v.text, flag: 'feed', where: 'in a feed post', link: `hub-clubhouse.html#p${ins.meta.last_row_id}`, ref: `feed:${ins.meta.last_row_id}` }); // P6.5
     return json({ post: await onePost(env, me, ins.meta.last_row_id) });
   }
   if (p === '/api/feed/edit') {
@@ -165,7 +165,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     if (v.error) return fail(v.error);
     const before = (await one(env, 'SELECT body FROM posts WHERE id = ?', id))?.body ?? '';
     await run(env, 'UPDATE posts SET body = ?, tag = ?, edited_at = ? WHERE id = ?', v.text, v.tag, Date.now(), id);
-    await notifyMentions(env, me, { text: v.text, before, flag: 'feed', where: 'in a feed post', link: `feed.html#p${id}`, ref: `feed:${id}` }); // P6.5 – only newly added names
+    await notifyMentions(env, me, { text: v.text, before, flag: 'feed', where: 'in a feed post', link: `hub-clubhouse.html#p${id}`, ref: `feed:${id}` }); // P6.5 – only newly added names
     return json({ post: await onePost(env, me, id) });
   }
   if (p === '/api/feed/delete') {
@@ -176,7 +176,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     await run(env, 'UPDATE posts SET removed = 1, removed_by = ?, removed_at = ?, pinned = 0 WHERE id = ?', me.n, Date.now(), id);
     await dropMedia(env, await postMediaKeys(env, id), 2); // photos/clips of a removed post leave storage straight away
     await run(env, 'DELETE FROM notifications WHERE ref IN (?, ?)', `feed:${id}`, `feed-react:${id}`);
-    if (!mine) await safely(notify(env, [r.user_id], { type: 'feed', icon: '🛡️', title: 'A manager removed one of your feed posts', body: `“${excerpt(r.body || 'photo/clip')}” – ask a manager on Discord if you think this was a mistake.`, link: 'feed.html' }));
+    if (!mine) await safely(notify(env, [r.user_id], { type: 'feed', icon: '🛡️', title: 'A manager removed one of your feed posts', body: `“${excerpt(r.body || 'photo/clip')}” – ask a manager on Discord if you think this was a mistake.`, link: 'hub-clubhouse.html#ch-feed' }));
     await log(env, me, mine ? 'post-delete' : 'post-remove', `#${id} ${excerpt(r.body, 60)}`);
     return json({ ok: true, id });
   }
@@ -188,7 +188,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     if (!add.meta?.changes) await run(env, 'DELETE FROM post_reactions WHERE post_id = ? AND user_id = ? AND emoji = ?', id, me.u, body.emoji);
     // One unread "reacted" bell note per post at a time – not one per click.
     else if (r.user_id !== me.u && !(await one(env, 'SELECT 1 FROM notifications WHERE user_id = ? AND ref = ? AND read_at IS NULL', r.user_id, `feed-react:${id}`))) {
-      await safely(notify(env, [r.user_id], { type: 'feed', icon: body.emoji, title: `${me.n} reacted ${body.emoji} to your post`, link: `feed.html#p${id}`, ref: `feed-react:${id}` }));
+      await safely(notify(env, [r.user_id], { type: 'feed', icon: body.emoji, title: `${me.n} reacted ${body.emoji} to your post`, link: `hub-clubhouse.html#p${id}`, ref: `feed-react:${id}` }));
     }
     const post = await onePost(env, me, id);
     return json({ id, reacts: post.reacts, who: post.who, mine: post.mine });
@@ -212,7 +212,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     const ins = await run(env, `INSERT INTO post_comments (post_id, parent_id, user_id, name, body, at) SELECT ?, ?, ?, ?, ?, ?
       WHERE (SELECT COUNT(*) FROM post_comments WHERE user_id = ? AND at > ?) < ?`, id, parent?.id ?? null, me.u, me.n, text, now, me.u, now - DAY, COMMENTS_DAY);
     if (!ins.meta?.changes) return fail(`That’s ${COMMENTS_DAY} comments today – take a breather.`, 429);
-    const n = { type: 'feed', icon: '💬', body: excerpt(text, 120), link: `feed.html#p${id}`, ref: `feed:${id}` };
+    const n = { type: 'feed', icon: '💬', body: excerpt(text, 120), link: `hub-clubhouse.html#p${id}`, ref: `feed:${id}` };
     const replyTo = parent?.replyTo && parent.replyTo !== me.u ? parent.replyTo : null;
     if (replyTo) await safely(notify(env, [replyTo], { ...n, icon: '↩️', title: `${me.n} replied to your comment` }));
     if (post.user_id !== me.u && post.user_id !== replyTo) await safely(notify(env, [post.user_id], { ...n, title: `${me.n} commented on your post` }));
@@ -254,7 +254,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     if (r.reported_at) return fail('Already reported – the managers are on it.', 409);
     const reason = cleanText(body.reason, 200) || 'No reason given';
     await run(env, 'UPDATE posts SET reported_at = ?, reported_by = ?, reported_reason = ? WHERE id = ?', Date.now(), me.u, reason, id);
-    await safely(notifyManagers(env, { type: 'queue', icon: '🚩', title: `${me.n} reported a feed post`, body: `“${excerpt(r.body || 'photo/clip', 100)}” – ${reason}`, link: `feed.html#p${id}` }, me.u));
+    await safely(notifyManagers(env, { type: 'queue', icon: '🚩', title: `${me.n} reported a feed post`, body: `“${excerpt(r.body || 'photo/clip', 100)}” – ${reason}`, link: `hub-clubhouse.html#p${id}` }, me.u));
     await log(env, me, 'post-report', `#${id}: ${reason}`);
     return json({ post: await onePost(env, me, id) });
   }
@@ -273,7 +273,7 @@ export async function feedRoute(p, method, body, me, env, log, url) {
     const res = await postEmbed(env, body.channel, body.role, message({ blocks: [
       header({ eyebrow: `${orgName(env).toUpperCase()} · Club feed`, title: `${TAGS[r.tag]?.[0] ?? '💬'} ${r.name ?? 'A member'}`, size: 3 }),
       text(excerpt(r.body || '(photo/clip)', 400)),
-      buttons([{ label: 'Open post', url: `${site}feed.html#p${id}` }]),
+      buttons([{ label: 'Open post', url: `${site}hub-clubhouse.html#p${id}` }]),
     ] }));
     if (!res.ok) return fail(res.error, 400);
     await run(env, 'UPDATE posts SET discord_at = ? WHERE id = ?', Date.now(), id);

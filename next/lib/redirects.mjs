@@ -3,28 +3,17 @@
 // on (meta refresh + location.replace, query and #fragment kept). Anything without a new equivalent goes to the same page under classic/.
 import fs from 'node:fs'; import path from 'node:path';
 import { cfg } from './data.mjs';
+import { HASH_MAP, HASH_TABLE, PAGE_MAP, KEEP_ID } from './linkmap.mjs';
 
 // Old root pages with a different home in the new design (target is relative to the site root; '#x' fragments are kept).
 export const ROOT_MAP = {
   'members.html': 'hub.html',
-  'builder.html': 'builds.html',
+  ...PAGE_MAP, // dead legacy names → their one current page (linkmap.mjs)
   'probuilds.html': 'builds.html',
-  'compare.html': 'players.html#compare',
-  'apply.html': 'join.html',
-  'docs.html': 'news.html',
-  'feed.html': 'news.html',
-  'messages.html': 'hub-clubhouse.html',
   'hub/index.html': 'hub.html',
 };
-// members.html#fragment → page (the bot's Discord embeds link to these)
-// Targets are pages and ids that exist in the built site today (locker items use the split pages, as the hub.html forwarder does).
-export const HASH_MAP = {
-  locker: 'hub.html', me: 'hub-profile.html#lk-me', achievements: 'hub-medals.html#lk-medals', alerts: 'hub-alerts.html#lk-alerts', 'alerts-settings': 'hub-alerts.html#lk-alertset',
-  schedule: 'hub-matchnight.html#mn-week', events: 'hub-matchnight.html#mn-week', rsvp: 'hub-matchnight.html#mn-week', motm: 'hub-matchnight.html#mn-motm', rush: 'hub-matchnight.html#mn-rush',
-  awards: 'hub-squad.html#sq-awards', predict: 'hub-squad.html#sq-predict', squads: 'hub-squad.html#sq-squads', teamup: 'hub-squad.html#sq-team', recs: 'hub-squad.html#sq-team', scout: 'hub-squad.html#sq-scout',
-  ideas: 'hub-clubhouse.html#ch-ideas', feedback: 'hub-clubhouse.html#ch-feedback', clubhouse: 'hub-clubhouse.html',
-  docs: 'hub-handbook.html#hb-docs', handbook: 'hub-handbook.html', manager: 'staff.html',
-};
+// members.html#fragment → page: see linkmap.mjs (one map for the site, the forwarder and the bot link test)
+export { HASH_MAP, HASH_TABLE };
 
 const walk = (dir, base = dir, acc = []) => {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -59,10 +48,10 @@ export function stubHtml(file, target) {
   const up = '../'.repeat(file.split('/').length - 1);
   const [page, frag] = target.split('#');
   const to = up + page + (frag ? '#' + frag : '');
-  const hashes = file === 'members.html' ? JSON.stringify(Object.fromEntries(Object.entries(HASH_MAP).map(([k, v]) => [k, up + v]))) : 'null';
+  const hashes = file === 'members.html' ? JSON.stringify(Object.fromEntries(Object.entries(HASH_TABLE).map(([k, v]) => [k, up + v]))) : 'null';
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${esc(cfg.siteTitle)}</title><meta http-equiv="refresh" content="0;url=${esc(to)}"><link rel="canonical" href="${esc(to)}">
-<script>(function(){var t=${JSON.stringify(to)},m=${hashes},h=location.hash.slice(1).split('?')[0],i=t.indexOf('#'),base=i<0?t:t.slice(0,i),f=i<0?'':t.slice(i);if(m&&Object.prototype.hasOwnProperty.call(m,h)){var j=m[h].indexOf('#');base=j<0?m[h]:m[h].slice(0,j);f=j<0?'':m[h].slice(j)}else if(!f)f=location.hash;location.replace(base+location.search+f)})()</script></head>
-<body style="background:#0b0f16;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:40px"><p>Taking you to the new page… <a style="color:#c8352c" href="${esc(to)}">continue</a></p></body></html>
+<script>(function(){var t=${JSON.stringify(to)},m=${hashes},h=location.hash.slice(1).split('?')[0],i=t.indexOf('#'),base=i<0?t:t.slice(0,i),f=i<0?'':t.slice(i);var o=Object.prototype.hasOwnProperty;if(m&&!o.call(m,h)&&h.indexOf('-')>0&&o.call(m,'~'+h.split('-')[0]))h='~'+h.split('-')[0];if(m&&o.call(m,h)){var j=m[h].indexOf('#');base=j<0?m[h]:m[h].slice(0,j);f=j<0?'':m[h].slice(j)}else if(!f||${KEEP_ID.has(file)})f=location.hash||f;location.replace(base+location.search+f)})()</script></head>
+<body style="background:${esc(cfg.brand?.ink || '#0a0705')};color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:40px"><p>Taking you to the new page… <a style="color:${esc(cfg.brand?.red || '#e8651a')}" href="${esc(to)}">continue</a></p></body></html>
 `;
 }
 
@@ -77,6 +66,24 @@ export function emitRedirects({ out, classicDir, players }) {
     const dest = path.join(out, f);
     fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.writeFileSync(dest, stubHtml(f, t));
+  }
+  return plan;
+}
+
+// PF-018 D1: the Phoenix build has no classic/ copy, so only legacy names with a real new page get a stub (nothing falls back to classic/).
+// Covers docs/feed/messages/builder/compare/apply, players/<id>.html, matches/<id>.html and clubs/<id>.html; old Discord messages cannot be edited.
+export function emitLegacyStubs({ out, players = [] }) {
+  const newFiles = listFiles(out), have = new Set(newFiles), plan = {};
+  for (const [f, t] of Object.entries(PAGE_MAP)) if (!have.has(f) && have.has(t.split('#')[0])) plan[f] = t;
+  for (const p of players) if (p.id != null && have.has(`player-${p.k}.html`)) plan[`players/${p.id}.html`] = `player-${encodeURIComponent(p.k)}.html`;
+  for (const f of newFiles) {
+    let m;
+    if ((m = f.match(/^match-(.+)\.html$/))) plan[`matches/${m[1]}.html`] = f;
+    else if ((m = f.match(/^opp-(\d+)\.html$/))) { plan[`clubs/${m[1]}.html`] = f; plan[`clubs/${m[1]}-results.html`] = f; }
+  }
+  for (const [f, t] of Object.entries(plan)) {
+    if (have.has(f)) continue; // never overwrite a real page
+    const dest = path.join(out, f); fs.mkdirSync(path.dirname(dest), { recursive: true }); fs.writeFileSync(dest, stubHtml(f, t));
   }
   return plan;
 }
