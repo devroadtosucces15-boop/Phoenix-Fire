@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T12:50:43.545Z",
+ "fetchedAt": "2026-11-15T13:00:40.238Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -187,42 +187,6 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "zouz94230",
-   "gamesPlayed": "16",
-   "winRate": "93",
-   "goals": "16",
-   "assists": "4",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "53",
-   "passesMade": "159",
-   "passSuccessRate": "79",
-   "ratingAve": "7.5",
-   "tacklesMade": "12",
-   "tackleSuccessRate": "14",
-   "proName": "J. Zouzinho",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "169",
-   "proNationality": "108",
-   "proOverall": "84",
-   "proOverallStr": "84",
-   "manOfTheMatch": "2",
-   "redCards": "0",
-   "prevGoals": "2",
-   "prevGoals1": "2",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "1",
-   "prevGoals6": "1",
-   "prevGoals7": "0",
-   "prevGoals8": "3",
-   "prevGoals9": "3",
-   "prevGoals10": "0",
-   "favoritePosition": "forward"
   },
   {
    "name": "MV33xChris",
@@ -1884,7 +1848,7 @@
  "positionCount": {
   "midfielder": 7,
   "goalkeeper": 2,
-  "forward": 13,
+  "forward": 12,
   "defender": 6
  },
  "career": [
@@ -1975,17 +1939,6 @@
    "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
-  },
-  {
-   "name": "zouz94230",
-   "proPos": "25",
-   "gamesPlayed": "199",
-   "goals": "89",
-   "assists": "69",
-   "manOfTheMatch": "27",
-   "ratingAve": "7.5",
-   "prevGoals": "1",
-   "favoritePosition": "forward"
   },
   {
    "name": "MV33xChris",
