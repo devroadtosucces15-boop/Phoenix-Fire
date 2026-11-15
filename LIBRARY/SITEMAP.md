@@ -26,3 +26,8 @@ Rules:
 - Adding, renaming or removing a page: register it with `P('name.html', ...)` in a `next/pages/*.mjs` module, run
   `node tools/library/sync.mjs`, and update the group row above if it is a new group.
 - Control Center lives in the dock Admin and Manager views (`staff-controlcenter`, `bot/controlcenter.js`).
+- Links (PF-018): every address a bot message, DM, bell row or old Discord post can carry resolves through ONE map, `next/lib/linkmap.mjs`
+  (`members.html#<key>` table, `schedule-<id>` prefix, legacy page names). The site reads it through `PhoenixLinks.resolve` (`next/static/links.js`),
+  `members.html` forwards from it, and the build writes stubs for dead names (docs, feed, messages, builder, compare, apply, `players/<id>`,
+  `matches/<id>`, `clubs/<id>`). New bot links point at the real page; a new legacy key goes in `linkmap.mjs`, never in a second resolver.
+  `tests/linkresolve.test.mjs` fails when a bot link literal or map target does not land on a built page and id. Sign-in keeps the `#section` (`next/static/session.js`).

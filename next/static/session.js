@@ -9,7 +9,12 @@
   const fresh = hash.get(KEY) || hash.get(OLD);
   if (fresh) ls.set(KEY, fresh);
   else if (!ls.get(KEY) && ls.get(OLD)) ls.set(KEY, ls.get(OLD)); // a sign-in from before the rename carries over once
-  if (hash.has(KEY) || hash.has(OLD) || hash.get('phoenix_error') || hash.get('norex_error')) history.replaceState(null, '', location.pathname + location.search);
+  // D5: the #section you were on survives the round trip through Discord sign-in (saved when sign-in starts, put back when the session lands)
+  const AFTER = 'nx.after', keepHash = () => { if (location.hash && !location.hash.includes(KEY)) ss.set(AFTER, JSON.stringify({ p: location.pathname, h: location.hash })); };
+  let back = ''; try { const a = JSON.parse(ss.get(AFTER) || 'null'); if (fresh && a && a.p === location.pathname) back = a.h || ''; } catch {}
+  if (fresh) ss.set(AFTER, null);
+  d.addEventListener('click', (e) => { const a = e.target.closest?.('a[href*="/auth/login"]'); if (a) keepHash(); }, true);
+  if (hash.has(KEY) || hash.has(OLD) || hash.get('phoenix_error') || hash.get('norex_error')) history.replaceState(null, '', location.pathname + location.search + back);
   const decode = (t) => JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(t.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')), (c) => c.charCodeAt(0))));
   const session = (() => { try { const t = ls.get(KEY), p = decode(t); return p.exp > Date.now() / 1000 ? { token: t, ...p } : null; } catch { return null; } })();
   if (!session) { ls.set(KEY, null); ls.set(OLD, null); }
@@ -18,7 +23,7 @@
   // 👁️ "Preview as" (#53): the owner can look at the site as a member or a guest (menu, gated blocks). Display only – the server still sees the owner.
   const viewAs = realAs === 'owner' && ['member', 'guest'].includes(ls.get('phoenix.viewas')) ? ls.get('phoenix.viewas') : '';
   const as = viewAs || realAs;
-  const loginUrl = () => `${API}/auth/login?return=${encodeURIComponent(location.href.split('#')[0])}`;
+  const loginUrl = () => { keepHash(); return `${API}/auth/login?return=${encodeURIComponent(location.href.split('#')[0])}`; };
   const logout = () => { ls.set(KEY, null); ls.set(OLD, null); ss.set('nx.me', null); location.href = 'index.html'; };
   const call = async (path, opt = {}) => { const r = await fetch(API + path, { ...opt, headers: { ...(opt.headers || {}), ...(session ? { Authorization: 'Bearer ' + session.token } : {}) }, cache: 'no-store' }); if (!r.ok) { let m = ''; try { m = (await r.json()).error || ''; } catch {} const e = new Error(m || path + ' ' + r.status); e.status = r.status; throw e; } return r.json(); };
   let cached = null; try { cached = JSON.parse(ss.get('nx.me') || 'null'); } catch {}

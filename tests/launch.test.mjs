@@ -14,7 +14,9 @@ const build = (name, extra = []) => {
   execFileSync(process.execPath, [path.join(ROOT, 'phoenix/build.mjs'), '--out', out, ...extra], { cwd: ROOT, stdio: 'ignore' });
   return out;
 };
-const pages = (d) => fs.readdirSync(d).filter((f) => f.endsWith('.html'));
+// redirect stubs (feed.html, docs.html …, PF-018 D1) are not pages: they only forward old addresses
+const isStub = (d, f) => fs.readFileSync(path.join(d, f), 'utf8').includes('http-equiv="refresh"');
+const pages = (d) => fs.readdirSync(d).filter((f) => f.endsWith('.html') && !isStub(d, f));
 const noindex = (d, f) => /<meta name="robots" content="[^"]*noindex/.test(fs.readFileSync(path.join(d, f), 'utf8'));
 const HIDDEN = /^(hub|staff|lookbook|canvas|playstyle|offline|404|members)/; // members = player-claim page (squad.html is the public redesigned Squad page)
 

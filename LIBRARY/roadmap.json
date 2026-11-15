@@ -245,7 +245,7 @@
       "title": "Side roadmap step 2: links (Phases A, B, D1, D5): every button, notification and redirect lands on a current, correct page; no second landing page per feature",
       "phase": "Side roadmap",
       "area": "`next/`, `bot/` links",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -256,10 +256,16 @@
       ],
       "fileLane": "`next/`, `bot/` links",
       "lowHanging": false,
-      "percent": 0,
-      "verify": true,
+      "percent": 100,
+      "verify": false,
       "notes": "Resumes the owner's side roadmap `PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md` (copied from `~/.claude/plans/`). Its Item 3 backend (EA decoded columns) and PR 6 (decoded stats, recap) are already on main. Starts only after the local brain window works (owner order, 2026-11-15). Verify against the code first.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PR (PF-018)",
+          "what": "One link map (next/lib/linkmap.mjs: members.html#key table, schedule-<id> prefix, legacy page names) read by the bell, toasts, alerts page, locker (next/static/links.js, PhoenixLinks.resolve), the members.html forwarder and the legacy stubs; no ../ fallback. New keys cards, stats, discoveries, trials, vote, suggestions, points, portal, portal-reports. Card Studio notifications now link managers to staff-artwork.html and members to hub-cardstudio.html#lk-cards (needs a Worker deploy). Dead names in bot strings fixed (docs, feed, messages, builder, compare, tactics#play, crest path); about.html#requests anchor added. Phoenix build emits legacy stubs (docs, feed, messages, builder, compare, apply, players/<id>, matches/<id>, clubs/<id>); sign-in keeps the #section. tests/linkresolve.test.mjs (155 checks) resolves every bot link literal against the built site."
+        }
+      ],
       "plans": []
     },
     {
@@ -267,7 +273,7 @@
       "title": "Side roadmap step 3: menu gaps and duplicates (Phase C)",
       "phase": "Side roadmap",
       "area": "menus, `next/lib/ui.mjs`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,

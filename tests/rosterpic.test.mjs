@@ -86,7 +86,7 @@ env.SITE_URL = 'https://phoenix.test/';
 const seen = [];
 globalThis.fetch = async (url, init) => { seen.push(String(url)); return String(url).includes('crest-sm.png') || String(url).startsWith('https://cdn.discordapp.com/') ? new Response(PNG, { headers: { 'Content-Type': 'image/png' } }) : realFetch(url, init); };
 await drawRoster(env, 31, m, { title: 'Crest' });
-t('brand: the drawing fetches the Phoenix crest from the site and inlines it', seen.some((u) => u === 'https://phoenix.test/static/crest-sm.png') && /data:image\/png;base64,[^"]+" x="9\d\d"/.test(svgSeen));
+t('brand: the drawing fetches the Phoenix crest from the site and inlines it', seen.some((u) => u === 'https://phoenix.test/crest-sm.png') && /data:image\/png;base64,[^"]+" x="9\d\d"/.test(svgSeen));
 const ckSvg = rosterSvg(c, new Map(), { title: 'Check-in', sub: 'League' });
 t('brand: the check-in picture is Phoenix too, with the ticked-in ring in green', ckSvg.includes('PHOENIX FIRE') && ckSvg.includes('#e8651a') && ckSvg.includes('#4be08a') && !/norex|#c8352c/i.test(ckSvg));
 globalThis.fetch = realFetch;

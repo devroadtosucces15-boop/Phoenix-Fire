@@ -58,7 +58,7 @@ t('mentions: LIKE wildcards are literal', (await call(m1, '/api/mentions?q=%25')
 const post = (await call(m1, '/api/feed/post', { text: 'Great pass @u501 and @u502! (not @nobody, not @u500 = me)', tag: 'chat' })).d.post;
 t('mentions: post carries a map of real members only', post.mentions.u501?.id === '501' && post.mentions.u502?.n === 'Player Three' && !post.mentions.nobody);
 t('mentions: both mentioned get a note, the author doesn’t', notes('501', 'mention').length === 1 && notes('502', 'mention').length === 1 && notes('500', 'mention').length === 0);
-t('mentions: note links to the post', notes('501', 'mention')[0].link === `feed.html#p${post.id}` && notes('501', 'mention')[0].title.includes('Player One'));
+t('mentions: note links to the post', notes('501', 'mention')[0].link === `hub-clubhouse.html#p${post.id}` && notes('501', 'mention')[0].title.includes('Player One'));
 await call(m1, '/api/feed/edit', { id: post.id, text: 'Great pass @u501 and @u502 – and @u600!', tag: 'chat' });
 t('mentions: edit only notifies newly added names', notes('501', 'mention').length === 1 && notes('600', 'mention').length === 1);
 await call(m3, '/api/feed/comment', { id: post.id, text: 'cheers @u500 @u501' });
@@ -78,7 +78,7 @@ let rx = (await call(m1, '/api/react', { kind: 'comment', id: cid, emoji: '🔥'
 t('react: comment reaction added', rx.reacts['🔥'] === 1 && rx.mine.join() === '🔥' && rx.who['🔥'][0] === 'Player One');
 await call(m2, '/api/react', { kind: 'comment', id: cid, emoji: '🔥' });
 const cNotes = sqlite.prepare("SELECT * FROM notifications WHERE user_id = '502' AND ref = ?").all(`comment-react:${cid}`);
-t('react: comment author gets one unread note', cNotes.length === 1 && cNotes[0].link === `feed.html#p${post.id}`);
+t('react: comment author gets one unread note', cNotes.length === 1 && cNotes[0].link === `hub-clubhouse.html#p${post.id}`);
 rx = (await call(m1, '/api/react', { kind: 'comment', id: cid, emoji: '🔥' })).d;
 t('react: same emoji again takes it back', rx.reacts['🔥'] === 1 && !rx.mine.length);
 const seen = (await call(m1, `/api/feed/post?id=${post.id}`)).d.post.comments.find((c) => c.id === cid);
@@ -121,7 +121,7 @@ t('hotw: nothing public before a week closes', (await call(null, '/api/hotw/publ
 t('hotw: cron closes last week once', r1.closed === 1 && (await hotwDue(env)).closed === 0);
 const row = sqlite.prepare('SELECT * FROM hotw WHERE week = ?').get(last.key);
 t('hotw: tie on votes → more reactions wins', row.post_id === b && row.votes === 2 && row.entries === 2 && row.video === 'https://youtu.be/bbbbbbbbbbb');
-t('hotw: winner told', notes('501', 'award').some((n) => n.title.includes('Highlight of week') && n.link === `feed.html#p${b}`));
+t('hotw: winner told', notes('501', 'award').some((n) => n.title.includes('Highlight of week') && n.link === `hub-clubhouse.html#p${b}`));
 hs = (await call(m1, '/api/hotw')).d;
 t('hotw: last week’s winner shown in the feed strip', hs.last?.post === b && hs.last.by.n === 'Player Two' && hs.last.votes === 2);
 t('hotw: public strip hidden from guests until the flag is public', (await call(null, '/api/hotw/public')).s === 404);

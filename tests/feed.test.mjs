@@ -52,7 +52,7 @@ r = (await call(m2, '/api/feed/react', { id: p1.id, emoji: '🔥' })).d;
 t('react: same emoji again takes it back', r.reacts['🔥'] === 1 && !r.mine.includes('🔥'));
 await call(m2, '/api/feed/react', { id: p1.id, emoji: '🔥' });
 const reactNotes = sqlite.prepare("SELECT * FROM notifications WHERE user_id = '500' AND ref = ?").all(`feed-react:${p1.id}`);
-t('react: one unread bell note for the author, not one per click', reactNotes.length === 1 && reactNotes[0].link === `feed.html#p${p1.id}`);
+t('react: one unread bell note for the author, not one per click', reactNotes.length === 1 && reactNotes[0].link === `hub-clubhouse.html#p${p1.id}`);
 await call(m1, '/api/feed/react', { id: p1.id, emoji: '😂' });
 t('react: own post → no note', sqlite.prepare("SELECT COUNT(*) AS n FROM notifications WHERE user_id = '500' AND ref = ?").get(`feed-react:${p1.id}`).n === 1);
 
@@ -115,7 +115,7 @@ t('report: can’t report your own post', (await call(m1, '/api/feed/report', { 
 let rp = (await call(m2, '/api/feed/report', { id: pub1.id, reason: 'Spam' })).d.post;
 t('report: flags it, member only sees their own flag as a bool', rp.reported === true && rp.myReport === true);
 t('report: only once', (await call(m2, '/api/feed/report', { id: pub1.id, reason: 'again' })).s === 409);
-t('report: notifies managers with the post link', sqlite.prepare("SELECT COUNT(*) AS n FROM notifications WHERE user_id = '600' AND link = ?").get(`feed.html#p${pub1.id}`).n === 1);
+t('report: notifies managers with the post link', sqlite.prepare("SELECT COUNT(*) AS n FROM notifications WHERE user_id = '600' AND link = ?").get(`hub-clubhouse.html#p${pub1.id}`).n === 1);
 const rpMgr = (await call(mgr, `/api/feed/post?id=${pub1.id}`)).d.post;
 t('report: managers see who + why', rpMgr.reported?.by === '501' && rpMgr.reported?.reason === 'Spam');
 t('unreport: members can’t', (await call(m1, '/api/feed/unreport', { id: pub1.id })).s === 403);
@@ -134,6 +134,6 @@ globalThis.fetch = async (url, init = {}) => {
 };
 t('share: members can’t', (await call(m1, '/api/feed/share', { id: pub1.id, channel: '70001' })).s === 403);
 const shared = (await call(mgr, '/api/feed/share', { id: pub1.id, channel: '70001' })).d.post;
-t('share: manager posts it to Discord and the post remembers it', shares.length === 1 && shares[0].channel === '70001' && JSON.stringify(shares[0].components).includes(`feed.html#p${pub1.id}`) && !!shared.shared);
+t('share: manager posts it to Discord and the post remembers it', shares.length === 1 && shares[0].channel === '70001' && JSON.stringify(shares[0].components).includes(`hub-clubhouse.html#p${pub1.id}`) && !!shared.shared);
 
 done();

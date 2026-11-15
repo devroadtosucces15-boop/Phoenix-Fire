@@ -80,7 +80,7 @@ const req = await call(mgr, '/api/docs', { area: 'requirements', title: 'Mic <b>
 t('manager adds a requirement (title cleaned) – never public, even when asked', req.s === 200 && req.d.items.some((x) => x.area === 'requirements' && x.title === 'Mic b on /b' && !x.public));
 const ann = await call(mgr, '/api/docs', { area: 'announce', title: 'Season kick-off', body: 'League starts **Friday**.', pinned: true, notify: true });
 const annId = ann.d.id;
-t('announcement saved + members notified', ann.s === 200 && ann.d.notified >= 3 && (await call(member, '/api/notify')).d.items.some((n) => n.title === 'Season kick-off' && n.link === `docs.html#d-${annId}`));
+t('announcement saved + members notified', ann.s === 200 && ann.d.notified >= 3 && (await call(member, '/api/notify')).d.items.some((n) => n.title === 'Season kick-off' && n.link === 'hub-handbook.html#hb-docs'));
 const guestView = await (await W('/api/docs')).json();
 t('guest sees no docs at all, no rules state', guestView.items.length === 0 && guestView.rules === undefined && !guestView.canEdit);
 const memView = (await call(member, '/api/docs')).d;
@@ -132,7 +132,7 @@ t('preview of a removed/missing doc 404s', (await call(mgr, '/api/docs/discord',
 
 const dc = await call(mgr, '/api/docs/discord', { id: annId, channel: '70002', role: '80001' });
 const p0 = posts.at(-1);
-t('post to Discord: embed, role ping only that role, link back', dc.s === 200 && p0.channel === '70002' && p0.components[0].content === '<@&80001>' && p0.allowed_mentions.roles[0] === '80001' && plainText(p0).includes('Season kick-off') && JSON.stringify(p0.components).includes(`docs.html#d-${annId}`));
+t('post to Discord: embed, role ping only that role, link back', dc.s === 200 && p0.channel === '70002' && p0.components[0].content === '<@&80001>' && p0.allowed_mentions.roles[0] === '80001' && plainText(p0).includes('Season kick-off') && JSON.stringify(p0.components).includes('hub-handbook.html#hb-docs'));
 t('posted item remembers it (managers see it) + last channel', dc.d.items.find((x) => x.id === annId).discord?.channel === '70002' && (await call(mgr, '/api/docs/discord')).d.last === '70002');
 t('members don’t see the Discord marker', !(await call(member, '/api/docs')).d.items.find((x) => x.id === annId).discord);
 await call(mgr, '/api/docs/discord', { id: annId, channel: '70001', role: '9' });

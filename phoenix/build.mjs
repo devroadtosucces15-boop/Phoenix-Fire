@@ -5,7 +5,7 @@
 //   4. overlay (badge crest, 3D crest, theme layer, small design touches)   5. build the preview flavour (toolbar, noindex)
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { execFileSync } from 'node:child_process'; import { fileURLToPath, pathToFileURL } from 'node:url';
 import { assertNoLeaks } from './leakcheck.mjs';
-import { HASH_MAP } from '../next/lib/redirects.mjs';
+import { HASH_TABLE } from '../next/lib/redirects.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url)), repo = path.resolve(here, '..');
 const arg = (k) => { const i = process.argv.indexOf(k); return i > -1 ? process.argv[i + 1] : null; };
 const out = path.resolve(arg('--out') || path.join(repo, 'site', 'phoenix'));
@@ -123,7 +123,7 @@ try {
   } else warn('classic assets were not generated; assets/ will not be published');
   const claimTemplate = path.join(here, 'claim.html');
   if (fs.existsSync(claimTemplate)) {
-    let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', API).replace('__PHOENIX_HASHES__', JSON.stringify(HASH_MAP));
+    let claim = fs.readFileSync(claimTemplate, 'utf8').replace('__PHOENIX_API__', API).replace('__PHOENIX_HASHES__', JSON.stringify(HASH_TABLE));
     if (MOCK) claim = claim.replace('<head>', '<head><script src="phoenix-mock.js"></script>');
     fs.writeFileSync(path.join(out, 'members.html'), claim);
   } else warn('Phoenix claim page template missing; members.html will not be published');
@@ -134,6 +134,12 @@ try {
     fs.writeFileSync(path.join(out, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${listed.map((f) => `<url><loc>${esc(site + (f === 'index.html' ? '' : f))}</loc><lastmod>${day}</lastmod></url>`).join('\n')}\n</urlset>\n`);
     fs.writeFileSync(path.join(out, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /hub\nDisallow: /staff\n\nSitemap: ${site}sitemap.xml\n`);
   } else fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
+  { // D1: dead legacy addresses (docs, feed, messages, builder, compare, apply, players/<id>, matches/<id>, clubs/<id>) forward to their current page
+    const { emitLegacyStubs } = await import(pathToFileURL(path.join(stage, 'next/lib/redirects.mjs')).href);
+    const data = await import(pathToFileURL(path.join(stage, 'next/lib/data.mjs')).href);
+    const stubs = emitLegacyStubs({ out, players: (data.players || []).map((p) => ({ id: p.id, k: p.k })) });
+    console.log(`phoenix: ${Object.keys(stubs).length} legacy redirect stubs`);
+  }
   console.log(`phoenix: ${pages} pages -> ${path.relative(repo, out)}`);
   // 6. guard: next/ and web/ are shared sources themed here; the output must not show another club's name or palette
   assertNoLeaks(out, (m) => { console.error(m); process.exitCode = 1; });

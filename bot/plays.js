@@ -240,7 +240,7 @@ async function assignTo(env, me, id, userIds) {
   for (const uid of fresh) await run(env, 'INSERT INTO play_assign (play_id, user_id, assigned_by, assigned_at) VALUES (?, ?, ?, ?)', id, uid, me.u, now);
   if (fresh.length) {
     const title = (await one(env, 'SELECT title FROM plays WHERE id = ?', id))?.title ?? 'a play';
-    await safely(notify(env, fresh, { type: 'play', icon: '📋', title: `New play to learn: ${title}`, link: `tactics.html#play${id}` }));
+    await safely(notify(env, fresh, { type: 'play', icon: '📋', title: `New play to learn: ${title}`, link: `playbook.html#play${id}` }));
   }
   return fresh;
 }
@@ -300,7 +300,7 @@ function playEmbed(env, r, doc) {
     picture(env, 'post-play'),
     text(bits.join(' · ') || 'A new play in the Tactics Studio.'),
     footer(`Updated <t:${Math.floor(r.updated_at / 1000)}:R>`),
-    buttons([{ label: 'Learned it', id: `norex:play:${r.id}:learned`, style: 'ok', emoji: '✅' }, { label: 'Open in Studio', url: `${site}tactics.html#play${r.id}` }]),
+    buttons([{ label: 'Learned it', id: `norex:play:${r.id}:learned`, style: 'ok', emoji: '✅' }, { label: 'Open in Studio', url: `${site}playbook.html#play${r.id}` }]),
   ] });
 }
 // Posts a published play as a rich embed with answer buttons. Never throws – returns { ok } or { ok: false, error }.

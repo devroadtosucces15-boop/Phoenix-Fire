@@ -89,7 +89,7 @@ export async function hotwDue(env) {
 
 async function announce(env, w) {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
-  await safely(notify(env, [w.user_id], { type: 'award', icon: '🎬', title: `Your clip is the Highlight of week ${weekNo(w.week)}! 🏆`, body: `${w.votes} vote${w.votes === 1 ? '' : 's'} from the squad.`, link: `feed.html#p${w.post_id}` }));
+  await safely(notify(env, [w.user_id], { type: 'award', icon: '🎬', title: `Your clip is the Highlight of week ${weekNo(w.week)}! 🏆`, body: `${w.votes} vote${w.votes === 1 ? '' : 's'} from the squad.`, link: `hub-clubhouse.html#p${w.post_id}` }));
   // Discord only once members can see it – while the flag is owner/managers the club shouldn't be told about it.
   const level = flags(env).hotw;
   const channel = await channelFor(env, 'awards');
@@ -99,7 +99,7 @@ async function announce(env, w) {
     picture(env, 'post-hotw'),
     w.body ? text(excerpt(w.body.replace(CLIP, '').trim() || '🎬', 300)) : null,
     footer(`${w.votes} vote${w.votes === 1 ? '' : 's'} · ${w.entries} clip${w.entries === 1 ? '' : 's'} in the running`),
-    buttons([w.video && { label: 'Watch clip', url: w.video }, { label: 'On the site', url: `${site}${level === 'public' ? 'index.html' : `feed.html#p${w.post_id}`}` }]),
+    buttons([w.video && { label: 'Watch clip', url: w.video }, { label: 'On the site', url: `${site}${level === 'public' ? 'index.html' : `hub-clubhouse.html#p${w.post_id}`}` }]),
   ] }));
   if (r.ok) await run(env, 'UPDATE hotw SET posted_at = ? WHERE week = ?', Date.now(), w.week);
 }

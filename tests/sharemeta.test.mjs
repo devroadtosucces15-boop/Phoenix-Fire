@@ -12,7 +12,7 @@ const read = (d, f) => fs.readFileSync(path.join(d, f), 'utf8');
 try {
   const out = path.join(tmp, 'mock');
   execFileSync(process.execPath, [path.join(ROOT, 'phoenix/build.mjs'), '--out', out], { cwd: ROOT, stdio: 'ignore' });
-  const pages = fs.readdirSync(out).filter((f) => f.endsWith('.html'));
+  const pages = fs.readdirSync(out).filter((f) => f.endsWith('.html') && !fs.readFileSync(path.join(out, f), 'utf8').includes('http-equiv="refresh"')); // PF-018 D1 stubs only forward old addresses
 
   // 1. founded is never invented
   const founded = String(cfg.brand?.founded || '').trim();
