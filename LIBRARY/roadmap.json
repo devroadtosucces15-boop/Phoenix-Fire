@@ -88,7 +88,7 @@
       "title": "Project brain: live dashboard v1 (server, tabs, Roadmap home, Libraries, References, Credentials registry)",
       "phase": "Project brain",
       "area": "`tools/brain/`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "L",
       "effort": 4,
       "importance": 5,
@@ -99,10 +99,16 @@
       ],
       "fileLane": "`tools/brain/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Visual target: the owner's Discord gallery plus the Control Center layout",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PR 11",
+          "what": "Local brain dashboard: node tools/brain/serve.mjs (127.0.0.1:4577), live refresh, tabs Roadmap, Libraries, References, Credentials (names and places only, values redacted); tests/brain.test.mjs."
+        }
+      ],
       "plans": []
     },
     {
@@ -110,7 +116,7 @@
       "title": "Project brain: maps with drill-in, inputs and outputs folders",
       "phase": "Project brain",
       "area": "`tools/brain/`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "L",
       "effort": 4,
       "importance": 3,

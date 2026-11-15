@@ -21,6 +21,8 @@ given, and nothing else. Rules for using and updating it: `PLANNING/SESSION-HAND
 | `SITEMAP.md` | What each page group is for, audience rules and the rules for adding a page. | hand | `next/pages/`, `phoenix/build.mjs` |
 | `SITEMAP-INDEX.md` | Every built page, its title, audience and source module. | generated | a fresh `phoenix/build.mjs` build |
 
+The live dashboard over these files is `tools/brain/` (`node tools/brain/serve.mjs`, then open http://127.0.0.1:4577; tabs Roadmap, Libraries, References, Credentials). It reads this folder, `PLANNING/RESOURCES.md` and `bot/SECRETS-REGISTRY.md`, refreshes when they change, and never shows a secret value.
+
 Generated files are rewritten by `node tools/library/sync.mjs`. `node tests/library.test.mjs` fails when a generated file is stale, a
 hand file lost its "Last verified" date, the roadmap has no single `NEXT` item, or anything in this folder looks like a secret value.
 
