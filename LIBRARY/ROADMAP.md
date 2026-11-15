@@ -1,0 +1,56 @@
+# Master roadmap
+
+Last verified: 2026-11-15
+
+This is the only roadmap. Any smaller plan (a `PLANNING/*.md` for one feature) is a detail page for one row here; when its work is done
+its content is merged into the row's notes and the small file is deleted or marked merged. `PLANNING/PHOENIX-ROADMAP.md` keeps the
+"Done" history and is read only for background.
+
+## How it is used
+
+1. A session takes exactly one item: the one marked `NEXT`, or the one the owner names. Order is the order of the table.
+2. Anything found along the way that is not that item goes in the **Inbox** at the bottom, not into the work. No branching out.
+3. When an item finishes: set it `DONE` with the date and commit hash, move `NEXT` to the next open item whose dependencies are done,
+   update the library files the item touched, and write the next-session prompt (`PLANNING/SESSION-HANDOFF.md`).
+4. Exactly one row is `NEXT`. `tests/library.test.mjs` fails otherwise.
+5. Status words: `NEXT`, `OPEN`, `BLOCKED` (needs the owner or another item), `DONE`. A status marked "(verify)" came from older notes; the
+   session that takes the item confirms it against the code first.
+
+Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `opus` (claude-opus-5-5) for delicate multi-file changes;
+`fable` (claude-fable-5-2) for hard debugging or design of something new; `haiku` (claude-haiku-5-5) for mechanical edits and regenerating files.
+
+## Items
+
+| ID | Item | Status | Depends on | File lane | Model | Notes |
+|---|---|---|---|---|---|---|
+| PF-001 | Land the operating system (`LIBRARY/`, rules, generator, test, brain spec, side-roadmap copy) on `main`: pre-commit NOREX check, tests, rebuild, merge | NEXT | none | whole repo | sonnet | Follow `PLANNING/PRE-COMMIT-CHECK.md`. The old `integrate-control-center` branch carries nothing main lacks (checked 2026-11-15: main is 289 commits ahead, 0 behind), so work is on `ops-library-brain`, cut from `origin/main`. |
+| PF-002 | Fill the library to full granularity: `ASSETS.md`, `DESIGN.md`, `BOT.md`, `SITEMAP.md` row by row from the code | OPEN | PF-001 | `LIBRARY/`, `tools/library/` | sonnet | Extend `tools/library/sync.mjs` to generate the sitemap from a build. |
+| PF-011 | Project brain: roadmap data model (`roadmap.json`), metrics, generated markdown | OPEN | PF-002 | `LIBRARY/`, `tools/library/` | sonnet | Spec: `PLANNING/BRAIN-SPEC.md` |
+| PF-012 | Project brain: live dashboard v1 (server, tabs, Roadmap home, Libraries, References, Credentials registry) | OPEN | PF-011 | `tools/brain/` | opus | Visual target: the owner's Discord gallery plus the Control Center layout |
+| PF-013 | Project brain: maps with drill-in, inputs and outputs folders | OPEN | PF-012 | `tools/brain/` | opus | Reads `tools/bot-studio/lib/deps.mjs` |
+| PF-014 | Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders | OPEN | PF-012 | `tools/brain/`, `LIBRARY/inbox/` | sonnet | Dictation text only at first |
+| PF-015 | Project brain: usage probe, snapshots, policy, banner, save mode (`lowHanging` items) | OPEN | PF-011 | `tools/brain/`, `LIBRARY/state/` | sonnet | First test whether usage can be read outside a session |
+| PF-016 | Project brain: usage intelligence, lessons and improvement plans | OPEN | PF-015 | `tools/brain/`, `LIBRARY/LESSONS.md` | opus | Per session and per item |
+| PF-017 | Project brain: optional hosted artifact mirror for the phone | OPEN | PF-012, PF-014 | artifact | sonnet | Snapshot only; updates when a session publishes |
+| PF-018 | Side roadmap step 2: links (Phases A, B, D1, D5): every button, notification and redirect lands on a current, correct page; no second landing page per feature | OPEN (verify) | PF-012 | `next/`, `bot/` links | sonnet | Resumes the owner's side roadmap `PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md` (copied from `~/.claude/plans/`). Its Item 3 backend (EA decoded columns) and PR 6 (decoded stats, recap) are already on main. Starts only after the local brain window works (owner order, 2026-11-15). Verify against the code first. |
+| PF-019 | Side roadmap step 3: menu gaps and duplicates (Phase C) | OPEN (verify) | PF-018 | menus, `next/lib/ui.mjs` | sonnet | Plan section 3 |
+| PF-020 | Side roadmap Item 4: Card Studio and `/avatarcard` | OPEN (verify) | PF-019 | `bot/cardstudio.js`, `web/cardcomposer.js` | opus | Plan section 4. Owner decision pending: Workers Paid plan or fallback provider (4d). Chest-up rule applies. |
+| PF-021 | Side roadmap Item 3 visuals: match view, match center, box score, derived stats | OPEN (verify) | PF-020 | `next/pages/matches.mjs` | opus | Plan sections 1 and 5; part landed in PR 6. Design work: screenshots before and after. |
+| PF-022 | Side roadmap Item 5: Control Center CRM dashboard, remaining parts (DJ bridge, permissions, sign-in) | OPEN (verify) | PF-021 | `bot/controlcenter.js`, dock | opus | Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. |
+| PF-023 | Side roadmap Item 7: Rush queue and LFG as one matchmaking system | OPEN (verify) | PF-022 | `bot/` rush files | sonnet | Plan section 5b; queue board landed |
+| PF-024 | Side roadmap Items 8 to 25: bot cleanup and new bot features (including the test-view command) | OPEN | PF-023 | `bot/` | sonnet | Plan sections 5c to Item 25. Split into one session per item when taken. |
+| PF-025 | Side roadmap Item 6: visual and performance enhancement pass (last) | BLOCKED (owner) | PF-024 | site-wide | opus | Starts when the owner says the resources are ready. |
+| PF-003 | Dock browser check and hub page sweep at 390, 820, 1440 (verify; may already be done) | OPEN (verify) | PF-001 | `next/static/dock.*`, hub pages | sonnet | Details: `PLANNING/DOCK-HUB-DETAILS.md`. Needs screenshots before and after (design rule). |
+| PF-004 | Match-night follow-ups in code: `auto:watchlist-video` picture block, offline captures for check-in and line-up posts, track `tools/bot-studio/`, rerun `studio.mjs check` | OPEN | PF-001 | `bot/watchlist.js`, `tools/bot-audit/`, `tools/bot-studio/` | sonnet | See "Match-night follow-ups" in `PLANNING/PHOENIX-ROADMAP.md`. |
+| PF-005 | Match-night go-live (owner steps in order): apply migration 0061, confirm IMAGES and MEDIA bindings, publish site, deploy Worker and register commands, switch `rosterPicture` on | BLOCKED (owner) | PF-004 | Cloudflare, D1, Discord | none | Critical: touches live data. The owner confirms each step. |
+| PF-006 | Worker host: keep `phoenix-bot.norexunited.workers.dev` or move it | BLOCKED (owner decision) | none | `phoenix/worker-host.json` | none | `PLANNING/WORKER-HOST.md` has the flip steps. |
+| PF-007 | DJ bots on separate hosting (cannot run on the Worker) | OPEN | PF-006 | `dj/` | opus | Needs the owner's choice of host first. |
+| PF-008 | Deep-link helper and stale anchors (R04, R05); `members.html#...` forwarder (R06) | OPEN | PF-001 | `next/`, `phoenix/build.mjs` | sonnet | From "Still open later" in `PLANNING/DOCK-HUB-DETAILS.md`. |
+| PF-009 | Optional additions R18 to R22 and staff sweep follow-ups R24 to R29 | OPEN | PF-008 | staff pages | sonnet | Split into one session per item when taken. |
+| PF-010 | Theme leftovers: search palette still NOREX-style blue-black; hardcoded gold gradient in `staffhub.css` should come from config | OPEN | PF-001 | `next/static/`, `config.json` | sonnet | Brand rule: add a test that fails on the NOREX colour. |
+
+## Inbox (found along the way, not yet scheduled)
+
+Add one line per finding: date, what, where. The next planning pass turns each into an item or drops it.
+
+- (empty)

@@ -61,3 +61,16 @@ Every channel or role a bot feature uses (queue boards, reports, announcements, 
 (`discord_channels` / `discord_roles` by purpose, `bot/orgconfig.js`): several allowed per purpose, editable on the website **and** by a manager
 command that writes the same rows, so site and Discord always agree. A feature with no channel configured says so instead of guessing. New
 features add a purpose; they never add a name or ID to code. Add a test that the feature reads its channel from config.
+
+## How sessions run (details: `PLANNING/SESSION-HANDOFF.md`)
+
+- One master roadmap: `LIBRARY/ROADMAP.md`. One item per session (the `NEXT` row or the one the owner names), in order. Do not branch out; new
+  finds go to its Inbox. Small roadmaps merge into it when done.
+- Start from `LIBRARY/README.md` (assets, credentials registry, design, bot commands, site map) instead of surveying the repo.
+- Keep sessions short (new session at about 100 to 150 turns), check with text before screenshots, but for design talk use screenshots.
+- Before editing, read `LIBRARY/CLAIMS.md`; never edit files another live session claims; message that session instead.
+- Routine work is pre-approved (run, install, commit, push, merge to `main` after the checks); stop only for destructive, money, password or
+  owner-only portal steps, live member posts marked as owner steps, or real design/product choices.
+- A task is not done until the library files it touched are updated (`node tools/library/sync.mjs`, `node tests/library.test.mjs`) and the
+  next-session prompt is written (and started when no critical decision is waiting).
+- Never write a secret value anywhere in the repo; the library holds names and places only.
