@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-15T01:50:39.643Z",
+ "fetchedAt": "2026-11-15T02:00:39.679Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -801,6 +801,42 @@
    "favoritePosition": "goalkeeper"
   },
   {
+   "name": "Peru-Chocolate",
+   "gamesPlayed": "4",
+   "winRate": "25",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "48",
+   "passSuccessRate": "94",
+   "ratingAve": "7.4",
+   "tacklesMade": "4",
+   "tackleSuccessRate": "50",
+   "proName": "igot cracked",
+   "proPos": "5",
+   "proStyle": "0",
+   "proHeight": "196",
+   "proNationality": "59",
+   "proOverall": "86",
+   "proOverallStr": "86",
+   "manOfTheMatch": "1",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "defender"
+  },
+  {
    "name": "leo77romano",
    "gamesPlayed": "52",
    "winRate": "78",
@@ -1525,7 +1561,7 @@
   "midfielder": 10,
   "goalkeeper": 4,
   "forward": 13,
-  "defender": 11
+  "defender": 12
  },
  "career": [
   {
@@ -1758,6 +1794,17 @@
    "ratingAve": "6.7",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
+  },
+  {
+   "name": "Peru-Chocolate",
+   "proPos": "5",
+   "gamesPlayed": "233",
+   "goals": "36",
+   "assists": "30",
+   "manOfTheMatch": "42",
+   "ratingAve": "7.8",
+   "prevGoals": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "leo77romano",
