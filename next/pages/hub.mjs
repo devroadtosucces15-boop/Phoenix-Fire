@@ -42,8 +42,7 @@ export function locker(variant = 'landing') {
      </div>
     <div id="cardslot"></div>
     <div class="side r"><div class="panel reveal" id="mystats"></div><div class="panel reveal" style="--i:1" id="formpanel" hidden></div></div>${variant === 'landing' ? '' : btns}</section>
-   <div class="wrap lk-below"><div class="panel reveal" style="--i:2" id="medalpanel" hidden></div>
-     <div class="panel reveal" style="--i:3" id="artpanel"></div></div>
+   <div class="wrap lk-below"><div class="panel reveal" style="--i:2" id="medalpanel" hidden></div></div>
    <div class="wrap">${liveStrip}</div>
    <div class="wrap lk-prof"><section class="sec sq-sec" id="lk-me" style="margin-top:20px"><header><div><span class="ribbon">🪪 My profile</span></div><p>What teammates see on your card, hover card and in Team up. Only what you change is saved.</p></header><div id="lkme" class="sq-mount"></div></section>
    <section class="sec sq-sec" id="lk-streams" data-mystreams hidden><header><div><span class="ribbon">📺 My streams</span></div><p>The channels on your profile, and whether you are on air right now.</p></header><div class="nxs-row" data-ms-row></div></section>
@@ -154,7 +153,7 @@ const stGroup = (e, t, sub, tiles, cls = '') => `<section class="adm-g${cls ? ' 
 export const STAFF_GROUPS = [
   ['🌙', 'Match night', 'Plan the squad and the pitch', [['staff-schedule.html', '🗓️', 'Schedule', 'Create, edit and cancel match nights, check in, send session reports'], ['staff-dugout.html', '🧢', 'Dugout', 'Build the line-up on the real pitch and post it']]],
   ['👥', 'People', 'Everyone who needs a decision', [['staff-desk.html', '🗂️', 'Desk', 'Claims, members, requests, Rush results, trials and private notes']]],
-  ['📄', 'Club content', 'What members read', [['staff-content.html', '📄', 'Content', 'Club docs and rules, ideas board, squad week, media storage']]],
+  ['📄', 'Club content', 'What members read', [['staff-content.html', '📄', 'Content', 'Club docs and rules, ideas board, squad week, media storage'], ['staff-artwork.html', '🎨', 'Artwork', 'Approve, inspect or revoke player card artwork']]],
   ['🛡️', 'Moderation and tools', 'Keep the club tidy', [['staff-tools.html', '🛠️', 'Tools', 'Submissions, reported content, game data, bot settings, awards']]],
   ['🎛️', 'Control Center', 'Switch, aim and restrict every output', [['staff-controlcenter.html', '🎛️', 'Control Center', 'Every command, button, automated post, scheduled job, DM and site section: on or off, who gets it, which channels']]],
   ['🩺', 'Club health', 'How the club is doing', [['staff-insights.html', '🧭', 'Insights', 'Club Intelligence, written club notes, burner-club tracker']]],
@@ -162,8 +161,7 @@ export const STAFF_GROUPS = [
 // owner-only: the Boardroom, one page per tab, and the artwork studio
 export const BR_TABS = { switches: ['🎛️', 'Switches', 'Feature switches', 'Turn features on or off for guests, members and managers'], health: ['🩺', 'Health', 'Health', 'Club health score and recruitment'], announce: ['📣', 'Announce', 'Announce', 'Send club-wide announcements'], audit: ['🛡️', 'Audit', 'Audit log', 'Who changed what'], hof: ['🏛️', 'Hall of Fame', 'Hall of Fame', 'Trophies, legends, awards'], medals: ['🏅', 'Medals', 'Medals', 'Edit and award medals'], backup: ['💾', 'Backup', 'Backup', 'Export and restore club data'], org: ['🏢', 'Organization', 'Organization', 'Channels, roles and club settings'] };
 const OWNER_GROUPS = [
-  ['🎨', 'Artwork', 'Player card artwork', [['staff-artwork.html', '🎨', 'Artwork studio', 'Submit, inspect, download, approve or revoke player artwork']]],
-  ['👑', 'Owner controls', 'Only the owner changes these', [['staff-boardroom.html', '👑', 'Boardroom', 'Only the owner changes these'], ...Object.entries(BR_TABS).map(([k, [e, , t, d]]) => [`staff-${k === 'hof' ? 'halloffame' : k === 'org' ? 'organization' : k}.html`, e, t, d])]],
+  ['👑', 'Owner controls', 'Only the owner changes these. The Boardroom holds every owner tab.', [['staff-boardroom.html', '👑', 'Boardroom', 'Switches, health, announcements, audit log, Hall of Fame, medals, backup and organization, one page']]],
 ];
 export function staff() {
   const body = `<div class="wrap adm-wrap"><div class="adm-plate"><i aria-hidden="true">🧢</i><b role="heading" aria-level="1">Staff hub</b><small data-staff-role>managers and the owner · every tool, grouped, one tap each</small></div>${staffGate}

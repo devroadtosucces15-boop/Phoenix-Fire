@@ -39,6 +39,8 @@
   const role = () => (A?.token ? A.role : w.NorexAs === 'owner' ? 'owner' : 'guest');
   const isStaff = () => role() === 'owner' || role() === 'manager';
   const isOwner = () => role() === 'owner' && !A?.viewAs;
+  // the real owner keeps the Preview-as chips while previewing as member or guest, so there is always a way back
+  const canPreview = () => isOwner() || A?.realAs === 'owner' || (!!w.PF_MOCK && !!localStorage.getItem('phoenix.as'));
 
   // ---------- menu sources ----------
   const hubItems = () => [...d.querySelectorAll('.sub .wrap a[href]')].filter((a) => !a.hidden && !/^staff/.test(a.getAttribute('href')))
@@ -48,13 +50,13 @@
   const STAFF = [
     ['Match night', [['staff-schedule.html', '🗓️', 'Schedule'], ['staff-dugout.html', '🧢', 'Dugout']]],
     ['People', [['staff-desk.html', '🗂️', 'Desk']]],
-    ['Club content', [['staff-content.html', '📄', 'Content']]],
+    ['Club content', [['staff-content.html', '📄', 'Content'], ['staff-artwork.html', '🎨', 'Artwork']]],
     ['Moderation and tools', [['staff-tools.html', '🛠️', 'Tools']]],
     ['Club health', [['staff-insights.html', '🧭', 'Insights']]],
     ['Control Center', [['staff-controlcenter.html', '🎛️', 'Control Center']]]];
+  // One Boardroom tile: its tabs (switches, health, announce, audit, hall of fame, medals, backup, organization) stay as deep links inside the page.
   const OWNER = [
-    ['Artwork', [['staff-artwork.html', '🎨', 'Artwork studio']]],
-    ['Owner controls', [['staff-boardroom.html', '👑', 'Boardroom'], ['staff-controlcenter.html', '🎛️', 'Control Center'], ['staff-switches.html', '🎛️', 'Feature switches'], ['staff-health.html', '🩺', 'Health'], ['staff-announce.html', '📣', 'Announce'], ['staff-audit.html', '🛡️', 'Audit log'], ['staff-halloffame.html', '🏛️', 'Hall of Fame'], ['staff-medals.html', '🏅', 'Medals'], ['staff-backup.html', '💾', 'Backup'], ['staff-organization.html', '🏢', 'Organization']]]];
+    ['Owner controls', [['staff-boardroom.html', '👑', 'Boardroom']]]];
 
   // ---------- panel plumbing ----------
   const mk = (cls, html) => { const e = d.createElement('div'); e.className = cls; e.innerHTML = html; return e; };
@@ -90,8 +92,9 @@
     }
     const here = heads.length ? `<section class="dk-s"><h3>On this page</h3><div class="dk-chips dk-j">${heads.map(([id, t]) => `<a class="dk-ch" href="#${esc(id)}" data-jump>${esc(t)}</a>`).join('')}</div></section>` : '';
     // R47: shown only when the report button exists in this page (web/report.js mounts it for the owner only), so no dead card
+    const prev = canPreview() && !isOwner() ? `<section class="dk-s"><h3>Preview</h3><div class="dk-acts"><span class="dk-as">Preview as ${['guest', 'member', 'owner'].map((r) => `<button type="button" class="dk-chip${(w.NorexAs || role()) === r ? ' on' : ''}" data-as="${r}">${r}</button>`).join('')}</span></div></section>` : '';
     const rep = d.querySelector('.nxr-fab') ? '<section class="dk-s"><h3>Report</h3><p class="dk-none">Something wrong on this page? Tell the club.</p><div class="dk-lk"><div class="rm-w"><button type="button" class="rm rm-mini" data-issue><span class="rm-ic" aria-hidden="true">🐞</span><b class="rm-t">Report a problem</b></button></div></div></section>' : '';
-    return { where, html: `${pinned(pinsNav)}${main}${here}${rep}` };
+    return { where, html: `${pinned(pinsNav)}${main}${here}${prev}${rep}` };
   };
   const progress = () => { const h = d.documentElement.scrollHeight - innerHeight; ring?.style.setProperty('--p', h > 0 ? Math.min(100, Math.round(scrollY / h * 100)) : 0); };
   const goto = (y) => (w.NorexLenis && smooth() === 'smooth' ? w.NorexLenis.scrollTo(y, { duration: 1.1 }) : scrollTo({ top: y }));
@@ -139,7 +142,7 @@
   };
 
   // ---------- R46: quick dial (press and hold the badge) ----------
-  const HOLD_MS = 350, MOVE_PX = 6, CANCEL_PX = 120, DIAL_MAX = 14, DIAL_ROOMS = 6, SPAN = 70, ITEM = 44, GAP = 62;
+  const HOLD_MS = 350, MOVE_PX = 6, CANCEL_PX = 120, DIAL_MAX = 20, DIAL_ROOMS = 6, SPAN = 70, ITEM = 44, GAP = 62;
   const calm = () => d.documentElement.dataset.motion === 'calm' || d.documentElement.dataset.motion === 'off' || matchMedia('(prefers-reduced-motion: reduce)').matches;
   // items: the same sources as the menu. Pins first, then the top rooms of this page, then staff shortcuts (managers) and the Boardroom (owner).
   const dialItems = () => {
@@ -150,8 +153,9 @@
     if (inHub && R) { const live = new Set(hubItems().map((i) => i[0])); R.rooms.filter(([h]) => h === 'hub.html' || live.has(h)).slice(0, DIAL_ROOMS).forEach(([h, i, t]) => add(h, t, i)); }
     else if (inHub) hubItems().slice(0, DIAL_ROOMS).forEach(([h, l, e]) => add(h, l, e));
     else siteGroups().slice(0, DIAL_ROOMS).forEach((g) => add(g.href, g.l, '🚪'));
+    if (inHub && R?.lk) R.lk.forEach(([h, i, t]) => add(h, t, i)); // My Locker pages, Card Studio included
     if (isStaff()) STAFF.forEach(([, items]) => items.forEach(([h, e, l]) => add(h, l, e)));
-    if (isOwner()) { const [h, e, l] = OWNER[1][1][0]; add(h, l, e); } // the Boardroom, first in the owner group
+    if (isOwner()) { const [h, e, l] = OWNER[0][1][0]; add(h, l, e); } // the Boardroom, first in the owner group
     return out.slice(0, DIAL_MAX);
   };
   const dial = (() => {
@@ -280,7 +284,7 @@
       if (e.target.closest('[data-issue]')) { closeR(); const f = d.querySelector('.nxr-fab button, .nxr-fab'); if (f) f.click(); return; }
       if (e.target.closest('[data-edit]')) { closeR(); d.querySelector('.gr-fab')?.click(); return; }
       const as = e.target.closest('.dk-chip[data-as]');
-      if (as && isOwner()) { try { localStorage.setItem(API && !w.PF_MOCK ? 'phoenix.viewas' : 'phoenix.as', as.dataset.as); if (API && !w.PF_MOCK) localStorage.setItem('phoenix.viewas.t', String(Date.now())); } catch {} location.reload(); return; }
+      if (as && canPreview()) { try { localStorage.setItem(API && !w.PF_MOCK ? 'phoenix.viewas' : 'phoenix.as', as.dataset.as); if (API && !w.PF_MOCK) localStorage.setItem('phoenix.viewas.t', String(Date.now())); } catch {} location.reload(); return; }
       const j = e.target.closest('[data-jump]'); if (j) { e.preventDefault(); const t = d.getElementById(j.getAttribute('href').slice(1)); if (t) { const y = scrollY + t.getBoundingClientRect().top - 90; goto(y); } closeR(); return; }
       const p = e.target.closest('[data-pin]'); if (p) { (p.dataset.ps === 's' ? pinsStaff : pinsNav).toggle(p.dataset.pin, p.dataset.l, p.dataset.e); paint(`[data-pin="${CSS.escape(p.dataset.pin)}"]`); }
     });

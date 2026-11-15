@@ -8,6 +8,5 @@ or wait, or take a different item. Add your row before the first edit and delete
 
 | Session (name or id) | Roadmap item | Branch or worktree | Files and folders claimed | Started |
 |---|---|---|---|---|
-| (none) | | | | |
 
 A claim older than 24 hours with a session that no longer exists is stale; the next session may remove it and note that in its report.

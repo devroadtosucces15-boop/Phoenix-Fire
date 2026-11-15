@@ -14,7 +14,7 @@ Crest, logo, favicons and theme layer laid over the built site
 - `icon-192.png` (86036 bytes)
 - `icon-512.png` (483522 bytes)
 - `icon-maskable-512.png` (294230 bytes)
-- `phoenix-api.json` (235718 bytes)
+- `phoenix-api.json` (235720 bytes)
 - `phoenix-fx.js` (11576 bytes)
 - `phoenix-mock.js` (5119 bytes)
 - `phoenix.css` (12351 bytes)
