@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-15T20:00:42.641Z",
+ "fetchedAt": "2026-11-15T20:10:40.652Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1305,6 +1305,42 @@
    "favoritePosition": "goalkeeper"
   },
   {
+   "name": "Traperosky",
+   "gamesPlayed": "4",
+   "winRate": "100",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "1",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "39",
+   "passSuccessRate": "84",
+   "ratingAve": "7.5",
+   "tacklesMade": "6",
+   "tackleSuccessRate": "46",
+   "proName": "TRAPEROSKY",
+   "proPos": "5",
+   "proStyle": "0",
+   "proHeight": "187",
+   "proNationality": "45",
+   "proOverall": "77",
+   "proOverallStr": "77",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "defender"
+  },
+  {
    "name": "MS-05-05",
    "gamesPlayed": "7",
    "winRate": "42",
@@ -1777,7 +1813,7 @@
   "midfielder": 11,
   "goalkeeper": 7,
   "forward": 14,
-  "defender": 12
+  "defender": 13
  },
  "career": [
   {
@@ -2175,6 +2211,17 @@
    "ratingAve": "5.6",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
+  },
+  {
+   "name": "Traperosky",
+   "proPos": "14",
+   "gamesPlayed": "51",
+   "goals": "6",
+   "assists": "9",
+   "manOfTheMatch": "4",
+   "ratingAve": "7.2",
+   "prevGoals": "0",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "MS-05-05",
