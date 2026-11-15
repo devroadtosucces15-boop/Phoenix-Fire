@@ -301,7 +301,7 @@
       "title": "Side roadmap Item 4: Card Studio and `/avatarcard`",
       "phase": "Side roadmap",
       "area": "`bot/cardstudio.js`, `web/cardcomposer.js`",
-      "status": "NEXT",
+      "status": "PAUSED",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -314,7 +314,7 @@
       "lowHanging": false,
       "percent": 85,
       "verify": true,
-      "notes": "Built on branch claude/pf-020 (4a hardening, 4b no pre-approval preview, 4c male/female kits + migration 0064, 4d queue position/ETA + hourly submit throttle, 4e /avatarcard panel on pf:card: ids, 4f before/after shots 390/820/1440 in the notes folder). LEFT FOR THE OWNER (Item 4d, not decided here): (1) Workers Paid plan: same model and quality, lifts the 10,000 neurons/day free pool shared by every AI feature, costs money. (2) Composite cinematic from the portrait cutout: halves AI calls, cinematic looks less natural. (3) Fallback image provider: member face photos leave Cloudflare, privacy and consent risk. (4) How far to widen the one-request-per-month limit: needs a table rebuild (UNIQUE(user_id, month), migration 0039) and raises AI use. Also owner-side: 1-minute cron and a higher per-run limit change AI spend. Deploy notes: new migration 0064_card_kit_variant; Worker deploy for the panel, kit variants and the new /avatarcard command shape (re-register commands); upload male and female kit reference images in Staff Artwork. Staff kit example image not made (text do/don't guide only).",
+      "notes": "Built on branch claude/pf-020 (4a hardening, 4b no pre-approval preview, 4c male/female kits + migration 0064, 4d queue position/ETA + hourly submit throttle, 4e /avatarcard panel on pf:card: ids, 4f before/after shots 390/820/1440 in the notes folder). LEFT FOR THE OWNER (Item 4d, not decided here): (1) Workers Paid plan: same model and quality, lifts the 10,000 neurons/day free pool shared by every AI feature, costs money. (2) Composite cinematic from the portrait cutout: halves AI calls, cinematic looks less natural. (3) Fallback image provider: member face photos leave Cloudflare, privacy and consent risk. (4) How far to widen the one-request-per-month limit: needs a table rebuild (UNIQUE(user_id, month), migration 0039) and raises AI use. Also owner-side: 1-minute cron and a higher per-run limit change AI spend. Deploy notes: new migration 0064_card_kit_variant; Worker deploy for the panel, kit variants and the new /avatarcard command shape (re-register commands); upload male and female kit reference images in Staff Artwork. Staff kit example image not made (text do/don't guide only). PAUSED 2026-11-15 at 85% by owner order (\"next\"): everything that does not depend on Item 4d is merged; the 4d owner questions (Workers Paid plan or fallback image provider, monthly limit) are in PLANNING/NEXT-SESSION-PROMPT history and the PF-020 report. Resume when the owner answers.",
       "doneLog": [],
       "plans": []
     },
@@ -323,20 +323,20 @@
       "title": "Side roadmap Item 3 visuals: match view, match center, box score, derived stats",
       "phase": "Side roadmap",
       "area": "`next/pages/matches.mjs`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,
       "estMinutes": 120,
       "model": "opus",
       "dependsOn": [
-        "PF-020"
+        "PF-019"
       ],
       "fileLane": "`next/pages/matches.mjs`",
       "lowHanging": false,
       "percent": 0,
       "verify": true,
-      "notes": "Plan sections 1 and 5; part landed in PR 6. Design work: screenshots before and after.",
+      "notes": "Plan sections 1 and 5; part landed in PR 6. Design work: screenshots before and after. Dependency moved from PF-020 to PF-019: PF-020 only waits on the owner 4d decision and does not touch match pages.",
       "doneLog": [],
       "plans": []
     },
