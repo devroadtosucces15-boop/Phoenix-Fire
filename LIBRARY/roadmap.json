@@ -200,7 +200,7 @@
       "title": "Project brain: usage intelligence, lessons and improvement plans",
       "phase": "Project brain",
       "area": "`tools/brain/`, `LIBRARY/LESSONS.md`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "L",
       "effort": 4,
       "importance": 3,
@@ -323,7 +323,7 @@
       "title": "Side roadmap Item 3 visuals: match view, match center, box score, derived stats",
       "phase": "Side roadmap",
       "area": "`next/pages/matches.mjs`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -334,10 +334,16 @@
       ],
       "fileLane": "`next/pages/matches.mjs`",
       "lowHanging": false,
-      "percent": 0,
-      "verify": true,
+      "percent": 100,
+      "verify": false,
       "notes": "Plan sections 1 and 5; part landed in PR 6. Design work: screenshots before and after. Dependency moved from PF-020 to PF-019: PF-020 only waits on the owner 4d decision and does not touch match pages.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PF-021 PR",
+          "what": "Match page Box score tab with decoded columns (Fwd, Int, Won, Lost, Aer, Pos%), Total / Per 90 switch, team row and coverage note; team comparison extended from counters; Discord box score card gets Int/Won/Lost/Aer from evraw; scripts/lib/boxscore.mjs + tests/boxscore.test.mjs. Possession percentage stays unpublished (EA does not send it)."
+        }
+      ],
       "plans": []
     },
     {
@@ -358,7 +364,7 @@
       "lowHanging": false,
       "percent": 0,
       "verify": true,
-      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll.",
+      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT.",
       "doneLog": [],
       "plans": []
     },

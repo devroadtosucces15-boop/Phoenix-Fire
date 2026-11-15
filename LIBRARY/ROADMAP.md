@@ -24,13 +24,13 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 42% (items weighted by size: S 1, M 2, L 4).
+Project: 46% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
 | Project brain | 7 | 5 | 74% | 240 |
-| Side roadmap | 8 | 2 | 36% | 720 |
+| Side roadmap | 8 | 3 | 48% | 600 |
 | Match night and upkeep | 8 | 0 | 0% | 960 |
 
 ## Items
@@ -44,13 +44,13 @@ Project: 42% (items weighted by size: S 1, M 2, L 4).
 | PF-013 | Project brain: maps with drill-in, inputs and outputs folders | DONE 2026-11-15 (PR (PF-013)) | PF-012 | `tools/brain/` | opus | Reads `tools/bot-studio/lib/deps.mjs` |
 | PF-014 | Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders | DONE 2026-11-15 (PR (PF-014)) | PF-012 | `tools/brain/`, `LIBRARY/inbox/` | sonnet | Dictation text only at first |
 | PF-015 | Project brain: usage probe, snapshots, policy, banner, save mode (`lowHanging` items) | DONE 2026-11-15 (PR (PF-015)) | PF-011 | `tools/brain/`, `LIBRARY/state/` | sonnet | First test whether usage can be read outside a session |
-| PF-016 | Project brain: usage intelligence, lessons and improvement plans | OPEN | PF-015 | `tools/brain/`, `LIBRARY/LESSONS.md` | opus | Per session and per item. Queued behind PF-018 by owner order (side roadmap resumes once the dashboard works, 2026-11-15); take it any time after. |
+| PF-016 | Project brain: usage intelligence, lessons and improvement plans | NEXT | PF-015 | `tools/brain/`, `LIBRARY/LESSONS.md` | opus | Per session and per item. Queued behind PF-018 by owner order (side roadmap resumes once the dashboard works, 2026-11-15); take it any time after. |
 | PF-017 | Project brain: optional hosted artifact mirror for the phone | OPEN | PF-012, PF-014 | artifact | sonnet | Snapshot only; updates when a session publishes |
 | PF-018 | Side roadmap step 2: links (Phases A, B, D1, D5): every button, notification and redirect lands on a current, correct page; no second landing page per feature | DONE 2026-11-15 (PR (PF-018)) | PF-012 | `next/`, `bot/` links | sonnet | Resumes the owner's side roadmap `PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md` (copied from `~/.claude/plans/`). Its Item 3 backend (EA decoded columns) and PR 6 (decoded stats, recap) are already on main. Starts only after the local brain window works (owner order, 2026-11-15). Verify against the code first. |
 | PF-019 | Side roadmap step 3: menu gaps and duplicates (Phase C) | DONE 2026-11-15 (PR (PF-019)) | PF-018 | menus, `next/lib/ui.mjs` | sonnet | Plan section 3 |
 | PF-020 | Side roadmap Item 4: Card Studio and `/avatarcard` | PAUSED (verify) | PF-019 | `bot/cardstudio.js`, `web/cardcomposer.js` | opus | Built on branch claude/pf-020 (4a hardening, 4b no pre-approval preview, 4c male/female kits + migration 0064, 4d queue position/ETA + hourly submit throttle, 4e /avatarcard panel on pf:card: ids, 4f before/after shots 390/820/1440 in the notes folder). LEFT FOR THE OWNER (Item 4d, not decided here): (1) Workers Paid plan: same model and quality, lifts the 10,000 neurons/day free pool shared by every AI feature, costs money. (2) Composite cinematic from the portrait cutout: halves AI calls, cinematic looks less natural. (3) Fallback image provider: member face photos leave Cloudflare, privacy and consent risk. (4) How far to widen the one-request-per-month limit: needs a table rebuild (UNIQUE(user_id, month), migration 0039) and raises AI use. Also owner-side: 1-minute cron and a higher per-run limit change AI spend. Deploy notes: new migration 0064_card_kit_variant; Worker deploy for the panel, kit variants and the new /avatarcard command shape (re-register commands); upload male and female kit reference images in Staff Artwork. Staff kit example image not made (text do/don't guide only). PAUSED 2026-11-15 at 85% by owner order ("next"): everything that does not depend on Item 4d is merged; the 4d owner questions (Workers Paid plan or fallback image provider, monthly limit) are in PLANNING/NEXT-SESSION-PROMPT history and the PF-020 report. Resume when the owner answers. |
-| PF-021 | Side roadmap Item 3 visuals: match view, match center, box score, derived stats | NEXT (verify) | PF-019 | `next/pages/matches.mjs` | opus | Plan sections 1 and 5; part landed in PR 6. Design work: screenshots before and after. Dependency moved from PF-020 to PF-019: PF-020 only waits on the owner 4d decision and does not touch match pages. |
-| PF-022 | Side roadmap Item 5: Control Center CRM dashboard, remaining parts (DJ bridge, permissions, sign-in) | OPEN (verify) | PF-021 | `bot/controlcenter.js`, dock | opus | Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. |
+| PF-021 | Side roadmap Item 3 visuals: match view, match center, box score, derived stats | DONE 2026-11-15 (PF-021 PR) | PF-019 | `next/pages/matches.mjs` | opus | Plan sections 1 and 5; part landed in PR 6. Design work: screenshots before and after. Dependency moved from PF-020 to PF-019: PF-020 only waits on the owner 4d decision and does not touch match pages. |
+| PF-022 | Side roadmap Item 5: Control Center CRM dashboard, remaining parts (DJ bridge, permissions, sign-in) | OPEN (verify) | PF-021 | `bot/controlcenter.js`, dock | opus | Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT. |
 | PF-023 | Side roadmap Item 7: Rush queue and LFG as one matchmaking system | OPEN (verify) | PF-022 | `bot/` rush files | sonnet | Plan section 5b; queue board landed |
 | PF-024 | Side roadmap Items 8 to 25: bot cleanup and new bot features (including the test-view command) | OPEN | PF-023 | `bot/` | sonnet | Plan sections 5c to Item 25. Split into one session per item when taken. |
 | PF-025 | Side roadmap Item 6: visual and performance enhancement pass (last) | BLOCKED | PF-024 | site-wide | opus | Blocked: owner. Starts when the owner says the resources are ready. |

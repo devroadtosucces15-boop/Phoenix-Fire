@@ -5,6 +5,7 @@
 //   node scripts/cards.mjs --html     also writes each card's HTML next to it (for tweaking templates in a browser)
 // Cards are 1200 px wide: Discord shows them at ~550 px, so nothing in them is set smaller than ~24 px.
 // File names carry a hash of what's drawn, so Discord never shows a stale cached picture after the numbers change.
+import { BOX_COLS } from './lib/boxscore.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -168,34 +169,40 @@ ${graph ? `<div class="g-h">Match rating · last ${Math.min(10, (p.tr ?? []).len
 
 // ---------- box score (the "Box score" button on a match message) ----------
 // Our side only: the match data carries every player's line for us but nothing for the other team beyond the score.
+const EV_CARD_COLS = BOX_COLS.filter(([k]) => ['int', 'won', 'lost', 'aer'].includes(k)); // the four that fit the 1200 px card
 const pc = (a, b) => (b ? `${Math.round((a / b) * 100)}%` : '–');
 export function boxScoreCard(m, club) {
   const ps = [...(m.ps ?? [])].sort((a, b) => (+b.r || 0) - (+a.r || 0)).slice(0, 11);
   const sum = (f) => (m.ps ?? []).reduce((t, p) => t + (+p[f] || 0), 0);
+  // decoded event columns (scripts/lib/boxscore.mjs) only when at least one player carries EA's event counters; a dash for the rest
+  const evc = (m.ps ?? []).some((p) => p.ev) ? EV_CARD_COLS : [];
+  const cols = `minmax(0,1fr) ${evc.length ? '80px 46px 46px 90px 112px 84px' : '110px 70px 70px 120px 160px 120px'}${evc.map(() => ' 76px').join('')}`;
+  const evCell = (p, k) => `<span class="v ev">${p.ev?.[k] ?? '–'}</span>`;
+  const evTot = (k) => { const have = (m.ps ?? []).filter((p) => p.ev); return `<span>${have.length ? have.reduce((t, p) => t + (p.ev[k] || 0), 0) : '–'}</span>`; };
   const rows = ps.map((p) => {
     const b = band(+p.r, p.mom);
     return `<div class="r${p.mom ? ' top' : ''}"><span class="n">${esc(p.n)}${p.pos ? ` <i>${esc(String(p.pos).slice(0, 3).toUpperCase())}</i>` : ''}</span>
-<span class="v big" style="color:${BAND[b]}">${r1(p.r)}</span><span class="v">${p.g ?? 0}</span><span class="v">${p.a ?? 0}</span><span class="v">${pc(p.pm, p.pa)}</span><span class="v">${p.tm ?? 0}/${p.ta ?? 0}</span><span class="v">${p.sh ?? 0}</span></div>`;
+<span class="v big" style="color:${BAND[b]}">${r1(p.r)}</span><span class="v">${p.g ?? 0}</span><span class="v">${p.a ?? 0}</span><span class="v">${pc(p.pm, p.pa)}</span><span class="v">${p.tm ?? 0}/${p.ta ?? 0}</span><span class="v">${p.sh ?? 0}</span>${evc.map(([k]) => evCell(p, k)).join('')}</div>`;
   }).join('');
   return page(`
 .wrap{padding:44px 60px 70px}
 .head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
 .head h1{font:700 64px/1 Oswald;text-transform:uppercase;letter-spacing:.02em}
 .head .res{text-align:right}
-.h{display:grid;grid-template-columns:minmax(0,1fr) 110px 70px 70px 120px 160px 120px;font:700 19px Inter;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding:0 0 12px;border-bottom:1px solid var(--line)}
-.r{display:grid;grid-template-columns:minmax(0,1fr) 110px 70px 70px 120px 160px 120px;align-items:center;column-gap:10px;padding:13px 14px;margin-top:8px;border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,.04),transparent)}
+.h{display:grid;grid-template-columns:${cols};font:700 19px Inter;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding:0 0 12px;border-bottom:1px solid var(--line)}
+.r{display:grid;grid-template-columns:${cols};align-items:center;column-gap:10px;padding:13px 14px;margin-top:8px;border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,.04),transparent)}
 .r.top{background:linear-gradient(90deg,rgba(239,207,122,.14),transparent 75%)}
 .n{font:600 30px Inter;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.n i{font:600 19px Oswald;font-style:normal;letter-spacing:.08em;color:var(--g2);background:var(--p3);border-radius:6px;padding:1px 8px;margin-left:8px;vertical-align:3px}
-.v{text-align:right;font:600 30px Oswald;font-variant-numeric:tabular-nums;color:#cfd8e8}.v.big{font-size:38px}
+.v{text-align:right;font:600 30px Oswald;font-variant-numeric:tabular-nums;color:#cfd8e8}.v.ev{color:var(--g2);font-size:26px}${evc.length ? '.n{font-size:26px}.h{font-size:17px;letter-spacing:.12em}' : ''}.v.big{font-size:38px}
 .h span:nth-child(n+2){text-align:right}
-.tot{margin-top:18px;padding:16px 14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) 110px 70px 70px 120px 160px 120px;column-gap:10px;font:700 24px Oswald;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
+.tot{margin-top:18px;padding:16px 14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:${cols};column-gap:10px;font:700 24px Oswald;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
 .tot span:nth-child(n+2){text-align:right;color:var(--text)}`,
   `<div class="wrap">
 <div class="eyebrow">${esc(club.name)} · Box score</div>
 <div class="head"><h1>${esc(club.name.replace(/\s+FC$/i, ''))} ${m.gf}–${m.ga} ${esc(m.opp)}</h1><div class="res"><span class="pill ${m.res}">${RESULT[m.res] ?? ''}</span></div></div>
-<div class="h"><span>Player</span><span>RTG</span><span>G</span><span>A</span><span>Pass</span><span>Tackles</span><span>Shots</span></div>
+<div class="h"><span>Player</span><span>RTG</span><span>G</span><span>A</span><span>Pass</span><span>Tackles</span><span>Shots</span>${evc.map(([, h]) => `<span>${h}</span>`).join('')}</div>
 ${rows}
-<div class="tot"><span>Team</span><span>${r1((m.ps ?? []).length ? sum('r') / m.ps.length : 0)}</span><span>${sum('g')}</span><span>${sum('a')}</span><span>${pc(sum('pm'), sum('pa'))}</span><span>${sum('tm')}/${sum('ta')}</span><span>${sum('sh')}</span></div>
+<div class="tot"><span>Team</span><span>${r1((m.ps ?? []).length ? sum('r') / m.ps.length : 0)}</span><span>${sum('g')}</span><span>${sum('a')}</span><span>${pc(sum('pm'), sum('pa'))}</span><span>${sum('tm')}/${sum('ta')}</span><span>${sum('sh')}</span>${evc.map(([k]) => evTot(k)).join('')}</div>
 </div><div class="brand">${esc(SITE)}</div>`);
 }
 
