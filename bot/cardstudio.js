@@ -93,7 +93,7 @@ const dropPhoto = (env, key) => (key && env.MEDIA ? env.MEDIA.delete(key).catch(
 
 const reqView = (r, extra = {}) => ({
   id: r.id, month: r.month, status: r.status === 'done' && r.published === 0 ? 'review' : r.status, note: r.note, bg: r.bg_name ?? null, pose: r.pose_name ?? null,
-  createdAt: r.created_at, decidedAt: r.decided_at, hasPhoto: !!r.photo_key, targetPlayer: r.target_player ?? null, hasResult: !!r.result_key, hasPortrait: !!r.portrait_key, kitNumber: r.kit_number ?? null, avatarEnabled: r.avatar_enabled !== 0, portraitEnabled: r.portrait_enabled === 1, attempts: r.attempts, ...extra,
+  createdAt: r.created_at, decidedAt: r.decided_at, hasPhoto: !!r.photo_key, targetPlayer: r.target_player ?? null, hasResult: !!r.result_key, hasPortrait: !!r.portrait_key, kitNumber: r.kit_number ?? null, kit: r.kit_variant || 'male', avatarEnabled: r.avatar_enabled !== 0, portraitEnabled: r.portrait_enabled === 1, attempts: r.attempts, ...extra,
 });
 const REQ_SQL = `SELECT r.*, b.name AS bg_name, p.name AS pose_name FROM card_requests r
   LEFT JOIN card_templates b ON b.id = r.bg_id LEFT JOIN card_templates p ON p.id = r.pose_id`;
@@ -119,6 +119,8 @@ export async function cardRequestUpload(request, me, env, url, log, loadSite) {
   const rawNumber = url.searchParams.get('kitNumber');
   const kitNumber = rawNumber == null || rawNumber === '' ? null : Number(rawNumber);
   if (kitNumber !== null && (!/^\d{1,2}$/.test(rawNumber) || !Number.isInteger(kitNumber) || kitNumber < 0 || kitNumber > 99)) return fail('Kit number must be between 0 and 99.');
+  const variant = url.searchParams.get('kit') ?? 'male';
+  if (!KIT_VARIANTS.includes(variant)) return fail('Pick the male or female kit.');
   const month = monthKey();
   const existing = await one(env, 'SELECT id, status, photo_key, result_key, portrait_key FROM card_requests WHERE user_id = ? AND month = ?', targetUser, month);
   if (existing && existing.status !== 'rejected') return fail(targetPlayer ? 'That player already has a request this month. Revoke it to allow resubmission.' : 'You already sent a card request this month – the next one opens on the 1st.', 409);
@@ -137,7 +139,7 @@ export async function cardRequestUpload(request, me, env, url, log, loadSite) {
   await env.MEDIA.put(key, bytes, { httpMetadata: { contentType: type[0] } });
   try {
     if (existing) await run(env, "DELETE FROM card_requests WHERE id = ? AND status = 'rejected'", existing.id);
-    await run(env, 'INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, avatar_enabled, portrait_enabled, kit_number, target_player, submitted_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', targetUser, month, bg?.id ?? 0, pose?.id ?? 0, key, 'pending', Date.now(), avatarEnabled ? 1 : 0, portraitEnabled ? 1 : 0, kitNumber, targetPlayer, me.u);
+    await run(env, 'INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, avatar_enabled, portrait_enabled, kit_number, target_player, submitted_by, kit_variant) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', targetUser, month, bg?.id ?? 0, pose?.id ?? 0, key, 'pending', Date.now(), avatarEnabled ? 1 : 0, portraitEnabled ? 1 : 0, kitNumber, targetPlayer, me.u, variant);
   } catch {
     await dropPhoto(env, key);
     return fail('You already sent a card request this month – the next one opens on the 1st.', 409);
@@ -374,7 +376,10 @@ async function reference(env, bytes, type) {
 
 // The club kit every player wears. A manager can upload a photo/render of it (POST /api/cards/kit) and it is sent to the
 // model as an extra reference; without one, the written description below is used on its own.
-export const KIT_KEY = 'cardkit/reference';
+export const KIT_VARIANTS = ['male', 'female'];
+export const kitVariant = (v) => (KIT_VARIANTS.includes(v) ? v : 'male');
+export const kitKey = (variant) => `cardkit/${kitVariant(variant)}`;
+export const KIT_KEY = kitKey('male'); // the pre-variant reference lived at cardkit/reference; readKit still falls back to it
 // Default wording is Phoenix orange and ink; a deploy can override it with the CARD_KIT_TEXT var (CARD_KIT_TEXT_MALE / _FEMALE per variant).
 export const KIT_TEXT = 'an orange football shirt with black trim, a black collar and a small phoenix crest on the chest, black shorts with a small crest, black tape on the wrists';
 export const kitText = (env, variant = '') => String(env?.[`CARD_KIT_TEXT_${String(variant).toUpperCase()}`] || env?.CARD_KIT_TEXT || KIT_TEXT).slice(0, 400);
@@ -392,21 +397,24 @@ export async function cardKit(request, me, env, log) {
   if (blocked) return blocked;
   if (!can(me, 'cards.templates')) return fail('Managers only.', 403);
   if (!env.MEDIA) return fail('Media storage is not connected.', 503);
+  const qs = new URL(request.url).searchParams.get('variant');
+  if (qs !== null && !KIT_VARIANTS.includes(qs)) return fail('Pick the male or female kit.');
+  const KEY = kitKey(qs);
   if (request.method === 'GET') {
-    const obj = await env.MEDIA.get(KIT_KEY);
+    const obj = await env.MEDIA.get(KEY) || (KEY === KIT_KEY ? await env.MEDIA.get('cardkit/reference') : null);
     if (!obj) return new Response('Not found', { status: 404 });
     const h = new Headers(); obj.writeHttpMetadata(h);
     h.set('X-Content-Type-Options', 'nosniff'); h.set('Content-Security-Policy', "default-src 'none'; sandbox"); h.set('Cache-Control', 'private, no-store');
     return new Response(obj.body, { headers: h });
   }
-  if (request.method === 'DELETE') { await env.MEDIA.delete(KIT_KEY); await log(env, me, 'card-kit-remove', 'kit reference'); return json({ ok: true }); }
+  if (request.method === 'DELETE') { await env.MEDIA.delete(KEY); if (KEY === KIT_KEY) await env.MEDIA.delete('cardkit/reference'); await log(env, me, 'card-kit-remove', `${kitVariant(qs)} kit reference`); return json({ ok: true }); }
   const bytes = new Uint8Array(await request.arrayBuffer());
   if (!bytes.length) return fail('That file is empty.');
   if (bytes.length > PHOTO_MAX) return fail('That image is too big – 8 MB max.');
   const type = photoType(bytes);
   if (!type) return fail('Upload a PNG, JPG or WEBP image.');
-  await env.MEDIA.put(KIT_KEY, bytes, { httpMetadata: { contentType: type[0] } });
-  await log(env, me, 'card-kit-set', 'kit reference');
+  await env.MEDIA.put(KEY, bytes, { httpMetadata: { contentType: type[0] } });
+  await log(env, me, 'card-kit-set', `${kitVariant(qs)} kit reference`);
   return json({ ok: true });
 }
 
@@ -467,6 +475,8 @@ async function readAsset(env, key) {
   return { bytes, type: photoType(bytes)?.[0] || 'image/png' };
 }
 
+const readKit = async (env, variant) => (await readAsset(env, kitKey(variant))) || (kitVariant(variant) === 'male' ? await readAsset(env, 'cardkit/reference') : null);
+
 // Claims one request (approved, or "generating" for too long) and makes its card. Returns what happened.
 async function generateOne(env, r, now) {
   const claimed = await run(env, `UPDATE card_requests SET status = 'generating', attempts = attempts + 1, started_at = ?
@@ -501,13 +511,13 @@ async function generateOne(env, r, now) {
       return null;
     };
     if (wantP && !portraitKey) {
-      const kit = await readAsset(env, KIT_KEY);
-      portraitKey = await attemptEach('portrait', async (level) => store('portrait_key', await cutPortrait(env, await render(env, bg, poseT, photo, true, kit, level, { kitText: kitText(env) }))));
+      const kit = await readKit(env, r.kit_variant);
+      portraitKey = await attemptEach('portrait', async (level) => store('portrait_key', await cutPortrait(env, await render(env, bg, poseT, photo, true, kit, level, { kitText: kitText(env, r.kit_variant) }))));
     }
     if (wantA && !resultKey) {
       resultKey = await attemptEach('cinematic', async (level) => {
         if (!bg || !poseT) throw new Error('The chosen background or pose is gone.');
-        return store('result_key', await render(env, bg, poseT, photo, false, null, level, { kitText: kitText(env), number: r.kit_number }));
+        return store('result_key', await render(env, bg, poseT, photo, false, null, level, { kitText: kitText(env, r.kit_variant), number: r.kit_number }));
       });
     }
     const complete = (!wantP || portraitKey) && (!wantA || resultKey);

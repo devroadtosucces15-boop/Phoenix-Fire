@@ -72,7 +72,7 @@
   const stepKit = (inp, by) => { const v = kitVal(inp); inp.value = v === '' ? (by > 0 ? '0' : '99') : String((+v + by + 100) % 100); inp.dispatchEvent(new Event('input', { bubbles: true })); };
 
   // ================= 🪪 MEMBER: my card =================
-  let T = null, R = null, AV = null, waiting = 0, sel = { bg: null, pose: null }, photo = null, photoUrl = '', outs = { avatar: true, portrait: true }, kit = '', poll = 0, polls = 0;
+  let T = null, R = null, AV = null, waiting = 0, sel = { bg: null, pose: null }, photo = null, photoUrl = '', outs = { avatar: true, portrait: true }, kit = '', kitv = 'male', poll = 0, polls = 0;
   const tile = (t, kind) => `<button type="button" class="cs-tile${sel[kind] === t.id ? ' on' : ''}${t.locked ? ' locked' : ''}" data-tid="${t.id}" data-kind="${kind}" aria-pressed="${sel[kind] === t.id}"${t.locked ? ' aria-disabled="true"' : ''}>
 <span class="cs-th"><img src="${esc(media(t.key))}" alt="" loading="lazy">${t.locked ? '<i aria-hidden="true">🔒</i>' : ''}</span><b>${esc(t.name)}</b><small>${t.tier === 'premium' ? (t.locked ? `⭐ ${t.pointCost} pts` : '⭐ Unlocked') : 'Free'}</small></button>`;
   const gallery = (title, list, kind, empty) => `<div class="cs-gal"><h5>${title}</h5>${list.length ? `<div class="cs-tiles">${list.map((t) => tile(t, kind)).join('')}</div>` : `<p class="muted small">${empty}</p>`}</div>`;
@@ -100,9 +100,11 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
 <p class="tiny muted">Use the avatar as your Discord picture: Discord › Settings › Profiles › Change avatar. Discord does not let bots set it for you.</p></div>`; };
   const formHtml = () => { const bgs = T.backgrounds.filter((t) => t.active !== false), poses = T.poses.filter((t) => t.active !== false), w = why();
     return `<form class="panel cs-form" id="cs-form" novalidate><div class="eyebrow">📸 Request my card · ${esc(monthName(R.month))}</div>
+<ol class="cs-guide tiny muted"><li>Choose a clear photo of your face.</li><li>Pick your kit and an optional shirt number.</li><li>Pick what to make, then a look for the cinematic avatar.</li><li>Send it. A manager checks the photo, then the card is drawn.</li></ol>
 <div class="cs-fg"><div class="cs-step"><h5><i>1</i> Your photo</h5><label class="cs-drop${photo ? ' has' : ''}" id="cs-drop"><input type="file" id="cs-file" accept="image/png,image/jpeg,image/webp"><img id="cs-pimg" alt="Your photo"${photoUrl ? ` src="${esc(photoUrl)}"` : ' hidden'}><span class="cs-dt">${photo ? '🔁 Change photo' : '📷 Choose or drop a photo'}</span></label>
 <ul class="cs-tips tiny muted"><li>🙂 Face the camera, head and shoulders</li><li>💡 Good light, plain background</li><li>📁 PNG, JPG or WEBP up to 8 MB</li></ul></div>
 <div class="cs-step"><h5><i>2</i> What to make</h5><div class="cs-outs">${[['avatar', '🎬', 'Cinematic avatar', 'A club-style scene with your pose. Great as a Discord picture.'], ['portrait', '🪪', 'Website portrait', 'Your face on every player card on the site.']].map(([k, i, t, s]) => `<button type="button" class="cs-out${outs[k] ? ' on' : ''}" role="switch" aria-checked="${outs[k]}" data-out="${k}"><span aria-hidden="true">${i}</span><b>${t}</b><small>${s}</small></button>`).join('')}</div>
+<div class="pf-l">👕 Kit <div class="seg" role="radiogroup" aria-label="Kit">${[['male', 'Male kit'], ['female', 'Female kit']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${kitv === v}" class="${kitv === v ? 'on' : ''}" data-kv="${v}">${l}</button>`).join('')}</div></div>
 <label class="pf-l">👕 Kit number <small class="muted">optional</small>${kitInput(kit, 'cs-kitn')}</label></div></div>
 <div class="cs-looks"${outs.avatar ? '' : ' hidden'}><h5 class="cs-lh"><i>3</i> Pick a look <small class="muted">${T.backgrounds.some((t) => t.locked) || T.poses.some((t) => t.locked) ? '🔒 premium looks open when a manager unlocks them for you' : ''}</small></h5>${gallery('🌫️ Background', bgs, 'bg', 'No backgrounds yet. Turn off the cinematic avatar to ask for just the portrait.')}${gallery('💪 Pose', poses, 'pose', 'No poses yet.')}</div>
 <div class="cs-send"><p class="small" id="cs-why" aria-live="polite">${w ? `👉 ${esc(w)}` : `✅ Ready: ${[outs.avatar && 'cinematic avatar', outs.portrait && 'website portrait'].filter(Boolean).join(' + ')}${kit !== '' ? ` · #${esc(kit)}` : ''}`}</p><button type="submit" class="btn gold" id="cs-go"${w ? ' disabled' : ''}>📨 Send to a manager</button></div></form>`; };
@@ -147,7 +149,7 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
       const box = $('#cs-card .pc', meEl), k = box?.querySelector('.kit'); if (k) { k.textContent = v; box.classList.toggle('has-kit', v !== ''); }
       if (t.id === 'cs-kitn') { kit = v; syncForm(); } else { const sv = $('[data-kitsave]', meEl); if (sv) sv.hidden = v === String(R.request.kitNumber ?? ''); } });
     meEl.addEventListener('submit', async (e) => { if (e.target.id !== 'cs-form') return; e.preventDefault(); if (why()) return;
-      const q = new URLSearchParams({ bg: sel.bg ?? '', pose: sel.pose ?? '', avatar: outs.avatar ? '1' : '0', portrait: outs.portrait ? '1' : '0', kitNumber: kit });
+      const q = new URLSearchParams({ bg: sel.bg ?? '', pose: sel.pose ?? '', avatar: outs.avatar ? '1' : '0', portrait: outs.portrait ? '1' : '0', kitNumber: kit, kit: kitv });
       try { R = await go($('#cs-go', meEl), () => raw('/api/cards/request?' + q, photo)); photo = null; if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = ''; kit = ''; polls = 0;
         ok('Sent. A manager will check your photo', '📨'); setTimeout(() => paintMe(true), M?.off() ? 0 : 450); } catch (er) { oops(er); } });
     meEl.addEventListener('click', async (e) => { const t = e.target;
@@ -155,6 +157,7 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
       if (ti) { if (ti.classList.contains('locked')) { M?.toast('Locked for now. A manager can unlock premium looks for you', { icon: '🔒' }); M?.pulse(ti); return; }
         const k = ti.dataset.kind, id = +ti.dataset.tid; sel[k] = sel[k] === id ? null : id;
         $$(`[data-kind="${k}"]`, meEl).forEach((x) => { const on = +x.dataset.tid === sel[k]; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); syncForm(); return; }
+      const kv = t.closest('[data-kv]'); if (kv) { kitv = kv.dataset.kv; $$('[data-kv]', meEl).forEach((x) => { x.classList.toggle('on', x === kv); x.setAttribute('aria-checked', x === kv); }); return; }
       const o = t.closest('[data-out]');
       if (o) { const k = o.dataset.out; outs[k] = !outs[k]; o.classList.toggle('on', outs[k]); o.setAttribute('aria-checked', outs[k]); const lk = $('.cs-looks', meEl); if (lk) lk.hidden = !outs.avatar; syncForm(); return; }
       const kb = t.closest('[data-kit]'); if (kb) { stepKit(kb.parentElement.querySelector('input'), +kb.dataset.kit); return; }
@@ -208,7 +211,9 @@ ${rest.length ? `<h4 class="al-day">🕘 Last 14 days</h4><ul class="cs-rec">${r
 <div class="seg cs-tier" role="radiogroup" aria-label="Tier">${['free', 'premium'].map((v) => `<button type="button" role="radio" aria-checked="${t.tier === v}" class="${t.tier === v ? 'on' : ''}" data-tier="${v}">${v === 'free' ? 'Free' : '⭐ Premium'}</button>`).join('')}</div>
 <input data-f="point_cost" type="number" min="1" max="100000" value="${t.pointCost || ''}" placeholder="pts" aria-label="Point cost"${t.tier === 'premium' ? '' : ' hidden'}>${t.kind === 'pose' ? `<input data-f="prompt" value="${esc(t.prompt)}" maxlength="200" aria-label="Pose description" placeholder="e.g. arms crossed">` : ''}</div>
 <div class="cs-la"><button type="button" class="cs-sw${t.active ? ' on' : ''}" role="switch" aria-checked="${!!t.active}" data-act aria-label="Shown to members"><i></i></button><small>${t.active ? 'Shown' : 'Hidden'}</small><button type="button" class="btn ghost" data-lsave hidden>💾 Save</button></div></li>`;
-    return `<form class="panel cs-up" id="cs-kit"><div class="eyebrow">👕 Club kit reference</div><div class="cs-ofg"><p class="muted small">A photo or render of the kit every player is dressed in. It is sent to the artwork maker with each portrait, so every card wears the same uniform. Replace it any time.</p>
+    return `<form class="panel cs-up" id="cs-kit"><div class="eyebrow">👕 Club kit reference</div><div class="cs-ofg"><p class="muted small">A photo or render of the kit players are dressed in. It is sent to the artwork maker with each portrait, so every card wears the same uniform. There is one for the male kit and one for the female kit. Replace it any time.</p>
+<ul class="cs-dd tiny muted"><li>✅ Do: the whole shirt on a plain background, front view, sharp, club colours true.</li><li>✅ Do: show the crest and any stripes clearly.</li><li>❌ Don't: a person wearing it, a crowd, text overlays, a tiny or blurry picture.</li></ul>
+<label class="pf-l">Which kit<select name="variant" data-kvsel><option value="male">Male kit</option><option value="female">Female kit</option></select></label>
 <label class="pf-l">Kit image <small class="muted">PNG, JPG or WEBP</small><input name="file" type="file" accept="image/png,image/jpeg,image/webp" required></label><div class="sq-acts"><button class="btn gold" type="submit">⬆ Save kit</button><button class="btn ghost" type="button" data-kitdrop>🗑 Remove</button></div></div></form>
 <form class="panel cs-up" id="cs-up"><div class="eyebrow">⬆ Add a look</div><div class="cs-ofg"><div class="seg" role="radiogroup" aria-label="Kind">${[['bg', '🌫️ Background'], ['pose', '💪 Pose']].map(([v, l], i) => `<button type="button" role="radio" aria-checked="${!i}" class="${i ? '' : 'on'}" data-ukind="${v}">${l}</button>`).join('')}</div>
 <label class="pf-l">Name<input name="name" maxlength="40" required placeholder="e.g. Crimson ribbon"></label><label class="pf-l">Tier<select name="tier"><option value="free">Free</option><option value="premium">⭐ Premium</option></select></label>
@@ -262,13 +267,13 @@ ${rest.length ? `<h4 class="al-day">🕘 Last 14 days</h4><ul class="cs-rec">${r
     });
     stEl.addEventListener('input', (e) => { const t = e.target; if (/^cs-o/.test(t.id || '')) { const v = kitVal(t); if (t.value !== v) t.value = v; } const li = t.closest('[data-lr]'); if (li) $('[data-lsave]', li).hidden = false; });
     stEl.addEventListener('change', (e) => { const f = e.target.closest('#cs-up'); if (f && e.target.name === 'tier') $('[data-ucost]', f).hidden = e.target.value !== 'premium'; if (e.target.closest('#cs-gr') && e.target.name === 'user') grantUser = e.target.value; });
-    stEl.addEventListener('click', async (e) => { const d = e.target.closest('[data-kitdrop]'); if (!d) return; try { await go(d, () => A.call('/api/cards/kit', { method: 'DELETE' })); ok('Kit removed', '🗑'); } catch (er) { oops(er); } });
+    stEl.addEventListener('click', async (e) => { const d = e.target.closest('[data-kitdrop]'); if (!d) return; try { await go(d, () => A.call('/api/cards/kit?variant=' + ($('[data-kvsel]', stEl)?.value || 'male'), { method: 'DELETE' })); ok('Kit removed', '🗑'); } catch (er) { oops(er); } });
     stEl.addEventListener('submit', async (e) => { e.preventDefault(); const f = e.target, btn = e.submitter || $('button[type=submit]', f);
       if (f.id === 'cs-of') { const file = f.photo.files[0]; if (!f.player.value) { M?.toast('Choose a player first', { kind: 'err' }); return; } if (!imageOk(file)) { M?.toast('Use a PNG, JPG or WEBP photo', { kind: 'err' }); return; }
         const q = new URLSearchParams({ targetPlayer: f.player.value, avatar: '0', portrait: '1', kitNumber: kitVal($('#cs-okit', f)) });
         try { const p = await shrink(file); await go(btn, () => raw('/api/cards/request?' + q, p)); ok('Sent for the check. It is in Review now', '📨'); setTimeout(refreshStaff, 500); } catch (er) { oops(er); } return; }
       if (f.id === 'cs-kit') { const file = f.file.files[0]; if (!imageOk(file)) { M?.toast('Use a PNG, JPG or WEBP image', { kind: 'err' }); return; }
-        try { const p = await shrink(file); await go(btn, () => raw('/api/cards/kit', p)); ok('Kit saved. New portraits will wear it', '👕'); f.reset(); } catch (er) { oops(er); } return; }
+        try { const p = await shrink(file); await go(btn, () => raw('/api/cards/kit?variant=' + f.variant.value, p)); ok('Kit saved. New portraits will wear it', '👕'); f.reset(); } catch (er) { oops(er); } return; }
       if (f.id === 'cs-up') { const file = f.file.files[0], kind = $('[data-ukind].on', f).dataset.ukind; if (!file) { M?.toast('Choose an image first', { kind: 'err' }); return; }
         if (kind === 'bg' && file.type !== 'image/png') { M?.toast('Backgrounds must be PNG files', { kind: 'err' }); return; }
         const q = new URLSearchParams({ kind, name: f.name.value.trim(), tier: f.tier.value }); if (f.tier.value === 'premium') q.set('cost', f.cost.value); if (kind === 'pose') q.set('prompt', f.prompt.value.trim());

@@ -328,12 +328,12 @@ t('owner revokes claimed-player artwork', (await call(owner, '/api/cards/owner/r
 t('revocation preserves explicit artwork assigned to a different player', (await env.DB.prepare("SELECT published FROM card_requests WHERE target_player = 'different-player'").first('published')) === 1);
 
 // Club kit reference: managers set the uniform every portrait is dressed in.
-const kitReq = (tok, method, body) => W('/api/cards/kit', { method, headers: { ...(tok ? { Authorization: 'Bearer ' + tok } : {}), 'Content-Type': 'image/png' }, ...(body ? { body } : {}) });
+const kitReq = (tok, method, body, q = '') => W('/api/cards/kit' + q, { method, headers: { ...(tok ? { Authorization: 'Bearer ' + tok } : {}), 'Content-Type': 'image/png' }, ...(body ? { body } : {}) });
 t('kit reference: members refused', (await kitReq(m1, 'POST', PNG(64, 64))).status === 403);
 t('kit reference: non-image refused', (await kitReq(mgr, 'POST', new Uint8Array(40))).status === 400);
 t('kit reference: none stored yet', (await kitReq(mgr, 'GET')).status === 404);
 t('kit reference: manager can set it', (await kitReq(mgr, 'POST', PNG(64, 64))).status === 200);
-t('kit reference: stored privately', r2objects.has('cardkit/reference') && (await kitReq(mgr, 'GET')).status === 200 && (await kitReq(m1, 'GET')).status === 403);
+t('kit reference: stored privately', r2objects.has('cardkit/male') && (await kitReq(mgr, 'GET')).status === 200 && (await kitReq(m1, 'GET')).status === 403);
 t('kit reference: manager can remove it', (await kitReq(mgr, 'DELETE')).status === 200 && (await kitReq(mgr, 'GET')).status === 404);
 t('image prompts: chest up, margin from the edges', () => {
   for (const lvl of [0]) {
@@ -356,6 +356,17 @@ t('4a: wrong-size model answer is scaled when Images is bound', async () => {
   const out = await resizeSquare(fake, PNG(1000, 1000));
   if (!out || pngSize(out).w !== CARD_SIZE) throw new Error('not scaled');
   if ((await resizeSquare(fake, PNG(1000, 500))) !== null) throw new Error('non-square must be refused');
+});
+t('4c: male and female kit references are separate and validated', async () => {
+  if ((await kitReq(mgr, 'POST', PNG(64, 64), '?variant=female')).status !== 200 || !r2objects.has('cardkit/female')) throw new Error('female not stored');
+  if ((await kitReq(mgr, 'GET', null, '?variant=female')).status !== 200 || (await kitReq(mgr, 'GET', null, '?variant=male')).status !== 404) throw new Error('variants mixed');
+  if ((await kitReq(mgr, 'POST', PNG(64, 64), '?variant=robot')).status !== 400) throw new Error('bad variant accepted');
+  await kitReq(mgr, 'DELETE', null, '?variant=female');
+});
+t('4c: kit_variant column exists, defaults male, prompts take the per-variant text', async () => {
+  const col = await env.DB.prepare("SELECT dflt_value AS d FROM pragma_table_info('card_requests') WHERE name = 'kit_variant'").first();
+  if (!col || !/male/.test(col.d)) throw new Error('column missing');
+  if (kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'female') !== 'b' || kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'male') !== 'a') throw new Error('text pair');
 });
 import { readFileSync } from 'node:fs';
 t('4b: no pre-approval preview in the member page or the classic page', () => {
