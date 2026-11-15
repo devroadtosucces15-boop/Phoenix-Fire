@@ -56,7 +56,7 @@ ${t.locked ? '<span class="cs-redeem" title="Redeeming with points is coming soo
 <p class="muted">One request per month (${esc(month)}). Upload a photo and choose your outputs. Background and pose templates are only required for a cinematic avatar. A manager will approve the request.</p>
 ${status}${card}
 ${open ? `<form id="cs-request" class="cs-form"><label class="cs-file"><input type="file" name="photo" accept="image/png,image/jpeg,image/webp" required><span>📷 Choose photo</span></label>
-<label>Kit number (optional)<input name="kitNumber" type="number" min="0" max="99" step="1" placeholder="0–99"></label><img class="cs-photo" id="cs-preview" alt="" hidden><p class="muted small">No templates yet? Uncheck Cinematic avatar to request the standard website portrait immediately.</p><label><input type="checkbox" name="avatar" checked> Cinematic avatar</label><label><input type="checkbox" name="portrait" checked> Website portrait</label><button class="btn" type="submit" disabled>📨 Send request</button></form>${r?.status === 'rejected' ? '<p class="muted">Your last photo was not approved – sending a new one does not use up your month.</p>' : ''}` : ''}</section>`;
+<label>Kit number (optional)<input name="kitNumber" type="number" min="0" max="99" step="1" placeholder="0–99"></label><p class="muted small">No templates yet? Uncheck Cinematic avatar to request the standard website portrait immediately.</p><label><input type="checkbox" name="avatar" checked> Cinematic avatar</label><label><input type="checkbox" name="portrait" checked> Website portrait</label><button class="btn" type="submit" disabled>📨 Send request</button></form>${r?.status === 'rejected' ? '<p class="muted">Your last photo was not approved – sending a new one does not use up your month.</p>' : ''}` : ''}</section>`;
   };
 
   const queueHtml = (list, players = []) => {
@@ -192,13 +192,9 @@ ${d.manage ? `<div class="card cs-wrap">${queueHtml(queue, ctx.players?.() || []
       const cancel = $('#cs-cancel', el);
       if (cancel) cancel.onclick = async () => { try { await ctx.call('/api/cards/request/cancel', {}); ctx.toast('Request cancelled'); load(); } catch (err) { ctx.toast(err.message, true); } };
       if (rform) {
-        const prev = $('#cs-preview', el);
-        if (photo) { prev.src = URL.createObjectURL(photo); prev.hidden = false; }
         rform.photo.onchange = async () => {
           const f = rform.photo.files[0];
           photo = f ? await shrink(f) : null;
-          prev.hidden = !photo;
-          if (photo) prev.src = URL.createObjectURL(photo);
           sync();
         };
         rform.onsubmit = async (e) => {

@@ -357,5 +357,11 @@ t('4a: wrong-size model answer is scaled when Images is bound', async () => {
   if (!out || pngSize(out).w !== CARD_SIZE) throw new Error('not scaled');
   if ((await resizeSquare(fake, PNG(1000, 500))) !== null) throw new Error('non-square must be refused');
 });
+import { readFileSync } from 'node:fs';
+t('4b: no pre-approval preview in the member page or the classic page', () => {
+  const nx = readFileSync(new URL('../next/static/cardstudio.js', import.meta.url), 'utf8'), wb = readFileSync(new URL('../web/cardstudio.js', import.meta.url), 'utf8');
+  if (/Rough preview|sentPhoto/.test(nx) || /cs-preview/.test(wb)) throw new Error('pre-approval preview is back');
+  if (!/status === 'done' && r\.hasPortrait\)\) return ''/.test(nx)) throw new Error('card preview must only show for a finished portrait');
+});
 
 done();

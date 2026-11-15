@@ -90,11 +90,11 @@ ${s === 'approved' || s === 'generating' ? '<p class="small muted">⏱️ Usuall
 ${!open && s === 'done' ? `<p class="small muted">Your next request opens on ${esc(nextFirst())}.</p>` : ''}
 ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto ? `<div class="cs-mine">${fig('photo', r.id, 'The photo you sent')}</div>` : ''}
 <div class="sq-acts">${s === 'pending' ? '<button type="button" class="btn ghost" data-cscancel>✖ Cancel request</button>' : ''}${waiting ? `<a class="btn ghost" href="staff-artwork.html">📥 ${waiting} waiting for staff ›</a>` : ''}</div></div>`; };
-  const sentPhoto = () => { const r = R?.request; return !photo && r?.hasPhoto && ['pending', 'approved', 'generating'].includes(r.status) ? r.id : null; };
-  const previewHtml = () => { const r = R?.request, ready = r?.status === 'done' && r.hasPortrait, rough = photo || sentPhoto();
-    return `<div class="panel cs-prev"><div class="eyebrow">👀 ${ready ? 'Your player card' : rough ? 'Rough preview' : 'Your card today'}</div><div class="cs-card" id="cs-card">${cardBox(!ready && !rough)}</div>
-<p class="tiny muted">${ready ? 'Live numbers from the club data. Change the kit number and the shirt follows.' : rough ? 'Your photo on the card. The finished portrait is drawn in the club style.' : 'Approved portraits show on every card on the site.'}</p>
-${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empty for none</small>${kitInput(r.kitNumber, 'cs-kitdone')}</label><div class="sq-acts"><button type="button" class="btn ghost" data-kitsave hidden>💾 Save number</button><button type="button" class="btn gold" data-export>⬇ Export player card</button></div>` : ''}</div>`; };
+  // No preview before approval: the card only shows once the finished portrait exists (kit number + export live here).
+  const previewHtml = () => { const r = R?.request; if (!(r?.status === 'done' && r.hasPortrait)) return '';
+    return `<div class="panel cs-prev"><div class="eyebrow">👀 Your player card</div><div class="cs-card" id="cs-card">${cardBox(true)}</div>
+<p class="tiny muted">Live numbers from the club data. Change the kit number and the shirt follows.</p>
+<label class="pf-l">👕 Kit number <small class="muted">0–99, empty for none</small>${kitInput(r.kitNumber, 'cs-kitdone')}</label><div class="sq-acts"><button type="button" class="btn ghost" data-kitsave hidden>💾 Save number</button><button type="button" class="btn gold" data-export>⬇ Export player card</button></div></div>`; };
   const artHtml = () => { const r = R?.request; if (!(r?.status === 'done' && (r.hasResult || r.hasPortrait))) return '';
     return `<div class="panel cs-art"><div class="eyebrow">🖼️ Your artwork · ${esc(monthName(r.month))}</div><div class="cs-figs">${r.hasResult ? fig('avatar', r.id, 'Cinematic avatar', `${(window.NOREX?.slug || 'club')}-avatar-${r.month}.png`) : ''}${r.hasPortrait ? fig('portrait', r.id, 'Website portrait', `${(window.NOREX?.slug || 'club')}-portrait-${r.month}.png`) : ''}</div>
 <p class="tiny muted">Use the avatar as your Discord picture: Discord › Settings › Profiles › Change avatar. Discord does not let bots set it for you.</p></div>`; };
@@ -117,9 +117,7 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
   const afterMe = async () => { fillPics(meEl); const r = R?.request, box = $('#cs-card .pc', meEl);
     clearTimeout(poll); if (['approved', 'generating'].includes(r?.status) && ++polls <= 30) poll = setTimeout(() => { if (meEl.isConnected) loadMe(true); }, 20000);
     if (!box) return;
-    try { if (r?.status === 'done' && r.hasPortrait) { const { u } = await blobOf(picPath('portrait', r.id)); await window.NorexArt?.fitInto(box, u, r.kitNumber ?? ''); }
-      else if (photoUrl) await window.NorexArt?.fitInto(box, photoUrl, kit);
-      else if (sentPhoto()) { const { u } = await blobOf(picPath('photo', r.id)); await window.NorexArt?.fitInto(box, u, r.kitNumber ?? ''); } else window.NorexArt?.apply(box.parentNode); } catch {} };
+    try { if (r?.status === 'done' && r.hasPortrait) { const { u } = await blobOf(picPath('portrait', r.id)); await window.NorexArt?.fitInto(box, u, r.kitNumber ?? ''); } } catch {} };
   const paintMe = (land) => (land ? put(meEl, meHtml(), afterMe) : ((meEl.innerHTML = meHtml()), afterMe()));
   const syncForm = () => { const w = why(), b = $('#cs-go', meEl), p = $('#cs-why', meEl); if (!b) return; b.disabled = !!w;
     p.textContent = w ? `👉 ${w}` : `✅ Ready: ${[outs.avatar && 'cinematic avatar', outs.portrait && 'website portrait'].filter(Boolean).join(' + ')}${kit !== '' ? ` · #${kit}` : ''}`; };
@@ -140,7 +138,6 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
       photo = await shrink(f); if (photo.size > 8e6) { photo = null; M?.toast('That photo is still over 8 MB after shrinking', { kind: 'err' }); return; }
       if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = URL.createObjectURL(photo);
       const img = $('#cs-pimg', meEl); img.src = photoUrl; img.hidden = false; $('#cs-drop', meEl).classList.add('has'); $('.cs-dt', meEl).textContent = '🔁 Change photo';
-      const box = $('#cs-card .pc', meEl); if (box) { $('#cs-card', meEl).innerHTML = cardBox(false); window.NorexArt?.fitInto($('#cs-card .pc', meEl), photoUrl, kit).catch(() => {}); $('.cs-prev .eyebrow', meEl).textContent = '👀 Rough preview'; }
       M?.pulse($('#cs-drop', meEl)); syncForm(); };
     meEl.addEventListener('change', (e) => { if (e.target.id === 'cs-file') setPhoto(e.target.files[0]); });
     meEl.addEventListener('dragover', (e) => { const z = e.target.closest('#cs-drop'); if (z) { e.preventDefault(); z.classList.add('over'); } });
