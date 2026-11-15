@@ -1,5 +1,6 @@
 import { clubStats as C, players, matches, opponents, fmtDate, teamTotals, intel } from '../lib/data.mjs';
 import * as W from '../lib/widgets.mjs';
+import { BOX_COLS, boxEv, boxCell, evCoverage } from '../../scripts/lib/boxscore.mjs';
 import { oppCrest, ownCrest, tagChips, matchTags, shell, esc, chip, card, pillRes, sbt, sample, slug, lineLabel } from '../lib/ui.mjs';
 
 const TYPE = { leagueMatch: 'League', playoffMatch: 'Playoff', friendlyMatch: 'Friendly' };
@@ -81,6 +82,11 @@ const EVROWS = [
   ['🎯 Shots inside the box', (t) => (t.shotsOnTargetInsideBox || 0) + (t.shotsOffTargetInsideBox || 0)],
   ['✂️ Interceptions', (t) => t.interceptions || 0],
   ['🛫 Aerial duels won', (t) => (t.aerialDuelsWonAttacking || 0) + (t.aerialDuelsWonDefending || 0)],
+  ['🧲 Won in their third', (t) => t.possessionWonAttackingThird || 0],
+  ['⚖️ Possession net (won − lost)', (t, r) => r.possessionNet, false, ''],
+  ['🚩 Fouls conceded', (t) => t.foulsConceded || 0, true],
+  ['⛳ Corners taken', (t) => t.cornersTaken || 0],
+  ['🟨 Yellow cards', (t) => t.yellowCards || 0, true],
   ['📍 In position', (t, r) => r.positioning ?? 0, false, '%'],
 ];
 export function evCompare(m) {
@@ -103,9 +109,21 @@ function motmCard(l, p) {
 <div class="mc-st">${st.map(([v, k]) => `<div><b class="num">${v}</b><span>${k}</span></div>`).join('')}</div><p class="muted tiny" style="margin:10px 0 0;text-align:center">This game only</p></div>`;
 }
 const head = ['Player', 'Pos', 'Rating', 'G', 'A', 'Pre-A', 'Shots', 'Passes', 'Drb', 'Tackles', 'Saves', ''];
+// Box score table. The first columns are EA's named stats; when any player of the side carries decoded event counters the table adds
+// the decoded columns (BOX_COLS). Each decoded cell holds its total and its per-90 value so the Total / Per 90 switch can swap them
+// without a rebuild; players without event data show a dash, never a zero.
 function table(L, us) {
-  return `<div class="tscroll"><table class="tb mt"><thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${[...L].sort((a, b) => b.rating - a.rating).map((l) => { const p = us ? pmap.get(l.n) : null;
-    return `<tr><td class="tn">${p ? chip(p, .5) : `<span class="fini sm">${esc(ini(l.n))}</span>`}${p ? `<a href="player-${slug(p.k)}.html" class="fit" title="${esc(l.n)}">${esc(l.n)}</a>` : `<span class="fit" title="${esc(l.n)}">${esc(l.n)}</span>`}</td><td class="muted">${l.line}</td><td><b class="rt ${rcls(l.rating)}">${l.rating ? l.rating.toFixed(1) : '–'}</b></td><td>${l.goals || ''}</td><td>${l.assists || ''}</td><td>${l.sa || ''}</td><td>${l.shots || ''}</td><td>${l.pm}/${l.pa}</td><td>${l.drb || ''}</td><td>${l.tm}/${l.ta}</td><td>${l.saves || ''}</td><td>${l.mom ? '🏅' : ''}${l.red ? '🟥' : ''}</td></tr>`; }).join('')}</tbody></table></div>`;
+  const hasEv = L.some((l) => l.ev), cov = evCoverage(L);
+  const evHead = hasEv ? BOX_COLS.map(([, h, long]) => `<th class="evc" title="${esc(long)}">${h}</th>`).join('') : '';
+  const sorted = [...L].sort((a, b) => b.rating - a.rating);
+  const rows = sorted.map((l) => { const p = us ? pmap.get(l.n) : null, box = boxEv(l.ev);
+    const evCells = hasEv ? BOX_COLS.map(([k]) => { const c = boxCell(box, k, l.secs); return c.total == null ? '<td class="evc muted">–</td>' : `<td class="evc" data-t="${c.total}"${c.p90 != null ? ` data-p="${c.p90}"` : ''}>${c.total}</td>`; }).join('') : '';
+    return `<tr><td class="tn">${p ? chip(p, .5) : `<span class="fini sm">${esc(ini(l.n))}</span>`}${p ? `<a href="player-${slug(p.k)}.html" class="fit" title="${esc(l.n)}">${esc(l.n)}</a>` : `<span class="fit" title="${esc(l.n)}">${esc(l.n)}</span>`}</td><td class="muted">${l.line}</td><td><b class="rt ${rcls(l.rating)}">${l.rating ? l.rating.toFixed(1) : '–'}</b></td><td>${l.goals || ''}</td><td>${l.assists || ''}</td><td>${l.sa || ''}</td><td>${l.shots || ''}</td><td>${l.pm}/${l.pa}</td><td>${l.drb || ''}</td><td>${l.tm}/${l.ta}</td><td>${l.saves || ''}</td><td>${l.mom ? '🏅' : ''}${l.red ? '🟥' : ''}</td>${evCells}</tr>`; }).join('');
+  // team row: sums of the decoded counters over the players that have them
+  const evTot = hasEv ? BOX_COLS.map(([k]) => { if (k === 'pos') { const t = L.filter((l) => l.ev).reduce((a, l) => (a[0] += l.ev.inPosition || 0, a[1] += (l.ev.inPosition || 0) + (l.ev.outOfPosition || 0), a), [0, 0]); return `<td class="evc">${t[1] ? Math.round((t[0] / t[1]) * 100) : '–'}</td>`; } const t = L.reduce((a, l) => a + (boxEv(l.ev)?.[k] ?? 0), 0); return `<td class="evc" data-t="${t}">${t}</td>`; }).join('') : '';
+  const foot = hasEv ? `<tfoot><tr class="tteam"><td class="tn muted">Team (event data)</td><td colspan="11"></td>${evTot}</tr></tfoot>` : '';
+  const note = hasEv ? `<p class="muted tiny" style="margin:8px 0 0">Fwd = forward passes completed · Int = interceptions · Won / Lost = possession won / lost · Aer = aerial duels won · Pos% = share of the game in position. From EA's event counters for ${cov.have} of ${cov.all} players; a dash means EA sent none for that player.</p>` : '';
+  return `<div class="tscroll"><table class="tb mt"><thead><tr>${head.map((h) => `<th>${h}</th>`).join('')}${evHead}</tr></thead><tbody>${rows}</tbody>${foot}</table></div>${note}`;
 }
 export function match(m) {
   const us = teamTotals(m.lines), them = teamTotals(m.olines || []);
@@ -122,7 +140,7 @@ export function match(m) {
    <div class="mh-mid"><div class="num mh-score">${m.gf}<span>:</span>${m.ga}</div>${pillRes(m.res)}</div>
    <div class="mh-t">${oppCrest(m.crest, m.opp, 84)}<div class="osw mh-n">${esc(m.opp)}</div><ul class="mh-sc">${sc(m.olines || [])}</ul></div></div>
    <div class="mtags big" style="margin-top:16px;justify-content:center">${matchTags(m).map(([e, l]) => `<span class="mtag">${e} <small>${esc(l)}</small></span>`).join('')}</div>
-   <div class="mh-act"><div class="seg" role="tablist" aria-label="Match view"><button type="button" role="tab" class="on" aria-selected="true" data-mv="field">🏟️ Field</button><button type="button" role="tab" aria-selected="false" data-mv="table">📋 Table</button></div><button type="button" class="btn ghost" id="mposter">⬇️ Result graphic</button></div>
+   <div class="mh-act"><div class="seg" role="tablist" aria-label="Match view"><button type="button" role="tab" class="on" aria-selected="true" data-mv="field">🏟️ Field</button><button type="button" role="tab" aria-selected="false" data-mv="table">📋 Box score</button></div><button type="button" class="btn ghost" id="mposter">⬇️ Result graphic</button></div>
    <script type="application/json" id="mposterdata">${JSON.stringify(poster).replace(/</g, '\\u003c')}</script></section>
   <div id="mv-field" class="mv">
    <div class="mfield-grid">
@@ -138,9 +156,10 @@ export function match(m) {
      ${motm ? `<div class="panel reveal">${motmCard(motm, mp)}</div>` : omotm ? `<div class="panel reveal"><p class="muted" style="margin:0">🏅 Man of the match went to <b>${esc(omotm.n)}</b> (${esc(m.opp)}), rated ${omotm.rating.toFixed(1)}.</p></div>` : ''}
     </div></div></div>
   <div id="mv-table" class="mv" hidden>
+   ${m.intel?.us || m.intel?.opp ? '<div class="evmode"><div class="seg sm" role="tablist" aria-label="Event columns"><button type="button" role="tab" class="on" aria-selected="true" data-evm="t">Match totals</button><button type="button" role="tab" aria-selected="false" data-evm="p">Per 90</button></div><span class="muted tiny">Per 90 appears for players with 10+ minutes.</span></div>' : ''}
    <div class="panel flat reveal"><h3><img src="crest.png" alt="" width="22" height="22" style="vertical-align:-5px"> ${esc(C.name)}</h3>${table(m.lines, true)}</div>
    <div class="panel flat reveal" style="margin-top:22px"><h3>${oppCrest(m.crest, m.opp, 22)} ${esc(m.opp)}</h3>${table(m.olines || [], false)}</div></div>
-  <p class="muted small" style="margin:14px 0 0">Every number comes from EA's match record. EA lists each player as GK, DEF, MID or FWD (not an exact spot) and does not publish a possession percentage or a goal timeline, so those are not shown (the event data panel counts possession won and lost by third where EA sent it). AI teammates are not recorded by EA.</p></div>`;
+  <p class="muted small" style="margin:14px 0 0">Every number comes from EA's match record. EA lists each player as GK, DEF, MID or FWD (not an exact spot) and does not publish a possession percentage or a goal timeline, so those are not shown. Where EA sent its event counters, the event data panel and the box score count possession won and lost, passes by direction, interceptions and aerial duels from them, as totals and per 90. AI teammates are not recorded by EA.</p></div>`;
   return shell({ group: 'matches', page: 'results.html', title: `${C.name} ${m.gf}-${m.ga} ${m.opp}`, body });
 }
 

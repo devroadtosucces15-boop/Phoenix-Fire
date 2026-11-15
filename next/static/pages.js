@@ -15,6 +15,8 @@ addEventListener('DOMContentLoaded', () => {
     const setView = (v, save) => { seg.forEach((b) => { const on = b.dataset.mv === v; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); $('#mv-field').hidden = v !== 'field'; $('#mv-table').hidden = v !== 'table'; if (save) ls.set(MKEY, v); window.NorexMotion?.watch(); };
     seg.forEach((b) => b.addEventListener('click', () => setView(b.dataset.mv, true)));
     if (ls.get(MKEY) === 'table') setView('table');
+    // box score: swap the decoded columns between match totals and per 90 (each cell carries both, data-t / data-p)
+    const evm = $$('[data-evm]'); evm.forEach((b) => b.addEventListener('click', () => { const k = b.dataset.evm; evm.forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); }); $$('td.evc[data-t]').forEach((c) => { const v = k === 'p' ? c.dataset.p : c.dataset.t; c.textContent = v ?? '–'; c.classList.toggle('muted', v == null); }); }));
     const pts = $$('.pteam [data-pt]'), setTeam = (t) => { pts.forEach((b) => { const on = b.dataset.pt === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); }); field.classList.toggle('solo', t !== 'both'); field.classList.toggle('solo-us', t === 'us'); field.classList.toggle('solo-them', t === 'them'); close(); };
     pts.forEach((b) => b.addEventListener('click', () => setTeam(b.dataset.pt)));
     if (innerWidth < 700) setTeam('us');

@@ -4,6 +4,8 @@ import path from 'node:path';
 import { ROOT, DATA, readJson, loadConfig, loadOverrides, num } from './lib.mjs';
 import { orgClubsFromDisk, combineOrg, orgOverview } from './lib/org.mjs';
 import { clubTag } from './lib/clubtag.mjs';
+import { decodeEvents } from './lib/events.mjs';
+import { boxEv } from './lib/boxscore.mjs';
 import { lineChart, goalBars, donut, radar, spark, pitchMap } from './charts.mjs';
 import { buildUpdates } from './updates-page.mjs';
 import { buildBuilder } from './builder-page.mjs';
@@ -1365,7 +1367,7 @@ write('api/club.json', JSON.stringify({
       ps: Object.entries(m.players?.[homeId] || {}).filter(([pid]) => !players.get(pid)?.hidden)
       // ps: per-player line for the bot's "Show my match" card (P7.2) – rating, goals, assists, passes, tackles, shots, saves.
       .map(([pid, p]) => ({ k: pid, n: p.playername, r: num(p.rating), g: num(p.goals), a: num(p.assists), pm: num(p.passesmade), pa: num(p.passattempts),
-        tm: num(p.tacklesmade), ta: num(p.tackleattempts), sh: num(p.shots), sv: num(p.saves), pos: p.pos ?? '', mom: p.mom === '1' ? 1 : 0 })) };
+        tm: num(p.tacklesmade), ta: num(p.tackleattempts), sh: num(p.shots), sv: num(p.saves), pos: p.pos ?? '', mom: p.mom === '1' ? 1 : 0, ...(p.evraw ? { ev: boxEv(decodeEvents(p.evraw)) } : {}) })) };
   }),
   radarAxes: RADAR.map((a) => a.label),
   apply: RECRUIT.open ? `${SITE}apply.html` : null,
