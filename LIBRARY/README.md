@@ -7,7 +7,8 @@ given, and nothing else. Rules for using and updating it: `PLANNING/SESSION-HAND
 
 | File | What it holds | Kind | Source of truth |
 |---|---|---|---|
-| `ROADMAP.md` | The master roadmap: every item, its order, status, model and file lane. One item is `NEXT`. | hand | this file |
+| `roadmap.json` | The roadmap data: every item with status, size, effort, importance, percent, notes and done log, plus the inbox. Edit this. | hand | this file |
+| `ROADMAP.md` | The master roadmap as a readable page with phase and project percent. One item is `NEXT`. | generated | `roadmap.json` |
 | `CLAIMS.md` | Which session is editing which files right now. Check before editing, update after. | hand | this file |
 | `ASSETS.md` | What each asset group is for, and where to find the crest, icons, card looks and art. | hand | `phoenix/overlay/`, `bot/icons/phoenix/` |
 | `ASSETS-INDEX.md` | Every file in those folders. | generated | the folders |
