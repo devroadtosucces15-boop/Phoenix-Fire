@@ -24,8 +24,8 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 | ID | Item | Status | Depends on | File lane | Model | Notes |
 |---|---|---|---|---|---|---|
 | PF-001 | Land the operating system (`LIBRARY/`, rules, generator, test, brain spec, side-roadmap copy) on `main`: pre-commit NOREX check, tests, rebuild, merge | DONE 2026-11-15 (PR 7, 9b33f23) | none | whole repo | sonnet | Follow `PLANNING/PRE-COMMIT-CHECK.md`. The old `integrate-control-center` branch carries nothing main lacks (checked 2026-11-15: main is 289 commits ahead, 0 behind), so work is on `ops-library-brain`, cut from `origin/main`. |
-| PF-002 | Fill the library to full granularity: `ASSETS.md`, `DESIGN.md`, `BOT.md`, `SITEMAP.md` row by row from the code | NEXT | PF-001 | `LIBRARY/`, `tools/library/` | sonnet | Extend `tools/library/sync.mjs` to generate the sitemap from a build. Gotcha learned in PF-001: `git switch -c` must run unsandboxed (the sandbox creates the branch but leaves HEAD behind). |
-| PF-011 | Project brain: roadmap data model (`roadmap.json`), metrics, generated markdown | OPEN | PF-002 | `LIBRARY/`, `tools/library/` | sonnet | Spec: `PLANNING/BRAIN-SPEC.md` |
+| PF-002 | Fill the library to full granularity: `ASSETS.md`, `DESIGN.md`, `BOT.md`, `SITEMAP.md` row by row from the code | DONE 2026-11-15 (PR pending) | PF-001 | `LIBRARY/`, `tools/library/` | sonnet | Extend `tools/library/sync.mjs` to generate the sitemap from a build. Gotcha learned in PF-001: `git switch -c` must run unsandboxed (the sandbox creates the branch but leaves HEAD behind). |
+| PF-011 | Project brain: roadmap data model (`roadmap.json`), metrics, generated markdown | NEXT | PF-002 | `LIBRARY/`, `tools/library/` | sonnet | Spec: `PLANNING/BRAIN-SPEC.md` |
 | PF-012 | Project brain: live dashboard v1 (server, tabs, Roadmap home, Libraries, References, Credentials registry) | OPEN | PF-011 | `tools/brain/` | opus | Visual target: the owner's Discord gallery plus the Control Center layout |
 | PF-013 | Project brain: maps with drill-in, inputs and outputs folders | OPEN | PF-012 | `tools/brain/` | opus | Reads `tools/bot-studio/lib/deps.mjs` |
 | PF-014 | Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders | OPEN | PF-012 | `tools/brain/`, `LIBRARY/inbox/` | sonnet | Dictation text only at first |
@@ -53,4 +53,5 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 Add one line per finding: date, what, where. The next planning pass turns each into an item or drops it.
 
-- (empty)
+- 2026-11-15: application emoji names in `bot/emojis.gen.js` start with `nx_` (NOREX era); rename on the next emoji upload (found in PF-002, see `LIBRARY/ASSETS.md`).
+- 2026-11-15: `LIBRARY/CLAIMS.md` was not used in PF-002 (single session, nothing else live); fine, but PF-011 onward should add a claim.

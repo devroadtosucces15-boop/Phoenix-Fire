@@ -1,7 +1,7 @@
 // The library (LIBRARY/) stays complete, current and free of secrets, and the operating rules are in place.
 import fs from 'node:fs';
 import { t, done } from './lib.mjs';
-import { renderCommands, renderAssets } from '../tools/library/sync.mjs';
+import { renderCommands, renderAssets, renderSitemap, renderFlags } from '../tools/library/sync.mjs';
 
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const exists = (f) => fs.existsSync(new URL(`../${f}`, import.meta.url));
@@ -12,7 +12,7 @@ for (const n of HAND) {
   t(`LIBRARY/${n}.md exists`, ok);
   if (ok) t(`LIBRARY/${n}.md has a "Last verified: YYYY-MM-DD" line`, /^Last verified: \d{4}-\d{2}-\d{2}/m.test(read(`LIBRARY/${n}.md`)));
 }
-t('README lists every hand and generated library file', [...HAND.filter((n) => n !== 'README'), 'BOT-COMMANDS', 'ASSETS-INDEX'].every((n) => read('LIBRARY/README.md').includes(`\`${n}.md\``)));
+t('README lists every hand and generated library file', [...HAND.filter((n) => n !== 'README'), 'BOT-COMMANDS', 'ASSETS-INDEX', 'SITEMAP-INDEX', 'FLAGS-INDEX'].every((n) => read('LIBRARY/README.md').includes(`\`${n}.md\``)));
 
 const road = read('LIBRARY/ROADMAP.md');
 t('the roadmap has exactly one NEXT item', (road.match(/^\| PF-\d+ \|.*\| NEXT \|/gm) || []).length === 1);
@@ -21,6 +21,8 @@ t('roadmap item ids are unique', new Set(ids).size === ids.length && ids.length 
 
 t('BOT-COMMANDS.md matches bot/commanddefs.js (run node tools/library/sync.mjs)', exists('LIBRARY/BOT-COMMANDS.md') && read('LIBRARY/BOT-COMMANDS.md') === renderCommands());
 t('ASSETS-INDEX.md matches the asset folders (run node tools/library/sync.mjs)', exists('LIBRARY/ASSETS-INDEX.md') && read('LIBRARY/ASSETS-INDEX.md') === renderAssets());
+t('SITEMAP-INDEX.md matches a fresh build (run node tools/library/sync.mjs)', exists('LIBRARY/SITEMAP-INDEX.md') && read('LIBRARY/SITEMAP-INDEX.md') === renderSitemap());
+t('FLAGS-INDEX.md matches config.json features (run node tools/library/sync.mjs)', exists('LIBRARY/FLAGS-INDEX.md') && read('LIBRARY/FLAGS-INDEX.md') === renderFlags());
 
 // No secret values anywhere in the library.
 const SECRET = [

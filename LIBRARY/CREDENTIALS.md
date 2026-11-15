@@ -1,6 +1,6 @@
 # Credentials and keys (registry only)
 
-Last verified: 2026-11-15
+Last verified: 2026-11-15 (names checked against `env.*` use in `bot/*.js`, `bot/wrangler.toml` and every `secrets.*` in `.github/workflows/`; whether each is actually set is not verifiable from here)
 
 **Never write a secret value into this repo, this library, a prompt, a commit message or chat.** This file says where each credential
 lives and who owns it, so a session can find it without anyone pasting it. The detailed table (app IDs, token names, where each is set in
@@ -12,8 +12,14 @@ the Worker and in GitHub) is `bot/SECRETS-REGISTRY.md`; it is the single source 
 | Discord application IDs and public keys | Public; `bot/wrangler.toml` | same | none |
 | VAPID, dispatch and analytics secrets | Worker secrets | same | Rotate by the owner |
 | GitHub access | `gh` login on the owner's machine (`gh auth setup-git` makes plain `git push` work) | memory note `git-push-gh-credential` | Re-login if expired |
-| Cloudflare account and deploy token | Owner's Cloudflare account; deploys run from GitHub (`bot.yml`) | `bot/SECRETS-REGISTRY.md` (verify the exact names in PF-002) | Owner only |
-| Any other key (analytics, club data) | Worker secrets or GitHub secrets; never committed | `bot/SECRETS-REGISTRY.md` | Owner |
+| Cloudflare account ID and deploy token | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` as GitHub secrets; deploys and backups run from GitHub (`bot.yml`, `backup.yml`) | `bot/SECRETS-REGISTRY.md`, "Secrets" | Owner only |
+| Cloudflare analytics token | `CLOUDFLARE_ANALYTICS_TOKEN` in Worker and GitHub | same | Owner |
+| Discord client secret (website login) | `DISCORD_CLIENT_SECRET` in Worker; GitHub for `update.yml` and `ea-relay.yml` | same | Reset in the portal |
+| Discord webhook for site posts | `DISCORD_WEBHOOK`, GitHub secret read by `update.yml` | same (row added in PF-002; set status not verified) | Owner |
+| Twitch app keys (optional) | `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`; without them the bot reads public channel pages | same (optional, status not verified) | Owner |
+| Board OCR reader (optional) | `BOARD_OCR_URL`, `BOARD_OCR_KEY`; dark until both are set (`tools/board-ocr`) | same (optional, not set) | Owner |
+| Rush report salt (optional) | `RUSH_REPORT_SALT`; falls back to the public key when unset | same (optional) | Owner |
+| Bootstrap owner IDs | `ADMIN_IDS`, a plain var in `bot/wrangler.toml` (Discord user IDs, not secret) | `bot/wrangler.toml` | Owner |
 
 Rules for sessions:
 - Read secrets from the environment or the platform that holds them; do not print them, log them, or copy them into files.
