@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T17:20:37.942Z",
+ "fetchedAt": "2026-11-15T17:30:47.475Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -549,7 +549,7 @@
    "favoritePosition": "defender"
   },
   {
-   "name": "SevnAliasX",
+   "name": "AliasX47",
    "gamesPlayed": "2",
    "winRate": "100",
    "goals": "7",
@@ -2150,7 +2150,7 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "SevnAliasX",
+   "name": "AliasX47",
    "proPos": "25",
    "gamesPlayed": "361",
    "goals": "428",
