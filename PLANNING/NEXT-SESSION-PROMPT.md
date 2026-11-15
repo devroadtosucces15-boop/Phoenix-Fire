@@ -1,18 +1,29 @@
-Model: opus (claude-opus-5-5)   Item: PF-020 remainder (Item 4d owner decisions), then PF-021
+Model: opus (claude-opus-5-5)   Item: PF-021 Side roadmap Item 3 visuals: match view, match center, box score, derived stats
 
-STOP: do not start a build session from this file until the owner answers the Item 4d questions below. PF-020 stays NEXT at 85% waiting on them in `LIBRARY/roadmap.json`; PF-021 depends on PF-020.
+Repo: /home/mrsuccess/Phoenix-Fire. Cut a branch from origin/main (`git switch -c <name> origin/main`, run unsandboxed). Read CLAUDE.md, PLANNING/SESSION-HANDOFF.md sections 1 to 5, LIBRARY/README.md, the PF-021 row of LIBRARY/roadmap.json, and sections 1 and "Item 3 visuals" of PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md.
 
-## What landed (PR for branch claude/pf-020)
-4a hardening (kit text from config, kit and number in the cinematic prompt, wrong-size model output scaled), 4b no pre-approval preview, 4c male and female kits (migration 0064, selectors, staff do/don't guide), 4d queue position and wait plus an hourly per-member submit throttle, 4e `/avatarcard` as a private panel (`bot/cardpanel.js`, `pf:card:` ids), 4f before/after screenshots (390, 820, 1440) in the side-session notes folder `pf020-shots/`.
+## Goal
+Match pages and match posts show the decoded EA stats well: retouched match view, match center, a real box score, and the proposed derived stats (true numbers only, per match and per 90, only where `evraw` exists). Design work: screenshots before and after at 390, 820, 1440, shown to the owner; ask for or look at the owner's screenshots first, do not guess.
 
-## Owner decisions (not made here)
-1. Workers Paid plan: same model, lifts the free 10,000 neurons/day pool shared by every AI feature; costs money.
-2. Composite cinematic from the portrait cutout: halves AI calls; the cinematic looks less natural.
-3. Fallback image provider: member face photos would leave Cloudflare (privacy and consent).
-4. How far to widen the one-request-per-month limit (needs a table rebuild of `UNIQUE(user_id, month)`; raises AI use). Also the 1-minute cron and higher per-run limit, which change AI spend.
+## State right now
+- The backend is on main: `evraw` is stored for every match (98caa54), decoded named stats and schema probe exist, and PR 6 put decoded stats on match pages and made the stats board, field view and review share one 1200x1700 canvas, plus the session recap. This row is marked verify: confirm what is still missing against `next/pages/matches.mjs`, `scripts/lib/resultpost.mjs`, `matchpicture.mjs`, `matchreview.mjs`, `scripts/cards.mjs` (`boxScoreCard`) and `scripts/build.mjs`.
+- PF-016 (usage intelligence) and PF-017 are OPEN and can be taken any time. PF-020 is PAUSED waiting on the owner (see PLANNING/PF-020-4D-DECISION.md); do not touch Card Studio provider or limits.
 
-## Owner-side steps after merge
-Apply migration 0064; deploy the Worker (panel, kit variants, new `/avatarcard` shape, bot link fixes); re-register slash commands; upload the male and female kit reference images in Staff Artwork. Optionally set `CARD_KIT_TEXT`, `CARD_KIT_TEXT_MALE`, `CARD_KIT_TEXT_FEMALE`.
+## Do next, in order
+1. Check LIBRARY/CLAIMS.md; claim `next/pages/matches.mjs`, `scripts/lib/`, `scripts/cards.mjs`.
+2. Audit: list what the match view, match center and box score show now vs the decoded stats available; screenshots of the current state at 390, 820, 1440.
+3. Build the missing pieces (decoded table columns, team comparison rows, a box score on the site as well as the Discord card, remove the "does not publish possession" caveat only for what is truly available). Keep `next/` and `web/` outputs Phoenix-themed; no NOREX names or colours; every derived number must be computable from stored data.
+4. Tests: new or extended tests for each output (brand, leak, picture size), fixtures from existing matches. Then library sync and test, `node tests/run.mjs` (design test needs Chrome: run unsandboxed), rebuild `node phoenix/build.mjs --out site`.
+5. Commit, push with the gh helper (unsandboxed), PR, merge. Mark PF-021 DONE, set PF-022 NEXT (its owner decision on the DJ bridge push or poll is pending: if it still blocks, stop the chain and say so; PF-016 is the next free item), write the next prompt, start the next session only if no owner decision is needed.
 
-## Then
-When the owner has answered 4d, build the chosen option, mark PF-020 DONE, set PF-021 NEXT. Follow-ups noticed: abandoned attachment photos from `/avatarcard` stay in R2 under `cardphoto/` if never sent (add a cleanup); staff kit example image not made.
+## Decisions already made (do not re-open)
+- Latest version wins; one landing page per feature; Phoenix branding on every output; merge to main after green checks; library holds names and places only.
+
+## Gotchas
+- Tests overwrite `site/`: rebuild after any test run. A hook may rewrite a Bash call (the `rtk` prefix) and auto mode asks you to reissue it exactly. `git switch -c` needs the sandbox off. The brain test "inbox: listed newest first" can flake within one second.
+
+## Out of scope
+- PF-022 and later; Card Studio (PF-020); new finds go in the roadmap inbox.
+
+## When done
+Update roadmap and library files, run node tests/library.test.mjs, write the next prompt, start the next session if no decision is needed.
