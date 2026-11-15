@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import { t, done } from './lib.mjs';
 import { model, md, redact, credentials } from '../tools/brain/lib.mjs';
 import { createServer, watch } from '../tools/brain/serve.mjs';
+import * as inbox from '../tools/brain/inbox.mjs';
+import { reminderText } from '../tools/brain/reminders.mjs';
 
 const m = model();
 t('model has the roadmap with metrics and one NEXT', m.roadmap.items.length > 0 && m.roadmap.metrics.project >= 0 && !!m.roadmap.next);
@@ -20,8 +22,22 @@ t('maps: bot commands come from BOT-COMMANDS.md with a source module that exists
 t('maps: a command that posts to a channel names a purpose from config, never an ID', m.maps.commands.filter((c) => c.posts.channels.length).every((c) => c.posts.channels.every((p) => /^[a-z_]+$/.test(p))) && m.maps.commands.some((c) => c.posts.channels.length));
 t('io: one folder per feature, site and bot, each with in and out', m.io.some((f) => f.key === 'site:club') && m.io.some((f) => f.key === 'bot:core') && m.io.every((f) => f.in && f.out && f.items.length));
 t('maps and io hold no token-shaped value (secret names only)', !/[A-Za-z0-9_-]{23,28}\.[A-Za-z0-9_-]{6,7}\.[A-Za-z0-9_-]{27,}/.test(JSON.stringify([m.maps, m.io])) && !/\b\d{17,20}\b/.test(JSON.stringify([m.maps, m.io])));
-t('the page has the six tabs and no external script', ['roadmap', 'maps', 'io', 'libraries', 'references', 'credentials'].every((k) => fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8').includes(`['${k}'`)) && !/<script[^>]+src=/.test(fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8')));
+t('the page has the seven tabs and no external script', ['roadmap', 'maps', 'io', 'brainstorm', 'libraries', 'references', 'credentials'].every((k) => fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8').includes(`['${k}'`)) && !/<script[^>]+src=/.test(fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8')));
 t('the page is Phoenix themed (ink and orange, no NOREX)', (() => { const h = fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8'); return h.includes('#0a0705') && h.includes('#e8651a') && !/norex|c8352c/i.test(h); })());
+
+// Brainstorm store: test notes are removed again so the repo inbox stays as it was.
+const made = [];
+const a = inbox.addNote('Idea: try a smaller crest on the dock', 'dictated'); made.push(a.note?.id);
+t('inbox: a note is stored as a file with date, source, open status and the text', a.ok && a.note.status === 'open' && a.note.source === 'dictated' && fs.existsSync(inbox.INBOX + a.note.id + '.md') && /status: open/.test(fs.readFileSync(inbox.INBOX + a.note.id + '.md', 'utf8')));
+t('inbox: the stored date reads back whole (time included)', inbox.listNotes().find((n) => n.id === a.note.id).date === a.note.date && !isNaN(new Date(a.note.date)));
+t('inbox: listed newest first', (() => { const b = inbox.addNote('second'); made.push(b.note.id); const l = inbox.listNotes().map((n) => n.id); return l.indexOf(b.note.id) < l.indexOf(a.note.id); })());
+t('inbox: rejects empty, oversize and non-string text', !inbox.addNote('   ').ok && !inbox.addNote('x'.repeat(inbox.MAX_TEXT + 1)).ok && !inbox.addNote({ a: 1 }).ok);
+const sec = ['token = abcdefghijklmnopqrstuvwx1234', 'ghp_' + 'a'.repeat(30), 'abcdefghijklmnopqrstuvwx.abcdef.abcdefghijklmnopqrstuvwxyz1', 'c84cd49d2e12a5dca30af9abbb35ce9e'];
+t('inbox: secret-shaped text is refused and never written', sec.every((v) => !inbox.addNote('note ' + v).ok) && !inbox.listNotes().some((n) => sec.some((v) => n.text.includes(v))));
+t('inbox: tackle and drop change the status; bad id and bad status are refused', inbox.setStatus(a.note.id, 'tackled').ok && inbox.listNotes().find((n) => n.id === a.note.id).status === 'tackled' && inbox.setStatus(a.note.id, 'dropped').ok && !inbox.setStatus('../../etc/passwd', 'open').ok && !inbox.setStatus(a.note.id, 'x').ok);
+t('reminders: lists open ideas with the tackle-or-drop question, drops finished ones', (() => { const r = reminderText(inbox.openNotes().filter((n) => made.includes(n.id))); return /tackle it/.test(r) && /second/.test(r) && !/smaller crest/.test(r); })());
+t('reminders: says so when nothing is open', /no open ideas/.test(reminderText([])));
+t('the model carries the inbox', Array.isArray(model().inbox) && model().inbox.some((n) => n.id === a.note.id));
 
 const srv = createServer();
 await new Promise((r) => srv.listen(0, '127.0.0.1', r));
@@ -43,5 +59,18 @@ const got = await new Promise((resolve) => {
   req.on('error', () => {});
 });
 t('a library file change pushes a live "change" event', got);
-stop(); srv.close();
+stop();
+// POST routes: local JSON only, size-capped, text only.
+const post = (p, body, headers = {}, raw) => new Promise((res, rej) => { const d = raw ?? JSON.stringify(body); const r = http.request({ port, path: p, method: 'POST', headers: { 'content-type': 'application/json', 'content-length': Buffer.byteLength(d), ...headers } }, (x) => { let b = ''; x.on('data', (c) => (b += c)); x.on('end', () => res({ status: x.statusCode, body: b })); }); r.on('error', () => res({ status: 0, body: '' })); r.end(d); });
+const p1 = await post('/api/inbox', { text: 'Via the route', source: 'typed' }); const id1 = JSON.parse(p1.body).note?.id; made.push(id1);
+t('POST /api/inbox stores a note', p1.status === 200 && inbox.listNotes().some((n) => n.id === id1 && n.text === 'Via the route'));
+t('POST /api/inbox/<id> marks it tackled', (await post('/api/inbox/' + id1, { status: 'tackled' })).status === 200 && inbox.listNotes().find((n) => n.id === id1).status === 'tackled');
+t('POST rejects a non-local Host header', (await post('/api/inbox', { text: 'x' }, { host: 'evil.example.com' })).status === 403);
+t('POST rejects a foreign Origin', (await post('/api/inbox', { text: 'x' }, { origin: 'https://evil.example.com' })).status === 403);
+t('POST rejects an oversize body', [413, 0].includes((await post('/api/inbox', null, {}, JSON.stringify({ text: 'x'.repeat(9000) }))).status));
+t('POST rejects non-JSON content, bad JSON and secret text', (await post('/api/inbox', null, { 'content-type': 'text/plain' }, 'hi')).status === 415 && (await post('/api/inbox', null, {}, '{bad')).status === 400 && (await post('/api/inbox', { text: 'ghp_' + 'b'.repeat(30) })).status === 400);
+t('PUT and DELETE are refused', await Promise.all(['PUT', 'DELETE'].map((m) => new Promise((res) => { const r = http.request({ port, path: '/api/inbox', method: m }, (x) => { x.resume(); res(x.statusCode === 405); }); r.on('error', () => res(false)); r.end(); }))).then((a) => a.every(Boolean)));
+t('the page reads and writes the inbox through those routes only', /\/api\/inbox/.test(fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8')) && /webkitSpeechRecognition/.test(fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8')));
+for (const id of made.filter(Boolean)) fs.rmSync(inbox.INBOX + id + '.md', { force: true });
+srv.close();
 done();
