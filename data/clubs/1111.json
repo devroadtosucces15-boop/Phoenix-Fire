@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T03:43:33.086Z",
+ "fetchedAt": "2026-11-15T03:47:21.481Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1855,7 +1855,7 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "182",
+   "gamesPlayed": "183",
    "goals": "28",
    "assists": "64",
    "manOfTheMatch": "18",
@@ -1866,7 +1866,7 @@
   {
    "name": "rubNiyo",
    "proPos": "5",
-   "gamesPlayed": "119",
+   "gamesPlayed": "120",
    "goals": "83",
    "assists": "35",
    "manOfTheMatch": "14",
@@ -1921,7 +1921,7 @@
   {
    "name": "RealMinato7",
    "proPos": "5",
-   "gamesPlayed": "344",
+   "gamesPlayed": "345",
    "goals": "150",
    "assists": "162",
    "manOfTheMatch": "29",
@@ -2031,12 +2031,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "128",
-   "goals": "65",
-   "assists": "50",
+   "gamesPlayed": "129",
+   "goals": "67",
+   "assists": "51",
    "manOfTheMatch": "20",
    "ratingAve": "7.5",
-   "prevGoals": "1",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2152,12 +2152,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "194",
-   "goals": "228",
-   "assists": "99",
-   "manOfTheMatch": "7",
+   "gamesPlayed": "195",
+   "goals": "230",
+   "assists": "101",
+   "manOfTheMatch": "8",
    "ratingAve": "7.2",
-   "prevGoals": "3",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2185,7 +2185,7 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "236",
+   "gamesPlayed": "237",
    "goals": "36",
    "assists": "30",
    "manOfTheMatch": "42",
@@ -2207,7 +2207,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "113",
+   "gamesPlayed": "114",
    "goals": "38",
    "assists": "51",
    "manOfTheMatch": "6",
@@ -2284,11 +2284,11 @@
   {
    "name": "Luna9500",
    "proPos": "0",
-   "gamesPlayed": "13",
+   "gamesPlayed": "14",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "5.5",
+   "ratingAve": "5.6",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
