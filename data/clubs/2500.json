@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-15T04:40:39.378Z",
+ "fetchedAt": "2026-11-15T04:50:39.389Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1603,12 +1603,12 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "184",
+   "gamesPlayed": "185",
    "goals": "29",
    "assists": "64",
-   "manOfTheMatch": "19",
+   "manOfTheMatch": "20",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
@@ -1779,12 +1779,12 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "21",
-   "goals": "4",
+   "gamesPlayed": "22",
+   "goals": "5",
    "assists": "3",
    "manOfTheMatch": "1",
    "ratingAve": "7.5",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -1833,14 +1833,14 @@
   },
   {
    "name": "YAMI-_-77",
-   "proPos": "25",
-   "gamesPlayed": "272",
+   "proPos": "0",
+   "gamesPlayed": "273",
    "goals": "126",
    "assists": "88",
    "manOfTheMatch": "37",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "CanerAKC",
@@ -1867,7 +1867,7 @@
   {
    "name": "Froezer",
    "proPos": "5",
-   "gamesPlayed": "174",
+   "gamesPlayed": "175",
    "goals": "124",
    "assists": "163",
    "manOfTheMatch": "20",
