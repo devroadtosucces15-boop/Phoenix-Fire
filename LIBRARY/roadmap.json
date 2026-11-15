@@ -60,7 +60,7 @@
       "title": "Project brain: roadmap data model (`roadmap.json`), metrics, generated markdown",
       "phase": "Project brain",
       "area": "`LIBRARY/`, `tools/library/`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 5,
@@ -71,10 +71,16 @@
       ],
       "fileLane": "`LIBRARY/`, `tools/library/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Spec: `PLANNING/BRAIN-SPEC.md`",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PR 10, efc384c",
+          "what": "roadmap.json is the source; sync.mjs generates ROADMAP.md with phase and project percent; library test checks model, deps, DONE rows, freshness."
+        }
+      ],
       "plans": []
     },
     {
@@ -82,7 +88,7 @@
       "title": "Project brain: live dashboard v1 (server, tabs, Roadmap home, Libraries, References, Credentials registry)",
       "phase": "Project brain",
       "area": "`tools/brain/`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "L",
       "effort": 4,
       "importance": 5,
