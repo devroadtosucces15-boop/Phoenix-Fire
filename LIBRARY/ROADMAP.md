@@ -24,12 +24,12 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 28% (items weighted by size: S 1, M 2, L 4).
+Project: 31% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
-| Project brain | 7 | 4 | 63% | 360 |
+| Project brain | 7 | 5 | 74% | 240 |
 | Side roadmap | 8 | 0 | 0% | 960 |
 | Match night and upkeep | 8 | 0 | 0% | 960 |
 
@@ -43,8 +43,8 @@ Project: 28% (items weighted by size: S 1, M 2, L 4).
 | PF-012 | Project brain: live dashboard v1 (server, tabs, Roadmap home, Libraries, References, Credentials registry) | DONE 2026-11-15 (PR 11) | PF-011 | `tools/brain/` | opus | Visual target: the owner's Discord gallery plus the Control Center layout |
 | PF-013 | Project brain: maps with drill-in, inputs and outputs folders | DONE 2026-11-15 (PR (PF-013)) | PF-012 | `tools/brain/` | opus | Reads `tools/bot-studio/lib/deps.mjs` |
 | PF-014 | Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders | DONE 2026-11-15 (PR (PF-014)) | PF-012 | `tools/brain/`, `LIBRARY/inbox/` | sonnet | Dictation text only at first |
-| PF-015 | Project brain: usage probe, snapshots, policy, banner, save mode (`lowHanging` items) | NEXT | PF-011 | `tools/brain/`, `LIBRARY/state/` | sonnet | First test whether usage can be read outside a session |
-| PF-016 | Project brain: usage intelligence, lessons and improvement plans | OPEN | PF-015 | `tools/brain/`, `LIBRARY/LESSONS.md` | opus | Per session and per item |
+| PF-015 | Project brain: usage probe, snapshots, policy, banner, save mode (`lowHanging` items) | DONE 2026-11-15 (PR (PF-015)) | PF-011 | `tools/brain/`, `LIBRARY/state/` | sonnet | First test whether usage can be read outside a session |
+| PF-016 | Project brain: usage intelligence, lessons and improvement plans | NEXT | PF-015 | `tools/brain/`, `LIBRARY/LESSONS.md` | opus | Per session and per item |
 | PF-017 | Project brain: optional hosted artifact mirror for the phone | OPEN | PF-012, PF-014 | artifact | sonnet | Snapshot only; updates when a session publishes |
 | PF-018 | Side roadmap step 2: links (Phases A, B, D1, D5): every button, notification and redirect lands on a current, correct page; no second landing page per feature | OPEN (verify) | PF-012 | `next/`, `bot/` links | sonnet | Resumes the owner's side roadmap `PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md` (copied from `~/.claude/plans/`). Its Item 3 backend (EA decoded columns) and PR 6 (decoded stats, recap) are already on main. Starts only after the local brain window works (owner order, 2026-11-15). Verify against the code first. |
 | PF-019 | Side roadmap step 3: menu gaps and duplicates (Phase C) | OPEN (verify) | PF-018 | menus, `next/lib/ui.mjs` | sonnet | Plan section 3 |

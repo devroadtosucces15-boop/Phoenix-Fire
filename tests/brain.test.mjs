@@ -6,6 +6,7 @@ import { model, md, redact, credentials } from '../tools/brain/lib.mjs';
 import { createServer, watch } from '../tools/brain/serve.mjs';
 import * as inbox from '../tools/brain/inbox.mjs';
 import { reminderText } from '../tools/brain/reminders.mjs';
+import * as usage from '../tools/brain/usage.mjs';
 
 const m = model();
 t('model has the roadmap with metrics and one NEXT', m.roadmap.items.length > 0 && m.roadmap.metrics.project >= 0 && !!m.roadmap.next);
@@ -22,8 +23,30 @@ t('maps: bot commands come from BOT-COMMANDS.md with a source module that exists
 t('maps: a command that posts to a channel names a purpose from config, never an ID', m.maps.commands.filter((c) => c.posts.channels.length).every((c) => c.posts.channels.every((p) => /^[a-z_]+$/.test(p))) && m.maps.commands.some((c) => c.posts.channels.length));
 t('io: one folder per feature, site and bot, each with in and out', m.io.some((f) => f.key === 'site:club') && m.io.some((f) => f.key === 'bot:core') && m.io.every((f) => f.in && f.out && f.items.length));
 t('maps and io hold no token-shaped value (secret names only)', !/[A-Za-z0-9_-]{23,28}\.[A-Za-z0-9_-]{6,7}\.[A-Za-z0-9_-]{27,}/.test(JSON.stringify([m.maps, m.io])) && !/\b\d{17,20}\b/.test(JSON.stringify([m.maps, m.io])));
-t('the page has the seven tabs and no external script', ['roadmap', 'maps', 'io', 'brainstorm', 'libraries', 'references', 'credentials'].every((k) => fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8').includes(`['${k}'`)) && !/<script[^>]+src=/.test(fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8')));
+t('the page has the seven tabs and no external script', ['roadmap', 'maps', 'io', 'brainstorm', 'usage', 'libraries', 'references', 'credentials'].every((k) => fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8').includes(`['${k}'`)) && !/<script[^>]+src=/.test(fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8')));
 t('the page is Phoenix themed (ink and orange, no NOREX)', (() => { const h = fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8'); return h.includes('#0a0705') && h.includes('#e8651a') && !/norex|c8352c/i.test(h); })());
+
+// Usage: snapshots, policy, save mode. The real state file is restored afterwards.
+const UF = new URL('../LIBRARY/state/usage.json', import.meta.url); const keep = fs.readFileSync(UF, 'utf8');
+const pol = { fiveHourPercent: 80, weeklyPercent: 85, staleAfterMinutes: 90 }; const T0 = Date.parse('2026-11-15T12:00:00Z');
+const snap = (f, w, ts = '2026-11-15T12:00:00Z') => ({ fiveHour: f, weekly: w, timestamp: ts });
+t('usage: policy file has the 80 and 85 thresholds', usage.readPolicy().fiveHourPercent === 80 && usage.readPolicy().weeklyPercent === 85);
+t('usage: below both thresholds is not save mode', !usage.evaluate(snap(79.9, 84.9), pol, T0).saveMode);
+t('usage: 5-hour at 80 turns save mode on', usage.evaluate(snap(80, 2), pol, T0).saveMode);
+t('usage: weekly at 85 turns save mode on, with its reason', (() => { const e = usage.evaluate(snap(5, 85), pol, T0); return e.saveMode && e.reasons.length === 1 && /weekly/.test(e.reasons[0]); })());
+t('usage: age in minutes and stale flag', usage.evaluate(snap(1, 1), pol, T0 + 30 * 60000).ageMinutes === 30 && !usage.evaluate(snap(1, 1), pol, T0 + 30 * 60000).stale && usage.evaluate(snap(1, 1), pol, T0 + 120 * 60000).stale);
+t('usage: no snapshot is reported as none, never as zero', usage.evaluate(null, pol, T0).has === false && usage.evaluate({ fiveHour: null, weekly: null }, pol, T0).has === false);
+t('usage: writeSnapshot refuses bad percents', [{}, { fiveHour: 101 }, { weekly: -1 }, { fiveHour: 'abc' }].every((x) => !usage.writeSnapshot(x).ok));
+const w1 = usage.writeSnapshot({ fiveHour: 91, weekly: 40, source: 'test <script>' }, new Date(T0));
+t('usage: writeSnapshot stores the snapshot, keeps the old one in history, cleans the source', w1.ok && usage.readUsage().latest.fiveHour === 91 && usage.readUsage().history.length >= 1 && !/[<>]/.test(usage.readUsage().latest.source));
+const um = usage.usageModel(T0 + 5 * 60000);
+t('usage: model reports save mode, age and only lowHanging items', um.saveMode && um.ageMinutes === 5 && um.lowHanging.every((i) => model().roadmap.items.find((r) => r.id === i.id).lowHanging));
+t('usage: model() carries usage for the page', typeof model().usage.policy.fiveHourPercent === 'number');
+fs.writeFileSync(UF, keep);
+const page = fs.readFileSync(new URL('../tools/brain/index.html', import.meta.url), 'utf8');
+t('usage: page has strip, save-mode banner and Notification alert, no external script', /ustrip/.test(page) && /Save mode/.test(page) && /new Notification/.test(page) && !/<script[^>]+src=/.test(page));
+t('usage: state folder is watched for live refresh', (await import('../tools/brain/lib.mjs')).WATCH.includes('LIBRARY/state'));
+t('usage files hold no token-shaped value', !/[A-Za-z0-9_-]{23,28}\.[A-Za-z0-9_-]{6,7}\.[A-Za-z0-9_-]{27,}/.test(keep + fs.readFileSync(new URL('../LIBRARY/state/usage-policy.json', import.meta.url), 'utf8')));
 
 // Brainstorm store: test notes are removed again so the repo inbox stays as it was.
 const made = [];

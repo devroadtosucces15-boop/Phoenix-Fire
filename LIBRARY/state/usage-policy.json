@@ -1,0 +1,6 @@
+{
+  "fiveHourPercent": 80,
+  "weeklyPercent": 85,
+  "staleAfterMinutes": 90,
+  "saveMode": "At or above a threshold a session starts no large items and takes only roadmap items flagged lowHanging (size S, no open dependencies, not an owner step)."
+}

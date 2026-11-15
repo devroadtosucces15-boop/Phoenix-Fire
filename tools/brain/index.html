@@ -53,16 +53,19 @@ textarea:focus-visible,.btn:focus-visible{outline:2px solid var(--gold);outline-
 .btn.pri{background:var(--acc);border-color:var(--acc);color:#1a0d04}.btn.rec{background:#7a1f16;border-color:var(--bad)}.btn[disabled]{opacity:.5;cursor:default}
 .note{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px;margin-bottom:10px;display:grid;gap:6px}.note.open{border-left:3px solid var(--gold)}.note p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
 .note.tackled,.note.dropped{opacity:.65}.remind{border-color:var(--gold);background:#1d160c}
+.ustrip{display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center;margin-top:12px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font-size:13px}.ustrip.save{border-color:var(--bad);background:#22110c}.ustrip a{cursor:pointer;text-decoration:underline;color:var(--gold)}
+.meter.warn span{background:var(--bad)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="top"><img src="/crest.png" alt=""><div><h1>Phoenix Fire <em>Brain</em></h1><p class="lede" id="lede">Rise. Burn. Repeat.</p></div><div class="live" id="live"><i></i><span>connecting</span></div></header>
+<div id="ustrip"></div>
 <nav class="bar"><div class="r" role="tablist" id="tabs"></div><div class="r" id="tools"></div></nav>
 <main id="main"></main>
 </div>
 <script>
-const TABS=[['roadmap','Roadmap'],['maps','Maps'],['io','Inputs and outputs'],['brainstorm','Brainstorm'],['libraries','Libraries'],['references','References'],['credentials','Credentials']];
+const TABS=[['roadmap','Roadmap'],['maps','Maps'],['io','Inputs and outputs'],['brainstorm','Brainstorm'],['usage','Usage'],['libraries','Libraries'],['references','References'],['credentials','Credentials']];
 const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let mapKind='site',mapOpen=null,M=null,tab=(location.hash||'#roadmap').slice(1),fStatus='ALL',fPhase='ALL',q='';const openLib=new Set();
 const tabOk=()=>TABS.some(t=>t[0]===tab)||(tab='roadmap');
@@ -114,11 +117,29 @@ function brain(){const N=M.inbox||[],open=N.filter(n=>n.status==='open'),can=!!(
  <div class="card remind">${open.length?`<p style="margin:0 0 8px">Each open idea needs a decision before you close the session: <b>tackle it</b> (turn it into a roadmap item or inbox row, then mark it) or <b>drop it</b>. Same list in a terminal: <code>node tools/brain/reminders.mjs</code></p>`+open.map(row).join(''):'<span class="mute">No open ideas. Nothing to decide.</span>'}</div>
  <h2>Decided <span class="mute" style="font:400 14px var(--ui)">${f.length} newest first</span></h2>${f.map(row).join('')||'<p class="mute">Nothing decided yet.</p>'}`;}
 async function bsPost(url,body){const r=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const j=await r.json().catch(()=>({error:'bad reply'}));if(!r.ok||j.ok===false)throw new Error(j.error||('error '+r.status));return j}
-function render(){if(!M)return;tabOk();head();document.getElementById('lede').textContent='Rise. Burn. Repeat. · '+M.roadmap.metrics.project+'% done · refreshed '+new Date(M.generated).toLocaleTimeString();
- document.getElementById('main').innerHTML=({roadmap,maps,io,brainstorm:brain,libraries:libs,references:refs,credentials:creds})[tab]();}
+
+const uMeter=(label,p,lim,reset)=>`<div style="min-width:200px;flex:1 1 200px"><div style="display:flex;justify-content:space-between;gap:8px"><span class="lab">${label}</span><span>${p==null?'unknown':p+'%'} <span class="mute">of ${lim}% limit</span></span></div><div class="meter${p!=null&&p>=lim?' warn':''}" role="img" aria-label="${label} ${p==null?'unknown':p+' percent'}"><span style="width:${p==null?0:p}%"></span></div><span class="mute" style="font-size:12px">${reset?'resets '+E(new Date(reset).toLocaleString()):'reset time not recorded'}</span></div>`;
+const ageTxt=u=>u.ageMinutes==null?'age unknown':u.ageMinutes<2?'just now':u.ageMinutes<120?u.ageMinutes+' min ago':Math.round(u.ageMinutes/60)+' h ago';
+function ustrip(){const el=document.getElementById('ustrip');if(!M||!M.usage){el.innerHTML='';return}const u=M.usage;
+ if(!u.has){el.innerHTML='<div class="ustrip"><span class="lab">Usage</span><span class="mute">No snapshot yet. A session writes one with <code>node tools/brain/usage.mjs write --five N --week N</code>.</span></div>';return}
+ const L=u.latest;el.innerHTML=`<div class="ustrip${u.saveMode?' save':''}" id="ustrip-in"><span class="lab">Usage</span><span>5-hour <b>${L.fiveHour==null?'?':L.fiveHour+'%'}</b></span><span>weekly <b>${L.weekly==null?'?':L.weekly+'%'}</b></span><span class="mute">snapshot ${ageTxt(u)}${u.stale?' · stale, treat as unknown':''}</span>${u.saveMode?`<b style="color:var(--bad)">SAVE MODE</b>`:''}<a data-tab="usage">details</a></div>`;}
+function usageTab(){const u=M.usage,L=u.latest;
+ if(!u.has)return `<div class="banner" style="margin-top:14px">No usage snapshot yet. A session writes one with <code>node tools/brain/usage.mjs write --five N --week N</code>.</div>`;
+ const pol=u.policy;let h='';
+ if(u.saveMode)h+=`<div class="banner" role="alert"><b>Save mode.</b> ${u.reasons.map(E).join('; ')}. Start no large items; take only roadmap items flagged low hanging.<div style="margin-top:6px">${u.lowHanging.length?u.lowHanging.map(i=>`<div><code>${E(i.id)}</code> ${E(i.title)}</div>`).join(''):'<span class="mute">No item is flagged low hanging right now: wait for the window to reset.</span>'}</div></div>`;
+ if(u.stale)h+=`<div class="banner" style="background:#1d160c;border-color:var(--gold);color:var(--txt)">The latest snapshot is ${ageTxt(u)} old (limit ${pol.staleAfterMinutes} min). Do not rely on it; the next session writes a new one.</div>`;
+ h+=`<div class="card" style="margin-top:14px"><div class="r" style="gap:18px">${uMeter('5-hour',L.fiveHour,pol.fiveHourPercent,L.fiveHourResetsAt)}${uMeter('Weekly',L.weekly,pol.weeklyPercent,L.weeklyResetsAt)}</div><p class="mute" style="margin:8px 0 0">Snapshot ${E(new Date(L.timestamp).toLocaleString())} (${ageTxt(u)}) · source ${E(L.source)}</p></div>
+ <div class="r" style="margin-top:12px"><button class="btn" id="notif-btn">${typeof Notification==='undefined'?'Notifications not supported here':Notification.permission==='granted'?'Notifications on':Notification.permission==='denied'?'Notifications blocked in the browser':'Turn on notifications'}</button><span class="mute">A browser notification fires once when a limit is crossed.</span></div>
+ <h2>Policy</h2><p class="doc">Thresholds: 5-hour at or above <b>${pol.fiveHourPercent}%</b>, weekly at or above <b>${pol.weeklyPercent}%</b> (edit <code>LIBRARY/state/usage-policy.json</code>). ${E(pol.saveMode||'')}</p>
+ <h2>How the numbers get here</h2><p class="doc">The usage tool only works inside a session, so a session writes a snapshot at its start, after each item and at its end: <code>node tools/brain/usage.mjs write --five N --week N --five-reset ISO --week-reset ISO --source name</code>. This page shows the newest one with its age.</p>
+ <h2>Recent snapshots <span class="mute" style="font:400 14px var(--ui)">${u.history.length}</span></h2><div class="tw"><table><thead><tr><th>When</th><th>5-hour</th><th>Weekly</th><th>Source</th></tr></thead><tbody>${[...u.history].reverse().map(x=>`<tr><td>${E(new Date(x.timestamp).toLocaleString())}</td><td>${x.fiveHour??'?'}%</td><td>${x.weekly??'?'}%</td><td>${E(x.source)}</td></tr>`).join('')||'<tr><td colspan="4" class="mute">No earlier snapshots.</td></tr>'}</tbody></table></div>`;return h;}
+function usageNotify(){if(!M||!M.usage||!M.usage.saveMode||typeof Notification==='undefined'||Notification.permission!=='granted')return;const k=(M.usage.latest.timestamp||'')+'|'+M.usage.reasons.join();let seen='';try{seen=localStorage.getItem('brain.usage.notified')||''}catch{}if(seen===k)return;try{localStorage.setItem('brain.usage.notified',k)}catch{}try{new Notification('Phoenix brain: save mode',{body:M.usage.reasons.join('. ')+'. Only low hanging items.',icon:'/crest.png'})}catch{}}
+document.addEventListener('click',async e=>{if(e.target.id==='notif-btn'&&typeof Notification!=='undefined'){try{await Notification.requestPermission()}catch{}usageNotify();render()}});
+function render(){if(!M)return;tabOk();head();ustrip();usageNotify();document.getElementById('lede').textContent='Rise. Burn. Repeat. · '+M.roadmap.metrics.project+'% done · refreshed '+new Date(M.generated).toLocaleTimeString();
+ document.getElementById('main').innerHTML=({roadmap,maps,io,brainstorm:brain,usage:usageTab,libraries:libs,references:refs,credentials:creds})[tab]();}
 async function load(){try{M=await (await fetch('/api/model')).json();if(M.error)throw new Error(M.error);if(tab==='brainstorm'&&document.activeElement&&document.activeElement.id==='bs-text')return;render()}catch(e){document.getElementById('main').innerHTML=`<div class="banner">Could not read the library: ${E(e.message)}</div>`}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-tab],[data-st],[data-ph],[data-mk]');if(!b)return;if(b.dataset.mk)mapKind=b.dataset.mk;if(b.dataset.tab){tab=b.dataset.tab;q='';location.hash=tab}if(b.dataset.st)fStatus=b.dataset.st;if(b.dataset.ph)fPhase=b.dataset.ph;render()});
-document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;document.getElementById('main').innerHTML=({roadmap,maps,io,brainstorm:brain,libraries:libs,references:refs,credentials:creds})[tab]();}});
+document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;document.getElementById('main').innerHTML=({roadmap,maps,io,brainstorm:brain,usage:usageTab,libraries:libs,references:refs,credentials:creds})[tab]();}});
 document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.d){d.open?mapOpen=d.dataset.d:(mapOpen===d.dataset.d&&(mapOpen=null))}if(d.dataset&&d.dataset.lib){d.open?openLib.add(d.dataset.lib):openLib.delete(d.dataset.lib)}},true);
 document.addEventListener('click',async e=>{const b=e.target.closest('#bs-save,#bs-mic,[data-st-id]');if(!b)return;
  if(b.id==='bs-mic'){if(rec){rec.stop();return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();r.lang=navigator.language||'en-US';r.interimResults=false;r.continuous=true;const ta=document.getElementById('bs-text');
