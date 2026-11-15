@@ -1,0 +1,4 @@
+{
+  "latest": { "fiveHour": 13, "weekly": 2, "fiveHourResetsAt": null, "weeklyResetsAt": null, "timestamp": "2026-11-15T03:30:00.000Z", "source": "session:PF-015 (app usage tool reading, plan Pro)" },
+  "history": []
+}

@@ -172,7 +172,7 @@
       "title": "Project brain: usage probe, snapshots, policy, banner, save mode (`lowHanging` items)",
       "phase": "Project brain",
       "area": "`tools/brain/`, `LIBRARY/state/`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -183,10 +183,16 @@
       ],
       "fileLane": "`tools/brain/`, `LIBRARY/state/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "First test whether usage can be read outside a session",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PR (PF-015)",
+          "what": "Usage probe: a standalone script cannot read the percent, so sessions write snapshots (node tools/brain/usage.mjs write) to LIBRARY/state/usage.json; policy in usage-policy.json (80% five-hour, 85% weekly, 90 min stale). Brain page: header strip, Usage tab, save-mode banner listing only lowHanging items, browser notification once per crossing; 13 new checks in tests/brain.test.mjs."
+        }
+      ],
       "plans": []
     },
     {
@@ -194,7 +200,7 @@
       "title": "Project brain: usage intelligence, lessons and improvement plans",
       "phase": "Project brain",
       "area": "`tools/brain/`, `LIBRARY/LESSONS.md`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "L",
       "effort": 4,
       "importance": 3,

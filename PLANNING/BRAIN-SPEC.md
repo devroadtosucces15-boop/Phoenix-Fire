@@ -32,6 +32,12 @@ ideas of the Phoenix Control Center (tabs, grouped tiles). Rules for sessions: `
 - **Usage reading.** Inside a session the app's usage tool returns the 5-hour and weekly percent and reset times (read 2026-11-15: 5-hour 13%, weekly 2%, Pro
   plan). A standalone script cannot call that tool, so PF-015 first tests whether the status line or another local source exposes the same numbers; if not, a
   session writes a snapshot to `LIBRARY/state/usage.json` at its start, after each item and at its end, and the page shows the latest snapshot with its age.
+- **Probe result (PF-015, 2026-11-15).** A standalone node script cannot read the percent. Local Claude files hold only token and cost logs (`~/.claude/metrics/`),
+  no 5-hour or weekly percent, and no status line is configured here (the status line input carries the numbers only inside a running session, and changing
+  the owner's global settings is not this project's call). So snapshots are the source: `node tools/brain/usage.mjs write --five N --week N [--five-reset ISO]
+  [--week-reset ISO] [--source name]` writes `LIBRARY/state/usage.json` (latest plus the last 200 in `history`). Thresholds, stale limit (90 min) in
+  `LIBRARY/state/usage-policy.json`. The page shows a header strip on every tab, a Usage tab, the save-mode banner (lists only `lowHanging` items) and a
+  browser notification once per crossing. A snapshot older than the stale limit is marked stale and treated as unknown.
 - **Save mode.** A running session cannot be switched from outside. The rule instead: when a snapshot shows 5-hour usage at or above a set threshold (start:
   80%) or weekly at or above 85%, a session stops starting large items and takes only roadmap items flagged `lowHanging` (size S, no open dependencies,
   not an owner step), and the page shows the switch and notifies the owner (browser notification). Thresholds live in `LIBRARY/state/usage-policy.json`.

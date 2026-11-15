@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { mapsModel } from './maps.mjs';
 import { listNotes } from './inbox.mjs';
+import { usageModel } from './usage.mjs';
 import { readRoadmap, roadmapMetrics } from '../library/sync.mjs';
 
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url));
@@ -99,8 +100,8 @@ export function model() {
   const metrics = roadmapMetrics(rm.items);
   const byId = new Map(rm.items.map((i) => [i.id, i]));
   const items = rm.items.map((i) => ({ ...i, blockedBy: i.dependsOn.filter((d) => byId.get(d)?.status !== 'DONE') }));
-  return { generated: new Date().toISOString(), roadmap: { updated: rm.updated, items, inbox: rm.inbox, metrics, next: items.find((i) => i.status === 'NEXT')?.id || null }, libraries: libraries(), references: references(), credentials: credentials(), inbox: listNotes(), ...mapsModel() };
+  return { generated: new Date().toISOString(), roadmap: { updated: rm.updated, items, inbox: rm.inbox, metrics, next: items.find((i) => i.status === 'NEXT')?.id || null }, libraries: libraries(), references: references(), credentials: credentials(), inbox: listNotes(), usage: usageModel(), ...mapsModel() };
 }
 
 // Files whose change should refresh the window.
-export const WATCH = ['LIBRARY', 'LIBRARY/inbox', 'bot/commanddefs.js', 'PLANNING/RESOURCES.md', 'bot/SECRETS-REGISTRY.md'];
+export const WATCH = ['LIBRARY', 'LIBRARY/inbox', 'LIBRARY/state', 'bot/commanddefs.js', 'PLANNING/RESOURCES.md', 'bot/SECRETS-REGISTRY.md'];
