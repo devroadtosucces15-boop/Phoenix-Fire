@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T21:40:40.643Z",
+ "fetchedAt": "2026-11-15T21:50:41.380Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1855,10 +1855,10 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "189",
+   "gamesPlayed": "190",
    "goals": "30",
    "assists": "65",
-   "manOfTheMatch": "20",
+   "manOfTheMatch": "21",
    "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
@@ -2031,9 +2031,9 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "135",
+   "gamesPlayed": "136",
    "goals": "69",
-   "assists": "52",
+   "assists": "53",
    "manOfTheMatch": "20",
    "ratingAve": "7.5",
    "prevGoals": "0",
@@ -2086,7 +2086,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "96",
+   "gamesPlayed": "97",
    "goals": "13",
    "assists": "7",
    "manOfTheMatch": "2",
@@ -2130,7 +2130,7 @@
   {
    "name": "KolletRivera",
    "proPos": "0",
-   "gamesPlayed": "159",
+   "gamesPlayed": "160",
    "goals": "6",
    "assists": "3",
    "manOfTheMatch": "13",
@@ -2240,12 +2240,12 @@
   {
    "name": "HristoNL",
    "proPos": "5",
-   "gamesPlayed": "270",
-   "goals": "173",
+   "gamesPlayed": "271",
+   "goals": "174",
    "assists": "230",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "defender"
   },
   {
@@ -2262,12 +2262,12 @@
   {
    "name": "SamESKO4",
    "proPos": "25",
-   "gamesPlayed": "132",
-   "goals": "137",
+   "gamesPlayed": "133",
+   "goals": "139",
    "assists": "126",
    "manOfTheMatch": "33",
    "ratingAve": "8.1",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
