@@ -46,6 +46,13 @@ details.lib{border:1px solid var(--line);border-radius:12px;background:var(--pan
 .drill{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:8px}.drill>summary{cursor:pointer;padding:10px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;list-style:none}.drill>summary b{font:700 17px var(--display);letter-spacing:.03em;overflow-wrap:anywhere}.drill[open]{border-color:var(--acc)}
 .dr{padding:4px 14px 12px;border-top:1px solid var(--line);display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}.dr h4{margin:8px 0 4px;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}.dr div>span{display:inline-block;margin:2px 4px 2px 0}.dr code{display:inline-block}
 .io2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));padding:4px 14px 12px;border-top:1px solid var(--line)}.io2 .in{border-left:3px solid var(--steel);padding-left:10px}.io2 .out{border-left:3px solid var(--acc);padding-left:10px}
+.bs{display:grid;gap:10px;margin-top:14px}
+textarea{width:100%;min-height:92px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--txt);font:inherit;resize:vertical}
+textarea:focus-visible,.btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.btn{font:700 14px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);cursor:pointer;min-height:38px}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#1a0d04}.btn.rec{background:#7a1f16;border-color:var(--bad)}.btn[disabled]{opacity:.5;cursor:default}
+.note{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:12px 14px;margin-bottom:10px;display:grid;gap:6px}.note.open{border-left:3px solid var(--gold)}.note p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.note.tackled,.note.dropped{opacity:.65}.remind{border-color:var(--gold);background:#1d160c}
 </style>
 </head>
 <body>
@@ -55,7 +62,7 @@ details.lib{border:1px solid var(--line);border-radius:12px;background:var(--pan
 <main id="main"></main>
 </div>
 <script>
-const TABS=[['roadmap','Roadmap'],['maps','Maps'],['io','Inputs and outputs'],['libraries','Libraries'],['references','References'],['credentials','Credentials']];
+const TABS=[['roadmap','Roadmap'],['maps','Maps'],['io','Inputs and outputs'],['brainstorm','Brainstorm'],['libraries','Libraries'],['references','References'],['credentials','Credentials']];
 const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 let mapKind='site',mapOpen=null,M=null,tab=(location.hash||'#roadmap').slice(1),fStatus='ALL',fPhase='ALL',q='';const openLib=new Set();
 const tabOk=()=>TABS.some(t=>t[0]===tab)||(tab='roadmap');
@@ -65,7 +72,7 @@ function head(){document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<bu
  const t=document.getElementById('tools');
  if(tab==='roadmap'&&M){const it=M.roadmap.items,st=['ALL','NEXT','OPEN','BLOCKED','PAUSED','DONE'];
   t.innerHTML=`<span class="lab">Status</span>`+st.map(s=>chip(s,s==='ALL'?it.length:it.filter(i=>i.status===s).length,fStatus===s,`data-st="${s}"`)).join('')+`<span class="lab" style="margin-left:10px">Phase</span>`+['ALL',...M.roadmap.metrics.phases.map(p=>p.phase)].map(p=>chip(p,null,fPhase===p,`data-ph="${E(p)}"`)).join('')+`<input type="search" id="q" placeholder="Search items" value="${E(q)}">`;
- }else if(tab==='maps'||tab==='io'||tab==='libraries'||tab==='references'){t.innerHTML=`<input type="search" id="q" placeholder="Search" value="${E(q)}">`}else t.innerHTML='';}
+ }else if(tab==='maps'||tab==='io'||tab==='brainstorm'||tab==='libraries'||tab==='references'){t.innerHTML=`<input type="search" id="q" placeholder="Search" value="${E(q)}">`}else t.innerHTML='';}
 function roadmap(){const R=M.roadmap,m=R.metrics,nx=R.items.find(i=>i.id===R.next);
  let h=`<div class="grid"><div class="card"><div class="lab">Project</div><div class="big">${m.project}<small>%</small></div>${meter(m.project)}<span class="mute">${R.items.filter(i=>i.status==='DONE').length} of ${R.items.length} items done · updated ${E(R.updated)}</span></div>`;
  h+=`<div class="card"><div class="lab">Next session</div>${nx?`<div class="id" style="font:700 26px var(--display);color:var(--gold)">${nx.id}</div><div>${E(nx.title)}</div><div class="mute" style="margin-top:6px">model ${nx.model} · size ${nx.size} · about ${nx.estMinutes} min</div>`:'<div class="mute">No NEXT item.</div>'}</div>`;
@@ -97,12 +104,29 @@ function maps(){const P=M.maps.pages,C=M.maps.commands,site=mapKind==='site';
  return h;}
 function io(){const F=M.io.filter(f=>has(f,q));
  return `<p class="lede" style="margin-top:14px">One folder per feature: what goes in and what comes out. Open one to see its pages or commands.</p>`+F.map(f=>`<details class="drill" data-d="f:${E(f.key)}" ${mapOpen==='f:'+f.key?'open':''}><summary><b>${E(f.label)}</b><span class="tag">${f.kind}</span><span class="tag">${f.items.length} ${f.kind==='site'?'pages':'commands'}</span></summary><div class="io2"><div class="in"><div class="lab">In</div>${sec('Tables',f.in.tables)}${sec('Config and bindings',f.in.config)}${sec('APIs',f.in.apis)}${sec('Data files',f.in.data)}${sec('Secret names',f.in.secrets)}</div><div class="out"><div class="lab">Out</div>${sec('Channel purposes',f.out.channels)}${sec('Pages',f.out.pages)}${sec('Images',f.out.images)}${sec('Buttons and menus',f.out.buttons)}</div><div style="grid-column:1/-1">${sec('Contains',f.items)}</div></div></details>`).join('')||'<p class="mute">Nothing matches.</p>';}
+let bsDraft='',bsSrc='typed',bsMsg='',rec=null;
+function brain(){const N=M.inbox||[],open=N.filter(n=>n.status==='open'),can=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+ const row=n=>`<div class="note ${n.status}"><div class="r"><span class="tag ${n.status==='open'?'OPEN':n.status==='tackled'?'DONE':''}">${n.status}</span><span class="tag">${n.source}</span><span class="mute">${E(new Date(n.date).toLocaleString())}</span><code>${E(n.id)}</code></div><p>${E(n.text)}</p>${n.status==='open'?`<div class="r"><button class="btn pri" data-st-id="${E(n.id)}" data-to="tackled">Tackle</button><button class="btn" data-st-id="${E(n.id)}" data-to="dropped">Drop</button></div>`:`<div class="r"><button class="btn" data-st-id="${E(n.id)}" data-to="open">Reopen</button></div>`}</div>`;
+ const f=N.filter(n=>n.status!=='open').filter(n=>!q||JSON.stringify(n).toLowerCase().includes(q.toLowerCase()));
+ return `<div class="bs"><label class="lab" for="bs-text">New idea</label><textarea id="bs-text" maxlength="2000" placeholder="Type a thought${can?', or press Dictate and speak':''}. Never put a password or key here: name it instead.">${E(bsDraft)}</textarea>
+ <div class="r"><button class="btn pri" id="bs-save">Save idea</button>${can?`<button class="btn${rec?' rec':''}" id="bs-mic" aria-pressed="${!!rec}">${rec?'Stop dictating':'Dictate'}</button>`:'<span class="mute">Dictation needs a browser with speech recognition (Chrome).</span>'}<span class="mute" id="bs-msg" role="status">${E(bsMsg)}</span></div></div>
+ <h2>End-of-session check <span class="mute" style="font:400 14px var(--ui)">${open.length} open</span></h2>
+ <div class="card remind">${open.length?`<p style="margin:0 0 8px">Each open idea needs a decision before you close the session: <b>tackle it</b> (turn it into a roadmap item or inbox row, then mark it) or <b>drop it</b>. Same list in a terminal: <code>node tools/brain/reminders.mjs</code></p>`+open.map(row).join(''):'<span class="mute">No open ideas. Nothing to decide.</span>'}</div>
+ <h2>Decided <span class="mute" style="font:400 14px var(--ui)">${f.length} newest first</span></h2>${f.map(row).join('')||'<p class="mute">Nothing decided yet.</p>'}`;}
+async function bsPost(url,body){const r=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});const j=await r.json().catch(()=>({error:'bad reply'}));if(!r.ok||j.ok===false)throw new Error(j.error||('error '+r.status));return j}
 function render(){if(!M)return;tabOk();head();document.getElementById('lede').textContent='Rise. Burn. Repeat. · '+M.roadmap.metrics.project+'% done · refreshed '+new Date(M.generated).toLocaleTimeString();
- document.getElementById('main').innerHTML=({roadmap,maps,io,libraries:libs,references:refs,credentials:creds})[tab]();}
-async function load(){try{M=await (await fetch('/api/model')).json();if(M.error)throw new Error(M.error);render()}catch(e){document.getElementById('main').innerHTML=`<div class="banner">Could not read the library: ${E(e.message)}</div>`}}
+ document.getElementById('main').innerHTML=({roadmap,maps,io,brainstorm:brain,libraries:libs,references:refs,credentials:creds})[tab]();}
+async function load(){try{M=await (await fetch('/api/model')).json();if(M.error)throw new Error(M.error);if(tab==='brainstorm'&&document.activeElement&&document.activeElement.id==='bs-text')return;render()}catch(e){document.getElementById('main').innerHTML=`<div class="banner">Could not read the library: ${E(e.message)}</div>`}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-tab],[data-st],[data-ph],[data-mk]');if(!b)return;if(b.dataset.mk)mapKind=b.dataset.mk;if(b.dataset.tab){tab=b.dataset.tab;q='';location.hash=tab}if(b.dataset.st)fStatus=b.dataset.st;if(b.dataset.ph)fPhase=b.dataset.ph;render()});
-document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;document.getElementById('main').innerHTML=({roadmap,maps,io,libraries:libs,references:refs,credentials:creds})[tab]();}});
+document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;document.getElementById('main').innerHTML=({roadmap,maps,io,brainstorm:brain,libraries:libs,references:refs,credentials:creds})[tab]();}});
 document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.d){d.open?mapOpen=d.dataset.d:(mapOpen===d.dataset.d&&(mapOpen=null))}if(d.dataset&&d.dataset.lib){d.open?openLib.add(d.dataset.lib):openLib.delete(d.dataset.lib)}},true);
+document.addEventListener('click',async e=>{const b=e.target.closest('#bs-save,#bs-mic,[data-st-id]');if(!b)return;
+ if(b.id==='bs-mic'){if(rec){rec.stop();return}const SR=window.SpeechRecognition||window.webkitSpeechRecognition,r=new SR();r.lang=navigator.language||'en-US';r.interimResults=false;r.continuous=true;const ta=document.getElementById('bs-text');
+  r.onresult=ev=>{let t='';for(let i=ev.resultIndex;i<ev.results.length;i++)if(ev.results[i].isFinal)t+=ev.results[i][0].transcript+' ';ta.value=(ta.value+' '+t).trim();bsDraft=ta.value;bsSrc='dictated'};
+  r.onerror=ev=>{bsMsg='Dictation stopped: '+ev.error;};r.onend=()=>{rec=null;render()};rec=r;r.start();render();return}
+ try{if(b.id==='bs-save'){const ta=document.getElementById('bs-text');await bsPost('/api/inbox',{text:ta.value,source:bsSrc});bsDraft='';bsSrc='typed';bsMsg='Saved.'}else{await bsPost('/api/inbox/'+b.dataset.stId,{status:b.dataset.to});bsMsg=''}}catch(err){bsMsg='Not saved: '+err.message}
+ await load()});
+document.addEventListener('input',e=>{if(e.target.id==='bs-text')bsDraft=e.target.value});
 window.addEventListener('hashchange',()=>{tab=(location.hash||'#roadmap').slice(1);render()});
 function live(){const el=document.getElementById('live'),es=new EventSource('/events');es.onopen=()=>{el.className='live on';el.lastChild.textContent='live'};es.onerror=()=>{el.className='live';el.lastChild.textContent='reconnecting'};es.addEventListener('change',load)}
 load();live();

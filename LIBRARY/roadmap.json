@@ -144,7 +144,7 @@
       "title": "Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders",
       "phase": "Project brain",
       "area": "`tools/brain/`, `LIBRARY/inbox/`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -155,10 +155,16 @@
       ],
       "fileLane": "`tools/brain/`, `LIBRARY/inbox/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Dictation text only at first",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PR (PF-014)",
+          "what": "Brain dashboard Brainstorm tab: typed and dictated ideas as files in LIBRARY/inbox/ (tools/brain/inbox.mjs), local-only size-capped POST routes, Tackle/Drop, end-of-session check on the page and node tools/brain/reminders.mjs; secret-shaped text refused; 17 new checks in tests/brain.test.mjs."
+        }
+      ],
       "plans": []
     },
     {
@@ -166,7 +172,7 @@
       "title": "Project brain: usage probe, snapshots, policy, banner, save mode (`lowHanging` items)",
       "phase": "Project brain",
       "area": "`tools/brain/`, `LIBRARY/state/`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,
