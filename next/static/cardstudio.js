@@ -2,7 +2,7 @@
 // member: GET /api/cards/templates + /api/cards/request, POST /api/cards/request (the photo is the raw body, one a month),
 // /api/cards/request/cancel, /api/cards/kit-number. Private pictures (/api/cards/photo|result/<id>) are fetched with the session
 // token and shown from blob URLs. Staff: /api/cards/requests (+ decide, review, retry), template upload/update, premium grant/revoke.
-// Owner: /api/cards/owner/requests (+ revoke) and photos for any player. The Discord /avatarcard card (GET /api/avatarcard) sits
+// Owner: /api/cards/owner/requests (+ revoke) and photos for any player. The Discord /avatarcard panel (bot/cardpanel.js) feeds the same requests; it sits
 // beside it. Preview = the /next/ player card through NorexArt.fitInto; PNG export = the live site's cardcomposer.js (copied at build).
 (() => {
   const d = document, $ = (s, r = d) => r.querySelector(s), $$ = (s, r = d) => [...r.querySelectorAll(s)];
@@ -72,7 +72,7 @@
   const stepKit = (inp, by) => { const v = kitVal(inp); inp.value = v === '' ? (by > 0 ? '0' : '99') : String((+v + by + 100) % 100); inp.dispatchEvent(new Event('input', { bubbles: true })); };
 
   // ================= 🪪 MEMBER: my card =================
-  let T = null, R = null, AV = null, waiting = 0, sel = { bg: null, pose: null }, photo = null, photoUrl = '', outs = { avatar: true, portrait: true }, kit = '', kitv = 'male', poll = 0, polls = 0;
+  let T = null, R = null, waiting = 0, sel = { bg: null, pose: null }, photo = null, photoUrl = '', outs = { avatar: true, portrait: true }, kit = '', kitv = 'male', poll = 0, polls = 0;
   const tile = (t, kind) => `<button type="button" class="cs-tile${sel[kind] === t.id ? ' on' : ''}${t.locked ? ' locked' : ''}" data-tid="${t.id}" data-kind="${kind}" aria-pressed="${sel[kind] === t.id}"${t.locked ? ' aria-disabled="true"' : ''}>
 <span class="cs-th"><img src="${esc(media(t.key))}" alt="" loading="lazy">${t.locked ? '<i aria-hidden="true">🔒</i>' : ''}</span><b>${esc(t.name)}</b><small>${t.tier === 'premium' ? (t.locked ? `⭐ ${t.pointCost} pts` : '⭐ Unlocked') : 'Free'}</small></button>`;
   const gallery = (title, list, kind, empty) => `<div class="cs-gal"><h5>${title}</h5>${list.length ? `<div class="cs-tiles">${list.map((t) => tile(t, kind)).join('')}</div>` : `<p class="muted small">${empty}</p>`}</div>`;
@@ -108,13 +108,9 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
 <label class="pf-l">👕 Kit number <small class="muted">optional</small>${kitInput(kit, 'cs-kitn')}</label></div></div>
 <div class="cs-looks"${outs.avatar ? '' : ' hidden'}><h5 class="cs-lh"><i>3</i> Pick a look <small class="muted">${T.backgrounds.some((t) => t.locked) || T.poses.some((t) => t.locked) ? '🔒 premium looks open when a manager unlocks them for you' : ''}</small></h5>${gallery('🌫️ Background', bgs, 'bg', 'No backgrounds yet. Turn off the cinematic avatar to ask for just the portrait.')}${gallery('💪 Pose', poses, 'pose', 'No poses yet.')}</div>
 <div class="cs-send"><p class="small" id="cs-why" aria-live="polite">${w ? `👉 ${esc(w)}` : `✅ Ready: ${[outs.avatar && 'cinematic avatar', outs.portrait && 'website portrait'].filter(Boolean).join(' + ')}${kit !== '' ? ` · #${esc(kit)}` : ''}`}</p><button type="submit" class="btn gold" id="cs-go"${w ? ' disabled' : ''}>📨 Send to a manager</button></div></form>`; };
-  const avHtml = () => ""; // the old Discord /avatarcard panel is retired: Card Studio replaces it (FEEDBACK-1 #21)
-  const avHtmlOld = () => !flagOn('avatarCard') ? '' : AV ? `<div class="panel cs-av"><div class="eyebrow">🎮 Your card from Discord</div><div class="cs-avc" style="background-image:url('${esc(media(AV.bgKey))}')"><img class="cs-avp" src="${esc(media(AV.photoKey))}" alt="" crossorigin="anonymous"><img class="cs-avk" src="crest.png" alt=""><b>${esc(A.name || (window.NOREX?.brand || 'the club'))}</b><i aria-hidden="true">★★★★★</i></div>
-<div class="sq-acts"><button type="button" class="btn ghost" data-avdl>⬇ Download PNG</button></div><p class="tiny muted">Made ${esc(ago(AV.at))} with <code>/avatarcard</code> in Discord. Run it again for a new one.</p></div>`
-    : `<div class="panel cs-av sq-empty"><span>🎮</span><div><b>Your card from Discord</b><p class="muted small">Type <code>/avatarcard</code> in the club Discord and attach a photo. The bot draws a club background for it and the card shows up here to download.</p></div></div>`;
   const meHtml = () => { const r = R?.request, open = !r || r.status === 'rejected' || r.month !== R.month;
-    if (!flagOn('cardStudio')) return `<div class="cs-top">${avHtml() || '<div class="panel sq-empty"><span>🎨</span><div><b>Card Studio is not switched on for you yet</b><p class="muted small">It opens here as soon as the club turns it on.</p></div></div>'}</div>`;
-    return `<div class="cs-top">${statusHtml()}${previewHtml()}</div>${artHtml()}${open ? formHtml() : ''}${avHtml() ? `<div class="cs-low">${avHtml()}</div>` : ''}`; };
+    if (!flagOn('cardStudio')) return `<div class="cs-top">${'<div class="panel sq-empty"><span>🎨</span><div><b>Card Studio is not switched on for you yet</b><p class="muted small">It opens here as soon as the club turns it on.</p></div></div>'}</div>`;
+    return `<div class="cs-top">${statusHtml()}${previewHtml()}</div>${artHtml()}${open ? formHtml() : ''}`; };
   // after a paint: private pictures, the card preview, the polling while a card is being drawn
   const afterMe = async () => { fillPics(meEl); const r = R?.request, box = $('#cs-card .pc', meEl);
     clearTimeout(poll); if (['approved', 'generating'].includes(r?.status) && ++polls <= 30) poll = setTimeout(() => { if (meEl.isConnected) loadMe(true); }, 20000);
@@ -127,8 +123,8 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
     if (!quiet) M?.skeleton(meEl, 4);
     await (A.ready || Promise.resolve()); resetPics();
     try { const on = flagOn('cardStudio');
-      const [t, r, av] = await Promise.all([on ? A.call('/api/cards/templates') : null, on ? A.call('/api/cards/request') : null, flagOn('avatarCard') ? A.call('/api/avatarcard').then((x) => x.card).catch(() => null) : null]);
-      T = t; R = r; AV = av; waiting = 0;
+      const [t, r] = await Promise.all([on ? A.call('/api/cards/templates') : null, on ? A.call('/api/cards/request') : null]);
+      T = t; R = r; waiting = 0;
       if (T?.manage) A.call('/api/cards/requests').then((q) => { const n = q.requests.filter((x) => x.status === 'pending' || x.status === 'review').length; if (n !== waiting) { waiting = n; const a = $('.cs-stat .sq-acts', meEl); if (a && n) { a.insertAdjacentHTML('beforeend', `<a class="btn ghost" href="staff-artwork.html">📥 ${n} waiting for staff ›</a>`); } } }).catch(() => {});
       for (const k of ['bg', 'pose']) if (sel[k] && !(T?.[k === 'bg' ? 'backgrounds' : 'poses'] || []).some((x) => x.id === sel[k] && !x.locked)) sel[k] = null;
       paintMe(!quiet);
@@ -168,26 +164,8 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
       if (ex) { try { const { u } = await blobOf(picPath('portrait', R.request.id)); await exportCard(ex, u, kitVal($('#cs-kitdone', meEl))); } catch (er) { oops(er); } return; }
       const cc = t.closest('[data-cscancel]');
       if (cc) { if (!sure(cc, 'Cancel it? Tap again')) return; try { R = await go(cc, () => post('/api/cards/request/cancel', {})); ok('Request cancelled. You can send a new one', '✖'); paintMe(true); } catch (er) { oops(er); } return; }
-      const dl = t.closest('[data-avdl]'); if (dl) { try { await go(dl, () => avDownload(AV, A.name || (window.NOREX?.brand || 'the club'))); } catch { M?.toast('Could not build the download. Try again', { kind: 'err' }); } }
     });
   }
-  // the Discord card as one PNG (the live site's layout: background, round photo with a red ring, crest, name, five stars)
-  async function avDownload(card, name) {
-    const W = 1080, H = 1350, c = d.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d'), red = '#c8352c'; await d.fonts?.ready;
-    const img = (src, cors = true) => new Promise((res) => { const i = new Image(); if (cors) i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
-    const [bg, ph, cr] = await Promise.all([img(media(card.bgKey)), img(media(card.photoKey)), img('crest.png', false)]);
-    const cover = (im, w, h) => { const s = Math.max(w / im.naturalWidth, h / im.naturalHeight), iw = im.naturalWidth * s, ih = im.naturalHeight * s; return [(w - iw) / 2, (h - ih) / 2, iw, ih]; };
-    g.fillStyle = '#0b0f16'; g.fillRect(0, 0, W, H); if (bg) g.drawImage(bg, ...cover(bg, W, H));
-    const gr = g.createLinearGradient(0, H * .55, 0, H); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.6)'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
-    const S = 640, cx = W / 2, cy = H * .42;
-    if (ph) { g.save(); g.beginPath(); g.arc(cx, cy, S / 2, 0, Math.PI * 2); g.clip(); const [x, y, w, h] = cover(ph, S, S); g.drawImage(ph, cx - S / 2 + x, cy - S / 2 + y, w, h); g.restore(); g.beginPath(); g.arc(cx, cy, S / 2, 0, Math.PI * 2); g.lineWidth = 10; g.strokeStyle = red; g.stroke(); }
-    if (cr) { const h = 92, w = cr.naturalWidth / cr.naturalHeight * h; g.drawImage(cr, W / 2 - w / 2, 56, w, h); }
-    g.textAlign = 'center'; g.fillStyle = '#fff'; g.font = '700 54px Oswald, Impact, sans-serif'; g.fillText(String(name).toUpperCase().slice(0, 24), W / 2, cy + S / 2 + 80);
-    g.fillStyle = '#f5d061'; g.font = '600 30px Oswald, Impact, sans-serif'; g.fillText('★  ★  ★  ★  ★', W / 2, cy + S / 2 + 128); g.fillStyle = red; g.fillRect(0, H - 14, W, 14);
-    const blob = await new Promise((res) => { try { c.toBlob(res, 'image/png'); } catch { res(null); } }); if (!blob) throw new Error('blocked');
-    const u = URL.createObjectURL(blob), a = Object.assign(d.createElement('a'), { href: u, download: `${name}-${(window.NOREX?.slug || 'club')}-card.png`.replace(/[^\w.-]+/g, '_') }); d.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 30000);
-  }
-
   // ================= 🛡️ STAFF: review queue, player artwork (owner), looks =================
   let ST = null, Q = [], OW = [], tab = 'review', grantUser = '';
   const nameOf = (x) => playerOf(x.targetPlayer || x.player)?.n || x.user || 'Member';

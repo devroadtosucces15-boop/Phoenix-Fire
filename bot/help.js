@@ -116,7 +116,7 @@ const BOTS = {
       intel: 'Managers only. Takes a moment, then a private report with recommendations.',
       feedback: 'The teammate never sees who sent it.',
       suggest: 'Tick `anon` to hide your name from the board.',
-      avatarcard: 'Attach your avatar and you get an AI-styled club background.',
+      avatarcard: 'Opens your private Card Studio panel: photo, look, kit and number, then it goes to a manager.',
       jail: 'Just for fun. Nothing happens in the real server.',
       trivia: '`play` for a question, `board` for the scores.',
       wheel: 'Put the options in one line, separated by commas.',

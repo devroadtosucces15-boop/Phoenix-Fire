@@ -98,43 +98,43 @@ const reqView = (r, extra = {}) => ({
 const REQ_SQL = `SELECT r.*, b.name AS bg_name, p.name AS pose_name FROM card_requests r
   LEFT JOIN card_templates b ON b.id = r.bg_id LEFT JOIN card_templates p ON p.id = r.pose_id`;
 
-// POST /api/cards/request?bg=<id>&pose=<id> – the body is the raw photo. Photos live under cardphoto/ (never /media),
-// so only the member and managers can ever see them; they are deleted on reject/cancel.
-export async function cardRequestUpload(request, me, env, url, log, loadSite) {
+// One request, however it arrives (website upload or the /avatarcard panel). `o` = { targetPlayer, avatar, portrait, kitNumber (raw string or null),
+// kit ('male'|'female'), bg, pose, bytes }. Returns { error, status } or { ok: true }.
+export async function submitCardRequest(me, env, o, log, loadSite) {
   const blocked = gate(me, env);
-  if (blocked) return blocked;
-  if (!env.MEDIA) return fail('Media storage is not connected.', 503);
-  const targetPlayer = url.searchParams.get('targetPlayer');
+  if (blocked) return { error: 'Not available yet.', status: 404 };
+  if (!env.MEDIA) return { error: 'Media storage is not connected.', status: 503 };
+  const targetPlayer = o.targetPlayer ?? null;
   let targetUser = me.u;
   if (targetPlayer !== null) {
-    if (me.role !== 'owner') return fail('Owner only.', 403);
+    if (me.role !== 'owner') return { error: 'Owner only.', status: 403 };
     const player = (await loadSite('players')).find(p => p.k === targetPlayer);
-    if (!player) return fail('Player not found.', 404);
+    if (!player) return { error: 'Player not found.', status: 404 };
     const claim = await one(env, "SELECT user_id FROM claims WHERE player = ? AND status = 'approved'", targetPlayer);
     targetUser = claim?.user_id || 'player:' + targetPlayer;
   }
-  const avatarEnabled = url.searchParams.get('avatar') !== '0';
-  const portraitEnabled = url.searchParams.get('portrait') === '1';
-  if (!avatarEnabled && !portraitEnabled) return fail('Choose at least one output.');
-  const rawNumber = url.searchParams.get('kitNumber');
+  const avatarEnabled = o.avatar !== false;
+  const portraitEnabled = o.portrait === true;
+  if (!avatarEnabled && !portraitEnabled) return { error: 'Choose at least one output.', status: 400 };
+  const rawNumber = o.kitNumber ?? null;
   const kitNumber = rawNumber == null || rawNumber === '' ? null : Number(rawNumber);
-  if (kitNumber !== null && (!/^\d{1,2}$/.test(rawNumber) || !Number.isInteger(kitNumber) || kitNumber < 0 || kitNumber > 99)) return fail('Kit number must be between 0 and 99.');
-  const variant = url.searchParams.get('kit') ?? 'male';
-  if (!KIT_VARIANTS.includes(variant)) return fail('Pick the male or female kit.');
+  if (kitNumber !== null && (!/^\d{1,2}$/.test(rawNumber) || !Number.isInteger(kitNumber) || kitNumber < 0 || kitNumber > 99)) return { error: 'Kit number must be between 0 and 99.', status: 400 };
+  const variant = o.kit ?? 'male';
+  if (!KIT_VARIANTS.includes(variant)) return { error: 'Pick the male or female kit.', status: 400 };
   const month = monthKey();
   const existing = await one(env, 'SELECT id, status, photo_key, result_key, portrait_key FROM card_requests WHERE user_id = ? AND month = ?', targetUser, month);
-  if (existing && existing.status !== 'rejected') return fail(targetPlayer ? 'That player already has a request this month. Revoke it to allow resubmission.' : 'You already sent a card request this month – the next one opens on the 1st.', 409);
-  const bg = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'bg'", Number(url.searchParams.get('bg')));
-  const pose = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'pose'", Number(url.searchParams.get('pose')));
-  if (avatarEnabled && !bg) return fail('Pick a background for your cinematic avatar.');
-  if (avatarEnabled && !pose) return fail('Pick a pose for your cinematic avatar.');
-  if (bg && !(await canUseTemplate(env, me.u, bg))) return fail('That background is locked for you.', 403);
-  if (pose && !(await canUseTemplate(env, me.u, pose))) return fail('That pose is locked for you.', 403);
-  const bytes = new Uint8Array(await request.arrayBuffer());
-  if (!bytes.length) return fail('Choose a photo first.');
-  if (bytes.length > PHOTO_MAX) return fail('That photo is too big – 8 MB max.');
+  if (existing && existing.status !== 'rejected') return { error: targetPlayer ? 'That player already has a request this month. Revoke it to allow resubmission.' : 'You already sent a card request this month – the next one opens on the 1st.', status: 409 };
+  const bg = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'bg'", Number(o.bg));
+  const pose = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'pose'", Number(o.pose));
+  if (avatarEnabled && !bg) return { error: 'Pick a background for your cinematic avatar.', status: 400 };
+  if (avatarEnabled && !pose) return { error: 'Pick a pose for your cinematic avatar.', status: 400 };
+  if (bg && !(await canUseTemplate(env, me.u, bg))) return { error: 'That background is locked for you.', status: 403 };
+  if (pose && !(await canUseTemplate(env, me.u, pose))) return { error: 'That pose is locked for you.', status: 403 };
+  const bytes = o.bytes;
+  if (!bytes?.length) return { error: 'Choose a photo first.', status: 400 };
+  if (bytes.length > PHOTO_MAX) return { error: 'That photo is too big – 8 MB max.', status: 400 };
   const type = photoType(bytes);
-  if (!type) return fail('Upload a PNG, JPG or WEBP photo.');
+  if (!type) return { error: 'Upload a PNG, JPG or WEBP photo.', status: 400 };
   const key = `cardphoto/${hex(16)}.${type[1]}`;
   await env.MEDIA.put(key, bytes, { httpMetadata: { contentType: type[0] } });
   try {
@@ -142,12 +142,23 @@ export async function cardRequestUpload(request, me, env, url, log, loadSite) {
     await run(env, 'INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, avatar_enabled, portrait_enabled, kit_number, target_player, submitted_by, kit_variant) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', targetUser, month, bg?.id ?? 0, pose?.id ?? 0, key, 'pending', Date.now(), avatarEnabled ? 1 : 0, portraitEnabled ? 1 : 0, kitNumber, targetPlayer, me.u, variant);
   } catch {
     await dropPhoto(env, key);
-    return fail('You already sent a card request this month – the next one opens on the 1st.', 409);
+    return { error: 'You already sent a card request this month – the next one opens on the 1st.', status: 409 };
   }
   if (existing) await Promise.all([dropPhoto(env, existing.photo_key), dropPhoto(env, existing.result_key), dropPhoto(env, existing.portrait_key)]);
   await log(env, me, 'card-request', avatarEnabled ? `${bg.name} + ${pose.name}` : 'Standardized portrait');
   await safely(notifyManagers(env, { icon: '🪪', title: 'New card request', body: avatarEnabled ? `${me.n || 'A member'} asked for a ${bg.name} / ${pose.name} card.` : `${me.n || 'A member'} asked for a standardized website portrait.`, link: 'staff-artwork.html', ref: `card:${me.u}:${month}` }, me.u));
-  return json(await mine(env, me));
+  return { ok: true };
+}
+
+// POST /api/cards/request?bg=<id>&pose=<id> – the body is the raw photo. Photos live under cardphoto/ (never /media),
+// so only the member and managers can ever see them; they are deleted on reject/cancel.
+export async function cardRequestUpload(request, me, env, url, log, loadSite) {
+  const q = url.searchParams;
+  const res = await submitCardRequest(me, env, {
+    targetPlayer: q.get('targetPlayer'), avatar: q.get('avatar') !== '0', portrait: q.get('portrait') === '1', kitNumber: q.get('kitNumber'),
+    kit: q.get('kit') ?? 'male', bg: q.get('bg'), pose: q.get('pose'), bytes: new Uint8Array(await request.arrayBuffer()),
+  }, log, loadSite);
+  return res.error ? fail(res.error, res.status) : json(await mine(env, me));
 }
 
 async function mine(env, me) {

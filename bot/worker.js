@@ -49,7 +49,7 @@ import { checkProfanity, cleanBonus, setupAutoMod } from './profanity.js';
 import { checkHype } from './hype.js';
 import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
-import { makeAvatarCard } from './avatarcard.js';
+import { cardOpen, cardInteraction, CARD_ID } from './cardpanel.js';
 import { postEmbed } from './docs.js';
 import { refreshStatInsights, handleStatInsightJob, statInsightWeekly, discordInsightEmbed, discordH2hEmbed } from './statinsights.js';
 import { handleHubWaveJob } from './hub.js';
@@ -208,7 +208,11 @@ export default {
     if (i.type === 2 && i.data.name === 'exportcontent') return exportContentCommand(i, env, ctx, who);
     if (i.type === 2 && i.data.name === 'aispike') return aiSpikeCommand(i, env, ctx, who);
     if (i.type === 2 && i.data.name === 'profanitysetup') return profanitySetupCommand(i, env, ctx, who);
-    if (i.type === 2 && i.data.name === 'avatarcard') return avatarCardCommand(i, env, ctx, who, new URL(request.url).origin);
+    if (i.type === 2 && i.data.name === 'avatarcard') { // the private Card Studio panel (bot/cardpanel.js)
+      const optId = flatOptions(i.data.options).find((o) => o.name === 'image')?.value;
+      return json(await cardOpen(i, env, await memberOf(i, who, env), optId ? i.data.resolved?.attachments?.[optId] : undefined));
+    }
+    if ((i.type === 3 || i.type === 5) && CARD_ID.test(i.data?.custom_id ?? '')) return json(await cardInteraction(i, env, await memberOf(i, who, env), (f) => load(site, f, ctx)));
     if (i.type === 2 && i.data.name === 'ask') return askCommand(i, env, ctx, site, who);
     if (i.type === 2 && i.data.name === 'insight') return insightCommand(i, env, ctx, site, who); // BE9
     if (i.type === 2 && i.data.name === 'burner') return burnerCommand(i, env, ctx, who, site, (f) => load(site, f, ctx)); // burner-club tracker
@@ -400,33 +404,6 @@ function profanitySetupCommand(i, env, ctx, who) {
     await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(noteMsg(content))),
     }).catch((e) => console.log('profanitysetup reply failed', e.message));
-  })());
-  return json(DEFER_PANEL(true));
-}
-
-// ---------- /avatarcard (members): P11.5 upload an avatar → AI background + stored photo, both served via /media ----------
-function avatarCardCommand(i, env, ctx, who, origin) {
-  if (!flagOn(env, who, 'avatarCard')) return json(privateNote('🔒 Not switched on yet.'));
-  const optId = flatOptions(i.data.options).find((o) => o.name === 'image')?.value;
-  const attachment = i.data.resolved?.attachments?.[optId];
-  if (!attachment) return json(privateNote('⚠️ Attach an image.'));
-  ctx.waitUntil((async () => {
-    let content;
-    try {
-      const { photoKey, bgKey } = await makeAvatarCard(env, who.u, attachment);
-      content = [
-        '🎨 **Your club card art is ready!**',
-        `📷 Your photo: ${origin}/media/${photoKey}`,
-        `🖼️ AI background: ${origin}/media/${bgKey}`,
-        "Discord doesn't let bots set another member's avatar for them – download whichever you want and set it yourself (User Settings → Edit Profile).",
-        'An interactive web card combining both is coming in a follow-up.',
-      ].join('\n');
-    } catch (e) {
-      content = `⚠️ ${e.message}`;
-    }
-    await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
-      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(noteMsg(content))),
-    }).catch((e) => console.log('avatarcard reply failed', e.message));
   })());
   return json(DEFER_PANEL(true));
 }
