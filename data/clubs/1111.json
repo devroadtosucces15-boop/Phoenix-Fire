@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T03:24:20.059Z",
+ "fetchedAt": "2026-11-15T03:26:59.904Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2194,17 +2194,6 @@
    "manOfTheMatch": "7",
    "ratingAve": "7.2",
    "prevGoals": "3",
-   "favoritePosition": "forward"
-  },
-  {
-   "name": "SevnAliasX",
-   "proPos": "25",
-   "gamesPlayed": "358",
-   "goals": "427",
-   "assists": "240",
-   "manOfTheMatch": "37",
-   "ratingAve": "7.6",
-   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {

@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-15T03:24:20.059Z",
+ "fetchedAt": "2026-11-15T03:26:59.904Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1627,6 +1627,42 @@
    "prevGoals8": "0",
    "prevGoals9": "0",
    "prevGoals10": "0"
+  },
+  {
+   "name": "SevnAliasX",
+   "gamesPlayed": "0",
+   "favoritePosition": "",
+   "winRate": "0",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "0",
+   "passSuccessRate": "0",
+   "ratingAve": "0.0",
+   "tacklesMade": "0",
+   "tackleSuccessRate": "0",
+   "proName": "",
+   "proPos": "",
+   "proStyle": "",
+   "proHeight": "",
+   "proNationality": "",
+   "proOverall": "0",
+   "proOverallStr": "",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0"
   }
  ],
  "positionCount": {
@@ -1832,6 +1868,17 @@
    "manOfTheMatch": "7",
    "ratingAve": "7.2",
    "prevGoals": "3",
+   "favoritePosition": "forward"
+  },
+  {
+   "name": "SevnAliasX",
+   "proPos": "25",
+   "gamesPlayed": "358",
+   "goals": "427",
+   "assists": "240",
+   "manOfTheMatch": "37",
+   "ratingAve": "7.6",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
