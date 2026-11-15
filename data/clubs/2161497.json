@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-15T02:10:41.069Z",
+ "fetchedAt": "2026-11-15T02:20:44.365Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -369,42 +369,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Ana Montana8022",
-   "gamesPlayed": "5",
-   "winRate": "80",
-   "goals": "3",
-   "assists": "1",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "60",
-   "passesMade": "52",
-   "passSuccessRate": "63",
-   "ratingAve": "7.1",
-   "tacklesMade": "3",
-   "tackleSuccessRate": "21",
-   "proName": "T. Marc",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "170",
-   "proNationality": "18",
-   "proOverall": "78",
-   "proOverallStr": "78",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "2",
-   "prevGoals1": "2",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "1",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "Ritzeltod",
    "gamesPlayed": "20",
    "winRate": "55",
@@ -660,7 +624,7 @@
  "positionCount": {
   "midfielder": 3,
   "goalkeeper": 0,
-  "forward": 10,
+  "forward": 9,
   "defender": 1
  },
  "career": [
@@ -772,17 +736,6 @@
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "forward"
-  },
-  {
-   "name": "Ana Montana8022",
-   "proPos": "25",
-   "gamesPlayed": "39",
-   "goals": "7",
-   "assists": "16",
-   "manOfTheMatch": "1",
-   "ratingAve": "7.2",
-   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
