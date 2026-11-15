@@ -40,3 +40,6 @@ html[data-tin=locker]:before{background:linear-gradient(90deg,#8a6216,#c99a3a 20
 @media(max-width:820px){#acct{display:none}}
 /* phone: the preview strip sits above the header instead of covering the logo */
 @media(max-width:820px){.prevrib{top:0;padding-top:calc(3px + env(safe-area-inset-top))}body:has(.prevrib) .bar{top:calc(17px + env(safe-area-inset-top))}body:has(.prevrib){padding-top:17px}html.standalone body:has(.prevrib) .bar{padding-top:0}}
+
+/* the dock badge is the one round nav button: hide the fx.js orb when the dock is mounted */
+html.pf-dock #fxnav{display:none!important}

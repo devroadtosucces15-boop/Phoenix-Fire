@@ -399,7 +399,7 @@ html[data-motion=calm] .txpane.tx-in{animation:mxFade var(--m-base) ease both}
 .lk-orbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.lk-orbs span{display:grid;justify-items:center;padding:8px 4px;border-radius:12px;background:var(--p3);border:1px solid var(--line);animation:mxLand .6s var(--e-out) both;animation-delay:calc(var(--i) * 90ms)}
 .lk-orbs b{font:600 20px Oswald}.lk-orbs small{font-size:9.5px;color:var(--soft)}.lk-orbs .hi{border-color:rgba(255,154,74,.55)}.lk-orbs .hi b{color:#ff9a4a}.lk-orbs .lo{border-color:rgba(143,211,255,.5)}.lk-orbs .lo b{color:#8fd3ff}
 .lk-q{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.lk-q a{display:flex;gap:8px;align-items:center;padding:9px 10px;border-radius:10px;background:var(--p3);border:1px solid var(--line);font-size:12.5px;font-weight:600;min-width:0;transition:transform var(--m-fast) var(--e-out),border-color var(--m-fast)}.lk-q a:hover{transform:translateY(-2px);border-color:rgba(239,207,122,.5)}.lk-q a span{font-size:17px}
-.lockstage.nocard{min-height:0;padding-top:10px!important;align-items:flex-start;justify-content:center;gap:26px}.lockstage.nocard #mystats,.lockstage.nocard #artpanel,.lockstage.nocard #formpanel{display:none}
+.lockstage.nocard{min-height:0;padding-top:10px!important;align-items:flex-start;justify-content:center;gap:26px}.lockstage.nocard #mystats,.lockstage.nocard #formpanel{display:none}
 .lk-form small b{display:inline;font:700 13px Inter;color:#fff;letter-spacing:0}
 /* ---------- Handbook: live docs + play style accordions, rules acknowledge ---------- */
 .hb-jump{margin:4px 0 6px}.hb-sec{scroll-margin-top:130px}

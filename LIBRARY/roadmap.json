@@ -273,7 +273,7 @@
       "title": "Side roadmap step 3: menu gaps and duplicates (Phase C)",
       "phase": "Side roadmap",
       "area": "menus, `next/lib/ui.mjs`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -284,10 +284,16 @@
       ],
       "fileLane": "menus, `next/lib/ui.mjs`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": true,
       "notes": "Plan section 3",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PR (PF-019)",
+          "what": "Menus show every real page once. Dock and staff hub list the same tiles: Artwork is now a manager tile, Control Center once (Manager view only), one Boardroom tile (its eight tabs stay deep links). Card Studio added to the quick dial (R.lk) and the search palette; fx.js orb hidden when the dock is mounted; dead #artpanel removed; Preview-as chips stay for the real owner while previewing member or guest; mock fixture cardStudio flag is members. tests/menus.test.mjs (16 checks); dock, controlcenter-nav and layout-pass tests updated."
+        }
+      ],
       "plans": []
     },
     {
@@ -295,7 +301,7 @@
       "title": "Side roadmap Item 4: Card Studio and `/avatarcard`",
       "phase": "Side roadmap",
       "area": "`bot/cardstudio.js`, `web/cardcomposer.js`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,

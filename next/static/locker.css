@@ -6,7 +6,6 @@
 .lk-jump a{display:flex;align-items:center;justify-content:center;min-height:56px;text-align:center}
 /* ---------- landing: card in the middle of the stage, two level panels each side, the button grid right under it ---------- */
 .lk-landing .lk-prof,.lk-landing .lk-al2{display:none}
-.lk-landing #artpanel{display:none!important}
 .lk-landing .lockstage{min-height:0;padding-block:var(--pf-gap,18px) 28px;align-items:stretch;gap:var(--pf-gap,18px);max-width:var(--pf-wrap-max,1320px)}
 .lk-landing .lockstage #cardslot{position:relative;left:auto;top:auto;z-index:2;align-self:center;flex:none;margin-inline:auto}
 .lk-landing .lockstage .side{width:auto;display:grid;grid-auto-rows:1fr;align-content:stretch;gap:var(--pf-gap,18px)}

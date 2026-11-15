@@ -15,6 +15,7 @@
     ['Alerts inbox', 'My Locker · everything the club sent you', '🔔', { href: 'hub-alerts.html' }, 'alerts inbox notifications bell unread'],
     ['Clubhouse feed', 'Clubhouse · goals, results and posts', '📰', { href: 'hub-clubhouse.html#ch-feed' }, 'feed club news posts'],
     ['Direct messages & chat', 'Clubhouse · chat room and DMs', '💬', { href: 'hub-clubhouse.html#ch-chat' }, 'chat messages dm direct inbox'],
+    ['Card Studio', 'My Locker · send a photo for your player card', '🎨', { href: 'hub-cardstudio.html#lk-cards' }, 'card studio artwork portrait photo face avatar player card'],
     ['Ideas & suggestions', 'Clubhouse · suggest something', '💡', { href: 'hub-clubhouse.html#ch-ideas' }, 'ideas suggestions feedback']];
   const items = () => {
     // Treat the embedded site index as untrusted input: one incomplete player/nav record must
@@ -33,7 +34,7 @@
       sec: 'Players', label: String(p.n), sub: `${p.line || ''} · ${p.ovr ? 'OVR ' + p.ovr : 'unrated'}`,
       href: `player-${slug(p.k)}.html`, emo: '👤', score: 2
     }));
-    const sets = SETTINGS.filter((x) => A?.session || !/alert|chat|feed|messages|ideas/i.test(x[0] + x[1])).map(([label, sub, emo, t, kw]) => ({
+    const sets = SETTINGS.filter((x) => A?.session || !/alert|chat|feed|messages|ideas|card studio/i.test(x[0] + x[1])).map(([label, sub, emo, t, kw]) => ({
       sec: 'Settings', label, sub, emo, href: t.href || '#', act: t.act, kw, score: 1
     }));
     // Each top-level menu keeps its own landing page; child pages keep their own hrefs.

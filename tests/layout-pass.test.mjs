@@ -36,7 +36,7 @@ t('locker.css: no card size override sits outside a media query, so the phone ke
 // ---------- the staff hub ----------
 const st = read('staff.html');
 t('staff hub: shared groups for managers, owner-only groups behind .adm-owner', st.includes('Match night') && st.includes('class="adm-g adm-owner"') && st.includes('Owner controls') && st.includes('src="staffhub.js"'));
-t('staff hub: every tile opens a page of its own', (st.match(/class="panel room adm-tile" href="([^"#]+)"/g) ?? []).length >= 15 && !/class="panel room adm-tile" href="#/.test(st));
+t('staff hub: every tile opens a page of its own', (st.match(/class="panel room adm-tile" href="([^"#]+)"/g) ?? []).length >= 9 && !/class="panel room adm-tile" href="#/.test(st));
 const BR = ['switches', 'health', 'announce', 'audit', 'halloffame', 'medals', 'backup', 'organization'];
 t('staff hub: each Boardroom control is its own page that opens its tab', BR.every((k) => html.includes(`staff-${k}.html`) && /name="pf-br-tab" content="[a-z]+"/.test(read(`staff-${k}.html`)) && read(`staff-${k}.html`).includes('br-solo')));
 t('staff hub: the Boardroom page itself is unchanged (no solo tab)', !read('staff-boardroom.html').includes('pf-br-tab'));
