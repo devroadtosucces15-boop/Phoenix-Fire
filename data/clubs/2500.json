@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-15T16:30:40.552Z",
+ "fetchedAt": "2026-11-15T16:40:41.105Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1889,7 +1889,7 @@
   {
    "name": "schivera",
    "proPos": "25",
-   "gamesPlayed": "220",
+   "gamesPlayed": "221",
    "goals": "61",
    "assists": "55",
    "manOfTheMatch": "19",
