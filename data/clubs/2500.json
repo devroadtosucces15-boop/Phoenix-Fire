@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-15T22:10:41.818Z",
+ "fetchedAt": "2026-11-15T22:20:40.181Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1603,9 +1603,9 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "190",
+   "gamesPlayed": "191",
    "goals": "30",
-   "assists": "65",
+   "assists": "66",
    "manOfTheMatch": "21",
    "ratingAve": "7.7",
    "prevGoals": "0",
@@ -1779,12 +1779,12 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "27",
-   "goals": "5",
+   "gamesPlayed": "28",
+   "goals": "6",
    "assists": "3",
    "manOfTheMatch": "1",
    "ratingAve": "7.4",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -1889,7 +1889,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "227",
+   "gamesPlayed": "228",
    "goals": "61",
    "assists": "55",
    "manOfTheMatch": "21",
