@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-15T15:00:41.895Z",
+ "fetchedAt": "2026-11-15T15:10:39.379Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1867,9 +1867,9 @@
   {
    "name": "Froezer",
    "proPos": "25",
-   "gamesPlayed": "178",
+   "gamesPlayed": "179",
    "goals": "124",
-   "assists": "164",
+   "assists": "165",
    "manOfTheMatch": "20",
    "ratingAve": "8.2",
    "prevGoals": "0",
@@ -1888,14 +1888,14 @@
   },
   {
    "name": "schivera",
-   "proPos": "5",
-   "gamesPlayed": "217",
-   "goals": "60",
-   "assists": "54",
+   "proPos": "25",
+   "gamesPlayed": "218",
+   "goals": "61",
+   "assists": "55",
    "manOfTheMatch": "19",
    "ratingAve": "7.2",
-   "prevGoals": "0",
-   "favoritePosition": "defender"
+   "prevGoals": "1",
+   "favoritePosition": "forward"
   },
   {
    "name": "Kolanskiy86",
