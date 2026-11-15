@@ -1,34 +1,30 @@
-Model: opus (claude-opus-5-5)   Item: PF-016 Project brain: usage intelligence, lessons and improvement plans
+Model: sonnet (claude-sonnet-5-5)   Item: PF-018 Side roadmap step 2: links (Phases A, B, D1, D5)
 
-Repo: /home/mrsuccess/Phoenix-Fire, branch from origin/main (`git switch -c <name> origin/main`, run unsandboxed: the sandbox creates the branch but leaves HEAD behind).
-Read CLAUDE.md, then PLANNING/SESSION-HANDOFF.md sections 1, 4 and 5, then LIBRARY/README.md, only the PF-016 entry of `LIBRARY/roadmap.json`, and PLANNING/BRAIN-SPEC.md (the "Usage intelligence" decision).
+Repo: /home/mrsuccess/Phoenix-Fire. Cut a branch from origin/main (`git switch -c <name> origin/main`, run unsandboxed). Read CLAUDE.md, PLANNING/SESSION-HANDOFF.md sections 1, 4 and 5, LIBRARY/README.md, then only the PF-018 row of LIBRARY/roadmap.json and section 2 of PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md (the owner's side roadmap, now merged into the master roadmap as PF-018 to PF-025).
 
 ## Goal
-Per session and per roadmap item: turns, tokens, duration, share of context, tool mix, percent of the window consumed (from usage snapshots). Rules (no model) flag likely causes (very long session, large screenshots, repeated failing commands, big file reads) and write short lessons to `LIBRARY/LESSONS.md`; the brain page lists them as improvement plans.
+Every button, notification, DM and redirect lands on a current, correct page; no feature has a second landing page. Root cause to fix first: card notifications link to `members.html#cards` (claim page in the Phoenix build, no `cards` key in the forwarder `HASH_MAP`, bell falls back to a 404). Real targets: `staff-artwork.html` (manager approval queue) and `hub-cardstudio.html#lk-cards` (member).
 
 ## State right now
-- Done: PF-012 to PF-015. Brain tabs Roadmap, Maps, Inputs and outputs, Brainstorm, Usage, Libraries, References, Credentials; `tests/brain.test.mjs` (49 checks).
-- Usage: `tools/brain/usage.mjs` (snapshot write/read, `evaluate`, `usageModel`), `LIBRARY/state/usage.json` (latest + 200 history), `usage-policy.json` (80% five-hour, 85% weekly, 90 min stale). Probe result in BRAIN-SPEC: usage percent is not readable by a standalone script, so sessions write snapshots. Page: header strip, Usage tab, save-mode banner, browser notification.
-- Local session data for the analysis: `~/.claude/metrics/costs.jsonl` (tokens and cost per session, transcript_path) and the transcript jsonl files. Read counts and tool names only; never copy message text or any secret into the repo.
-- Not started: analysis script, `LIBRARY/LESSONS.md`, improvement-plans section on the page.
+- The side roadmap's Item 3 backend (EA decoded columns) and PR 6 (decoded stats, recap) are already on main. Nothing in step 2 is confirmed done: this row is marked verify, so check each part against the code before changing it.
+- The project brain dashboard (PF-011 to PF-015) works locally: `node tools/brain/serve.mjs`, http://127.0.0.1:4577. PF-016 and PF-017 are queued after this item.
 
 ## Do next, in order
-1. Check LIBRARY/CLAIMS.md; claim `tools/brain/`, `LIBRARY/LESSONS.md`.
-2. Write `tools/brain/intel.mjs` (no dependencies, no model): per session turns, tokens, duration, tool mix, image count, repeated failing commands, big reads; map sessions to roadmap items by branch or id in the title where possible; usage percent per item from snapshot deltas.
-3. Rules to lessons: short, dated lines in `LIBRARY/LESSONS.md`, no duplicates. Page: a section on the Usage tab listing improvement plans. Screenshots at 390, 820 and 1440 before and after (built-in browser; headless chrome screenshots hang on the live page).
-4. Extend `tests/brain.test.mjs` (fixtures, not real transcripts); run `node tools/library/sync.mjs`, `node tests/library.test.mjs`, `node tests/run.mjs`.
-5. Commit, push with the gh helper (unsandboxed), PR, merge. Mark PF-016 DONE in `roadmap.json`, set the next open item NEXT (PF-017), run sync.mjs, write the next prompt, start the next session.
+1. Check LIBRARY/CLAIMS.md and add your claim for `next/`, `bot/cardstudio.js`, `phoenix/`.
+2. A1: one shared link resolver used by `next/static/alerts.js` ROUTE, `header.js` `room()`, `pages.js`, `LK_FWD` (`next/pages/hub.mjs`) and `HASH_MAP` / `phoenix/claim.html`; drop the `../` fallback; add missing keys (cards, stats, discoveries, trials, vote, suggestions, points, portal, portal-reports, schedule-<id> prefix). This also fixes rows already in D1 and DMs already sent.
+3. B1: `bot/cardstudio.js` links (managers to `staff-artwork.html`, members to `hub-cardstudio.html#lk-cards`). B2: dead page names in bot strings (`docs.html`, `feed.html`, `messages.html`, `builder.html`, `compare.html`, `apply.html`, `static/crest-sm.png`, `tactics.html#play` to `playbook.html#play`, `../members.html*` in `mylocker.js` and `playbook.js`). B3: missing anchors (`stats.html#h2h`, `about.html#requests`, `updates.html#<slug>`).
+4. D1: redirect stubs in the Phoenix build for dead legacy names (players/<id>.html, matches/<id>.html, docs, feed, messages, builder, compare, apply). D5: keep `#hash` through sign-in (`next/static/session.js`).
+5. New test: every bot link literal and every resolver target resolves to a built page; plus brand and leakcheck. Then `node tools/library/sync.mjs`, `node tests/library.test.mjs`, `node tests/run.mjs` (design test needs Chrome: run it unsandboxed), rebuild `node phoenix/build.mjs --out site`.
+6. Commit, push with the gh helper (unsandboxed), PR, merge. Mark PF-018 DONE with commit, set PF-019 NEXT, write the next prompt, start the next session. Note what goes live with the merge (the bot deploys from main: B1 needs a Worker deploy).
 
 ## Decisions already made (do not re-open)
-- Merge to main after green checks. No secret values anywhere. The analysis runs without a model; a session adds the "why" only when asked.
+- Latest version of a feature wins; no feature gets a second landing page; Phoenix branding on every output; merge to main after green checks. New design choices in the library get a row in LIBRARY/DESIGN.md.
 
 ## Gotchas
-- /tmp is a small shared tmpfs (97% full); check `df /tmp`, use the scratchpad.
-- Do not leave test snapshots in `LIBRARY/state/usage.json`; tests restore it, manual checks must too.
-- Do not use `pkill -f` or `pgrep -f` with a pattern in your own command line; stop the dashboard with `kill <pid>` from `ss -ltnp`.
+- Tests overwrite `site/` with the classic build: rebuild after any test run. Auto-mode may refuse a Bash call a hook rewrote (the `rtk` prefix): reissue it exactly as quoted. `git switch -c` needs the sandbox off.
 
 ## Out of scope
-Hosted mirror (PF-017).
+- Step 3 (menu gaps, PF-019) and everything else; new finds go in the roadmap inbox (`LIBRARY/roadmap.json`).
 
 ## When done
-Update the roadmap row and library files, run node tests/library.test.mjs, write the next prompt, start the next session.
+Update the roadmap and library files, run node tests/library.test.mjs, write the next prompt, start the next session.
