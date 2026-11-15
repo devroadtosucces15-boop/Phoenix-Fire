@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T01:40:41.367Z",
+ "fetchedAt": "2026-11-15T01:50:39.643Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,7 +1891,7 @@
   {
    "name": "kingmitch93",
    "proPos": "5",
-   "gamesPlayed": "178",
+   "gamesPlayed": "179",
    "goals": "27",
    "assists": "63",
    "manOfTheMatch": "18",
@@ -1902,7 +1902,7 @@
   {
    "name": "rubNiyo",
    "proPos": "14",
-   "gamesPlayed": "115",
+   "gamesPlayed": "116",
    "goals": "82",
    "assists": "35",
    "manOfTheMatch": "14",
@@ -1990,7 +1990,7 @@
   {
    "name": "MV33xChris",
    "proPos": "14",
-   "gamesPlayed": "206",
+   "gamesPlayed": "207",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
@@ -2067,12 +2067,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "124",
+   "gamesPlayed": "125",
    "goals": "64",
    "assists": "46",
    "manOfTheMatch": "20",
-   "ratingAve": "7.5",
-   "prevGoals": "1",
+   "ratingAve": "7.4",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2133,9 +2133,9 @@
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "169",
-   "goals": "151",
-   "assists": "122",
+   "gamesPlayed": "170",
+   "goals": "154",
+   "assists": "124",
    "manOfTheMatch": "30",
    "ratingAve": "7.9",
    "prevGoals": "3",
@@ -2188,10 +2188,10 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "190",
-   "goals": "221",
-   "assists": "96",
-   "manOfTheMatch": "4",
+   "gamesPlayed": "191",
+   "goals": "222",
+   "assists": "98",
+   "manOfTheMatch": "5",
    "ratingAve": "7.2",
    "prevGoals": "1",
    "favoritePosition": "forward"
@@ -2221,11 +2221,11 @@
   {
    "name": "CapoGroot",
    "proPos": "0",
-   "gamesPlayed": "40",
+   "gamesPlayed": "41",
    "goals": "3",
    "assists": "5",
    "manOfTheMatch": "1",
-   "ratingAve": "6.8",
+   "ratingAve": "6.7",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
@@ -2254,7 +2254,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "109",
+   "gamesPlayed": "110",
    "goals": "38",
    "assists": "51",
    "manOfTheMatch": "5",
@@ -2287,12 +2287,12 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "264",
-   "goals": "170",
+   "gamesPlayed": "265",
+   "goals": "172",
    "assists": "229",
    "manOfTheMatch": "9",
    "ratingAve": "7.1",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "midfielder"
   },
   {
@@ -2397,9 +2397,9 @@
   {
    "name": "Pain11x",
    "proPos": "14",
-   "gamesPlayed": "39",
+   "gamesPlayed": "40",
    "goals": "3",
-   "assists": "6",
+   "assists": "7",
    "manOfTheMatch": "0",
    "ratingAve": "7.2",
    "prevGoals": "0",
