@@ -21,6 +21,7 @@ decisions and where they are enforced. Design talk always starts from a screensh
 | Area | Decision | Enforced by |
 |---|---|---|
 | Player images | Chest up: head, neck, shoulders, chest; large with a clear margin from every card border; big bold shirt number on the chest | `bot/cardstudio.js` prompts, `web/cardcomposer.js` (`CHEST_ASPECT`, `FIT_PAD`), `tests/cardstudio.test.mjs` |
+| Card Studio uniform and panel | Members pick the male or female club kit (reference image per variant, text pair from config); no card preview before approval; `/avatarcard` is a private panel on `pf:card:` ids that feeds the same request pipeline | `bot/cardstudio.js`, `bot/cardpanel.js`, `tests/cardpanel.test.mjs`, `tests/cardstudio.test.mjs` |
 | Site theming | `next/` and `web/` are shared sources; `phoenix/build.mjs` stages them, recolours, renames, overlays the Phoenix theme. Source may say NOREX; built output must not | `tests/brand.test.mjs`, `tests/phoenix-brand.test.mjs`, `phoenix/leakcheck.mjs` |
 | Bot pictures | Every message the bots send carries a drawn Phoenix picture; `studio.mjs check --strict` is at 0 warnings | `tools/bot-studio/`, `PLANNING/OUTPUT-REDESIGN-SECTIONS.md` |
 | Navigation | A dock: crest ring with scroll progress plus a Staff pill; hub pages list hub rooms only, main pages list site menus; Staff never appears for members | `next/static/dock.js`, `dock.css`, `tests/dock.test.mjs` |

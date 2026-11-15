@@ -312,9 +312,9 @@
       ],
       "fileLane": "`bot/cardstudio.js`, `web/cardcomposer.js`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 85,
       "verify": true,
-      "notes": "Plan section 4. Owner decision pending: Workers Paid plan or fallback provider (4d). Chest-up rule applies.",
+      "notes": "Built on branch claude/pf-020 (4a hardening, 4b no pre-approval preview, 4c male/female kits + migration 0064, 4d queue position/ETA + hourly submit throttle, 4e /avatarcard panel on pf:card: ids, 4f before/after shots 390/820/1440 in the notes folder). LEFT FOR THE OWNER (Item 4d, not decided here): (1) Workers Paid plan: same model and quality, lifts the 10,000 neurons/day free pool shared by every AI feature, costs money. (2) Composite cinematic from the portrait cutout: halves AI calls, cinematic looks less natural. (3) Fallback image provider: member face photos leave Cloudflare, privacy and consent risk. (4) How far to widen the one-request-per-month limit: needs a table rebuild (UNIQUE(user_id, month), migration 0039) and raises AI use. Also owner-side: 1-minute cron and a higher per-run limit change AI spend. Deploy notes: new migration 0064_card_kit_variant; Worker deploy for the panel, kit variants and the new /avatarcard command shape (re-register commands); upload male and female kit reference images in Staff Artwork. Staff kit example image not made (text do/don't guide only).",
       "doneLog": [],
       "plans": []
     },
