@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T22:30:42.979Z",
+ "fetchedAt": "2026-11-15T22:40:40.443Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1855,7 +1855,7 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "191",
+   "gamesPlayed": "192",
    "goals": "30",
    "assists": "66",
    "manOfTheMatch": "21",
@@ -1943,12 +1943,12 @@
   {
    "name": "zouz94230",
    "proPos": "25",
-   "gamesPlayed": "208",
-   "goals": "101",
-   "assists": "81",
+   "gamesPlayed": "209",
+   "goals": "102",
+   "assists": "83",
    "manOfTheMatch": "30",
    "ratingAve": "7.5",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2031,9 +2031,9 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "137",
+   "gamesPlayed": "138",
    "goals": "69",
-   "assists": "53",
+   "assists": "54",
    "manOfTheMatch": "20",
    "ratingAve": "7.5",
    "prevGoals": "0",
@@ -2086,7 +2086,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "98",
+   "gamesPlayed": "99",
    "goals": "13",
    "assists": "7",
    "manOfTheMatch": "2",
@@ -2097,12 +2097,12 @@
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "183",
-   "goals": "184",
-   "assists": "136",
-   "manOfTheMatch": "30",
+   "gamesPlayed": "184",
+   "goals": "186",
+   "assists": "137",
+   "manOfTheMatch": "31",
    "ratingAve": "7.8",
-   "prevGoals": "1",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2130,7 +2130,7 @@
   {
    "name": "KolletRivera",
    "proPos": "0",
-   "gamesPlayed": "161",
+   "gamesPlayed": "162",
    "goals": "6",
    "assists": "3",
    "manOfTheMatch": "13",
@@ -2141,7 +2141,7 @@
   {
    "name": "MejMech",
    "proPos": "14",
-   "gamesPlayed": "595",
+   "gamesPlayed": "596",
    "goals": "435",
    "assists": "453",
    "manOfTheMatch": "153",
@@ -2240,7 +2240,7 @@
   {
    "name": "HristoNL",
    "proPos": "5",
-   "gamesPlayed": "272",
+   "gamesPlayed": "273",
    "goals": "174",
    "assists": "230",
    "manOfTheMatch": "9",
@@ -2262,12 +2262,12 @@
   {
    "name": "SamESKO4",
    "proPos": "25",
-   "gamesPlayed": "134",
-   "goals": "141",
-   "assists": "128",
+   "gamesPlayed": "135",
+   "goals": "142",
+   "assists": "129",
    "manOfTheMatch": "34",
    "ratingAve": "8.1",
-   "prevGoals": "2",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
