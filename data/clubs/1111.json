@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T14:40:41.331Z",
+ "fetchedAt": "2026-11-15T14:50:46.683Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2097,11 +2097,11 @@
   {
    "name": "Gravity-_-Snake",
    "proPos": "25",
-   "gamesPlayed": "263",
-   "goals": "271",
-   "assists": "269",
-   "manOfTheMatch": "28",
-   "ratingAve": "7.1",
+   "gamesPlayed": "264",
+   "goals": "273",
+   "assists": "271",
+   "manOfTheMatch": "29",
+   "ratingAve": "7.2",
    "prevGoals": "2",
    "favoritePosition": "forward"
   },
@@ -2130,12 +2130,12 @@
   {
    "name": "MejMech",
    "proPos": "14",
-   "gamesPlayed": "591",
-   "goals": "433",
-   "assists": "451",
+   "gamesPlayed": "592",
+   "goals": "435",
+   "assists": "452",
    "manOfTheMatch": "153",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "2",
    "favoritePosition": "midfielder"
   },
   {
