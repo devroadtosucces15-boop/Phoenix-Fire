@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T03:14:39.333Z",
+ "fetchedAt": "2026-11-15T03:20:45.059Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,7 +1891,7 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "181",
+   "gamesPlayed": "182",
    "goals": "28",
    "assists": "64",
    "manOfTheMatch": "18",
@@ -1902,12 +1902,12 @@
   {
    "name": "rubNiyo",
    "proPos": "5",
-   "gamesPlayed": "118",
+   "gamesPlayed": "119",
    "goals": "83",
    "assists": "35",
    "manOfTheMatch": "14",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "defender"
   },
   {
@@ -1957,7 +1957,7 @@
   {
    "name": "RealMinato7",
    "proPos": "5",
-   "gamesPlayed": "343",
+   "gamesPlayed": "344",
    "goals": "150",
    "assists": "162",
    "manOfTheMatch": "29",
@@ -1978,19 +1978,19 @@
   },
   {
    "name": "zouz94230",
-   "proPos": "5",
-   "gamesPlayed": "197",
+   "proPos": "25",
+   "gamesPlayed": "198",
    "goals": "88",
-   "assists": "64",
+   "assists": "65",
    "manOfTheMatch": "26",
    "ratingAve": "7.5",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "forward"
   },
   {
    "name": "MV33xChris",
    "proPos": "14",
-   "gamesPlayed": "209",
+   "gamesPlayed": "210",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
@@ -2067,12 +2067,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "127",
-   "goals": "64",
-   "assists": "48",
+   "gamesPlayed": "128",
+   "goals": "65",
+   "assists": "50",
    "manOfTheMatch": "20",
-   "ratingAve": "7.4",
-   "prevGoals": "0",
+   "ratingAve": "7.5",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2133,12 +2133,12 @@
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "173",
-   "goals": "162",
+   "gamesPlayed": "174",
+   "goals": "165",
    "assists": "128",
    "manOfTheMatch": "30",
    "ratingAve": "7.9",
-   "prevGoals": "1",
+   "prevGoals": "3",
    "favoritePosition": "forward"
   },
   {
@@ -2188,12 +2188,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "193",
-   "goals": "225",
+   "gamesPlayed": "194",
+   "goals": "228",
    "assists": "99",
-   "manOfTheMatch": "6",
+   "manOfTheMatch": "7",
    "ratingAve": "7.2",
-   "prevGoals": "1",
+   "prevGoals": "3",
    "favoritePosition": "forward"
   },
   {
@@ -2232,11 +2232,11 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "235",
+   "gamesPlayed": "236",
    "goals": "36",
    "assists": "30",
    "manOfTheMatch": "42",
-   "ratingAve": "7.8",
+   "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
@@ -2254,7 +2254,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "112",
+   "gamesPlayed": "113",
    "goals": "38",
    "assists": "51",
    "manOfTheMatch": "6",
@@ -2331,11 +2331,11 @@
   {
    "name": "Luna9500",
    "proPos": "0",
-   "gamesPlayed": "12",
+   "gamesPlayed": "13",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "5.4",
+   "ratingAve": "5.5",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
@@ -2396,14 +2396,14 @@
   },
   {
    "name": "Pain11x",
-   "proPos": "14",
-   "gamesPlayed": "40",
+   "proPos": "25",
+   "gamesPlayed": "41",
    "goals": "3",
-   "assists": "7",
-   "manOfTheMatch": "0",
+   "assists": "9",
+   "manOfTheMatch": "1",
    "ratingAve": "7.2",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "Superdaddysi",

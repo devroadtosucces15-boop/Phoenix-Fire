@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-15T03:14:39.333Z",
+ "fetchedAt": "2026-11-15T03:20:45.059Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -642,12 +642,12 @@
   {
    "name": "rubNiyo",
    "proPos": "5",
-   "gamesPlayed": "118",
+   "gamesPlayed": "119",
    "goals": "83",
    "assists": "35",
    "manOfTheMatch": "14",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "defender"
   },
   {
@@ -675,7 +675,7 @@
   {
    "name": "MV33xChris",
    "proPos": "14",
-   "gamesPlayed": "209",
+   "gamesPlayed": "210",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
@@ -763,7 +763,7 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "112",
+   "gamesPlayed": "113",
    "goals": "38",
    "assists": "51",
    "manOfTheMatch": "6",
