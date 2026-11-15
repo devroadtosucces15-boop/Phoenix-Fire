@@ -116,7 +116,7 @@
       "title": "Project brain: maps with drill-in, inputs and outputs folders",
       "phase": "Project brain",
       "area": "`tools/brain/`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "L",
       "effort": 4,
       "importance": 3,
@@ -127,10 +127,16 @@
       ],
       "fileLane": "`tools/brain/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Reads `tools/bot-studio/lib/deps.mjs`",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-15",
+          "ref": "PR (PF-013)",
+          "what": "Brain dashboard Maps (site and bot, drill-in) and Inputs and outputs tabs; tools/brain/maps.mjs; 5 new checks in tests/brain.test.mjs."
+        }
+      ],
       "plans": []
     },
     {
@@ -138,7 +144,7 @@
       "title": "Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders",
       "phase": "Project brain",
       "area": "`tools/brain/`, `LIBRARY/inbox/`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,

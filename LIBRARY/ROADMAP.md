@@ -24,12 +24,12 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 17% (items weighted by size: S 1, M 2, L 4).
+Project: 24% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
-| Project brain | 7 | 2 | 32% | 630 |
+| Project brain | 7 | 3 | 53% | 450 |
 | Side roadmap | 8 | 0 | 0% | 960 |
 | Match night and upkeep | 8 | 0 | 0% | 960 |
 
@@ -41,8 +41,8 @@ Project: 17% (items weighted by size: S 1, M 2, L 4).
 | PF-002 | Fill the library to full granularity: `ASSETS.md`, `DESIGN.md`, `BOT.md`, `SITEMAP.md` row by row from the code | DONE 2026-11-15 (PR 9, 26fc0a4) | PF-001 | `LIBRARY/`, `tools/library/` | sonnet | Extend `tools/library/sync.mjs` to generate the sitemap from a build. Gotcha learned in PF-001: `git switch -c` must run unsandboxed (the sandbox creates the branch but leaves HEAD behind). |
 | PF-011 | Project brain: roadmap data model (`roadmap.json`), metrics, generated markdown | DONE 2026-11-15 (PR 10, efc384c) | PF-002 | `LIBRARY/`, `tools/library/` | sonnet | Spec: `PLANNING/BRAIN-SPEC.md` |
 | PF-012 | Project brain: live dashboard v1 (server, tabs, Roadmap home, Libraries, References, Credentials registry) | DONE 2026-11-15 (PR 11) | PF-011 | `tools/brain/` | opus | Visual target: the owner's Discord gallery plus the Control Center layout |
-| PF-013 | Project brain: maps with drill-in, inputs and outputs folders | NEXT | PF-012 | `tools/brain/` | opus | Reads `tools/bot-studio/lib/deps.mjs` |
-| PF-014 | Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders | OPEN | PF-012 | `tools/brain/`, `LIBRARY/inbox/` | sonnet | Dictation text only at first |
+| PF-013 | Project brain: maps with drill-in, inputs and outputs folders | DONE 2026-11-15 (PR (PF-013)) | PF-012 | `tools/brain/` | opus | Reads `tools/bot-studio/lib/deps.mjs` |
+| PF-014 | Project brain: brainstorm inbox (typed and dictated) with end-of-session reminders | NEXT | PF-012 | `tools/brain/`, `LIBRARY/inbox/` | sonnet | Dictation text only at first |
 | PF-015 | Project brain: usage probe, snapshots, policy, banner, save mode (`lowHanging` items) | OPEN | PF-011 | `tools/brain/`, `LIBRARY/state/` | sonnet | First test whether usage can be read outside a session |
 | PF-016 | Project brain: usage intelligence, lessons and improvement plans | OPEN | PF-015 | `tools/brain/`, `LIBRARY/LESSONS.md` | opus | Per session and per item |
 | PF-017 | Project brain: optional hosted artifact mirror for the phone | OPEN | PF-012, PF-014 | artifact | sonnet | Snapshot only; updates when a session publishes |

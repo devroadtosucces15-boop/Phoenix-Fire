@@ -43,6 +43,9 @@ code{font:12px var(--mono);background:#000;color:var(--gold);padding:1px 5px;bor
 a{color:var(--gold)}.mute{color:var(--mute)}.doc h2{font-size:18px}.doc p,.doc li{max-width:90ch}
 details.lib{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:10px}details.lib>summary{cursor:pointer;padding:12px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;font:700 19px var(--display);letter-spacing:.03em}details.lib>.doc{padding:0 16px 14px;border-top:1px solid var(--line)}
 .banner{background:#22110c;border:1px solid #6b2a1f;border-radius:10px;padding:10px 14px;margin-top:14px;color:#ffcfc8}
+.drill{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:8px}.drill>summary{cursor:pointer;padding:10px 14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;list-style:none}.drill>summary b{font:700 17px var(--display);letter-spacing:.03em;overflow-wrap:anywhere}.drill[open]{border-color:var(--acc)}
+.dr{padding:4px 14px 12px;border-top:1px solid var(--line);display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}.dr h4{margin:8px 0 4px;font-size:13px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}.dr div>span{display:inline-block;margin:2px 4px 2px 0}.dr code{display:inline-block}
+.io2{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));padding:4px 14px 12px;border-top:1px solid var(--line)}.io2 .in{border-left:3px solid var(--steel);padding-left:10px}.io2 .out{border-left:3px solid var(--acc);padding-left:10px}
 </style>
 </head>
 <body>
@@ -52,9 +55,9 @@ details.lib{border:1px solid var(--line);border-radius:12px;background:var(--pan
 <main id="main"></main>
 </div>
 <script>
-const TABS=[['roadmap','Roadmap'],['libraries','Libraries'],['references','References'],['credentials','Credentials']];
+const TABS=[['roadmap','Roadmap'],['maps','Maps'],['io','Inputs and outputs'],['libraries','Libraries'],['references','References'],['credentials','Credentials']];
 const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let M=null,tab=(location.hash||'#roadmap').slice(1),fStatus='ALL',fPhase='ALL',q='';const openLib=new Set();
+let mapKind='site',mapOpen=null,M=null,tab=(location.hash||'#roadmap').slice(1),fStatus='ALL',fPhase='ALL',q='';const openLib=new Set();
 const tabOk=()=>TABS.some(t=>t[0]===tab)||(tab='roadmap');
 const chip=(label,n,on,attr)=>`<button class="chip" aria-pressed="${on}" ${attr}>${E(label)}${n==null?'':`<b>${n}</b>`}</button>`;
 const meter=p=>`<div class="meter" role="img" aria-label="${p}%"><span style="width:${p}%"></span></div>`;
@@ -62,7 +65,7 @@ function head(){document.getElementById('tabs').innerHTML=TABS.map(([k,l])=>`<bu
  const t=document.getElementById('tools');
  if(tab==='roadmap'&&M){const it=M.roadmap.items,st=['ALL','NEXT','OPEN','BLOCKED','PAUSED','DONE'];
   t.innerHTML=`<span class="lab">Status</span>`+st.map(s=>chip(s,s==='ALL'?it.length:it.filter(i=>i.status===s).length,fStatus===s,`data-st="${s}"`)).join('')+`<span class="lab" style="margin-left:10px">Phase</span>`+['ALL',...M.roadmap.metrics.phases.map(p=>p.phase)].map(p=>chip(p,null,fPhase===p,`data-ph="${E(p)}"`)).join('')+`<input type="search" id="q" placeholder="Search items" value="${E(q)}">`;
- }else if(tab==='libraries'||tab==='references'){t.innerHTML=`<input type="search" id="q" placeholder="Search" value="${E(q)}">`}else t.innerHTML='';}
+ }else if(tab==='maps'||tab==='io'||tab==='libraries'||tab==='references'){t.innerHTML=`<input type="search" id="q" placeholder="Search" value="${E(q)}">`}else t.innerHTML='';}
 function roadmap(){const R=M.roadmap,m=R.metrics,nx=R.items.find(i=>i.id===R.next);
  let h=`<div class="grid"><div class="card"><div class="lab">Project</div><div class="big">${m.project}<small>%</small></div>${meter(m.project)}<span class="mute">${R.items.filter(i=>i.status==='DONE').length} of ${R.items.length} items done · updated ${E(R.updated)}</span></div>`;
  h+=`<div class="card"><div class="lab">Next session</div>${nx?`<div class="id" style="font:700 26px var(--display);color:var(--gold)">${nx.id}</div><div>${E(nx.title)}</div><div class="mute" style="margin-top:6px">model ${nx.model} · size ${nx.size} · about ${nx.estMinutes} min</div>`:'<div class="mute">No NEXT item.</div>'}</div>`;
@@ -83,12 +86,23 @@ function creds(){const C=M.credentials;
  <h2>Discord apps</h2><div class="tw"><table><thead><tr><th>App</th><th>Public key</th><th>Endpoint</th><th>Intents</th></tr></thead><tbody>${C.apps.map(a=>`<tr><td>${E(a.app)}</td><td>${E(a.publicKey)}</td><td><code>${E(a.endpoint)}</code></td><td>${E(a.intents)}</td></tr>`).join('')}</tbody></table></div>
  <h2>Secrets <span class="mute" style="font:400 14px var(--ui)">${C.secrets.length} rows</span></h2><div class="tw"><table><thead><tr><th>Name</th><th>Needed for</th><th>Where it comes from</th><th>Worker</th><th>GitHub</th></tr></thead><tbody>${C.secrets.map(s=>`<tr><td>${s.names.map(n=>`<code>${E(n)}</code>`).join(' ')}</td><td>${E(s.purpose)}</td><td>${E(s.source)}</td><td><span class="tag ${s.worker}" title="${E(s.workerNote)}">${s.worker}</span></td><td><span class="tag ${s.github}" title="${E(s.githubNote)}">${s.github}</span></td></tr>`).join('')}</tbody></table></div>
  <p class="mute">Source: <code>bot/SECRETS-REGISTRY.md</code> and <code>LIBRARY/CREDENTIALS.md</code>. Owner-only steps (Dev Portal, Cloudflare) are never done by a session.</p>`;}
+const chips=(a,cls='')=>a&&a.length?a.map(x=>`<code class="${cls}">${E(x)}</code>`).join(' '):'<span class="mute">none found</span>';
+const sec=(t,a)=>`<div><h4>${t}</h4>${chips(a)}</div>`;
+const has=(o,v)=>!q||JSON.stringify(o).toLowerCase().includes(v.toLowerCase());
+function maps(){const P=M.maps.pages,C=M.maps.commands,site=mapKind==='site';
+ const pf=P.filter(p=>has(p,q)),cf=C.filter(c=>has(c,q));
+ let h=`<div class="r" style="margin-top:14px"><span class="lab">Map</span>${chip('Site',P.length,site,'data-mk="site"')}${chip('Bot',C.length,!site,'data-mk="bot"')}</div><p class="lede">Open a row to see what builds it, what it reads and what it posts. Built from the site map index, the bot command list and the bot studio dependency scan; file names only.</p>`;
+ if(site){const aud=[...new Set(pf.map(p=>p.audience))];h+=aud.map(a=>`<h2>${E(a)} <span class="mute" style="font:400 14px var(--ui)">${pf.filter(p=>p.audience===a).length} pages</span></h2>`+pf.filter(p=>p.audience===a).map(p=>`<details class="drill" data-d="p:${E(p.page)}" ${mapOpen==='p:'+p.page?'open':''}><summary><b>${E(p.title)}</b><code>${E(p.page)}</code><span class="tag">${E(p.feature)}</span></summary><div class="dr">${sec('Built by',p.builtBy)}${sec('Reads (data)',[...p.reads.accessors.slice(0,8),...p.reads.data])}${sec('Reads (API)',p.reads.api)}${sec('Posts',[...p.posts.pages,...p.posts.images.map(i=>'image: '+i)])}</div></details>`).join('')).join('')||'<p class="mute">Nothing matches.</p>';}
+ else{const apps=[...new Set(cf.map(c=>c.app))];h+=apps.map(a=>`<h2>${E(a)} <span class="mute" style="font:400 14px var(--ui)">${cf.filter(c=>c.app===a).length} commands</span></h2>`+cf.filter(c=>c.app===a).map(c=>`<details class="drill" data-d="c:${E(c.command)}" ${mapOpen==='c:'+c.command?'open':''}><summary><b>/${E(c.command)}</b><span class="mute">${E(c.what)}</span></summary><div class="dr">${sec('Built by',c.builtBy)}${sec('Reads (tables)',c.reads.tables)}${sec('Reads (config)',c.reads.env)}${sec('Secret names (values never shown)',c.reads.secrets)}${sec('Reads (API)',c.reads.apis)}${sec('Posts to (channel purpose)',c.posts.channels)}${sec('Posts (images and buttons)',[...c.posts.pictures.map(i=>'image: '+i),...c.posts.buttons])}</div></details>`).join('')).join('')||'<p class="mute">Nothing matches.</p>';}
+ return h;}
+function io(){const F=M.io.filter(f=>has(f,q));
+ return `<p class="lede" style="margin-top:14px">One folder per feature: what goes in and what comes out. Open one to see its pages or commands.</p>`+F.map(f=>`<details class="drill" data-d="f:${E(f.key)}" ${mapOpen==='f:'+f.key?'open':''}><summary><b>${E(f.label)}</b><span class="tag">${f.kind}</span><span class="tag">${f.items.length} ${f.kind==='site'?'pages':'commands'}</span></summary><div class="io2"><div class="in"><div class="lab">In</div>${sec('Tables',f.in.tables)}${sec('Config and bindings',f.in.config)}${sec('APIs',f.in.apis)}${sec('Data files',f.in.data)}${sec('Secret names',f.in.secrets)}</div><div class="out"><div class="lab">Out</div>${sec('Channel purposes',f.out.channels)}${sec('Pages',f.out.pages)}${sec('Images',f.out.images)}${sec('Buttons and menus',f.out.buttons)}</div><div style="grid-column:1/-1">${sec('Contains',f.items)}</div></div></details>`).join('')||'<p class="mute">Nothing matches.</p>';}
 function render(){if(!M)return;tabOk();head();document.getElementById('lede').textContent='Rise. Burn. Repeat. · '+M.roadmap.metrics.project+'% done · refreshed '+new Date(M.generated).toLocaleTimeString();
- document.getElementById('main').innerHTML=({roadmap,libraries:libs,references:refs,credentials:creds})[tab]();}
+ document.getElementById('main').innerHTML=({roadmap,maps,io,libraries:libs,references:refs,credentials:creds})[tab]();}
 async function load(){try{M=await (await fetch('/api/model')).json();if(M.error)throw new Error(M.error);render()}catch(e){document.getElementById('main').innerHTML=`<div class="banner">Could not read the library: ${E(e.message)}</div>`}}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-tab],[data-st],[data-ph]');if(!b)return;if(b.dataset.tab){tab=b.dataset.tab;q='';location.hash=tab}if(b.dataset.st)fStatus=b.dataset.st;if(b.dataset.ph)fPhase=b.dataset.ph;render()});
-document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;document.getElementById('main').innerHTML=({roadmap,libraries:libs,references:refs,credentials:creds})[tab]();}});
-document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.lib){d.open?openLib.add(d.dataset.lib):openLib.delete(d.dataset.lib)}},true);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tab],[data-st],[data-ph],[data-mk]');if(!b)return;if(b.dataset.mk)mapKind=b.dataset.mk;if(b.dataset.tab){tab=b.dataset.tab;q='';location.hash=tab}if(b.dataset.st)fStatus=b.dataset.st;if(b.dataset.ph)fPhase=b.dataset.ph;render()});
+document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;document.getElementById('main').innerHTML=({roadmap,maps,io,libraries:libs,references:refs,credentials:creds})[tab]();}});
+document.addEventListener('toggle',e=>{const d=e.target;if(d.dataset&&d.dataset.d){d.open?mapOpen=d.dataset.d:(mapOpen===d.dataset.d&&(mapOpen=null))}if(d.dataset&&d.dataset.lib){d.open?openLib.add(d.dataset.lib):openLib.delete(d.dataset.lib)}},true);
 window.addEventListener('hashchange',()=>{tab=(location.hash||'#roadmap').slice(1);render()});
 function live(){const el=document.getElementById('live'),es=new EventSource('/events');es.onopen=()=>{el.className='live on';el.lastChild.textContent='live'};es.onerror=()=>{el.className='live';el.lastChild.textContent='reconnecting'};es.addEventListener('change',load)}
 load();live();
