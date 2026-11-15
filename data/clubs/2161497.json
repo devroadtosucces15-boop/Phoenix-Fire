@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-15T20:20:49.947Z",
+ "fetchedAt": "2026-11-15T20:30:43.821Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -741,7 +741,7 @@
   {
    "name": "Ritzeltod",
    "proPos": "14",
-   "gamesPlayed": "288",
+   "gamesPlayed": "289",
    "goals": "19",
    "assists": "28",
    "manOfTheMatch": "16",
