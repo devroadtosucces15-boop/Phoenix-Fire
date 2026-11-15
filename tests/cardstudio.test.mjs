@@ -1,6 +1,6 @@
 import { call, env, login, r2objects, W } from './mock.mjs';
 import { t, done } from './lib.mjs';
-import { canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, portraitPrompt, CARD_MODEL } from '../bot/cardstudio.js';
+import { canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, portraitPrompt, CARD_MODEL, KIT_TEXT, kitText, resizeSquare } from '../bot/cardstudio.js';
 
 const setFlags = (o) => { env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), ...o }); };
 const owner = await login('111', [], 'Boss');
@@ -328,12 +328,12 @@ t('owner revokes claimed-player artwork', (await call(owner, '/api/cards/owner/r
 t('revocation preserves explicit artwork assigned to a different player', (await env.DB.prepare("SELECT published FROM card_requests WHERE target_player = 'different-player'").first('published')) === 1);
 
 // Club kit reference: managers set the uniform every portrait is dressed in.
-const kitReq = (tok, method, body) => W('/api/cards/kit', { method, headers: { ...(tok ? { Authorization: 'Bearer ' + tok } : {}), 'Content-Type': 'image/png' }, ...(body ? { body } : {}) });
+const kitReq = (tok, method, body, q = '') => W('/api/cards/kit' + q, { method, headers: { ...(tok ? { Authorization: 'Bearer ' + tok } : {}), 'Content-Type': 'image/png' }, ...(body ? { body } : {}) });
 t('kit reference: members refused', (await kitReq(m1, 'POST', PNG(64, 64))).status === 403);
 t('kit reference: non-image refused', (await kitReq(mgr, 'POST', new Uint8Array(40))).status === 400);
 t('kit reference: none stored yet', (await kitReq(mgr, 'GET')).status === 404);
 t('kit reference: manager can set it', (await kitReq(mgr, 'POST', PNG(64, 64))).status === 200);
-t('kit reference: stored privately', r2objects.has('cardkit/reference') && (await kitReq(mgr, 'GET')).status === 200 && (await kitReq(m1, 'GET')).status === 403);
+t('kit reference: stored privately', r2objects.has('cardkit/male') && (await kitReq(mgr, 'GET')).status === 200 && (await kitReq(m1, 'GET')).status === 403);
 t('kit reference: manager can remove it', (await kitReq(mgr, 'DELETE')).status === 200 && (await kitReq(mgr, 'GET')).status === 404);
 t('image prompts: chest up, margin from the edges', () => {
   for (const lvl of [0]) {
@@ -341,6 +341,56 @@ t('image prompts: chest up, margin from the edges', () => {
     if (!/chest up/i.test(cardPrompt('standing', lvl))) throw new Error('card prompt must say chest up');
   }
   if (!/no waist, shorts or legs/.test(portraitPrompt(false, 0))) throw new Error('portrait prompt must exclude legs');
+});
+t('4a: cinematic prompt carries kit and shirt number, still chest up', () => {
+  const p = cardPrompt('standing', 0, kitText({}), 9);
+  if (!p.includes(KIT_TEXT) || !/number 9 big/.test(p) || !/chest up/i.test(p)) throw new Error(p);
+});
+t('4a: kit text is Phoenix, config-overridable, no NOREX words or red', () => {
+  if (/norex|red\b|crest red/i.test(KIT_TEXT) || !/orange/.test(KIT_TEXT)) throw new Error(KIT_TEXT);
+  if (kitText({ CARD_KIT_TEXT: 'a blue shirt' }) !== 'a blue shirt' || kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'female') !== 'b') throw new Error('override');
+});
+t('4a: no Images binding means no resize, never a crash', (await resizeSquare({}, PNG(1000, 1000))) === null);
+t('4a: wrong-size model answer is scaled when Images is bound', async () => {
+  const fake = { IMAGES: { input: () => ({ transform: () => ({ output: async () => ({ response: () => new Response(PNG(CARD_SIZE, CARD_SIZE)) }) }) }) } };
+  const out = await resizeSquare(fake, PNG(1000, 1000));
+  if (!out || pngSize(out).w !== CARD_SIZE) throw new Error('not scaled');
+  if ((await resizeSquare(fake, PNG(1000, 500))) !== null) throw new Error('non-square must be refused');
+});
+t('4c: male and female kit references are separate and validated', async () => {
+  if ((await kitReq(mgr, 'POST', PNG(64, 64), '?variant=female')).status !== 200 || !r2objects.has('cardkit/female')) throw new Error('female not stored');
+  if ((await kitReq(mgr, 'GET', null, '?variant=female')).status !== 200 || (await kitReq(mgr, 'GET', null, '?variant=male')).status !== 404) throw new Error('variants mixed');
+  if ((await kitReq(mgr, 'POST', PNG(64, 64), '?variant=robot')).status !== 400) throw new Error('bad variant accepted');
+  await kitReq(mgr, 'DELETE', null, '?variant=female');
+});
+t('4c: kit_variant column exists, defaults male, prompts take the per-variant text', async () => {
+  const col = await env.DB.prepare("SELECT dflt_value AS d FROM pragma_table_info('card_requests') WHERE name = 'kit_variant'").first();
+  if (!col || !/male/.test(col.d)) throw new Error('column missing');
+  if (kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'female') !== 'b' || kitText({ CARD_KIT_TEXT: 'a', CARD_KIT_TEXT_FEMALE: 'b' }, 'male') !== 'a') throw new Error('text pair');
+});
+t('4d: queue position and wait come from the real queue', async () => {
+  const { queueInfo, CARD_RUN_LIMIT, CARD_CRON_MINUTES } = await import('../bot/cardstudio.js');
+  const mk = async (u, st, at) => (await env.DB.prepare("INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, decided_at) VALUES (?, '2099-01', 0, 0, 'k', ?, ?, ?)").bind(u, st, at, at).run()).meta.last_row_id;
+  const a = await mk('q1', 'approved', 1000), b = await mk('q2', 'approved', 2000), c = await mk('q3', 'approved', 3000);
+  const row = (id) => env.DB.prepare('SELECT * FROM card_requests WHERE id = ?').bind(id).first();
+  const qa = await queueInfo(env, await row(a)), qc = await queueInfo(env, await row(c));
+  const out = qa.position === 1 && qc.position === 3 && qc.etaMinutes === Math.ceil(3 / CARD_RUN_LIMIT) * CARD_CRON_MINUTES && (await queueInfo(env, { status: 'done' })) === null;
+  await env.DB.prepare("DELETE FROM card_requests WHERE month = '2099-01'").run();
+  if (!out) throw new Error(JSON.stringify([qa, qc]));
+});
+t('4d: a member can only submit so many times an hour', async () => {
+  const { submitCardRequest, SUBMITS_PER_HOUR } = await import('../bot/cardstudio.js');
+  const store = new Map(); const kv = { get: async (k) => store.get(k) ?? null, put: async (k, v) => { store.set(k, v); } };
+  const e2 = Object.assign(Object.create(env), { PHOENIX_KV: kv });
+  let last;
+  for (let n = 0; n <= SUBMITS_PER_HOUR; n++) last = await submitCardRequest({ u: 'spam', n: 'Spam', role: 'member' }, e2, { avatar: false, portrait: true, bytes: new Uint8Array(0) }, async () => {}, async () => []);
+  if (last.status !== 429) throw new Error(JSON.stringify(last));
+});
+import { readFileSync } from 'node:fs';
+t('4b: no pre-approval preview in the member page or the classic page', () => {
+  const nx = readFileSync(new URL('../next/static/cardstudio.js', import.meta.url), 'utf8'), wb = readFileSync(new URL('../web/cardstudio.js', import.meta.url), 'utf8');
+  if (/Rough preview|sentPhoto/.test(nx) || /cs-preview/.test(wb)) throw new Error('pre-approval preview is back');
+  if (!/status === 'done' && r\.hasPortrait\)\) return ''/.test(nx)) throw new Error('card preview must only show for a finished portrait');
 });
 
 done();

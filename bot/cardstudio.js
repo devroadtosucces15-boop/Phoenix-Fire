@@ -3,6 +3,7 @@ import { orgName } from './orgconfig.js';
 import { hex } from './media.js';
 import { notify, notifyManagers, safely } from './notify.js';
 import { cutoutGreen } from './cutout.js';
+import { kvOf } from './kv.js';
 
 export const CARD_MODEL = '@cf/black-forest-labs/flux-2-klein-9b';
 export const MAX_ATTEMPTS = 3;
@@ -13,6 +14,9 @@ const flagged = (e) => /\b3030\b|flagged/i.test(String(e?.message || e)); // Wor
 const STALE_AFTER = 10 * 60e3; // a "generating" row older than this was abandoned by a dead Worker run
 const REF_MAX = 500; // FLUX.2 wants reference images under 512×512
 
+export const CARD_RUN_LIMIT = 2; // cards drawn per cron run
+export const CARD_CRON_MINUTES = 10; // how often the cron runs (bot/wrangler.toml)
+export const SUBMITS_PER_HOUR = 10; // per member, so a stuck button cannot burn the shared AI allowance
 export const CARD_SIZE = 1024;
 export const TEMPLATE_MAX = 5e6;
 export const COST_MAX = 100000;
@@ -93,64 +97,99 @@ const dropPhoto = (env, key) => (key && env.MEDIA ? env.MEDIA.delete(key).catch(
 
 const reqView = (r, extra = {}) => ({
   id: r.id, month: r.month, status: r.status === 'done' && r.published === 0 ? 'review' : r.status, note: r.note, bg: r.bg_name ?? null, pose: r.pose_name ?? null,
-  createdAt: r.created_at, decidedAt: r.decided_at, hasPhoto: !!r.photo_key, targetPlayer: r.target_player ?? null, hasResult: !!r.result_key, hasPortrait: !!r.portrait_key, kitNumber: r.kit_number ?? null, avatarEnabled: r.avatar_enabled !== 0, portraitEnabled: r.portrait_enabled === 1, attempts: r.attempts, ...extra,
+  createdAt: r.created_at, decidedAt: r.decided_at, hasPhoto: !!r.photo_key, targetPlayer: r.target_player ?? null, hasResult: !!r.result_key, hasPortrait: !!r.portrait_key, kitNumber: r.kit_number ?? null, kit: r.kit_variant || 'male', avatarEnabled: r.avatar_enabled !== 0, portraitEnabled: r.portrait_enabled === 1, attempts: r.attempts, ...extra,
 });
 const REQ_SQL = `SELECT r.*, b.name AS bg_name, p.name AS pose_name FROM card_requests r
   LEFT JOIN card_templates b ON b.id = r.bg_id LEFT JOIN card_templates p ON p.id = r.pose_id`;
 
-// POST /api/cards/request?bg=<id>&pose=<id> – the body is the raw photo. Photos live under cardphoto/ (never /media),
-// so only the member and managers can ever see them; they are deleted on reject/cancel.
-export async function cardRequestUpload(request, me, env, url, log, loadSite) {
+// Same shape as spendScan (bot/rushscan.js): a small per-member, per-hour counter in KV. No KV bound = no limit.
+async function spendSubmit(env, me) {
+  const kv = kvOf(env);
+  if (!kv) return true;
+  const key = `cardrl:${me.u}:${Math.floor(Date.now() / 3600e3)}`;
+  const n = Number(await kv.get(key)) || 0;
+  if (n >= SUBMITS_PER_HOUR) return false;
+  await kv.put(key, String(n + 1), { expirationTtl: 2 * 3600 });
+  return true;
+}
+
+// Where a request stands in the drawing queue and a rough wait. Managers' check comes first, then the cron draws CARD_RUN_LIMIT per run.
+export async function queueInfo(env, r) {
+  if (!r || !['pending', 'approved', 'generating'].includes(r.status)) return null;
+  const waiting = r.status === 'pending'
+    ? await one(env, "SELECT COUNT(*) AS n FROM card_requests WHERE (status IN ('approved', 'generating')) OR (status = 'pending' AND created_at < ?)", r.created_at)
+    : await one(env, "SELECT COUNT(*) AS n FROM card_requests WHERE status IN ('approved', 'generating') AND id <> ? AND COALESCE(decided_at, created_at) <= COALESCE(?, ?)", r.id, r.decided_at, r.created_at);
+  const ahead = waiting?.n ?? 0;
+  return { ahead, position: ahead + 1, etaMinutes: Math.ceil((ahead + 1) / CARD_RUN_LIMIT) * CARD_CRON_MINUTES, needsApproval: r.status === 'pending' };
+}
+
+// One request, however it arrives (website upload or the /avatarcard panel). `o` = { targetPlayer, avatar, portrait, kitNumber (raw string or null),
+// kit ('male'|'female'), bg, pose, bytes }. Returns { error, status } or { ok: true }.
+export async function submitCardRequest(me, env, o, log, loadSite) {
   const blocked = gate(me, env);
-  if (blocked) return blocked;
-  if (!env.MEDIA) return fail('Media storage is not connected.', 503);
-  const targetPlayer = url.searchParams.get('targetPlayer');
+  if (blocked) return { error: 'Not available yet.', status: 404 };
+  if (!(await spendSubmit(env, me))) return { error: 'Too many tries this hour – wait a little and try again.', status: 429 };
+  if (!env.MEDIA) return { error: 'Media storage is not connected.', status: 503 };
+  const targetPlayer = o.targetPlayer ?? null;
   let targetUser = me.u;
   if (targetPlayer !== null) {
-    if (me.role !== 'owner') return fail('Owner only.', 403);
+    if (me.role !== 'owner') return { error: 'Owner only.', status: 403 };
     const player = (await loadSite('players')).find(p => p.k === targetPlayer);
-    if (!player) return fail('Player not found.', 404);
+    if (!player) return { error: 'Player not found.', status: 404 };
     const claim = await one(env, "SELECT user_id FROM claims WHERE player = ? AND status = 'approved'", targetPlayer);
     targetUser = claim?.user_id || 'player:' + targetPlayer;
   }
-  const avatarEnabled = url.searchParams.get('avatar') !== '0';
-  const portraitEnabled = url.searchParams.get('portrait') === '1';
-  if (!avatarEnabled && !portraitEnabled) return fail('Choose at least one output.');
-  const rawNumber = url.searchParams.get('kitNumber');
+  const avatarEnabled = o.avatar !== false;
+  const portraitEnabled = o.portrait === true;
+  if (!avatarEnabled && !portraitEnabled) return { error: 'Choose at least one output.', status: 400 };
+  const rawNumber = o.kitNumber ?? null;
   const kitNumber = rawNumber == null || rawNumber === '' ? null : Number(rawNumber);
-  if (kitNumber !== null && (!/^\d{1,2}$/.test(rawNumber) || !Number.isInteger(kitNumber) || kitNumber < 0 || kitNumber > 99)) return fail('Kit number must be between 0 and 99.');
+  if (kitNumber !== null && (!/^\d{1,2}$/.test(rawNumber) || !Number.isInteger(kitNumber) || kitNumber < 0 || kitNumber > 99)) return { error: 'Kit number must be between 0 and 99.', status: 400 };
+  const variant = o.kit ?? 'male';
+  if (!KIT_VARIANTS.includes(variant)) return { error: 'Pick the male or female kit.', status: 400 };
   const month = monthKey();
   const existing = await one(env, 'SELECT id, status, photo_key, result_key, portrait_key FROM card_requests WHERE user_id = ? AND month = ?', targetUser, month);
-  if (existing && existing.status !== 'rejected') return fail(targetPlayer ? 'That player already has a request this month. Revoke it to allow resubmission.' : 'You already sent a card request this month – the next one opens on the 1st.', 409);
-  const bg = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'bg'", Number(url.searchParams.get('bg')));
-  const pose = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'pose'", Number(url.searchParams.get('pose')));
-  if (avatarEnabled && !bg) return fail('Pick a background for your cinematic avatar.');
-  if (avatarEnabled && !pose) return fail('Pick a pose for your cinematic avatar.');
-  if (bg && !(await canUseTemplate(env, me.u, bg))) return fail('That background is locked for you.', 403);
-  if (pose && !(await canUseTemplate(env, me.u, pose))) return fail('That pose is locked for you.', 403);
-  const bytes = new Uint8Array(await request.arrayBuffer());
-  if (!bytes.length) return fail('Choose a photo first.');
-  if (bytes.length > PHOTO_MAX) return fail('That photo is too big – 8 MB max.');
+  if (existing && existing.status !== 'rejected') return { error: targetPlayer ? 'That player already has a request this month. Revoke it to allow resubmission.' : 'You already sent a card request this month – the next one opens on the 1st.', status: 409 };
+  const bg = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'bg'", Number(o.bg));
+  const pose = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'pose'", Number(o.pose));
+  if (avatarEnabled && !bg) return { error: 'Pick a background for your cinematic avatar.', status: 400 };
+  if (avatarEnabled && !pose) return { error: 'Pick a pose for your cinematic avatar.', status: 400 };
+  if (bg && !(await canUseTemplate(env, me.u, bg))) return { error: 'That background is locked for you.', status: 403 };
+  if (pose && !(await canUseTemplate(env, me.u, pose))) return { error: 'That pose is locked for you.', status: 403 };
+  const bytes = o.bytes;
+  if (!bytes?.length) return { error: 'Choose a photo first.', status: 400 };
+  if (bytes.length > PHOTO_MAX) return { error: 'That photo is too big – 8 MB max.', status: 400 };
   const type = photoType(bytes);
-  if (!type) return fail('Upload a PNG, JPG or WEBP photo.');
+  if (!type) return { error: 'Upload a PNG, JPG or WEBP photo.', status: 400 };
   const key = `cardphoto/${hex(16)}.${type[1]}`;
   await env.MEDIA.put(key, bytes, { httpMetadata: { contentType: type[0] } });
   try {
     if (existing) await run(env, "DELETE FROM card_requests WHERE id = ? AND status = 'rejected'", existing.id);
-    await run(env, 'INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, avatar_enabled, portrait_enabled, kit_number, target_player, submitted_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', targetUser, month, bg?.id ?? 0, pose?.id ?? 0, key, 'pending', Date.now(), avatarEnabled ? 1 : 0, portraitEnabled ? 1 : 0, kitNumber, targetPlayer, me.u);
+    await run(env, 'INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, avatar_enabled, portrait_enabled, kit_number, target_player, submitted_by, kit_variant) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', targetUser, month, bg?.id ?? 0, pose?.id ?? 0, key, 'pending', Date.now(), avatarEnabled ? 1 : 0, portraitEnabled ? 1 : 0, kitNumber, targetPlayer, me.u, variant);
   } catch {
     await dropPhoto(env, key);
-    return fail('You already sent a card request this month – the next one opens on the 1st.', 409);
+    return { error: 'You already sent a card request this month – the next one opens on the 1st.', status: 409 };
   }
   if (existing) await Promise.all([dropPhoto(env, existing.photo_key), dropPhoto(env, existing.result_key), dropPhoto(env, existing.portrait_key)]);
   await log(env, me, 'card-request', avatarEnabled ? `${bg.name} + ${pose.name}` : 'Standardized portrait');
   await safely(notifyManagers(env, { icon: '🪪', title: 'New card request', body: avatarEnabled ? `${me.n || 'A member'} asked for a ${bg.name} / ${pose.name} card.` : `${me.n || 'A member'} asked for a standardized website portrait.`, link: 'staff-artwork.html', ref: `card:${me.u}:${month}` }, me.u));
-  return json(await mine(env, me));
+  return { ok: true };
+}
+
+// POST /api/cards/request?bg=<id>&pose=<id> – the body is the raw photo. Photos live under cardphoto/ (never /media),
+// so only the member and managers can ever see them; they are deleted on reject/cancel.
+export async function cardRequestUpload(request, me, env, url, log, loadSite) {
+  const q = url.searchParams;
+  const res = await submitCardRequest(me, env, {
+    targetPlayer: q.get('targetPlayer'), avatar: q.get('avatar') !== '0', portrait: q.get('portrait') === '1', kitNumber: q.get('kitNumber'),
+    kit: q.get('kit') ?? 'male', bg: q.get('bg'), pose: q.get('pose'), bytes: new Uint8Array(await request.arrayBuffer()),
+  }, log, loadSite);
+  return res.error ? fail(res.error, res.status) : json(await mine(env, me));
 }
 
 async function mine(env, me) {
   const r = await one(env, `${REQ_SQL} WHERE r.user_id = ? ORDER BY r.created_at DESC LIMIT 1`, me.u);
-  return { month: monthKey(), request: r ? reqView(r) : null };
+  return { month: monthKey(), request: r ? reqView(r, { queue: await queueInfo(env, r) }) : null };
 }
 
 // GET /api/cards/photo/<id> – Bearer-authenticated: the requester or a manager.
@@ -355,13 +394,15 @@ export async function cardResult(request, me, env, id) {
 }
 
 // level > 0 = plainer wording for the retry after the AI safety filter flagged the result.
-export const cardPrompt = (poseFragment, level = 0) => level >= 2
+export const cardPrompt = (poseFragment, level = 0, kit = KIT_TEXT, number = null) => level >= 2
   ? 'Place the person from image 1 in the centre of image 0.'
   : level === 1
     ? `Image 0 is the background. Image 1 is the player. Place the player in the centre of the background, ${poseFragment}.`
     : 'Image 0 is the card background: keep its colours, framing and empty centre exactly. '
       + `Image 1 is the player: keep their real face, hair and skin tone. Place the player from image 1 in the centre of image 0, ${poseFragment}. `
-      + 'Show the player chest up only (head, neck, shoulders, chest), large in the frame with a clear margin from every card edge, and the shirt number big and clear on the chest. Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
+      + `Dress the player in the club kit: ${kit}. `
+      + 'Show the player chest up only (head, neck, shoulders, chest), large in the frame with a clear margin from every card edge, and the shirt number '
+      + (number == null ? '' : `${number} `) + 'big and clear on the chest. Esports football club player card, clean studio lighting, sharp, no text, no logos, no watermark.';
 
 // FLUX.2 rejects references of 512×512 or more; shrink with the Images binding when it is bound.
 async function reference(env, bytes, type) {
@@ -372,13 +413,18 @@ async function reference(env, bytes, type) {
 
 // The club kit every player wears. A manager can upload a photo/render of it (POST /api/cards/kit) and it is sent to the
 // model as an extra reference; without one, the written description below is used on its own.
-export const KIT_KEY = 'cardkit/reference';
-export const KIT_TEXT = 'a white football shirt with broken red vertical stripes, a red collar, a small gold club crest on the chest and a small swoosh-style mark, red shorts with a small crest, white tape on the wrists';
+export const KIT_VARIANTS = ['male', 'female'];
+export const kitVariant = (v) => (KIT_VARIANTS.includes(v) ? v : 'male');
+export const kitKey = (variant) => `cardkit/${kitVariant(variant)}`;
+export const KIT_KEY = kitKey('male'); // the pre-variant reference lived at cardkit/reference; readKit still falls back to it
+// Default wording is Phoenix orange and ink; a deploy can override it with the CARD_KIT_TEXT var (CARD_KIT_TEXT_MALE / _FEMALE per variant).
+export const KIT_TEXT = 'an orange football shirt with black trim, a black collar and a small phoenix crest on the chest, black shorts with a small crest, black tape on the wrists';
+export const kitText = (env, variant = '') => String(env?.[`CARD_KIT_TEXT_${String(variant).toUpperCase()}`] || env?.CARD_KIT_TEXT || KIT_TEXT).slice(0, 400);
 // level 0 = full prompt + kit picture; later tries (after the AI's safety filter, error 3030, flagged the result) send fewer
 // and plainer inputs: level 1 drops the kit picture and body details, level 2 is the bare minimum.
-export const portraitPrompt = (hasKit, level = 0) =>
+export const portraitPrompt = (hasKit, level = 0, kit = KIT_TEXT) =>
   (level >= 2 ? 'Image 0 is the person: keep their face, hairstyle and beard. ' : 'Image 0 is the person: preserve their face, hairstyle and hair colour, beard, skin tone and expression. ')
-  + (hasKit && level === 0 ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${KIT_TEXT}. `)
+  + (hasKit && level === 0 ? 'Image 1 is the club kit: dress the player in exactly that kit, including its stripes, collar, crest and colours. ' : `Dress the player in the club kit: ${kit}. `)
   + 'Draw it as a flat 2D cartoon illustration: clean cel shading, bold uniform black outlines, simple solid colour fills with a few soft shadow shapes, realistic proportions, detailed expressive face with eyebrows, eyes, nose and beard drawn crisply, no gradients, no painterly texture, no 3D render look. '
   + 'Chest-up portrait: crop at mid-chest, so only head, neck, shoulders, chest and upper arms show, with no waist, shorts or legs. The figure fills most of the frame width but never touches the edges, with a clear margin on both sides, straight-on camera, neutral confident expression, centred. '
   + 'No text, no frame, no scenery. The whole background must be one flat, uniform, pure bright green (#00FF00) with no shadow, gradient or floor, so it can be cut out automatically.';
@@ -388,21 +434,24 @@ export async function cardKit(request, me, env, log) {
   if (blocked) return blocked;
   if (!can(me, 'cards.templates')) return fail('Managers only.', 403);
   if (!env.MEDIA) return fail('Media storage is not connected.', 503);
+  const qs = new URL(request.url).searchParams.get('variant');
+  if (qs !== null && !KIT_VARIANTS.includes(qs)) return fail('Pick the male or female kit.');
+  const KEY = kitKey(qs);
   if (request.method === 'GET') {
-    const obj = await env.MEDIA.get(KIT_KEY);
+    const obj = await env.MEDIA.get(KEY) || (KEY === KIT_KEY ? await env.MEDIA.get('cardkit/reference') : null);
     if (!obj) return new Response('Not found', { status: 404 });
     const h = new Headers(); obj.writeHttpMetadata(h);
     h.set('X-Content-Type-Options', 'nosniff'); h.set('Content-Security-Policy', "default-src 'none'; sandbox"); h.set('Cache-Control', 'private, no-store');
     return new Response(obj.body, { headers: h });
   }
-  if (request.method === 'DELETE') { await env.MEDIA.delete(KIT_KEY); await log(env, me, 'card-kit-remove', 'kit reference'); return json({ ok: true }); }
+  if (request.method === 'DELETE') { await env.MEDIA.delete(KEY); if (KEY === KIT_KEY) await env.MEDIA.delete('cardkit/reference'); await log(env, me, 'card-kit-remove', `${kitVariant(qs)} kit reference`); return json({ ok: true }); }
   const bytes = new Uint8Array(await request.arrayBuffer());
   if (!bytes.length) return fail('That file is empty.');
   if (bytes.length > PHOTO_MAX) return fail('That image is too big – 8 MB max.');
   const type = photoType(bytes);
   if (!type) return fail('Upload a PNG, JPG or WEBP image.');
-  await env.MEDIA.put(KIT_KEY, bytes, { httpMetadata: { contentType: type[0] } });
-  await log(env, me, 'card-kit-set', 'kit reference');
+  await env.MEDIA.put(KEY, bytes, { httpMetadata: { contentType: type[0] } });
+  await log(env, me, 'card-kit-set', `${kitVariant(qs)} kit reference`);
   return json({ ok: true });
 }
 
@@ -424,11 +473,17 @@ export async function cutPortrait(env, picture) {
   return { ...picture, cut: false };
 }
 
-async function render(env, bg, pose, photo, portrait = false, kit = null, level = 0) {
+export async function resizeSquare(env, bytes) {
+  const size = pngSize(bytes);
+  if (!env.IMAGES?.input || !size || size.w < 256 || size.h < 256 || Math.abs(size.w / size.h - 1) > 0.02) return null; // only near-square pictures are safe to scale
+  try { const out = await env.IMAGES.input(new Blob([bytes]).stream()).transform({ width: CARD_SIZE, height: CARD_SIZE, fit: 'cover' }).output({ format: 'image/png' }); return new Uint8Array(await out.response().arrayBuffer()); } catch { return null; }
+}
+
+async function render(env, bg, pose, photo, portrait = false, kit = null, level = 0, opts = {}) {
   if (!env.AI) throw new Error('The AI binding is not connected.');
   if (level > 0) kit = null; // a second picture of a person is the likeliest thing for the safety filter to trip on
   const form = new FormData();
-  form.append('prompt', portrait ? portraitPrompt(!!kit, level) : cardPrompt(pose.prompt, level));
+  form.append('prompt', portrait ? portraitPrompt(!!kit, level, opts.kitText) : cardPrompt(pose.prompt, level, opts.kitText, opts.number));
   form.append('width', String(CARD_SIZE));
   form.append('height', String(CARD_SIZE));
   if (!portrait) form.append('input_image_0', await reference(env, bg.bytes, bg.type), 'background.png');
@@ -437,11 +492,16 @@ async function render(env, bg, pose, photo, portrait = false, kit = null, level 
   const packed = new Response(form);
   const out = await env.AI.run(CARD_MODEL, { multipart: { body: packed.body, contentType: packed.headers.get('content-type') } });
   if (typeof out?.image !== 'string') throw new Error('The image model returned no picture.');
-  const bytes = Uint8Array.from(atob(out.image), (c) => c.charCodeAt(0));
-  const type = photoType(bytes);
+  let bytes = Uint8Array.from(atob(out.image), (c) => c.charCodeAt(0));
+  let type = photoType(bytes);
   if (bytes.length < 1000 || !type) throw new Error('The image model returned an unusable picture.');
   const dimensions = type[1] === 'png' ? pngSize(bytes) : null;
-  if (dimensions && dimensions.w && dimensions.h && (dimensions.w !== CARD_SIZE || dimensions.h !== CARD_SIZE)) throw new Error('AI artwork must be exactly 1024 × 1024 pixels.');
+  if (dimensions && dimensions.w && dimensions.h && (dimensions.w !== CARD_SIZE || dimensions.h !== CARD_SIZE)) {
+    // A model answering at another size is not worth a failed try: scale it to the card size when the Images binding is there.
+    const fixed = await resizeSquare(env, bytes);
+    if (!fixed) throw new Error('AI artwork must be exactly 1024 × 1024 pixels.');
+    bytes = fixed; type = ['image/png', 'png'];
+  }
   return { bytes, type };
 }
 
@@ -451,6 +511,8 @@ async function readAsset(env, key) {
   const bytes = new Uint8Array(await new Response(obj.body).arrayBuffer());
   return { bytes, type: photoType(bytes)?.[0] || 'image/png' };
 }
+
+const readKit = async (env, variant) => (await readAsset(env, kitKey(variant))) || (kitVariant(variant) === 'male' ? await readAsset(env, 'cardkit/reference') : null);
 
 // Claims one request (approved, or "generating" for too long) and makes its card. Returns what happened.
 async function generateOne(env, r, now) {
@@ -486,13 +548,13 @@ async function generateOne(env, r, now) {
       return null;
     };
     if (wantP && !portraitKey) {
-      const kit = await readAsset(env, KIT_KEY);
-      portraitKey = await attemptEach('portrait', async (level) => store('portrait_key', await cutPortrait(env, await render(env, bg, poseT, photo, true, kit, level))));
+      const kit = await readKit(env, r.kit_variant);
+      portraitKey = await attemptEach('portrait', async (level) => store('portrait_key', await cutPortrait(env, await render(env, bg, poseT, photo, true, kit, level, { kitText: kitText(env, r.kit_variant) }))));
     }
     if (wantA && !resultKey) {
       resultKey = await attemptEach('cinematic', async (level) => {
         if (!bg || !poseT) throw new Error('The chosen background or pose is gone.');
-        return store('result_key', await render(env, bg, poseT, photo, false, null, level));
+        return store('result_key', await render(env, bg, poseT, photo, false, null, level, { kitText: kitText(env, r.kit_variant), number: r.kit_number }));
       });
     }
     const complete = (!wantP || portraitKey) && (!wantA || resultKey);
@@ -522,7 +584,7 @@ async function generateOne(env, r, now) {
 }
 
 // Called from the cron and, right after an approval, from the request itself. Never throws.
-export async function generateCards(env, { limit = 2, now = Date.now() } = {}) {
+export async function generateCards(env, { limit = CARD_RUN_LIMIT, now = Date.now() } = {}) {
   if (!env.DB || !env.MEDIA) return [];
   await run(env, "UPDATE card_requests SET status = 'failed' WHERE status = 'generating' AND attempts >= ? AND started_at < ?", MAX_ATTEMPTS, now - STALE_AFTER); // died on the last try
   const rows = await all(env, `SELECT * FROM card_requests WHERE attempts < ? AND ((status = 'approved' AND (started_at IS NULL OR started_at < ?)) OR (status = 'generating' AND started_at < ?))

@@ -1886,7 +1886,7 @@ ${[d.activity, d.claim?.history, d.roleHistory, u?.warnings, d.votes, d.ratings,
     const aw = $('#awards-panel', panel); // P4.1 weekly awards – assets/awards.js
     if (aw) loadAwards().then(() => NXAwards.tab(aw, { call, toast, me: { u: session.u, n: session.n, a: session.a } })).catch(() => toast('Could not load the awards – try again', true));
     // Wave 10: P4.2 star ratings · P3.8 predictions · P3.6 who to play with · P4.4 anonymous feedback
-    for (const [id, file, glob, label] of [['#ratings-panel', 'ratings.js', 'NXRatings', 'star ratings'], ['#predict-panel', 'predict.js', 'NXPredict', 'predictions'], ['#teamup-panel', 'recs.js', 'NXRecs', 'recommendations'], ['#feedback-panel', 'feedback.js', 'NXFeedback', 'feedback'], ['#card-panel', 'avatarcard.js', 'NXAvatarCard', 'AI card'], ['#cards-panel', 'cardstudio.js', 'NXCardStudio', 'Card Studio']]) {
+    for (const [id, file, glob, label] of [['#ratings-panel', 'ratings.js', 'NXRatings', 'star ratings'], ['#predict-panel', 'predict.js', 'NXPredict', 'predictions'], ['#teamup-panel', 'recs.js', 'NXRecs', 'recommendations'], ['#feedback-panel', 'feedback.js', 'NXFeedback', 'feedback'], ['#cards-panel', 'cardstudio.js', 'NXCardStudio', 'Card Studio']]) {
       const el = $(id, panel);
       if (el) (window[glob] ? Promise.resolve() : new Promise((ok, no) => document.head.appendChild(Object.assign(document.createElement('script'), { src: `${BASE}assets/${file}`, onload: ok, onerror: no }))))
         .then(() => window[glob].tab(el, { call, toast, api: MAPI, token: session.token, me: { u: session.u, n: session.n, a: session.a }, claim: () => S.me?.claim, players: () => S.players })).catch(() => toast(`Could not load the ${label} – try again`, true));

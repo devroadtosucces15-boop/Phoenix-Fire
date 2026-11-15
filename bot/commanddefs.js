@@ -46,8 +46,8 @@ export const COMMANDS = [
   { name: 'awards', description: "This week's award ballot and last week's winners" },
   { name: 'points', description: 'Your total points + breakdown by category (P11.3)' },
   {
-    name: 'avatarcard', description: 'Upload your avatar for an AI-styled club background (P11.5)',
-    options: [{ type: ATTACHMENT, name: 'image', description: 'Your avatar image (PNG/JPG/WEBP, 8 MB max)', required: true }],
+    name: 'avatarcard', description: 'Make your club card: pick a photo, a look and your kit (Card Studio)',
+    options: [{ type: ATTACHMENT, name: 'image', description: 'Your photo (PNG/JPG/WEBP, 8 MB max). Leave empty to reuse your last one', required: false }],
   },
   // P2.5 – only shown to people with Discord's Manage Roles permission (server owner can widen it in Server Settings → Integrations).
   // Club Intelligence – same visibility as /syncroles; the Worker still checks the manager role + `insights` flag.

@@ -24,13 +24,13 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 39% (items weighted by size: S 1, M 2, L 4).
+Project: 42% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
 | Project brain | 7 | 5 | 74% | 240 |
-| Side roadmap | 8 | 2 | 25% | 720 |
+| Side roadmap | 8 | 2 | 36% | 720 |
 | Match night and upkeep | 8 | 0 | 0% | 960 |
 
 ## Items
@@ -48,7 +48,7 @@ Project: 39% (items weighted by size: S 1, M 2, L 4).
 | PF-017 | Project brain: optional hosted artifact mirror for the phone | OPEN | PF-012, PF-014 | artifact | sonnet | Snapshot only; updates when a session publishes |
 | PF-018 | Side roadmap step 2: links (Phases A, B, D1, D5): every button, notification and redirect lands on a current, correct page; no second landing page per feature | DONE 2026-11-15 (PR (PF-018)) | PF-012 | `next/`, `bot/` links | sonnet | Resumes the owner's side roadmap `PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md` (copied from `~/.claude/plans/`). Its Item 3 backend (EA decoded columns) and PR 6 (decoded stats, recap) are already on main. Starts only after the local brain window works (owner order, 2026-11-15). Verify against the code first. |
 | PF-019 | Side roadmap step 3: menu gaps and duplicates (Phase C) | DONE 2026-11-15 (PR (PF-019)) | PF-018 | menus, `next/lib/ui.mjs` | sonnet | Plan section 3 |
-| PF-020 | Side roadmap Item 4: Card Studio and `/avatarcard` | NEXT (verify) | PF-019 | `bot/cardstudio.js`, `web/cardcomposer.js` | opus | Plan section 4. Owner decision pending: Workers Paid plan or fallback provider (4d). Chest-up rule applies. |
+| PF-020 | Side roadmap Item 4: Card Studio and `/avatarcard` | NEXT (verify) | PF-019 | `bot/cardstudio.js`, `web/cardcomposer.js` | opus | Built on branch claude/pf-020 (4a hardening, 4b no pre-approval preview, 4c male/female kits + migration 0064, 4d queue position/ETA + hourly submit throttle, 4e /avatarcard panel on pf:card: ids, 4f before/after shots 390/820/1440 in the notes folder). LEFT FOR THE OWNER (Item 4d, not decided here): (1) Workers Paid plan: same model and quality, lifts the 10,000 neurons/day free pool shared by every AI feature, costs money. (2) Composite cinematic from the portrait cutout: halves AI calls, cinematic looks less natural. (3) Fallback image provider: member face photos leave Cloudflare, privacy and consent risk. (4) How far to widen the one-request-per-month limit: needs a table rebuild (UNIQUE(user_id, month), migration 0039) and raises AI use. Also owner-side: 1-minute cron and a higher per-run limit change AI spend. Deploy notes: new migration 0064_card_kit_variant; Worker deploy for the panel, kit variants and the new /avatarcard command shape (re-register commands); upload male and female kit reference images in Staff Artwork. Staff kit example image not made (text do/don't guide only). |
 | PF-021 | Side roadmap Item 3 visuals: match view, match center, box score, derived stats | OPEN (verify) | PF-020 | `next/pages/matches.mjs` | opus | Plan sections 1 and 5; part landed in PR 6. Design work: screenshots before and after. |
 | PF-022 | Side roadmap Item 5: Control Center CRM dashboard, remaining parts (DJ bridge, permissions, sign-in) | OPEN (verify) | PF-021 | `bot/controlcenter.js`, dock | opus | Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. |
 | PF-023 | Side roadmap Item 7: Rush queue and LFG as one matchmaking system | OPEN (verify) | PF-022 | `bot/` rush files | sonnet | Plan section 5b; queue board landed |

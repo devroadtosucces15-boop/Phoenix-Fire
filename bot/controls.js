@@ -92,4 +92,4 @@ export async function disabledOutputs(env, prefix = '') {
   return off;
 }
 // The registry key of a button, menu or form: its custom id with ids and counters folded (`pf:lfg:482:in` → `comp:pf:lfg:#:in`), the same on both sides.
-export const componentKey = (customId) => `comp:${String(customId).replace(/\d{3,}/g, 'N').replace(/:\d+(?=:|$)/g, ':#')}`;
+export const componentKey = (customId) => /^pf:card:/.test(String(customId)) ? `comp:pf:card:${String(customId).split(':')[2]}` : `comp:${String(customId).replace(/\d{3,}/g, 'N').replace(/:\d+(?=:|$)/g, ':#')}`;

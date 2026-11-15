@@ -2,7 +2,7 @@
 // member: GET /api/cards/templates + /api/cards/request, POST /api/cards/request (the photo is the raw body, one a month),
 // /api/cards/request/cancel, /api/cards/kit-number. Private pictures (/api/cards/photo|result/<id>) are fetched with the session
 // token and shown from blob URLs. Staff: /api/cards/requests (+ decide, review, retry), template upload/update, premium grant/revoke.
-// Owner: /api/cards/owner/requests (+ revoke) and photos for any player. The Discord /avatarcard card (GET /api/avatarcard) sits
+// Owner: /api/cards/owner/requests (+ revoke) and photos for any player. The Discord /avatarcard panel (bot/cardpanel.js) feeds the same requests; it sits
 // beside it. Preview = the /next/ player card through NorexArt.fitInto; PNG export = the live site's cardcomposer.js (copied at build).
 (() => {
   const d = document, $ = (s, r = d) => r.querySelector(s), $$ = (s, r = d) => [...r.querySelectorAll(s)];
@@ -72,7 +72,7 @@
   const stepKit = (inp, by) => { const v = kitVal(inp); inp.value = v === '' ? (by > 0 ? '0' : '99') : String((+v + by + 100) % 100); inp.dispatchEvent(new Event('input', { bubbles: true })); };
 
   // ================= 🪪 MEMBER: my card =================
-  let T = null, R = null, AV = null, waiting = 0, sel = { bg: null, pose: null }, photo = null, photoUrl = '', outs = { avatar: true, portrait: true }, kit = '', poll = 0, polls = 0;
+  let T = null, R = null, waiting = 0, sel = { bg: null, pose: null }, photo = null, photoUrl = '', outs = { avatar: true, portrait: true }, kit = '', kitv = 'male', poll = 0, polls = 0;
   const tile = (t, kind) => `<button type="button" class="cs-tile${sel[kind] === t.id ? ' on' : ''}${t.locked ? ' locked' : ''}" data-tid="${t.id}" data-kind="${kind}" aria-pressed="${sel[kind] === t.id}"${t.locked ? ' aria-disabled="true"' : ''}>
 <span class="cs-th"><img src="${esc(media(t.key))}" alt="" loading="lazy">${t.locked ? '<i aria-hidden="true">🔒</i>' : ''}</span><b>${esc(t.name)}</b><small>${t.tier === 'premium' ? (t.locked ? `⭐ ${t.pointCost} pts` : '⭐ Unlocked') : 'Free'}</small></button>`;
   const gallery = (title, list, kind, empty) => `<div class="cs-gal"><h5>${title}</h5>${list.length ? `<div class="cs-tiles">${list.map((t) => tile(t, kind)).join('')}</div>` : `<p class="muted small">${empty}</p>`}</div>`;
@@ -86,40 +86,36 @@ ${s && s !== 'rejected' ? stepper(s) : ''}
 ${r?.note ? `<p class="cs-note${s === 'rejected' ? ' bad' : ''}">💬 “${esc(r.note)}”</p>` : ''}
 ${s === 'rejected' ? '<p class="small">Fix what the manager asked and send a new photo below. It does not use up your month.</p>' : ''}
 ${s === 'failed' ? '<p class="small">A manager has been told and can try again. You do not need to send anything.</p>' : ''}
-${s === 'approved' || s === 'generating' ? '<p class="small muted">⏱️ Usually a few minutes. This page checks again by itself.</p>' : ''}
+${s === 'approved' || s === 'generating' || s === 'pending' ? `<p class="small muted">⏱️ ${r?.queue ? `Place ${r.queue.position} in line, about ${r.queue.etaMinutes} min once a manager approves it.` : 'Usually a few minutes.'}${s === 'pending' ? '' : ' This page checks again by itself.'}</p>` : ''}
 ${!open && s === 'done' ? `<p class="small muted">Your next request opens on ${esc(nextFirst())}.</p>` : ''}
 ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto ? `<div class="cs-mine">${fig('photo', r.id, 'The photo you sent')}</div>` : ''}
 <div class="sq-acts">${s === 'pending' ? '<button type="button" class="btn ghost" data-cscancel>✖ Cancel request</button>' : ''}${waiting ? `<a class="btn ghost" href="staff-artwork.html">📥 ${waiting} waiting for staff ›</a>` : ''}</div></div>`; };
-  const sentPhoto = () => { const r = R?.request; return !photo && r?.hasPhoto && ['pending', 'approved', 'generating'].includes(r.status) ? r.id : null; };
-  const previewHtml = () => { const r = R?.request, ready = r?.status === 'done' && r.hasPortrait, rough = photo || sentPhoto();
-    return `<div class="panel cs-prev"><div class="eyebrow">👀 ${ready ? 'Your player card' : rough ? 'Rough preview' : 'Your card today'}</div><div class="cs-card" id="cs-card">${cardBox(!ready && !rough)}</div>
-<p class="tiny muted">${ready ? 'Live numbers from the club data. Change the kit number and the shirt follows.' : rough ? 'Your photo on the card. The finished portrait is drawn in the club style.' : 'Approved portraits show on every card on the site.'}</p>
-${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empty for none</small>${kitInput(r.kitNumber, 'cs-kitdone')}</label><div class="sq-acts"><button type="button" class="btn ghost" data-kitsave hidden>💾 Save number</button><button type="button" class="btn gold" data-export>⬇ Export player card</button></div>` : ''}</div>`; };
+  // No preview before approval: the card only shows once the finished portrait exists (kit number + export live here).
+  const previewHtml = () => { const r = R?.request; if (!(r?.status === 'done' && r.hasPortrait)) return '';
+    return `<div class="panel cs-prev"><div class="eyebrow">👀 Your player card</div><div class="cs-card" id="cs-card">${cardBox(true)}</div>
+<p class="tiny muted">Live numbers from the club data. Change the kit number and the shirt follows.</p>
+<label class="pf-l">👕 Kit number <small class="muted">0–99, empty for none</small>${kitInput(r.kitNumber, 'cs-kitdone')}</label><div class="sq-acts"><button type="button" class="btn ghost" data-kitsave hidden>💾 Save number</button><button type="button" class="btn gold" data-export>⬇ Export player card</button></div></div>`; };
   const artHtml = () => { const r = R?.request; if (!(r?.status === 'done' && (r.hasResult || r.hasPortrait))) return '';
     return `<div class="panel cs-art"><div class="eyebrow">🖼️ Your artwork · ${esc(monthName(r.month))}</div><div class="cs-figs">${r.hasResult ? fig('avatar', r.id, 'Cinematic avatar', `${(window.NOREX?.slug || 'club')}-avatar-${r.month}.png`) : ''}${r.hasPortrait ? fig('portrait', r.id, 'Website portrait', `${(window.NOREX?.slug || 'club')}-portrait-${r.month}.png`) : ''}</div>
 <p class="tiny muted">Use the avatar as your Discord picture: Discord › Settings › Profiles › Change avatar. Discord does not let bots set it for you.</p></div>`; };
   const formHtml = () => { const bgs = T.backgrounds.filter((t) => t.active !== false), poses = T.poses.filter((t) => t.active !== false), w = why();
     return `<form class="panel cs-form" id="cs-form" novalidate><div class="eyebrow">📸 Request my card · ${esc(monthName(R.month))}</div>
+<ol class="cs-guide tiny muted"><li>Choose a clear photo of your face.</li><li>Pick your kit and an optional shirt number.</li><li>Pick what to make, then a look for the cinematic avatar.</li><li>Send it. A manager checks the photo, then the card is drawn.</li></ol>
 <div class="cs-fg"><div class="cs-step"><h5><i>1</i> Your photo</h5><label class="cs-drop${photo ? ' has' : ''}" id="cs-drop"><input type="file" id="cs-file" accept="image/png,image/jpeg,image/webp"><img id="cs-pimg" alt="Your photo"${photoUrl ? ` src="${esc(photoUrl)}"` : ' hidden'}><span class="cs-dt">${photo ? '🔁 Change photo' : '📷 Choose or drop a photo'}</span></label>
 <ul class="cs-tips tiny muted"><li>🙂 Face the camera, head and shoulders</li><li>💡 Good light, plain background</li><li>📁 PNG, JPG or WEBP up to 8 MB</li></ul></div>
 <div class="cs-step"><h5><i>2</i> What to make</h5><div class="cs-outs">${[['avatar', '🎬', 'Cinematic avatar', 'A club-style scene with your pose. Great as a Discord picture.'], ['portrait', '🪪', 'Website portrait', 'Your face on every player card on the site.']].map(([k, i, t, s]) => `<button type="button" class="cs-out${outs[k] ? ' on' : ''}" role="switch" aria-checked="${outs[k]}" data-out="${k}"><span aria-hidden="true">${i}</span><b>${t}</b><small>${s}</small></button>`).join('')}</div>
+<div class="pf-l">👕 Kit <div class="seg" role="radiogroup" aria-label="Kit">${[['male', 'Male kit'], ['female', 'Female kit']].map(([v, l]) => `<button type="button" role="radio" aria-checked="${kitv === v}" class="${kitv === v ? 'on' : ''}" data-kv="${v}">${l}</button>`).join('')}</div></div>
 <label class="pf-l">👕 Kit number <small class="muted">optional</small>${kitInput(kit, 'cs-kitn')}</label></div></div>
 <div class="cs-looks"${outs.avatar ? '' : ' hidden'}><h5 class="cs-lh"><i>3</i> Pick a look <small class="muted">${T.backgrounds.some((t) => t.locked) || T.poses.some((t) => t.locked) ? '🔒 premium looks open when a manager unlocks them for you' : ''}</small></h5>${gallery('🌫️ Background', bgs, 'bg', 'No backgrounds yet. Turn off the cinematic avatar to ask for just the portrait.')}${gallery('💪 Pose', poses, 'pose', 'No poses yet.')}</div>
 <div class="cs-send"><p class="small" id="cs-why" aria-live="polite">${w ? `👉 ${esc(w)}` : `✅ Ready: ${[outs.avatar && 'cinematic avatar', outs.portrait && 'website portrait'].filter(Boolean).join(' + ')}${kit !== '' ? ` · #${esc(kit)}` : ''}`}</p><button type="submit" class="btn gold" id="cs-go"${w ? ' disabled' : ''}>📨 Send to a manager</button></div></form>`; };
-  const avHtml = () => ""; // the old Discord /avatarcard panel is retired: Card Studio replaces it (FEEDBACK-1 #21)
-  const avHtmlOld = () => !flagOn('avatarCard') ? '' : AV ? `<div class="panel cs-av"><div class="eyebrow">🎮 Your card from Discord</div><div class="cs-avc" style="background-image:url('${esc(media(AV.bgKey))}')"><img class="cs-avp" src="${esc(media(AV.photoKey))}" alt="" crossorigin="anonymous"><img class="cs-avk" src="crest.png" alt=""><b>${esc(A.name || (window.NOREX?.brand || 'the club'))}</b><i aria-hidden="true">★★★★★</i></div>
-<div class="sq-acts"><button type="button" class="btn ghost" data-avdl>⬇ Download PNG</button></div><p class="tiny muted">Made ${esc(ago(AV.at))} with <code>/avatarcard</code> in Discord. Run it again for a new one.</p></div>`
-    : `<div class="panel cs-av sq-empty"><span>🎮</span><div><b>Your card from Discord</b><p class="muted small">Type <code>/avatarcard</code> in the club Discord and attach a photo. The bot draws a club background for it and the card shows up here to download.</p></div></div>`;
   const meHtml = () => { const r = R?.request, open = !r || r.status === 'rejected' || r.month !== R.month;
-    if (!flagOn('cardStudio')) return `<div class="cs-top">${avHtml() || '<div class="panel sq-empty"><span>🎨</span><div><b>Card Studio is not switched on for you yet</b><p class="muted small">It opens here as soon as the club turns it on.</p></div></div>'}</div>`;
-    return `<div class="cs-top">${statusHtml()}${previewHtml()}</div>${artHtml()}${open ? formHtml() : ''}${avHtml() ? `<div class="cs-low">${avHtml()}</div>` : ''}`; };
+    if (!flagOn('cardStudio')) return `<div class="cs-top">${'<div class="panel sq-empty"><span>🎨</span><div><b>Card Studio is not switched on for you yet</b><p class="muted small">It opens here as soon as the club turns it on.</p></div></div>'}</div>`;
+    return `<div class="cs-top">${statusHtml()}${previewHtml()}</div>${artHtml()}${open ? formHtml() : ''}`; };
   // after a paint: private pictures, the card preview, the polling while a card is being drawn
   const afterMe = async () => { fillPics(meEl); const r = R?.request, box = $('#cs-card .pc', meEl);
     clearTimeout(poll); if (['approved', 'generating'].includes(r?.status) && ++polls <= 30) poll = setTimeout(() => { if (meEl.isConnected) loadMe(true); }, 20000);
     if (!box) return;
-    try { if (r?.status === 'done' && r.hasPortrait) { const { u } = await blobOf(picPath('portrait', r.id)); await window.NorexArt?.fitInto(box, u, r.kitNumber ?? ''); }
-      else if (photoUrl) await window.NorexArt?.fitInto(box, photoUrl, kit);
-      else if (sentPhoto()) { const { u } = await blobOf(picPath('photo', r.id)); await window.NorexArt?.fitInto(box, u, r.kitNumber ?? ''); } else window.NorexArt?.apply(box.parentNode); } catch {} };
+    try { if (r?.status === 'done' && r.hasPortrait) { const { u } = await blobOf(picPath('portrait', r.id)); await window.NorexArt?.fitInto(box, u, r.kitNumber ?? ''); } } catch {} };
   const paintMe = (land) => (land ? put(meEl, meHtml(), afterMe) : ((meEl.innerHTML = meHtml()), afterMe()));
   const syncForm = () => { const w = why(), b = $('#cs-go', meEl), p = $('#cs-why', meEl); if (!b) return; b.disabled = !!w;
     p.textContent = w ? `👉 ${w}` : `✅ Ready: ${[outs.avatar && 'cinematic avatar', outs.portrait && 'website portrait'].filter(Boolean).join(' + ')}${kit !== '' ? ` · #${kit}` : ''}`; };
@@ -127,8 +123,8 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
     if (!quiet) M?.skeleton(meEl, 4);
     await (A.ready || Promise.resolve()); resetPics();
     try { const on = flagOn('cardStudio');
-      const [t, r, av] = await Promise.all([on ? A.call('/api/cards/templates') : null, on ? A.call('/api/cards/request') : null, flagOn('avatarCard') ? A.call('/api/avatarcard').then((x) => x.card).catch(() => null) : null]);
-      T = t; R = r; AV = av; waiting = 0;
+      const [t, r] = await Promise.all([on ? A.call('/api/cards/templates') : null, on ? A.call('/api/cards/request') : null]);
+      T = t; R = r; waiting = 0;
       if (T?.manage) A.call('/api/cards/requests').then((q) => { const n = q.requests.filter((x) => x.status === 'pending' || x.status === 'review').length; if (n !== waiting) { waiting = n; const a = $('.cs-stat .sq-acts', meEl); if (a && n) { a.insertAdjacentHTML('beforeend', `<a class="btn ghost" href="staff-artwork.html">📥 ${n} waiting for staff ›</a>`); } } }).catch(() => {});
       for (const k of ['bg', 'pose']) if (sel[k] && !(T?.[k === 'bg' ? 'backgrounds' : 'poses'] || []).some((x) => x.id === sel[k] && !x.locked)) sel[k] = null;
       paintMe(!quiet);
@@ -140,7 +136,6 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
       photo = await shrink(f); if (photo.size > 8e6) { photo = null; M?.toast('That photo is still over 8 MB after shrinking', { kind: 'err' }); return; }
       if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = URL.createObjectURL(photo);
       const img = $('#cs-pimg', meEl); img.src = photoUrl; img.hidden = false; $('#cs-drop', meEl).classList.add('has'); $('.cs-dt', meEl).textContent = '🔁 Change photo';
-      const box = $('#cs-card .pc', meEl); if (box) { $('#cs-card', meEl).innerHTML = cardBox(false); window.NorexArt?.fitInto($('#cs-card .pc', meEl), photoUrl, kit).catch(() => {}); $('.cs-prev .eyebrow', meEl).textContent = '👀 Rough preview'; }
       M?.pulse($('#cs-drop', meEl)); syncForm(); };
     meEl.addEventListener('change', (e) => { if (e.target.id === 'cs-file') setPhoto(e.target.files[0]); });
     meEl.addEventListener('dragover', (e) => { const z = e.target.closest('#cs-drop'); if (z) { e.preventDefault(); z.classList.add('over'); } });
@@ -150,7 +145,7 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
       const box = $('#cs-card .pc', meEl), k = box?.querySelector('.kit'); if (k) { k.textContent = v; box.classList.toggle('has-kit', v !== ''); }
       if (t.id === 'cs-kitn') { kit = v; syncForm(); } else { const sv = $('[data-kitsave]', meEl); if (sv) sv.hidden = v === String(R.request.kitNumber ?? ''); } });
     meEl.addEventListener('submit', async (e) => { if (e.target.id !== 'cs-form') return; e.preventDefault(); if (why()) return;
-      const q = new URLSearchParams({ bg: sel.bg ?? '', pose: sel.pose ?? '', avatar: outs.avatar ? '1' : '0', portrait: outs.portrait ? '1' : '0', kitNumber: kit });
+      const q = new URLSearchParams({ bg: sel.bg ?? '', pose: sel.pose ?? '', avatar: outs.avatar ? '1' : '0', portrait: outs.portrait ? '1' : '0', kitNumber: kit, kit: kitv });
       try { R = await go($('#cs-go', meEl), () => raw('/api/cards/request?' + q, photo)); photo = null; if (photoUrl) URL.revokeObjectURL(photoUrl); photoUrl = ''; kit = ''; polls = 0;
         ok('Sent. A manager will check your photo', '📨'); setTimeout(() => paintMe(true), M?.off() ? 0 : 450); } catch (er) { oops(er); } });
     meEl.addEventListener('click', async (e) => { const t = e.target;
@@ -158,6 +153,7 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
       if (ti) { if (ti.classList.contains('locked')) { M?.toast('Locked for now. A manager can unlock premium looks for you', { icon: '🔒' }); M?.pulse(ti); return; }
         const k = ti.dataset.kind, id = +ti.dataset.tid; sel[k] = sel[k] === id ? null : id;
         $$(`[data-kind="${k}"]`, meEl).forEach((x) => { const on = +x.dataset.tid === sel[k]; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); syncForm(); return; }
+      const kv = t.closest('[data-kv]'); if (kv) { kitv = kv.dataset.kv; $$('[data-kv]', meEl).forEach((x) => { x.classList.toggle('on', x === kv); x.setAttribute('aria-checked', x === kv); }); return; }
       const o = t.closest('[data-out]');
       if (o) { const k = o.dataset.out; outs[k] = !outs[k]; o.classList.toggle('on', outs[k]); o.setAttribute('aria-checked', outs[k]); const lk = $('.cs-looks', meEl); if (lk) lk.hidden = !outs.avatar; syncForm(); return; }
       const kb = t.closest('[data-kit]'); if (kb) { stepKit(kb.parentElement.querySelector('input'), +kb.dataset.kit); return; }
@@ -168,26 +164,8 @@ ${ready ? `<label class="pf-l">👕 Kit number <small class="muted">0–99, empt
       if (ex) { try { const { u } = await blobOf(picPath('portrait', R.request.id)); await exportCard(ex, u, kitVal($('#cs-kitdone', meEl))); } catch (er) { oops(er); } return; }
       const cc = t.closest('[data-cscancel]');
       if (cc) { if (!sure(cc, 'Cancel it? Tap again')) return; try { R = await go(cc, () => post('/api/cards/request/cancel', {})); ok('Request cancelled. You can send a new one', '✖'); paintMe(true); } catch (er) { oops(er); } return; }
-      const dl = t.closest('[data-avdl]'); if (dl) { try { await go(dl, () => avDownload(AV, A.name || (window.NOREX?.brand || 'the club'))); } catch { M?.toast('Could not build the download. Try again', { kind: 'err' }); } }
     });
   }
-  // the Discord card as one PNG (the live site's layout: background, round photo with a red ring, crest, name, five stars)
-  async function avDownload(card, name) {
-    const W = 1080, H = 1350, c = d.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d'), red = '#c8352c'; await d.fonts?.ready;
-    const img = (src, cors = true) => new Promise((res) => { const i = new Image(); if (cors) i.crossOrigin = 'anonymous'; i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
-    const [bg, ph, cr] = await Promise.all([img(media(card.bgKey)), img(media(card.photoKey)), img('crest.png', false)]);
-    const cover = (im, w, h) => { const s = Math.max(w / im.naturalWidth, h / im.naturalHeight), iw = im.naturalWidth * s, ih = im.naturalHeight * s; return [(w - iw) / 2, (h - ih) / 2, iw, ih]; };
-    g.fillStyle = '#0b0f16'; g.fillRect(0, 0, W, H); if (bg) g.drawImage(bg, ...cover(bg, W, H));
-    const gr = g.createLinearGradient(0, H * .55, 0, H); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.6)'); g.fillStyle = gr; g.fillRect(0, 0, W, H);
-    const S = 640, cx = W / 2, cy = H * .42;
-    if (ph) { g.save(); g.beginPath(); g.arc(cx, cy, S / 2, 0, Math.PI * 2); g.clip(); const [x, y, w, h] = cover(ph, S, S); g.drawImage(ph, cx - S / 2 + x, cy - S / 2 + y, w, h); g.restore(); g.beginPath(); g.arc(cx, cy, S / 2, 0, Math.PI * 2); g.lineWidth = 10; g.strokeStyle = red; g.stroke(); }
-    if (cr) { const h = 92, w = cr.naturalWidth / cr.naturalHeight * h; g.drawImage(cr, W / 2 - w / 2, 56, w, h); }
-    g.textAlign = 'center'; g.fillStyle = '#fff'; g.font = '700 54px Oswald, Impact, sans-serif'; g.fillText(String(name).toUpperCase().slice(0, 24), W / 2, cy + S / 2 + 80);
-    g.fillStyle = '#f5d061'; g.font = '600 30px Oswald, Impact, sans-serif'; g.fillText('★  ★  ★  ★  ★', W / 2, cy + S / 2 + 128); g.fillStyle = red; g.fillRect(0, H - 14, W, 14);
-    const blob = await new Promise((res) => { try { c.toBlob(res, 'image/png'); } catch { res(null); } }); if (!blob) throw new Error('blocked');
-    const u = URL.createObjectURL(blob), a = Object.assign(d.createElement('a'), { href: u, download: `${name}-${(window.NOREX?.slug || 'club')}-card.png`.replace(/[^\w.-]+/g, '_') }); d.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 30000);
-  }
-
   // ================= 🛡️ STAFF: review queue, player artwork (owner), looks =================
   let ST = null, Q = [], OW = [], tab = 'review', grantUser = '';
   const nameOf = (x) => playerOf(x.targetPlayer || x.player)?.n || x.user || 'Member';
@@ -211,7 +189,9 @@ ${rest.length ? `<h4 class="al-day">🕘 Last 14 days</h4><ul class="cs-rec">${r
 <div class="seg cs-tier" role="radiogroup" aria-label="Tier">${['free', 'premium'].map((v) => `<button type="button" role="radio" aria-checked="${t.tier === v}" class="${t.tier === v ? 'on' : ''}" data-tier="${v}">${v === 'free' ? 'Free' : '⭐ Premium'}</button>`).join('')}</div>
 <input data-f="point_cost" type="number" min="1" max="100000" value="${t.pointCost || ''}" placeholder="pts" aria-label="Point cost"${t.tier === 'premium' ? '' : ' hidden'}>${t.kind === 'pose' ? `<input data-f="prompt" value="${esc(t.prompt)}" maxlength="200" aria-label="Pose description" placeholder="e.g. arms crossed">` : ''}</div>
 <div class="cs-la"><button type="button" class="cs-sw${t.active ? ' on' : ''}" role="switch" aria-checked="${!!t.active}" data-act aria-label="Shown to members"><i></i></button><small>${t.active ? 'Shown' : 'Hidden'}</small><button type="button" class="btn ghost" data-lsave hidden>💾 Save</button></div></li>`;
-    return `<form class="panel cs-up" id="cs-kit"><div class="eyebrow">👕 Club kit reference</div><div class="cs-ofg"><p class="muted small">A photo or render of the kit every player is dressed in. It is sent to the artwork maker with each portrait, so every card wears the same uniform. Replace it any time.</p>
+    return `<form class="panel cs-up" id="cs-kit"><div class="eyebrow">👕 Club kit reference</div><div class="cs-ofg"><p class="muted small">A photo or render of the kit players are dressed in. It is sent to the artwork maker with each portrait, so every card wears the same uniform. There is one for the male kit and one for the female kit. Replace it any time.</p>
+<ul class="cs-dd tiny muted"><li>✅ Do: the whole shirt on a plain background, front view, sharp, club colours true.</li><li>✅ Do: show the crest and any stripes clearly.</li><li>❌ Don't: a person wearing it, a crowd, text overlays, a tiny or blurry picture.</li></ul>
+<label class="pf-l">Which kit<select name="variant" data-kvsel><option value="male">Male kit</option><option value="female">Female kit</option></select></label>
 <label class="pf-l">Kit image <small class="muted">PNG, JPG or WEBP</small><input name="file" type="file" accept="image/png,image/jpeg,image/webp" required></label><div class="sq-acts"><button class="btn gold" type="submit">⬆ Save kit</button><button class="btn ghost" type="button" data-kitdrop>🗑 Remove</button></div></div></form>
 <form class="panel cs-up" id="cs-up"><div class="eyebrow">⬆ Add a look</div><div class="cs-ofg"><div class="seg" role="radiogroup" aria-label="Kind">${[['bg', '🌫️ Background'], ['pose', '💪 Pose']].map(([v, l], i) => `<button type="button" role="radio" aria-checked="${!i}" class="${i ? '' : 'on'}" data-ukind="${v}">${l}</button>`).join('')}</div>
 <label class="pf-l">Name<input name="name" maxlength="40" required placeholder="e.g. Crimson ribbon"></label><label class="pf-l">Tier<select name="tier"><option value="free">Free</option><option value="premium">⭐ Premium</option></select></label>
@@ -265,13 +245,13 @@ ${rest.length ? `<h4 class="al-day">🕘 Last 14 days</h4><ul class="cs-rec">${r
     });
     stEl.addEventListener('input', (e) => { const t = e.target; if (/^cs-o/.test(t.id || '')) { const v = kitVal(t); if (t.value !== v) t.value = v; } const li = t.closest('[data-lr]'); if (li) $('[data-lsave]', li).hidden = false; });
     stEl.addEventListener('change', (e) => { const f = e.target.closest('#cs-up'); if (f && e.target.name === 'tier') $('[data-ucost]', f).hidden = e.target.value !== 'premium'; if (e.target.closest('#cs-gr') && e.target.name === 'user') grantUser = e.target.value; });
-    stEl.addEventListener('click', async (e) => { const d = e.target.closest('[data-kitdrop]'); if (!d) return; try { await go(d, () => A.call('/api/cards/kit', { method: 'DELETE' })); ok('Kit removed', '🗑'); } catch (er) { oops(er); } });
+    stEl.addEventListener('click', async (e) => { const d = e.target.closest('[data-kitdrop]'); if (!d) return; try { await go(d, () => A.call('/api/cards/kit?variant=' + ($('[data-kvsel]', stEl)?.value || 'male'), { method: 'DELETE' })); ok('Kit removed', '🗑'); } catch (er) { oops(er); } });
     stEl.addEventListener('submit', async (e) => { e.preventDefault(); const f = e.target, btn = e.submitter || $('button[type=submit]', f);
       if (f.id === 'cs-of') { const file = f.photo.files[0]; if (!f.player.value) { M?.toast('Choose a player first', { kind: 'err' }); return; } if (!imageOk(file)) { M?.toast('Use a PNG, JPG or WEBP photo', { kind: 'err' }); return; }
         const q = new URLSearchParams({ targetPlayer: f.player.value, avatar: '0', portrait: '1', kitNumber: kitVal($('#cs-okit', f)) });
         try { const p = await shrink(file); await go(btn, () => raw('/api/cards/request?' + q, p)); ok('Sent for the check. It is in Review now', '📨'); setTimeout(refreshStaff, 500); } catch (er) { oops(er); } return; }
       if (f.id === 'cs-kit') { const file = f.file.files[0]; if (!imageOk(file)) { M?.toast('Use a PNG, JPG or WEBP image', { kind: 'err' }); return; }
-        try { const p = await shrink(file); await go(btn, () => raw('/api/cards/kit', p)); ok('Kit saved. New portraits will wear it', '👕'); f.reset(); } catch (er) { oops(er); } return; }
+        try { const p = await shrink(file); await go(btn, () => raw('/api/cards/kit?variant=' + f.variant.value, p)); ok('Kit saved. New portraits will wear it', '👕'); f.reset(); } catch (er) { oops(er); } return; }
       if (f.id === 'cs-up') { const file = f.file.files[0], kind = $('[data-ukind].on', f).dataset.ukind; if (!file) { M?.toast('Choose an image first', { kind: 'err' }); return; }
         if (kind === 'bg' && file.type !== 'image/png') { M?.toast('Backgrounds must be PNG files', { kind: 'err' }); return; }
         const q = new URLSearchParams({ kind, name: f.name.value.trim(), tier: f.tier.value }); if (f.tier.value === 'premium') q.set('cost', f.cost.value); if (kind === 'pose') q.set('prompt', f.prompt.value.trim());
