@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-15T02:48:13.449Z",
+ "fetchedAt": "2026-11-15T02:51:37.293Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1602,14 +1602,14 @@
  "career": [
   {
    "name": "kingmitch93",
-   "proPos": "5",
-   "gamesPlayed": "180",
+   "proPos": "14",
+   "gamesPlayed": "181",
    "goals": "28",
-   "assists": "63",
+   "assists": "64",
    "manOfTheMatch": "18",
    "ratingAve": "7.7",
-   "prevGoals": "1",
-   "favoritePosition": "defender"
+   "prevGoals": "0",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "SirLogma",
@@ -1779,12 +1779,12 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "17",
+   "gamesPlayed": "18",
    "goals": "4",
    "assists": "3",
    "manOfTheMatch": "1",
    "ratingAve": "7.6",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1823,12 +1823,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "192",
-   "goals": "224",
+   "gamesPlayed": "193",
+   "goals": "225",
    "assists": "99",
    "manOfTheMatch": "6",
    "ratingAve": "7.2",
-   "prevGoals": "2",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {

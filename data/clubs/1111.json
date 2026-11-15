@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-15T02:48:13.449Z",
+ "fetchedAt": "2026-11-15T02:51:37.293Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1890,25 +1890,25 @@
  "career": [
   {
    "name": "kingmitch93",
-   "proPos": "5",
-   "gamesPlayed": "180",
-   "goals": "28",
-   "assists": "63",
-   "manOfTheMatch": "18",
-   "ratingAve": "7.7",
-   "prevGoals": "1",
-   "favoritePosition": "defender"
-  },
-  {
-   "name": "rubNiyo",
    "proPos": "14",
-   "gamesPlayed": "117",
-   "goals": "82",
-   "assists": "35",
-   "manOfTheMatch": "14",
+   "gamesPlayed": "181",
+   "goals": "28",
+   "assists": "64",
+   "manOfTheMatch": "18",
    "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
+  },
+  {
+   "name": "rubNiyo",
+   "proPos": "5",
+   "gamesPlayed": "118",
+   "goals": "83",
+   "assists": "35",
+   "manOfTheMatch": "14",
+   "ratingAve": "7.7",
+   "prevGoals": "1",
+   "favoritePosition": "defender"
   },
   {
    "name": "OH-912",
@@ -1956,14 +1956,14 @@
   },
   {
    "name": "RealMinato7",
-   "proPos": "25",
-   "gamesPlayed": "342",
+   "proPos": "5",
+   "gamesPlayed": "343",
    "goals": "150",
    "assists": "162",
    "manOfTheMatch": "29",
    "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "defender"
   },
   {
    "name": "Bantu Vikng",
@@ -1990,7 +1990,7 @@
   {
    "name": "MV33xChris",
    "proPos": "14",
-   "gamesPlayed": "208",
+   "gamesPlayed": "209",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
@@ -2067,11 +2067,11 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "126",
+   "gamesPlayed": "127",
    "goals": "64",
    "assists": "48",
    "manOfTheMatch": "20",
-   "ratingAve": "7.5",
+   "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2188,12 +2188,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "192",
-   "goals": "224",
+   "gamesPlayed": "193",
+   "goals": "225",
    "assists": "99",
    "manOfTheMatch": "6",
    "ratingAve": "7.2",
-   "prevGoals": "2",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2232,7 +2232,7 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "234",
+   "gamesPlayed": "235",
    "goals": "36",
    "assists": "30",
    "manOfTheMatch": "42",
@@ -2254,10 +2254,10 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "111",
+   "gamesPlayed": "112",
    "goals": "38",
    "assists": "51",
-   "manOfTheMatch": "5",
+   "manOfTheMatch": "6",
    "ratingAve": "7.5",
    "prevGoals": "0",
    "favoritePosition": "forward"
@@ -2331,11 +2331,11 @@
   {
    "name": "Luna9500",
    "proPos": "0",
-   "gamesPlayed": "11",
+   "gamesPlayed": "12",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "5.5",
+   "ratingAve": "5.4",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
