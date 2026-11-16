@@ -1,4 +1,4 @@
-Model: opus (claude-opus-5-5)   Item: PF-009 R24 to R29 (waits on the owner)
+Model: opus (claude-opus-5-5)   Item: PF-009 R25 to R29 (approved by the owner 2026-11-16, one per session)
 
 Repo: /home/mrsuccess/Phoenix-Fire, branch cut from origin/main. Read CLAUDE.md, then PLANNING/SESSION-HANDOFF.md sections 1, 4 and 5, then
 LIBRARY/README.md and only the roadmap row for PF-009.
@@ -7,15 +7,15 @@ LIBRARY/README.md and only the roadmap row for PF-009.
 Do PF-009 R24 to R29 once the owner has answered the open choices. Do not start it before that.
 
 ## State right now
-- Done and tested: PF-010 (search palette, header menu and staff-hub gold plate read config.json brand.palette / brand.plate through
-  --pal-* and --plate-* tokens written by phoenix/build.mjs; tests/theme-tokens.test.mjs, 13 checks; node tests/run.mjs green).
-- PF-026 (visual roadmap) and PF-009 R22, R23 are merged.
-- Open items that need no owner decision: none left.
-- Owner steps (do not start): PF-005, PF-006, PF-022, PF-025. PF-009 R24 to R29 wait on the owner.
+- PF-009 R18 to R24 are done (R24: staff home groups in a dense 4-column grid, `tests/layout-pass.test.mjs`). PF-010 (config-driven palette and plate), PF-026 and PF-009 R22, R23 are merged.
+- Owner approved R25 to R29 on 2026-11-16, R28 look exception included. Build ONE per session in order: R25 Boardroom (equal auto-fill link tiles, Switches accordion in 2 columns from 1100, counts beside the title), R26 Dugout (3 columns roster / pitch / ready-check, equal heights), R27 Insights (Health and Month-by-month stacked left, To do right), R28 Tools and Content form controls and table in the site input style (Phoenix tokens, contrast kept), R29 sweep against live Worker data (if it needs a password, token or owner-only portal step, stop and report exactly what; never store secrets).
+- Spec: `.site-context/spec/STAFF-SWEEP.md` lines 20 to 25 (main checkout, outside the sandbox, read only). Also write the approved status with the date into STAFF-SWEEP.md and REFACTOR.md if you can write there.
+- Owner steps (do not start): PF-005, PF-006, PF-022, PF-025.
 
 ## Do next, in order
-1. Ask the owner (or read the Inbox) whether R24 to R29 are answered. If not, stop and say so.
-2. If answered: claim files in LIBRARY/CLAIMS.md, do R24 to R29, add tests, update the library.
+1. Claim files in LIBRARY/CLAIMS.md. Take the next open R item. Screenshots at 390, 820 and 1440 before and after (serve `site/` statically, headless Chrome over CDP with `window.NorexAuth={role:'owner',as:'owner'}` injected before load).
+2. Add a test (`tests/layout-pass.test.mjs`); grep `tests/` first for class-name strings you change (R24 broke three).
+3. Tests, `node tools/library/sync.mjs`, `node tests/library.test.mjs`, `node tests/run.mjs`, commit, merge to main, run `node tools/brain/roadmap-page.mjs` and republish the Artifact.
 
 ## Decisions already made (do not re-open)
 - Brand colours live in config.json (brand.plate, brand.palette); css reads tokens, never hex.

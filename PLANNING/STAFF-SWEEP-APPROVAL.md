@@ -1,6 +1,6 @@
 # Staff sweep follow-ups R24 to R29: approve in one reply
 
-Source: `.site-context/spec/STAFF-SWEEP.md` (2026-11-11 sweep of the staff pages, mock data, desktop 1440 and phone 390). All six are **proposed, not approved**, and none is built. Reply with the ids you approve (for example "approve R24 R25 R26 R27, R28 with exception, R29 later").
+Source: `.site-context/spec/STAFF-SWEEP.md` (2026-11-11 sweep of the staff pages, mock data, desktop 1440 and phone 390). **Owner approved R24 to R29 on 2026-11-16 (R28 look exception approved too), relayed by the parent session.** Status: R24 built 2026-11-16; R25 to R29 open. `.site-context/spec/STAFF-SWEEP.md` and `REFACTOR.md` are outside the sandbox of this session, so their status lines still need the same date written in. Reply with the ids you approve (for example "approve R24 R25 R26 R27, R28 with exception, R29 later").
 
 | Id | What changes | Kind | Phone | Needs from you | Check it passes |
 |---|---|---|---|---|---|

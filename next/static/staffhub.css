@@ -11,6 +11,10 @@
 .adm-tile{display:flex;flex-direction:column;justify-content:flex-start;margin:0;min-height:150px;box-sizing:border-box}
 .adm-tile .adm-e{font-size:30px}.adm-tile h3{margin:6px 0 2px}
 @media(min-width:1100px){.adm-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.adm-groups{display:grid;grid-auto-flow:dense;grid-template-columns:minmax(0,1fr);gap:26px var(--pf-gap,18px)}
+.adm-groups>.adm-g{margin:0;min-width:0;display:flex;flex-direction:column}.adm-groups .adm-grid{flex:1}
+@media(min-width:821px){.adm-groups{grid-template-columns:repeat(2,minmax(0,1fr))}.adm-groups .adm-n1 .adm-grid{grid-template-columns:minmax(0,1fr)}.adm-groups .adm-n2 .adm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.adm-groups .adm-n2,.adm-groups .adm-owner{grid-column:1/-1}}
+@media(min-width:1100px){.adm-groups{grid-template-columns:repeat(4,minmax(0,1fr))}.adm-groups .adm-n2{grid-column:span 2}.adm-groups .adm-owner{grid-column:1/-1}.adm-groups .adm-owner .adm-grid{grid-template-columns:minmax(0,1fr)}}
 .adm-owner{display:none}.is-owner .adm-owner{display:block}
 /* a Boardroom page that shows one tab: the tab bar is not needed */
 .br-solo .dk-tabs [data-tab]{display:none}

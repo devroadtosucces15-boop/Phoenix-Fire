@@ -662,11 +662,11 @@
       ],
       "fileLane": "staff pages",
       "lowHanging": false,
-      "percent": 80,
+      "percent": 85,
       "verify": false,
-      "notes": "Split into one session per item when taken. 2026-11-16: R18-R22 done (R18/R19 wired, R20/R21 built, R22 axe at 0). R23 briefs written (PLANNING/handoffs/, 17 briefs, Status open, homes proposed). R24-R29 are proposed in .site-context/spec/STAFF-SWEEP.md and wait for the owner: approval checklist in PLANNING/STAFF-SWEEP-APPROVAL.md.",
+      "notes": "Split into one session per item when taken. 2026-11-16: R18-R24 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R25 Boardroom grid, R26 Dugout 3 columns, R27 Insights 2 columns, R28 Tools/Content form look, R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md.",
       "outcome": "The optional additions the owner approved are live, and the remaining follow-ups are listed.",
-      "behavior": "R18 to R22 are done and R23 briefs are written. R24 to R29 are unbuilt and wait for the owner's one-reply approval (PLANNING/STAFF-SWEEP-APPROVAL.md); R28 needs a look-change exception.",
+      "behavior": "R18 to R24 are done: the staff home groups sit in a dense 4-column grid from 1100 px (2 from 821, one on phones) with the Boardroom tile spanning the row. R25 to R29 are approved and wait to be built one per session.",
       "doneLog": [
         {
           "date": "2026-11-16",
@@ -687,6 +687,11 @@
           "date": "2026-11-16",
           "ref": "PF-009 R23",
           "what": "Wrote 17 visual-forge briefs (Status: open) in PLANNING/handoffs/ with an index, one per wishlist group, homes proposed from LAYOUT.md section 9 (lenis and confetti need none). Wrote PLANNING/STAFF-SWEEP-APPROVAL.md for R24 to R29. Docs only."
+        },
+        {
+          "date": "2026-11-16",
+          "ref": "PF-009 R24",
+          "what": "Staff home: groups in a dense grid (4 columns from 1100, 2 from 821, 1 on phones), two-tile groups span 2, owner group spans the row, equal tile heights. Screenshots at 390, 820 and 1440 before and after checked (820 is the phone layout by design, unchanged). Tests in tests/layout-pass.test.mjs; three older tests updated for the new group class. Full suite green."
         }
       ],
       "plans": []

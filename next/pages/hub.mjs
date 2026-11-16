@@ -149,7 +149,7 @@ const staffGate = `<div data-for="guest member" class="panel" style="text-align:
 // ---------- STAFF HUB: one page for managers and the owner. Managers see the groups they work in; the owner sees the same groups plus the
 // owner-only controls (staffhub.js adds html.is-owner from the session). Every tile opens its own page, nothing scrolls within this one. ----------
 const stTile = ([h, e, t, d]) => `<a class="panel room adm-tile" href="${h}"><div class="adm-e" aria-hidden="true">${e}</div><h3>${t}</h3><p class="muted small">${d}</p></a>`;
-const stGroup = (e, t, sub, tiles, cls = '') => `<section class="adm-g${cls ? ' ' + cls : ''}"><header class="adm-gh"><span aria-hidden="true">${e}</span><div><h2>${t}</h2><p class="muted small">${sub}</p></div></header><div class="adm-grid">${tiles.map(stTile).join('')}</div></section>`;
+const stGroup = (e, t, sub, tiles, cls = '') => `<section class="adm-g adm-n${tiles.length}${cls ? ' ' + cls : ''}"><header class="adm-gh"><span aria-hidden="true">${e}</span><div><h2>${t}</h2><p class="muted small">${sub}</p></div></header><div class="adm-grid">${tiles.map(stTile).join('')}</div></section>`;
 export const STAFF_GROUPS = [
   ['🌙', 'Match night', 'Plan the squad and the pitch', [['staff-schedule.html', '🗓️', 'Schedule', 'Create, edit and cancel match nights, check in, send session reports'], ['staff-dugout.html', '🧢', 'Dugout', 'Build the line-up on the real pitch and post it']]],
   ['👥', 'People', 'Everyone who needs a decision', [['staff-desk.html', '🗂️', 'Desk', 'Claims, members, requests, Rush results, trials and private notes']]],
@@ -165,7 +165,7 @@ const OWNER_GROUPS = [
 ];
 export function staff() {
   const body = `<div class="wrap adm-wrap"><div class="adm-plate"><i aria-hidden="true">🧢</i><b role="heading" aria-level="1">Staff hub</b><small data-staff-role>managers and the owner · every tool, grouped, one tap each</small></div>${staffGate}
-  <div data-for="owner" hidden>${STAFF_GROUPS.map((g) => stGroup(...g)).join('')}${OWNER_GROUPS.map((g) => stGroup(...g, 'adm-owner')).join('')}</div></div>`;
+  <div data-for="owner" hidden><div class="adm-groups">${STAFF_GROUPS.map((g) => stGroup(...g)).join('')}${OWNER_GROUPS.map((g) => stGroup(...g, 'adm-owner')).join('')}</div></div></div>`;
   return hubShell('staff.html', 'Staff hub', body, { extraHead: '<link rel="stylesheet" href="staffhub.css"><script src="staffhub.js" defer></script>' });
 }
 export function dugout() {
