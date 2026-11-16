@@ -24,7 +24,11 @@ ideas of the Phoenix Control Center (tabs, grouped tiles). Rules for sessions: `
 - **Live window: yes.** A small local server (`node tools/brain/serve.mjs`, no dependencies) serves the page and pushes updates when the generator
   runs, so one browser window opened in app mode stays current. Private to this computer.
 - **Hosted artifact: optional mirror (PF-017).** A claude.ai artifact can be reached from the phone, but it only updates when a session publishes it, so it is
-  a snapshot, not the live window. Phone brainstorm notes would use the artifact's shared storage and be pulled in at the end of a session.
+  a snapshot, not the live window. Built (PF-017, 2026-11-16) by `node tools/brain/publish.mjs`: the same page and model, one self-contained file in
+  `tools/brain/out/` (git-ignored), published as a private Artifact (capabilities `db`, `dictation`). It leaves out the Credentials tab and its data, runs every
+  string through the redaction and refuses to build if a secret-shaped string or a server hook remains, and states its build time. Phone brainstorm notes (typed or
+  dictated text) go to the artifact's shared storage (collection `phone-notes`) and `node tools/brain/phone-notes.mjs import <file.json>` pulls the open ones into
+  `LIBRARY/inbox/` at the end of a session. Tested by `tests/publish.test.mjs`.
 - **Voice notes.** In the page the microphone button uses the browser's dictation to turn speech into text; the text is stored with the note. A saved audio
   file and offline transcription are a later option (nothing installed for that today).
 - **Credentials: names and places only.** The page links to where each secret lives (portal, GitHub secrets, Worker secrets) and shows set or not set. It
