@@ -65,4 +65,10 @@ const ixj = read('intel.js');
 t('R27: each Insights card carries its own class (ix-card-health, ix-card-todo, ix-card-history)', ixj.includes('ix-card ix-card-${k}'));
 t('R27: Insights is a 2-column grid from 821 with To do spanning both rows', /@media\(min-width:821px\)\{\.ix-cards\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);grid-template-areas:"ixh ixt" "ixm ixt"/.test(lay) && /\.ix-card-todo\{grid-area:ixt\}/.test(lay) && /\.ix-card-history\{grid-area:ixm\}/.test(lay));
 t('R27: the Insights output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-insights.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
+// PF-009 R28 (owner approved look exception 2026-11-16): Tools and Content controls and tables use the site input style, from tokens
+const hx = read('hubx.css');
+const r28 = hx.slice(hx.indexOf('PF-009 R28'));
+t('R28: Tools and Content inputs, selects and textareas share one dark site input style with a focus ring from tokens', /\.room-staff \.dk-nf select[\s\S]*\.room-staff \.ct-l textarea\{[^}]*border:1px solid var\(--line2\);background:rgba\(0,0,0,\.3\);color:#fff/.test(r28) && /input:focus[\s\S]*border-color:var\(--g2\)/.test(r28));
+t('R28: the Tools tables are styled (header row, row lines, hover) and checkboxes use the accent token', /\.room-staff table\.tbl th\{[^}]*border-bottom:1px solid var\(--line2\)/.test(r28) && /\.room-staff table\.tbl tbody tr:hover td/.test(r28) && /accent-color:var\(--g2\)/.test(r28) && /accent-color:var\(--g2\)/.test(read('content.css')));
+t('R28: Tools and Content styling carries no NOREX red or name', !/c8352c/i.test(r28 + read('content.css')) && !/norex/i.test(read('staff-tools.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/norex/i.test(read('staff-content.html').replace(/<script[\s\S]*?<\/script>/g, '')));
 done();

@@ -205,3 +205,25 @@ html:has(>body.hub-page)::after{content:"";position:fixed;inset:0;z-index:-1;poi
  opacity:.8}
 html:has(>body.hub-page):not([data-fx-glow=off]):not([data-motion=calm]):not([data-motion=off])::after{animation:hxNeon 7s ease-in-out infinite}
 @keyframes hxNeon{0%,100%{opacity:.62}50%{opacity:1}}
+
+/* PF-009 R28: Staff Tools and Content form controls and tables in the site input style (Phoenix tokens, white on dark kept) */
+.room-staff .dk-nf input:not([type=checkbox]):not([type=color]):not([type=radio]),.room-staff .dk-nf select,.room-staff .dk-nf textarea,
+.room-staff .dk-row input:not([type=checkbox]):not([type=radio]),.room-staff .dk-row select,
+.room-staff table.tbl input:not([type=checkbox]):not([type=radio]),.room-staff table.tbl select,
+.room-staff .ct-l input,.room-staff .ct-l select,.room-staff .ct-l textarea{box-sizing:border-box;min-height:40px;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:rgba(0,0,0,.3);color:#fff;font:500 14px/1.45 Inter;min-width:0}
+.room-staff .dk-nf input:not([type=checkbox]):not([type=color]):not([type=radio]),.room-staff .dk-nf textarea{width:100%}
+.room-staff .dk-nf select,.room-staff .dk-row select,.room-staff table.tbl select,.room-staff .ct-l select{appearance:auto}
+.room-staff .dk-nf option,.room-staff .dk-row option,.room-staff table.tbl option,.room-staff .ct-l option{background:var(--p1);color:#fff}
+.room-staff .dk-nf input:focus,.room-staff .dk-nf select:focus,.room-staff .dk-nf textarea:focus,.room-staff .dk-row input:focus,.room-staff .dk-row select:focus,
+.room-staff table.tbl input:focus,.room-staff table.tbl select:focus,.room-staff .ct-l input:focus,.room-staff .ct-l select:focus,.room-staff .ct-l textarea:focus{outline:none;border-color:var(--g2);box-shadow:0 0 0 3px rgba(239,207,122,.2)}
+.room-staff .dk-nf input::placeholder,.room-staff .dk-row input::placeholder,.room-staff table.tbl input::placeholder,.room-staff .ct-l ::placeholder{color:var(--soft);opacity:1}
+.room-staff .dk-nf label{display:grid;gap:6px;font:600 12px Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
+.room-staff .dk-nf label:has(>input[type=checkbox]){display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font:500 14px Inter;color:#fff}
+.room-staff .dk-nf small,.room-staff .dk-nf label textarea,.room-staff .dk-nf label input{text-transform:none;letter-spacing:0}
+.room-staff .dk-nf input[type=checkbox],.room-staff table.tbl input[type=checkbox],.room-staff .ct-ck input{width:18px;height:18px;accent-color:var(--g2)}
+.room-staff table.tbl{display:table;width:100%;border-collapse:separate;border-spacing:0;font:500 14px/1.45 Inter;color:#fff}
+.room-staff table.tbl th{text-align:left;padding:12px 14px;font:600 12px Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);border-bottom:1px solid var(--line2);white-space:nowrap}
+.room-staff table.tbl td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.room-staff table.tbl tbody tr:last-child td{border-bottom:0}
+.room-staff table.tbl tbody tr:hover td{background:rgba(255,255,255,.04)}
+@media(max-width:700px){.room-staff .panel>table.tbl{min-width:600px}.room-staff table.tbl th,.room-staff table.tbl td{padding-left:10px;padding-right:10px}}
