@@ -6,6 +6,7 @@ import { message, header, text, facts, footer, cards, bannerUrl } from './ui.js'
 import { orgName, rolesFor, channelsFor } from './orgconfig.js';
 import { sharedKey } from './sharedkey.js';
 import { settingsKey } from './settings.js';
+import { ccStored } from './ccsettings.js';
 
 // The trigger. Default rule: a defeat by 3 or more goals. config.json `matchAlert.loseBy` changes the margin (0 or off = never).
 export const DEFAULT_LOSE_BY = 3;
@@ -64,7 +65,7 @@ export async function matchAlertRoute(request, env) {
   if (request.method !== 'POST') return reply({ error: 'POST only' }, 405);
   if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return reply({ error: 'Forbidden' }, 403);
   const b = await request.json().catch(() => ({}));
-  const line = alertLine(b.us, b.them, loseByOf({ matchAlert: { loseBy: b.loseBy } }));
+  const line = alertLine(b.us, b.them, loseByOf({ matchAlert: { loseBy: (await ccStored(env, 'matchAlert'))?.loseBy ?? b.loseBy } }));
   if (!line) return reply({ posted: 0, reason: 'This result does not trip the alert.' });
   const when = String(b.when ?? '').slice(0, 40), opponent = String(b.opponent ?? 'Opponent').slice(0, 60);
   return reply(await postMatchAlert(env, { opponent, us: +b.us, them: +b.them, line, when }));

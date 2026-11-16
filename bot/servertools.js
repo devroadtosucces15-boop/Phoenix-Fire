@@ -94,7 +94,7 @@ export async function getToolSettings(env) {
     return v ? { ...base, ...JSON.parse(v) } : base;
   } catch { return base; }
 }
-const saveToolSettings = (env, s) => env.DB.prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value').bind(KEY, JSON.stringify(s)).run();
+export const saveToolSettings = (env, s) => env.DB.prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value').bind(KEY, JSON.stringify(s)).run();
 async function batch(env, list) {
   for (let k = 0; k < list.length; k += 50) await env.DB.batch(list.slice(k, k + 50));
 }

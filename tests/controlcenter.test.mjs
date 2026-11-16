@@ -36,7 +36,7 @@ const HELPERS = new Set(['monitor.js', 'servertools.js', 'insights.js', 'notify.
 const unregistered = POSTERS.filter((f) => !HELPERS.has(f) && !REGISTRY.items.some((i) => String(i.source ?? '').includes(f)));
 t(`every module that posts to a channel is the source of a registered output (${unregistered.join(', ') || 'none missing'})`, unregistered.length === 0);
 const used = new Set();
-for (const f of botFiles) for (const m of read(`bot/${f}`).matchAll(/(?:audienceOf|controlOf|postChannels|gate)\(\s*env,\s*'((?:auto|job|dm|slash|site|comp):[^']+)'/g)) used.add(m[1]);
+for (const f of botFiles) for (const m of read(`bot/${f}`).matchAll(/(?:audienceOf|controlOf|postChannels|gate)\(\s*env,\s*'((?:auto|job|dm|slash|site|comp|dj|setting):[^']+)'/g)) used.add(m[1]);
 t(`every Control Center key used in code is in the registry (${[...used].join(', ')})`, [...used].every((k) => REGISTRY_KEYS.has(k)));
 
 // ---------- no hardcoded channel or role (name or ID) anywhere ----------

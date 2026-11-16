@@ -3,6 +3,9 @@
 //   GET  /api/controlcenter/discord          managers+: the server's channels and roles for the pickers
 //   POST /api/controlcenter/save             managers+: { key, enabled, rules } – one output (no change from the default deletes the row)
 //   POST /api/controlcenter/reset            managers+: { key } – back to default
+//   GET  /api/controlcenter/settings         managers+: every bot setting in one place (bot, routes, rush, tools, profanity, stream sources, recruitment, match alert, stream links) and who may change each
+//   POST /api/controlcenter/settings/<area>  the area's level (owner for `bot`, managers otherwise); `fold-legacy` copies the old channel and ping-role homes into the Organization config
+//   GET  /api/controlcenter/audit            managers+: one feed across config_audit, activity and role history (?source= ?q= ?before= ?limit=)
 //   POST /api/controlcenter/create           managers+: { kind: 'channel' | 'role', name } – make it in Discord, then attach it from the page
 // Every write goes through saveControl(): the website and the /setup output command write the same `output_controls` rows, and every change is
 // recorded in config_audit (who, what, when). Changes apply on the next request: the Worker reads the rows at runtime (bot/controls.js), no deploy.
@@ -15,6 +18,7 @@ import { CHANNEL_PURPOSE_INFO, loadOrgConfig } from './orgconfig.js';
 import { COMMANDS } from './commanddefs.js';
 import { discordTargets } from './docs.js';
 import { discord } from './servertools.js';
+import { settingsOverview, saveArea, auditFeed } from './ccsettings.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
@@ -77,7 +81,7 @@ export function outputChoices(query = '') {
 
 const summary = (i, c) => ({ ...i, row: c ? { enabled: c.enabled, rules: c.rules, updated_at: c.updated_at, updated_by: c.updated_by } : null });
 
-export async function controlCenterRoute(p, method, body, me, env) {
+export async function controlCenterRoute(p, method, body, me, env, url = null) {
   if (!p.startsWith('/api/controlcenter')) return null;
   if (!can(me, 'controlcenter.manage')) return fail('Managers and the owner only.', 403); // enforced here, not just by hiding the page
   if (!env.DB) return fail('The member database is not connected.', 503);
@@ -95,8 +99,11 @@ export async function controlCenterRoute(p, method, body, me, env) {
       notifications: { types: Object.entries(TYPES).filter(([, t]) => !t.hidden).map(([k, t]) => ({ k, icon: t.icon, label: t.label, role: t.role ?? null })) },
     });
   }
+  if (p === '/api/controlcenter/settings' && method === 'GET') return json(await settingsOverview(env, me));
+  if (p === '/api/controlcenter/audit' && method === 'GET') { return json(await auditFeed(env, Object.fromEntries(['limit', 'before', 'source', 'q'].map((k) => [k, url?.searchParams.get(k) ?? undefined])))); }
   if (p === '/api/controlcenter/discord' && method === 'GET') return json(await discordTargets(env).catch((e) => ({ ready: false, error: e.message })));
   if (method !== 'POST') return fail('Not found', 404);
+  if (p.startsWith('/api/controlcenter/settings/')) { const r = await saveArea(env, me, p.slice('/api/controlcenter/settings/'.length), body ?? {}); return json(r.body, r.status); }
   if (p === '/api/controlcenter/save') {
     const res = await saveControl(env, me, String(body?.key ?? ''), { enabled: body?.enabled, rules: body?.rules });
     return res.error ? fail(res.error, res.status ?? 400) : json(res);

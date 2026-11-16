@@ -10,8 +10,8 @@
 import { can, flagOn } from './roles.js';
 import { audienceOf, postChannels } from './controls.js';
 import { message, notice, reply, header, text, facts, footer, sep, button, buttons, autoBanner, cards, bannerUrl } from './ui.js';
-import { orgName, channelsFor, channelNotice } from './orgconfig.js';
-import { discord, getToolSettings } from './servertools.js';
+import { orgName, channelsFor, channelNotice, pingRoleFor } from './orgconfig.js';
+import { discord } from './servertools.js';
 import { appEnv, appConfigured, APP_LABEL } from './apps.js';
 import { kvOf } from './kv.js';
 
@@ -523,7 +523,7 @@ async function joinAllowed(env, uid, st, now) {
 export async function needAudience(env) {
   const a = await audienceOf(env, 'auto:rush-need');
   let roles = a.roles, users = a.members, legacy = false;
-  if (!roles.length && !users.length) { const r = String((await getToolSettings(env).catch(() => ({}))).pingRoles?.rush ?? '').replace(/\D/g, ''); if (r) { roles = [r]; legacy = true; } }
+  if (!roles.length && !users.length) { const r = await pingRoleFor(env, 'ping_rush').catch(() => null); if (r) { roles = [r]; legacy = true; } }
   return { enabled: a.enabled, roles: roles.filter((r) => !a.denyRoles.includes(r)), users: users.filter((u) => !a.denyMembers.includes(u)), legacy };
 }
 async function finishNeed(env, ctx, q, uid, positions, now) {

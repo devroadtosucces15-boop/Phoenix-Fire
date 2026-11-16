@@ -33,8 +33,19 @@ Discord's `<t:..:R>` text counts live on the client with no edits. "Time in the 
 
 ## Deferred
 - Per-module adoption of `postChannels`/`audienceOf` for the other automated posts (today they are switched via their job; only the Rush board/need post read channel and audience from their row).
-- Merge of the event routing table (`bot/routing.js`); retiring Boardroom switches and old org tabs.
-- Legacy fallbacks `HYPE_CHANNEL`, `VOICE_CHANNEL`, `pingRoles`; the owner user ID in workflows/`ADMIN_IDS`; `norex:` custom-id prefixes.
+- Retiring Boardroom switches and old org tabs (PF-022c, front end).
+- The owner user ID in workflows/`ADMIN_IDS`; `norex:` custom-id prefixes.
+- Legacy fallbacks `HYPE_CHANNEL`, `VOICE_CHANNEL`, `pingRoles`: folded into the Organization config by PF-022a (see Backend settings); the old values are still read when no row exists and can retire once `fold-legacy` has run on the live server.
 
 ## Hardcode audit
 Tests scan bot/, web/, next/, scripts/ for Discord IDs and `#channel` names: none found. Remaining non-config sources are the legacy fallbacks listed under Deferred.
+
+## Backend settings (PF-022a)
+`bot/ccsettings.js`, routes in `bot/controlcenter.js`. One place for the settings that had their own page or command.
+- **Owner/manager split** (`SPLIT`): owner = `bot` (embed colour, emoji, which auto-posts run), feature flags, Organization structure (clubs, servers, role mapping). Managers = notification routes, Rush queue settings, server tools (welcome, leave, ping roles), profanity alert channel, stream sources, recruitment, match alert, club stream links. The old owner routes (`/api/bot/settings`, `/api/bot/routes`) still work and write the same rows.
+- Routes: `GET /api/controlcenter/settings`, `POST /api/controlcenter/settings/<area>` (areas: bot, routes, rush, tools, profanity, stream_sources, recruitment, matchAlert, streams), `POST .../settings/fold-legacy`, `GET /api/controlcenter/audit`. Every save goes to `config_audit` (entity `cc:<area>`).
+- **Legacy fold-in:** result, reminder, member log, welcome, AutoMod, hype and voice recap channels become Organization purposes; the result/reminder/Rush/match ping roles become `ping_results|ping_events|ping_rush|ping_match` rows in `discord_roles` (`pingRoleFor`). Fill-only: a row that exists always wins. Saving through the Control Center writes both the old blob and the Organization row.
+- **Registry kinds:** `setting` (one per area, with the commands that write the same rows) and `dj` (the 17 Phoenix DJ commands, read from `dj/src/commands.js`; the DJ bridge itself is PF-022b). `audienceOf(env, key, fallback)` and `postChannels(env, key, [purposes])` work for every key kind.
+- **Config-only items in D1** (`cc_config`, migration `0065_cc_config.sql`, not applied by code): recruitment, matchAlert, streams. Code defaults equal `config.json`; keyed `GET /api/org/cc-config` gives the site build and result import the saved values. The result import reads the saved match alert margin first.
+- **One audit read:** merges `config_audit`, `activity` and `role_history`, newest first, filter by source or text, page back with `before`.
+Owner steps: apply migration 0065; run `fold-legacy` once; re-register the Discord commands (`/setup role group` gained the four ping groups).

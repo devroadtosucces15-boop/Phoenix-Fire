@@ -265,6 +265,65 @@ export async function channelsFor(env, purpose, { clubId = null, divisionId = nu
   return [];
 }
 // The channel a feature posts to for a purpose, or null: callers say "no channel is set" and never substitute another one.
+// Opt-in ping roles (who a post tags): a ping_* group row in discord_roles first, the pre-A9 setting only when no row exists. null = no role (never a guess).
+const PING_LEGACY = {
+  ping_results: async (env) => (await metaJson(env, 'bot_settings')).pingRole,
+  ping_events: async (env) => (await metaJson(env, 'bot_settings')).pingRole,
+  ping_rush: async (env) => (await metaJson(env, 'server_tools')).pingRoles?.rush,
+  ping_match: async (env) => (await metaJson(env, 'server_tools')).pingRoles?.match,
+};
+export const PING_GROUPS = Object.keys(PING_LEGACY);
+export async function pingRoleFor(env, group) {
+  const rows = await rolesFor(env, group).catch(() => []);
+  if (rows.length) return String(rows[0].role_id);
+  const legacy = String((await PING_LEGACY[group]?.(env)) ?? '').replace(/\D/g, '');
+  return legacy || null;
+}
+
+// Step 2 of the Control Center backend: copy every legacy channel and ping-role setting into the Organization config so the old homes can retire.
+// Fill-only (a purpose that already has a row is never overridden). Returns { channels: {purpose: 'folded'|'kept'|'none'|'no-server'}, roles: {group: …} }.
+export async function foldLegacy(env, me = null) {
+  const out = { channels: {}, roles: {} };
+  const server = await activeServer(env);
+  for (const purpose of Object.keys(LEGACY)) {
+    const have = (await all(env, "SELECT 1 FROM discord_channels WHERE purpose = ? AND active = 1 AND scope_type = 'org'", purpose).catch(() => [])).length;
+    const legacy = String((await Promise.resolve(LEGACY[purpose](env)).catch(() => '')) ?? '').replace(/\D/g, '');
+    if (have) out.channels[purpose] = 'kept';
+    else if (!legacy) out.channels[purpose] = 'none';
+    else if (!server) out.channels[purpose] = 'no-server';
+    else if (await mirrorChannel(env, purpose, legacy)) { out.channels[purpose] = 'folded'; await audit(env, me ?? { u: 'system', n: 'fold-legacy' }, 'channels', null, 'fold-legacy', null, { purpose, channel_id: legacy }); } else out.channels[purpose] = 'none';
+  }
+  for (const group of PING_GROUPS) {
+    const have = (await rolesFor(env, group).catch(() => [])).length;
+    const legacy = String((await Promise.resolve(PING_LEGACY[group](env)).catch(() => '')) ?? '').replace(/\D/g, '');
+    if (have) out.roles[group] = 'kept';
+    else if (!/^\d{5,25}$/.test(legacy)) out.roles[group] = 'none';
+    else if (!server) out.roles[group] = 'no-server';
+    else {
+      await run(env, "INSERT INTO discord_roles (server_id, role_id, permission_group, scope_type, label, active) VALUES (?, ?, ?, 'org', '', 1)", server.id, legacy, group);
+      out.roles[group] = 'folded';
+      await audit(env, me ?? { u: 'system', n: 'fold-legacy' }, 'roles', null, 'fold-legacy', null, { permission_group: group, role_id: legacy });
+    }
+  }
+  return out;
+}
+// Point a ping_* group at one role (the Control Center writes through this): updates the group's org row or adds it; '' retires it.
+export async function setPingRole(env, group, roleId) {
+  if (!PING_GROUPS.includes(group)) return false;
+  const id = String(roleId ?? '').replace(/\D/g, ''), server = await activeServer(env);
+  if (!server) return false;
+  const cur = await all(env, "SELECT id FROM discord_roles WHERE server_id = ? AND permission_group = ? AND scope_type = 'org' AND active = 1 ORDER BY id", server.id, group);
+  if (!id) { for (const r of cur) await run(env, 'UPDATE discord_roles SET active = 0 WHERE id = ?', r.id); return true; }
+  if (!/^\d{5,25}$/.test(id)) return false;
+  if (cur.length) await run(env, 'UPDATE discord_roles SET role_id = ? WHERE id = ?', id, cur[0].id);
+  else await run(env, "INSERT INTO discord_roles (server_id, role_id, permission_group, scope_type, label, active) VALUES (?, ?, ?, 'org', '', 1)", server.id, id, group);
+  return true;
+}
+async function activeServer(env) {
+  return (env.DISCORD_GUILD_ID && await one(env, 'SELECT id FROM discord_servers WHERE guild_id = ? AND active = 1', String(env.DISCORD_GUILD_ID)).catch(() => null))
+    || (await all(env, 'SELECT id FROM discord_servers WHERE active = 1 ORDER BY id LIMIT 2').catch(() => [])).filter((_, __, a) => a.length === 1)[0] || null;
+}
+
 export const channelFor = async (env, purpose, scope) => (await channelsFor(env, purpose, scope))[0] ?? null;
 // The private notice for a feature whose channel is not set (section 9). It reads the purpose from the Organization config: with no channel it says so and
 // where a manager sets it; with some, it names exactly those channels (never a guess). The words for the purpose are CHANNEL_PURPOSE_INFO, the same text the site shows.

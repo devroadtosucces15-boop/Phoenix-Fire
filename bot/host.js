@@ -4,7 +4,8 @@
 // everyone else in theirs (Discord timestamps).
 //   when: "tonight 9pm", "tomorrow 20:30", "fri 8:30pm", "oct 14 9pm", "2026-10-14 21:00", "in 2h"
 import { validZone, zonedToUtc, eventsRoute } from './events.js';
-import { parseDuration, getToolSettings } from './servertools.js';
+import { parseDuration } from './servertools.js';
+import { pingRoleFor } from './orgconfig.js';
 import { reply, pictureNote } from './ui.js';
 
 // Time-zone suggestions for the autocomplete (any valid IANA zone is accepted when typed in full).
@@ -110,8 +111,7 @@ export async function hostCommand(i, env, me, o, { log, loadSite }, build = host
   if (when.error) return say('I couldn’t read that time', when.error);
   const body = build(o, tz, when);
   if (!o.silent) {
-    const pings = (await getToolSettings(env)).pingRoles ?? {};
-    const role = o.ping ?? (o.mode === 'rush' ? pings.rush : pings.match);
+    const role = o.ping ?? await pingRoleFor(env, o.mode === 'rush' ? 'ping_rush' : 'ping_match');
     body.discord = { channel: o.channel || i.channel_id, role: role || '' };
   } else body.discord = { channel: o.channel || i.channel_id, role: '' };
   const res = await eventsRoute('/api/events', 'POST', body, me, env, log, loadSite, new URL('https://bot.invalid/'));
