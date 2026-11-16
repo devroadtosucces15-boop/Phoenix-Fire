@@ -40,20 +40,27 @@ export async function settingsKey(secret) {
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+// One validated write of the personalisation blob; the Control Center route (bot/ccsettings.js) uses the same function.
+export async function applyBotSettings(env, body = {}) {
+  const cur = await getBotSettings(env);
+  const ch = (v) => (v === '' || v == null ? '' : CH.test(String(v)) ? String(v) : null);
+  const resultChannel = ch(body.resultChannel ?? cur.resultChannel), reminderChannel = ch(body.reminderChannel ?? cur.reminderChannel), pingRole = ch(body.pingRole ?? cur.pingRole);
+  if (resultChannel === null || reminderChannel === null || pingRole === null) return { error: 'Channel/role IDs must be plain Discord IDs (right-click → Copy ID).' };
+  const color = /^#?[0-9a-fA-F]{6}$/.test(body.color ?? '') ? String(body.color).replace('#', '') : cur.color;
+  const emoji = clean(body.emoji, 8) || cur.emoji;
+  const autoPosts = { ...cur.autoPosts };
+  if (body.autoPosts && typeof body.autoPosts === 'object') for (const k of Object.keys(autoPosts)) if (k in body.autoPosts) autoPosts[k] = !!body.autoPosts[k];
+  return { before: cur, saved: await saveBotSettings(env, { resultChannel, reminderChannel, pingRole, color, emoji, autoPosts }) };
+}
+
 export async function botSettingsRoute(p, method, body, me, env, log) {
   if (p !== '/api/bot/settings') return null;
   if (!can(me, 'settings.bot')) return fail('Owner only.', 403);
   if (method === 'GET') return json(await getBotSettings(env));
   if (method !== 'POST') return fail('Not found', 404);
-  const cur = await getBotSettings(env);
-  const ch = (v) => (v === '' || v == null ? '' : CH.test(String(v)) ? String(v) : null);
-  const resultChannel = ch(body.resultChannel), reminderChannel = ch(body.reminderChannel), pingRole = ch(body.pingRole);
-  if (resultChannel === null || reminderChannel === null || pingRole === null) return fail('Channel/role IDs must be plain Discord IDs (right-click → Copy ID).');
-  const color = /^#?[0-9a-fA-F]{6}$/.test(body.color ?? '') ? String(body.color).replace('#', '') : cur.color;
-  const emoji = clean(body.emoji, 8) || cur.emoji;
-  const autoPosts = { ...cur.autoPosts };
-  if (body.autoPosts && typeof body.autoPosts === 'object') for (const k of Object.keys(autoPosts)) if (k in body.autoPosts) autoPosts[k] = !!body.autoPosts[k];
-  const saved = await saveBotSettings(env, { resultChannel, reminderChannel, pingRole, color, emoji, autoPosts });
+  const res = await applyBotSettings(env, body);
+  if (res.error) return fail(res.error);
+  const saved = res.saved;
   await log?.(env, me, 'bot-settings', 'Updated bot personalisation');
   return json(saved);
 }

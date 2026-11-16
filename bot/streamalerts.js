@@ -16,7 +16,8 @@ import { parseFeed } from './watchlist.js';
 
 export const STREAM_COMMANDS = new Set(['streamalerts']);
 export const streamAlertsOn = (env) => flagOn(env, { role: 'owner' }, 'streamAlerts');
-const STREAM_PER_RUN = 10, MAX_SOURCES = 40, BLIP_GAP = 3 * 3600e3, POST_MAX_AGE = 3 * 864e5, POST_CAP = 3;
+export const MAX_SOURCES = 40;
+const STREAM_PER_RUN = 10, BLIP_GAP = 3 * 3600e3, POST_MAX_AGE = 3 * 864e5, POST_CAP = 3;
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const PLATFORM = { twitch: 'Twitch', youtube: 'YouTube', kick: 'Kick' };
 const say = (title, body) => reply(notice(title, body));

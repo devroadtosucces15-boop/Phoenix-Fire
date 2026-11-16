@@ -166,7 +166,7 @@ t('/tag /remind /setup replies are Phoenix', ![tagPost, tagList, rem, remList, s
 const files = ['botcmds', 'host', 'matchday', 'lfg', 'discoveries', 'fun', 'servertools'].map((f) => [f, fs.readFileSync(`bot/${f}.js`, 'utf8')]);
 t('no code holds a channel or role id', files.every(([, src]) => !/\b\d{17,20}\b/.test(src)));
 t('a discovery is announced in the channel the Organization config names', /channelFor\(env, 'announcements'\)/.test(files.find(([f]) => f === 'discoveries')[1]));
-t('the Rush ping role comes from the server tools settings, not from code', /getToolSettings\(env\)\)\.pingRoles\?\.rush/.test(files.find(([f]) => f === 'lfg')[1]) && /getToolSettings\(env\)\)\.pingRoles \?\? \{\}/.test(fs.readFileSync('bot/host.js', 'utf8')));
+t('the Rush ping role comes from the Organization config (ping_rush, legacy server tools value as fallback), not from code', /pingRoleFor\(env, 'ping_rush'\)/.test(files.find(([f]) => f === 'lfg')[1]) && /pingRoleFor\(env, o\.mode === 'rush' \? 'ping_rush' : 'ping_match'\)/.test(fs.readFileSync('bot/host.js', 'utf8')));
 t('setup writes channel and role purposes through orgconfig (the same rows as the site)', /setupMapping/.test(files.find(([f]) => f === 'servertools')[1]));
 t('/announce reads its audience through the notify route, not a literal channel', !/discord\.com\/api\/v10\/channels\/\d/.test(files.find(([f]) => f === 'botcmds')[1]));
 done();

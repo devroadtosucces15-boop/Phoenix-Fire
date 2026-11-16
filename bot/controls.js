@@ -73,17 +73,21 @@ export const gate = async (env, key, ctx) => decide(await controlOf(env, key), c
 
 // What a manager said about an automated post / DM: the roles and members it goes to (blank = the feature's own default),
 // the channels it is posted to (blank = the Organization-config purpose), the notification methods that stay on.
-export async function audienceOf(env, key) {
+// `fallback` ({ roles, members }) is the feature's own default (an Organization-config ping role, say): used only when the row names nobody, so a
+// manager's choice always wins and a feature with no row behaves exactly as before. Works for every key kind, `dj:/…` and `setting:…` included.
+export async function audienceOf(env, key, fallback = {}) {
   const c = await controlOf(env, key), r = c.rules;
-  return { enabled: c.enabled, roles: r.allow_roles, members: r.allow_members, denyRoles: r.deny_roles, denyMembers: r.deny_members, channels: r.post_channels, methods: r.methods, windows: r.windows, allowLevels: r.allow_levels, denyLevels: r.deny_levels };
+  return { enabled: c.enabled, roles: r.allow_roles.length || r.allow_members.length ? r.allow_roles : (fallback.roles ?? []), members: r.allow_roles.length || r.allow_members.length ? r.allow_members : (fallback.members ?? []), denyRoles: r.deny_roles, denyMembers: r.deny_members, channels: r.post_channels, methods: r.methods, windows: r.windows, allowLevels: r.allow_levels, denyLevels: r.deny_levels };
 }
 // The channels a post goes to: the Control Center's choice when one is set, else the Organization-config purpose (several allowed).
+// `purpose` may be one purpose or a list tried in order (the first that has a channel wins), so a post can name its fallback purpose explicitly.
 export async function postChannels(env, key, purpose, scope) {
   const c = await controlOf(env, key);
   if (!c.enabled) return [];
   if (c.rules.post_channels.length) return c.rules.post_channels;
   const { channelsFor } = await import('./orgconfig.js');
-  return channelsFor(env, purpose, scope);
+  for (const p of [].concat(purpose ?? [])) { const ch = await channelsFor(env, p, scope); if (ch.length) return ch; }
+  return [];
 }
 // The keys of one kind (`job:`, `slash:/`, `comp:`, `auto:`, `dm:`) a manager switched off. Read on every cron run / interaction (15 s cache).
 export async function disabledOutputs(env, prefix = '') {

@@ -3,7 +3,7 @@
 // has a cooldown, moderation-muted members cannot post, and members can mute the alerts in the notification settings (type
 // `lfg`). Flag `rushLfg` (default owner). Dark until the Phoenix Rush app is configured (bot/apps.js HELD).
 import { can, flagOn, muted } from './roles.js';
-import { getToolSettings } from './servertools.js';
+import { pingRoleFor } from './orgconfig.js';
 import { message, header, text, facts, footer, buttons, reply, pictureNote, picture, sep } from './ui.js';
 
 export const LFG_DEFAULT_MIN = 60, LFG_MAX_MIN = 180, LFG_COOLDOWN_MIN = 10;
@@ -69,7 +69,7 @@ export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now())
   const res = await env.DB.prepare('INSERT INTO rush_lfg (user_id, name, avatar, note, channel, at, expires, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
     .bind(post.user_id, post.name, post.avatar, post.note, post.channel, post.at, post.expires, post.status).run();
   post.id = res.meta?.last_row_id ?? res.lastRowId;
-  const roleId = String((await getToolSettings(env)).pingRoles?.rush ?? '').replace(/\D/g, '');
+  const roleId = (await pingRoleFor(env, 'ping_rush')) ?? '';
   return reply(lfgMessage(post, [], { roleId, now, env }));
 }
 

@@ -27,7 +27,7 @@ import { broadcastRoom } from './clubroom.js';
 import { POSITIONS } from './profiles.js';
 import { discordTargets, postEmbed } from './docs.js';
 import { message, header, text, sep, facts, footer, buttons, side, thumb, toLegacy, cards, RESULT_ICON, bannerUrl, lineupUrl, autoBanner } from './ui.js';
-import { orgName, channelFor } from './orgconfig.js';
+import { orgName, channelFor, pingRoleFor } from './orgconfig.js';
 import { facesOf } from './faces.js';
 import { awardPoints } from './points.js';
 import { getBotSettings } from './settings.js';
@@ -292,10 +292,9 @@ const routeEvent = async (env, action, e, n, heading = '') => routeNotification(
 // Where a new event is announced: the channel the form picked, else the bot settings' reminder channel, else the channel
 // last posted to. Null (nothing to post to) when none is known.
 async function announceTarget(env, pick) {
-  const s = await getBotSettings(env);
   const channel = pick?.channel || await channelFor(env, 'reminders');
   if (!channel) return null;
-  return { channel, role: pick?.channel ? pick.role : (pick?.role ?? s.pingRole) };
+  return { channel, role: pick?.channel ? pick.role : (pick?.role ?? await pingRoleFor(env, 'ping_events')) };
 }
 
 async function saveEvent(body, me, env, log) {

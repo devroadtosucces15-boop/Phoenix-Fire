@@ -49,8 +49,10 @@ export async function loadRules(env) {
   try { const r = JSON.parse(row?.value ?? '[]'); return Array.isArray(r) ? r : []; } catch { return []; }
 }
 
+export const saveRules = (env, rules) => env.DB.prepare("INSERT INTO meta (key, value) VALUES ('notify_routes', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(JSON.stringify(rules)).run();
+
 // Returns an error string, or { rules } cleaned.
-function cleanRules(list) {
+export function cleanRules(list) {
   if (!Array.isArray(list)) return { error: 'Send a list of rules.' };
   if (list.length > MAX_RULES) return { error: `At most ${MAX_RULES} rules.` };
   const rules = [];
@@ -132,7 +134,7 @@ export async function routingRoute(p, method, body, me, env, log) {
   if (method !== 'POST') return fail('Not found', 404);
   const { rules, error } = cleanRules(body.rules);
   if (error) return fail(error);
-  await env.DB.prepare("INSERT INTO meta (key, value) VALUES ('notify_routes', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(JSON.stringify(rules)).run();
+  await saveRules(env, rules);
   await log?.(env, me, 'notify-routes', `${rules.length} rule${rules.length === 1 ? '' : 's'}`);
   return json({ rules, actions: ACTIONS, groups: GROUPS, methods: METHODS });
 }
