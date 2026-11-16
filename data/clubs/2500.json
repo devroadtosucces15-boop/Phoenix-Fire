@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-16T19:40:42.842Z",
+ "fetchedAt": "2026-11-16T19:50:41.787Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1730,12 +1730,12 @@
   {
    "name": "SkinnerLAYDD",
    "proPos": "25",
-   "gamesPlayed": "18",
+   "gamesPlayed": "19",
    "goals": "11",
    "assists": "5",
    "manOfTheMatch": "2",
-   "ratingAve": "7.1",
-   "prevGoals": "1",
+   "ratingAve": "7.0",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2126,7 +2126,7 @@
   {
    "name": "alicerce-sulista",
    "proPos": "25",
-   "gamesPlayed": "34",
+   "gamesPlayed": "35",
    "goals": "18",
    "assists": "14",
    "manOfTheMatch": "2",
