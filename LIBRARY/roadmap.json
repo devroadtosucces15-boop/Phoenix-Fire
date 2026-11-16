@@ -485,7 +485,7 @@
       "title": "Match-night follow-ups in code: `auto:watchlist-video` picture block, offline captures for check-in and line-up posts, track `tools/bot-studio/`, rerun `studio.mjs check`",
       "phase": "Match night and upkeep",
       "area": "`bot/watchlist.js`, `tools/bot-audit/`, `tools/bot-studio/`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -496,10 +496,16 @@
       ],
       "fileLane": "`bot/watchlist.js`, `tools/bot-audit/`, `tools/bot-studio/`",
       "lowHanging": false,
-      "percent": 0,
-      "verify": false,
+      "percent": 100,
+      "verify": true,
       "notes": "See \"Match-night follow-ups\" in `PLANNING/PHOENIX-ROADMAP.md`.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-16",
+          "ref": "PF-004 PR",
+          "what": "Most of the item was already on main (watchlist picture falls back to the YouTube thumb with a test, offline captures for event, check-in, check-in reply and line-up posts, tools/bot-studio tracked). Closed the rest: recapture with the cards redrawn (banner-recap.png was missing, the one FIX), removed the duplicate auto:session-recap registry row, refreshed the snapshot, and added guards in tests/botstudio.test.mjs (match-night captures exist, no picture block without a url, Phoenix not NOREX). studio.mjs check: 0 FIX, 0 warnings. Screenshots not needed: no visual changed."
+        }
+      ],
       "plans": []
     },
     {
@@ -571,7 +577,7 @@
       "title": "Deep-link helper and stale anchors (R04, R05); `members.html#...` forwarder (R06)",
       "phase": "Match night and upkeep",
       "area": "`next/`, `phoenix/build.mjs`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,

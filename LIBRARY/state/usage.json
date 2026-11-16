@@ -1,10 +1,10 @@
 {
   "latest": {
-    "fiveHour": 63,
-    "weekly": 7,
+    "fiveHour": 73,
+    "weekly": 8,
     "fiveHourResetsAt": null,
     "weeklyResetsAt": null,
-    "timestamp": "2026-11-16T14:16:51.224Z",
+    "timestamp": "2026-11-16T14:27:37.285Z",
     "source": "session"
   },
   "history": [
@@ -15,6 +15,14 @@
       "weeklyResetsAt": null,
       "timestamp": "2026-11-15T03:30:00.000Z",
       "source": "session:PF-015 (app usage tool reading, plan Pro)"
+    },
+    {
+      "fiveHour": 63,
+      "weekly": 7,
+      "fiveHourResetsAt": null,
+      "weeklyResetsAt": null,
+      "timestamp": "2026-11-16T14:16:51.224Z",
+      "source": "session"
     }
   ]
 }

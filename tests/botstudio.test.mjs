@@ -69,6 +69,12 @@ t('an edit is reported for that output only', d.changed.length === 1 && d.change
 t('the diff shows the old and the new line', d.changed[0].lines.some((l) => /- text: ## Title/.test(l)) && d.changed[0].lines.some((l) => /\+ text: ## New title/.test(l)));
 t('new and removed outputs are reported', diffSnapshot(snap, [sample[0], { id: 'c', messages: sample[1].messages }]).added.includes('c') && diffSnapshot(snap, [sample[0]]).removed.includes('b'));
 
+// ---- match-night posts are covered offline (PF-004) ----
+const MN = ['auto:watchlist-video', 'auto:event-league', 'auto:event-roster', 'auto:checkin', 'auto:checkin-roster', 'auto:checkin-reply', 'auto:lineup-suggested', 'auto:lineup-final'];
+t(`the match-night posts have offline captures (missing: ${MN.filter((id) => !byId(id)?.messages.length).join(', ') || 'none'})`, MN.every((id) => byId(id)?.messages.length));
+t('no captured picture block is missing its url', !model.entries.some((e) => e.messages.some((m) => JSON.stringify(m.body).match(/"type":12[^]*?"items":\[[^\]]*\]/g)?.some((b) => /"media":\{\}|"media":\{"url":(null|"")/.test(b)))));
+t('the match-night posts are Phoenix, never NOREX', MN.every((id) => !/norex united|c8352c|13122604/i.test(JSON.stringify(byId(id)?.messages))));
+
 // ---- gallery ----
 await tt('the gallery builds as one self-contained page under the 16 MB artifact limit', () => {
   const g = buildGallery({ model });
