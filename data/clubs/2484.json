@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T19:54:36.459Z",
+ "fetchedAt": "2026-11-16T20:00:43.109Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -76,7 +76,7 @@
   "wstreak": "7",
   "unbeatenstreak": "22",
   "skillRating": "2405",
-  "reputationtier": "1",
+  "reputationtier": "2",
   "leagueAppearances": "102"
  },
  "members": [
