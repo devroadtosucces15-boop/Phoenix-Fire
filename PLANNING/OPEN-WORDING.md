@@ -1,6 +1,6 @@
-# Open wording for the owner (PF-009 R18, R19)
+# Wording for R18 and R19 (PF-009): APPROVED and wired 2026-11-16
 
-Drafts only. None of this is in the site. Pick, edit or reject each line; then a session wires it in and extends the link tests.
+The owner approved these drafts. Two lines were adjusted when wiring because the pages differ from the draft: the Rush sub line says "Scores, top scorers and form, newest first." (rush.html shows no line-ups), and the scouting links read "Track your recommendations in Squad" (scouting.html is where members recommend players, not where they are scouted) and "Recommend a player" (back link on Squad). Guarded in `tests/forwarder.test.mjs`.
 
 ## R18: Rush log to `rush.html`
 `rush.html` (Rush results) is in the Matches menu but nothing on the Rush queue or Rush night pages points at it.
@@ -14,6 +14,7 @@ Drafts only. None of this is in the site. Pick, edit or reject each line; then a
 - On `hub-squad.html#sq-scout`: "How scouting works" linking to `scouting.html`.
 
 ## Status of the rest of PF-009 (checked 2026-11-16)
+- R18 and R19 are done (above).
 - R20 (staff tab hashes) and R21 (split locker pages): built and guarded in `tests/deeplink.test.mjs`.
 - R22: zoom is already allowed (no `maximum-scale` or `user-scalable` in `next/lib`, `next/pages`, `phoenix/`). Still to do: re-run axe for `aria-required-children` (tactics, rush), `aria-allowed-attr` (`music()` in `hub.mjs`) and tap targets; needs Chrome and a decision on phone wording.
 - R23: needs the list of assigned wishlist items; write one brief each in `.site-context/handoffs/` with `Status: open` (the folder is missing in this checkout).

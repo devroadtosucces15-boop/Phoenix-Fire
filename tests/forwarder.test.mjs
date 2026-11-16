@@ -36,4 +36,8 @@ for (const [f, h] of Object.entries(docs)) for (const a of h.matchAll(/href="([\
   if (!(p === 'hub-handbook.html' && /^(league|rush)-setpieces$/.test(id) && js.includes('id="${mode}-${k}"'))) stale.push(`${f} -> ${p}#${id}`);
 }
 t('no stale page.html#anchor link in any built page' + (stale.length ? ': ' + stale.slice(0, 5).join('; ') : ''), stale.length === 0);
+// PF-009 R18/R19 (owner-approved wording): Rush log and scouting are linked both ways
+const hasLink = (f, href, text) => new RegExp(`<a href="${href.replace(/[.#]/g, '\\$&')}">(<span[^>]*>[^<]*</span> )?${text}</a>`).test(docs[f] || '');
+t('R18: hub-matchnight.html and tactics.html link "See every Rush result" to rush.html, and the page exists', hasLink('hub-matchnight.html', 'rush.html', 'See every Rush result') && hasLink('tactics.html', 'rush.html', 'See every Rush result') && !!docs['rush.html']);
+t('R19: scouting.html links to hub-squad.html#sq-scout and hub-squad.html links back to scouting.html', hasLink('scouting.html', 'hub-squad.html#sq-scout', 'Track your recommendations in Squad') && hasLink('hub-squad.html', 'scouting.html', 'Recommend a player'));
 done();
