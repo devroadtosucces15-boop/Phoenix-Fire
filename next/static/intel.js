@@ -72,7 +72,7 @@ ${vals.some((v) => v != null) ? `<div class="ix-sky" role="img" aria-label="${es
     const cards = [['health', '🩺 Health', healthCard], ['todo', '🎯 To do', todoCard], ['history', '🏙️ Month by month', historyCard]];
     return `<div class="ix-head"><span class="muted small">Report from ${esc(ago(S.r.at))} · refreshes every Monday and whenever someone runs /insights</span><button type="button" class="chip" data-ix="refresh"${S.busy === 'load' ? ' disabled' : ''}>${S.busy === 'load' ? '⏳ Reading the club…' : '↻ Refresh'}</button></div>
 <div class="chips ix-pick" role="tablist" aria-label="Report cards">${cards.map(([k, n]) => `<button type="button" role="tab" aria-selected="${S.card === k}" class="chip${S.card === k ? ' on' : ''}" data-card="${k}">${n}</button>`).join('')}</div>
-<div class="ix-cards">${cards.map(([k, n, f]) => `<section class="panel ix-card${S.card === k ? ' on' : ''}" aria-label="${esc(n)}"><h3>${n}</h3>${f()}</section>`).join('')}</div>`;
+<div class="ix-cards">${cards.map(([k, n, f]) => `<section class="panel ix-card ix-card-${k}${S.card === k ? ' on' : ''}" aria-label="${esc(n)}"><h3>${n}</h3>${f()}</section>`).join('')}</div>`;
   }
   async function loadIntel() {
     S.busy = 'load'; S.err.intel = ''; paint();

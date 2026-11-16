@@ -70,3 +70,5 @@ label.al-box{min-height:40px;padding:0 2px}label.al-box input{width:24px;height:
 /* PF-009 R25: Boardroom Switches accordion in 2 columns from 1100, counts beside the title */
 .br-grp>summary{justify-content:flex-start}.br-grp>summary:after{margin-left:auto}.br-grp>summary small{margin-left:2px}
 @media(min-width:1100px){.br-grps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.br-grps>.br-grp{margin:0}.br-grp .br-flags{grid-template-columns:minmax(0,1fr)}}
+/* PF-009 R27 (owner approved 2026-11-16): Insights is two columns from 821: Health and Month by month stacked left, To do right (spans both rows); phones keep the one-card tab view */
+@media(min-width:821px){.ix-cards{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"ixh ixt" "ixm ixt";align-items:start}.ix-cards>.ix-card-health{grid-area:ixh}.ix-cards>.ix-card-todo{grid-area:ixt}.ix-cards>.ix-card-history{grid-area:ixm}.ix-cards>.ix-card-todo{align-self:stretch}}

@@ -60,4 +60,9 @@ const dgj = read('dugout.js');
 t('R26: the Dugout roster section no longer uses the .dg-av avatar class (it collapsed to 34px)', dgj.includes('dg-sec dg-roster') && !/<section[^>]*dg-sec dg-av/.test(dgj));
 t('R26: Dugout board is a 3-column equal-height grid from 1100, pitch column widest', /@media\(min-width:1100px\)\{\.dg-top\{grid-template-columns:minmax\(240px,1fr\) minmax\(0,1\.5fr\) minmax\(240px,1fr\);[^}]*align-items:stretch\}\.dg-top>\.dg-sec\{height:100%;margin:0\}/.test(lay));
 t('R26: the Dugout output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-dugout.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
+// PF-009 R27 (owner approved 2026-11-16): Insights is two columns from 821 (Health and Month by month left, To do right); phones keep one card
+const ixj = read('intel.js');
+t('R27: each Insights card carries its own class (ix-card-health, ix-card-todo, ix-card-history)', ixj.includes('ix-card ix-card-${k}'));
+t('R27: Insights is a 2-column grid from 821 with To do spanning both rows', /@media\(min-width:821px\)\{\.ix-cards\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);grid-template-areas:"ixh ixt" "ixm ixt"/.test(lay) && /\.ix-card-todo\{grid-area:ixt\}/.test(lay) && /\.ix-card-history\{grid-area:ixm\}/.test(lay));
+t('R27: the Insights output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-insights.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
 done();

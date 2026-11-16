@@ -664,9 +664,9 @@
       "lowHanging": false,
       "percent": 85,
       "verify": false,
-      "notes": "Split into one session per item when taken. 2026-11-16: R18-R26 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R27 Insights 2 columns, R28 Tools/Content form look, R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md.",
+      "notes": "Split into one session per item when taken. 2026-11-16: R18-R27 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R28 Tools/Content form look, R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md.",
       "outcome": "The optional additions the owner approved are live, and the remaining follow-ups are listed.",
-      "behavior": "R18 to R26 are done: staff home groups in a dense 4-column grid, Boardroom equal link tiles with a 2-column Switches accordion, and the Dugout as three equal-height columns (roster, pitch, ready-check) from 1100 px, one column on phones. R27 to R29 are approved and wait to be built one per session.",
+      "behavior": "R18 to R27 are done: Insights as two columns from 821 px (Health and Month by month left, To do right); staff home groups in a dense 4-column grid, Boardroom equal link tiles with a 2-column Switches accordion, and the Dugout as three equal-height columns (roster, pitch, ready-check) from 1100 px, one column on phones. R28 and R29 are approved and wait to be built one per session.",
       "doneLog": [
         {
           "date": "2026-11-16",
@@ -702,6 +702,11 @@
           "date": "2026-11-16",
           "ref": "PF-009 R26",
           "what": "Dugout: board is three equal-height columns (roster / pitch / ready-check) from 1100, pitch column widest and centred, one column below. Root cause of the empty left column: the roster section reused the .dg-av avatar class and collapsed to a 34px circle; renamed to dg-roster. Sibling panel margin reset so all three start level. Before and after shots at 390, 820, 1440 checked. Tests in tests/layout-pass.test.mjs."
+        },
+        {
+          "date": "2026-11-16",
+          "ref": "PF-009 R27",
+          "what": "Insights: Health and Month by month stacked left, To do right spanning both rows, two equal columns from 821 px; phones keep the one-card tab view. Each card now has its own class (ix-card-health, ix-card-todo, ix-card-history). Before and after shots at 390, 820, 1440 checked. Tests in tests/layout-pass.test.mjs."
         }
       ],
       "plans": []
