@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T18:00:42.710Z",
+ "fetchedAt": "2026-11-16T18:10:41.486Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -330,42 +330,6 @@
    "prevGoals8": "0",
    "prevGoals9": "0",
    "prevGoals10": "2",
-   "favoritePosition": "defender"
-  },
-  {
-   "name": "Ibekayne",
-   "gamesPlayed": "19",
-   "winRate": "94",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "9",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "125",
-   "passSuccessRate": "86",
-   "ratingAve": "7.1",
-   "tacklesMade": "18",
-   "tackleSuccessRate": "50",
-   "proName": "k. jones",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "190",
-   "proNationality": "14",
-   "proOverall": "82",
-   "proOverallStr": "82",
-   "manOfTheMatch": "1",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
    "favoritePosition": "defender"
   },
   {
@@ -1705,7 +1669,7 @@
   "midfielder": 9,
   "goalkeeper": 5,
   "forward": 14,
-  "defender": 14
+  "defender": 13
  },
  "career": [
   {
@@ -1797,22 +1761,11 @@
    "favoritePosition": "defender"
   },
   {
-   "name": "Ibekayne",
-   "proPos": "5",
-   "gamesPlayed": "94",
-   "goals": "1",
-   "assists": "0",
-   "manOfTheMatch": "2",
-   "ratingAve": "7.3",
-   "prevGoals": "0",
-   "favoritePosition": "defender"
-  },
-  {
    "name": "ed44ed",
    "proPos": "25",
-   "gamesPlayed": "221",
-   "goals": "261",
-   "assists": "155",
+   "gamesPlayed": "222",
+   "goals": "262",
+   "assists": "156",
    "manOfTheMatch": "43",
    "ratingAve": "7.8",
    "prevGoals": "1",
