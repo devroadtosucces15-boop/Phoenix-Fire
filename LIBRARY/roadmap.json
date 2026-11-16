@@ -616,10 +616,16 @@
       ],
       "fileLane": "staff pages",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 30,
       "verify": false,
-      "notes": "Split into one session per item when taken.",
-      "doneLog": [],
+      "notes": "Split into one session per item when taken. 2026-11-16: R20, R21 already built; zoom part of R22 done; R18/R19 wording drafted in PLANNING/OPEN-WORDING.md for the owner. Open: R22 axe re-run, R23 briefs, R24-R29 (spec file .site-context/spec/REFACTOR.md is missing from the repo).",
+      "doneLog": [
+        {
+          "date": "2026-11-16",
+          "ref": "PF-009 PR",
+          "what": "Audit: R20 and R21 were already built and tested, R22 zoom already allowed. Drafted R18 and R19 link wording for the owner in PLANNING/OPEN-WORDING.md (not in the site). Still open: R22 axe pass, R23 briefs, R24-R29."
+        }
+      ],
       "plans": []
     },
     {
