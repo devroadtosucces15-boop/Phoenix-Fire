@@ -24,14 +24,14 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 56% (items weighted by size: S 1, M 2, L 4).
+Project: 59% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
 | Project brain | 7 | 7 | 100% | 0 |
 | Side roadmap | 8 | 4 | 50% | 480 |
-| Match night and upkeep | 8 | 0 | 0% | 960 |
+| Match night and upkeep | 8 | 1 | 13% | 840 |
 
 ## Items
 
@@ -54,8 +54,8 @@ Project: 56% (items weighted by size: S 1, M 2, L 4).
 | PF-023 | Side roadmap Item 7: Rush queue and LFG as one matchmaking system | OPEN (verify) | PF-022 | `bot/` rush files | sonnet | Plan section 5b; queue board landed |
 | PF-024 | Side roadmap Items 8 to 25: bot cleanup and new bot features (including the test-view command) | OPEN | PF-023 | `bot/` | sonnet | Plan sections 5c to Item 25. Split into one session per item when taken. |
 | PF-025 | Side roadmap Item 6: visual and performance enhancement pass (last) | BLOCKED | PF-024 | site-wide | opus | Blocked: owner. Starts when the owner says the resources are ready. |
-| PF-003 | Dock browser check and hub page sweep at 390, 820, 1440 (verify; may already be done) | NEXT (verify) | PF-001 | `next/static/dock.*`, hub pages | sonnet | Details: `PLANNING/DOCK-HUB-DETAILS.md`. Needs screenshots before and after (design rule). |
-| PF-004 | Match-night follow-ups in code: `auto:watchlist-video` picture block, offline captures for check-in and line-up posts, track `tools/bot-studio/`, rerun `studio.mjs check` | OPEN | PF-001 | `bot/watchlist.js`, `tools/bot-audit/`, `tools/bot-studio/` | sonnet | See "Match-night follow-ups" in `PLANNING/PHOENIX-ROADMAP.md`. |
+| PF-003 | Dock browser check and hub page sweep at 390, 820, 1440 (verify; may already be done) | DONE 2026-11-16 (PF-003 PR) | PF-001 | `next/static/dock.*`, hub pages | sonnet | Details: `PLANNING/DOCK-HUB-DETAILS.md`. Needs screenshots before and after (design rule). |
+| PF-004 | Match-night follow-ups in code: `auto:watchlist-video` picture block, offline captures for check-in and line-up posts, track `tools/bot-studio/`, rerun `studio.mjs check` | NEXT | PF-001 | `bot/watchlist.js`, `tools/bot-audit/`, `tools/bot-studio/` | sonnet | See "Match-night follow-ups" in `PLANNING/PHOENIX-ROADMAP.md`. |
 | PF-005 | Match-night go-live (owner steps in order): apply migration 0061, confirm IMAGES and MEDIA bindings, publish site, deploy Worker and register commands, switch `rosterPicture` on | BLOCKED | PF-004 | Cloudflare, D1, Discord | none | Blocked: owner. Critical: touches live data. The owner confirms each step. |
 | PF-006 | Worker host: keep `phoenix-bot.norexunited.workers.dev` or move it | BLOCKED | none | `phoenix/worker-host.json` | none | Blocked: owner decision. `PLANNING/WORKER-HOST.md` has the flip steps. |
 | PF-007 | DJ bots on separate hosting (cannot run on the Worker) | OPEN | PF-006 | `dj/` | opus | Needs the owner's choice of host first. |
