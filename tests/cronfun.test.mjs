@@ -17,7 +17,7 @@ sqlite.prepare('INSERT INTO profiles (user_id, birthday, updated) VALUES (?, ?, 
 const realFetch = globalThis.fetch;
 const auths = [];
 globalThis.fetch = async (url, init = {}) => {
-  if (/discord\.com\/api\/v\d+\/channels\/42420\/messages/.test(String(url))) { auths.push(init.headers?.Authorization); return new Response('{"id":"1"}', { status: 200 }); }
+  if (/discord\.com\/api\/v\d+\/channels\/42420\/messages/.test(String(url))) { if (String(init.body).includes('BIRTHDAYS')) auths.push(init.headers?.Authorization); return new Response('{"id":"1"}', { status: 200 }); }
   return realFetch(url, init).catch(() => new Response('{}', { status: 500 }));
 };
 const run = async (e) => { const p = []; await worker.scheduled({ cron: '*/10 * * * *' }, e, { waitUntil: (x) => p.push(x) }); await Promise.allSettled(p); };
