@@ -10,6 +10,7 @@ the Worker and in GitHub) is `bot/SECRETS-REGISTRY.md`; it is the single source 
 |---|---|---|---|
 | Discord bot tokens (one per app) | Dev Portal, set in the Worker and GitHub secrets | `bot/SECRETS-REGISTRY.md`, "Discord apps" and "Secrets" | Reset in the portal, then `set-tokens.sh` |
 | Discord application IDs and public keys | Public; `bot/wrangler.toml` | same | none |
+| DJ bridge key `MUSIC_SHARED_KEY` | Worker secret and the PC's `dj/.env` (same value, never in git) | `bot/SECRETS-REGISTRY.md` | Owner sets both; see `dj/DEPLOY.md`, "Website link" |
 | VAPID, dispatch and analytics secrets | Worker secrets | same | Rotate by the owner |
 | GitHub access | `gh` login on the owner's machine (`gh auth setup-git` makes plain `git push` work) | memory note `git-push-gh-credential` | Re-login if expired |
 | Cloudflare account ID and deploy token | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` as GitHub secrets; deploys and backups run from GitHub (`bot.yml`, `backup.yml`) | `bot/SECRETS-REGISTRY.md`, "Secrets" | Owner only |

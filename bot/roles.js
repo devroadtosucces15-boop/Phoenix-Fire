@@ -93,6 +93,9 @@ export const PERMS = {
   'submissions.view': 'manager', // P8.1 – portal: feedback, ratings, award votes, predictions, suggestions, builds in one place
   'reports.view': 'manager', // P8.3 – unified reported-content queue (posts, feedback, messages)
   'moderation.manage': 'manager', // P8.3 – warn / mute members
+  'music.view': 'member', // PF-022 DJ bridge: rooms, now playing, queue on the site
+  'music.control': 'member', // pause, skip, volume, add and remove through the DJ bridge
+  'music.manage': 'manager', // DJ bridge status and command log (Control Center)
   'points.view': 'member', // P11.3 – point system: my total/breakdown + leaderboard
   'medals.manage': 'owner', // C4 – Boardroom: edit, hide, add and hand out medals (meta `medal_config`)
   'flags.manage': 'owner', // BE5 – Boardroom: live-edit feature flag levels (flag_overrides table)

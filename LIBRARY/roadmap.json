@@ -408,7 +408,7 @@
       "lowHanging": false,
       "percent": 0,
       "verify": true,
-      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT.",
+      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT. Step 5 (DJ bridge, push and poll) built on branch pf-022b-dj-bridge: bot/music.js, migration 0068 (not applied), dj/src/bridge.js, bot/djregistry.js, tests/music.test.mjs; owner steps in dj/DEPLOY.md. Backend steps 1-4, 6 (pf-022a) and front end 7-9 (pf-022c) remain.",
       "outcome": "Staff run the club from the Control Center: DJ bridge, permissions and sign-in work end to end.",
       "behavior": "Waits on one owner decision, whether the DJ bridge pushes or polls; the remaining dashboard parts follow that choice.",
       "doneLog": [],

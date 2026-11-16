@@ -27,6 +27,7 @@ Core OAuth redirect: `https://phoenix-bot.norexunited.workers.dev/auth/callback`
 | `DISCORD_BOT_TOKEN_MATCHDAY` | matchday app | Dev Portal, Matchday app, Bot, Reset Token | set with `bot/set-tokens.sh MATCHDAY`; `bot.yml` uploads it | same |
 | `DISCORD_BOT_TOKEN_RUSH` | rush app | Dev Portal, Rush app, Bot, Reset Token | set with `bot/set-tokens.sh RUSH`; `bot.yml` uploads it | same |
 | `DISCORD_CLIENT_SECRET` | website login (core) | Dev Portal, core app, OAuth2, Reset Secret | present | no |
+| `MUSIC_SHARED_KEY` | DJ bridge: the PC's Phoenix DJ pushes snapshots and polls commands (`bot/music.js`, `dj/src/bridge.js`) | owner picks a long random value; `wrangler secret put MUSIC_SHARED_KEY` and, on the PC, `dj/set-secret.sh MUSIC_SHARED_KEY` | not set yet (owner step) | n/a (PC `.env`) |
 | `GH_DISPATCH_TOKEN` | cron triggers site update | GitHub fine-grained token, Actions write on this repo | set 2026-11-10 | set 2026-11-10 |
 | `VAPID_PRIVATE_KEY` | web push | keypair generated once | set 2026-11-10 | set 2026-11-10 |
 | `CLOUDFLARE_ANALYTICS_TOKEN` | health page | Cloudflare token, Account Analytics read | set 2026-11-10 | set 2026-11-10 |

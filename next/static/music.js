@@ -70,15 +70,15 @@
   });
   room.addEventListener('change', (e) => { if (e.target.matches('[data-mu-vol]')) run('volume', { v: +e.target.value }); });
 
-  const http = MM.httpTransport({ get: (p) => B.call(p), post: (p, b) => B.post(p, b) });
+  const http = MM.httpTransport({ get: (p) => B.call(p), post: (p, b) => B.post(p, b), every: 8e3 }) // the DJ app pushes every change, so 8 s polling feels live;
   const real = host.dataset.socket ? MM.socketTransport({ url: host.dataset.socket, http }) : http;
-  // real rows win: start in practice mode, probe the bot now and every 30 s, switch for good when rows arrive
+  // real rows win: start in practice mode, probe the bot now and every 10 s, switch for good when rows arrive
   const probe = async () => { let rows = []; try { rows = MM.norm(await B.call('/api/music/rooms')); } catch {} if (!rows.length) return false; store.use(real); return true; };
   const boot = async () => {
     list.innerHTML = '<div class="panel"><span class="sk" style="height:64px;display:block"></span></div>';
     if (await probe()) return;
     store.use(MM.sampleTransport(me));
-    const i = setInterval(async () => { if (!d.hidden && await probe()) clearInterval(i); }, 30e3);
+    const i = setInterval(async () => { if (!d.hidden && await probe()) clearInterval(i); }, 10e3);
   };
   // one clock for the progress bar (the room state only changes on events)
   setInterval(() => { const r = store.room(), pos = room.querySelector('[data-mu-pos]'); if (!r?.nowPlaying || !pos || d.hidden) return; const np = r.nowPlaying, q = played(np, r.paused), b = room.querySelector('.mu-bar'); pos.textContent = clock(q); b.querySelector('i').style.width = (np.duration ? Math.round((q / np.duration) * 100) : 0) + '%'; b.setAttribute('aria-valuenow', q); }, 1000);

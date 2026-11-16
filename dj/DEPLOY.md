@@ -42,3 +42,17 @@ Everyday: `systemctl --user status phoenix-dj` · `journalctl --user -u phoenix-
 - Running on a server instead: `docker compose up -d --build` with `LAVALINK_HOST=lavalink:2333` and a `LAVALINK_PASSWORD` in `.env`
   (the compose file starts its own Lavalink; `maintain.sh` keeps its YouTube plugin current).
 - Brand (names, colours, crest) lives in `src/brand.js`, read from `../config.json`; `tests/dj.test.mjs` fails if another club's name, colour or crest shows up.
+
+## Website link: the DJ bridge (PF-022)
+The PC is behind NAT, so the Worker never calls it. The DJ app **pushes** a snapshot of every live room to the Worker
+(`POST /api/music/bridge/push`, on every change and every 20 s) and **polls** a command queue every 2 s
+(`GET /api/music/bridge/commands`, then `POST .../ack`) over the shared key header `X-Phoenix-Key`. The Music page and the
+Control Center use those routes; with the DJ off the page shows its SAMPLE rooms. Commands run at most once.
+1. Pick a long random key (at least 16 characters). Never put it in git or in chat.
+2. On the PC: `./set-secret.sh MUSIC_SHARED_KEY` (hidden prompt, writes `.env`). `WORKER_URL` is optional: it defaults to
+   `members.api` in `config.json`, so a Worker host move needs no change here.
+3. In the Worker (owner step): `wrangler secret put MUSIC_SHARED_KEY` with the same value, and apply migration
+   `bot/migrations/0068_music_bridge.sql`, then deploy the Worker.
+4. Restart the DJ (`sudo systemctl restart phoenix-dj`): the log says `bridge: connected to the Worker`. Without the key it
+   says `site bridge off`.
+5. Turn on the `music` feature flag (Boardroom) for the audience you want.

@@ -64,3 +64,6 @@ IDs and secret names are in `bot/SECRETS-REGISTRY.md` (see `CREDENTIALS.md`).
 
 Adding a command: define it in `bot/commanddefs.js`, map it in `APP_COMMANDS`, read channels from config, add its picture and a brand test,
 run `node tools/library/sync.mjs`.
+
+## DJ bridge (PF-022 step 5)
+The Phoenix DJ apps run on the owner's PC (`dj/`). `dj/src/bridge.js` pushes room snapshots and polls commands over `X-Phoenix-Key`; the Worker side is `bot/music.js` (`/api/music/*`, migration `0068_music_bridge.sql`), the Control Center rows are `bot/djregistry.js` (kind `dj`), the site page is `hub-music.html`. Setup: `dj/DEPLOY.md`, "Website link".

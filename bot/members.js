@@ -60,6 +60,7 @@ import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
 import { issueSave } from './issues.js';
 import { clubLookup } from './clublookup.js';
 import { awardPoints, pointsRoute } from './points.js';
+import { musicBridgeRoute, musicRoute } from './music.js';
 import { FLAG_LEVELS, ROLES, ROLE_LABEL, atLeast, can, committedFlags, discordRole, featuresFor, flagOn, flags, loadFlagOverrides, permsFor, sessionRole, viewAsRole, withFlagOverrides } from './roles.js';
 import { healthRoute } from './health.js';
 import { jailCount, triviaPoints } from './fun.js';
@@ -432,6 +433,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
     if (url.pathname === '/api/org/clubs/public') return cors(env, await orgClubsPublicRoute(request, env)); // jobs read the saved club list
     if (url.pathname === '/api/bot/settings/public') return cors(env, await botSettingsPublicRoute(request, env)); // P7.5 – fetch.mjs reads before posting
     if (url.pathname === '/api/bot/faces') return cors(env, await botFacesRoute(request, env)); // faces for the match picture, drawn in the Action
+    if (url.pathname.startsWith('/api/music/bridge/')) return cors(env, await musicBridgeRoute(request, env)); // PF-022 – the DJ app on the owner's PC pushes snapshots and polls commands (keyed)
     if (url.pathname === '/api/crawl') return cors(env, await crawlRoute(request, env)); // P9.1 – fetch.mjs's resumable club-ID crawl checkpoint
     if (url.pathname === '/api/burners/relay') return cors(env, await burnersRelay(request, env)); // EA relay answer from the Actions job
     if (url.pathname === '/api/burners/tracked') return cors(env, await burnersRoute(request, env)); // burner tracker – fetch.mjs reads the clubs to follow
@@ -830,6 +832,8 @@ async function route(p, method, body, me, env, loadSite, url) {
   if (ccr) return ccr;
   const pts = await pointsRoute(p, method, body, me, env); // P11.3 point system
   if (pts) return pts;
+  const mus = await musicRoute(p, method, body, me, env, url?.searchParams); // PF-022 – DJ bridge: rooms, commands, search for the site
+  if (mus) return mus;
 
   if (p.startsWith('/api/admin/')) {
     if (!can(me, 'portal.view')) return fail('Managers only.', 403);

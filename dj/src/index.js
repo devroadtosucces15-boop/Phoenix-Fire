@@ -13,6 +13,7 @@ import * as rooms from './bubbles.js';
 import * as icons from './icons.js';
 import * as plcmd from './playlistcmd.js';
 import * as plist from './playlists.js';
+import { createBridge, searchTracks, workerUrl } from './bridge.js';
 import { panel as v2panel, small, btn } from './v2.js';
 import { MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } from 'discord.js';
 
@@ -54,7 +55,12 @@ const isManager = (m) => m.permissions.has('ManageGuild') || m.roles.cache.some(
 const canControl = (room, m) => isManager(m) || m.voice?.channelId === room.channelId;
 const NOPERM = 'Join the music voice channel first (or ask a manager).';
 
-const onChange = (room) => { panel.refresh(room.binding); if (rooms.isBubble(room.binding.textId)) rooms.ctlEnsureLast(room.binding.textId); };
+// Site bridge (PF-022): off until WORKER_URL (or config.json members.api) and MUSIC_SHARED_KEY are set in .env
+const liveRooms = () => [...store.bindings.values()].map((b) => b.room).filter(Boolean);
+const bridge = env.MUSIC_SHARED_KEY && workerUrl(env) ? createBridge({ url: workerUrl(env), key: env.MUSIC_SHARED_KEY,
+  ctx: { rooms: liveRooms, find: (id) => liveRooms().find((r) => String(r.binding.key || r.binding.textId) === id), resolve: (q) => resolve(main.shoukaku.getIdealNode(), q), search: (q) => searchTracks(main.shoukaku.getIdealNode(), q) } }) : null;
+bridge ? bridge.start() : console.log(`${BOT}: site bridge off (set MUSIC_SHARED_KEY in .env to link the website player)`);
+const onChange = (room) => { bridge?.changed(); panel.refresh(room.binding); if (rooms.isBubble(room.binding.textId)) rooms.ctlEnsureLast(room.binding.textId); };
 const notify = (room, text) => main.client.channels.fetch(room.binding.textId)
   .then((c) => c.send({ embeds: [new EmbedBuilder().setColor(COLORS.steel).setDescription(text)] }))
   .then((m) => setTimeout(() => m.delete().catch(() => {}), 20_000)).catch(() => {});
@@ -118,6 +124,7 @@ main.client.on('interactionCreate', async (i) => {
         const hint = link && /spotify/i.test(link) && !env.SPOTIFY_CLIENT_ID ? ' Spotify links need Spotify credentials set up on the server.' : '';
         return i.editReply(err((found?.failed ? `Could not load that: ${found.failed}` : 'Nothing found for that.') + hint));
       }
+      for (const tr of found.tracks) tr.by = { id: i.user.id, name: i.member?.displayName || i.user.username };
       await r.room.add(found.tracks);
       const where = platformOf(normalizeLink(q) || '') ;
       const msg = found.fallback ? `YouTube blocked that link, so I played the exact same song from SoundCloud: **${found.title}**` : found.viaSpotify ? `Queued **${found.title}** (matched from Spotify on ${found.matchedOn === 'soundcloud' ? 'SoundCloud' : 'YouTube'})` : found.playlist ? `Queued **${found.tracks.length}** tracks from **${found.title}**` : `Queued **${found.title}**`;
