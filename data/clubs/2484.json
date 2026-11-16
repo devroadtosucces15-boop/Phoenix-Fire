@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T21:20:45.258Z",
+ "fetchedAt": "2026-11-16T21:30:42.095Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1829,7 +1829,7 @@
   {
    "name": "KolletRivera",
    "proPos": "0",
-   "gamesPlayed": "169",
+   "gamesPlayed": "170",
    "goals": "6",
    "assists": "3",
    "manOfTheMatch": "13",
@@ -1851,7 +1851,7 @@
   {
    "name": "EL-nugat",
    "proPos": "0",
-   "gamesPlayed": "9",
+   "gamesPlayed": "10",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
@@ -1906,7 +1906,7 @@
   {
    "name": "CapoGroot",
    "proPos": "0",
-   "gamesPlayed": "43",
+   "gamesPlayed": "44",
    "goals": "3",
    "assists": "5",
    "manOfTheMatch": "1",
