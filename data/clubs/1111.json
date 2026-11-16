@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-16T18:33:37.768Z",
+ "fetchedAt": "2026-11-16T18:36:58.618Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2001,7 +2001,7 @@
   {
    "name": "Ibekayne",
    "proPos": "5",
-   "gamesPlayed": "94",
+   "gamesPlayed": "95",
    "goals": "1",
    "assists": "0",
    "manOfTheMatch": "2",
@@ -2034,12 +2034,12 @@
   {
    "name": "ed44ed",
    "proPos": "25",
-   "gamesPlayed": "222",
+   "gamesPlayed": "223",
    "goals": "262",
    "assists": "156",
    "manOfTheMatch": "43",
    "ratingAve": "7.8",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
