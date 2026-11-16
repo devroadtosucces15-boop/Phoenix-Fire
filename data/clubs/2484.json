@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T13:00:48.817Z",
+ "fetchedAt": "2026-11-16T13:10:44.302Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -2198,7 +2198,7 @@
   {
    "name": "Glekke-93",
    "proPos": "25",
-   "gamesPlayed": "103",
+   "gamesPlayed": "104",
    "goals": "93",
    "assists": "44",
    "manOfTheMatch": "21",
