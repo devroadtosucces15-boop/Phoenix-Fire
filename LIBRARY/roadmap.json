@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15",
+  "updated": "2026-11-16",
   "items": [
     {
       "id": "PF-001",
@@ -228,7 +228,7 @@
       "title": "Project brain: optional hosted artifact mirror for the phone",
       "phase": "Project brain",
       "area": "artifact",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 2,
@@ -240,10 +240,16 @@
       ],
       "fileLane": "artifact",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Snapshot only; updates when a session publishes",
-      "doneLog": [],
+      "notes": "Snapshot only; updates when a session publishes (handoff section 7 step 6).",
+      "doneLog": [
+        {
+          "date": "2026-11-16",
+          "ref": "PF-017 PR",
+          "what": "tools/brain/publish.mjs builds one self-contained snapshot of the brain page (no Credentials tab, redacted, build time stated, phone Brainstorm on db and dictation capabilities); published as a private Artifact https://claude.ai/artifact/XyziYyVtcpdwsghV8G6Y72. tools/brain/phone-notes.mjs imports phone ideas into LIBRARY/inbox/. tests/publish.test.mjs (12 checks). Handoff section 7 step 6 added."
+        }
+      ],
       "plans": []
     },
     {
@@ -451,7 +457,7 @@
       "title": "Dock browser check and hub page sweep at 390, 820, 1440 (verify; may already be done)",
       "phase": "Match night and upkeep",
       "area": "`next/static/dock.*`, hub pages",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,
