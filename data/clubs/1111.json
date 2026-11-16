@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-16T09:20:40.211Z",
+ "fetchedAt": "2026-11-16T09:30:41.605Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1975,14 +1975,14 @@
   },
   {
    "name": "ImWizardJr",
-   "proPos": "",
-   "gamesPlayed": "0",
+   "proPos": "25",
+   "gamesPlayed": "1",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "0.0",
+   "ratingAve": "6.9",
    "prevGoals": "0",
-   "favoritePosition": ""
+   "favoritePosition": "forward"
   },
   {
    "name": "DOENGDOENGTJAK",
@@ -2096,14 +2096,14 @@
   },
   {
    "name": "Gravity-_-Snake",
-   "proPos": "25",
-   "gamesPlayed": "265",
+   "proPos": "5",
+   "gamesPlayed": "266",
    "goals": "274",
    "assists": "274",
    "manOfTheMatch": "29",
    "ratingAve": "7.2",
-   "prevGoals": "1",
-   "favoritePosition": "forward"
+   "prevGoals": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "Ana Montana8022",
@@ -2130,7 +2130,7 @@
   {
    "name": "MejMech",
    "proPos": "14",
-   "gamesPlayed": "596",
+   "gamesPlayed": "597",
    "goals": "435",
    "assists": "453",
    "manOfTheMatch": "153",
@@ -2152,12 +2152,12 @@
   {
    "name": "AliasX47",
    "proPos": "25",
-   "gamesPlayed": "372",
-   "goals": "444",
+   "gamesPlayed": "373",
+   "goals": "446",
    "assists": "249",
-   "manOfTheMatch": "39",
+   "manOfTheMatch": "40",
    "ratingAve": "7.7",
-   "prevGoals": "1",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
