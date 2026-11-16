@@ -40,4 +40,10 @@ t('no stale page.html#anchor link in any built page' + (stale.length ? ': ' + st
 const hasLink = (f, href, text) => new RegExp(`<a href="${href.replace(/[.#]/g, '\\$&')}">(<span[^>]*>[^<]*</span> )?${text}</a>`).test(docs[f] || '');
 t('R18: hub-matchnight.html and tactics.html link "See every Rush result" to rush.html, and the page exists', hasLink('hub-matchnight.html', 'rush.html', 'See every Rush result') && hasLink('tactics.html', 'rush.html', 'See every Rush result') && !!docs['rush.html']);
 t('R19: scouting.html links to hub-squad.html#sq-scout and hub-squad.html links back to scouting.html', hasLink('scouting.html', 'hub-squad.html#sq-scout', 'Track your recommendations in Squad') && hasLink('hub-squad.html', 'scouting.html', 'Recommend a player'));
+// PF-009 R22 (axe re-run 2026-11-16): the two findings left after the playbook and music() fixes are closed
+const mnjs = fs.readFileSync(path.join(ROOT, 'next/static/matchnight.js'), 'utf8');
+t('R22: match-night day buttons are plain buttons in a group, not role="listitem" (axe aria-allowed-role)', !mnjs.includes('role="listitem"') && !mnjs.includes('role="list"') && mnjs.includes('class="mn-days" role="group"'));
+const mcss = read('motion.css');
+t('R22: the install-banner close button keeps a 44px hit area (axe target-size)', /#nx-inst \.x\{[^}]*min-width:44px;min-height:44px/.test(mcss));
+t('R22: on phones the install banner sits above the dock button, so it never covers the close button (axe target-size)', /@media\(max-width:820px\)\{#nx-inst\{bottom:calc\(168px/.test(mcss));
 done();

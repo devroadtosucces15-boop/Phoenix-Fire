@@ -662,11 +662,11 @@
       ],
       "fileLane": "staff pages",
       "lowHanging": false,
-      "percent": 45,
+      "percent": 60,
       "verify": false,
-      "notes": "Split into one session per item when taken. 2026-11-16: R20, R21 already built; zoom part of R22 done; R18 and R19 approved by the owner and wired with a test. Open: R22 axe re-run, R23 briefs, R24-R29 (spec file .site-context/spec/REFACTOR.md is missing from the repo).",
+      "notes": "Split into one session per item when taken. 2026-11-16: R20, R21 done; R22 done (zoom, axe at 0 on 12 phone pages); R18 and R19 approved and wired. Open: R23 briefs (needs the owner's list of assigned wishlist items), R24-R29 (spec file .site-context/spec/REFACTOR.md is missing from the repo; owner must restate them).",
       "outcome": "The optional additions the owner approved are live, and the remaining follow-ups are listed.",
-      "behavior": "R18 and R19 link wording was approved and wired with a test; R22 axe pass, R23 briefs and R24 to R29 remain.",
+      "behavior": "R18, R19 and R22 are done: Rush and scouting links wired, zoom allowed, axe re-run at 0 on 12 phone pages (match-night day buttons are plain buttons, install banner clears the dock button and keeps a 44px close). R23 briefs and R24 to R29 remain.",
       "doneLog": [
         {
           "date": "2026-11-16",
@@ -677,6 +677,11 @@
           "date": "2026-11-16",
           "ref": "PF-009 R18/R19",
           "what": "Owner approved the R18 and R19 wording. Wired: rush.html link on hub-matchnight#mn-rush and tactics, scouting.html and hub-squad#sq-scout link both ways (two lines adjusted to match the pages). Test in tests/forwarder.test.mjs; full suite green."
+        },
+        {
+          "date": "2026-11-16",
+          "ref": "PF-009 R22",
+          "what": "Axe re-run (axe-core 4.10.2, headless Chrome, 390 wide, 12 pages): aria-required-children and aria-allowed-attr were already 0. Fixed the two left: match-night day buttons lost role=listitem (group instead), install banner close button 44px and lifted above the dock button on phones. Re-run shows 0 on all five rules. Guarded in tests/forwarder.test.mjs. Colour contrast and classic link wording stay a written owner question."
         }
       ],
       "plans": []

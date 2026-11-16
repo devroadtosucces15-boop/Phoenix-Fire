@@ -6,10 +6,11 @@ PLANNING/SESSION-HANDOFF.md sections 1 to 5, LIBRARY/README.md and the PF-009 ro
 already built and are guarded by `tests/deeplink.test.mjs` (staff tab data-dl, split locker mounts): confirm what is still open before building.
 
 ## State right now
-- PF-008 is DONE: the deep-link helper, link resolver and `members.html#...` forwarder were already built; nothing stale. Added `tests/forwarder.test.mjs` (every forwarder target and every static `page.html#anchor` resolves in the Phoenix build). Real-browser check at 390 and 1440 passed.
-- PF-026 is DONE: visual roadmap at http://127.0.0.1:4577/roadmap (`node tools/brain/serve.mjs`) and the private Artifact "Phoenix Roadmap" (link in `LIBRARY/README.md`). At the end of your session run `node tools/brain/roadmap-page.mjs` and republish that Artifact (handoff section 7 step 7), and give your item `outcome` and `behavior` text in `roadmap.json` if it is new.
-- PF-022 (Control Center CRM, DJ bridge push or poll) waits on an owner decision: do not start it, and PF-023 follows it. PF-005, PF-006, PF-007 and PF-025 are owner steps.
-- Write a fresh usage snapshot first (`node tools/brain/usage.mjs write --five <n> --week <n>`, numbers from the app usage tool); at 80% or more stop and report. Usage was 89% (5-hour) on 2026-11-16 around 15:15 UTC; the window resets about 15:50 UTC.
+- PF-009 R22 is DONE (2026-11-16): axe-core 4.10.2 in headless Chrome at 390 wide on 12 phone pages shows 0 for aria-required-children, aria-allowed-attr, aria-allowed-role, aria-required-parent and target-size. Fixed match-night day buttons (no listitem role) and the install banner (44px close, lifted above the dock button). Guarded in `tests/forwarder.test.mjs`. Colour contrast and the classic link wording stay a written owner question.
+- PF-009 still open: R23 (one brief per assigned wishlist item in `.site-context/handoffs/` with `Status: open`; the list of items is missing, ask the owner or find it) and R24 to R29 (their definitions lived in `.site-context/spec/REFACTOR.md`, not in the repo; the owner must restate them). If neither can be recovered, mark PF-009 DONE with that written down and make PF-010 NEXT.
+- PF-022 waits on an owner decision (do not start; PF-023 follows). PF-005, PF-006, PF-007 and PF-025 are owner steps.
+- Write a fresh usage snapshot first (`node tools/brain/usage.mjs write --five <n> --week <n>`); at 80% or more stop and report.
+- At the end run `node tools/brain/roadmap-page.mjs` and republish the private Artifact "Phoenix Roadmap" (handoff section 7 step 7).
 
 ## Do next, in order
 1. Check LIBRARY/CLAIMS.md and claim the files you will touch.
