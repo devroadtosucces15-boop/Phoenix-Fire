@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-16T23:20:40.292Z",
+ "fetchedAt": "2026-11-16T23:30:41.603Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2254,8 +2254,8 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "116",
-   "goals": "39",
+   "gamesPlayed": "117",
+   "goals": "40",
    "assists": "51",
    "manOfTheMatch": "6",
    "ratingAve": "7.5",
@@ -2264,14 +2264,14 @@
   },
   {
    "name": "ImVietSoWhat",
-   "proPos": "",
-   "gamesPlayed": "0",
+   "proPos": "14",
+   "gamesPlayed": "1",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "0.0",
+   "ratingAve": "7.5",
    "prevGoals": "0",
-   "favoritePosition": ""
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Usman4518",
