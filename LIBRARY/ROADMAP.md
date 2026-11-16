@@ -24,14 +24,14 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 72% (items weighted by size: S 1, M 2, L 4).
+Project: 75% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
 | Project brain | 8 | 8 | 100% | 0 |
 | Side roadmap | 8 | 4 | 50% | 480 |
-| Match night and upkeep | 8 | 3 | 48% | 600 |
+| Match night and upkeep | 8 | 4 | 60% | 480 |
 
 ## Items
 
@@ -61,7 +61,7 @@ Project: 72% (items weighted by size: S 1, M 2, L 4).
 | PF-007 | DJ bots on separate hosting (cannot run on the Worker) | OPEN | PF-006 | `dj/` | opus | Needs the owner's choice of host first. |
 | PF-008 | Deep-link helper and stale anchors (R04, R05); `members.html#...` forwarder (R06) | DONE 2026-11-16 (PF-008 PR) | PF-001 | `next/`, `phoenix/build.mjs` | sonnet | From "Still open later" in `PLANNING/DOCK-HUB-DETAILS.md`. |
 | PF-009 | Optional additions R18 to R22 and staff sweep follow-ups R24 to R29 | NEXT | PF-008 | staff pages | sonnet | Split into one session per item when taken. 2026-11-16: R18-R22 done (R18/R19 wired, R20/R21 built, R22 axe at 0). R23 briefs written (PLANNING/handoffs/, 17 briefs, Status open, homes proposed). R24-R29 are proposed in .site-context/spec/STAFF-SWEEP.md and wait for the owner: approval checklist in PLANNING/STAFF-SWEEP-APPROVAL.md. |
-| PF-010 | Theme leftovers: search palette still NOREX-style blue-black; hardcoded gold gradient in `staffhub.css` should come from config | OPEN | PF-001 | `next/static/`, `config.json` | sonnet | Brand rule: add a test that fails on the NOREX colour. |
+| PF-010 | Theme leftovers: search palette still NOREX-style blue-black; hardcoded gold gradient in `staffhub.css` should come from config | DONE 2026-11-16 (PR (PF-010)) | PF-001 | `next/static/`, `config.json` | sonnet | Brand rule: add a test that fails on the NOREX colour. |
 | PF-026 | Project brain: visual, navigable roadmap (timeline, board, dependency graph, step drawer with outcome and behavior), local live and hosted snapshot | DONE 2026-11-16 (PR (PF-026)) | PF-017 | `tools/brain/`, `LIBRARY/roadmap.json` | opus | Owner request 2026-11-16. Full brief: `PLANNING/PF-026-ROADMAP-VISUAL.md`. Can run beside the PF-008 session; both edit roadmap.json rows, so claim and rebase. |
 
 ## Outcome and behavior

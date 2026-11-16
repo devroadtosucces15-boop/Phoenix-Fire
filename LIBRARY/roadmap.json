@@ -696,7 +696,7 @@
       "title": "Theme leftovers: search palette still NOREX-style blue-black; hardcoded gold gradient in `staffhub.css` should come from config",
       "phase": "Match night and upkeep",
       "area": "`next/static/`, `config.json`",
-      "status": "OPEN",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -707,12 +707,18 @@
       ],
       "fileLane": "`next/static/`, `config.json`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Brand rule: add a test that fails on the NOREX colour.",
       "outcome": "The search palette and staff hub use the Phoenix colours with no NOREX blue-black left.",
       "behavior": "The gold gradient in staffhub.css moves to config and a test fails when the NOREX colour reappears.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-16",
+          "ref": "PR (PF-010)",
+          "what": "Search palette, header menu and staff-hub plate no longer hardcode colours: header.css and staffhub.css read var(--pal-top/--pal-bottom/--pal-veil) and var(--plate-top/--plate-bottom); config.json brand.palette and brand.plate hold the values and phoenix/build.mjs writes them into phoenix.css. the NOREX blue-black surfaces and the hardcoded gold plate are gone from the built output; tests/theme-tokens.test.mjs (13 checks) fails on them. Checked at 390, 820, 1440."
+        }
+      ],
       "plans": []
     },
     {

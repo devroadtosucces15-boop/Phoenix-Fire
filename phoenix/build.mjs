@@ -54,6 +54,10 @@ try {
   // 4. overlay: badge crest, icons, 3D crest, theme layer
   for (const f of fs.readdirSync(path.join(here, 'overlay'))) fs.copyFileSync(path.join(here, 'overlay', f), path.join(stage, 'next', f === 'crest.png' ? f : path.join('static', f)));
   // The recorded API answers (phoenix-api.json) come from the Norex worker; give their text the same club names.
+  // brand tokens from config.json (gold staff-hub plate, search palette / menu surfaces): the css reads var(--plate-*) and var(--pal-*), never a hex
+  { const b = JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).brand || {}, t = [['plate-top', b.plate?.top], ['plate-bottom', b.plate?.bottom], ['pal-top', b.palette?.top], ['pal-bottom', b.palette?.bottom], ['pal-veil', b.palette?.veil]];
+    if (t.some(([, v]) => !v)) throw new Error('config.json brand.plate and brand.palette are required (top, bottom, veil)');
+    fs.appendFileSync(path.join(stage, 'next/static/phoenix.css'), `\n/* brand tokens (config.json) */\n:root{${t.map(([k, v]) => `--${k}:${v}`).join(';')}}\n`); }
   const mock = path.join(stage, 'next/static/phoenix-api.json');
   if (fs.existsSync(mock)) { let s = fs.readFileSync(mock, 'utf8'); const o = s; for (const [re, to] of names) s = s.replace(re, to); if (s !== o) fs.writeFileSync(mock, s); }
   const appjs = path.join(stage, 'next/static/app.js'), as = fs.readFileSync(appjs, 'utf8');

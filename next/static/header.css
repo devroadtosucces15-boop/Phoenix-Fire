@@ -17,7 +17,7 @@
   .hdr-r .ac{padding:4px;width:44px;height:44px}.acn{display:none}
 }
 /* dropdown: one flat panel, hairline sections, never wider than the screen, scrolls inside its max-height */
-.hdr-menu{position:fixed;z-index:9990;top:calc(var(--hb,68px) + 6px);right:max(12px,calc((100vw - 1240px)/2 + 12px));width:min(340px,calc(100vw - 24px));max-height:calc(100dvh - var(--hb,68px) - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,#151c2a,#0f151f);border:1px solid var(--line2);border-radius:18px;box-shadow:0 26px 60px rgba(0,0,0,.65);animation:hdrIn .22s var(--ease,ease) both}
+.hdr-menu{position:fixed;z-index:9990;top:calc(var(--hb,68px) + 6px);right:max(12px,calc((100vw - 1240px)/2 + 12px));width:min(340px,calc(100vw - 24px));max-height:calc(100dvh - var(--hb,68px) - 24px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:linear-gradient(180deg,var(--pal-top,var(--p2)),var(--pal-bottom,var(--p1)));border:1px solid var(--line2);border-radius:18px;box-shadow:0 26px 60px rgba(0,0,0,.65);animation:hdrIn .22s var(--ease,ease) both}
 .hdr-menu[hidden],.hdr-pal[hidden]{display:none}
 @keyframes hdrIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
 .hdr-menu>*{padding:14px 16px}.hdr-menu>*+*{border-top:1px solid var(--line)}
@@ -34,8 +34,8 @@
 .hdr-menu .pv button{min-height:36px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line2);color:#fff;font:600 13px Inter;cursor:pointer}.hdr-menu .pv button.on{background:var(--red);border-color:var(--red)}
 .hdr-menu .pout{color:#ff9a92!important}
 /* palette */
-.hdr-pal{position:fixed;inset:0;z-index:9995;background:rgba(4,6,10,.94);display:flex;justify-content:center;align-items:flex-start;padding:calc(env(safe-area-inset-top) + 10vh) 12px 12px;contain:layout paint;overscroll-behavior:contain;touch-action:pan-y}
-.hdr-pal .pbox{width:min(560px,100%);max-height:min(70dvh,560px);display:flex;flex-direction:column;background:linear-gradient(180deg,#151c2a,#0f151f);border:1px solid var(--line2);border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.7);overflow:hidden}
+.hdr-pal{position:fixed;inset:0;z-index:9995;background:var(--pal-veil,rgba(0,0,0,.94));display:flex;justify-content:center;align-items:flex-start;padding:calc(env(safe-area-inset-top) + 10vh) 12px 12px;contain:layout paint;overscroll-behavior:contain;touch-action:pan-y}
+.hdr-pal .pbox{width:min(560px,100%);max-height:min(70dvh,560px);display:flex;flex-direction:column;background:linear-gradient(180deg,var(--pal-top,var(--p2)),var(--pal-bottom,var(--p1)));border:1px solid var(--line2);border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.7);overflow:hidden}
 .hdr-pal .pin{display:flex;align-items:center;gap:10px;padding:0 8px 0 16px;border-bottom:1px solid var(--line)}
 .hdr-pal input{flex:1;min-width:0;height:54px;background:none;border:0;outline:0;color:#fff;font:500 16px Inter}
 .hdr-pal .pclose{width:44px;height:44px;border-radius:50%;background:none;border:0;color:var(--soft);font-size:16px;cursor:pointer}
@@ -121,7 +121,7 @@ body.hub-page .bar .lg::after{background:linear-gradient(90deg,rgba(var(--ic),.9
 .nx-note{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top));z-index:9971;width:min(460px,calc(100vw - 24px));display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:18px;background:rgba(17,23,34,.97);border:1px solid rgba(239,207,122,.45);box-shadow:0 20px 44px rgba(0,0,0,.6);animation:nxNoteIn .5s cubic-bezier(.34,1.56,.64,1) both;transition:opacity .3s,translate .3s}
 .nx-note+.nx-note{top:calc(84px + env(safe-area-inset-top))}
 .nx-note.out{opacity:0;translate:0 -14px}
-.nx-note .ni{font-size:24px}.nx-note a{flex:1;min-width:0;display:grid;gap:2px;color:#c9d1df;font:500 12.5px Inter;text-decoration:none}.nx-note a b{color:#fff;font:700 15px Oswald;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nx-note a span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nx-note .ni{font-size:24px}.nx-note a{flex:1;min-width:0;display:grid;gap:2px;color:var(--soft);font:500 12.5px Inter;text-decoration:none}.nx-note a b{color:#fff;font:700 15px Oswald;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nx-note a span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nx-note .x{background:none;border:0;color:#8d98aa;font-size:16px;cursor:pointer;padding:8px;min-width:40px;min-height:40px}
 @keyframes nxNoteIn{from{opacity:0;transform:translate(-50%,-16px)}to{opacity:1;transform:translateX(-50%)}}
 html[data-motion=calm] .nx-note,html[data-motion=off] .nx-note,html[data-fx-bursts=off] .nx-note{animation:none}

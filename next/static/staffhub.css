@@ -1,6 +1,6 @@
 /* Staff hub (owner and manager) and the one-tab Boardroom pages. Layout only: grouped tiles in equal grids. */
 .adm-wrap{max-width:var(--pf-wrap-max,1320px)}
-.adm-plate{margin:26px 0 22px;text-align:center;border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,#e9c56a,#b88a2e);display:grid;justify-content:center;grid-template-columns:auto auto;column-gap:10px;align-items:center}
+.adm-plate{margin:26px 0 22px;text-align:center;border-radius:14px;padding:14px 18px;background:linear-gradient(180deg,var(--plate-top,var(--g2)),var(--plate-bottom,var(--g3)));display:grid;justify-content:center;grid-template-columns:auto auto;column-gap:10px;align-items:center}
 .adm-plate b{font-family:'Oswald',sans-serif;letter-spacing:.14em;font-size:28px;color:#2a1a05;text-transform:uppercase}
 .adm-plate i{font-style:normal;font-size:26px}
 .adm-plate small{grid-column:1/-1;letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:#4a3410}

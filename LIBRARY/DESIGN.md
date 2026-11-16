@@ -41,6 +41,7 @@ decisions and where they are enforced. Design talk always starts from a screensh
 | Rooms | `locker.css`, `hubx.css`, `staffhub.css`, `controlcenter.css`, `rush.css`, `rushboard.css`, `canvas.css`, `lookbook.css` | Page families: locker, staff hub, control center, rush, cards |
 | Motion | `fx.css`, `motion.css`, `smooth.css`, `crest3d.css`, `vendor-gsap`, `vendor-lenis`, `vendor-three` | Entrance, scroll and 3D crest; owner can switch motion off |
 | Phoenix | `phoenix/overlay/phoenix.css` (loaded last), `phoenix-fx.js` | Ember orange (`--red #e8741a`, `--red2 #ff9a2e`), gold (`--g1..g4`), silver (`--s1..s3`), black marble background, ember button gradient |
+| Brand tokens | `config.json` brand.plate, brand.palette; `phoenix/build.mjs` | Staff-hub gold plate (`--plate-top/-bottom`) and search palette and menu surfaces (`--pal-top/-bottom/-veil`) come from config, written into `phoenix.css` at build; css never holds those hex values (`tests/theme-tokens.test.mjs`) |
 
 ## Guard tests by area
 

@@ -14,7 +14,9 @@
     "red": "#e8651a",
     "ink": "#0a0705",
     "founded": "2025",
-    "motto": "Rise. Burn. Repeat."
+    "motto": "Rise. Burn. Repeat.",
+    "plate": { "top": "#f3c95c", "bottom": "#cf9a2a" },
+    "palette": { "top": "#1f1710", "bottom": "#17110b", "veil": "rgba(10,7,5,.94)" }
   },
   "platform": "common-gen5",
   "homeClubId": 1111,
