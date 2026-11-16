@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T16:45:19.905Z",
+ "fetchedAt": "2026-11-16T16:50:46.522Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -257,42 +257,6 @@
    "prevGoals7": "0",
    "prevGoals8": "0",
    "prevGoals9": "1",
-   "prevGoals10": "0",
-   "favoritePosition": "defender"
-  },
-  {
-   "name": "RealMinato7",
-   "gamesPlayed": "5",
-   "winRate": "100",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "3",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "39",
-   "passSuccessRate": "92",
-   "ratingAve": "7.5",
-   "tacklesMade": "2",
-   "tackleSuccessRate": "28",
-   "proName": "SAHAR",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "187",
-   "proNationality": "183",
-   "proOverall": "85",
-   "proOverallStr": "85",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "defender"
   },
@@ -1741,7 +1705,7 @@
   "midfielder": 9,
   "goalkeeper": 5,
   "forward": 14,
-  "defender": 15
+  "defender": 14
  },
  "career": [
   {
@@ -1808,17 +1772,6 @@
    "manOfTheMatch": "2",
    "ratingAve": "7.6",
    "prevGoals": "1",
-   "favoritePosition": "defender"
-  },
-  {
-   "name": "RealMinato7",
-   "proPos": "5",
-   "gamesPlayed": "347",
-   "goals": "150",
-   "assists": "162",
-   "manOfTheMatch": "29",
-   "ratingAve": "7.0",
-   "prevGoals": "0",
    "favoritePosition": "defender"
   },
   {
