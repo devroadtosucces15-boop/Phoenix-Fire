@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-16T22:50:42.892Z",
+ "fetchedAt": "2026-11-16T23:00:41.587Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -405,42 +405,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "khytEN_Prodige",
-   "gamesPlayed": "15",
-   "winRate": "66",
-   "goals": "4",
-   "assists": "9",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "1",
-   "shotSuccessRate": "23",
-   "passesMade": "237",
-   "passSuccessRate": "75",
-   "ratingAve": "7.5",
-   "tacklesMade": "28",
-   "tackleSuccessRate": "35",
-   "proName": "khy",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "38",
-   "proOverall": "81",
-   "proOverallStr": "81",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "2",
-   "prevGoals6": "0",
-   "prevGoals7": "1",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "Ghostz_x12",
    "gamesPlayed": "15",
    "winRate": "33",
@@ -624,7 +588,7 @@
  "positionCount": {
   "midfielder": 2,
   "goalkeeper": 0,
-  "forward": 9,
+  "forward": 8,
   "defender": 1
  },
  "career": [
@@ -758,17 +722,6 @@
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
    "prevGoals": "0",
-   "favoritePosition": "forward"
-  },
-  {
-   "name": "khytEN_Prodige",
-   "proPos": "25",
-   "gamesPlayed": "116",
-   "goals": "39",
-   "assists": "51",
-   "manOfTheMatch": "6",
-   "ratingAve": "7.5",
-   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
