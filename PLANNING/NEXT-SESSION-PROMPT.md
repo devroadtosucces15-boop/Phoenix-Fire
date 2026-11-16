@@ -7,6 +7,7 @@ already built and are guarded by `tests/deeplink.test.mjs` (staff tab data-dl, s
 
 ## State right now
 - PF-008 is DONE: the deep-link helper, link resolver and `members.html#...` forwarder were already built; nothing stale. Added `tests/forwarder.test.mjs` (every forwarder target and every static `page.html#anchor` resolves in the Phoenix build). Real-browser check at 390 and 1440 passed.
+- PF-026 is DONE: visual roadmap at http://127.0.0.1:4577/roadmap (`node tools/brain/serve.mjs`) and the private Artifact "Phoenix Roadmap" (link in `LIBRARY/README.md`). At the end of your session run `node tools/brain/roadmap-page.mjs` and republish that Artifact (handoff section 7 step 7), and give your item `outcome` and `behavior` text in `roadmap.json` if it is new.
 - PF-022 (Control Center CRM, DJ bridge push or poll) waits on an owner decision: do not start it, and PF-023 follows it. PF-005, PF-006, PF-007 and PF-025 are owner steps.
 - Write a fresh usage snapshot first (`node tools/brain/usage.mjs write --five <n> --week <n>`, numbers from the app usage tool); at 80% or more stop and report. Usage was 89% (5-hour) on 2026-11-16 around 15:15 UTC; the window resets about 15:50 UTC.
 

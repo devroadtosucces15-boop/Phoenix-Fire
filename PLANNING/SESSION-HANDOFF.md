@@ -85,6 +85,7 @@ When the item is finished and checked:
 5. End the final message with: what was done, what to look at (one line), the next item, and the model recommended. Do not ask for approval
    of routine steps.
 6. Brain snapshot (when `tools/brain/` or the library changed): `node tools/brain/publish.mjs`, then publish `tools/brain/out/brain-snapshot.html` to the same private Artifact (https://claude.ai/artifact/XyziYyVtcpdwsghV8G6Y72, capabilities `db` and `dictation`; never read it back), then `ArtifactData` list `phone-notes` and, if any are open, save them to a JSON file, run `node tools/brain/phone-notes.mjs import <file>` and mark each pulled.
+7. Roadmap snapshot (always, after the roadmap is updated): `node tools/brain/roadmap-page.mjs`, then publish `tools/brain/out/roadmap-snapshot.html` to the private Artifact "Phoenix Roadmap" (link in `LIBRARY/README.md`, no capability, never read it back).
 
 ### Next-session prompt template (keep it under about 40 lines)
 

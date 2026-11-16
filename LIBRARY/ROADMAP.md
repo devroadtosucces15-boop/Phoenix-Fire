@@ -24,12 +24,12 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 64% (items weighted by size: S 1, M 2, L 4).
+Project: 71% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
-| Project brain | 8 | 7 | 83% | 150 |
+| Project brain | 8 | 8 | 100% | 0 |
 | Side roadmap | 8 | 4 | 50% | 480 |
 | Match night and upkeep | 8 | 3 | 43% | 600 |
 
@@ -62,7 +62,38 @@ Project: 64% (items weighted by size: S 1, M 2, L 4).
 | PF-008 | Deep-link helper and stale anchors (R04, R05); `members.html#...` forwarder (R06) | DONE 2026-11-16 (PF-008 PR) | PF-001 | `next/`, `phoenix/build.mjs` | sonnet | From "Still open later" in `PLANNING/DOCK-HUB-DETAILS.md`. |
 | PF-009 | Optional additions R18 to R22 and staff sweep follow-ups R24 to R29 | NEXT | PF-008 | staff pages | sonnet | Split into one session per item when taken. 2026-11-16: R20, R21 already built; zoom part of R22 done; R18 and R19 approved by the owner and wired with a test. Open: R22 axe re-run, R23 briefs, R24-R29 (spec file .site-context/spec/REFACTOR.md is missing from the repo). |
 | PF-010 | Theme leftovers: search palette still NOREX-style blue-black; hardcoded gold gradient in `staffhub.css` should come from config | OPEN | PF-001 | `next/static/`, `config.json` | sonnet | Brand rule: add a test that fails on the NOREX colour. |
-| PF-026 | Project brain: visual, navigable roadmap (timeline, board, dependency graph, step drawer with outcome and behavior), local live and hosted snapshot | OPEN | PF-017 | `tools/brain/`, `LIBRARY/roadmap.json` | opus | Owner request 2026-11-16. Full brief: `PLANNING/PF-026-ROADMAP-VISUAL.md`. Start when the 5-hour usage window is below 80% (save mode). Can run beside the PF-008 session; both edit roadmap.json rows, so claim and rebase. |
+| PF-026 | Project brain: visual, navigable roadmap (timeline, board, dependency graph, step drawer with outcome and behavior), local live and hosted snapshot | DONE 2026-11-16 (PR (PF-026)) | PF-017 | `tools/brain/`, `LIBRARY/roadmap.json` | opus | Owner request 2026-11-16. Full brief: `PLANNING/PF-026-ROADMAP-VISUAL.md`. Can run beside the PF-008 session; both edit roadmap.json rows, so claim and rebase. |
+
+## Outcome and behavior
+
+What the owner can do or see when the item is done, and how it works. Optional fields `outcome` and `behavior` in `roadmap.json`.
+
+- **PF-001**: The project has one operating system: a roadmap, rules, generators and tests that every session starts from. _How:_ A library folder holds the indexes; a generator rewrites the machine-made files and a test fails when they drift or a secret appears.
+- **PF-002**: A new session finds assets, design, bot, commands, flags and the site map in one place, row by row, without surveying the repo. _How:_ Hand files describe meaning; sync.mjs generates the indexes from the code so they cannot go stale.
+- **PF-011**: The roadmap is data: every item has status, size, effort, importance, percent, notes and a done log, and the readable page is generated from it. _How:_ roadmap.json is the single source; sync.mjs computes size-weighted phase and project percent and writes ROADMAP.md; a test checks the model and its freshness.
+- **PF-012**: The owner opens one local window and sees the roadmap, libraries, references and the credentials registry, refreshed when files change. _How:_ node tools/brain/serve.mjs serves a page on this computer only; it reads the library files, pushes change events, and shows credential names and places, never values.
+- **PF-013**: The owner can click through maps of the site and the bot and see each page's or command's inputs and outputs. _How:_ maps.mjs reads the bot-studio dependency data and the site build; the page drills from a group to a single item.
+- **PF-014**: The owner can drop an idea, typed or dictated, and see open ideas again at the end of a session. _How:_ Each idea is a file in LIBRARY/inbox with status open, tackled or dropped; routes are local and size-capped, and secret-shaped text is refused.
+- **PF-015**: The page shows how full the 5-hour and weekly usage windows are and switches to save mode near the limit. _How:_ Sessions write snapshots to LIBRARY/state/usage.json; a policy sets 80% and 85%; in save mode only low-hanging items are offered.
+- **PF-016**: The owner sees which sessions were long or costly and gets lessons and improvement plans for them. _How:_ intel.mjs reads local transcripts for numbers only, flags patterns, ties sessions to items and writes LESSONS.md and an intel file.
+- **PF-017**: The owner can open a phone copy of the brain and leave ideas from the phone. _How:_ publish.mjs builds one redacted snapshot with its build time; a session republishes it as a private Artifact; phone ideas sit in shared storage and are imported into the inbox.
+- **PF-018**: Every button, notification and redirect lands on the one current page for that feature, not on a stale or duplicate page. _How:_ One link map is read by the bell, toasts, alerts, locker, the members.html forwarder and legacy stubs, so a link is fixed in one place.
+- **PF-019**: Menus list each real page once and nothing is missing. _How:_ The dock and the staff hub share the same tiles; Card Studio is in the quick dial and the search palette; duplicates were removed.
+- **PF-020**: Members can make their own player card in Card Studio or with /avatarcard, within a monthly limit. _How:_ A queue with position and ETA runs the image job, a free Workers AI pool pays for it, and an hourly throttle and a month slot count cap use.
+- **PF-021**: Match pages show a full box score with decoded stats, per 90 totals and a team comparison, and the Discord box score card matches. _How:_ Decoded EA columns feed the site tab and the card through a shared box score library; a coverage note says when a stat is missing.
+- **PF-022**: Staff run the club from the Control Center: DJ bridge, permissions and sign-in work end to end. _How:_ Waits on one owner decision, whether the DJ bridge pushes or polls; the remaining dashboard parts follow that choice.
+- **PF-023**: Rush queue and looking-for-game share one matchmaking system, so players see a single queue. _How:_ The queue board already exists; the item merges the two flows behind one board, one set of commands and one channel config.
+- **PF-024**: The bot has fewer, cleaner commands and the planned new features, including a test-view command. _How:_ Split into one session per plan item when taken; each follows the channel and role from config rule.
+- **PF-025**: The whole site and bot get a last visual and speed pass once the final art and resources are ready. _How:_ Starts only when the owner says the resources are ready; it touches the shared theme layer last so nothing is redone.
+- **PF-003**: The owner knows the dock and hub pages are sound at phone, tablet and desktop widths. _How:_ An iframe sweep loaded every hub page at 390, 820 and 1440 and checked for sideways overflow and Phoenix branding; no code change was needed.
+- **PF-004**: Match-night posts show their pictures even offline, and the recap banner exists. _How:_ The watchlist picture falls back to the YouTube thumbnail; captures cover event, check-in and line-up posts; guards stop a duplicate registry row.
+- **PF-005**: Match night goes live: the migration is applied, bindings confirmed, the site published, the Worker deployed and roster pictures switched on. _How:_ Owner steps in order, each confirmed by the owner because they touch live data.
+- **PF-006**: The Worker lives at the host the owner chose, with every place switched at once. _How:_ phoenix/worker-host.json holds the host and one command flips config, wrangler vars, live.json and the secrets registry.
+- **PF-007**: DJ bots run all day on a host that can keep them running. _How:_ The Worker cannot hold a long connection, so the bots need a separate host; the owner picks it first.
+- **PF-008**: Links with an anchor land on the right section, and old members.html links forward correctly. _How:_ PhoenixDeeplink, PhoenixLinks and the forwarder were checked in headless Chrome at 390 and 1440; no anchor was stale.
+- **PF-009**: The optional additions the owner approved are live, and the remaining follow-ups are listed. _How:_ R18 and R19 link wording was approved and wired with a test; R22 axe pass, R23 briefs and R24 to R29 remain.
+- **PF-010**: The search palette and staff hub use the Phoenix colours with no NOREX blue-black left. _How:_ The gold gradient in staffhub.css moves to config and a test fails when the NOREX colour reappears.
+- **PF-026**: The owner opens one page and sees where the project is, can drill into any phase and step, and can share a link to a step. _How:_ One script renders roadmap.json into timeline, board and dependency graph views with a drawer per step; the local dashboard serves it live and a session republishes a private Artifact snapshot.
 
 ## Inbox (found along the way, not yet scheduled)
 

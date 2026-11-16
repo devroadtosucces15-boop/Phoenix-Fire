@@ -154,7 +154,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('#bs-save,#
  await load()});
 document.addEventListener('input',e=>{if(e.target.id==='bs-text')bsDraft=e.target.value});
 window.addEventListener('hashchange',()=>{tab=(location.hash||'#roadmap').slice(1);render()});
-function live(){const el=document.getElementById('live'),es=new EventSource('/events');es.onopen=()=>{el.className='live on';el.lastChild.textContent='live'};es.onerror=()=>{el.className='live';el.lastChild.textContent='reconnecting'};es.addEventListener('change',load)}
+function live(){const el=document.getElementById('live'),es=new EventSource('/events');{const a=document.createElement('a');a.href='/roadmap';a.className='chip';a.textContent='Visual roadmap';a.style.textDecoration='none';el.before(a)}es.onopen=()=>{el.className='live on';el.lastChild.textContent='live'};es.onerror=()=>{el.className='live';el.lastChild.textContent='reconnecting'};es.addEventListener('change',load)}
 load();live();
 </script>
 </body>

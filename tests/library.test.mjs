@@ -28,6 +28,7 @@ t('roadmap.json values are in range (status, size, effort, importance, percent)'
 t('roadmap.json dependsOn only names existing items', rm.items.every((i) => i.dependsOn.every((d) => known.has(d) && d !== i.id)));
 t('a DONE item is 100% and has a doneLog entry with date and ref', rm.items.filter((i) => i.status === 'DONE').every((i) => i.percent === 100 && i.doneLog.length && i.doneLog.every((l) => /^\d{4}-\d{2}-\d{2}$/.test(l.date) && l.ref && !/pending/i.test(l.ref))));
 t('the NEXT item has all its dependencies DONE', rm.items.filter((i) => i.status === 'NEXT').every((i) => i.dependsOn.every((d) => rm.items.find((x) => x.id === d).status === 'DONE')));
+t('every item has outcome and behavior text (20 to 400 characters, no secret-shaped value)', rm.items.every((i) => [i.outcome, i.behavior].every((x) => typeof x === 'string' && x.length >= 20 && x.length <= 400 && !/[0-9a-f]{32,}|\b\d{17,20}\b|gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{20,}/.test(x))));
 t('roadmap metrics: project percent is the size-weighted mean', roadmapMetrics([{ size: 'S', percent: 100 }, { size: 'L', percent: 0 }]).project === 20);
 t('ROADMAP.md matches roadmap.json (run node tools/library/sync.mjs)', read('LIBRARY/ROADMAP.md') === renderRoadmap());
 t('BOT-COMMANDS.md matches bot/commanddefs.js (run node tools/library/sync.mjs)', exists('LIBRARY/BOT-COMMANDS.md') && read('LIBRARY/BOT-COMMANDS.md') === renderCommands());

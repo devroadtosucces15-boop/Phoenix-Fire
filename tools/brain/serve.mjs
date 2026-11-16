@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { model, WATCH, ROOT } from './lib.mjs';
 import { addNote, setStatus } from './inbox.mjs';
+import { buildRoadmapData, renderRoadmapPage } from './roadmap-view.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const MIME = { '.html': 'text/html; charset=utf-8', '.png': 'image/png' };
@@ -44,6 +45,15 @@ export function createServer() {
     if (url.pathname === '/api/model') {
       try { res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); res.end(JSON.stringify(model())); }
       catch (e) { res.writeHead(500, { 'content-type': 'application/json' }); res.end(JSON.stringify({ error: String(e.message || e) })); }
+      return;
+    }
+    if (url.pathname === '/api/roadmap-data') {
+      try { json(res, 200, buildRoadmapData()); } catch (e) { json(res, 500, { error: String(e.message || e) }); }
+      return;
+    }
+    if (url.pathname === '/roadmap') {
+      try { res.writeHead(200, { 'content-type': MIME['.html'], 'cache-control': 'no-store' }); res.end('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>' + renderRoadmapPage({ data: buildRoadmapData(), mode: 'live' }) + '</body></html>'); }
+      catch (e) { res.writeHead(500, { 'content-type': 'text/plain' }); res.end(String(e.message || e)); }
       return;
     }
     if (url.pathname === '/events') {

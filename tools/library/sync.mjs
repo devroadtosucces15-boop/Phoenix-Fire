@@ -137,6 +137,8 @@ export function renderRoadmap() {
     ...m.phases.map((p) => `| ${p.phase} | ${p.items} | ${p.done} | ${p.percent}% | ${p.estMinutesLeft} |`), '',
     '## Items', '', '| ID | Item | Status | Depends on | File lane | Model | Notes |', '|---|---|---|---|---|---|---|',
     ...items.map((i) => `| ${i.id} | ${cell(i.title)} | ${statusCell(i)} | ${i.dependsOn.length ? i.dependsOn.join(', ') : 'none'} | ${cell(i.fileLane)} | ${i.model} | ${cell(i.notes)} |`), '',
+    '## Outcome and behavior', '', 'What the owner can do or see when the item is done, and how it works. Optional fields `outcome` and `behavior` in `roadmap.json`.', '',
+    ...items.filter((i) => i.outcome || i.behavior).flatMap((i) => [`- **${i.id}**: ${i.outcome || ''}${i.behavior ? ` _How:_ ${i.behavior}` : ''}`]), '',
     '## Inbox (found along the way, not yet scheduled)', '', 'Add one entry per finding to `inbox` in `LIBRARY/roadmap.json`: date, what, where. The next planning pass turns each into an item or drops it.', '',
     ...inbox.map((x) => `- ${x.date}: ${x.text}`), ''];
   return out.join('\n');

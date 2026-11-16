@@ -1,11 +1,11 @@
 {
   "latest": {
-    "fiveHour": 0,
-    "weekly": 11,
-    "fiveHourResetsAt": null,
+    "fiveHour": 6,
+    "weekly": 12,
+    "fiveHourResetsAt": "2026-11-16T20:49:59.000Z",
     "weeklyResetsAt": null,
-    "timestamp": "2026-11-16T15:54:25.444Z",
-    "source": "session"
+    "timestamp": "2026-11-16T15:56:39.532Z",
+    "source": "session:PF-026 start"
   },
   "history": [
     {
@@ -46,6 +46,14 @@
       "fiveHourResetsAt": null,
       "weeklyResetsAt": null,
       "timestamp": "2026-11-16T15:36:38.861Z",
+      "source": "session"
+    },
+    {
+      "fiveHour": 0,
+      "weekly": 11,
+      "fiveHourResetsAt": null,
+      "weeklyResetsAt": null,
+      "timestamp": "2026-11-16T15:54:25.444Z",
       "source": "session"
     }
   ]
