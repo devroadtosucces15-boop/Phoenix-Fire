@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-16T00:00:56.884Z",
+ "fetchedAt": "2026-11-16T00:10:39.119Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1855,7 +1855,7 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "194",
+   "gamesPlayed": "195",
    "goals": "31",
    "assists": "67",
    "manOfTheMatch": "21",
@@ -1943,18 +1943,18 @@
   {
    "name": "zouz94230",
    "proPos": "25",
-   "gamesPlayed": "212",
-   "goals": "105",
+   "gamesPlayed": "213",
+   "goals": "106",
    "assists": "86",
    "manOfTheMatch": "30",
    "ratingAve": "7.5",
-   "prevGoals": "3",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
    "name": "MV33xChris",
    "proPos": "5",
-   "gamesPlayed": "211",
+   "gamesPlayed": "212",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
@@ -2020,7 +2020,7 @@
   {
    "name": "xEthxnH-_-",
    "proPos": "25",
-   "gamesPlayed": "47",
+   "gamesPlayed": "48",
    "goals": "9",
    "assists": "9",
    "manOfTheMatch": "0",
@@ -2031,12 +2031,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "140",
+   "gamesPlayed": "141",
    "goals": "71",
-   "assists": "55",
+   "assists": "56",
    "manOfTheMatch": "20",
    "ratingAve": "7.5",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2086,23 +2086,23 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "101",
+   "gamesPlayed": "102",
    "goals": "13",
    "assists": "7",
-   "manOfTheMatch": "2",
-   "ratingAve": "7.0",
+   "manOfTheMatch": "3",
+   "ratingAve": "7.1",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
    "name": "GoldenFrize",
    "proPos": "25",
-   "gamesPlayed": "187",
+   "gamesPlayed": "188",
    "goals": "192",
-   "assists": "139",
+   "assists": "141",
    "manOfTheMatch": "33",
-   "ratingAve": "7.9",
-   "prevGoals": "2",
+   "ratingAve": "7.8",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2130,7 +2130,7 @@
   {
    "name": "KolletRivera",
    "proPos": "0",
-   "gamesPlayed": "164",
+   "gamesPlayed": "165",
    "goals": "6",
    "assists": "3",
    "manOfTheMatch": "13",
@@ -2240,7 +2240,7 @@
   {
    "name": "HristoNL",
    "proPos": "5",
-   "gamesPlayed": "275",
+   "gamesPlayed": "276",
    "goals": "174",
    "assists": "230",
    "manOfTheMatch": "9",
