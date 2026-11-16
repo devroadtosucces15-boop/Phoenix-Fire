@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T23:40:54.898Z",
+ "fetchedAt": "2026-11-16T23:50:40.179Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1939,12 +1939,12 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "117",
+   "gamesPlayed": "118",
    "goals": "40",
-   "assists": "51",
+   "assists": "52",
    "manOfTheMatch": "6",
    "ratingAve": "7.5",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2049,7 +2049,7 @@
   {
    "name": "Damlaaa61",
    "proPos": "5",
-   "gamesPlayed": "200",
+   "gamesPlayed": "201",
    "goals": "44",
    "assists": "46",
    "manOfTheMatch": "36",
