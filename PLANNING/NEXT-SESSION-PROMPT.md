@@ -7,7 +7,7 @@ already built and are guarded by `tests/deeplink.test.mjs` (staff tab data-dl, s
 
 ## State right now
 - PF-009 R22 is DONE (2026-11-16): axe-core 4.10.2 in headless Chrome at 390 wide on 12 phone pages shows 0 for aria-required-children, aria-allowed-attr, aria-allowed-role, aria-required-parent and target-size. Fixed match-night day buttons (no listitem role) and the install banner (44px close, lifted above the dock button). Guarded in `tests/forwarder.test.mjs`. Colour contrast and the classic link wording stay a written owner question.
-- PF-009 still open: R23 (one brief per assigned wishlist item in `.site-context/handoffs/` with `Status: open`; the list of items is missing, ask the owner or find it) and R24 to R29 (their definitions lived in `.site-context/spec/REFACTOR.md`, not in the repo; the owner must restate them). If neither can be recovered, mark PF-009 DONE with that written down and make PF-010 NEXT.
+- PF-009: R18 to R23 done (R23 briefs in `PLANNING/handoffs/`). R24 to R29 are unbuilt and wait for the owner: `PLANNING/STAFF-SWEEP-APPROVAL.md`. If approved, build one per session (R30 first if not built); if not, leave PF-009 NEXT and take PF-010 only on the owner's word.
 - PF-022 waits on an owner decision (do not start; PF-023 follows). PF-005, PF-006, PF-007 and PF-025 are owner steps.
 - Write a fresh usage snapshot first (`node tools/brain/usage.mjs write --five <n> --week <n>`); at 80% or more stop and report.
 - At the end run `node tools/brain/roadmap-page.mjs` and republish the private Artifact "Phoenix Roadmap" (handoff section 7 step 7).
