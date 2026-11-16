@@ -664,9 +664,9 @@
       "lowHanging": false,
       "percent": 85,
       "verify": false,
-      "notes": "Split into one session per item when taken. 2026-11-16: R18-R25 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R26 Dugout 3 columns, R27 Insights 2 columns, R28 Tools/Content form look, R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md.",
+      "notes": "Split into one session per item when taken. 2026-11-16: R18-R26 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R27 Insights 2 columns, R28 Tools/Content form look, R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md.",
       "outcome": "The optional additions the owner approved are live, and the remaining follow-ups are listed.",
-      "behavior": "R18 to R25 are done: the staff home groups sit in a dense 4-column grid from 1100 px (2 from 821, one on phones) with the Boardroom tile spanning the row; the Boardroom link tiles are an equal auto-fill grid and the Switches accordion sits in 2 columns from 1100 with counts beside the title. R26 to R29 are approved and wait to be built one per session.",
+      "behavior": "R18 to R26 are done: staff home groups in a dense 4-column grid, Boardroom equal link tiles with a 2-column Switches accordion, and the Dugout as three equal-height columns (roster, pitch, ready-check) from 1100 px, one column on phones. R27 to R29 are approved and wait to be built one per session.",
       "doneLog": [
         {
           "date": "2026-11-16",
@@ -697,6 +697,11 @@
           "date": "2026-11-16",
           "ref": "PF-009 R25",
           "what": "Boardroom: link directory is an equal auto-fill tile grid (no auto-fit stretch), Switches accordion groups sit in a .br-grps 2-column grid from 1100 (one column below), counts sit beside the group title with the chevron at the end. Checked at 390, 820 and 1440 (after shots; Switches checked with synthetic groups because the static build has no Worker data). Tests in tests/layout-pass.test.mjs."
+        },
+        {
+          "date": "2026-11-16",
+          "ref": "PF-009 R26",
+          "what": "Dugout: board is three equal-height columns (roster / pitch / ready-check) from 1100, pitch column widest and centred, one column below. Root cause of the empty left column: the roster section reused the .dg-av avatar class and collapsed to a 34px circle; renamed to dg-roster. Sibling panel margin reset so all three start level. Before and after shots at 390, 820, 1440 checked. Tests in tests/layout-pass.test.mjs."
         }
       ],
       "plans": []

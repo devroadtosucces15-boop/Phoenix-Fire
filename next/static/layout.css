@@ -62,6 +62,8 @@
 /* R13 dugout */
 @media(min-width:1600px){.split{grid-template-columns:minmax(0,1fr) 440px}}
 .dg-top{align-items:stretch}
+/* PF-009 R26: Dugout board is three equal-height columns (roster / pitch / ready-check) from 1100; the roster section no longer shares the .dg-av avatar class (it collapsed to a 34px circle); phone stays one column */
+@media(min-width:1100px){.dg-top{grid-template-columns:minmax(240px,1fr) minmax(0,1.5fr) minmax(240px,1fr);gap:var(--pf-gap,22px);align-items:stretch}.dg-top>.dg-sec{height:100%;margin:0}.dg-pi .dg-pitch-wrap{justify-items:center}}
 /* Alert settings (alerts.js): each Site / Discord DM / Push / All checkbox label is a 40px tap row, the box itself is 24px (WCAG 2.5.8; the audit measures the input) */
 label.al-box{min-height:40px;padding:0 2px}label.al-box input{width:24px;height:24px;margin:0;flex:none}.al-boxes{gap:0 10px}
 

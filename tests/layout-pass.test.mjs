@@ -55,4 +55,9 @@ const brj = read('boardroom.js');
 t('R25: Boardroom link tiles use an equal auto-fill grid (no auto-fit stretch)', /\.br-tools\{grid-template-columns:repeat\(auto-fill,minmax\(min\(100%,190px\),1fr\)\)\}/.test(lay) && !/\.br-tools\{grid-template-columns:repeat\(auto-fit/.test(lay));
 t('R25: Switches accordion groups sit in a .br-grps 2-column grid from 1100, counts next to the title', brj.includes('class="br-grps"') && /@media\(min-width:1100px\)\{\.br-grps\{display:grid;grid-template-columns:repeat\(2,/.test(lay) && /\.br-grp>summary\{justify-content:flex-start\}/.test(lay) && /\.br-grp>summary:after\{margin-left:auto\}/.test(lay));
 t('R25: the Boardroom output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-boardroom.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
+// PF-009 R26 (owner approved 2026-11-16): Dugout is three equal-height columns from 1100 (roster / pitch / ready-check); phone stays one column
+const dgj = read('dugout.js');
+t('R26: the Dugout roster section no longer uses the .dg-av avatar class (it collapsed to 34px)', dgj.includes('dg-sec dg-roster') && !/<section[^>]*dg-sec dg-av/.test(dgj));
+t('R26: Dugout board is a 3-column equal-height grid from 1100, pitch column widest', /@media\(min-width:1100px\)\{\.dg-top\{grid-template-columns:minmax\(240px,1fr\) minmax\(0,1\.5fr\) minmax\(240px,1fr\);[^}]*align-items:stretch\}\.dg-top>\.dg-sec\{height:100%;margin:0\}/.test(lay));
+t('R26: the Dugout output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-dugout.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
 done();

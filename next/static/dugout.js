@@ -87,7 +87,7 @@ ${shortOn.length ? `<div class="dg-short">${shortOn.map((pos) => `<button type="
     const when = e ? new Date(e.start).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
     root.innerHTML = `<div class="dg"><div class="dg-head"><h3>${e ? `${esc(e.title || (e.type === 'league' ? 'League match' : 'Match night'))} · ${esc(when)}` : 'The Dugout'}</h3>
 <div class="dg-acts">${e && D.live ? '<span class="dg-live" title="Updates by itself when another manager edits or players answer">🟢 Live</span>' : ''}${e && flagOn('lineupRec') ? '<button type="button" class="chip" data-dg="suggest">✨ Suggest line-up</button>' : ''}${e ? `<button type="button" class="chip" data-dg="clear">Clear</button><button type="button" class="btn" data-dg="publish">📣 Post line-up${e.lineupAt ? ' again' : ''}</button>` : ''}</div></div>
-${e ? `<div class="dg-top"><section class="panel dg-sec dg-av">${available(e, who)}</section><section class="panel dg-sec dg-pi">${pitch(e, who)}</section><section class="panel dg-sec dg-rd">${ready(e, who)}</section></div>`
+${e ? `<div class="dg-top"><section class="panel dg-sec dg-roster">${available(e, who)}</section><section class="panel dg-sec dg-pi">${pitch(e, who)}</section><section class="panel dg-sec dg-rd">${ready(e, who)}</section></div>`
       : empty('🗓️', 'No match night coming up', 'Schedule one in the live Hub and the line-up builder opens here.')}</div>`;
   }
   // ---------- actions ----------
