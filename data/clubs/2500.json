@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-16T22:40:45.658Z",
+ "fetchedAt": "2026-11-16T22:50:42.892Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1884,11 +1884,11 @@
   {
    "name": "EL-nugat",
    "proPos": "0",
-   "gamesPlayed": "13",
+   "gamesPlayed": "14",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "6.1",
+   "ratingAve": "6.0",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
@@ -1994,12 +1994,12 @@
   {
    "name": "Jakeyboy65466",
    "proPos": "14",
-   "gamesPlayed": "176",
-   "goals": "286",
-   "assists": "228",
-   "manOfTheMatch": "108",
+   "gamesPlayed": "177",
+   "goals": "289",
+   "assists": "229",
+   "manOfTheMatch": "109",
    "ratingAve": "8.5",
-   "prevGoals": "0",
+   "prevGoals": "3",
    "favoritePosition": "midfielder"
   },
   {
