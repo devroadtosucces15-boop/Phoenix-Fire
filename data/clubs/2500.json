@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-16T12:50:42.168Z",
+ "fetchedAt": "2026-11-16T13:00:48.817Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2046,12 +2046,12 @@
   {
    "name": "Glekke-93",
    "proPos": "25",
-   "gamesPlayed": "102",
+   "gamesPlayed": "103",
    "goals": "93",
    "assists": "44",
    "manOfTheMatch": "21",
-   "ratingAve": "7.4",
-   "prevGoals": "3",
+   "ratingAve": "7.3",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
