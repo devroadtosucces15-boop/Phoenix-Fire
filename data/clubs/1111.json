@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-16T20:20:57.616Z",
+ "fetchedAt": "2026-11-16T20:30:41.674Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2119,7 +2119,7 @@
   {
    "name": "KolletRivera",
    "proPos": "0",
-   "gamesPlayed": "166",
+   "gamesPlayed": "167",
    "goals": "6",
    "assists": "3",
    "manOfTheMatch": "13",

@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-16T20:20:57.616Z",
+ "fetchedAt": "2026-11-16T20:30:41.674Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1730,7 +1730,7 @@
   {
    "name": "SkinnerLAYDD",
    "proPos": "25",
-   "gamesPlayed": "19",
+   "gamesPlayed": "20",
    "goals": "11",
    "assists": "5",
    "manOfTheMatch": "2",
