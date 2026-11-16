@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-16T20:40:42.481Z",
+ "fetchedAt": "2026-11-16T20:50:47.401Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1730,7 +1730,7 @@
   {
    "name": "SkinnerLAYDD",
    "proPos": "25",
-   "gamesPlayed": "20",
+   "gamesPlayed": "21",
    "goals": "11",
    "assists": "5",
    "manOfTheMatch": "2",
@@ -1884,11 +1884,11 @@
   {
    "name": "EL-nugat",
    "proPos": "0",
-   "gamesPlayed": "7",
+   "gamesPlayed": "8",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "6.4",
+   "ratingAve": "6.5",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
