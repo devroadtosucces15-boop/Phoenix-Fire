@@ -457,7 +457,7 @@
       "title": "Dock browser check and hub page sweep at 390, 820, 1440 (verify; may already be done)",
       "phase": "Match night and upkeep",
       "area": "`next/static/dock.*`, hub pages",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -468,10 +468,16 @@
       ],
       "fileLane": "`next/static/dock.*`, hub pages",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": true,
       "notes": "Details: `PLANNING/DOCK-HUB-DETAILS.md`. Needs screenshots before and after (design rule).",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-16",
+          "ref": "PF-003 PR",
+          "what": "Verify-only pass, no code change needed. Iframe sweep of hub, hub-profile, hub-stats, hub-medals, hub-cardstudio, hub-alerts, hub-clubhouse, hub-squad, hub-matchnight, hub-discoveries, hub-handbook, hub-music, hub-watchlist, staff and stats at 390, 820 and 1440 (45 loads): no sideways overflow, Phoenix crest ring present, old compass/owner stamp/gear/preview bar hidden, no overlap with the issue pill, no page errors. Panel opens, hub pages list hub rooms only, main pages list site menus only, no Staff links for a signed-out visitor, pins persist after reload. Screenshots of hub.html at 390 and 1440 (card first on phone, ring clear of the tab bar). The two red tests on main (brain inbox ordering, cronfun) were fixed first in their own PR. Not covered: the Staff pill for a signed-in manager/owner (covered by tests/dock.test.mjs)."
+        }
+      ],
       "plans": []
     },
     {
@@ -479,7 +485,7 @@
       "title": "Match-night follow-ups in code: `auto:watchlist-video` picture block, offline captures for check-in and line-up posts, track `tools/bot-studio/`, rerun `studio.mjs check`",
       "phase": "Match night and upkeep",
       "area": "`bot/watchlist.js`, `tools/bot-audit/`, `tools/bot-studio/`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,
