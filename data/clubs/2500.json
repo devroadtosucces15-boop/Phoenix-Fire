@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-16T14:00:48.062Z",
+ "fetchedAt": "2026-11-16T14:10:45.182Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2045,14 +2045,14 @@
   },
   {
    "name": "Glekke-93",
-   "proPos": "25",
-   "gamesPlayed": "106",
+   "proPos": "14",
+   "gamesPlayed": "107",
    "goals": "93",
    "assists": "44",
    "manOfTheMatch": "21",
    "ratingAve": "7.3",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "-KRS-Tesoro-",
