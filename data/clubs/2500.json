@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-16T18:40:41.144Z",
+ "fetchedAt": "2026-11-16T18:50:44.156Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2067,25 +2067,25 @@
   },
   {
    "name": "Rafid_Sx07",
-   "proPos": "14",
-   "gamesPlayed": "369",
+   "proPos": "5",
+   "gamesPlayed": "370",
    "goals": "73",
    "assists": "90",
    "manOfTheMatch": "31",
    "ratingAve": "7.3",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "defender"
   },
   {
    "name": "alicerce-sulista",
-   "proPos": "25",
-   "gamesPlayed": "31",
+   "proPos": "14",
+   "gamesPlayed": "32",
    "goals": "18",
    "assists": "14",
    "manOfTheMatch": "2",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Rinconkelvin95",
