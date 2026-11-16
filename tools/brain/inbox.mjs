@@ -40,7 +40,7 @@ export function addNote(text, source = 'typed') {
   if (looksSecret(t)) return { ok: false, error: 'this looks like a secret value; notes never store secrets (name the secret instead)' };
   const now = new Date();
   const iso = now.toISOString();
-  const id = `${iso.slice(0, 10)}-${iso.slice(11, 19).replace(/:/g, '')}-${crypto.randomBytes(2).toString('hex')}`;
+  const id = `${iso.slice(0, 10)}-${iso.slice(11, 19).replace(/:/g, '')}-${(now.getUTCMilliseconds() * 64 + crypto.randomInt(64)).toString(16).padStart(4, '0')}`; // suffix sorts by millisecond, so same-second notes list newest first
   const note = { id, date: iso, source: SOURCES.includes(source) ? source : 'typed', status: 'open', updated: iso, text: t };
   fs.mkdirSync(INBOX, { recursive: true });
   fs.writeFileSync(file(id), render(note), { flag: 'wx' });
