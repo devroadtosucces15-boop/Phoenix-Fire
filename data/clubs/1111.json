@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-16T02:50:48.503Z",
+ "fetchedAt": "2026-11-16T03:00:42.619Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -583,6 +583,42 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "defender"
+  },
+  {
+   "name": "AliasX47",
+   "gamesPlayed": "2",
+   "winRate": "100",
+   "goals": "7",
+   "assists": "1",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "77",
+   "passesMade": "43",
+   "passSuccessRate": "84",
+   "ratingAve": "10.0",
+   "tacklesMade": "2",
+   "tackleSuccessRate": "22",
+   "proName": "OMERTA",
+   "proPos": "25",
+   "proStyle": "0",
+   "proHeight": "162",
+   "proNationality": "129",
+   "proOverall": "82",
+   "proOverallStr": "82",
+   "manOfTheMatch": "2",
+   "redCards": "0",
+   "prevGoals": "3",
+   "prevGoals1": "3",
+   "prevGoals2": "4",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "forward"
   },
   {
    "name": "leo77romano",
@@ -1812,7 +1848,7 @@
  "positionCount": {
   "midfielder": 7,
   "goalkeeper": 2,
-  "forward": 12,
+  "forward": 13,
   "defender": 6
  },
  "career": [
@@ -1984,12 +2020,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "146",
-   "goals": "78",
-   "assists": "61",
-   "manOfTheMatch": "22",
+   "gamesPlayed": "147",
+   "goals": "81",
+   "assists": "62",
+   "manOfTheMatch": "23",
    "ratingAve": "7.5",
-   "prevGoals": "0",
+   "prevGoals": "3",
    "favoritePosition": "forward"
   },
   {
@@ -2111,6 +2147,17 @@
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
    "prevGoals": "2",
+   "favoritePosition": "forward"
+  },
+  {
+   "name": "AliasX47",
+   "proPos": "25",
+   "gamesPlayed": "372",
+   "goals": "444",
+   "assists": "249",
+   "manOfTheMatch": "39",
+   "ratingAve": "7.7",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {

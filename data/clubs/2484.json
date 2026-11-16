@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T02:50:48.503Z",
+ "fetchedAt": "2026-11-16T03:00:42.619Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -725,42 +725,6 @@
    "prevGoals7": "2",
    "prevGoals8": "0",
    "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "forward"
-  },
-  {
-   "name": "AliasX47",
-   "gamesPlayed": "14",
-   "winRate": "92",
-   "goals": "17",
-   "assists": "9",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "65",
-   "passesMade": "235",
-   "passSuccessRate": "88",
-   "ratingAve": "8.2",
-   "tacklesMade": "6",
-   "tackleSuccessRate": "13",
-   "proName": "OMERTA",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "129",
-   "proOverall": "83",
-   "proOverallStr": "83",
-   "manOfTheMatch": "2",
-   "redCards": "0",
-   "prevGoals": "1",
-   "prevGoals1": "1",
-   "prevGoals2": "0",
-   "prevGoals3": "4",
-   "prevGoals4": "2",
-   "prevGoals5": "1",
-   "prevGoals6": "2",
-   "prevGoals7": "0",
-   "prevGoals8": "2",
-   "prevGoals9": "1",
    "prevGoals10": "0",
    "favoritePosition": "forward"
   },
@@ -1776,7 +1740,7 @@
  "positionCount": {
   "midfielder": 9,
   "goalkeeper": 5,
-  "forward": 15,
+  "forward": 14,
   "defender": 15
  },
  "career": [
@@ -1915,12 +1879,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "146",
-   "goals": "78",
-   "assists": "61",
-   "manOfTheMatch": "22",
+   "gamesPlayed": "147",
+   "goals": "81",
+   "assists": "62",
+   "manOfTheMatch": "23",
    "ratingAve": "7.5",
-   "prevGoals": "0",
+   "prevGoals": "3",
    "favoritePosition": "forward"
   },
   {
@@ -1998,17 +1962,6 @@
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
    "prevGoals": "2",
-   "favoritePosition": "forward"
-  },
-  {
-   "name": "AliasX47",
-   "proPos": "25",
-   "gamesPlayed": "372",
-   "goals": "444",
-   "assists": "249",
-   "manOfTheMatch": "39",
-   "ratingAve": "7.7",
-   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
