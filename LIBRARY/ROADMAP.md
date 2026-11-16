@@ -24,12 +24,12 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 63% (items weighted by size: S 1, M 2, L 4).
+Project: 59% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
 | Foundation | 2 | 2 | 100% | 0 |
-| Project brain | 7 | 7 | 100% | 0 |
+| Project brain | 8 | 7 | 83% | 150 |
 | Side roadmap | 8 | 4 | 50% | 480 |
 | Match night and upkeep | 8 | 2 | 25% | 720 |
 
@@ -62,6 +62,7 @@ Project: 63% (items weighted by size: S 1, M 2, L 4).
 | PF-008 | Deep-link helper and stale anchors (R04, R05); `members.html#...` forwarder (R06) | NEXT | PF-001 | `next/`, `phoenix/build.mjs` | sonnet | From "Still open later" in `PLANNING/DOCK-HUB-DETAILS.md`. |
 | PF-009 | Optional additions R18 to R22 and staff sweep follow-ups R24 to R29 | OPEN | PF-008 | staff pages | sonnet | Split into one session per item when taken. |
 | PF-010 | Theme leftovers: search palette still NOREX-style blue-black; hardcoded gold gradient in `staffhub.css` should come from config | OPEN | PF-001 | `next/static/`, `config.json` | sonnet | Brand rule: add a test that fails on the NOREX colour. |
+| PF-026 | Project brain: visual, navigable roadmap (timeline, board, dependency graph, step drawer with outcome and behavior), local live and hosted snapshot | OPEN | PF-017 | `tools/brain/`, `LIBRARY/roadmap.json` | opus | Owner request 2026-11-16. Full brief: `PLANNING/PF-026-ROADMAP-VISUAL.md`. Start when the 5-hour usage window is below 80% (save mode). Can run beside the PF-008 session; both edit roadmap.json rows, so claim and rebase. |
 
 ## Inbox (found along the way, not yet scheduled)
 

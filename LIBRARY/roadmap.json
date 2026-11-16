@@ -637,6 +637,28 @@
       "notes": "Brand rule: add a test that fails on the NOREX colour.",
       "doneLog": [],
       "plans": []
+    },
+    {
+      "id": "PF-026",
+      "title": "Project brain: visual, navigable roadmap (timeline, board, dependency graph, step drawer with outcome and behavior), local live and hosted snapshot",
+      "phase": "Project brain",
+      "area": "`tools/brain/`, `LIBRARY/roadmap.json`",
+      "status": "OPEN",
+      "size": "L",
+      "effort": 4,
+      "importance": 4,
+      "estMinutes": 150,
+      "model": "opus",
+      "dependsOn": [
+        "PF-017"
+      ],
+      "fileLane": "`tools/brain/`, `LIBRARY/roadmap.json`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Owner request 2026-11-16. Full brief: `PLANNING/PF-026-ROADMAP-VISUAL.md`. Start when the 5-hour usage window is below 80% (save mode). Can run beside the PF-008 session; both edit roadmap.json rows, so claim and rebase.",
+      "doneLog": [],
+      "plans": []
     }
   ],
   "inbox": [
