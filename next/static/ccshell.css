@@ -1,0 +1,117 @@
+/* Control Center shell (PF-022 step 7): a scoped dark CRM variant. Everything sits under .cx so no other page changes.
+   Accents are the Phoenix family from the site theme (--red ember, --red2 amber, --g2 gold): never a NOREX colour. Mobile first: the base rules are the phone layout, wider layouts add in min-width queries. */
+.cx-page .wrap.cx-wrap{max-width:1500px;padding-left:16px;padding-right:16px}
+.cx{--cx-bg:var(--ink,#0a0705);--cx-p1:rgba(255,255,255,.035);--cx-p2:rgba(255,255,255,.065);--cx-line:rgba(255,255,255,.1);--cx-tx:var(--cream,#f6ecdd);--cx-mu:rgba(246,236,221,.62);
+  --cx-a:var(--red,#e8741a);--cx-a2:var(--red2,#ff9a2e);--cx-gold:var(--g2,#f3c95c);--cx-ok:#5fe3a1;--cx-glow:var(--redg,rgba(232,116,26,.38));
+  position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin:18px 0 40px;color:var(--cx-tx);min-width:0}
+.cx *{box-sizing:border-box}
+.cx .muted{color:var(--cx-mu)}
+.cx-i{width:20px;height:20px;flex:none;display:inline-block;vertical-align:middle}
+/* top bar (phone and desktop): back, current tool + menu button, search */
+.cx-bar{display:flex;align-items:center;gap:8px;min-width:0}
+.cx-back,.cx-menu,.cx-find{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid var(--cx-line);border-radius:12px;background:var(--cx-p1);color:var(--cx-tx);font:600 14px/1 var(--body,inherit);text-decoration:none;cursor:pointer}
+.cx-menu{flex:1 1 auto;min-width:0;justify-content:flex-start}.cx-menu span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cx-find kbd{display:none;font:600 11px/1 var(--body,inherit);padding:3px 6px;border:1px solid var(--cx-line);border-radius:6px;color:var(--cx-mu)}
+.cx-find span,.cx-back span{display:none}
+.cx-back:hover,.cx-menu:hover,.cx-find:hover{border-color:var(--cx-a2)}
+/* sidebar: a drawer on phones (grouped list, 48px rows), a sticky column from 900px */
+.cx-side{position:fixed;z-index:60;top:0;bottom:0;left:0;width:min(88vw,340px);transform:translateX(-102%);transition:transform .22s ease;overflow-y:auto;overscroll-behavior:contain;
+  background:linear-gradient(180deg,var(--cx-bg),#150d08);border-right:1px solid var(--cx-line);padding:16px 12px 28px;visibility:hidden}
+.cx.open .cx-side{transform:none;visibility:visible}
+.cx-scrim{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.6)}
+.cx-brand{display:flex;gap:10px;align-items:center;padding:4px 8px 14px;border-bottom:1px solid var(--cx-line);margin-bottom:8px}
+.cx-brand b{display:block;font:700 15px/1.2 var(--head,inherit);letter-spacing:.04em}.cx-brand small{color:var(--cx-mu)}
+.cx-sec{margin:14px 0 0}.cx-sec h3{margin:0 8px 6px;font:700 11px/1.2 var(--body,inherit);letter-spacing:.14em;text-transform:uppercase;color:var(--cx-gold)}
+.cx-sec ul{list-style:none;margin:0;padding:0}
+.cx-nav{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 12px;border-radius:12px;color:var(--cx-tx);text-decoration:none;font:500 15px/1.2 var(--body,inherit);border:1px solid transparent}
+.cx-nav span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.cx-nav:hover{background:var(--cx-p2)}
+.cx-nav[aria-current="page"]{background:linear-gradient(90deg,rgba(232,116,26,.22),rgba(232,116,26,.04));border-color:rgba(232,116,26,.45);color:#fff;box-shadow:0 0 18px -6px var(--cx-glow)}
+.cx-nav[aria-current="page"] .cx-i{color:var(--cx-a2);filter:drop-shadow(0 0 6px var(--cx-glow))}
+.cx-ext{font-style:normal;color:var(--cx-mu);font-size:13px}
+.cx-n{min-width:22px;padding:2px 7px;border-radius:99px;background:var(--cx-a);color:var(--ink,#0a0705);font:700 12px/1.4 var(--body,inherit);text-align:center}
+/* main */
+.cx-main{min-width:0}
+.cx-h{margin:6px 0 4px;font:700 26px/1.15 var(--head,inherit);letter-spacing:.02em}
+.cx-sub{margin:0 0 16px;max-width:72ch}
+/* reusable blocks ---------------------------------------------------------------- */
+.cx-card{background:linear-gradient(180deg,var(--cx-p2),var(--cx-p1));border:1px solid var(--cx-line);border-radius:16px;padding:14px;min-width:0}
+.cx-card h3{margin:0 0 10px;font:700 12px/1.2 var(--body,inherit);letter-spacing:.12em;text-transform:uppercase;color:var(--cx-gold)}
+.cx-chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cx-chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:99px;border:1px solid var(--cx-line);background:var(--cx-p1);color:var(--cx-tx);font:600 13px/1 var(--body,inherit);cursor:pointer}
+.cx-chip:hover{border-color:var(--cx-a2)}
+.cx-chip.on{background:var(--cx-a);border-color:var(--cx-a);color:var(--ink,#0a0705)}
+.cx-chip .cx-i{width:16px;height:16px}
+.cx-pill{display:inline-block;padding:3px 10px;border-radius:99px;font:700 11.5px/1.4 var(--body,inherit);letter-spacing:.04em;text-transform:uppercase;border:1px solid currentColor}
+.cx-pill.ok{color:var(--cx-ok)}.cx-pill.bad{color:var(--cx-a)}.cx-pill.busy{color:var(--cx-gold)}.cx-pill.grey{color:var(--cx-mu)}
+.cx-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 14px}
+.cx-tile{display:grid;gap:2px;text-align:left;min-height:104px;padding:12px;border-radius:16px;border:1px solid var(--cx-line);background:linear-gradient(180deg,var(--cx-p2),var(--cx-p1));color:var(--cx-tx);cursor:pointer;font:inherit;min-width:0}
+.cx-tile:hover{border-color:var(--cx-a2)}
+.cx-tile[aria-pressed="true"]{border-color:var(--cx-a);box-shadow:0 0 0 1px var(--cx-a),0 0 24px -8px var(--cx-glow)}
+.cx-tile small{font:600 11px/1.2 var(--body,inherit);letter-spacing:.1em;text-transform:uppercase;color:var(--cx-mu)}
+.cx-num{font:800 34px/1.05 var(--head,inherit);color:var(--cx-a2);text-shadow:0 0 16px var(--cx-glow),0 0 2px var(--cx-a2);font-variant-numeric:tabular-nums}
+.cx-tile.gold .cx-num{color:var(--cx-gold);text-shadow:0 0 16px rgba(243,201,92,.45)}
+.cx-tile.ok .cx-num{color:var(--cx-ok);text-shadow:0 0 16px rgba(95,227,161,.4)}
+.cx-tile svg.cx-spark{width:100%;height:26px;display:block;margin-top:4px}
+.cx-spark path{fill:none;stroke:var(--cx-a2);stroke-width:1.6;stroke-linejoin:round}.cx-spark .fill{fill:var(--cx-glow);stroke:none;opacity:.5}
+.cx-tile .cx-d{font-size:12px;color:var(--cx-mu)}
+.cx-grid{display:grid;gap:12px;grid-template-columns:minmax(0,1fr);margin-bottom:12px}
+.cx-filterbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;padding:10px;border:1px solid var(--cx-line);border-radius:14px;background:var(--cx-p1)}
+.cx-filterbar input[type=search]{flex:1 1 180px;min-width:0;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--cx-line);background:rgba(0,0,0,.35);color:var(--cx-tx);font:inherit}
+.cx-bars{display:flex;align-items:flex-end;gap:6px;height:128px;padding-top:6px}
+.cx-bar1{flex:1 1 0;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:4px;background:none;border:0;padding:0;color:var(--cx-mu);font:600 10.5px/1 var(--body,inherit);cursor:pointer}
+.cx-bar1 i{display:block;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--cx-a2),var(--cx-a));min-height:3px;box-shadow:0 0 12px -2px var(--cx-glow)}
+.cx-bar1[aria-pressed="true"] i{background:linear-gradient(180deg,var(--cx-gold),var(--cx-a2));outline:2px solid var(--cx-gold)}
+.cx-bar1 b{text-align:center;color:var(--cx-tx);font-size:11px}.cx-bar1 span{text-align:center;overflow:hidden}
+.cx-health{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.cx-h1{display:grid;gap:3px;padding:10px;border-radius:12px;border:1px solid var(--cx-line);background:rgba(0,0,0,.25);min-width:0}
+.cx-h1 b{font-size:14px}.cx-h1 small{color:var(--cx-mu);overflow-wrap:anywhere}
+.cx-tablewrap{border:1px solid var(--cx-line);border-radius:14px;overflow-x:auto;background:rgba(0,0,0,.22)}
+.cx-t{width:100%;border-collapse:collapse;font-size:14px}
+.cx-t th{padding:0;text-align:left;border-bottom:1px solid var(--cx-line);font:700 11px/1.2 var(--body,inherit);letter-spacing:.1em;text-transform:uppercase;color:var(--cx-mu);white-space:nowrap}
+.cx-t th button{display:flex;align-items:center;gap:6px;width:100%;min-height:44px;padding:0 12px;background:none;border:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+.cx-t th button[aria-sort] {color:var(--cx-gold)}
+.cx-t td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:middle}
+.cx-t tr:last-child td{border-bottom:0}
+.cx-t tbody tr{cursor:pointer}.cx-t tbody tr:hover{background:var(--cx-p2)}
+.cx-t td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.cx-more{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+/* phones: the table becomes a grouped list (one card per row, no sideways scroll) */
+@media(max-width:639px){.cx-t thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.cx-t,.cx-t tbody,.cx-t tr,.cx-t td{display:block;width:100%}
+  .cx-t tr{padding:10px 12px;border-bottom:1px solid var(--cx-line)}.cx-t td{padding:2px 0;border:0}.cx-t td[data-l]::before{content:attr(data-l) ' ';color:var(--cx-mu);font-size:12px}
+  .cx-t td.what{font-weight:600;font-size:15px}}
+.cx-empty{display:flex;gap:12px;align-items:center;padding:18px;color:var(--cx-mu)}.cx-empty b{color:var(--cx-tx);display:block}
+.cx-skel{height:84px;border-radius:14px;background:linear-gradient(90deg,var(--cx-p1),var(--cx-p2),var(--cx-p1));background-size:200% 100%;animation:cxs 1.3s linear infinite}
+@keyframes cxs{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.cx-skel{animation:none}.cx-side{transition:none}}
+/* drawer: a bottom sheet on phones, a right panel from 900px */
+.cx-drawer{position:fixed;z-index:80;left:0;right:0;bottom:0;max-height:82vh;overflow:auto;background:linear-gradient(180deg,#1b110b,var(--cx-bg));border:1px solid var(--cx-line);border-radius:18px 18px 0 0;padding:16px 16px 28px;box-shadow:0 -18px 50px rgba(0,0,0,.6)}
+.cx-drawer h3{margin:0 40px 8px 0;font:700 18px/1.25 var(--head,inherit)}
+.cx-drawer dl{display:grid;grid-template-columns:minmax(0,max-content) minmax(0,1fr);gap:6px 14px;margin:10px 0}.cx-drawer dt{color:var(--cx-mu)}.cx-drawer dd{margin:0;overflow-wrap:anywhere}
+.cx-x{position:absolute;top:8px;right:8px;width:44px;height:44px;display:grid;place-items:center;border:0;background:none;color:var(--cx-tx);cursor:pointer}
+/* Ctrl+K palette */
+.cx-pal{position:fixed;z-index:90;inset:0;display:grid;align-items:start;justify-items:center;padding:8vh 12px 12px;background:rgba(0,0,0,.65)}
+.cx-pal>div{width:min(560px,100%);background:#150d08;border:1px solid var(--cx-line);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.cx-pal input{width:100%;min-height:52px;padding:0 16px;border:0;border-bottom:1px solid var(--cx-line);background:transparent;color:var(--cx-tx);font:500 16px/1 var(--body,inherit)}
+.cx-pal ul{list-style:none;margin:0;padding:6px;max-height:50vh;overflow:auto}
+.cx-pal a{display:flex;gap:12px;align-items:center;min-height:48px;padding:0 12px;border-radius:10px;color:var(--cx-tx);text-decoration:none}
+.cx-pal a:hover,.cx-pal a.sel{background:rgba(232,116,26,.2)}.cx-pal small{margin-left:auto;color:var(--cx-mu)}
+/* the mounted tools (controlcenter.js, orgpanel.js) keep their own markup; this only sets the frame */
+.cx #ccLive{min-width:0}.cx #ccLive .tablewrap{max-width:100%}
+.cx #ccLive .cc-panel{min-height:0}
+@media(min-width:640px){.cx-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}.cx-health{grid-template-columns:repeat(4,minmax(0,1fr))}.cx-find span,.cx-find kbd,.cx-back span{display:inline}
+  .cx-bars{height:150px}}
+@media(min-width:900px){
+  .cx{grid-template-columns:264px minmax(0,1fr);align-items:start;gap:22px}
+  .cx-bar{grid-column:1 / -1;grid-row:1}.cx-side{grid-column:1;grid-row:2}.cx-main{grid-column:2;grid-row:2}.cx-menu,.cx-scrim{display:none!important}.cx-bar{justify-content:space-between}
+  .cx-side{position:static;z-index:1;transform:none;visibility:visible;width:auto;overflow:visible;border:1px solid var(--cx-line);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02))}
+  .cx-grid.two{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+  .cx-drawer{left:auto;top:0;right:0;bottom:0;width:min(420px,92vw);max-height:none;border-radius:18px 0 0 18px}
+  .cx-h{font-size:30px}}
+@media(min-width:1280px){.cx{grid-template-columns:280px minmax(0,1fr)}.cx-num{font-size:40px}}
+.cx-toast{position:fixed;z-index:95;left:50%;bottom:20px;transform:translateX(-50%);max-width:92vw;padding:12px 18px;border-radius:12px;background:#1b110b;border:1px solid var(--cx-a);color:var(--cx-tx);box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.cx-chip .cx-vb,.cx-vb,.cx-vx{background:none;border:0;color:inherit;font:inherit;cursor:pointer;min-height:44px}.cx-chip:has(.cx-vb){padding:0 4px 0 14px}.cx-vx{width:36px;display:grid;place-items:center}
+.cx-i-s{width:12px;height:12px;opacity:.5}
+.cx .cx-tile .cx-num{font-size:34px;line-height:1.05}.cx .cx-tile small{font-size:11px;line-height:1.2}.cx .cx-tile .cx-d{font-size:12px}
+@media(min-width:1280px){.cx .cx-tile .cx-num{font-size:40px}}
+.cx-ext .cx-i{width:15px;height:15px;opacity:.7;display:block}

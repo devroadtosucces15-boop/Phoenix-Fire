@@ -47,16 +47,7 @@
     .map((a) => [a.getAttribute('href'), a.textContent.replace(/\s+/g, ' ').trim().replace(/^\S*\p{Extended_Pictographic}\S*\s*/u, ''), (a.querySelector('.em')?.textContent || '').trim()]);
   const siteGroups = () => (Array.isArray(N.nav) ? N.nav : []).filter((g) => g && g.l && g.href && !/^(hub|staff)/.test(g.href))
     .map((g) => ({ l: String(g.l), href: String(g.href), subs: (Array.isArray(g.subs) ? g.subs : []).filter((s) => Array.isArray(s) && s[0] && s[1] && !/^(hub|staff)/.test(s[0])) }));
-  const STAFF = [
-    ['Match night', [['staff-schedule.html', '🗓️', 'Schedule'], ['staff-dugout.html', '🧢', 'Dugout']]],
-    ['People', [['staff-desk.html', '🗂️', 'Desk']]],
-    ['Club content', [['staff-content.html', '📄', 'Content'], ['staff-artwork.html', '🎨', 'Artwork']]],
-    ['Moderation and tools', [['staff-tools.html', '🛠️', 'Tools']]],
-    ['Club health', [['staff-insights.html', '🧭', 'Insights']]],
-    ['Control Center', [['staff-controlcenter.html', '🎛️', 'Control Center']]]];
-  // One Boardroom tile: its tabs (switches, health, announce, audit, hall of fame, medals, backup, organization) stay as deep links inside the page.
-  const OWNER = [
-    ['Owner controls', [['staff-boardroom.html', '👑', 'Boardroom']]]];
+  /*@STAFF_LISTS@*/ // next/build.mjs writes const STAFF and const OWNER here from the staff manifest (next/lib/staffmanifest.mjs)
 
   // ---------- panel plumbing ----------
   const mk = (cls, html) => { const e = d.createElement('div'); e.className = cls; e.innerHTML = html; return e; };

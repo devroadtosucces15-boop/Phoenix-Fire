@@ -1,6 +1,6 @@
 # Design choices and systems
 
-Last verified: 2026-11-15
+Last verified: 2026-11-16
 
 Single source for brand values: `config.json` (`brand`), `phoenix/live.json`, `phoenix/overlay/`, `bot/icons/phoenix/`. This file records the
 decisions and where they are enforced. Design talk always starts from a screenshot (`PLANNING/SESSION-HANDOFF.md`).
@@ -25,6 +25,7 @@ decisions and where they are enforced. Design talk always starts from a screensh
 | Site theming | `next/` and `web/` are shared sources; `phoenix/build.mjs` stages them, recolours, renames, overlays the Phoenix theme. Source may say NOREX; built output must not | `tests/brand.test.mjs`, `tests/phoenix-brand.test.mjs`, `phoenix/leakcheck.mjs` |
 | Bot pictures | Every message the bots send carries a drawn Phoenix picture; `studio.mjs check --strict` is at 0 warnings | `tools/bot-studio/`, `PLANNING/OUTPUT-REDESIGN-SECTIONS.md` |
 | Navigation | A dock: crest ring with scroll progress plus a Staff pill; hub pages list hub rooms only, main pages list site menus; Staff never appears for members | `next/static/dock.js`, `dock.css`, `tests/dock.test.mjs` |
+| Control Center | One staff manifest (`next/lib/staffmanifest.mjs`) feeds hub tiles, dock lists, sidebar, Ctrl+K and link resolver; shell is a scoped dark CRM variant (`.cx`, ember/amber/gold theme vars, neon numbers), one SVG sprite (`next/lib/ccsprite.mjs`), phone-first drawer and grouped lists, dashboard cross-filters one data layer | `tests/ccshell.test.mjs`, `tests/controlcenter-nav.test.mjs` |
 | Layout | Shared layout rules; no sideways scroll at 390, 820, 1440 | `next/static/layout.css`, layout tests |
 | Channels and roles | Never hardcoded; read from Organization config | `bot/orgconfig.js`, per-feature test |
 | Frameworks | Vanilla JS and CSS only; vendored gsap, lenis, three for motion | `PLANNING/RESOURCES.md` |

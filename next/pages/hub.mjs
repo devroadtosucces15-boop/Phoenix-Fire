@@ -3,6 +3,8 @@ import * as W from '../lib/widgets.mjs';
 import { shell, esc, sample, sbt, chip, liveStrip } from '../lib/ui.mjs';
 import { formations } from './stats.mjs';
 import { playstyleBlock } from './tactics.mjs';
+import { hubGroups, SECTIONS, TOOLS } from '../lib/staffmanifest.mjs';
+import { sprite, icon } from '../lib/ccsprite.mjs';
 
 const ROOMS = [['hub.html', '🎽', 'My Locker', 'Your card, artwork, stats, trophies and alerts'], ['hub-matchnight.html', '🗓️', 'Match Night', 'RSVP, availability, MOTM votes, ratings, Rush log'], ['hub-squad.html', '🤝', 'Squad Room', 'Team up, awards, predictions, Rush squads and scouting'], ['hub-clubhouse.html', '💬', 'Clubhouse', 'Club feed, ideas board, chat room and who is on Discord'], ['hub-handbook.html', '📜', 'Handbook', 'Club rules, docs and how the site works']];
 const ROOMCLS = { 'hub.html': 'locker', 'hub-matchnight.html': 'night', 'hub-squad.html': 'squadr', 'hub-clubhouse.html': 'clubh', 'hub-handbook.html': 'handb', 'hub-watchlist.html': 'clubh', 'hub-discoveries.html': 'clubh', 'hub-music.html': 'clubh' };
@@ -150,19 +152,11 @@ const staffGate = `<div data-for="guest member" class="panel" style="text-align:
 // owner-only controls (staffhub.js adds html.is-owner from the session). Every tile opens its own page, nothing scrolls within this one. ----------
 const stTile = ([h, e, t, d]) => `<a class="panel room adm-tile" href="${h}"><div class="adm-e" aria-hidden="true">${e}</div><h3>${t}</h3><p class="muted small">${d}</p></a>`;
 const stGroup = (e, t, sub, tiles, cls = '') => `<section class="adm-g adm-n${tiles.length}${cls ? ' ' + cls : ''}"><header class="adm-gh"><span aria-hidden="true">${e}</span><div><h2>${t}</h2><p class="muted small">${sub}</p></div></header><div class="adm-grid">${tiles.map(stTile).join('')}</div></section>`;
-export const STAFF_GROUPS = [
-  ['🌙', 'Match night', 'Plan the squad and the pitch', [['staff-schedule.html', '🗓️', 'Schedule', 'Create, edit and cancel match nights, check in, send session reports'], ['staff-dugout.html', '🧢', 'Dugout', 'Build the line-up on the real pitch and post it']]],
-  ['👥', 'People', 'Everyone who needs a decision', [['staff-desk.html', '🗂️', 'Desk', 'Claims, members, requests, Rush results, trials and private notes']]],
-  ['📄', 'Club content', 'What members read', [['staff-content.html', '📄', 'Content', 'Club docs and rules, ideas board, squad week, media storage'], ['staff-artwork.html', '🎨', 'Artwork', 'Approve, inspect or revoke player card artwork']]],
-  ['🛡️', 'Moderation and tools', 'Keep the club tidy', [['staff-tools.html', '🛠️', 'Tools', 'Submissions, reported content, game data, bot settings, awards']]],
-  ['🎛️', 'Control Center', 'Switch, aim and restrict every output', [['staff-controlcenter.html', '🎛️', 'Control Center', 'Every command, button, automated post, scheduled job, DM and site section: on or off, who gets it, which channels']]],
-  ['🩺', 'Club health', 'How the club is doing', [['staff-insights.html', '🧭', 'Insights', 'Club Intelligence, written club notes, burner-club tracker']]],
-];
+// the groups come from the one staff manifest (next/lib/staffmanifest.mjs); the dock lists and the Control Center sidebar read the same file
+export const STAFF_GROUPS = hubGroups(false);
 // owner-only: the Boardroom, one page per tab, and the artwork studio
 export const BR_TABS = { switches: ['🎛️', 'Switches', 'Feature switches', 'Turn features on or off for guests, members and managers'], health: ['🩺', 'Health', 'Health', 'Club health score and recruitment'], announce: ['📣', 'Announce', 'Announce', 'Send club-wide announcements'], audit: ['🛡️', 'Audit', 'Audit log', 'Who changed what'], hof: ['🏛️', 'Hall of Fame', 'Hall of Fame', 'Trophies, legends, awards'], medals: ['🏅', 'Medals', 'Medals', 'Edit and award medals'], backup: ['💾', 'Backup', 'Backup', 'Export and restore club data'], org: ['🏢', 'Organization', 'Organization', 'Channels, roles and club settings'] };
-const OWNER_GROUPS = [
-  ['👑', 'Owner controls', 'Only the owner changes these. The Boardroom holds every owner tab.', [['staff-boardroom.html', '👑', 'Boardroom', 'Switches, health, announcements, audit log, Hall of Fame, medals, backup and organization, one page']]],
-];
+const OWNER_GROUPS = hubGroups(true);
 export function staff() {
   const body = `<div class="wrap adm-wrap"><div class="adm-plate"><i aria-hidden="true">🧢</i><b role="heading" aria-level="1">Staff hub</b><small data-staff-role>managers and the owner · every tool, grouped, one tap each</small></div>${staffGate}
   <div data-for="owner" hidden><div class="adm-groups">${STAFF_GROUPS.map((g) => stGroup(...g)).join('')}${OWNER_GROUPS.map((g) => stGroup(...g, 'adm-owner')).join('')}</div></div></div>`;
@@ -209,9 +203,17 @@ export function boardroom(tab = '') {
 }
 // managers and the owner: the Control Center (next/static/controlcenter.js) switches, aims and restricts every output; its Site access and Organization panels are the Boardroom's Switches and Organization
 export function controlCenter() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow"><a href="staff.html" style="color:inherit">‹ Staff hub</a> · managers and owner</div><h2>Control Center</h2><p class="muted small" style="margin:6px 0 0">Switch, aim and restrict every command, button, automated post, scheduled job, DM and site section in one place. Changes apply at once: no deploy, no code change. The <code>/setup output</code> command writes the same settings.</p></div></header>${staffGate}<div data-for="owner" hidden>
-  <div id="ccLive" hidden></div><div id="ccLocal" class="panel sq-empty"><span>🎛️</span><div><b>Sign in to the live Hub</b><p class="muted small">The Control Center works on the live bot, so it opens when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
-  return hubShell('staff-controlcenter.html', 'Control Center', body, { extraHead: '<link rel="stylesheet" href="controlcenter.css"><script src="orgpanel.js" defer></script><script src="controlcenter.js" defer></script>' });
+  // the shell (PF-022 step 7): a left sidebar built from the staff manifest, the dashboard home (ccshell.js) and the existing tools mounted as modules (#ccLive: controlcenter.js, orgpanel.js)
+  const side = SECTIONS.map(([sid, sname]) => { const tools = TOOLS.filter((t) => t.section === sid); return tools.length ? `<section class="cx-sec"><h3>${esc(sname)}</h3><ul>${tools.map((t) => `<li${t.owner ? ' data-owner hidden' : ''}><a class="cx-nav" href="${esc(t.href)}" data-tool="${esc(t.id)}"${t.module ? ` data-module="${esc(t.module)}"` : ''}>${icon(t.icon)}<span>${esc(t.label)}</span>${t.module ? '' : `<em class="cx-ext" role="img" aria-label="opens its own page">${icon('i-ext')}</em>`}<b class="cx-n" data-n="${esc(t.id)}" hidden></b></a></li>`).join('')}</ul></section>` : ''; }).join('');
+  const body = `${sprite()}<div class="wrap cx-wrap">${staffGate}<div data-for="owner" hidden><div class="cx" id="cx" data-cx>
+  <div class="cx-bar"><a class="cx-back" href="staff.html">${icon('i-back')}<span>Staff hub</span></a><button type="button" class="cx-menu" id="cxMenu" aria-expanded="false" aria-controls="cxSide">${icon('i-menu')}<span id="cxCur">Dashboard</span></button><button type="button" class="cx-find" id="cxFind" aria-label="Search every tool (Ctrl+K)">${icon('i-search')}<span>Search</span><kbd>Ctrl K</kbd></button></div>
+  <aside class="cx-side" id="cxSide" aria-label="Control Center tools"><div class="cx-brand"><img src="crest-sm.png" alt="" width="34" height="34"><div><b>Control Center</b><small>${esc(cfg.siteTitle || 'Club')} staff</small></div></div><nav>${side}</nav></aside>
+  <main class="cx-main" id="cxMain"><h2 class="cx-h" id="cxTitle">Dashboard</h2><p class="cx-sub muted small" id="cxSubtitle">${esc(TOOLS[0].desc)}. Changes made in a tool apply at once: no deploy, no code change.</p>
+  <section id="cxHome" data-module="home" aria-label="Dashboard"></section>
+  <section id="ccLive" hidden></section>
+  <div id="ccLocal" class="panel sq-empty"><span>🎛️</span><div><b>Sign in to the live Hub</b><p class="muted small">The Control Center works on the live bot, so it opens when you are signed in as a manager or the owner.</p></div></div>
+  </main><div class="cx-scrim" id="cxScrim" hidden></div></div></div></div>`;
+  return hubShell('staff-controlcenter.html', 'Control Center', body, { bodyExtra: 'cx-page', extraHead: '<link rel="stylesheet" href="controlcenter.css"><link rel="stylesheet" href="ccshell.css"><script src="staffmanifest.js" defer></script><script src="orgpanel.js" defer></script><script src="controlcenter.js" defer></script><script src="ccshell.js" defer></script>' });
 }
 export function artwork() {
   const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · owner</div><h2>Artwork studio</h2></div></header>${staffGate}<div data-for="owner" hidden>

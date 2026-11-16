@@ -12,7 +12,11 @@ fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(out, { recursive:
 const { players, matches, cfg } = await import('./lib/data.mjs');
 const CLUB = cfg.siteTitle || 'CLUB'; const INK = (cfg.brand && cfg.brand.ink) || '#080b11';
 const W = (f, h) => fs.writeFileSync(path.join(out, f), h);
+const SM = await import('./lib/staffmanifest.mjs');
 for (const f of fs.readdirSync(path.join(here, 'static')).filter((f) => !f.startsWith('.'))) fs.copyFileSync(path.join(here, 'static', f), path.join(out, f));
+// the staff tool manifest: the dock lists are written into dock.js, the browser copy (sidebar, search, link resolver) is staffmanifest.js
+{ const df = path.join(out, 'dock.js'); fs.writeFileSync(df, fs.readFileSync(df, 'utf8').replace('/*@STAFF_LISTS@*/', SM.dockLists())); }
+fs.writeFileSync(path.join(out, 'staffmanifest.js'), SM.manifestJs());
 fs.copyFileSync(path.join(here, 'crest.png'), path.join(out, 'crest.png'));
 // the live site's shared browser libraries (markdown-lite for docs, the Team up ranking, the player card PNG maker, the owner's 🐞 issue tool), shared rather than copied
 for (const f of ['docs-md.js', 'recs.js', 'cardcomposer.js', 'report.js', 'report.css', 'build-math.js']) { const lib = path.join(here, '..', 'web', f); if (fs.existsSync(lib)) fs.copyFileSync(lib, path.join(out, f)); }

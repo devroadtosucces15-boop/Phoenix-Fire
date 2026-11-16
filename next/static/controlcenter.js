@@ -25,6 +25,7 @@
   const METHOD_LABEL = { site: '🔔 Site', dm: '💬 Discord DM', push: '📲 Push' };
   const LISTS = { allow_roles: ['roles', 'Roles who can'], allow_members: ['members', 'Members who can'], deny_roles: ['roles', 'Roles who cannot'], deny_members: ['members', 'Members who cannot'], allow_channels: ['channels', 'Usable only in'], deny_channels: ['channels', 'Never usable in'], post_channels: ['channels', 'Posts go to'] };
 
+  const shell = !!root.closest('.cx'); // inside the Control Center shell (ccshell.js) the sidebar picks the panel, so no slicer here
   const S = { data: null, panel: (location.hash.slice(1) || 'access'), q: '', app: '', state: '', edit: null, draft: null, open: new Set(), discord: null, flagQ: '', err: null };
   if (!PANELS.some(([k]) => k === S.panel)) S.panel = 'access';
 
@@ -123,7 +124,7 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
     else if (S.panel === 'audit') body = auditPanel();
     else body = outputPanel(cur[3]);
     const keep = d.activeElement?.matches?.('[data-q],[data-flagq]') ? d.activeElement.hasAttribute('data-q') ? 'data-q' : 'data-flagq' : null, pos = keep ? d.activeElement.selectionStart : 0;
-    root.innerHTML = `<nav class="cc-slicer" role="tablist" aria-label="Control Center panels">${PANELS.map(([k, e, t]) => `<button type="button" role="tab" class="chip${S.panel === k ? ' on' : ''}" aria-selected="${S.panel === k}" data-panel="${k}">${e} ${t}${counts[k] != null ? ` <small>${counts[k]}</small>` : ''}</button>`).join('')}</nav>
+    root.innerHTML = `${shell ? '' : `<nav class="cc-slicer" role="tablist" aria-label="Control Center panels">${PANELS.map(([k, e, t]) => `<button type="button" role="tab" class="chip${S.panel === k ? ' on' : ''}" aria-selected="${S.panel === k}" data-panel="${k}">${e} ${t}${counts[k] != null ? ` <small>${counts[k]}</small>` : ''}</button>`).join('')}</nav>`}
 <section class="cc-panel" id="ccPanel" role="tabpanel" aria-label="${esc(cur[2])}">${body}</section>`;
     if (keep) { const el = root.querySelector(`[${keep}]`); if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch {} } }
   }
@@ -132,6 +133,7 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
     try { S.data = await call('/api/controlcenter'); S.err = null; } catch (er) { S.err = er.status === 403 || /only/i.test(er.message) ? 'The Control Center is for managers and the owner.' : er.message; }
     paint();
     if (S.data && S.panel === 'org' && OP) OP.load();
+    window.dispatchEvent(new CustomEvent('pfcc:data'));
   };
   const loadDiscord = async () => { if (S.discord) return; try { S.discord = await call('/api/controlcenter/discord'); } catch (er) { S.discord = { ready: false, error: er.message }; } paint(); };
   const find = (key) => S.data.items.find((i) => i.key === key);
@@ -181,9 +183,13 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
   root.addEventListener('toggle', (ev) => { const f = ev.target.dataset?.det; if (f) ev.target.open ? S.open.add(f) : S.open.delete(f); }, true);
   root.addEventListener('submit', (ev) => { const f = ev.target.closest('[data-form]'); if (!f) return; ev.preventDefault(); const i = find(f.dataset.form); if (i && S.draft) save(i); });
 
+  // the shell drives the panel: PFCC.go('audit') or a #hash change; PFCC.data() hands the loaded registry and audit to the dashboard (one data layer)
+  const go = (k) => { if (!PANELS.some(([p]) => p === k)) return false; S.panel = k; paint(); if (k === 'org' && OP && S.data) OP.load(); return true; };
+  window.PFCC = { go, data: () => S.data, reload: () => load(), ready: null };
+  window.addEventListener('hashchange', () => { if (!shell) go(location.hash.slice(1)); });
   (async () => {
     await A.ready?.catch?.(() => {});
     if (A.role !== 'owner' && A.role !== 'manager') return;
-    d.getElementById('ccLocal')?.setAttribute('hidden', ''); root.hidden = false; paint(); load();
+    d.getElementById('ccLocal')?.setAttribute('hidden', ''); if (!shell) root.hidden = false; paint(); load();
   })();
 })();
