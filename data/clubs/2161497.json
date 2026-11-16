@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-16T10:30:49.280Z",
+ "fetchedAt": "2026-11-16T10:40:40.321Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -686,12 +686,12 @@
   {
    "name": "ImWizardJr",
    "proPos": "25",
-   "gamesPlayed": "3",
-   "goals": "1",
-   "assists": "3",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.6",
-   "prevGoals": "0",
+   "gamesPlayed": "4",
+   "goals": "3",
+   "assists": "5",
+   "manOfTheMatch": "1",
+   "ratingAve": "8.2",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
