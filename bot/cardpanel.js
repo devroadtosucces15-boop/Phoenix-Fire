@@ -7,7 +7,7 @@
 import { can, flagOn } from './roles.js';
 import { hex } from './media.js';
 import { message, header, text, sep, buttons, footer, notice } from './ui.js';
-import { submitCardRequest, canUseTemplate, photoType, PHOTO_MAX } from './cardstudio.js';
+import { submitCardRequest, canUseTemplate, photoType, PHOTO_MAX, monthlyLimit } from './cardstudio.js';
 import { log } from './members.js';
 
 export const CARD_ID = /^pf:card:/;
@@ -63,7 +63,7 @@ export async function cardPanel(env, me, s, note) {
     text('**How it works**\n1. Check the photo: face to the camera, head and shoulders, good light.\n2. Choose what to make, a look, your kit and a number.\n3. Send it. A manager checks the photo, then the card is drawn.'),
     sep(),
     ...rows, ...kitRow,
-    footer(missing ? `Still needed: ${missing}` : 'Ready. One request a month.'),
+    footer(missing ? `Still needed: ${missing}` : `Ready. ${monthlyLimit(env) === 1 ? 'One request' : monthlyLimit(env) + ' requests'} a month.`),
   ] });
 }
 

@@ -1,6 +1,6 @@
 import { call, env, login, r2objects, W } from './mock.mjs';
 import { t, done } from './lib.mjs';
-import { canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, portraitPrompt, CARD_MODEL, KIT_TEXT, kitText, resizeSquare } from '../bot/cardstudio.js';
+import { monthlyLimit, slotMonth, baseMonth, canUseTemplate, CARD_SIZE, pngSize, photoType, monthKey, generateCards, cardPrompt, portraitPrompt, CARD_MODEL, KIT_TEXT, kitText, resizeSquare } from '../bot/cardstudio.js';
 
 const setFlags = (o) => { env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), ...o }); };
 const owner = await login('111', [], 'Boss');
@@ -392,5 +392,23 @@ t('4b: no pre-approval preview in the member page or the classic page', () => {
   if (/Rough preview|sentPhoto/.test(nx) || /cs-preview/.test(wb)) throw new Error('pre-approval preview is back');
   if (!/status === 'done' && r\.hasPortrait\)\) return ''/.test(nx)) throw new Error('card preview must only show for a finished portrait');
 });
+
+// ---------- monthly limit comes from CARD_MONTHLY_LIMIT (PF-020 4d): extra requests are stored as month slots, no table rebuild ----------
+{
+  const m3 = await login('502', [], 'Player Three');
+  t('limit defaults to 1 when unset', monthlyLimit({}) === 1 && monthlyLimit({ CARD_MONTHLY_LIMIT: 'junk' }) === 1 && monthlyLimit({ CARD_MONTHLY_LIMIT: '99' }) === 10);
+  t('slot months keep the calendar month', slotMonth('2026-11', 1) === '2026-11' && slotMonth('2026-11', 3) === '2026-11#3' && baseMonth('2026-11#3') === '2026-11');
+  const before = env.CARD_MONTHLY_LIMIT;
+  env.CARD_MONTHLY_LIMIT = '2';
+  const a = await reqUp(m3, `bg=${bgId}&pose=${poseId}`, JPG());
+  const b = await reqUp(m3, `bg=${bgId}&pose=${poseId}`, JPG());
+  const c = await reqUp(m3, `bg=${bgId}&pose=${poseId}`, JPG());
+  t('limit 2: first and second request accepted', a.s === 200 && b.s === 200);
+  t('limit 2: third request refused', c.s === 409);
+  const mine3 = (await call(m3, '/api/cards/request')).d;
+  t('mine reports limit and used', mine3.limit === 2 && mine3.used === 2 && mine3.request.month === monthKey());
+  env.CARD_MONTHLY_LIMIT = before;
+  t('limit back to 1 refuses again', (await reqUp(m3, `bg=${bgId}&pose=${poseId}`, JPG())).s === 409);
+}
 
 done();

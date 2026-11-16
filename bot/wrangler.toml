@@ -8,6 +8,7 @@ crons = ["*/10 * * * *", "* * * * *"] # every 10 min: site update + checks; ever
 [vars]
 SITE_URL = "https://devroadtosucces15-boop.github.io/Phoenix-Fire/"
 PUBLIC_URL = "https://phoenix-bot.norexunited.workers.dev" # this Worker – Card Studio cards are served from /media/ here (bot/faces.js)
+CARD_MONTHLY_LIMIT = "2" # Card Studio requests per member per month (1 to 10); stored as month slots, no migration (bot/cardstudio.js)
 GITHUB_REPO = "devroadtosucces15-boop/Phoenix-Fire"
 DISCORD_APP_ID = "1569450321057550537"
 DISCORD_PUBLIC_KEY = "997cfab5315bb5bf6941860ea81b3e80b70c74d2649397f28bf7680540722bcb"

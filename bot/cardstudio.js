@@ -85,6 +85,12 @@ export async function cardTemplateUpload(request, me, env, url, log) {
 let kick = false; // a request was just approved → handleMembers starts generating right after responding
 export const takeCardKick = () => { const k = kick; kick = false; return k; };
 export const monthKey = (now = Date.now()) => new Date(now).toISOString().slice(0, 7);
+// Requests a member may send per month: wrangler var CARD_MONTHLY_LIMIT (1 to 10, default 1). card_requests keeps UNIQUE(user_id, month), so the
+// 2nd, 3rd... request of a month is stored as '2026-11#2', '2026-11#3' (no table rebuild; baseMonth() gives the calendar month back).
+export const monthlyLimit = (env) => Math.min(10, Math.max(1, Math.floor(Number(env?.CARD_MONTHLY_LIMIT)) || 1));
+export const slotMonth = (month, n) => (n <= 1 ? month : `${month}#${n}`);
+export const baseMonth = (m) => String(m ?? '').split('#')[0];
+const perMonthText = (limit) => (limit === 1 ? 'a card request' : `${limit} card requests`);
 const startsWith = (b, sig, at = 0) => sig.every((x, i) => b[at + i] === x);
 export function photoType(b) {
   if (b.length < 12) return null;
@@ -96,7 +102,7 @@ export function photoType(b) {
 const dropPhoto = (env, key) => (key && env.MEDIA ? env.MEDIA.delete(key).catch(() => {}) : null);
 
 const reqView = (r, extra = {}) => ({
-  id: r.id, month: r.month, status: r.status === 'done' && r.published === 0 ? 'review' : r.status, note: r.note, bg: r.bg_name ?? null, pose: r.pose_name ?? null,
+  id: r.id, month: baseMonth(r.month), status: r.status === 'done' && r.published === 0 ? 'review' : r.status, note: r.note, bg: r.bg_name ?? null, pose: r.pose_name ?? null,
   createdAt: r.created_at, decidedAt: r.decided_at, hasPhoto: !!r.photo_key, targetPlayer: r.target_player ?? null, hasResult: !!r.result_key, hasPortrait: !!r.portrait_key, kitNumber: r.kit_number ?? null, kit: r.kit_variant || 'male', avatarEnabled: r.avatar_enabled !== 0, portraitEnabled: r.portrait_enabled === 1, attempts: r.attempts, ...extra,
 });
 const REQ_SQL = `SELECT r.*, b.name AS bg_name, p.name AS pose_name FROM card_requests r
@@ -147,9 +153,16 @@ export async function submitCardRequest(me, env, o, log, loadSite) {
   if (kitNumber !== null && (!/^\d{1,2}$/.test(rawNumber) || !Number.isInteger(kitNumber) || kitNumber < 0 || kitNumber > 99)) return { error: 'Kit number must be between 0 and 99.', status: 400 };
   const variant = o.kit ?? 'male';
   if (!KIT_VARIANTS.includes(variant)) return { error: 'Pick the male or female kit.', status: 400 };
-  const month = monthKey();
-  const existing = await one(env, 'SELECT id, status, photo_key, result_key, portrait_key FROM card_requests WHERE user_id = ? AND month = ?', targetUser, month);
-  if (existing && existing.status !== 'rejected') return { error: targetPlayer ? 'That player already has a request this month. Revoke it to allow resubmission.' : 'You already sent a card request this month – the next one opens on the 1st.', status: 409 };
+  const base = monthKey();
+  const limit = monthlyLimit(env);
+  const rows = await all(env, "SELECT id, month, status, photo_key, result_key, portrait_key FROM card_requests WHERE user_id = ? AND (month = ? OR month LIKE ?)", targetUser, base, base + '#%');
+  const live = rows.filter(r => r.status !== 'rejected');
+  if (live.length >= limit) return { error: targetPlayer ? 'That player already used their requests this month. Revoke one to allow resubmission.' : `You already sent ${perMonthText(limit)} this month – the next ${limit === 1 ? 'one opens' : 'ones open'} on the 1st.`, status: 409 };
+  const taken = new Set(live.map(r => r.month));
+  let slot = 1;
+  while (taken.has(slotMonth(base, slot))) slot++;
+  const month = slotMonth(base, slot);
+  const existing = rows.find(r => r.month === month) ?? null; // a rejected request sitting in this slot is replaced
   const bg = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'bg'", Number(o.bg));
   const pose = await one(env, "SELECT * FROM card_templates WHERE id = ? AND kind = 'pose'", Number(o.pose));
   if (avatarEnabled && !bg) return { error: 'Pick a background for your cinematic avatar.', status: 400 };
@@ -168,7 +181,7 @@ export async function submitCardRequest(me, env, o, log, loadSite) {
     await run(env, 'INSERT INTO card_requests (user_id, month, bg_id, pose_id, photo_key, status, created_at, avatar_enabled, portrait_enabled, kit_number, target_player, submitted_by, kit_variant) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', targetUser, month, bg?.id ?? 0, pose?.id ?? 0, key, 'pending', Date.now(), avatarEnabled ? 1 : 0, portraitEnabled ? 1 : 0, kitNumber, targetPlayer, me.u, variant);
   } catch {
     await dropPhoto(env, key);
-    return { error: 'You already sent a card request this month – the next one opens on the 1st.', status: 409 };
+    return { error: `You already sent ${perMonthText(limit)} this month – the next ${limit === 1 ? 'one opens' : 'ones open'} on the 1st.`, status: 409 };
   }
   if (existing) await Promise.all([dropPhoto(env, existing.photo_key), dropPhoto(env, existing.result_key), dropPhoto(env, existing.portrait_key)]);
   await log(env, me, 'card-request', avatarEnabled ? `${bg.name} + ${pose.name}` : 'Standardized portrait');
@@ -189,7 +202,8 @@ export async function cardRequestUpload(request, me, env, url, log, loadSite) {
 
 async function mine(env, me) {
   const r = await one(env, `${REQ_SQL} WHERE r.user_id = ? ORDER BY r.created_at DESC LIMIT 1`, me.u);
-  return { month: monthKey(), request: r ? reqView(r, { queue: await queueInfo(env, r) }) : null };
+  const used = (await one(env, "SELECT COUNT(*) AS n FROM card_requests WHERE user_id = ? AND status <> 'rejected' AND (month = ? OR month LIKE ?)", me.u, monthKey(), monthKey() + '#%'))?.n ?? 0;
+  return { month: monthKey(), limit: monthlyLimit(env), used, request: r ? reqView(r, { queue: await queueInfo(env, r) }) : null };
 }
 
 // GET /api/cards/photo/<id> – Bearer-authenticated: the requester or a manager.

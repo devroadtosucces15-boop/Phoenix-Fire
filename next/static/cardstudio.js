@@ -1,5 +1,5 @@
 // Card Studio: My Locker (member) + Staff › Artwork (managers and the owner). Only the live routes in bot/cardstudio.js:
-// member: GET /api/cards/templates + /api/cards/request, POST /api/cards/request (the photo is the raw body, one a month),
+// member: GET /api/cards/templates + /api/cards/request, POST /api/cards/request (the photo is the raw body, up to CARD_MONTHLY_LIMIT a month),
 // /api/cards/request/cancel, /api/cards/kit-number. Private pictures (/api/cards/photo|result/<id>) are fetched with the session
 // token and shown from blob URLs. Staff: /api/cards/requests (+ decide, review, retry), template upload/update, premium grant/revoke.
 // Owner: /api/cards/owner/requests (+ revoke) and photos for any player. The Discord /avatarcard panel (bot/cardpanel.js) feeds the same requests; it sits
@@ -78,7 +78,7 @@
   const gallery = (title, list, kind, empty) => `<div class="cs-gal"><h5>${title}</h5>${list.length ? `<div class="cs-tiles">${list.map((t) => tile(t, kind)).join('')}</div>` : `<p class="muted small">${empty}</p>`}</div>`;
   const why = () => !photo ? 'Choose a photo first' : !outs.avatar && !outs.portrait ? 'Pick at least one thing to make' : outs.avatar && !(sel.bg && sel.pose) ? `Pick a ${sel.bg ? 'pose' : sel.pose ? 'background' : 'background and a pose'} for the cinematic avatar` : '';
   const statusHtml = () => { const r = R?.request, s = r?.status, [ic, label] = s ? STATUS[s] || ['•', s] : ['🪪', 'No request yet'];
-    const thisMonth = r && r.month === R.month, open = !r || s === 'rejected' || !thisMonth;
+    const thisMonth = r && r.month === R.month, open = !r || s === 'rejected' || !thisMonth || (R.used ?? 1) < (R.limit ?? 1);
     const outsLine = r ? [r.avatarEnabled !== false && '🎬 Cinematic avatar', r.portraitEnabled && '🪪 Website portrait'].filter(Boolean).join(' + ') : '';
     return `<div class="panel cs-stat${s ? ' s-' + s : ''}"><div class="cs-sh"><div class="eyebrow">📆 ${esc(monthName(r?.month || R.month))}</div>${s ? pill(s) : ''}</div>
 <div class="cs-sl"><span class="cs-si" aria-hidden="true">${ic}</span><div><h3>${esc(label)}</h3><p class="muted small">${r ? `${esc(outsLine)}${r.avatarEnabled !== false && (r.bg || r.pose) ? ` · ${esc(r.bg || '–')} + ${esc(r.pose || '–')}` : ''}${r.kitNumber != null ? ` · 👕 #${r.kitNumber}` : ''} · sent ${esc(ago(r.createdAt))}` : 'One request a month. A manager checks the photo before anything is drawn.'}</p></div></div>
@@ -108,7 +108,7 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
 <label class="pf-l">👕 Kit number <small class="muted">optional</small>${kitInput(kit, 'cs-kitn')}</label></div></div>
 <div class="cs-looks"${outs.avatar ? '' : ' hidden'}><h5 class="cs-lh"><i>3</i> Pick a look <small class="muted">${T.backgrounds.some((t) => t.locked) || T.poses.some((t) => t.locked) ? '🔒 premium looks open when a manager unlocks them for you' : ''}</small></h5>${gallery('🌫️ Background', bgs, 'bg', 'No backgrounds yet. Turn off the cinematic avatar to ask for just the portrait.')}${gallery('💪 Pose', poses, 'pose', 'No poses yet.')}</div>
 <div class="cs-send"><p class="small" id="cs-why" aria-live="polite">${w ? `👉 ${esc(w)}` : `✅ Ready: ${[outs.avatar && 'cinematic avatar', outs.portrait && 'website portrait'].filter(Boolean).join(' + ')}${kit !== '' ? ` · #${esc(kit)}` : ''}`}</p><button type="submit" class="btn gold" id="cs-go"${w ? ' disabled' : ''}>📨 Send to a manager</button></div></form>`; };
-  const meHtml = () => { const r = R?.request, open = !r || r.status === 'rejected' || r.month !== R.month;
+  const meHtml = () => { const r = R?.request, open = !r || r.status === 'rejected' || r.month !== R.month || (R.used ?? 1) < (R.limit ?? 1);
     if (!flagOn('cardStudio')) return `<div class="cs-top">${'<div class="panel sq-empty"><span>🎨</span><div><b>Card Studio is not switched on for you yet</b><p class="muted small">It opens here as soon as the club turns it on.</p></div></div>'}</div>`;
     return `<div class="cs-top">${statusHtml()}${previewHtml()}</div>${artHtml()}${open ? formHtml() : ''}`; };
   // after a paint: private pictures, the card preview, the polling while a card is being drawn
