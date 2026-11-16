@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-16T10:10:39.658Z",
+ "fetchedAt": "2026-11-16T10:20:45.153Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1976,12 +1976,12 @@
   {
    "name": "ImWizardJr",
    "proPos": "25",
-   "gamesPlayed": "2",
+   "gamesPlayed": "3",
    "goals": "1",
    "assists": "3",
    "manOfTheMatch": "0",
-   "ratingAve": "8.4",
-   "prevGoals": "1",
+   "ratingAve": "7.6",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -2097,7 +2097,7 @@
   {
    "name": "Gravity-_-Snake",
    "proPos": "5",
-   "gamesPlayed": "267",
+   "gamesPlayed": "268",
    "goals": "274",
    "assists": "274",
    "manOfTheMatch": "29",
@@ -2130,9 +2130,9 @@
   {
    "name": "MejMech",
    "proPos": "14",
-   "gamesPlayed": "598",
+   "gamesPlayed": "599",
    "goals": "435",
-   "assists": "453",
+   "assists": "454",
    "manOfTheMatch": "153",
    "ratingAve": "7.7",
    "prevGoals": "0",
@@ -2152,12 +2152,12 @@
   {
    "name": "AliasX47",
    "proPos": "14",
-   "gamesPlayed": "374",
-   "goals": "451",
+   "gamesPlayed": "375",
+   "goals": "452",
    "assists": "251",
    "manOfTheMatch": "40",
    "ratingAve": "7.7",
-   "prevGoals": "5",
+   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
