@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-16T22:10:44.095Z",
+ "fetchedAt": "2026-11-16T22:20:40.920Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1851,11 +1851,11 @@
   {
    "name": "EL-nugat",
    "proPos": "0",
-   "gamesPlayed": "12",
+   "gamesPlayed": "13",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "6.2",
+   "ratingAve": "6.1",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
