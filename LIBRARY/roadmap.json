@@ -577,7 +577,7 @@
       "title": "Deep-link helper and stale anchors (R04, R05); `members.html#...` forwarder (R06)",
       "phase": "Match night and upkeep",
       "area": "`next/`, `phoenix/build.mjs`",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -588,10 +588,16 @@
       ],
       "fileLane": "`next/`, `phoenix/build.mjs`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "From \"Still open later\" in `PLANNING/DOCK-HUB-DETAILS.md`.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-16",
+          "ref": "PF-008 PR",
+          "what": "Audited what R04/R05/R06 and PF-018 already built: PhoenixDeeplink, PhoenixLinks and the members.html forwarder were in place and no anchor was stale. Verified in headless Chrome at 390 and 1440: hub-clubhouse#ch-ideas, hub-handbook#hb-docs, hub-matchnight#mn-rush and #mn-motm, leaders#assists, tactics#xi land at the sticky offset, and members.html#rush, #ideas, #docs forward to their hub page and land the same way. Added tests/forwarder.test.mjs: every forwarder target page and id exists in the Phoenix build, unknown hashes stay on the claim page, no NOREX in it, and no stale page.html#anchor link in any built page."
+        }
+      ],
       "plans": []
     },
     {
@@ -599,7 +605,7 @@
       "title": "Optional additions R18 to R22 and staff sweep follow-ups R24 to R29",
       "phase": "Match night and upkeep",
       "area": "staff pages",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,

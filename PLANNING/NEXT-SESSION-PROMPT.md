@@ -1,24 +1,22 @@
-Model: sonnet (claude-sonnet-5-5)   Item: PF-008 Deep-link helper and stale anchors (R04, R05); `members.html#...` forwarder (R06)
+Model: sonnet (claude-sonnet-5-5)   Item: PF-009 Optional additions R18 to R22 and staff sweep follow-ups R24 to R29 (take ONE of them per session; the roadmap row says so)
 
-Repo: /home/mrsuccess/Phoenix-Fire. Cut a branch from origin/main (`git switch -c <name> origin/main`, run unsandboxed; if it leaves you on the old branch because of staged
-data files, use `git switch -m <name>`; if the branch then exists but HEAD is still the old one, `git symbolic-ref HEAD refs/heads/<name>`). Read CLAUDE.md,
-PLANNING/SESSION-HANDOFF.md sections 1 to 5, LIBRARY/README.md and the PF-008 row of LIBRARY/roadmap.json. Details: "Still open later" in `PLANNING/DOCK-HUB-DETAILS.md`,
-the R04/R05/R06 items in `.site-context/spec/REFACTOR.md`, and `PLANNING/NEXT-ITEMS-PROMPT.md` item 1 (verify `PhoenixDeeplink` in a real browser at 390 and 1440,
-direct and from `burners.html`: `hub-clubhouse.html#ch-*`, `hub-handbook.html#hb-*`, `hub-matchnight.html#mn-*`, and the `members.html#...` forwarder).
+Repo: /home/mrsuccess/Phoenix-Fire. Cut a branch from origin/main (`git switch -c <name> origin/main`, run unsandboxed; if staged data files block it, use `git switch -m <name>`; if the branch name already exists, `git switch -m` to it). Read CLAUDE.md,
+PLANNING/SESSION-HANDOFF.md sections 1 to 5, LIBRARY/README.md and the PF-009 row of LIBRARY/roadmap.json. The R-items are listed in `.site-context/spec/REFACTOR.md` when present
+(it may be missing in a fresh checkout) and in `PLANNING/DOCK-HUB-DETAILS.md` ("Still open later"); `PLANNING/NEXT-ITEMS-PROMPT.md` has more. Several R20 to R22 pieces were
+already built and are guarded by `tests/deeplink.test.mjs` (staff tab data-dl, split locker mounts): confirm what is still open before building.
 
 ## State right now
-- PF-004 is DONE (most of it was already on main; the rest closed: `banner-recap.png` drawn, duplicate `auto:session-recap` registry row removed, guards added in `tests/botstudio.test.mjs`, `studio.mjs check` 0 FIX).
+- PF-008 is DONE: the deep-link helper, link resolver and `members.html#...` forwarder were already built; nothing stale. Added `tests/forwarder.test.mjs` (every forwarder target and every static `page.html#anchor` resolves in the Phoenix build). Real-browser check at 390 and 1440 passed.
 - PF-022 (Control Center CRM, DJ bridge push or poll) waits on an owner decision: do not start it, and PF-023 follows it. PF-005, PF-006, PF-007 and PF-025 are owner steps.
-- Usage on 2026-11-16 was 73% of the 5-hour window at the start of PF-004. Write a fresh snapshot first (`node tools/brain/usage.mjs write --five <n> --week <n>`, numbers from the app usage tool); at 80% or more stop and report.
+- Write a fresh usage snapshot first (`node tools/brain/usage.mjs write --five <n> --week <n>`, numbers from the app usage tool); at 80% or more stop and report. Usage was 89% (5-hour) on 2026-11-16 around 15:15 UTC; the window resets about 15:50 UTC.
 
 ## Do next, in order
-1. Check LIBRARY/CLAIMS.md and claim `next/`, `phoenix/build.mjs`.
-2. Read what R04, R05 and R06 already built (they were finished and tested earlier); find which anchors are still stale or untested, and verify in a real browser (screenshots at 390 and 1440 for any visual change, text checks for logic).
-3. Fix what fails: stale anchors, the deep-link helper, the `members.html#...` forwarder. Phoenix branding on everything touched; add or extend a test.
-4. Tests, `node tools/library/sync.mjs`, `node tests/library.test.mjs`, `node tests/run.mjs`. Commit, push with the gh helper (unsandboxed), merge to main. Mark PF-008 DONE, set the next free item NEXT (not PF-022), write the next prompt and start that session.
+1. Check LIBRARY/CLAIMS.md and claim the files you will touch.
+2. Pick ONE R item from PF-009, find what is already built, build only the gap. Phoenix branding on everything it touches; add or extend a test.
+3. Tests, `node tools/library/sync.mjs`, `node tests/library.test.mjs`, `node tests/run.mjs`. Commit, push with the gh helper (unsandboxed), merge to main. If R items remain, keep PF-009 as NEXT with a shorter row; else mark it DONE and set PF-010 NEXT. Write the next prompt.
 
 ## Gotchas
 - Tests overwrite `site/`: rebuild after any test run (`node phoenix/build.mjs --out site`). A hook rewrites Bash calls with an `rtk` prefix and auto mode asks you to reissue them exactly.
-- `studio.mjs capture` needs a built `site/`; `capture --cards` needs Chrome (run unsandboxed). Keep only new card files you need; the redraw rewrites hashed files.
-- /tmp is a RAM tmpfs and filled up before: clean old /tmp/claude-1000 and /tmp/nxq-* if Bash says "Disk full".
+- The sandboxed shell has its own private /tmp/claude-1000; unsandboxed commands cannot see files written there. Put shared scratch inside the worktree and delete it.
+- A headless Chrome check is easy: serve the built dir, launch `google-chrome --headless=new --remote-debugging-port`, drive it over CDP with node's global WebSocket (unsandboxed).
 - The design test "score card 1200 x 500 PNG" fails only where Chrome cannot launch (sandbox).

@@ -1,10 +1,10 @@
 {
   "latest": {
-    "fiveHour": 73,
-    "weekly": 8,
+    "fiveHour": 89,
+    "weekly": 10,
     "fiveHourResetsAt": null,
     "weeklyResetsAt": null,
-    "timestamp": "2026-11-16T14:27:37.285Z",
+    "timestamp": "2026-11-16T15:10:38.341Z",
     "source": "session"
   },
   "history": [
@@ -22,6 +22,14 @@
       "fiveHourResetsAt": null,
       "weeklyResetsAt": null,
       "timestamp": "2026-11-16T14:16:51.224Z",
+      "source": "session"
+    },
+    {
+      "fiveHour": 73,
+      "weekly": 8,
+      "fiveHourResetsAt": null,
+      "weeklyResetsAt": null,
+      "timestamp": "2026-11-16T14:27:37.285Z",
       "source": "session"
     }
   ]
