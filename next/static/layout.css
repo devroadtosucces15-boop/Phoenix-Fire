@@ -11,7 +11,7 @@
 /* R30 (from 700px, because the grids go two-up at tablet width 820): the same 22px came from .panel+.panel (motion.css) on the named grids, so rows start level. The :is() list repeats the sibling selector to beat its specificity. */
 @media(min-width:700px){:is(.bx-grps,.nw-posts,.pb-top,.ct-list,.ix-cards,.sc-list,.adm-grid)>*,:is(.bx-grps,.nw-posts,.pb-top,.ct-list,.ix-cards,.sc-list,.adm-grid)>.panel+.panel{margin-top:0}}
 /* R45 Boardroom (desktop and up): tiles fill the row (auto-fit drops the empty tracks, so 6 tiles use the full width); eight tiles go two even rows of four; the closing note gets space from the last row and the staff pages lose the dead band under their content (the tab bar that needs the 110px is phone-only) */
-@media(min-width:821px){.br-tools{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}.br-tools:has(>:nth-child(8):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}.br-tools+p.muted{margin-top:16px}body.room-staff main{padding-bottom:56px}}
+@media(min-width:821px){.br-tools{grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr))}.br-tools:has(>:nth-child(8):last-child){grid-template-columns:repeat(4,minmax(0,1fr))}.br-tools+p.muted{margin-top:16px}body.room-staff main{padding-bottom:56px}}
 /* R34: room for a hash target near the end of a short page (set only by deeplink.js) */
 #main::after{content:"";display:block;height:var(--pf-tail,0)}
 /* R35 tap targets (phone and up, explicit spec item): bigger boxes only, no font, colour or icon change */
@@ -64,3 +64,7 @@
 .dg-top{align-items:stretch}
 /* Alert settings (alerts.js): each Site / Discord DM / Push / All checkbox label is a 40px tap row, the box itself is 24px (WCAG 2.5.8; the audit measures the input) */
 label.al-box{min-height:40px;padding:0 2px}label.al-box input{width:24px;height:24px;margin:0;flex:none}.al-boxes{gap:0 10px}
+
+/* PF-009 R25: Boardroom Switches accordion in 2 columns from 1100, counts beside the title */
+.br-grp>summary{justify-content:flex-start}.br-grp>summary:after{margin-left:auto}.br-grp>summary small{margin-left:2px}
+@media(min-width:1100px){.br-grps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.br-grps>.br-grp{margin:0}.br-grp .br-flags{grid-template-columns:minmax(0,1fr)}}

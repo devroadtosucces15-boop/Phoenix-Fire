@@ -95,7 +95,7 @@ ${groups.map(([t, it]) => `<h4 class="dk-h">${esc(t)}</h4><div class="br-tools">
     const nOver = all.filter((k) => committed[k] !== undefined && committed[k] !== S.flags[k]).length;
     return `<div class="br-bar"><input type="search" class="br-in" data-filter placeholder="Find a feature…" value="${esc(S.filter)}" aria-label="Find a feature"><span class="muted small">${all.length} switches · ${nOver} live override${nOver === 1 ? '' : 's'}</span><button type="button" class="chip" data-undo${S.undo.length ? '' : ' disabled'}>↶ Undo${S.undo.length ? ` (${esc(S.undo[S.undo.length - 1].name)})` : ''}</button></div>
 ${S.canEdit ? '' : '<p class="muted small">Only the owner can change switches; you can see them.</p>'}
-${html || '<p class="muted small">No switch matches.</p>'}
+${html ? `<div class="br-grps">${html}</div>` : '<p class="muted small">No switch matches.</p>'}
 <p class="muted small">A change is live on the next page load, with no deploy. “Committed” is the level saved in the club config. New features start at Owner.</p>`;
   }
   async function setFlag(name, level, undo) {

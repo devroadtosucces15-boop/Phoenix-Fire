@@ -50,4 +50,9 @@ t('no NOREX name in the new pages and stylesheets', NEW.every((f) => { const s =
 const shc = read('staffhub.css');
 t('R24: staff home groups are a dense grid (4 columns from 1100, 2 from 821), double groups span 2, owner group spans the row', st.includes('<div class="adm-groups">') && /adm-n2/.test(st) && /@media\(min-width:1100px\)\{\.adm-groups\{grid-template-columns:repeat\(4,/.test(shc) && /@media\(min-width:821px\)\{\.adm-groups\{grid-template-columns:repeat\(2,/.test(shc) && shc.includes('grid-auto-flow:dense') && /\.adm-groups \.adm-owner\{grid-column:1\/-1\}/.test(shc));
 t('R24: the staff home stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(st.replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(shc));
+// PF-009 R25 (owner approved 2026-11-16): Boardroom link tiles are an equal auto-fill grid; the Switches accordion sits in 2 columns from 1100 with the counts beside the title
+const brj = read('boardroom.js');
+t('R25: Boardroom link tiles use an equal auto-fill grid (no auto-fit stretch)', /\.br-tools\{grid-template-columns:repeat\(auto-fill,minmax\(min\(100%,190px\),1fr\)\)\}/.test(lay) && !/\.br-tools\{grid-template-columns:repeat\(auto-fit/.test(lay));
+t('R25: Switches accordion groups sit in a .br-grps 2-column grid from 1100, counts next to the title', brj.includes('class="br-grps"') && /@media\(min-width:1100px\)\{\.br-grps\{display:grid;grid-template-columns:repeat\(2,/.test(lay) && /\.br-grp>summary\{justify-content:flex-start\}/.test(lay) && /\.br-grp>summary:after\{margin-left:auto\}/.test(lay));
+t('R25: the Boardroom output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-boardroom.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
 done();
