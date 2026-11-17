@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-17T18:10:44.943Z",
+ "fetchedAt": "2026-11-17T18:20:42.243Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1730,11 +1730,11 @@
   {
    "name": "SkinnerLAYDD",
    "proPos": "25",
-   "gamesPlayed": "22",
+   "gamesPlayed": "23",
    "goals": "11",
    "assists": "5",
    "manOfTheMatch": "2",
-   "ratingAve": "7.0",
+   "ratingAve": "6.9",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -1939,12 +1939,12 @@
   {
    "name": "Froezer",
    "proPos": "25",
-   "gamesPlayed": "195",
+   "gamesPlayed": "196",
    "goals": "127",
-   "assists": "183",
+   "assists": "184",
    "manOfTheMatch": "23",
    "ratingAve": "8.2",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
