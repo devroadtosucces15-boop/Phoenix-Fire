@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-17T21:00:49.986Z",
+ "fetchedAt": "2026-11-17T21:10:44.311Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -2115,11 +2115,11 @@
   {
    "name": "LightHazee_",
    "proPos": "5",
-   "gamesPlayed": "3",
+   "gamesPlayed": "4",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "6.6",
+   "ratingAve": "6.7",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
