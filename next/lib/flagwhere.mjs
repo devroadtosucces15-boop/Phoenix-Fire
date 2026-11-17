@@ -54,6 +54,7 @@ export const WHERE = {
   recommendations: ["hub-squad.html",""],
   ask: ["stats.html",""],
   translate: ["stats.html",""],
+  quoteCard: ["stats.html",""],
   scoutReport: ["scout.html",""],
   rushSquads: ["rush.html",""],
   boardroom: ["staff-controlcenter.html","","boardroom"],

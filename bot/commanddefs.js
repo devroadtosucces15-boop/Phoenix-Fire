@@ -19,6 +19,8 @@ export const COMMANDS = [
     options: [{ type: STRING, name: 'question', description: 'e.g. who has the most assists this season?', required: true, max_length: 300 }],
   },
   // PF-024 Item 9 – the Translator (bot/translate.js). The message command needs no gateway: Discord resolves the message text into the interaction.
+  // PF-024 Item 10 – the Quote card (bot/quotecard.js): right click a message → a clean share picture.
+  { type: MESSAGE_COMMAND, name: 'Quote card', description: 'Turn the message you right click into a share picture' },
   { type: MESSAGE_COMMAND, name: 'Translate message', description: 'Translate the message you right click into your language' },
   {
     name: 'translate', description: 'Translate text into your language or another one',
@@ -371,7 +373,7 @@ export const APP_COMMANDS = {
   // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
   core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
-  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
+  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
   matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],

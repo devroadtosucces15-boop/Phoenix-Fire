@@ -81,7 +81,7 @@ export function rosterSvg(model, faces = new Map(), { title = 'Who is playing', 
 
 // ---------- drawing + caching ----------
 const b64 = (buf) => { let s = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode(...u.subarray(i, i + 0x8000)); return btoa(s); };
-async function imageData(url, limit) {
+export async function imageData(url, limit) {
   try {
     const r = await fetch(url, { signal: AbortSignal.timeout(3000) });
     const type = r.headers.get('Content-Type') ?? '';
@@ -99,7 +99,7 @@ export const crestData = async (env) => {
   if (crestMemo?.site !== site || (!crestMemo.uri && Date.now() - crestMemo.at > 6e4)) crestMemo = { site, at: Date.now(), uri: await imageData(`${site}crest-sm.png`, CREST_BYTES) };
   return crestMemo.uri;
 };
-const sha = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].slice(0, 8).map((b) => b.toString(16).padStart(2, '0')).join('');
+export const sha = async (s) => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].slice(0, 8).map((b) => b.toString(16).padStart(2, '0')).join('');
 
 // → { url, key, cached } or { error }. Never throws.
 export async function drawRoster(env, eventId, model, opts = {}) {

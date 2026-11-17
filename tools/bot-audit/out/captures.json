@@ -16,7 +16,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · CLUB\n## Phoenix Fire\n-# Division 6 · Skill rating 2153 · 🔥 2 win streak"
+        "content": "-# PHOENIX FIRE · CLUB\n## PHOENIX FIRE\n-# Division 2 · Skill rating 1886"
        },
        {
         "type": 12,
@@ -25,7 +25,7 @@
           "media": {
            "url": "http://localhost:4321/cards/club-a85b449ea3.png"
           },
-          "description": "217 wins, 18 draws, 34 losses"
+          "description": "43 wins, 10 draws, 11 losses"
          }
         ]
        },
@@ -39,13 +39,13 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
+          "url": "https://example.invalid/phoenix-fire/",
           "label": "Club site"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
+          "url": "https://example.invalid/phoenix-fire/apply.html",
           "label": "Trials"
          }
         ]
@@ -73,41 +73,34 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 15716218,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 10,
-        "content": "🚨 **`PHOENIX XI VPG`** · **FRIENDLY** 🚨"
+        "content": "**`PHOENIX FIRE`** · LEAGUE"
        },
        {
-        "type": 9,
-        "components": [
-         {
-          "type": 10,
-          "content": "-# PHOENIX FIRE · MATCH CENTRE · FRIENDLY\n## Phoenix Fire 5–3 HOOPERS ONLY\n-# <t:1794865232:f> · Draw"
-         }
-        ],
-        "accessory": {
-         "type": 11,
-         "media": {
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
-         }
-        }
+        "type": 10,
+        "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## PHOENIX FIRE 3–2 Iron Harbor\n-# <t:1794169239:f> · Win"
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-match.png?v=16"
+           "url": "http://localhost:4321/cards/score-100030000000000-41b88e9d34.png"
           },
-          "description": "Match centre"
+          "description": "PHOENIX FIRE 3–2 Iron Harbor"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**⚽ Goals** ed44ed, Bergkamp6317\n**📊 Team rating** 7.0"
+        "content": "**⚽ Goals** Ignis77, Helios_10, NovaCrest\n**📊 Team rating** 7.2"
+       },
+       {
+        "type": 10,
+        "content": "**⭐ Man of the match** Ignis77"
        },
        {
         "type": 14,
@@ -116,7 +109,18 @@
        },
        {
         "type": 10,
-        "content": "`7.5` SamESKO4\n`7.4` Marlo7bk\n`7.4` Panorave\n`7.3` MV33xChris\n`7.2` ed44ed\n`7.2` Bergkamp6317\n`7.1` kingmitch93\n`7.0` HristoNL\n`6.7` Damlaaa61\n`6.2` Voro2rt\n`5.7` Glekke-93"
+        "content": "-# **FIELD VIEW · RATINGS**"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/field-100030000000000-a59236dca5.png"
+          },
+          "description": "Our players on the pitch with their match ratings"
+         }
+        ]
        },
        {
         "type": 10,
@@ -127,98 +131,98 @@
         "components": [
          {
           "type": 3,
-          "custom_id": "norex:mm:196972881460482",
+          "custom_id": "norex:mm:100030000000000",
           "placeholder": "📊 Show my match – pick your player",
           "min_values": 1,
           "max_values": 1,
           "options": [
            {
-            "label": "SamESKO4",
-            "value": "1006486784243",
+            "label": "Ignis77",
+            "value": "700188022",
+            "emoji": {
+             "name": "🟢"
+            },
+            "description": "Rating 8.2 · ⚽ 1"
+           },
+           {
+            "label": "Vesper_X",
+            "value": "700344707",
             "emoji": {
              "name": "🟡"
             },
-            "description": "Rating 7.5"
+            "description": "Rating 8.0 · 🎯 1"
            },
            {
-            "label": "Marlo7bk",
-            "value": "1007930234696",
+            "label": "Helios_10",
+            "value": "700313370",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.5 · ⚽ 1"
+           },
+           {
+            "label": "IronTalon",
+            "value": "700094011",
             "emoji": {
              "name": "🟡"
             },
             "description": "Rating 7.4"
            },
            {
-            "label": "Panorave",
-            "value": "1010051541951",
+            "label": "NovaCrest",
+            "value": "700438718",
             "emoji": {
              "name": "🟡"
             },
-            "description": "Rating 7.4"
+            "description": "Rating 7.4 · ⚽ 1"
            },
            {
-            "label": "MV33xChris",
-            "value": "1640851384",
+            "label": "BlazeGuard",
+            "value": "700156685",
             "emoji": {
              "name": "🟡"
             },
-            "description": "Rating 7.3"
+            "description": "Rating 7.2"
            },
            {
-            "label": "ed44ed",
-            "value": "1761731510",
+            "label": "TalonStrike",
+            "value": "700564066",
             "emoji": {
              "name": "🟡"
             },
-            "description": "Rating 7.2 · ⚽ 1"
+            "description": "Rating 7.1 · 🎯 1"
            },
            {
-            "label": "Bergkamp6317",
-            "value": "1007796036245",
+            "label": "GoldenLoom",
+            "value": "700376044",
             "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.2 · ⚽ 1"
-           },
-           {
-            "label": "kingmitch93",
-            "value": "182169169",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.1"
-           },
-           {
-            "label": "HristoNL",
-            "value": "1006208965101",
-            "emoji": {
-             "name": "🟡"
+             "name": "🟠"
             },
             "description": "Rating 7.0"
            },
            {
-            "label": "Damlaaa61",
-            "value": "1007626573954",
+            "label": "Rekindle",
+            "value": "700407381",
+            "emoji": {
+             "name": "🟠"
+            },
+            "description": "Rating 6.8"
+           },
+           {
+            "label": "SolarGlove",
+            "value": "700000000",
             "emoji": {
              "name": "🟠"
             },
             "description": "Rating 6.7"
            },
            {
-            "label": "Voro2rt",
-            "value": "1005717067455",
+            "label": "Wildfire_J",
+            "value": "700626740",
             "emoji": {
              "name": "🟠"
             },
-            "description": "Rating 6.2"
-           },
-           {
-            "label": "Glekke-93",
-            "value": "1008655888440",
-            "emoji": {
-             "name": "🔴"
-            },
-            "description": "Rating 5.7"
+            "description": "Rating 6.5"
            }
           ]
          }
@@ -230,7 +234,7 @@
          {
           "type": 2,
           "style": 2,
-          "custom_id": "norex:mme:196972881460482",
+          "custom_id": "norex:mme:100030000000000",
           "label": "My match",
           "emoji": {
            "name": "🙋"
@@ -238,8 +242,17 @@
          },
          {
           "type": 2,
+          "style": 2,
+          "custom_id": "norex:box:100030000000000",
+          "label": "Box score",
+          "emoji": {
+           "name": "📊"
+          }
+         },
+         {
+          "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/196972881460482.html",
+          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
           "label": "Match report"
          }
         ]
@@ -256,7 +269,7 @@
  },
  {
   "kind": "component",
-  "trigger": "select norex:mm:196972881460482",
+  "trigger": "select norex:mm:100030000000000",
   "parent": "/last",
   "label": null,
   "app": "stats",
@@ -269,20 +282,20 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 15716218,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 9,
         "components": [
          {
           "type": 10,
-          "content": "-# PHOENIX FIRE · PLAYER MATCH\n## SamESKO4 · 5–3 HOOPERS ONLY\n-# ➖ Draw · Midfielder · <t:1794865232:R>"
+          "content": "-# PHOENIX FIRE · PLAYER MATCH\n## Ignis77 · 3–2 Iron Harbor\n-# ✅ Win · Defender · <t:1794169239:R>"
          }
         ],
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -299,7 +312,7 @@
        },
        {
         "type": 10,
-        "content": "**🟡 Rating**\n**7.5** · avg 7.6 ▼\n\n**⚽ Goals · 🎯 Assists**\n**0** · **0**\navg 0.70 · 0.65 per game\n\n**🅿️ Passes**\n**0/0**\n\n**🛡️ Tackles**\n**0/0**\n\n**📈 Last 10 ratings (oldest → newest)**\n🟢🟠🟢🟡🟡🟡🟢🟢🟢🟠\n10.0 · 6.5 · 10.0 · 7.9 · 7.2 · 7.1 · 8.3 · 9.9 · 8.1 · 6.5\nBest **10.0** · season avg **7.6**"
+        "content": "**🟢 Rating**\n**8.2** · avg 6.9 ▲\n⭐ **Man of the match**\n\n**⚽ Goals · 🎯 Assists**\n**1** · **0**\navg 0.04 · 0.00 per game\n\n**🅿️ Passes**\n**37/44** (84%) · avg 82% ▲\n\n**🛡️ Tackles**\n**6/10** (60%) · avg 60% ＝\n\n**📈 Last 10 ratings (oldest → newest)**\n🟠🟠🟡🟠🟡🟡🟡🟠🔴🟢\n6.3 · 6.8 · 7.5 · 6.6 · 7.5 · 7.2 · 7.3 · 6.7 · 5.8 · 8.2\nBest **8.2** · season avg **6.9**"
        },
        {
         "type": 14,
@@ -316,13 +329,13 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/196972881460482.html",
+          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
           "label": "Match page"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players/1006486784243.html",
+          "url": "http://localhost:4321/players/700188022.html",
           "label": "Player page"
          }
         ]
@@ -339,7 +352,7 @@
  },
  {
   "kind": "component",
-  "trigger": "button norex:mme:196972881460482",
+  "trigger": "button norex:mme:100030000000000",
   "parent": "/last",
   "label": "My match",
   "app": "stats",
@@ -380,6 +393,59 @@
   "calls": []
  },
  {
+  "kind": "component",
+  "trigger": "button norex:box:100030000000000",
+  "parent": "/last",
+  "label": "Box score",
+  "app": "stats",
+  "command": "last",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 4972682,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · BOX SCORE\n## PHOENIX FIRE 3–2 Iron Harbor\n-# <t:1794169239:f>"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/box-100030000000000-4f6974f0ca.png"
+          },
+          "description": "Every player: rating, goals, assists, passes, tackles and shots"
+         }
+        ]
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
+          "label": "Match report"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
   "kind": "slash",
   "command": "results",
   "trigger": "/results",
@@ -396,7 +462,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RESULTS\n## Last 5 results\n-# 0W 5D 0L"
+        "content": "-# PHOENIX FIRE · RESULTS\n## Last 5 results\n-# 4W 0D 1L"
        },
        {
         "type": 12,
@@ -419,7 +485,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/results.html",
+          "url": "https://example.invalid/phoenix-fire/results.html",
           "label": "All results"
          }
         ]
@@ -437,7 +503,7 @@
  {
   "kind": "slash",
   "command": "player",
-  "trigger": "/player gamertag=kingmitch93",
+  "trigger": "/player gamertag=SolarGlove",
   "app": "stats",
   "status": 200,
   "response": {
@@ -454,13 +520,13 @@
         "components": [
          {
           "type": 10,
-          "content": "-# PHOENIX FIRE · PLAYER CARD\n## kingmitch93 · 83 OVR\n-# CM · Phoenix Fire, Phoenix Fire XI, Phoenix FIIre"
+          "content": "-# PHOENIX FIRE · PLAYER CARD\n## SolarGlove · 84 OVR\n-# GK · PHOENIX FIRE"
          }
         ],
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -469,19 +535,15 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-player.png?v=16"
+           "url": "http://localhost:4321/cards/player-700000000-5049c11d3b.png"
           },
-          "description": "Player"
+          "description": "SolarGlove: season stats and match ratings"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**Phoenix Fire this season** 196 games · 31 goals · 68 assists · rating 7.7 · MOTM 22"
-       },
-       {
-        "type": 10,
-        "content": "**🌍 Career** 588 games · 93 goals · 204 assists · rating 7.7\n**📈 Last 5** 🟢 8.1  🟢 8.6  🟢 8.9  🟠 6.7  🟢 8.9  → newest"
+        "content": "**🌍 Career** 90 games · 0 goals · 0 assists · rating 7.1\n**📈 Last 5** 🟠 6.1  🟡 7.6  🟡 8.0  🟠 6.9  🟠 6.7  → newest"
        },
        {
         "type": 10,
@@ -493,7 +555,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players/182169169.html",
+          "url": "http://localhost:4321/players/700000000.html",
           "label": "Full profile"
          }
         ]
@@ -511,7 +573,7 @@
  {
   "kind": "slash",
   "command": "compare",
-  "trigger": "/compare player1=kingmitch93 player2=rubNiyo",
+  "trigger": "/compare player1=SolarGlove player2=CinderRock",
   "app": "stats",
   "status": 200,
   "response": {
@@ -525,22 +587,18 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · COMPARE\n## kingmitch93 vs rubNiyo\n-# CM vs CB · club stats this season"
+        "content": "-# PHOENIX FIRE · COMPARE\n## SolarGlove vs CinderRock\n-# GK vs CB · club stats this season"
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-stats.png?v=16"
+           "url": "http://localhost:4321/cards/cmp-700000000-700062674-8aea6986ed.png"
           },
-          "description": "Stats"
+          "description": "SolarGlove and CinderRock compared stat by stat"
          }
         ]
-       },
-       {
-        "type": 10,
-        "content": "```\nSTAT        kingmitch93      rubNiyo\nOVR                83           83  \nGames             196 ◀         70  \nGoals              31           32 ◀\nAssists            68 ◀         15  \nRating            7.7 ◀        7.7  \nMOTM               22 ◀          5  \nPass %             75           80 ◀\nTackle %           36 ◀         34  \nWin %              86 ◀         78  \n```"
        },
        {
         "type": 10,
@@ -552,7 +610,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players.html#compare=182169169,245256219",
+          "url": "http://localhost:4321/players.html#compare=700000000,700062674",
           "label": "Compare on the site"
          }
         ]
@@ -593,7 +651,7 @@
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -614,19 +672,19 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
+          "url": "https://example.invalid/phoenix-fire/",
           "label": "Website"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/members.html",
+          "url": "https://example.invalid/phoenix-fire/members.html",
           "label": "Squad Hub"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
+          "url": "https://example.invalid/phoenix-fire/apply.html",
           "label": "Trials"
          }
         ]
@@ -656,7 +714,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokieki6f80hg/messages/@original",
+    "url": "/webhooks/2/tokekyva0n7gq/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -677,6 +735,35 @@
     }
    }
   ]
+ },
+ {
+  "kind": "slash",
+  "command": "Quote card",
+  "trigger": "/Quote card",
+  "app": "tools",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 10,
+        "content": "**I can only make a card from a message with text, written by a person.**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
  },
  {
   "kind": "slash",
@@ -722,7 +809,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok33m4t45deqq/messages/@original",
+    "url": "/webhooks/3/tokqj4weqiodh8/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -767,7 +854,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokpeeck3gm7d/messages/@original",
+    "url": "/webhooks/3/tokxg9b4a2kpl/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -804,7 +891,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokqj4weqiodh8/messages/@original",
+    "url": "/webhooks/3/tok43kplnciw7w/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -841,7 +928,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokxg9b4a2kpl/messages/@original",
+    "url": "/webhooks/3/tokd7dddfa34h7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -878,7 +965,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok43kplnciw7w/messages/@original",
+    "url": "/webhooks/3/tok65qn27skqiy/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -915,7 +1002,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokd7dddfa34h7/messages/@original",
+    "url": "/webhooks/3/tokhbbc51npu3a/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -952,7 +1039,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok65qn27skqiy/messages/@original",
+    "url": "/webhooks/3/tok00gladejwymej/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -989,7 +1076,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokhbbc51npu3a/messages/@original",
+    "url": "/webhooks/3/tok4rhr1dslhhn/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1026,7 +1113,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok00gladejwymej/messages/@original",
+    "url": "/webhooks/3/tokzgn0m6d8p3/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1071,7 +1158,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok4rhr1dslhhn/messages/@original",
+    "url": "/webhooks/3/tok3q814gjeyqi/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1108,7 +1195,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokzgn0m6d8p3/messages/@original",
+    "url": "/webhooks/3/tokahxphdrhlh/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1145,7 +1232,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok3q814gjeyqi/messages/@original",
+    "url": "/webhooks/3/tokk835s59few/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1766,7 +1853,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# MV33xChris leads with 76"
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# FlareKing leads with 21"
        },
        {
         "type": 12,
@@ -1789,7 +1876,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
+          "url": "https://example.invalid/phoenix-fire/stats.html",
           "label": "All leaderboards"
          }
         ]
@@ -1982,7 +2069,7 @@
        },
        {
         "type": 10,
-        "content": "👟 **Golden Boot** — [Lucus1997](http://localhost:4321/players/1004882887686.html)\n🦾 **Iron Man** — [KOEN WIE](http://localhost:4321/players/1952070240.html)\n🎩 **Playmaker** — [Dimantu_](http://localhost:4321/players/1827145830.html)\n🌱 **Rising Star** — [ILYM-07](http://localhost:4321/players/1004614724650.html)"
+        "content": "No winners yet."
        },
        {
         "type": 1,
@@ -3802,7 +3889,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok0a1ih2uw1zx8/messages/@original",
+    "url": "/webhooks/3/tokyrnxe2rxo3/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -3839,7 +3926,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok5834xbnrvlh/messages/@original",
+    "url": "/webhooks/2/tok84gejqftyx5/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -3849,11 +3936,11 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · BURNER CLUBS\n### 🕘 25 clubs Phoenix Fire played lately"
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 14 clubs Phoenix Fire played lately"
         },
         {
          "type": 10,
-         "content": "🔥 **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 19h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 20h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 20h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 20h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 21h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 21h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 41h ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 41h ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 42h ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 42h ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 42h ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 43h ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 43h ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 44h ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 44h ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago\n🔥 **Tym2ToShine** · `1235969` · we won 3–0 · League · 3d ago\n🔥 **The Dinoss** · `1143242` · we won 4–0 · League · 3d ago\n🔥 **Lanky FC** · `1967229` · we won 4–0 · League · 3d ago\n🔥 **azure deer** · `1932965` · we won 2–1 · League · 3d ago\n🔥 **Martin Gray 1st** · `1887666` · we won 5–1 · League · 3d ago\n🔥 **AFC Badu** · `1907508` · we won 4–0 · League · 3d ago\n🔥 **Ar Tarn FC** · `1397258` · we won 2–0 · League · 3d ago\n🔥 **StokeRamblers** · `1679909` · we won 2–0 · League · 3d ago\n🔥 **UK EUROPE FC** · `582311` · we won 4–0 · League · 3d ago"
+         "content": "🔥 **Iron Harbor** · `1115838` · we won 3–2 · League · 9d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 10d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 11d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 13d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 15d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 16d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 17d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 19d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 25d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 30d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 32d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 33d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 35d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 44d ago"
         },
         {
          "type": 10,
@@ -3870,201 +3957,113 @@
            "max_values": 1,
            "options": [
             {
-             "label": "HOOPERS ONLY",
-             "value": "91325",
-             "description": "91325 · we drew 5–3 · Friendly · 19h ago",
+             "label": "Iron Harbor",
+             "value": "1115838",
+             "description": "1115838 · we won 3–2 · League · 9d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "IIPWBXMST",
-             "value": "1055",
-             "description": "1055 · we drew 1–1 · Friendly · 20h ago",
+             "label": "Night Owls",
+             "value": "1107919",
+             "description": "1107919 · we lost 1–2 · League · 10d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "STARK FC",
-             "value": "34969",
-             "description": "34969 · we drew 3–0 · Friendly · 20h ago",
+             "label": "Copperhead FC",
+             "value": "1171271",
+             "description": "1171271 · we won 2–1 · League · 11d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Dutch Despair",
-             "value": "18418",
-             "description": "18418 · we drew 3–0 · Friendly · 20h ago",
+             "label": "Velvet Thunder",
+             "value": "1147514",
+             "description": "1147514 · we won 4–0 · League · 13d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "oCampos eSports",
-             "value": "15609",
-             "description": "15609 · we drew 2–1 · Friendly · 21h ago",
+             "label": "Coastline United",
+             "value": "1123757",
+             "description": "1123757 · we won 3–1 · League · 15d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "LEGACY 1830",
-             "value": "48699",
-             "description": "48699 · we drew 0–1 · Friendly · 21h ago",
+             "label": "Northgate Elite",
+             "value": "1155433",
+             "description": "1155433 · we drew 0–0 · League · 16d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Ameko Army",
-             "value": "751307",
-             "description": "751307 · we won 3–1 · League · 41h ago",
+             "label": "Silent Wolves",
+             "value": "1139595",
+             "description": "1139595 · we drew 1–1 · League · 17d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "NOXION",
-             "value": "2158998",
-             "description": "2158998 · we won 1–0 · League · 41h ago",
+             "label": "Red Mesa Rovers",
+             "value": "1131676",
+             "description": "1131676 · we won 3–1 · League · 19d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Spain X11",
-             "value": "24151",
-             "description": "24151 · we won 6–1 · League · 42h ago",
+             "label": "Frostbite FC",
+             "value": "1100000",
+             "description": "1100000 · we won 5–1 · League · 25d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "FCMeMeMeMee",
-             "value": "98030",
-             "description": "98030 · we won 6–1 · League · 42h ago",
+             "label": "Glass Cannons",
+             "value": "1202947",
+             "description": "1202947 · we won 3–0 · League · 30d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Usual Suspectz",
-             "value": "1378369",
-             "description": "1378369 · we won 3–1 · League · 42h ago",
+             "label": "Lunar Drift",
+             "value": "1163352",
+             "description": "1163352 · we lost 1–2 · League · 32d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Davslads United",
-             "value": "1705",
-             "description": "1705 · we won 5–1 · League · 43h ago",
+             "label": "Static Noise",
+             "value": "1187109",
+             "description": "1187109 · we lost 1–4 · League · 33d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "oh yes my sons",
-             "value": "297158",
-             "description": "297158 · we won 3–0 · League · 43h ago",
+             "label": "Bluefin Athletic",
+             "value": "1179190",
+             "description": "1179190 · we won 1–0 · League · 35d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "OG b2k",
-             "value": "117777",
-             "description": "117777 · we won 3–0 · League · 44h ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Tassive Mitts",
-             "value": "2111007",
-             "description": "2111007 · we won 7–1 · League · 44h ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "W1NTER SOLD1ERS",
-             "value": "1813860",
-             "description": "1813860 · we won 3–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Tym2ToShine",
-             "value": "1235969",
-             "description": "1235969 · we won 3–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "The Dinoss",
-             "value": "1143242",
-             "description": "1143242 · we won 4–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Lanky FC",
-             "value": "1967229",
-             "description": "1967229 · we won 4–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "azure deer",
-             "value": "1932965",
-             "description": "1932965 · we won 2–1 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Martin Gray 1st",
-             "value": "1887666",
-             "description": "1887666 · we won 5–1 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "AFC Badu",
-             "value": "1907508",
-             "description": "1907508 · we won 4–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Ar Tarn FC",
-             "value": "1397258",
-             "description": "1397258 · we won 2–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "StokeRamblers",
-             "value": "1679909",
-             "description": "1679909 · we won 2–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "UK EUROPE FC",
-             "value": "582311",
-             "description": "582311 · we won 4–0 · League · 3d ago",
+             "label": "Rustbelt Kings",
+             "value": "1195028",
+             "description": "1195028 · we won 2–0 · League · 44d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -4102,7 +4101,7 @@
       "components": [
        {
         "type": 10,
-        "content": "🔥 Now tracking **HOOPERS ONLY** (club 91325).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c91325"
+        "content": "🔥 Now tracking **Iron Harbor** (club 1115838).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c1115838"
        }
       ]
      }
@@ -4129,7 +4128,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok84gejqftyx5/messages/@original",
+    "url": "/webhooks/2/tokegfgvfuacel/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4139,11 +4138,11 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · BURNER CLUBS\n### 🕘 25 clubs Phoenix Fire played lately"
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 14 clubs Phoenix Fire played lately"
         },
         {
          "type": 10,
-         "content": "✅ **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 19h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 20h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 20h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 20h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 21h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 21h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 41h ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 41h ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 42h ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 42h ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 42h ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 43h ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 43h ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 44h ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 44h ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago\n🔥 **Tym2ToShine** · `1235969` · we won 3–0 · League · 3d ago\n🔥 **The Dinoss** · `1143242` · we won 4–0 · League · 3d ago\n🔥 **Lanky FC** · `1967229` · we won 4–0 · League · 3d ago\n🔥 **azure deer** · `1932965` · we won 2–1 · League · 3d ago\n🔥 **Martin Gray 1st** · `1887666` · we won 5–1 · League · 3d ago\n🔥 **AFC Badu** · `1907508` · we won 4–0 · League · 3d ago\n🔥 **Ar Tarn FC** · `1397258` · we won 2–0 · League · 3d ago\n🔥 **StokeRamblers** · `1679909` · we won 2–0 · League · 3d ago\n🔥 **UK EUROPE FC** · `582311` · we won 4–0 · League · 3d ago"
+         "content": "✅ **Iron Harbor** · `1115838` · we won 3–2 · League · 9d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 10d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 11d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 13d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 15d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 16d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 17d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 19d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 25d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 30d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 32d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 33d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 35d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 44d ago"
         },
         {
          "type": 10,
@@ -4160,201 +4159,113 @@
            "max_values": 1,
            "options": [
             {
-             "label": "HOOPERS ONLY",
-             "value": "91325",
-             "description": "91325 · we drew 5–3 · Friendly · 19h ago",
+             "label": "Iron Harbor",
+             "value": "1115838",
+             "description": "1115838 · we won 3–2 · League · 9d ago",
              "emoji": {
               "name": "✅"
              }
             },
             {
-             "label": "IIPWBXMST",
-             "value": "1055",
-             "description": "1055 · we drew 1–1 · Friendly · 20h ago",
+             "label": "Night Owls",
+             "value": "1107919",
+             "description": "1107919 · we lost 1–2 · League · 10d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "STARK FC",
-             "value": "34969",
-             "description": "34969 · we drew 3–0 · Friendly · 20h ago",
+             "label": "Copperhead FC",
+             "value": "1171271",
+             "description": "1171271 · we won 2–1 · League · 11d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Dutch Despair",
-             "value": "18418",
-             "description": "18418 · we drew 3–0 · Friendly · 20h ago",
+             "label": "Velvet Thunder",
+             "value": "1147514",
+             "description": "1147514 · we won 4–0 · League · 13d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "oCampos eSports",
-             "value": "15609",
-             "description": "15609 · we drew 2–1 · Friendly · 21h ago",
+             "label": "Coastline United",
+             "value": "1123757",
+             "description": "1123757 · we won 3–1 · League · 15d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "LEGACY 1830",
-             "value": "48699",
-             "description": "48699 · we drew 0–1 · Friendly · 21h ago",
+             "label": "Northgate Elite",
+             "value": "1155433",
+             "description": "1155433 · we drew 0–0 · League · 16d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Ameko Army",
-             "value": "751307",
-             "description": "751307 · we won 3–1 · League · 41h ago",
+             "label": "Silent Wolves",
+             "value": "1139595",
+             "description": "1139595 · we drew 1–1 · League · 17d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "NOXION",
-             "value": "2158998",
-             "description": "2158998 · we won 1–0 · League · 41h ago",
+             "label": "Red Mesa Rovers",
+             "value": "1131676",
+             "description": "1131676 · we won 3–1 · League · 19d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Spain X11",
-             "value": "24151",
-             "description": "24151 · we won 6–1 · League · 42h ago",
+             "label": "Frostbite FC",
+             "value": "1100000",
+             "description": "1100000 · we won 5–1 · League · 25d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "FCMeMeMeMee",
-             "value": "98030",
-             "description": "98030 · we won 6–1 · League · 42h ago",
+             "label": "Glass Cannons",
+             "value": "1202947",
+             "description": "1202947 · we won 3–0 · League · 30d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Usual Suspectz",
-             "value": "1378369",
-             "description": "1378369 · we won 3–1 · League · 42h ago",
+             "label": "Lunar Drift",
+             "value": "1163352",
+             "description": "1163352 · we lost 1–2 · League · 32d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Davslads United",
-             "value": "1705",
-             "description": "1705 · we won 5–1 · League · 43h ago",
+             "label": "Static Noise",
+             "value": "1187109",
+             "description": "1187109 · we lost 1–4 · League · 33d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "oh yes my sons",
-             "value": "297158",
-             "description": "297158 · we won 3–0 · League · 43h ago",
+             "label": "Bluefin Athletic",
+             "value": "1179190",
+             "description": "1179190 · we won 1–0 · League · 35d ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "OG b2k",
-             "value": "117777",
-             "description": "117777 · we won 3–0 · League · 44h ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Tassive Mitts",
-             "value": "2111007",
-             "description": "2111007 · we won 7–1 · League · 44h ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "W1NTER SOLD1ERS",
-             "value": "1813860",
-             "description": "1813860 · we won 3–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Tym2ToShine",
-             "value": "1235969",
-             "description": "1235969 · we won 3–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "The Dinoss",
-             "value": "1143242",
-             "description": "1143242 · we won 4–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Lanky FC",
-             "value": "1967229",
-             "description": "1967229 · we won 4–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "azure deer",
-             "value": "1932965",
-             "description": "1932965 · we won 2–1 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Martin Gray 1st",
-             "value": "1887666",
-             "description": "1887666 · we won 5–1 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "AFC Badu",
-             "value": "1907508",
-             "description": "1907508 · we won 4–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "Ar Tarn FC",
-             "value": "1397258",
-             "description": "1397258 · we won 2–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "StokeRamblers",
-             "value": "1679909",
-             "description": "1679909 · we won 2–0 · League · 3d ago",
-             "emoji": {
-              "name": "🔥"
-             }
-            },
-            {
-             "label": "UK EUROPE FC",
-             "value": "582311",
-             "description": "582311 · we won 4–0 · League · 3d ago",
+             "label": "Rustbelt Kings",
+             "value": "1195028",
+             "description": "1195028 · we won 2–0 · League · 44d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -4388,7 +4299,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok262kxyqm7nui/messages/@original",
+    "url": "/webhooks/2/tokl8ydtya3gba/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4431,7 +4342,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 **HOOPERS ONLY** · `91325` · ⏳ first collection pending\n🔥 **Sample** · `872273` · ⏳ first collection pending"
+        "content": "🔥 **Iron Harbor** · `1115838` · ⏳ first collection pending\n🔥 **Sample** · `872273` · ⏳ first collection pending"
        },
        {
         "type": 10,
@@ -4492,9 +4403,9 @@
           "max_values": 1,
           "options": [
            {
-            "label": "HOOPERS ONLY",
-            "value": "91325",
-            "description": "club 91325",
+            "label": "Iron Harbor",
+            "value": "1115838",
+            "description": "club 1115838",
             "emoji": {
              "name": "🗑️"
             }
@@ -4540,7 +4451,7 @@
       "components": [
        {
         "type": 10,
-        "content": "🗑️ Stopped tracking **HOOPERS ONLY**. Its history stays on the page until the next cleanup – /burner search brings it back."
+        "content": "🗑️ Stopped tracking **Iron Harbor**. Its history stays on the page until the next cleanup – /burner search brings it back."
        }
       ]
      }
@@ -4567,7 +4478,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokt5znybblelc/messages/@original",
+    "url": "/webhooks/1/tokhd9eeyfec2a/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4604,7 +4515,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokqai1xeb7r3s/messages/@original",
+    "url": "/webhooks/1/tokvtrydlkibg/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4641,7 +4552,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokhd9eeyfec2a/messages/@original",
+    "url": "/webhooks/1/tok54bhsz1urae/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4678,7 +4589,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokvtrydlkibg/messages/@original",
+    "url": "/webhooks/1/tok6278i4bu87/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4688,7 +4599,7 @@
        "components": [
         {
          "type": 10,
-         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 1 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
+         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 0 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
         }
        ]
       }
@@ -4715,7 +4626,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok54bhsz1urae/messages/@original",
+    "url": "/webhooks/1/tokc854p7sdftv/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4992,7 +4903,7 @@
  {
   "kind": "slash",
   "command": "trial",
-  "trigger": "/trial gamertag=kingmitch93",
+  "trigger": "/trial gamertag=SolarGlove",
   "app": "core",
   "status": 200,
   "response": {
@@ -5021,7 +4932,7 @@
        },
        {
         "type": 10,
-        "content": "🤷 No trial cards match \"kingmitch93\"."
+        "content": "🤷 No trial cards match \"SolarGlove\"."
        }
       ]
      }
@@ -5053,13 +4964,13 @@
         "components": [
          {
           "type": 10,
-          "content": "-# PHOENIX FIRE · MAN OF THE MATCH VOTE\n## 🌟 MOTM · vs HOOPERS ONLY\n-# 5–3 · 2 votes so far"
+          "content": "-# PHOENIX FIRE · MAN OF THE MATCH VOTE\n## 🌟 MOTM · vs Iron Harbor\n-# 3–2 · 2 votes so far"
          }
         ],
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -5076,7 +4987,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **kingmitch93** — 1 vote\n🥈 **MV33xChris** — 1 vote"
+        "content": "🥇 **SolarGlove** — 1 vote\n🥈 **IronTalon** — 1 vote"
        },
        {
         "type": 1,
@@ -5090,7 +5001,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/196972881460482.html",
+          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
           "label": "Match report"
          }
         ]
@@ -5118,37 +5029,11 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 4972682,
+      "accent_color": 7108752,
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · HEAD TO HEAD\n## ⚔️ Phoenix Fire vs Spain X11\n-# 1 game · 1W 0D 0L"
-       },
-       {
-        "type": 12,
-        "items": [
-         {
-          "media": {
-           "url": "http://localhost:4321/cards/banner-stats.png?v=16"
-          },
-          "description": "Stats"
-         }
-        ]
-       },
-       {
-        "type": 10,
-        "content": "**Goals** 6–1 (+5)\n**Win rate** 100%\n**Last meeting** W 6–1"
-       },
-       {
-        "type": 1,
-        "components": [
-         {
-          "type": 2,
-          "style": 5,
-          "url": "http://localhost:4321/stats.html",
-          "label": "Head to head on the site"
-         }
-        ]
+        "content": "🤷 No matches found against \"1\"."
        }
       ]
      }
@@ -5195,7 +5080,7 @@
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1794936908:R>"
+        "content": "**Sentence** 30 min · out <t:1794937887:R>"
        },
        {
         "type": 14,
@@ -5275,7 +5160,7 @@
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1794935108:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1794936087:R>"
        },
        {
         "type": 14,
@@ -5344,7 +5229,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1794935108:d> · 30 min · stealing the penalty off the nominated taker · 💸 bailed\n`PHX-0003` <t:1794934106:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794930106:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794926106:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1794936087:d> · 30 min · stealing the penalty off the nominated taker · 💸 bailed\n`PHX-0003` <t:1794935086:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794931086:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794927086:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -5508,7 +5393,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794924306:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794925286:R>"
        }
       ]
      }
@@ -5552,7 +5437,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794841506:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793855106:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794842486:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793856086:R>"
        }
       ]
      }
@@ -5596,7 +5481,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794683106:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794684086:R>"
        }
       ]
      }
@@ -5640,7 +5525,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794467106:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794468086:R>"
        }
       ]
      }
@@ -5684,7 +5569,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794215106:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794216086:R>"
        }
       ]
      }
@@ -6081,7 +5966,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 How many teams play at the 2026 World Cup?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 How many Ballon d’Or awards has Lionel Messi won?"
        },
        {
         "type": 12,
@@ -6096,7 +5981,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · 40\n**B** · 64\n**C** · 32\n**D** · 48"
+        "content": "**A** · 6\n**B** · 9\n**C** · 7\n**D** · 8"
        },
        {
         "type": 10,
@@ -6171,7 +6056,7 @@
        },
        {
         "type": 10,
-        "content": "**❌ Not this time – it was D · 48**\nThe first World Cup with 48 teams. You have 0 points."
+        "content": "**❌ Not this time – it was D · 8**\nEight, the most by any player. You have 0 points."
        }
       ]
      }
@@ -6368,7 +6253,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok0rsppz8tvhg/messages/@original",
+    "url": "/webhooks/1/tokylzgq56dcf9/messages/@original",
     "body": {
      "components": [
       {
@@ -6416,7 +6301,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokxjpybx2q6x/messages/@original",
+    "url": "/webhooks/1/tokih7b9wp6ebb/messages/@original",
     "body": {
      "components": [
       {
@@ -6464,7 +6349,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokylzgq56dcf9/messages/@original",
+    "url": "/webhooks/1/tok7gmxdmyd8q4/messages/@original",
     "body": {
      "components": [
       {
@@ -7352,7 +7237,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokk9mbzmjf4h/messages/@original",
+    "url": "/webhooks/1/tokvpnqxa484ed/messages/@original",
     "body": {
      "components": [
       {
@@ -7741,7 +7626,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794935108:R> · only you can see this"
+        "content": "-# Updated <t:1794936087:R> · only you can see this"
        },
        {
         "type": 1,
@@ -7815,7 +7700,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794934506:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794935486:R>"
          }
         ],
         "accessory": {
@@ -8099,7 +7984,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794935108:R> · only you can see this"
+        "content": "-# Updated <t:1794936087:R> · only you can see this"
        },
        {
         "type": 1,
@@ -8497,7 +8382,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794935108:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794936087:R>"
          }
         ],
         "accessory": {
@@ -9333,7 +9218,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794938708:t> · <t:1794938708:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794939687:t> · <t:1794939687:R>"
        },
        {
         "type": 14,
@@ -9402,7 +9287,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794938708:t> · <t:1794938708:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794939687:t> · <t:1794939687:R>"
        },
        {
         "type": 14,
@@ -9469,7 +9354,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794935708:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -9509,7 +9394,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794935708:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -9549,7 +9434,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794935708:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -9589,7 +9474,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794935708:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -14338,7 +14223,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -14347,7 +14232,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -14498,26 +14383,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -14605,7 +14496,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 2 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -14755,26 +14646,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -14835,7 +14732,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -14844,7 +14741,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -14995,26 +14892,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15102,7 +15005,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 2 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15252,26 +15155,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15332,7 +15241,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -15341,7 +15250,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15492,26 +15401,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15581,7 +15496,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 3 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15730,26 +15645,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15837,7 +15758,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 2 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15987,26 +15908,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -16076,7 +16003,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 4 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 4 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -16225,26 +16152,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -16305,7 +16238,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -16314,7 +16247,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 19 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -16465,26 +16398,32 @@
             "default": false
            },
            {
-            "label": "/Translate message",
+            "label": "/Quote card",
             "value": "15",
+            "description": "Turn the message you right click into a share picture",
+            "default": false
+           },
+           {
+            "label": "/Translate message",
+            "value": "16",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "16",
+            "value": "17",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "17",
+            "value": "18",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "18",
+            "value": "19",
             "description": "Set the language the translator uses for you",
             "default": false
            }

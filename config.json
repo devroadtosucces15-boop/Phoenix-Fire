@@ -107,6 +107,7 @@
     "scoutReport": "public",
     "ask": "members",
     "translate": "owner",
+    "quoteCard": "owner",
     "aiInsights": "members",
     "lineupRec": "managers",
     "rosterPicture": "members",

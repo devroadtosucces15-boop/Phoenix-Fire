@@ -415,6 +415,7 @@ export const resetOrgEnvCache = () => { hydrated = null; };
 // The organization's display name for text people read (embed eyebrows, error messages). It is the `orgs.name` row that withOrgEnv
 // copies into env.ORG_NAME; an env without it (no D1, or a test) gets the generic fallback, never a previous club's name.
 export const orgName = (env) => String(env?.ORG_NAME || 'Phoenix Fire').trim();
+export const orgMotto = (env) => String(env?.ORG_MOTTO || 'Rise. Burn. Repeat.').trim(); // config.json brand.motto; the same fallback pattern as orgName
 
 // Keyed like /api/org/clubs/public: result posts run in GitHub Actions (no D1), so they ask the Worker where a purpose goes for a source club.
 // Answers { channelId, guildId, scope } or { channelId: null } when nothing is configured – the caller must report that, never substitute.

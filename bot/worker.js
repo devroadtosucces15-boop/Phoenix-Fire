@@ -49,6 +49,7 @@ import { checkProfanity, cleanBonus, setupAutoMod } from './profanity.js';
 import { checkHype } from './hype.js';
 import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
+import { quoteOn, imagesReady, quoteModel, drawQuote, spendQuote, quoteMessage } from './quotecard.js';
 import { translateText, enhanceText, translationMessage, enhanceMessage, languageOf, setLanguage, LANG_NAME, TRANSLATE_COMMANDS } from './translate.js';
 import { cardOpen, cardInteraction, CARD_ID } from './cardpanel.js';
 import { postEmbed } from './docs.js';
@@ -214,6 +215,7 @@ export default {
       return json(await cardOpen(i, env, await memberOf(i, who, env), optId ? i.data.resolved?.attachments?.[optId] : undefined));
     }
     if ((i.type === 3 || i.type === 5) && CARD_ID.test(i.data?.custom_id ?? '')) return json(await cardInteraction(i, env, await memberOf(i, who, env), (f) => load(site, f, ctx)));
+    if (i.type === 2 && i.data.name === 'Quote card') return quoteCardCommand(i, env, ctx, who); // message context menu → share picture (bot/quotecard.js)
     if (i.type === 2 && TRANSLATE_COMMANDS.has(i.data.name)) return translatorCommand(i, env, ctx, who); // Translate message (context menu) /translate /enhance /language
     if (i.type === 2 && i.data.name === 'ask') return askCommand(i, env, ctx, site, who);
     if (i.type === 2 && i.data.name === 'insight') return insightCommand(i, env, ctx, site, who); // BE9
@@ -435,6 +437,30 @@ async function insightCommand(i, env, ctx, site, who) {
   const out = await discordInsightEmbed(env, stat, who.role).catch((e) => ({ error: `⚠️ ${e.message}` }));
   if (out.error) return json(privateNote(out.error));
   return json({ type: 4, data: out.embed });
+}
+
+// ---------- Quote card (PF-024 Item 10, flag `quoteCard`): message context menu → share picture, public in the channel ----------
+async function quoteCardCommand(i, env, ctx, who) {
+  if (!flagOn(env, who, 'quoteCard')) return json(privateNote('🔒 The quote card is not switched on for you yet.'));
+  const model = quoteModel(i.data.resolved?.messages?.[i.data.target_id], i.data.resolved);
+  if (!model) return json(privateNote('⚠️ I can only make a card from a message with text, written by a person.'));
+  const uid = i.member?.user?.id ?? i.user?.id ?? null;
+  if (!(await spendQuote(env, uid))) return json(privateNote('⚠️ Easy – that is a lot of quote cards this hour. Try again later.'));
+  const byLine = i.member?.nick || i.member?.user?.global_name || i.member?.user?.username || null;
+  ctx.waitUntil((async () => {
+    let msg;
+    try {
+      const drawn = imagesReady(env) ? await drawQuote(env, model) : { error: 'no image binding' };
+      if (drawn.error) console.log('quote card draw failed:', drawn.error);
+      msg = quoteMessage(env, model, drawn.url ?? null, { byLine });
+    } catch (e) {
+      msg = noteMsg(`⚠️ ${e.message}`);
+    }
+    await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(msg)),
+    }).catch((e) => console.log('quote card reply failed', e.message));
+  })());
+  return json(DEFER_PANEL(false));
 }
 
 // ---------- Translator (PF-024 Item 9, flag `translate`): message context menu + /translate /enhance /language, text goes to Workers AI only ----------
