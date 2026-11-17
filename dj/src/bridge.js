@@ -32,7 +32,7 @@ export function snapshot(rooms, now = Date.now()) {
 }
 
 // `ctx` = { rooms(): Room[], find(id): Room|undefined, resolve(query): Promise<{tracks}|null>, search(q): Promise<track[]> }
-export function createBridge({ url, key, ctx, fetchImpl = fetch, pushEvery = 20_000, pollEvery = 2_000, minGap = 1_000, log = console }) {
+export function createBridge({ url, key, ctx, fetchImpl = fetch, pushEvery = 20_000, pollEvery = 2_000, minGap = 1_000, log = console, clock = Date.now }) {
   let stopped = false, pushTimer = 0, lastBody = '', lastPush = 0, pollTimer = 0, backoff = 0, down = false;
   const head = { [KEY_HEADER]: key, 'Content-Type': 'application/json' };
   const note = (ok, why) => { if (ok === !down) return; down = !ok; log.log(ok ? `${BOT} bridge: connected to the Worker` : `${BOT} bridge: Worker unreachable (${why}), retrying`); };
@@ -44,7 +44,7 @@ export function createBridge({ url, key, ctx, fetchImpl = fetch, pushEvery = 20_
 
   async function push(force = false) {
     clearTimeout(pushTimer); pushTimer = 0;
-    const body = JSON.stringify({ rooms: snapshot(ctx.rooms()) }), now = Date.now();
+    const now = clock(), body = JSON.stringify({ rooms: snapshot(ctx.rooms(), now) });
     if (!force && body === lastBody && now - lastPush < pushEvery - 1000) return false;
     try { await call('/api/music/bridge/push', { method: 'POST', body }); lastBody = body; lastPush = now; note(true); return true; }
     catch (e) { note(false, e.message); return false; }

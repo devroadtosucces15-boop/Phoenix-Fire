@@ -45,11 +45,10 @@ t('snapshot: Phoenix room name, listeners, volume, progress, ids for remove, who
   && snap[0].nowPlaying.position === 20 && snap[0].nowPlaying.startedAt === 980 && snap[0].nowPlaying.by.name === 'Alice' && snap[0].queue.length === 2 && snap[0].queue[0].id !== snap[0].queue[1].id && snap[0].queue[0].duration === 200);
 t('snapshot ids stay the same between pushes (remove-by-id is stable)', snapshot([fake])[0].queue[0].id === snap[0].queue[0].id);
 const viaWorker = (path, init = {}) => W(path.replace(/^https?:\/\/[^/]+/, ''), init);
-const bridge = createBridge({ url: 'https://worker.test', key: env.MUSIC_SHARED_KEY, pushEvery: 60_000, minGap: 0, log: { log() {} },
+const bridge = createBridge({ url: 'https://worker.test', key: env.MUSIC_SHARED_KEY, pushEvery: 60_000, minGap: 0, clock: () => 1_000_000, log: { log() {} }, // a fixed clock: the snapshot carries startedAt = now - position and the fake player does not advance, so a real clock made two identical pushes differ when a second ticked between them (the intermittent red)
+ 
   fetchImpl: (u, init) => viaWorker(u, init),
   ctx: { rooms: () => [fake], find: (id) => (id === 'T1' ? fake : undefined), resolve: async (q) => (q.includes('bad') ? null : { tracks: [mk('Added')] }), search: async (q) => [{ id: 'https://youtu.be/s', title: 'Found ' + q, artist: 'X', thumb: '', duration: 100 }] } });
-// the snapshot carries startedAt = now (whole seconds) - position, and the fake player does not advance: start the two pushes just after a second boundary so the clock cannot tick between them (this was the intermittent red)
-await new Promise((r) => setTimeout(r, 1000 - (Date.now() % 1000) + 5));
 t('push sends the snapshot to the Worker', await bridge.push(true) === true);
 const alice = await login('701', [], 'Alice');
 t('the site now reads the live room the PC pushed', (await call(alice, '/api/music/rooms')).d?.[0]?.name === 'Phoenix DJ 1 · Lounge');
