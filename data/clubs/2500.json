@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-17T17:53:17.237Z",
+ "fetchedAt": "2026-11-17T18:00:43.855Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1730,7 +1730,7 @@
   {
    "name": "SkinnerLAYDD",
    "proPos": "25",
-   "gamesPlayed": "21",
+   "gamesPlayed": "22",
    "goals": "11",
    "assists": "5",
    "manOfTheMatch": "2",
@@ -1939,12 +1939,12 @@
   {
    "name": "Froezer",
    "proPos": "25",
-   "gamesPlayed": "194",
-   "goals": "126",
-   "assists": "178",
+   "gamesPlayed": "195",
+   "goals": "127",
+   "assists": "183",
    "manOfTheMatch": "23",
    "ratingAve": "8.2",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2114,14 +2114,14 @@
   },
   {
    "name": "Rafid_Sx07",
-   "proPos": "5",
-   "gamesPlayed": "375",
+   "proPos": "14",
+   "gamesPlayed": "376",
    "goals": "73",
    "assists": "90",
-   "manOfTheMatch": "31",
+   "manOfTheMatch": "32",
    "ratingAve": "7.3",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "alicerce-sulista",
