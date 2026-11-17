@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-17T19:50:46.558Z",
+ "fetchedAt": "2026-11-17T20:00:44.178Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1089,42 +1089,6 @@
    "favoritePosition": "defender"
   },
   {
-   "name": "SamESKO4",
-   "gamesPlayed": "22",
-   "winRate": "86",
-   "goals": "16",
-   "assists": "17",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "3",
-   "shotSuccessRate": "43",
-   "passesMade": "220",
-   "passSuccessRate": "79",
-   "ratingAve": "7.4",
-   "tacklesMade": "14",
-   "tackleSuccessRate": "20",
-   "proName": "",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "163",
-   "proOverall": "84",
-   "proOverallStr": "84",
-   "manOfTheMatch": "5",
-   "redCards": "0",
-   "prevGoals": "2",
-   "prevGoals1": "2",
-   "prevGoals2": "2",
-   "prevGoals3": "2",
-   "prevGoals4": "3",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "1",
-   "prevGoals8": "3",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "oxMEMxo",
    "gamesPlayed": "13",
    "winRate": "92",
@@ -1704,7 +1668,7 @@
  "positionCount": {
   "midfielder": 9,
   "goalkeeper": 5,
-  "forward": 14,
+  "forward": 13,
   "defender": 14
  },
  "career": [
@@ -2037,17 +2001,6 @@
    "ratingAve": "7.2",
    "prevGoals": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "SamESKO4",
-   "proPos": "25",
-   "gamesPlayed": "136",
-   "goals": "142",
-   "assists": "130",
-   "manOfTheMatch": "34",
-   "ratingAve": "8.1",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
   },
   {
    "name": "oxMEMxo",
