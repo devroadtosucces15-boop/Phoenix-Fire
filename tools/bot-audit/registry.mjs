@@ -1,7 +1,7 @@
 // Bot output audit: the hand-kept registry. Slash entries are generated from commanddefs + captures; this file holds
 // (a) the command → feature flag map, (b) automated posts we could NOT capture, with the reason and the source file.
 export const FLAG_OF = {
-  ask: 'ask', insight: 'statInsights', insights: 'insights', burner: 'burners', leaderboard: 'leaders', me: 'myStats', profile: 'profiles',
+  ask: 'ask', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', insight: 'statInsights', insights: 'insights', burner: 'burners', leaderboard: 'leaders', me: 'myStats', profile: 'profiles',
   points: 'points', awards: 'awards', avatarcard: 'avatarCard', syncroles: 'roleSync', schedule: 'events', nextevent: 'events', availability: 'events',
   lineup: 'lineupRec', host: 'events', matchday: 'events', rush: 'rushLog', lfg: 'rushLfg', jail: 'fun', wheel: 'fun', trivia: 'fun', share: 'discoveries',
   discoveries: 'discoveries', watch: 'watchlist', watchlist: 'watchlist', setup: 'serverTools', purge: 'serverTools', tag: 'serverTools', tags: 'serverTools',

@@ -189,7 +189,7 @@ export const HELP_ICON = { hub: 'flame', core: 'gear', stats: 'chart', tools: 'b
 export function helpPosterModel(key) {
   if (key === 'hub') return { key, label: 'Which bot do you need?', blurb: 'Phoenix is five bots. Each has its own help command.', who: '', cmds: Object.entries(BOTS).map(([k, b]) => ({ name: `/${Object.keys(HELP_COMMANDS).find((c) => HELP_COMMANDS[c] === k)}`, desc: clip(`${b.label} · ${b.blurb}`, 84), who: b.who })) };
   const bot = BOTS[key];
-  return { key, label: bot.label, blurb: bot.blurb, who: bot.who, cmds: APP_COMMANDS[key].filter((n) => !(n in HELP_COMMANDS) && defOf(n)).map((n) => ({ name: `/${n}`, desc: clip(plain(defOf(n).description), 64), who: who(defOf(n)) })) };
+  return { key, label: bot.label, blurb: bot.blurb, who: bot.who, cmds: APP_COMMANDS[key].filter((n) => !(n in HELP_COMMANDS) && defOf(n) && defOf(n).type !== 3).map((n) => ({ name: `/${n}`, desc: clip(plain(defOf(n).description), 64), who: who(defOf(n)) })) };
 }
 
 export function pagesFor(key) {

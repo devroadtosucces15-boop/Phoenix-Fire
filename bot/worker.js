@@ -49,6 +49,7 @@ import { checkProfanity, cleanBonus, setupAutoMod } from './profanity.js';
 import { checkHype } from './hype.js';
 import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
+import { translateText, enhanceText, translationMessage, enhanceMessage, languageOf, setLanguage, LANG_NAME, TRANSLATE_COMMANDS } from './translate.js';
 import { cardOpen, cardInteraction, CARD_ID } from './cardpanel.js';
 import { postEmbed } from './docs.js';
 import { refreshStatInsights, handleStatInsightJob, statInsightWeekly, discordInsightEmbed, discordH2hEmbed } from './statinsights.js';
@@ -213,6 +214,7 @@ export default {
       return json(await cardOpen(i, env, await memberOf(i, who, env), optId ? i.data.resolved?.attachments?.[optId] : undefined));
     }
     if ((i.type === 3 || i.type === 5) && CARD_ID.test(i.data?.custom_id ?? '')) return json(await cardInteraction(i, env, await memberOf(i, who, env), (f) => load(site, f, ctx)));
+    if (i.type === 2 && TRANSLATE_COMMANDS.has(i.data.name)) return translatorCommand(i, env, ctx, who); // Translate message (context menu) /translate /enhance /language
     if (i.type === 2 && i.data.name === 'ask') return askCommand(i, env, ctx, site, who);
     if (i.type === 2 && i.data.name === 'insight') return insightCommand(i, env, ctx, site, who); // BE9
     if (i.type === 2 && i.data.name === 'burner') return burnerCommand(i, env, ctx, who, site, (f) => load(site, f, ctx)); // burner-club tracker
@@ -433,6 +435,44 @@ async function insightCommand(i, env, ctx, site, who) {
   const out = await discordInsightEmbed(env, stat, who.role).catch((e) => ({ error: `⚠️ ${e.message}` }));
   if (out.error) return json(privateNote(out.error));
   return json({ type: 4, data: out.embed });
+}
+
+// ---------- Translator (PF-024 Item 9, flag `translate`): message context menu + /translate /enhance /language, text goes to Workers AI only ----------
+async function translatorCommand(i, env, ctx, who) {
+  if (!flagOn(env, who, 'translate')) return json(privateNote('🔒 The translator is not switched on for you yet.'));
+  const uid = i.member?.user?.id ?? i.user?.id ?? null, opt = (n) => flatOptions(i.data.options).find((o) => o.name === n)?.value;
+  const name = i.data.name;
+  if (name === 'language') {
+    const code = opt('language');
+    return json(privateNote((await setLanguage(env, uid, code)) ? `🌐 Done – I will translate into ${LANG_NAME[code]} for you.` : '⚠️ I could not save that language.'));
+  }
+  let input = opt('text');
+  if (name === 'Translate message') { // the text arrives inside the interaction: no Message Content intent needed
+    const target = i.data.resolved?.messages?.[i.data.target_id];
+    input = target?.content || target?.message_snapshots?.[0]?.message?.content || '';
+    if (!input) return json(privateNote('⚠️ That message has no text to translate.'));
+    if (target?.author?.bot) return json(privateNote('⚠️ I only translate what people write.'));
+  }
+  const byLine = i.member?.nick || i.member?.user?.global_name || i.member?.user?.username || null;
+  ctx.waitUntil((async () => {
+    let msg;
+    try {
+      if (name === 'enhance') {
+        const r = await enhanceText(env, { input, level: opt('level'), tone: opt('tone') ?? 'professional', to: opt('to'), who: uid });
+        msg = r.ok ? enhanceMessage(env, r, { byLine }) : noteMsg(`⚠️ ${r.error}`);
+      } else {
+        const to = opt('to') ?? (await languageOf(env, uid));
+        const r = await translateText(env, { input, to, tone: opt('tone') ?? 'standard', who: uid });
+        msg = r.ok ? translationMessage(env, r, { original: name === 'Translate message' ? input : null, byLine }) : noteMsg(`⚠️ ${r.error}`);
+      }
+    } catch (e) {
+      msg = noteMsg(`⚠️ ${e.message}`);
+    }
+    await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(panelEdit(msg)),
+    }).catch((e) => console.log('translator reply failed', e.message));
+  })());
+  return json(DEFER_PANEL(false)); // public by design: the translation is for the whole channel
 }
 
 // ---------- /ask (public, flag-gated): P11.11 AI club chatbot – site JSON stats as context for the text model ----------

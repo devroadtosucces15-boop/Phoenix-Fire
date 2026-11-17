@@ -28,6 +28,7 @@ export const BANNER_SPEC = {
   badge: { icon: 'medal', title: 'Badges', sub: 'Achievements earned' },
   insight: { icon: 'spark', title: 'Insights', sub: 'What the numbers say' },
   ask: { icon: 'spark', title: 'Ask Phoenix', sub: 'Answers from the club data' },
+  translate: { icon: 'book', title: 'Translator', sub: 'Any language, same squad' },
   help: { icon: 'book', title: 'Help', sub: 'Every command, one menu' },
   staff: { icon: 'gear', title: 'Staff', sub: 'Managers only' },
   setup: { icon: 'gear', title: 'Server setup', sub: 'Channels, roles and switches' },
@@ -159,7 +160,7 @@ export const BANNER_SPEC = {
 // Slash command → family.
 export const BANNER_BY_COMMAND = {
   club: 'club', last: 'match', results: 'club', player: 'player', compare: 'stats', leaderboard: 'stats', history: 'stats', profile: 'player', me: 'player',
-  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
+  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
   rush: 'rush', queue: 'queue', lfg: 'lfg', host: 'event', lineup: 'lineup', matchday: 'event', intel: 'stats',
   feedback: 'feedback', suggest: 'idea', share: 'fun', discoveries: 'fun', watch: 'live', tag: 'setup', remind: 'remind', site: 'general', avatarcard: 'card',
   jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',
@@ -210,7 +211,7 @@ const BY_EYEBROW = [
   [/live|stream|on air|twitch|youtube/i, 'live'], [/uptime|health|status/i, 'health'], [/birthday/i, 'birthday'], [/welcome|joined|left/i, 'welcome'],
   [/voice|recap/i, 'voice'], [/patch|update notes/i, 'patch'], [/burner/i, 'burner'], [/hype|countdown/i, 'hype'], [/trial/i, 'trial'], [/announce/i, 'announce'],
   [/reminder/i, 'remind'], [/media|clip|photo/i, 'media'], [/profanity|moderation|automod/i, 'moderation'], [/music|dj|now playing/i, 'music'],
-  [/feedback/i, 'feedback'], [/idea|suggest/i, 'idea'], [/card/i, 'card'], [/play/i, 'play'], [/help/i, 'help'], [/stat|leaderboard|compare/i, 'stats'], [/club/i, 'club'],
+  [/translat/i, 'translate'], [/feedback/i, 'feedback'], [/idea|suggest/i, 'idea'], [/card/i, 'card'], [/play/i, 'play'], [/help/i, 'help'], [/stat|leaderboard|compare/i, 'stats'], [/club/i, 'club'],
 ];
 export const bannerFromEyebrow = (s) => BY_EYEBROW.find(([re]) => re.test(String(s ?? '')))?.[1] ?? 'general';
 export const bannerForCommand = (name) => BANNER_BY_COMMAND[name] ?? 'general';

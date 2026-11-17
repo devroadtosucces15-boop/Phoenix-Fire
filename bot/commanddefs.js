@@ -2,6 +2,10 @@
 // and the Worker (the Boardroom's "Sync to Discord" button, bot/botcommands.js). Keep them here, not in either of those.
 const SUB = 1, STRING = 3, INTEGER = 4, BOOLEAN = 5, USER = 6, CHANNEL = 7, ROLE = 8, ATTACHMENT = 11;
 import { CHANNEL_PURPOSES, PERMISSION_GROUPS } from './orgconsts.js';
+import { LANGUAGES, TONES } from './translatelangs.js';
+const LANG_CHOICES = LANGUAGES.map(([value, name]) => ({ name, value }));
+const TONE_CHOICES = Object.keys(TONES).map((k) => ({ name: k[0].toUpperCase() + k.slice(1), value: k }));
+export const MESSAGE_COMMAND = 3; // Discord command type: right click a message → Apps
 const player = (name, description) => ({ type: STRING, name, description, required: true, autocomplete: true });
 export const COMMANDS = [
   { name: 'club', description: 'Club record, division and form' },
@@ -14,6 +18,26 @@ export const COMMANDS = [
     name: 'ask', description: 'Ask the club chatbot a question about our stats (P11.11)',
     options: [{ type: STRING, name: 'question', description: 'e.g. who has the most assists this season?', required: true, max_length: 300 }],
   },
+  // PF-024 Item 9 – the Translator (bot/translate.js). The message command needs no gateway: Discord resolves the message text into the interaction.
+  { type: MESSAGE_COMMAND, name: 'Translate message', description: 'Translate the message you right click into your language' },
+  {
+    name: 'translate', description: 'Translate text into your language or another one',
+    options: [
+      { type: STRING, name: 'text', description: 'The text to translate (any language)', required: true, max_length: 1500 },
+      { type: STRING, name: 'to', description: 'Translate into (default: your saved language)', choices: LANG_CHOICES },
+      { type: STRING, name: 'tone', description: 'How it should sound', choices: TONE_CHOICES },
+    ],
+  },
+  {
+    name: 'enhance', description: 'Polish your own text: fix it up or rewrite it professionally',
+    options: [
+      { type: STRING, name: 'text', description: 'Your text, e.g. a speech or announcement', required: true, max_length: 1500 },
+      { type: INTEGER, name: 'level', description: '1 = fix typos only, 10 = full professional rewrite (default 5)', min_value: 1, max_value: 10 },
+      { type: STRING, name: 'tone', description: 'How it should sound (default professional)', choices: TONE_CHOICES },
+      { type: STRING, name: 'to', description: 'Write the result in this language (default: same as your text)', choices: LANG_CHOICES },
+    ],
+  },
+  { name: 'language', description: 'Set the language the translator uses for you', options: [{ type: STRING, name: 'language', description: 'Your language', required: true, choices: LANG_CHOICES }] },
   {
     name: 'insight', description: "The club's latest stat insight (✨ BE9)",
     options: [{ type: STRING, name: 'stat', description: 'Which insight (default: club form)', choices: [
@@ -347,7 +371,7 @@ export const APP_COMMANDS = {
   // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
   core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
-  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'toolshelp'],
+  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
   matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
@@ -373,6 +397,7 @@ export const isStaffOnly = (c) => !!c.default_member_permissions;
 export function buildRegistration(list, settings = {}) {
   return list
     .filter((c) => settings[c.name]?.enabled !== false)
+    .map((c) => (c.type === MESSAGE_COMMAND ? { ...c, description: '' } : c)) // Discord wants an empty description on context-menu commands
     .map((c) => {
       const min = settings[c.name]?.min;
       if (STAFF_COMMANDS.includes(c.name) && !c.default_member_permissions) return { ...c, default_member_permissions: MANAGER_BIT, contexts: [0] };
