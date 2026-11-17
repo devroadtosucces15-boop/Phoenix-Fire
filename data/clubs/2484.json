@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-17T16:30:46.480Z",
+ "fetchedAt": "2026-11-17T16:40:43.722Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1895,12 +1895,12 @@
   {
    "name": "Froezer",
    "proPos": "25",
-   "gamesPlayed": "190",
+   "gamesPlayed": "191",
    "goals": "125",
-   "assists": "174",
+   "assists": "175",
    "manOfTheMatch": "23",
    "ratingAve": "8.2",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
