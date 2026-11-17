@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-17T20:50:42.105Z",
+ "fetchedAt": "2026-11-17T21:00:49.986Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1741,7 +1741,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "14",
-   "gamesPlayed": "41",
+   "gamesPlayed": "42",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -2027,12 +2027,12 @@
   {
    "name": "Ghostz_x12",
    "proPos": "25",
-   "gamesPlayed": "32",
-   "goals": "40",
+   "gamesPlayed": "33",
+   "goals": "41",
    "assists": "22",
    "manOfTheMatch": "5",
-   "ratingAve": "8.0",
-   "prevGoals": "2",
+   "ratingAve": "7.9",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2049,12 +2049,12 @@
   {
    "name": "ManiManolo88",
    "proPos": "25",
-   "gamesPlayed": "28",
+   "gamesPlayed": "29",
    "goals": "6",
    "assists": "4",
    "manOfTheMatch": "4",
    "ratingAve": "7.4",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {

@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-17T20:50:42.105Z",
+ "fetchedAt": "2026-11-17T21:00:49.986Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1829,7 +1829,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "5",
-   "gamesPlayed": "105",
+   "gamesPlayed": "106",
    "goals": "13",
    "assists": "8",
    "manOfTheMatch": "3",
@@ -2071,12 +2071,12 @@
   {
    "name": "ManiManolo88",
    "proPos": "25",
-   "gamesPlayed": "28",
+   "gamesPlayed": "29",
    "goals": "6",
    "assists": "4",
    "manOfTheMatch": "4",
    "ratingAve": "7.4",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
