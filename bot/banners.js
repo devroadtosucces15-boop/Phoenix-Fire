@@ -28,6 +28,7 @@ export const BANNER_SPEC = {
   badge: { icon: 'medal', title: 'Badges', sub: 'Achievements earned' },
   insight: { icon: 'spark', title: 'Insights', sub: 'What the numbers say' },
   ask: { icon: 'spark', title: 'Ask Phoenix', sub: 'Answers from the club data' },
+  navigator: { icon: 'search', title: 'Server navigator', sub: 'What every channel is for' },
   pin: { icon: 'bell', title: 'Pinned', sub: 'Kept at the bottom of the channel' },
   quote: { icon: 'spark', title: 'Quote card', sub: 'Words worth keeping' },
   translate: { icon: 'book', title: 'Translator', sub: 'Any language, same squad' },
@@ -162,7 +163,7 @@ export const BANNER_SPEC = {
 // Slash command → family.
 export const BANNER_BY_COMMAND = {
   club: 'club', last: 'match', results: 'club', player: 'player', compare: 'stats', leaderboard: 'stats', history: 'stats', profile: 'player', me: 'player',
-  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
+  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
   rush: 'rush', queue: 'queue', lfg: 'lfg', host: 'event', lineup: 'lineup', matchday: 'event', intel: 'stats',
   feedback: 'feedback', suggest: 'idea', share: 'fun', discoveries: 'fun', watch: 'live', tag: 'setup', remind: 'remind', site: 'general', avatarcard: 'card',
   jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',
@@ -172,7 +173,7 @@ export const BANNER_BY_COMMAND = {
 // Button / menu custom_id → family (first match wins).
 export const BANNER_BY_COMPONENT = [
   [/^norex:help:/, 'help'], [/^norex:(mm|mme|box):/, 'match'], [/^pf:rq/, 'queue'], [/^pf:lfg/, 'lfg'], [/^norex:fun:/, 'fun'], [/^norex:dc:/, 'fun'],
-  [/^norex:wl:/, 'live'], [/^norex:sc:/, 'season'], [/^norex:ev:/, 'event'], [/^norex:pin:/, 'pin'], [/^norex:play:/, 'play'], [/^norex:bn:/, 'burner'], [/^pf:pos/, 'event'],
+  [/^norex:wl:/, 'live'], [/^norex:sc:/, 'season'], [/^norex:ev:/, 'event'], [/^norex:nav:/, 'navigator'], [/^norex:pin:/, 'pin'], [/^norex:play:/, 'play'], [/^norex:bn:/, 'burner'], [/^pf:pos/, 'event'],
   [/^norex:mp:q:cards/, 'card'], [/^norex:mp:q:rush/, 'rush'], [/^norex:mp:q:requests/, 'request'], [/^norex:mp:[ar]:claims/, 'claim'],
   [/^norex:mp:[ar]:ideas/, 'idea'], [/^norex:mp:/, 'staff'], [/^norex:pr:/, 'predict'], [/^norex:rm:/, 'remind'],
 ];
@@ -213,7 +214,7 @@ const BY_EYEBROW = [
   [/live|stream|on air|twitch|youtube/i, 'live'], [/uptime|health|status/i, 'health'], [/birthday/i, 'birthday'], [/welcome|joined|left/i, 'welcome'],
   [/voice|recap/i, 'voice'], [/patch|update notes/i, 'patch'], [/burner/i, 'burner'], [/hype|countdown/i, 'hype'], [/trial/i, 'trial'], [/announce/i, 'announce'],
   [/reminder/i, 'remind'], [/media|clip|photo/i, 'media'], [/profanity|moderation|automod/i, 'moderation'], [/music|dj|now playing/i, 'music'],
-  [/pinned/i, 'pin'], [/quote/i, 'quote'], [/translat/i, 'translate'], [/feedback/i, 'feedback'], [/idea|suggest/i, 'idea'], [/card/i, 'card'], [/play/i, 'play'], [/help/i, 'help'], [/stat|leaderboard|compare/i, 'stats'], [/club/i, 'club'],
+  [/navigator/i, 'navigator'], [/pinned/i, 'pin'], [/quote/i, 'quote'], [/translat/i, 'translate'], [/feedback/i, 'feedback'], [/idea|suggest/i, 'idea'], [/card/i, 'card'], [/play/i, 'play'], [/help/i, 'help'], [/stat|leaderboard|compare/i, 'stats'], [/club/i, 'club'],
 ];
 export const bannerFromEyebrow = (s) => BY_EYEBROW.find(([re]) => re.test(String(s ?? '')))?.[1] ?? 'general';
 export const bannerForCommand = (name) => BANNER_BY_COMMAND[name] ?? 'general';

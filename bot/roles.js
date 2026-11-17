@@ -54,6 +54,7 @@ export const PERMS = {
   'content.edit': 'manager', // P5.1 / P5.2 – announcements, requirements, rules, FAQ, glossary, Play Style; see who acknowledged the rules
   'docs.read': 'member', // P5.2 – members-only docs + Play Style (guests only see items marked public)
   'docs.ack': 'member', // P5.2 – acknowledge the current rules
+  'navigator.manage': 'manager', // PF-024 Item 12 – staff-only channels in the navigator, "What changed", rescan now
   'pins.manage': 'manager', // PF-024 Item 11 – pin a message to the bottom of an allowed channel, unpin it
   'announce.discord': 'manager', // P5.3 – post an announcement to a Discord channel (optional role ping)
   'suggest.send': 'member', // P5.4 – suggestion box (optionally anonymous to members)

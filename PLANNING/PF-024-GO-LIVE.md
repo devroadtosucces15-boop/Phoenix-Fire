@@ -56,3 +56,22 @@ Owner decisions (defaults built are bold):
 - **Pin limits:** **one pin per channel, 30 days, managers only, only in `pinned_posts` channels.** Options: several pins per channel, a longer or no expiry, any manager role by channel.
 - **Cron cost:** one Discord read per active pin per minute (up to 25 pins). Fine for a few pins.
 - **Not built:** pinning attachments or embeds (text only), wheel entries from a role or voice channel, a site page for history.
+
+## Item 12: server navigator (code done on branch `pf-024-item12`)
+`/navigator [question]` (tools app, private reply, flag `navigator` ships `owner`). Code: `bot/navigator.js`, test: `tests/navigator.test.mjs`. No migration (the scan is kept in the `meta` table: `nav:map`, `nav:changes`), no new route, no new channel purpose. New permission `navigator.manage` (manager). Needs only the bot token and `DISCORD_GUILD_ID` (the same two the server-tools cron already uses); no gateway, no Message Content intent.
+
+What it does: scans the server's channels, categories and roles; works out what each channel is for (first the Organization config purposes, otherwise a guess from the name and topic, marked with ~); works out who can see it from the permission overwrites (public, some roles, staff only; a member only sees what they can see, managers see everything marked 🔒); shows a section menu, a page per section, a Q&A wiki built from the map and the public command list ("Where do I find Rush?", "What does /club do?"), and `/navigator question:` answers straight from it. The 10-minute cron rescans about hourly, compares the new map with the old (new, removed, renamed, moved, purpose or access changed) and keeps the last 5 change sets under **What changed** (managers). **Rescan now** (managers) scans on demand.
+
+Owner steps:
+1. Deploy the Worker, sync the commands to Discord (owner step). No migration.
+2. Make sure the bot has View Channels (it already needs it) and that `DISCORD_GUILD_ID` is set.
+3. Flip the `navigator` flag to `members` when ready (it is `owner` now).
+4. For the best answers set the channel purposes in the Organization config; unset channels are guessed from their names.
+
+Owner decisions (defaults built are bold):
+- **Public or private panel:** **private (only you see it).** Option: a public pinned navigator panel in a start channel (pair it with the pin tool from Item 11).
+- **Staff channels:** **hidden from members, shown to managers with a lock.** Option: hide them from managers' panel too, or list names only.
+- **Rescan cadence:** **hourly by cron, plus Rescan now.** Option: every 10 minutes (more Discord reads) or daily.
+- **No announcement of changes:** **changes are only listed for managers.** Option: post new channels to the announcements channel.
+- **Wiki scope:** **generated from channels and commands only.** Option: add hand-written FAQ entries (rules, how to claim a player) edited on the site; that fits Item 13 (the bot wiki book).
+- **Not built:** reading messages to learn what a channel is really used for (needs the Message Content intent; the guess uses names and topics only), a site page for the map.

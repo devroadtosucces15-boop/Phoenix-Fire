@@ -39,6 +39,7 @@ const sample = {
   profanitysetup: null, // deferred reply, owner only – calls the real Discord AutoMod API (P11.4)
   avatarcard: null, // deferred reply, needs a resolved attachment – tests/avatarcard.test.mjs (P11.5)
   insight: null, // BE9 stored insight, flag-gated (owner) – embed + tier gate tested in tests/statinsights.test.mjs
+  navigator: null, // member DB + Discord server scan, flag-gated – tests/navigator.test.mjs (PF-024 Item 12)
   'Pin to bottom': null, unpin: null, // managers, flag-gated – tests/wheelpin.test.mjs (PF-024 Item 11)
   'Quote card': null, // message context menu, flag-gated – tests/quotecard.test.mjs (PF-024 Item 10)
   'Translate message': null, translate: null, enhance: null, language: null, // Phoenix Tools, flag-gated + needs the AI binding – tests/translate.test.mjs (PF-024 Item 9)

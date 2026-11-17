@@ -56,6 +56,7 @@ export const WHERE = {
   translate: ["stats.html",""],
   quoteCard: ["stats.html",""],
   pins: ["stats.html",""],
+  navigator: ["stats.html",""],
   scoutReport: ["scout.html",""],
   rushSquads: ["rush.html",""],
   boardroom: ["staff-controlcenter.html","","boardroom"],

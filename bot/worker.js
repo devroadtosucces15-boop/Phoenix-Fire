@@ -49,6 +49,7 @@ import { checkProfanity, cleanBonus, setupAutoMod } from './profanity.js';
 import { checkHype } from './hype.js';
 import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
+import { NAV_COMMANDS, NAV_ID, navCommand, navButton, navCron } from './navigator.js';
 import { PIN_COMMANDS, PIN_BUTTON, pinCommand, pinButton, pinTick } from './pins.js';
 import { quoteOn, imagesReady, quoteModel, drawQuote, spendQuote, quoteMessage } from './quotecard.js';
 import { translateText, enhanceText, translationMessage, enhanceMessage, languageOf, setLanguage, LANG_NAME, TRANSLATE_COMMANDS } from './translate.js';
@@ -86,6 +87,7 @@ export default {
       job('queueTick', () => queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
       return;
     }
+    if (flagOn(env, { role: 'owner' }, 'navigator')) job('navScan', () => navCron(env).catch((e) => console.log('navigator scan failed', e.message))); // PF-024 Item 12: rescan the server about hourly, keep what changed
     job('updateLive', () => updateLive(env).catch((e) => console.log('live check failed', e.message))); // P1.3 live banner
     job('checkUptime', () => checkUptime(env).catch((e) => console.log('uptime monitor failed', e.message))); // P11.2 24/7 monitor
     job('checkProfanity', () => checkProfanity(env).then(() => cleanBonus(env)).catch((e) => console.log('profanity check failed', e.message))); // P11.4
@@ -217,6 +219,8 @@ export default {
       return json(await cardOpen(i, env, await memberOf(i, who, env), optId ? i.data.resolved?.attachments?.[optId] : undefined));
     }
     if ((i.type === 3 || i.type === 5) && CARD_ID.test(i.data?.custom_id ?? '')) return json(await cardInteraction(i, env, await memberOf(i, who, env), (f) => load(site, f, ctx)));
+    if (i.type === 2 && NAV_COMMANDS.has(i.data.name)) return json(await navCommand(i, env, who)); // /navigator (bot/navigator.js)
+    if (i.type === 3 && NAV_ID.test(i.data?.custom_id ?? '')) return json(await navButton(i, env, who)); // its section menu, Q&A and staff buttons
     if (i.type === 2 && PIN_COMMANDS.has(i.data.name)) return json(await pinCommand(i, env, who)); // Pin to bottom (context menu) /unpin (bot/pins.js)
     if (i.type === 3 && PIN_BUTTON.test(i.data?.custom_id ?? '')) return json(await pinButton(i, env, who)); // the Unpin button on a pinned post
     if (i.type === 2 && i.data.name === 'Quote card') return quoteCardCommand(i, env, ctx, who); // message context menu → share picture (bot/quotecard.js)

@@ -109,6 +109,7 @@
     "translate": "owner",
     "quoteCard": "owner",
     "pins": "owner",
+    "navigator": "owner",
     "aiInsights": "members",
     "lineupRec": "managers",
     "rosterPicture": "members",

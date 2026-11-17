@@ -20,6 +20,8 @@ export const COMMANDS = [
   },
   // PF-024 Item 9 – the Translator (bot/translate.js). The message command needs no gateway: Discord resolves the message text into the interaction.
   // PF-024 Item 10 – the Quote card (bot/quotecard.js): right click a message → a clean share picture.
+  // PF-024 Item 12 – the server navigator (bot/navigator.js): what every channel is for, plus a Q&A wiki. Private reply.
+  { name: 'navigator', description: 'Find your way around the server: what each channel is for', options: [{ type: STRING, name: 'question', description: 'Ask where something is, e.g. where do I find a Rush game', max_length: 200 }] },
   // PF-024 Item 11b – the pin tool (bot/pins.js): managers keep a message the newest in a configured channel.
   { type: MESSAGE_COMMAND, name: 'Pin to bottom', description: 'Managers: keep this message at the bottom of the channel', default_member_permissions: String(1 << 28), contexts: [0] },
   { name: 'unpin', description: 'Managers: remove the pinned post from this channel', default_member_permissions: String(1 << 28), contexts: [0] },
@@ -377,7 +379,7 @@ export const APP_COMMANDS = {
   // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
   core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
-  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
+  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
   matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
