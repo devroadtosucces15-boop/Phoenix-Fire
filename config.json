@@ -108,6 +108,7 @@
     "ask": "members",
     "translate": "owner",
     "quoteCard": "owner",
+    "pins": "owner",
     "aiInsights": "members",
     "lineupRec": "managers",
     "rosterPicture": "members",

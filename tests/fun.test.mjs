@@ -73,7 +73,7 @@ await tt('/wheel: result panel in gold with every option listed and the winner m
   const r = await wheelCmd(MEMBER, 'Jez, Kruger, Davey', 'Who plays GK tonight');
   const txt = plainText(r.d.data), panel = r.d.data.components.find((c) => c.type === 17);
   return panel.accent_color === 0xefcf7a && /Who plays GK tonight/.test(txt) && /## Kruger/.test(txt) && /▸ \*\*Kruger\*\*/.test(txt) && /▫ Jez/.test(txt) && /3 options/.test(txt)
-    && buttonIds(r.d.data).join() === 'norex:fun:spin:1,norex:fun:rmspin:1:1';
+    && buttonIds(r.d.data).join() === 'norex:fun:spin:1,norex:fun:rmspin:1:1,norex:fun:whist:1';
 });
 await tt('/wheel: one option is not a wheel', async () => /at least two/.test(plainText((await wheelCmd(MEMBER, 'Jez')).d.data)));
 await tt('spin again: same wheel, new pick, edited in place', async () => {

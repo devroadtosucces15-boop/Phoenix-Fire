@@ -110,42 +110,123 @@ async function rapSheet(env, userId) {
 }
 
 // ---------- /wheel ----------
-export const parseOptions = (s) => [...new Set(String(s ?? '').split(/[,;\n]+/).map((x) => clean(x, 40)).filter(Boolean))].slice(0, MAX_WHEEL);
+// Entries are "Name" or "Name*3" (weight 1 to 10: three times the chance). Stored as plain strings when every weight is 1 (the old shape),
+// otherwise as { n, w } objects; `norm` reads both.
+export const parseEntries = (s) => {
+  const seen = new Set(), out = [];
+  for (const raw of String(s ?? '').split(/[,;\n]+/)) {
+    const m = clean(raw, 60).match(/^(.*?)\s*\*\s*(\d{1,2})$/), n = clean(m ? m[1] : raw, 40), w = m ? Math.min(10, Math.max(1, Number(m[2]))) : 1;
+    if (n && !seen.has(n.toLowerCase())) { seen.add(n.toLowerCase()); out.push({ n, w }); }
+  }
+  return out.slice(0, MAX_WHEEL);
+};
+export const parseOptions = (s) => parseEntries(s).map((e) => e.n);
+const norm = (list) => list.map((o) => (typeof o === 'string' ? { n: o, w: 1 } : { n: o.n, w: o.w ?? 1 }));
+const pack = (entries) => (entries.every((e) => e.w === 1) ? entries.map((e) => e.n) : entries);
+// Weighted pick. `r` in [0,1) is injectable for tests; rng.pick drives it in production so tests can still force a winner.
+export function pickWeighted(entries, pick = rng.pick) {
+  if (entries.every((e) => e.w === 1)) return pick(entries.length);
+  const total = entries.reduce((a, e) => a + e.w, 0);
+  let r = pick(total * 1000) / 1000;
+  for (let k = 0; k < entries.length; k++) { if (r < entries[k].w) return k; r -= entries[k].w; }
+  return entries.length - 1;
+};
+const label = (e) => (e.w > 1 ? `${e.n} ×${e.w}` : e.n);
+export const SPIN_FRAME_MS = { ms: 1000 }; // one edit a second stays inside Discord's edit limit; tests set 0
+export const SPIN_SECONDS = [2, 10];
 
-function wheelPanel(row, options, winnerIdx, env) {
-  const win = options[winnerIdx];
+// Where the pointer sits in each frame: it runs round the wheel fast, slows down, and the last frame is the winner.
+export function spinFrames(n, winnerIdx, frames) {
+  const laps = Math.max(1, Math.round(frames / 2)) * n; // steps from the first frame to the winner
+  return Array.from({ length: frames }, (_, k) => {
+    const t = frames === 1 ? 1 : k / (frames - 1), remaining = Math.round(laps * (1 - t) ** 2);
+    return (((winnerIdx - remaining) % n) + n) % n;
+  });
+}
+function spinPanel(row, entries, at, env, k, total) {
+  return message({ accent: 'gold', blocks: [
+    cards(bannerUrl(env, 'wheel')),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Spin the wheel`, title: row.question ? `🎡 ${row.question}` : '🎡 Spinning…', sub: `${k + 1} of ${total}`, size: 3 }),
+    text(entriesList(entries, at, '▶')),
+    footer(`spun by <@${row.by_id}>`),
+  ] });
+}
+const entriesList = (entries, at, mark) => entries.map((e, k) => (k === at ? `${mark} **${label(e)}**` : `▫ ${label(e)}`)).join('\n');
+
+function wheelPanel(row, entries, winnerIdx, env) {
+  const win = entries[winnerIdx].n;
   return message({ accent: 'gold', blocks: [
     cards(bannerUrl(env, 'wheel')),
     header({ eyebrow: `${orgName(env).toUpperCase()} · Spin the wheel`, title: row.question ? `🎡 ${row.question}` : '🎡 The wheel has spoken', size: 3 }),
     text(`## ${win}`),
     sep(),
-    text(options.map((o, k) => (k === winnerIdx ? `▸ **${o}**` : `▫ ${o}`)).join('\n')),
-    footer(`${options.length} options · spun by <@${row.by_id}>`),
-    buttons([{ label: 'Spin again', id: `norex:fun:spin:${row.id}`, emoji: '🔄' }, options.length > MIN_WHEEL && { label: `Remove ${win.slice(0, 30)} and spin`, id: `norex:fun:rmspin:${row.id}:${winnerIdx}`, emoji: '✂️' }]),
+    text(entriesList(entries, winnerIdx, '▸')),
+    footer(`${entries.length} options · spun by <@${row.by_id}>${entries.some((e) => e.w > 1) ? ' · weighted' : ''}`),
+    buttons([{ label: 'Spin again', id: `norex:fun:spin:${row.id}`, emoji: '🔄' }, entries.length > MIN_WHEEL && { label: `Remove ${win.slice(0, 30)} and spin`, id: `norex:fun:rmspin:${row.id}:${winnerIdx}`, emoji: '✂️' }, { label: 'History', id: `norex:fun:whist:${row.id}`, emoji: '📜' }]),
   ] });
 }
 
-async function wheel(i, env, who, now) {
-  const o = opts(i);
-  const options = parseOptions(o.options);
-  if (options.length < MIN_WHEEL) return sayP(env, 'cmd-wheel-error', 'The wheel needs at least two options', 'Separate them with commas: /wheel options:Jez, Kruger, Davey');
-  const me = i.member?.user?.id ?? i.user?.id;
-  const question = clean(o.question, 100);
-  const res = await env.DB.prepare('INSERT INTO fun_wheels (question, options, by_id, at) VALUES (?, ?, ?, ?)').bind(question, JSON.stringify(options), me, now).run();
-  const row = { id: res.meta?.last_row_id, question, by_id: me };
-  return reply({ ...wheelPanel(row, options, rng.pick(options.length), env), allowed_mentions: { parse: [] } });
+// Edits the reply once a second: frame 0 was the immediate answer; the rest are PATCHes of the original message, the last is the result.
+async function animate(env, token, row, entries, winnerIdx, seconds) {
+  const frames = spinFrames(entries.length, winnerIdx, seconds), url = `https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${token}/messages/@original`;
+  for (let k = 1; k < frames.length; k++) {
+    if (SPIN_FRAME_MS.ms) await new Promise((r) => setTimeout(r, SPIN_FRAME_MS.ms));
+    const m = spinPanel(row, entries, frames[k], env, k, frames.length);
+    await fetch(url, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ flags: m.flags, components: m.components, allowed_mentions: { parse: [] } }) }).catch(() => null);
+  }
+  if (SPIN_FRAME_MS.ms) await new Promise((r) => setTimeout(r, SPIN_FRAME_MS.ms));
+  const m = wheelPanel(row, entries, winnerIdx, env);
+  await fetch(url, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ flags: m.flags, components: m.components, allowed_mentions: { parse: [] } }) }).catch((e) => console.log('wheel reveal failed', e.message));
+}
+const seconds = (n) => (Number.isFinite(Number(n)) && Number(n) > 0 ? Math.min(SPIN_SECONDS[1], Math.max(SPIN_SECONDS[0], Math.round(Number(n)))) : null);
+async function logSpin(env, id, winner, by, now) {
+  await env.DB.prepare('INSERT INTO fun_wheel_spins (wheel_id, winner, by_id, at) VALUES (?, ?, ?, ?)').bind(id, winner, by, now).run();
+}
+// Result for a command or a button: instant when the wheel has no spin length, otherwise frame 0 now and the rest in the background.
+function spinResult(env, ctx, i, row, entries, winnerIdx, secs, asUpdate) {
+  if (!secs || !ctx || !i?.token) return asUpdate ? upd(wheelPanel(row, entries, winnerIdx, env)) : reply({ ...wheelPanel(row, entries, winnerIdx, env), allowed_mentions: { parse: [] } });
+  const first = spinPanel(row, entries, spinFrames(entries.length, winnerIdx, secs)[0], env, 0, secs);
+  ctx.waitUntil(animate(env, i.token, row, entries, winnerIdx, secs).catch((e) => console.log('wheel animation failed', e.message)));
+  return asUpdate ? { type: 7, data: { components: first.components, allowed_mentions: { parse: [] } } } : reply({ ...first, allowed_mentions: { parse: [] } });
 }
 
-async function spin(env, id, removeIdx) {
+async function wheel(i, env, who, now, ctx) {
+  const o = opts(i);
+  const entries = parseEntries(o.options);
+  if (entries.length < MIN_WHEEL) return sayP(env, 'cmd-wheel-error', 'The wheel needs at least two options', 'Separate them with commas: /wheel options:Jez, Kruger, Davey. Add *3 for three times the chance.');
+  const me = i.member?.user?.id ?? i.user?.id;
+  const question = clean(o.question, 100), secs = seconds(o.seconds);
+  const res = await env.DB.prepare('INSERT INTO fun_wheels (question, options, by_id, at, seconds) VALUES (?, ?, ?, ?, ?)').bind(question, JSON.stringify(pack(entries)), me, now, secs).run();
+  const row = { id: res.meta?.last_row_id, question, by_id: me }, winnerIdx = pickWeighted(entries);
+  await logSpin(env, row.id, entries[winnerIdx].n, me, now);
+  return spinResult(env, ctx, i, row, entries, winnerIdx, secs, false);
+}
+
+async function spin(env, id, removeIdx, i, ctx, now) {
   const row = await env.DB.prepare('SELECT * FROM fun_wheels WHERE id = ?').bind(id).first();
   if (!row) return sayP(env, 'cmd-empty', 'That wheel is gone', 'Start a new one with /wheel.');
-  let options = JSON.parse(row.options);
+  let entries = norm(JSON.parse(row.options));
   if (removeIdx != null) {
-    if (options.length <= MIN_WHEEL) return sayP(env, 'cmd-wheel-error', 'Two is the minimum', 'Spin again instead.');
-    options = options.filter((_, k) => k !== removeIdx);
-    await env.DB.prepare('UPDATE fun_wheels SET options = ? WHERE id = ?').bind(JSON.stringify(options), id).run();
+    if (entries.length <= MIN_WHEEL) return sayP(env, 'cmd-wheel-error', 'Two is the minimum', 'Spin again instead.');
+    entries = entries.filter((_, k) => k !== removeIdx);
+    await env.DB.prepare('UPDATE fun_wheels SET options = ? WHERE id = ?').bind(JSON.stringify(pack(entries)), id).run();
   }
-  return upd(wheelPanel(row, options, rng.pick(options.length), env));
+  const winnerIdx = pickWeighted(entries);
+  await logSpin(env, id, entries[winnerIdx].n, i?.member?.user?.id ?? i?.user?.id ?? '', now);
+  return spinResult(env, ctx, i, row, entries, winnerIdx, row.seconds, true);
+}
+
+// The History button: the last ten results of this wheel and how often each option has won (private).
+async function wheelHistory(env, id) {
+  const rows = (await env.DB.prepare('SELECT winner, by_id, at FROM fun_wheel_spins WHERE wheel_id = ? ORDER BY id DESC LIMIT 10').bind(id).all()).results ?? [];
+  if (!rows.length) return sayP(env, 'cmd-empty', 'No spins yet', 'Spin the wheel first.');
+  const tally = (await env.DB.prepare('SELECT winner, COUNT(*) AS n FROM fun_wheel_spins WHERE wheel_id = ? GROUP BY winner ORDER BY n DESC, winner LIMIT 12').bind(id).all()).results ?? [];
+  return reply(message({ ephemeral: true, accent: 'steel', blocks: [
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Wheel`, title: '📜 History', sub: `Last ${rows.length} results`, size: 3 }),
+    text(rows.map((r) => `${ts(r.at, 't')} **${r.winner}** · <@${r.by_id}>`).join('\n')),
+    sep(),
+    text(`**Wins so far**\n${tally.map((r) => `${r.winner}: ${r.n}`).join(' · ')}`),
+  ] }));
 }
 
 // ---------- entry points ----------
@@ -154,21 +235,22 @@ export async function funCommand(i, env, ctx, who, now = Date.now()) {
   if (!env.DB) return sayP(env, 'cmd-problem', 'The member database isn’t connected');
   try {
     if (i.data.name === 'trivia') return await trivia(i, env, now);
-    return i.data.name === 'jail' ? await jail(i, env, who, now) : await wheel(i, env, who, now);
+    return i.data.name === 'jail' ? await jail(i, env, who, now) : await wheel(i, env, who, now, ctx);
   } catch (e) {
     return sayP(env, 'cmd-problem', 'Something went wrong', String(e.message ?? e).slice(0, 200));
   }
 }
 
-export async function funButton(i, env, who, now = Date.now()) {
+export async function funButton(i, env, who, ctx, now = Date.now()) {
   if (!flagOn(env, who, 'fun')) return sayP(env, 'cmd-locked', 'This isn’t switched on yet');
   if (!env.DB) return sayP(env, 'cmd-problem', 'The member database isn’t connected');
   const [, , kind, a, b] = String(i.data?.custom_id ?? '').split(':');
   try {
     if (kind === 'bail') return await bail(i, env, who, Number(a), now);
     if (kind === 'sheet') return await rapSheet(env, a);
-    if (kind === 'spin') return await spin(env, Number(a), null);
-    if (kind === 'rmspin') return await spin(env, Number(a), Number(b));
+    if (kind === 'spin') return await spin(env, Number(a), null, i, ctx, now);
+    if (kind === 'whist') return await wheelHistory(env, Number(a));
+    if (kind === 'rmspin') return await spin(env, Number(a), Number(b), i, ctx, now);
     if (kind === 'tq') return await triviaAnswer(i, env, Number(a), Number(b), now);
   } catch (e) {
     return sayP(env, 'cmd-problem', 'Something went wrong', String(e.message ?? e).slice(0, 200));

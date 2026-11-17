@@ -20,6 +20,9 @@ export const COMMANDS = [
   },
   // PF-024 Item 9 – the Translator (bot/translate.js). The message command needs no gateway: Discord resolves the message text into the interaction.
   // PF-024 Item 10 – the Quote card (bot/quotecard.js): right click a message → a clean share picture.
+  // PF-024 Item 11b – the pin tool (bot/pins.js): managers keep a message the newest in a configured channel.
+  { type: MESSAGE_COMMAND, name: 'Pin to bottom', description: 'Managers: keep this message at the bottom of the channel', default_member_permissions: String(1 << 28), contexts: [0] },
+  { name: 'unpin', description: 'Managers: remove the pinned post from this channel', default_member_permissions: String(1 << 28), contexts: [0] },
   { type: MESSAGE_COMMAND, name: 'Quote card', description: 'Turn the message you right click into a share picture' },
   { type: MESSAGE_COMMAND, name: 'Translate message', description: 'Translate the message you right click into your language' },
   {
@@ -154,8 +157,9 @@ export const COMMANDS = [
   {
     name: 'wheel', description: 'Spin a wheel to pick one option',
     options: [
-      { type: STRING, name: 'options', description: 'Separate with commas, e.g. Jez, Kruger, Davey', required: true, max_length: 400 },
+      { type: STRING, name: 'options', description: 'Separate with commas, e.g. Jez, Kruger*3, Davey (*3 = three times the chance)', required: true, max_length: 400 },
       { type: STRING, name: 'question', description: 'What the wheel decides, e.g. Who plays GK tonight', max_length: 100 },
+      { type: INTEGER, name: 'seconds', description: 'Spin for this long, 2 to 10 seconds (empty = instant result)', min_value: 2, max_value: 10 },
     ],
   },
   {
@@ -373,7 +377,7 @@ export const APP_COMMANDS = {
   // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
   core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
-  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
+  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
   matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],

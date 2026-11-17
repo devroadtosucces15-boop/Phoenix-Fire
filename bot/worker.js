@@ -49,6 +49,7 @@ import { checkProfanity, cleanBonus, setupAutoMod } from './profanity.js';
 import { checkHype } from './hype.js';
 import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
+import { PIN_COMMANDS, PIN_BUTTON, pinCommand, pinButton, pinTick } from './pins.js';
 import { quoteOn, imagesReady, quoteModel, drawQuote, spendQuote, quoteMessage } from './quotecard.js';
 import { translateText, enhanceText, translationMessage, enhanceMessage, languageOf, setLanguage, LANG_NAME, TRANSLATE_COMMANDS } from './translate.js';
 import { cardOpen, cardInteraction, CARD_ID } from './cardpanel.js';
@@ -81,6 +82,7 @@ export default {
     const funEnv = appConfigured(base, 'fun') && appCreds(base, 'fun').token ? appEnv(base, 'fun') : env;
     if (event?.cron === '* * * * *') { // the 1-minute timer sends /remind reminders and runs the Rush queue tick – everything else stays on the 10-minute one
       job('sendDueReminders', () => sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
+      if (flagOn(env, { role: 'owner' }, 'pins')) job('pinTick', () => pinTick(env).catch((e) => console.log('pin tick failed', e.message))); // PF-024 Item 11: keep pinned posts the newest message
       job('queueTick', () => queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
       return;
     }
@@ -203,7 +205,7 @@ export default {
     if (i.type === 2 && DISCOVERY_COMMANDS.has(i.data.name)) return json(await discoveryCommand(i, env, ctx, who)); // /share /discoveries
     if (i.type === 3 && DISCOVERY_BUTTON.test(i.data?.custom_id ?? '')) return json(await discoveryButton(i, env, who)); // approve / reject / useful
     if (i.type === 2 && FUN_COMMANDS.has(i.data.name)) return json(await funCommand(i, env, ctx, who)); // /jail /wheel
-    if (i.type === 3 && FUN_BUTTON.test(i.data?.custom_id ?? '')) return json(await funButton(i, env, who)); // bail, rap sheet, spin again
+    if (i.type === 3 && FUN_BUTTON.test(i.data?.custom_id ?? '')) return json(await funButton(i, env, who, ctx)); // bail, rap sheet, spin again
     if (i.type === 2 && SERVER_COMMANDS.has(i.data.name)) return json(await serverCommand(i, env, ctx, who)); // /setup /purge /tag /tags /remind /reminders
     if (i.type === 3 && SERVER_BUTTON.test(i.data?.custom_id ?? '')) return json(await serverButton(i, env, who)); // ping-role panel, reminder cancel
     if (i.type === 2 && i.data.name === 'syncroles') return syncRolesCommand(i, env, ctx, site, who);
@@ -215,6 +217,8 @@ export default {
       return json(await cardOpen(i, env, await memberOf(i, who, env), optId ? i.data.resolved?.attachments?.[optId] : undefined));
     }
     if ((i.type === 3 || i.type === 5) && CARD_ID.test(i.data?.custom_id ?? '')) return json(await cardInteraction(i, env, await memberOf(i, who, env), (f) => load(site, f, ctx)));
+    if (i.type === 2 && PIN_COMMANDS.has(i.data.name)) return json(await pinCommand(i, env, who)); // Pin to bottom (context menu) /unpin (bot/pins.js)
+    if (i.type === 3 && PIN_BUTTON.test(i.data?.custom_id ?? '')) return json(await pinButton(i, env, who)); // the Unpin button on a pinned post
     if (i.type === 2 && i.data.name === 'Quote card') return quoteCardCommand(i, env, ctx, who); // message context menu → share picture (bot/quotecard.js)
     if (i.type === 2 && TRANSLATE_COMMANDS.has(i.data.name)) return translatorCommand(i, env, ctx, who); // Translate message (context menu) /translate /enhance /language
     if (i.type === 2 && i.data.name === 'ask') return askCommand(i, env, ctx, site, who);

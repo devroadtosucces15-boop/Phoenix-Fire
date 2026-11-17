@@ -738,6 +738,86 @@
  },
  {
   "kind": "slash",
+  "command": "Pin to bottom",
+  "trigger": "/Pin to bottom",
+  "app": "tools",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=16"
+          },
+          "description": "Not set up yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**No pin channel is set**\nA manager sets the channels for pinned posts in the Organization config (purpose: pinned_posts)."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "unpin",
+  "trigger": "/unpin",
+  "app": "tools",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=16"
+          },
+          "description": "Not set up yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**No pin channel is set**\nA manager sets the channels for pinned posts in the Organization config (purpose: pinned_posts)."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
   "command": "Quote card",
   "trigger": "/Quote card",
   "app": "tools",
@@ -809,7 +889,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokqj4weqiodh8/messages/@original",
+    "url": "/webhooks/3/tok43kplnciw7w/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -854,7 +934,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokxg9b4a2kpl/messages/@original",
+    "url": "/webhooks/3/tokd7dddfa34h7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -891,7 +971,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok43kplnciw7w/messages/@original",
+    "url": "/webhooks/3/tok65qn27skqiy/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -928,7 +1008,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokd7dddfa34h7/messages/@original",
+    "url": "/webhooks/3/tokhbbc51npu3a/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -965,7 +1045,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok65qn27skqiy/messages/@original",
+    "url": "/webhooks/3/tok00gladejwymej/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1002,7 +1082,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokhbbc51npu3a/messages/@original",
+    "url": "/webhooks/3/tok4rhr1dslhhn/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1039,7 +1119,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok00gladejwymej/messages/@original",
+    "url": "/webhooks/3/tokzgn0m6d8p3/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1076,7 +1156,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok4rhr1dslhhn/messages/@original",
+    "url": "/webhooks/3/tok3q814gjeyqi/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1113,7 +1193,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokzgn0m6d8p3/messages/@original",
+    "url": "/webhooks/3/tokahxphdrhlh/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1158,7 +1238,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok3q814gjeyqi/messages/@original",
+    "url": "/webhooks/3/tokk835s59few/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1195,7 +1275,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokahxphdrhlh/messages/@original",
+    "url": "/webhooks/3/tokyocmxzt7do/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1232,7 +1312,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokk835s59few/messages/@original",
+    "url": "/webhooks/3/tokclsxv83g80s/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -3889,7 +3969,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokyrnxe2rxo3/messages/@original",
+    "url": "/webhooks/3/tok262kxyqm7nui/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -3926,7 +4006,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok84gejqftyx5/messages/@original",
+    "url": "/webhooks/2/tokegfgvfuacel/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4128,7 +4208,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokegfgvfuacel/messages/@original",
+    "url": "/webhooks/2/tokkdj2ojt7e4/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4299,7 +4379,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokl8ydtya3gba/messages/@original",
+    "url": "/webhooks/2/tokt5znybblelc/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4478,7 +4558,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokhd9eeyfec2a/messages/@original",
+    "url": "/webhooks/1/tok54bhsz1urae/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4515,7 +4595,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokvtrydlkibg/messages/@original",
+    "url": "/webhooks/1/tok6278i4bu87/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4552,7 +4632,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok54bhsz1urae/messages/@original",
+    "url": "/webhooks/1/tokc854p7sdftv/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4589,7 +4669,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok6278i4bu87/messages/@original",
+    "url": "/webhooks/1/tok94a0mc3ivf/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -4626,7 +4706,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokc854p7sdftv/messages/@original",
+    "url": "/webhooks/1/tokdi86fumfe9/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -5076,11 +5156,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with stealing the penalty off the nominated taker."
+        "content": "Charged with calling for a long ball and then not making the run."
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1794937887:R>"
+        "content": "**Sentence** 30 min · out <t:1794938313:R>"
        },
        {
         "type": 14,
@@ -5156,11 +5236,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with stealing the penalty off the nominated taker."
+        "content": "Charged with calling for a long ball and then not making the run."
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1794936087:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1794936513:R>"
        },
        {
         "type": 14,
@@ -5229,7 +5309,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1794936087:d> · 30 min · stealing the penalty off the nominated taker · 💸 bailed\n`PHX-0003` <t:1794935086:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794931086:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794927086:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1794936513:d> · 30 min · calling for a long ball and then not making the run · 💸 bailed\n`PHX-0003` <t:1794935512:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794931512:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794927512:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -5269,7 +5349,7 @@
        },
        {
         "type": 10,
-        "content": "**The wheel needs at least two options**\nSeparate them with commas: /wheel options:Jez, Kruger, Davey"
+        "content": "**The wheel needs at least two options**\nSeparate them with commas: /wheel options:Jez, Kruger, Davey. Add *3 for three times the chance."
        }
       ]
      }
@@ -5393,7 +5473,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794925286:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794925712:R>"
        }
       ]
      }
@@ -5437,7 +5517,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794842486:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793856086:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794842912:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793856512:R>"
        }
       ]
      }
@@ -5481,7 +5561,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794684086:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794684512:R>"
        }
       ]
      }
@@ -5525,7 +5605,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794468086:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794468512:R>"
        }
       ]
      }
@@ -5569,7 +5649,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794216086:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794216512:R>"
        }
       ]
      }
@@ -5966,7 +6046,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 How many Ballon d’Or awards has Lionel Messi won?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which nation has won the most men’s World Cups?"
        },
        {
         "type": 12,
@@ -5981,7 +6061,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · 6\n**B** · 9\n**C** · 7\n**D** · 8"
+        "content": "**A** · Brazil\n**B** · Argentina\n**C** · Italy\n**D** · Germany"
        },
        {
         "type": 10,
@@ -6041,22 +6121,22 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 16743794,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=16"
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=16"
           },
-          "description": "That did not work"
+          "description": "Done"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**❌ Not this time – it was D · 8**\nEight, the most by any player. You have 0 points."
+        "content": "**✅ Right! +10 points**\nBrazil have five. You have 10 points."
        }
       ]
      }
@@ -6211,7 +6291,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 1 player on the board"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 2 players on the board"
        },
        {
         "type": 12,
@@ -6226,7 +6306,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **Mike** · 120 pts · 9/12 right"
+        "content": "🥇 **Mike** · 120 pts · 9/12 right\n🥈 **Zub (owner)** · 10 pts · 1/1 right"
        }
       ]
      }
@@ -6253,7 +6333,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokylzgq56dcf9/messages/@original",
+    "url": "/webhooks/1/tok7gmxdmyd8q4/messages/@original",
     "body": {
      "components": [
       {
@@ -6301,7 +6381,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokih7b9wp6ebb/messages/@original",
+    "url": "/webhooks/1/toktn634fhhq3p/messages/@original",
     "body": {
      "components": [
       {
@@ -6349,7 +6429,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok7gmxdmyd8q4/messages/@original",
+    "url": "/webhooks/1/toknh163vy7rpb/messages/@original",
     "body": {
      "components": [
       {
@@ -7237,7 +7317,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokvpnqxa484ed/messages/@original",
+    "url": "/webhooks/1/tokqwotnqnuhfo/messages/@original",
     "body": {
      "components": [
       {
@@ -7626,7 +7706,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794936087:R> · only you can see this"
+        "content": "-# Updated <t:1794936513:R> · only you can see this"
        },
        {
         "type": 1,
@@ -7700,7 +7780,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794935486:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794935912:R>"
          }
         ],
         "accessory": {
@@ -7984,7 +8064,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794936087:R> · only you can see this"
+        "content": "-# Updated <t:1794936513:R> · only you can see this"
        },
        {
         "type": 1,
@@ -8382,7 +8462,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794936087:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794936513:R>"
          }
         ],
         "accessory": {
@@ -9218,7 +9298,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794939687:t> · <t:1794939687:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794940113:t> · <t:1794940113:R>"
        },
        {
         "type": 14,
@@ -9287,7 +9367,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794939687:t> · <t:1794939687:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794940113:t> · <t:1794940113:R>"
        },
        {
         "type": 14,
@@ -9354,7 +9434,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794937113:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -9394,7 +9474,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794937113:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -9434,7 +9514,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794937113:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -9474,7 +9554,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794936687:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794937113:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -14223,7 +14303,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Pin to bottom` – keep this message at the bottom of the channel *(managers)*\n`/unpin` – remove the pinned post from this channel *(managers)*\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -14232,7 +14312,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -14383,32 +14463,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -14496,7 +14588,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 2 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -14646,32 +14738,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -14732,7 +14836,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Pin to bottom` – keep this message at the bottom of the channel *(managers)*\n`/unpin` – remove the pinned post from this channel *(managers)*\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -14741,7 +14845,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -14892,32 +14996,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15005,7 +15121,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 2 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15155,32 +15271,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15241,7 +15369,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Pin to bottom` – keep this message at the bottom of the channel *(managers)*\n`/unpin` – remove the pinned post from this channel *(managers)*\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -15250,7 +15378,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15401,32 +15529,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15496,7 +15636,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 3 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15645,32 +15785,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -15758,7 +15910,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 2 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -15908,32 +16060,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -16003,7 +16167,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 4 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 4 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -16152,32 +16316,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
@@ -16238,7 +16414,7 @@
        },
        {
         "type": 10,
-        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
+        "content": "**Commands**\n`/intel` – Club Intelligence – server + club analysis with recommendations *(managers)*\n`/feedback` – Send praise, a tip or a concern to a verified teammate (they never se…\n`/suggest` – Drop an idea in the suggestion box\n`/share` – Share something worth knowing with the club – a manager approves it f…\n`/discoveries` – shared tips waiting for approval *(managers)*\n`/watch` – The watch list: latest Pro Clubs videos, and (managers) which creator…\n`/tag` – Saved answers (rules, trial info…): post one, or managers keep the li…\n`/remind` – Reminders: set one, or see and cancel the ones waiting\n`/site` – Link to the club website\n`/avatarcard` – Make your club card: pick a photo, a look and your kit (Card Studio)\n`/jail` – Lock a mate up for a daft offence (just for fun)\n`/wheel` – Spin a wheel to pick one option\n`/trivia` – A football trivia question – points for right answers\n`/Pin to bottom` – keep this message at the bottom of the channel *(managers)*\n`/unpin` – remove the pinned post from this channel *(managers)*\n`/Quote card` – Turn the message you right click into a share picture\n`/Translate message` – Translate the message you right click into your language\n`/translate` – Translate text into your language or another one\n`/enhance` – Polish your own text: fix it up or rewrite it professionally\n`/language` – Set the language the translator uses for you"
        },
        {
         "type": 14,
@@ -16247,7 +16423,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 20 · Everyone (managers for a few) can use these"
+        "content": "-# Page 1 of 22 · Everyone (managers for a few) can use these"
        },
        {
         "type": 1,
@@ -16398,32 +16574,44 @@
             "default": false
            },
            {
-            "label": "/Quote card",
+            "label": "/Pin to bottom",
             "value": "15",
+            "description": "keep this message at the bottom of the channel",
+            "default": false
+           },
+           {
+            "label": "/unpin",
+            "value": "16",
+            "description": "remove the pinned post from this channel",
+            "default": false
+           },
+           {
+            "label": "/Quote card",
+            "value": "17",
             "description": "Turn the message you right click into a share picture",
             "default": false
            },
            {
             "label": "/Translate message",
-            "value": "16",
+            "value": "18",
             "description": "Translate the message you right click into your language",
             "default": false
            },
            {
             "label": "/translate",
-            "value": "17",
+            "value": "19",
             "description": "Translate text into your language or another one",
             "default": false
            },
            {
             "label": "/enhance",
-            "value": "18",
+            "value": "20",
             "description": "Polish your own text: fix it up or rewrite it professionally",
             "default": false
            },
            {
             "label": "/language",
-            "value": "19",
+            "value": "21",
             "description": "Set the language the translator uses for you",
             "default": false
            }
