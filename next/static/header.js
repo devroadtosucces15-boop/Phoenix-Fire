@@ -145,7 +145,7 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
   const pollAlerts = () => {
     if (!A?.session || d.hidden) return;
     A.call('/api/notify/count').then((c) => {
-      bell.hidden = false; dot(bell, c.unread | 0);
+      bell.hidden = false; dot(bell, c.unread | 0); hashBell();
       if (!(c.unread > 0)) return;
       A.call('/api/notify').then((r) => {
         const fresh = (r.items || []).filter((n) => !n.read && !n.readAt && n.id > seenId() && Date.now() - n.at < 15 * 60e3).sort((a, b) => a.id - b.id);
@@ -186,6 +186,8 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
     if (!bp.hidden) return closeBell();
     closeMenu(); closePal(); const bb = box.getBoundingClientRect(); bp.style.top = Math.round(bb.bottom + 8) + 'px'; bp.style.maxHeight = `calc(100dvh - ${Math.round(bb.bottom + 8)}px - 12px)`; bp.hidden = false; bell.setAttribute('aria-expanded', 'true'); paintBell(); loadBell();
   };
+  const hashBell = () => { if (location.hash === '#bell' && bell && !bell.hidden) { window.PhoenixBell.open(); try { history.replaceState(null, '', location.pathname + location.search); } catch {} } };
+  window.addEventListener('hashchange', hashBell);
   window.PhoenixBell = { open: () => { if (bell && (!bp || bp.hidden)) toggleBell(); } };
 
   // ---------- 🔴 "N live" chip (flag memberLive; botfeat.js polls and fires nx:live). Hidden when nobody is on air; links to the strip. ----------

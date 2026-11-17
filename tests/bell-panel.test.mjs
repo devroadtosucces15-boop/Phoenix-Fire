@@ -17,4 +17,7 @@ t('floating menu backdrop swallows pointer, touch and click events while open', 
 t('owner button panel no longer lets the closing tap fall through', () => /capture|, true\)/.test(owner) && /stopPropagation/.test(owner));
 t('decorative hero layers never take taps', () => /\.crestwrap \.halo\{pointer-events:none/.test(style) && /\.wx \.rays\{pointer-events:none/.test(widgets));
 t('bell panel is Phoenix themed (accent from the token, no NOREX red)', () => { const css = rd('next/static/header.css'); return /hdr-bellp/.test(css) && !/c8352c/i.test(css) && !/c8352c/i.test(header); });
+import { HASH_MAP } from '../next/lib/linkmap.mjs';
+t('old alerts links (members.html#alerts, #lk-alerts, #lk-unread) open the bell, not the Locker', () => HASH_MAP.alerts === 'index.html#bell' && /'#lk-alerts':'index\.html#bell'/.test(rd('next/pages/hub.mjs')) && /'#lk-unread':'index\.html#bell'/.test(rd('next/pages/hub.mjs')));
+t('header opens the bell when the address carries #bell', () => /location\.hash === '#bell'/.test(header) && /hashchange/.test(header));
 done();

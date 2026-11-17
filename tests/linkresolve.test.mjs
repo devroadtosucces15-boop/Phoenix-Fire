@@ -9,7 +9,7 @@ execFileSync('node', [path.join(root, 'phoenix/build.mjs'), '--out', out], { cwd
 const page = (p) => { try { return fs.readFileSync(path.join(out, p), 'utf8'); } catch { return null; } };
 const lands = (target) => { // target = 'page.html#id' → the page is built and the id is on it (a bare '#' or none needs only the page)
   const [p, frag] = target.split('#'); const h = page(p); if (h == null) return false;
-  if (!frag) return true;
+  if (!frag || frag === 'bell') return true; // #bell opens the header notifications dropdown (header.js)
   return h.includes(`id="${frag}"`) || h.includes(`id='${frag}'`) || /^(p|c|play)\d+$/.test(frag) || /^compare=/.test(frag); // runtime-made ids: feed post, chat, play, compare deep link
 };
 

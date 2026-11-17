@@ -4,7 +4,7 @@
 
 // members.html#<key> (Discord embeds, DMs and notification rows already sent use these)
 export const HASH_MAP = {
-  locker: 'hub.html', me: 'hub-profile.html#lk-me', achievements: 'hub-medals.html#lk-medals', alerts: 'hub-alerts.html#lk-alerts', 'alerts-settings': 'hub-alerts.html#lk-alertset',
+  locker: 'hub.html', me: 'hub-profile.html#lk-me', achievements: 'hub-medals.html#lk-medals', alerts: 'index.html#bell', 'alerts-settings': 'hub-alerts.html#lk-alertset',
   cards: 'hub-cardstudio.html#lk-cards', stats: 'hub-stats.html#lk-mystats', points: 'hub-profile.html#lk-me', discoveries: 'hub-discoveries.html#dc-feed',
   schedule: 'hub-matchnight.html#mn-week', events: 'hub-matchnight.html#mn-week', rsvp: 'hub-matchnight.html#mn-week', motm: 'hub-matchnight.html#mn-motm', vote: 'hub-matchnight.html#mn-motm', rush: 'hub-matchnight.html#mn-rush',
   awards: 'hub-squad.html#sq-awards', predict: 'hub-squad.html#sq-predict', squads: 'hub-squad.html#sq-squads', teamup: 'hub-squad.html#sq-team', recs: 'hub-squad.html#sq-team', scout: 'hub-squad.html#sq-scout',

@@ -17,7 +17,7 @@ const bad = [];
 for (const [k, target] of Object.entries(map)) {
   const [page, id] = target.split('#');
   if (!fs.existsSync(path.join(out, page))) { bad.push(`${k} -> ${target} (no page)`); continue; }
-  if (!id) continue;
+  if (!id || id === 'bell') continue; // #bell: the header's own notifications panel opens on it (header.js)
   const s = read(page);
   if (!(s.includes(`id="${id}"`) || s.includes(`data-dl="${id}"`) || s.includes(`data-dl~="${id}`))) bad.push(`${k} -> ${target} (no id)`);
 }
