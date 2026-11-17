@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-17T21:20:43.679Z",
+ "fetchedAt": "2026-11-17T21:30:42.372Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1968,7 +1968,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "14",
-   "gamesPlayed": "42",
+   "gamesPlayed": "43",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -2110,14 +2110,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "5",
-   "gamesPlayed": "106",
+   "proPos": "25",
+   "gamesPlayed": "107",
    "goals": "13",
    "assists": "8",
    "manOfTheMatch": "3",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "forward"
   },
   {
    "name": "Fez-_-Fez",
@@ -2430,7 +2430,7 @@
   {
    "name": "LightHazee_",
    "proPos": "5",
-   "gamesPlayed": "4",
+   "gamesPlayed": "5",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
