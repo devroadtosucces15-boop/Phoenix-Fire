@@ -1,18 +1,19 @@
-Model: sonnet (claude-sonnet-5-5)   Item: PF-023 Rush queue and LFG as one matchmaking system (side roadmap Item 7, plan section 5b)
+Model: sonnet (claude-sonnet-5-5)   Item: PF-024 Side roadmap Items 8 to 25: bot cleanup and new bot features (start with the duplicate-post fix, Item 8)
 
 Repo: /home/mrsuccess/Phoenix-Fire, branch cut from origin/main. Read CLAUDE.md, then PLANNING/SESSION-HANDOFF.md sections 1, 3, 4, 5, 6, then
-LIBRARY/README.md, LIBRARY/CLAIMS.md and only the roadmap row for PF-023 plus section 5b of PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md.
+LIBRARY/README.md, LIBRARY/CLAIMS.md, the PF-024 row of LIBRARY/roadmap.json and plan sections 5c of PLANNING/SIDE-ROADMAP-eager-yawning-lovelace.md.
 
 ## State right now
-- PF-022 (Control Center) is DONE (2026-11-17), including step 9: permission matrix from the staff manifest (`level` per tool), Worker enforcement in `bot/ccpermissions.js`, signed-out and wrong-role gate, owner View as. Owner steps to take it live are in PLANNING/PF-022-GO-LIVE.md (not yours).
-- PF-009 stays open but dropped from NEXT: R29 needs live Worker data or an owner login.
-- Any new Worker route a staff tool uses must be added to `ROUTES` in `bot/ccpermissions.js` against a manifest tool; `tests/cc-permissions.test.mjs` fails otherwise for the listed paths.
+- PF-022 (Control Center) and PF-023 (Rush matchmaking core, `bot/rushmatch.js`) are DONE. Owner steps: PLANNING/PF-022-GO-LIVE.md, PLANNING/PF-023-GO-LIVE.md.
+- PF-023 leftovers (inbox, small): board-id compare-and-set in D1, offer DM registry entries (`auto:rush-offer`), the optional extras.
+- Any new Worker route a staff tool uses goes into `ROUTES` in `bot/ccpermissions.js` (tests/cc-permissions.test.mjs).
+- `node tests/run.mjs` can show a flaky cardstudio timing failure; run `node tests/cardstudio.test.mjs` alone to confirm.
 
-## Do next, in order
-1. Claim files in LIBRARY/CLAIMS.md. Read section 5b and the current rush files (`bot/rush*.js`, queue board) and LFG code.
-2. Build the one matchmaking system the plan describes; channels and roles from Organization config, never hardcoded; Phoenix branding on every output (test that fails on a NOREX name, colour or crest).
-3. `node tools/library/sync.mjs`, `node tests/library.test.mjs`, `node tests/run.mjs` (run the design test unsandboxed), rebuild `node phoenix/build.mjs --out site`, commit, push with gh, merge to main, mark PF-023 done, set the next item NEXT, write this file again.
+## Do next
+1. One item per session: PF-024 is split by item; take Item 8's duplicate-post fix first (`once(env, key)` helper, one owner app per output). Claim files in LIBRARY/CLAIMS.md.
+2. Channels and roles from Organization config; Phoenix branding on every output with a test that fails on a NOREX name, colour or crest.
+3. `node tools/library/sync.mjs`, `node tests/library.test.mjs`, `node tests/run.mjs` (design test unsandboxed), `node phoenix/build.mjs --out site`, commit, push with gh, merge to main, mark done, set the next item NEXT, rewrite this file.
 
 ## Gotchas
-- Tests overwrite site/; rebuild with node phoenix/build.mjs --out site. Roadmap text must not contain NOREX hex colours.
+- Tests need a built site/ (node phoenix/build.mjs --out site) and overwrite it. Roadmap text must not contain NOREX hex colours.
 - Never write a secret value; owner-only steps (deploy, migrations, Discord portal) are listed, not done.

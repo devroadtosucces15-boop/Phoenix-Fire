@@ -14,14 +14,15 @@ import { orgName, channelsFor, channelNotice, pingRoleFor } from './orgconfig.js
 import { discord } from './servertools.js';
 import { appEnv, appConfigured, APP_LABEL } from './apps.js';
 import { kvOf } from './kv.js';
+import { RUSH_POSITIONS, ANY, findPlayerLines, saveNeed, openNeeds, closeNeeds, expireNeeds, createOffers, sendOffers, getOffer, saveOffer, answerOffer, posLabel, cleanPositions, lobbyOfferMessage, playerOfferMessage, dm } from './rushmatch.js';
 
 export const MAX_CREW = 5; // including the captain
 export const DEFAULTS = { failedPolicy: 'next', greenWarnMin: 1, greenRemoveMin: 2, searchAskMin: 15, searchMaxMin: 60, waitDropMin: 90, pauseMin: 10, idleCloseMin: 60, joinsPerHour: 8, needMin: 60 };
-export const RQ_ID = /^pf:rq:[a-z]+(:[a-z0-9]+)?$/;
+export const RQ_ID = /^pf:rq:[a-z]+(:[a-z0-9]+){0,2}$/;
 export const REPORT_LIMIT = 3, REPORT_TTL = 3600;
 const MIN = 60e3;
 const NEED = { 1: 'needs 1 player', 2: 'needs 2 players', 9: 'needs a keeper' };
-export const POSITIONS = { GK: 'Keeper', CB: 'Centre back', FB: 'Full back', CM: 'Midfield', W: 'Winger', ST: 'Striker', ANY: 'Any position' };
+export const POSITIONS = { ...RUSH_POSITIONS, [ANY]: 'Any position' }; // Rush positions are only goalkeeper, striker, centre back, winger (PF-023)
 
 // ---------- settings (the owner's two-minute rule and the failed policy are settings, not constants) ----------
 const clampN = (v, lo, hi, d) => (Number.isFinite(+v) && v !== '' && v != null ? Math.min(hi, Math.max(lo, Math.round(+v))) : d);
@@ -172,7 +173,7 @@ const timers = (e, now) => {
   const since = e.status_since ?? e.joined_at, step = e.status === 'searching' ? 'Searching' : e.status === 'green' ? 'Green light' : 'Waiting';
   return `-# In the queue: joined ${ts(e.joined_at, 'R')} · ${step}: since ${ts(since, 'T')} (${ts(since, 'R')})${e.attempts ? ` · match failed ${e.attempts}×` : ''}`;
 };
-export function boardMessage(q, { now = Date.now(), org = 'Phoenix Fire', st = settingsOf(), avgSec = 300, poster = null, state = stateOf() } = {}) {
+export function boardMessage(q, { now = Date.now(), org = 'Phoenix Fire', st = settingsOf(), avgSec = 300, poster = null, state = stateOf(), needs = [] } = {}) {
   const sorted = byOrd(q), front = sorted.find((e) => e.status === 'green' || e.status === 'searching');
   const searching = sorted.filter((e) => e.status === 'searching'), waiting = sorted.filter((e) => e.status === 'waiting');
   const lines = [];
@@ -184,6 +185,8 @@ export function boardMessage(q, { now = Date.now(), org = 'Phoenix Fire', st = s
   if (searching.length > 1) lines.push('⚠️ **More than one group is searching: they can match each other.** Managers: `/queue clear`.');
   if (waiting.length) lines.push('', '**NEXT**', ...waiting.slice(0, 8).flatMap((e, k) => [`${k + 1}. ${crewText(e)}${(e.paused_until ?? 0) > now ? ' · ⏸ paused' : ''} · ~${Math.max(1, Math.round(((front ? 1 : 0) + k) * avgSec / 60))} min`, timers(e, now)]));
   if (waiting.length > 8) lines.push(`…and ${waiting.length - 8} more`);
+  const finder = findPlayerLines(needs);
+  if (finder.length) lines.push('', ...finder);
   const open = state.openedAt && sorted.length ? `Queue open since ${ts(state.openedAt, 'T')} (${ts(state.openedAt, 'R')})` : 'The queue is not running';
   const stopped = state.closed === 'staff' && !sorted.length;
   return message({
@@ -208,7 +211,7 @@ export function needMessage(e, { positions = [], answers = [], roleIds = [], use
   const lobby = [e.captain, ...e.members], size = lobby.length, want = e.needs === 9 ? 1 : e.needs || 1;
   const open = !closed && expires > now;
   const pos = positions.length ? positions.map((p) => POSITIONS[p] ?? p).join(', ') : e.needs === 9 ? POSITIONS.GK : POSITIONS.ANY;
-  const ins = answers.filter((a) => a.answer === 'in'), later = answers.filter((a) => a.answer === 'later');
+  const ins = answers.filter((a) => a.answer === 'in');
   const ping = open && (roleIds.length || userIds.length) ? [...roleIds.map((r) => `<@&${r}>`), ...userIds.map(mention)].join(' ') : null;
   return message({
     accent: open ? 'red' : 'steel', ping, mentions: open ? { parse: [], roles: roleIds.map(String), users: userIds.map(String) } : { parse: [] },
@@ -222,10 +225,9 @@ export function needMessage(e, { positions = [], answers = [], roleIds = [], use
         ['Mode', mode],
         ['Queue', status === 'searching' ? 'searching now' : status === 'green' ? 'at the green light' : queuePos ? `waiting, position ${queuePos}` : 'in line'],
         ['In', ins.length ? ins.map((a) => mention(a.user)).join(', ') : 'nobody yet'],
-        later.length ? ['Later', later.map((a) => mention(a.user)).join(', ')] : null,
       ].filter(Boolean)),
       sep(), footer(`Press I'm in and the captain <@${e.captain}> is told. only the audience a manager set in the Control Center is pinged, never @everyone.`),
-      open ? buttons([{ label: "I'm in", emoji: '🙋', id: `pf:rq:needin:${e.captain}`, style: 'ok' }, { label: 'Later', emoji: '⏳', id: `pf:rq:needlater:${e.captain}` }]) : null,
+      open ? buttons([{ label: "I'm in", emoji: '🙋', id: `pf:rq:needin:${e.captain}`, style: 'ok' }]) : null,
     ],
   });
 }
@@ -321,7 +323,8 @@ export async function refreshBoards(env, { now = Date.now(), pings = [], force =
     return { channels: channels.length, posted: 0, edited: 0, failures };
   }
   const q = await loadQueue(env), st = await getSettings(env), avgSec = await avgSearchSeconds(env), state = await getState(env);
-  const msg = autoBanner(env, boardMessage(q, { now, org: orgName(env), st, avgSec, state, poster: bannerUrl(env, 'queueflow') }), 'queue');
+  const needs = await boardNeeds(env, q, now);
+  const msg = autoBanner(env, boardMessage(q, { now, org: orgName(env), st, avgSec, state, needs, poster: bannerUrl(env, 'queueflow') }), 'queue');
   let edited = 0, posted = 0;
   const failures = [];
   for (const ch of channels) {
@@ -360,6 +363,7 @@ export async function queueTick(env, now = Date.now()) {
   const sw = sweep(before, st, now);
   if (sw.queue !== before) await saveQueue(env, before, sw.queue);
   if (sw.removed.length) await Promise.all(sw.removed.map((e) => closeNeed(env, e.captain)));
+  const expiredNeeds = await expireNeeds(env, now).catch(() => 0); // an expired call leaves the board banner
   const gone = { idle: 'You were removed from the Rush queue (no answer at the green light). Press **Join queue** to come back.', stuck: `Your search ran past ${st.searchMaxMin} min, so the queue let the next group go. Press **Join queue** to come back.`, stale: 'You were dropped from the Rush queue after a long wait. Press **Join queue** to come back.' };
   const pings = [
     ...sw.warn.map((e) => ping(everyone(e), `**One minute left**: press **Searching now** or the next group goes.`)),
@@ -369,7 +373,7 @@ export async function queueTick(env, now = Date.now()) {
   ];
   const channels = await postChannels(env, 'auto:rush-board', 'rush_queue');
   if (!channels.length) return { skipped: true, noChannel: true };
-  let stale = pings.length > 0 || closedNow !== state0 || !!tokenMissing(rushEnv(env)); // no token: refreshBoards records the failure without calling Discord
+  let stale = pings.length > 0 || expiredNeeds > 0 || closedNow !== state0 || !!tokenMissing(rushEnv(env)); // no token: refreshBoards records the failure without calling Discord
   if (!stale) {
     const kv = kvOf(env);
     for (const ch of channels) {
@@ -423,7 +427,9 @@ export async function queueInteraction(i, env, me, who, ctx, now = Date.now()) {
 
   const state = await getState(env);
   if (state.closed === 'staff' && ['join', 'search', 'found', 'failed', 'need', 'needin', 'needlater'].includes(action) && !q.length) return say('The queue is stopped', 'A manager stopped it and only a manager can start it again (`/queue start`).');
-  if (action === 'needin' || action === 'needlater') return needAnswer(env, ctx, mode, uid, action === 'needin' ? 'in' : 'later', q, now);
+  if (action === 'needlater') return say('That option was removed', 'Press **I’m in** on a call, or mark yourself available with `/lfg now`.');
+  if (action === 'offer') return offerButton(env, ctx, mode, id.split(':')[4], uid, now);
+  if (action === 'needin') return needAnswer(env, ctx, mode, uid, 'in', q, now);
 
   if (action === 'join') {
     if (!find(q, uid) && !(await joinAllowed(env, uid, st, now))) return say('Slow down a little', `You can join ${st.joinsPerHour} times an hour. Staff can see the queue is busy, not blocked.`);
@@ -487,7 +493,7 @@ export async function queueInteraction(i, env, me, who, ctx, now = Date.now()) {
       await saveQueue(env, q, res.queue); // the need is on the board at once; the post waits for the positions
       if (n === 9) return finishNeed(env, ctx, res.queue, uid, ['GK'], now);
       return reply(message({ ephemeral: true, accent: 'steel', blocks: [header({ eyebrow: 'Rush queue', title: 'Which positions?', sub: 'Optional. Skip to say any position.' }),
-        { type: 1, components: [{ type: 3, custom_id: 'pf:rq:need:pos', placeholder: 'Pick up to 3 positions', min_values: 0, max_values: 3, options: Object.entries(POSITIONS).filter(([k]) => k !== 'GK').map(([value, label]) => ({ label, value })) }] }] }));
+        { type: 1, components: [{ type: 3, custom_id: 'pf:rq:need:pos', placeholder: 'Pick up to 3 positions', min_values: 0, max_values: 3, options: Object.entries(RUSH_POSITIONS).map(([value, label]) => ({ label, value })) }] }] }));
     }
     if (mode === 'pos') return finishNeed(env, ctx, q, uid, picked.filter((x) => POSITIONS[x]), now);
     return reply(message({ ephemeral: true, accent: 'steel', blocks: [header({ eyebrow: 'Rush queue', title: 'Need a player?', sub: 'Posts a call, pings the people a manager chose, and shows on the board' }),
@@ -530,7 +536,9 @@ async function finishNeed(env, ctx, q, uid, positions, now) {
   const e = find(q, uid), st = await getSettings(env);
   if (!e) return say(reasons.absent);
   const aud = await needAudience(env), channels = await postChannels(env, 'auto:rush-need', 'rush_need');
+  const stNeed = await saveNeed(env, { captain: uid, positions, count: e.needs === 9 ? 1 : e.needs || 1, now, expires: now + st.needMin * MIN }); // the board banner and the matcher read this row
   await commit(env, ctx, q, { queue: q, lit: [] }, now); // the board shows the need either way
+  await after(env, ctx, () => offerMatches(env, stNeed, q, now));
   if (!aud.enabled) return say(`🙋 ${NEED[e.needs]}`, 'It shows on the board. The public call is switched off in the Control Center.', 'win');
   if (!channels.length) return say(`🙋 ${NEED[e.needs]}`, 'It shows on the board. No channel is set for the Rush calls: a manager adds one in the Control Center.', 'steel');
   const expires = now + st.needMin * MIN, post = needMessage(e, { positions, roleIds: aud.roles, userIds: aud.users, now, expires, org: orgName(env), queuePos: positionOf(q, uid), status: e.status });
@@ -558,11 +566,73 @@ async function needAnswer(env, ctx, captain, uid, answer, q, now) {
   return say(answer === 'in' ? '🙋 You are in' : '⏳ Noted', answer === 'in' ? `<@${captain}> was told. They add you to the crew.` : `<@${captain}> sees you as "later".`, 'win');
 }
 export async function closeNeed(env, captain) {
+  await closeNeeds(env, captain).catch(() => null);
   const kv = kvOf(env), need = await kv?.get(NEED_KEY + captain, 'json').catch(() => null);
   if (!need) return;
   await kv.delete(NEED_KEY + captain).catch(() => null);
   const stub = { captain, members: need.lobby ?? [], needs: need.needs ?? 1 };
   for (const p of need.posts ?? []) await discord(rushEnv(env), 'PATCH', `/channels/${p.ch}/messages/${p.id}`, needMessage(stub, { closed: true, answers: need.answers ?? [], org: orgName(env) })).catch(() => null);
+}
+
+// ---------- one system: the board banner, the matcher and the two-sided accept ----------
+// Open calls shown as the slim "Find a player" section on the board (only lobbies still in the queue).
+async function boardNeeds(env, q, now) {
+  const list = await openNeeds(env, now).catch(() => []);
+  return list.map((n) => { const e = find(q, n.captain); return e ? { captain: n.captain, positions: n.positions, count: n.count, size: everyone(e).length } : null; }).filter(Boolean);
+}
+const inAGroup = (q) => q.flatMap(everyone);
+// A call just opened or someone just went available: propose the fitting players to the lobby and to them (DMs from the Rush app).
+export async function offerMatches(env, need, q, now = Date.now(), org = orgName(env)) {
+  if (!need?.id) return { offers: 0 };
+  const offers = await createOffers(env, need, now, { busy: inAGroup(q) });
+  if (!offers.length) return { offers: 0 };
+  const failed = await sendOffers(rushEnv(env), offers, need, { org });
+  return { offers: offers.length, failed: failed.length };
+}
+// Called by bot/lfg.js when a member goes available: every open call gets a chance to match them.
+export async function matchNewPlayer(env, now = Date.now()) {
+  if (!env.DB) return 0;
+  const q = await loadQueue(env), needs = await openNeeds(env, now);
+  let n = 0;
+  for (const need of needs) if (find(q, need.captain)) n += (await offerMatches(env, need, q, now)).offers;
+  return n;
+}
+// A yes or no from one side of an offer. Both yes: the player joins the crew (setMembers + commit), the call closes, the LFG row is matched.
+export async function resolveOffer(env, ctx, offerId, side, yes, now = Date.now()) {
+  const row = await getOffer(env, offerId);
+  if (!row) return say('That offer is gone', '');
+  const { offer, done, stale } = answerOffer(row, side, yes);
+  if (stale) return say('That offer is over', done === 'accepted' ? 'They already joined the crew.' : 'It was declined or ran out of time.');
+  const need = await one(env, 'SELECT * FROM rush_needs WHERE id = ?', row.need_id);
+  if (!need || need.status !== 'open' || need.expires <= now) { await saveOffer(env, { ...offer, status: 'expired' }); return say('That call is closed', 'The lobby filled the spot or it ran out of time.'); }
+  await saveOffer(env, offer);
+  if (done === 'declined') return say('Noted', side === 'lobby' ? 'The player is not told it was you.' : 'No problem, you stay on the available list.', 'steel');
+  if (!done) { // one side said yes: tell the other
+    const target = side === 'lobby' ? offer.user_id : need.captain;
+    const msg = side === 'lobby' ? playerPrompt(offer, need, orgName(env)) : lobbyPrompt(offer, orgName(env));
+    await after(env, ctx, () => dm(rushEnv(env), target, msg));
+    return say('✅ Yes sent', side === 'lobby' ? 'They are asked now.' : `<@${need.captain}> is asked now.`, 'win');
+  }
+  const q = await loadQueue(env), e = find(q, need.captain);
+  const res = e ? setMembers(q, need.captain, [...e.members, offer.user_id]) : null;
+  if (res?.error === 'conflict') { await saveOffer(env, { ...offer, status: 'declined' }); return say('They are in another group', 'Ask them to leave it first.'); }
+  if (res) await commit(env, ctx, q, res, now);
+  else { const crew = (await savedCrew(env, need.captain)) ?? []; await saveCrew(env, need.captain, crewOf(need.captain, [...crew, offer.user_id]), now); }
+  await env.DB.prepare("UPDATE rush_lfg SET status = 'matched' WHERE user_id = ? AND status = 'open'").bind(offer.user_id).run();
+  const left = Math.max(0, (need.count ?? 1) - 1);
+  if (left > 0) await env.DB.prepare('UPDATE rush_needs SET count = ? WHERE id = ?').bind(left, need.id).run(); else await closeNeed(env, need.captain);
+  await env.DB.prepare("UPDATE rush_need_offers SET status = 'expired' WHERE need_id = ? AND status = 'open' AND id != ?").bind(need.id, offer.id).run();
+  await after(env, ctx, () => refreshBoards(env, { now, force: true, pings: [ping([need.captain], `<@${offer.user_id}> joined your crew as **${posLabel(offer.position)}**. Join the queue when you are ready.`)] }));
+  return say('✅ Added to the crew', `<@${offer.user_id}> is in <@${need.captain}>'s crew as ${posLabel(offer.position)}.`, 'win');
+}
+const playerPrompt = (offer, need, org) => playerOfferMessage(offer, { org, captain: need.captain_id ?? need.captain });
+const lobbyPrompt = (offer, org) => lobbyOfferMessage(offer, { org });
+// The lobby's buttons on the Rush app DM: pf:rq:offer:y|n:<id>.
+async function offerButton(env, ctx, yn, offerId, uid, now) {
+  const row = await getOffer(env, offerId), need = row ? await one(env, 'SELECT captain_id FROM rush_needs WHERE id = ?', row.need_id) : null;
+  if (!row || !need) return say('That offer is gone', '');
+  if (String(need.captain_id) !== String(uid)) return say('That offer is not yours', '');
+  return resolveOffer(env, ctx, offerId, 'lobby', yn === 'y', now);
 }
 
 // Anonymous report: no reporter id is stored or posted. The rate limit keys on a salted hash that expires after an hour.

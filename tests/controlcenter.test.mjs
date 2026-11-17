@@ -32,7 +32,7 @@ t('every kind the page shows is present', ['command', 'component', 'automated', 
 t('every item has a key, kind, name and app, and keys are unique', REGISTRY.items.every((i) => i.key && i.kind && i.name && i.app) && new Set(REGISTRY.items.map((i) => i.key)).size === REGISTRY.items.length);
 // A module that posts to a Discord channel must be the source of a registered output (or a generic sender): a new automated post cannot slip in unregistered.
 const POSTERS = botFiles.filter((f) => /\/channels\/\$\{[^}]+\}\/messages`/.test(read(`bot/${f}`)) && /method: 'POST'|'POST'/.test(read(`bot/${f}`)));
-const HELPERS = new Set(['monitor.js', 'servertools.js', 'insights.js', 'notify.js', 'routing.js', 'docs.js', 'botcommands.js', 'playmedia.js']); // generic senders: the outputs that use them are registered under their own modules
+const HELPERS = new Set(['monitor.js', 'servertools.js', 'insights.js', 'notify.js', 'routing.js', 'docs.js', 'botcommands.js', 'playmedia.js', 'rushmatch.js']); // generic senders: the outputs that use them are registered under their own modules
 const unregistered = POSTERS.filter((f) => !HELPERS.has(f) && !REGISTRY.items.some((i) => String(i.source ?? '').includes(f)));
 t(`every module that posts to a channel is the source of a registered output (${unregistered.join(', ') || 'none missing'})`, unregistered.length === 0);
 const used = new Set();

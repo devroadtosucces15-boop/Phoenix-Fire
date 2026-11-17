@@ -220,6 +220,7 @@ No commands (kept empty for the transition).
 - **/lfg**: Looking for Rush players: say you are available, or see who is
   - `now` (subcommand, optional): Post that you are available for Rush
     - `minutes` (number, optional): How long you are around (default 60, max 180)
+    - `position` (text, optional, choices: Goalkeeper, Striker, Centre back, Winger, Any position): The Rush position you want tonight (default: your profile position)
     - `note` (text, optional): Position, mode, anything else
   - `cancel` (subcommand, optional): Take your availability down
   - `list` (subcommand, optional): Who is available for Rush right now

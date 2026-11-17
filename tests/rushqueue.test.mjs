@@ -155,7 +155,7 @@ t('Need a player: shows "needs a keeper" on the board', sqlite.prepare('SELECT n
 const needPosts = () => posts(QCH).filter((c) => /pf:rq:needin/.test(JSON.stringify(c.body)));
 t('Need a player: no audience set → the public call goes up without a ping and the answer says a manager picks the audience', needPosts().length === 1 && !/<@&/.test(JSON.stringify(needPosts()[0].body.components?.[0])) && /Control Center/.test(T(res)) && JSON.stringify(needPosts()[0].body.allowed_mentions) === '{"parse":[],"roles":[],"users":[]}');
 const nb = JSON.stringify(needPosts()[0].body);
-t('the call has the lobby, players needed, positions, mode, queue state and a way to answer', nb.includes(`<@${p1.u}>`) && /Players needed/.test(nb) && /a keeper/.test(nb) && /Keeper/.test(nb) && /Rush · 5v5/.test(nb) && /I'm in/.test(nb) && /Later/.test(nb) && /Closes <t:\d+:R>/.test(nb));
+t('the call has the lobby, players needed, positions, mode, queue state and a way to answer', nb.includes(`<@${p1.u}>`) && /Players needed/.test(nb) && /a keeper/.test(nb) && /Goalkeeper/.test(nb) && /Rush · 5v5/.test(nb) && /I'm in/.test(nb) && !/Later/.test(nb) && /Closes <t:\d+:R>/.test(nb));
 // ---------- the cron tick: layer 2 and the idle timers ----------
 calls.length = 0;
 let tick = await Q.queueTick(env, T0 + 8 * MIN + 10e3);

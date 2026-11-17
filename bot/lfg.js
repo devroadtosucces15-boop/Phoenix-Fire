@@ -4,10 +4,12 @@
 // `lfg`). Flag `rushLfg` (default owner). Dark until the Phoenix Rush app is configured (bot/apps.js HELD).
 import { can, flagOn, muted } from './roles.js';
 import { pingRoleFor } from './orgconfig.js';
+import { RUSH_POSITIONS, ANY, cleanPositions, posLabel } from './rushmatch.js';
+import { resolveOffer, matchNewPlayer } from './rushqueue.js';
 import { message, header, text, facts, footer, buttons, reply, pictureNote, picture, sep } from './ui.js';
 
 export const LFG_DEFAULT_MIN = 60, LFG_MAX_MIN = 180, LFG_COOLDOWN_MIN = 10;
-export const LFG_ID = /^pf:lfg:\d+:(in|later)$/;
+export const LFG_ID = /^pf:lfg:(\d+:(in|later)|(acc|dec):\d+)$/; // `later` stays matched only to answer "that option was removed"
 const MIN = 60e3;
 const clean = (s, n) => String(s ?? '').replace(/[\u0000-\u001f<>@`]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n);
 
@@ -16,6 +18,7 @@ const say = (env, key, title, body, accent) => reply(pictureNote(env, key, title
 const rows = (env, sql, ...a) => env.DB.prepare(sql).bind(...a).all().then((r) => r.results);
 
 // What a post looks like. `answers` = [{ user_id, name, answer }]. Only the role (if any) may be pinged: never everyone or users.
+const posText = (post) => cleanPositions(post.positions).map(posLabel).join(' / ');
 export function lfgMessage(post, answers = [], { roleId = '', now = Date.now(), env = null } = {}) {
   const open = post.status === 'open' && post.expires > now;
   const names = (a) => answers.filter((x) => x.answer === a).map((x) => x.name);
@@ -28,9 +31,9 @@ export function lfgMessage(post, answers = [], { roleId = '', now = Date.now(), 
       header({ eyebrow: 'PHOENIX FIRE · Rush', title: `⚡ ${post.name} is available for Rush`, sub: open ? `Until <t:${unix}:t> · <t:${unix}:R>` : 'This call is over' }),
       post.note ? text(`📝 ${post.note}`) : null,
       sep(),
-      facts([['✅ In', list(names('in'))], ['⏰ Later', list(names('later'))]]),
+      facts([['🎯 Position', posText(post)], ['✅ In', list(names('in'))]]),
       footer(open ? 'Tap a button to answer' : 'Expired or taken down'),
-      open ? buttons([{ label: 'I’m in', emoji: '✅', style: 'ok', id: `pf:lfg:${post.id}:in` }, { label: 'Later', emoji: '⏰', style: 'grey', id: `pf:lfg:${post.id}:later` }]) : null,
+      open ? buttons([{ label: 'I’m in', emoji: '✅', style: 'ok', id: `pf:lfg:${post.id}:in` }]) : null,
     ].filter(Boolean),
   });
 }
@@ -50,7 +53,7 @@ export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now())
   if (sub === 'list') {
     const open = await rows(env, "SELECT * FROM rush_lfg WHERE status = 'open' AND expires > ? ORDER BY at", now);
     if (!open.length) return say(env, 'cmd-empty', 'Nobody is available right now', 'Post with /lfg now and the Rush role is tagged.');
-    return say(env, 'cmd-lfg-list', `⚡ Available for Rush (${open.length})`, open.map((p) => `**${p.name}** · until <t:${Math.floor(p.expires / 1000)}:t>${p.note ? ` · ${p.note}` : ''}`).join('\n'));
+    return say(env, 'cmd-lfg-list', `⚡ Available for Rush (${open.length})`, open.map((p) => `**${p.name}** · ${posText(p)} · until <t:${Math.floor(p.expires / 1000)}:t>${p.note ? ` · ${p.note}` : ''}`).join('\n'));
   }
   if (sub === 'cancel') {
     const r = await env.DB.prepare("UPDATE rush_lfg SET status = 'cancelled' WHERE user_id = ? AND status = 'open'").bind(me.u).run();
@@ -65,12 +68,19 @@ export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now())
   }
   const minutes = Math.min(LFG_MAX_MIN, Math.max(15, Math.round(Number(o.minutes) || LFG_DEFAULT_MIN)));
   await env.DB.prepare("UPDATE rush_lfg SET status = 'cancelled' WHERE user_id = ? AND status = 'open'").bind(me.u).run();
-  const post = { user_id: me.u, name: clean(me.n, 40) || 'A member', avatar: me.a ?? null, note: clean(o.note, 80), channel: i.channel_id ?? null, at: now, expires: now + minutes * MIN, status: 'open' };
-  const res = await env.DB.prepare('INSERT INTO rush_lfg (user_id, name, avatar, note, channel, at, expires, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(post.user_id, post.name, post.avatar, post.note, post.channel, post.at, post.expires, post.status).run();
+  const positions = cleanPositions(o.position ? [o.position] : await profilePositions(env, me.u));
+  const post = { positions, user_id: me.u, name: clean(me.n, 40) || 'A member', avatar: me.a ?? null, note: clean(o.note, 80), channel: i.channel_id ?? null, at: now, expires: now + minutes * MIN, status: 'open' };
+  const res = await env.DB.prepare('INSERT INTO rush_lfg (user_id, name, avatar, note, channel, at, expires, status, positions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(post.user_id, post.name, post.avatar, post.note, post.channel, post.at, post.expires, post.status, JSON.stringify(positions)).run();
   post.id = res.meta?.last_row_id ?? res.lastRowId;
   const roleId = (await pingRoleFor(env, 'ping_rush')) ?? '';
+  await matchNewPlayer(env, now).catch((e) => console.log('rush match failed', e.message)); // a lobby that needs this position is offered the player
   return reply(lfgMessage(post, [], { roleId, now, env }));
+}
+// Their Rush positions from the profile pre-select the choice, but any option is allowed and "Any" too (profile stays unchanged).
+async function profilePositions(env, userId) {
+  const r = await env.DB.prepare('SELECT rush_positions FROM profiles WHERE user_id = ?').bind(userId).first().catch(() => null);
+  try { const v = JSON.parse(r?.rush_positions ?? '[]'); return v.map((x) => ({ LB: 'CB', RB: 'CB', CDM: 'CB', CM: 'W', CAM: 'W', LM: 'W', RM: 'W', LW: 'W', RW: 'W', CF: 'ST' }[x] ?? x)); } catch { return []; }
 }
 
 // "I'm in" / "Later" on a post (component interaction pf:lfg:<id>:<answer>): records it and refreshes the post for everyone.
@@ -78,11 +88,13 @@ export async function lfgButton(i, env, me, who, now = Date.now()) {
   if (!env.DB) return say(env, 'cmd-problem', 'The member database is not connected', '');
   if (!flagOn(env, who, 'rushLfg') || !can(who, 'events.rsvp')) return say(env, 'cmd-locked', 'Rush LFG is not switched on for you yet', '');
   const [, , id, answer] = String(i.data?.custom_id).split(':');
+  if (id === 'acc' || id === 'dec') return resolveOffer(env, null, answer, 'player', id === 'acc', now); // the player's side of a match offer (DM)
+  if (answer === 'later') return say(env, 'cmd-empty', 'That option was removed', 'Press I’m in, or post your own with /lfg now.');
   const post = await env.DB.prepare('SELECT * FROM rush_lfg WHERE id = ?').bind(Number(id)).first();
   if (!post) return say(env, 'cmd-empty', 'That call is gone', '');
   if (post.status !== 'open' || post.expires <= now) return say(env, 'cmd-empty', 'That call is over', 'Post your own with /lfg now.');
   await env.DB.prepare('INSERT INTO rush_lfg_answers (lfg_id, user_id, name, answer, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT (lfg_id, user_id) DO UPDATE SET answer = excluded.answer, name = excluded.name, at = excluded.at')
-    .bind(post.id, me.u, clean(me.n, 40), answer === 'in' ? 'in' : 'later', now).run();
+    .bind(post.id, me.u, clean(me.n, 40), 'in', now).run();
   const answers = await rows(env, 'SELECT user_id, name, answer FROM rush_lfg_answers WHERE lfg_id = ? ORDER BY at', post.id);
   return { type: 7, data: lfgMessage(post, answers, { roleId: '', now, env }) }; // a refresh never pings again
 }

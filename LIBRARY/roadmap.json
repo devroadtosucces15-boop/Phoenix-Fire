@@ -435,7 +435,7 @@
       "title": "Side roadmap Item 7: Rush queue and LFG as one matchmaking system",
       "phase": "Side roadmap",
       "area": "`bot/` rush files",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -446,12 +446,18 @@
       ],
       "fileLane": "`bot/` rush files",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": true,
       "notes": "Plan section 5b; queue board landed",
       "outcome": "Rush queue and looking-for-game share one matchmaking system, so players see a single queue.",
       "behavior": "The queue board already exists; the item merges the two flows behind one board, one set of commands and one channel config.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-17",
+          "ref": "branch pf-023-matchmaking",
+          "what": "Matchmaking core: Rush positions GK/ST/CB/W, Later removed, /lfg position, Find a player banner on the one board, matcher + two-sided DM accept that adds the player to the crew (bot/rushmatch.js, migrations 0064/0065, tests/rushmatch.test.mjs). Owner steps: PLANNING/PF-023-GO-LIVE.md."
+        }
+      ],
       "plans": []
     },
     {
@@ -459,7 +465,7 @@
       "title": "Side roadmap Items 8 to 25: bot cleanup and new bot features (including the test-view command)",
       "phase": "Side roadmap",
       "area": "`bot/`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,

@@ -285,6 +285,7 @@ export const COMMANDS = [
     options: [
       { type: SUB, name: 'now', description: 'Post that you are available for Rush', options: [
         { type: INTEGER, name: 'minutes', description: 'How long you are around (default 60, max 180)', min_value: 15, max_value: 180 },
+        { type: STRING, name: 'position', description: 'The Rush position you want tonight (default: your profile position)', choices: [{ value: 'GK', name: 'Goalkeeper' }, { value: 'ST', name: 'Striker' }, { value: 'CB', name: 'Centre back' }, { value: 'W', name: 'Winger' }, { value: 'ANY', name: 'Any position' }] },
         { type: STRING, name: 'note', description: 'Position, mode, anything else', max_length: 80 },
       ] },
       { type: SUB, name: 'cancel', description: 'Take your availability down' },
