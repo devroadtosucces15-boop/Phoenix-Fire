@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-17T15:30:42.298Z",
+ "fetchedAt": "2026-11-17T15:40:44.753Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1894,14 +1894,14 @@
   },
   {
    "name": "Froezer",
-   "proPos": "5",
-   "gamesPlayed": "188",
+   "proPos": "25",
+   "gamesPlayed": "189",
    "goals": "124",
-   "assists": "172",
-   "manOfTheMatch": "21",
+   "assists": "174",
+   "manOfTheMatch": "22",
    "ratingAve": "8.2",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "forward"
   },
   {
    "name": "CapoGroot",
