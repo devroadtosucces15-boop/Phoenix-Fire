@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-17T00:40:42.264Z",
+ "fetchedAt": "2026-11-17T00:50:41.547Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -28,7 +28,7 @@
    "kitThrdColor2": "592653",
    "kitThrdColor3": "16696614",
    "kitThrdColor4": "15921906",
-   "dCustomKit": "1",
+   "dCustomKit": "0",
    "customKeeperKitId": "5007",
    "crestColor": "16495884",
    "crestAssetId": "99160802"
