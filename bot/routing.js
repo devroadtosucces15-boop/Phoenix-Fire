@@ -82,7 +82,7 @@ export async function routeNotification(env, action, ctx) {
   const rules = (await loadRules(env)).filter((r) => r.action === action && r.on !== false);
   if (!rules.length) return null;
   const out = { notified: 0, posts: [], errors: [] };
-  const cache = {};
+  const cache = {}, posted = new Set();
   const people = (g) => (cache[g] ??= peopleOf(env, g, ctx));
   for (const r of rules) {
     try {
@@ -104,6 +104,8 @@ export async function routeNotification(env, action, ctx) {
           if (ids.length) { ping = ids.map((id) => `<@${id}>`).join(' '); mentions = { users: ids }; }
         }
       }
+      if (posted.has(channel)) continue; // PF-024 Item 8: two rules for one action and one channel post once, not twice
+      posted.add(channel);
       out.posts.push(await post(env, channel, await ctx.build({ ping, mentions })));
     } catch (e) { out.errors.push(e.message); }
   }

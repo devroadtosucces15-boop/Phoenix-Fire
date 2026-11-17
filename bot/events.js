@@ -34,6 +34,7 @@ import { getBotSettings } from './settings.js';
 import { routeNotification } from './routing.js';
 import { recommendRoute } from './lineuprec.js';
 import { hex } from './media.js';
+import { once } from './once.js';
 
 import { cleanPref, parsePref, savePref } from './prefpos.js';
 import { rosterBlock, rosterOn, rosterModel, drawRoster } from './rosterpic.js';
@@ -309,6 +310,7 @@ async function saveEvent(body, me, env, log) {
     const moved = existing.start !== e.start;
     await run(env, `UPDATE events SET type = ?, title = ?, start = ?, duration = ?, tz = ?, notes = ?, needs = ?, public = ?, remind = ?, edited_by = ?, edited_at = ?${moved ? ', remind24_at = NULL, remind2_at = NULL' : ''} WHERE id = ?`,
       e.type, e.title, e.start, e.duration, e.tz, e.notes, JSON.stringify(e.needs), e.public, e.remind, me.n, Date.now(), existing.id);
+    if (moved) await run(env, 'DELETE FROM meta WHERE key IN (?, ?)', `remind24:${existing.id}`, `remind2:${existing.id}`); // a moved event is reminded afresh
     await refreshEventPost(env, existing.id);
     out.id = existing.id;
     await log(env, me, 'event-edit', `${label(e)} · ${when(e)}`);
@@ -857,6 +859,11 @@ export async function eventReminders(env) {
   for (const e of due) {
     const soon = e.start <= now + 2 * HOUR;
     await run(env, `UPDATE events SET ${soon ? 'remind2_at = ?, remind24_at = COALESCE(remind24_at, ?)' : 'remind24_at = ?'} WHERE id = ?`, ...(soon ? [now, now] : [now]), e.id);
+    // PF-024 Item 8: one reminder per event and kind, claimed before posting. A "Tomorrow" post for an event made under 24 h ago would
+    // repeat the create post, and T-2h right before T-30m is the same nudge twice: both are marked done and stay silent.
+    if (!soon && now - (e.at || 0) < 24 * HOUR) continue;
+    if (soon && e.start <= now + 30 * 60e3) continue;
+    if (!(await once(env, `${soon ? 'remind2' : 'remind24'}:${e.id}`))) continue;
     const rsvps = await rsvpRows(env, e.id);
     const answered = new Set(rsvps.map((r) => r.user_id));
     const quiet = (await all(env, 'SELECT id, role FROM users WHERE last_at > ?', now - 60 * DAY)).filter((u) => !answered.has(u.id) && flagOn(env, { role: u.role }, 'discordRsvp')).map((u) => u.id);

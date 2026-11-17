@@ -7,6 +7,7 @@ import { orgName, rolesFor, channelsFor } from './orgconfig.js';
 import { sharedKey } from './sharedkey.js';
 import { settingsKey } from './settings.js';
 import { ccStored } from './ccsettings.js';
+import { once, unclaim } from './once.js';
 
 // The trigger. Default rule: a defeat by 3 or more goals. config.json `matchAlert.loseBy` changes the margin (0 or off = never).
 export const DEFAULT_LOSE_BY = 3;
@@ -50,9 +51,12 @@ export async function postMatchAlert(env, m) {
   if (!env.DISCORD_BOT_TOKEN) return { posted: 0, reason: 'No bot token.' };
   const body = JSON.stringify(matchAlertMessage(env, m, { roles, owners }));
   let posted = 0;
-  for (const ch of channels) {
+  for (const ch of [...new Set(channels)]) {
+    // PF-024 Item 8: one alert per match and channel, even when CI retries the post step (m.id or opponent+when identify the match).
+    const key = `alert:${m.id ?? `${m.opponent}:${m.when}:${m.us}-${m.them}`}:${ch}`;
+    if (!(await once(env, key))) continue;
     const r = await fetch(`https://discord.com/api/v10/channels/${ch}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body }).catch(() => null);
-    if (r?.ok) posted++;
+    if (r?.ok) posted++; else await unclaim(env, key);
   }
   return { posted };
 }

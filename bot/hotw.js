@@ -10,6 +10,7 @@ import { can, flagOn, flags } from './roles.js';
 import { notify, safely } from './notify.js';
 import { weekOf } from './awards.js';
 import { postEmbed } from './docs.js';
+import { once, unclaim } from './once.js';
 import { message, header, text, footer, buttons, picture } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
 
@@ -94,6 +95,7 @@ async function announce(env, w) {
   const level = flags(env).hotw;
   const channel = await channelFor(env, 'awards');
   if (!['members', 'public'].includes(level) || !channel || !env.DISCORD_BOT_TOKEN) return;
+  if (!(await once(env, `hotw:${w.week}`))) return; // PF-024 Item 8: one Discord post per week
   const r = await postEmbed(env, channel, '', message({ accent: 'gold', blocks: [
     header({ eyebrow: `${orgName(env).toUpperCase()} · Highlight of the week`, title: `🎬 ${w.name}`, sub: `Week ${weekNo(w.week)}` }),
     picture(env, 'post-hotw'),
@@ -102,6 +104,7 @@ async function announce(env, w) {
     buttons([w.video && { label: 'Watch clip', url: w.video }, { label: 'On the site', url: `${site}${level === 'public' ? 'index.html' : `hub-clubhouse.html#p${w.post_id}`}` }]),
   ] }));
   if (r.ok) await run(env, 'UPDATE hotw SET posted_at = ? WHERE week = ?', Date.now(), w.week);
+  else await unclaim(env, `hotw:${w.week}`);
 }
 
 export async function hotwPublic(env) {

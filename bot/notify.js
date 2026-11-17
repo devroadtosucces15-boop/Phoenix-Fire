@@ -186,10 +186,14 @@ export async function deliverDMs(env, limit = 25) {
   const channels = {};
   let sent = 0, failed = 0;
   for (const n of q) {
+    // PF-024 Item 8: claim the row first (compare-and-set), so two overlapping callers never send the same DM twice.
+    const claim = await run(env, "UPDATE notifications SET dm = 'sending' WHERE id = ? AND dm = 'queued'", n.id);
+    if (claim?.meta?.changes === 0) continue;
+    const release = () => run(env, "UPDATE notifications SET dm = 'queued' WHERE id = ? AND dm = 'sending'", n.id);
     let ch = channels[n.user_id] ?? n.dm_channel;
     if (!ch) {
       const r = await discord(env, '/users/@me/channels', { recipient_id: n.user_id });
-      if (r.status === 429) break;
+      if (r.status === 429) { await release(); break; }
       const d = await r.json().catch(() => ({}));
       if (!r.ok || !d.id) { await mark(n.id, 'failed'); failed++; continue; }
       ch = d.id;
@@ -206,7 +210,7 @@ export async function deliverDMs(env, limit = 25) {
         buttons([{ label: 'Open on the site', url }]),
       ] }), bannerUrl(env, bannerForDm(n.type)), BANNER_SPEC[bannerForDm(n.type)]?.title),
     });
-    if (r.status === 429) break;
+    if (r.status === 429) { await release(); break; }
     if (r.ok) { await mark(n.id, 'sent'); sent++; continue; }
     await mark(n.id, 'failed'); failed++;
     // 50007 = the member doesn't accept DMs; a stale channel id is dropped so the next DM opens a new one.

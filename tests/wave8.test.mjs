@@ -73,6 +73,7 @@ const soonDate = new Date(Date.now() + 23 * 3600e3), soon2 = new Date(Date.now()
 const e24 = (await call(mgr, '/api/events', { type: 'rush', date: soonDate.toISOString().slice(0, 10), time: soonDate.toISOString().slice(11, 16), tz: 'UTC', remind: 'mention', discord: { channel: '70001' } })).d.id;
 const e2 = (await call(mgr, '/api/events', { type: 'league', date: soon2.toISOString().slice(0, 10), time: soon2.toISOString().slice(11, 16), tz: 'UTC', remind: 'dm' })).d.id;
 await call(member, '/api/events/rsvp', { ids: [e24], status: 'yes' });
+sqlite.prepare('UPDATE events SET at = at - ? WHERE id IN (?, ?)').run(25 * 3600e3, e24, e2); // PF-024 Item 8: an event made under 24 h ago gets no "Tomorrow" repeat; these were made yesterday
 const before = posts.length;
 const r1 = await eventReminders(env);
 const reminder = posts.slice(before).find((p) => /Tomorrow/.test(txt(p)));
@@ -80,6 +81,13 @@ t('P3.3 cron sends both reminders once', r1.sent === 2 && (await eventReminders(
 t('P3.3 T-24h reminder in the channel @mentions only members who haven’t answered', reminder && reminder.allowed_mentions.users.includes('501') && !reminder.allowed_mentions.users.includes('500') && /<@501>/.test(reminder.components[0].content) && btnsOf(reminder).length === 4);
 t('P3.3 T-2h nudge by bell / DM for dm mode', (await call(member2, '/api/notify')).d.items.some((n) => n.type === 'event' && /Starting soon/.test(n.title) && n.link === `members.html#schedule-${e2}`));
 t('P3.3 reminder times stored', sqlite.prepare('SELECT remind24_at, remind2_at FROM events WHERE id = ?').get(e2).remind2_at > 0 && sqlite.prepare('SELECT remind24_at FROM events WHERE id = ?').get(e24).remind24_at > 0);
+{ // PF-024 Item 8: a brand-new event inside 24 h is not announced a second time by the T-24h reminder
+  const fresh = new Date(Date.now() + 20 * 3600e3);
+  const ef = (await call(mgr, '/api/events', { type: 'rush', date: fresh.toISOString().slice(0, 10), time: fresh.toISOString().slice(11, 16), tz: 'UTC', remind: 'mention', discord: { channel: '70001' } })).d.id;
+  const n0 = posts.length;
+  t('PF-024 fresh event: no Tomorrow repeat of the create post, and the claim is single-use', (await eventReminders(env)).sent === 0 && posts.length === n0);
+  sqlite.prepare('DELETE FROM events WHERE id = ?').run(ef);
+}
 await call(mgr, '/api/events', { id: e24, type: 'rush', date: day(2), time: '20:00', tz: 'UTC' });
 t('P3.3 moving an event resets its reminders', sqlite.prepare('SELECT remind24_at FROM events WHERE id = ?').get(e24).remind24_at === null);
 
