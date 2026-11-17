@@ -63,7 +63,9 @@ ${hasReporter() ? '<li><button type="button" class="ofab-row" data-report><span 
       if (e.target.closest('[data-report]')) { set(false); d.querySelector('.nxr-fab')?.click(); }
     });
     d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) { set(false); btn.focus(); } });
-    d.addEventListener('pointerdown', (e) => { if (open && !root.contains(e.target)) set(false); });
+    // open panel is modal: taps outside are swallowed (not passed to the page behind) and close it on tap
+    d.addEventListener('click', (e) => { if (open && !root.contains(e.target)) { e.stopPropagation(); e.preventDefault(); set(false); } }, true);
+    ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchend'].forEach((t) => d.addEventListener(t, (e) => { if (open && !root.contains(e.target)) { e.stopPropagation(); if (e.cancelable) e.preventDefault(); } }, { capture: true, passive: false }));
     const poll = async () => {
       if (d.hidden) return;
       try { q = await A.call('/api/manager/queue'); } catch { if (q === null) q = {}; }

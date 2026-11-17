@@ -292,7 +292,11 @@
     };
     (A?.ready || Promise.resolve()).then(() => { poll(); if (!poller) poller = setInterval(poll, 60e3); });
     d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !rp.hidden) { closeR(); ring.focus(); } });
-    d.addEventListener('pointerdown', (e) => { if (!rp.hidden && !rp.contains(e.target) && !ring.contains(e.target)) closeR(); });
+    // modal backdrop: while the menu is open everything outside it is inert. Taps on the blurred area are swallowed (no pass-through, no close); close with the ✕, Escape or the ring.
+    ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'click', 'contextmenu'].forEach((t) => d.addEventListener(t, (e) => {
+      if (rp.hidden || rp.contains(e.target) || ring.contains(e.target)) return;
+      e.stopPropagation(); if (e.cancelable) e.preventDefault();
+    }, { capture: true, passive: false }));
   }
   // saved pins arrive with the profile; adopt them once the session is known, then mount
   const boot = () => { const pr = A?.prefs; if (pr) { if ('pins' in pr) pinsNav.adopt(pr.pins); if ('spins' in pr) pinsStaff.adopt(pr.spins); } mount(); };

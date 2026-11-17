@@ -126,3 +126,17 @@ body.hub-page .bar .lg::after{background:linear-gradient(90deg,rgba(var(--ic),.9
 @keyframes nxNoteIn{from{opacity:0;transform:translate(-50%,-16px)}to{opacity:1;transform:translateX(-50%)}}
 html[data-motion=calm] .nx-note,html[data-motion=off] .nx-note,html[data-fx-bursts=off] .nx-note{animation:none}
 @media(max-width:480px){.bar .lg{font-size:19px;gap:8px;letter-spacing:.03em}.bar .lg img{width:34px}.hdr-r{gap:3px}.hdr-s,.hdr-r .ac,.hdr-i{min-width:40px;min-height:40px}.hdr-r .ac{width:40px;height:40px}.hdr-i{width:40px}.hdr-on{min-width:40px;min-height:40px;padding:0 8px;gap:4px}.hdr-r .pav{width:30px;height:30px}}
+/* bell dropdown: the notifications inbox, its own panel (no page jump) */
+button.hdr-bell{font:inherit;color:inherit;cursor:pointer}
+.hdr-bellp{padding:0;width:min(380px,calc(100vw - 24px))}
+.hdr-bellp>*{padding:0}
+.hdr-bellp .bh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}
+.hdr-bellp .bh h4{margin:0}
+.hdr-bellp .bh button{min-height:36px;padding:0 12px;border:1px solid var(--line2);border-radius:999px;background:none;color:var(--ink);font:600 13px/1 inherit;cursor:pointer}
+.hdr-bellp .bl{list-style:none;margin:0;padding:0}
+.hdr-bellp .bl li+li{border-top:1px solid var(--line)}
+.hdr-bellp .bl a,.hdr-bellp .bl button{display:flex;align-items:flex-start;gap:12px;width:100%;min-height:56px;padding:12px 16px;border:0;background:none;color:inherit;font:inherit;text-align:left;text-decoration:none;cursor:pointer}
+.hdr-bellp .bl .new a,.hdr-bellp .bl .new button{background:rgba(232,101,26,.1);box-shadow:inset 3px 0 0 var(--red,#e8651a)}
+.hdr-bellp .nt{display:grid;gap:2px;min-width:0;flex:1}.hdr-bellp .nt b{font-size:14px}.hdr-bellp .nt span{font-size:13px;color:var(--mute)}
+.hdr-bellp small{color:var(--mute);font-size:12px;white-space:nowrap}
+.hdr-bellp .bempty{padding:18px 16px}

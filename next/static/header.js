@@ -12,7 +12,7 @@
   const SETTINGS = [
     ['Motion & effects', 'Settings · animations, glow, tilt, haptics', '🎬', { act: 'motion' }, 'motion effects animation calm full glow tilt parallax haptics settings'],
     ['Alert settings', 'Settings · choose how each alert reaches you', '⚙️', { href: 'hub-alerts.html' }, 'alert notification settings discord dm push site off'],
-    ['Alerts inbox', 'My Locker · everything the club sent you', '🔔', { href: 'hub-alerts.html' }, 'alerts inbox notifications bell unread'],
+    ['Alerts inbox', 'Bell · everything the club sent you', '🔔', { act: 'bell' }, 'alerts inbox notifications bell unread'],
     ['Clubhouse feed', 'Clubhouse · goals, results and posts', '📰', { href: 'hub-clubhouse.html#ch-feed' }, 'feed club news posts'],
     ['Direct messages & chat', 'Clubhouse · chat room and DMs', '💬', { href: 'hub-clubhouse.html#ch-chat' }, 'chat messages dm direct inbox'],
     ['Card Studio', 'My Locker · send a photo for your player card', '🎨', { href: 'hub-cardstudio.html#lk-cards' }, 'card studio artwork portrait photo face avatar player card'],
@@ -58,6 +58,7 @@
   const go = (r) => {
     if (!r) return;
     if (r.act === 'motion') { closePal(); window.NorexMotion?.settings?.(); return; }
+    if (r.act === 'bell') { closePal(); window.PhoenixBell?.open(); return; }
     if (typeof r.href === 'string' && r.href && r.href !== '#') location.assign(r.href);
   };
   const openPal = () => {
@@ -133,7 +134,7 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
   const dot = (el, n) => { const i = el?.querySelector('.hdr-n'); if (!i) return; i.hidden = !n; i.textContent = n > 99 ? '99+' : String(n || ''); };
   const SEEN = 'phoenix.nseen', seenId = () => { try { return +sessionStorage.getItem(SEEN) || 0; } catch { return 0; } };
   const setSeen = (v) => { try { sessionStorage.setItem(SEEN, String(v)); } catch {} };
-  const room = (l) => (l ? window.PhoenixLinks.resolve(l) : 'hub-alerts.html');
+  const room = (l) => (l ? window.PhoenixLinks.resolve(l) : '#bell');
   const banner = (n) => {
     if (d.querySelector(`.nx-note[data-id="${n.id}"]`) || d.querySelectorAll('.nx-note').length >= 2) return;
     const b = d.createElement('div'); b.className = 'nx-note'; b.dataset.id = n.id; b.setAttribute('role', 'status');
@@ -156,6 +157,37 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
     A.call('/api/chats').then((r) => { chat.hidden = false; dot(chat, (r.chats || []).reduce((n, c) => n + (c.unread || 0), 0)); }).catch(() => {});
   };
 
+
+  // ---------- 🔔 bell dropdown: the inbox lives here, nowhere else (settings stay in My Locker) ----------
+  let bp = null, bl = [], bu = 0;
+  const ago = (t) => { const m = Math.max(0, Math.round((Date.now() - t) / 60e3)); return m < 1 ? 'now' : m < 60 ? m + 'm' : m < 1440 ? Math.round(m / 60) + 'h' : Math.round(m / 1440) + 'd'; };
+  const bpost = (path, body) => A.call(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const paintBell = () => {
+    if (!bp) return;
+    const rows = bl.slice(0, 30).map((n) => { const to = n.link ? window.PhoenixLinks.resolve(n.link) : '';
+      const inner = `<span class="ni" aria-hidden="true">${esc(n.icon || '🔔')}</span><span class="nt"><b>${esc(n.title)}</b>${n.body ? `<span>${esc(String(n.body).slice(0, 110))}</span>` : ''}</span><small>${ago(n.at)}</small>`;
+      return `<li class="${n.read ? '' : 'new'}">${to ? `<a href="${esc(to)}" data-nid="${n.id}"${/^https:/.test(to) ? ' target="_blank" rel="noopener"' : ''}>${inner}</a>` : `<button type="button" data-nid="${n.id}">${inner}</button>`}</li>`; }).join('');
+    bp.innerHTML = `<div class="bh"><h4>Notifications</h4>${bu ? '<button type="button" data-all>Mark all read</button>' : '<span class="pm">All caught up</span>'}</div>${rows ? `<ul class="bl">${rows}</ul>` : '<p class="pm bempty">Nothing yet. Approvals, RSVPs, mentions and replies land here.</p>'}`;
+  };
+  const loadBell = () => A.call('/api/notify').then((r) => { bl = r.items || []; bu = r.unread | 0; paintBell(); dot(bell, bu); }).catch(() => { if (bp) bp.innerHTML = '<div class="bh"><h4>Notifications</h4></div><p class="pm bempty">Could not load. Try again in a moment.</p>'; });
+  const closeBell = () => { if (!bp || bp.hidden) return; bp.hidden = true; bell?.setAttribute('aria-expanded', 'false'); };
+  const toggleBell = (e) => {
+    e && e.preventDefault();
+    if (!bp) {
+      bp = d.createElement('div'); bp.className = 'hdr-menu hdr-bellp'; bp.hidden = true; bp.setAttribute('role', 'dialog'); bp.setAttribute('aria-label', 'Notifications'); d.body.appendChild(bp);
+      bp.addEventListener('click', (ev) => {
+        if (ev.target.closest('[data-all]')) { bl = bl.map((n) => ({ ...n, read: true })); bu = 0; paintBell(); dot(bell, 0); bpost('/api/notify/read', { all: true }).catch(loadBell); return; }
+        const it = ev.target.closest('[data-nid]'); if (!it) return; const id = +it.dataset.nid, n = bl.find((x) => x.id === id);
+        if (n && !n.read) { n.read = true; bu = Math.max(0, bu - 1); dot(bell, bu); bpost('/api/notify/read', { ids: [id] }).catch(() => {}); }
+        if (it.tagName === 'BUTTON') paintBell(); else closeBell();
+      });
+      d.addEventListener('click', (ev) => { if (bp && !bp.hidden && !bp.contains(ev.target) && !bell.contains(ev.target)) closeBell(); });
+    }
+    if (!bp.hidden) return closeBell();
+    closeMenu(); closePal(); const bb = box.getBoundingClientRect(); bp.style.top = Math.round(bb.bottom + 8) + 'px'; bp.style.maxHeight = `calc(100dvh - ${Math.round(bb.bottom + 8)}px - 12px)`; bp.hidden = false; bell.setAttribute('aria-expanded', 'true'); paintBell(); loadBell();
+  };
+  window.PhoenixBell = { open: () => { if (bell && (!bp || bp.hidden)) toggleBell(); } };
+
   // ---------- 🔴 "N live" chip (flag memberLive; botfeat.js polls and fires nx:live). Hidden when nobody is on air; links to the strip. ----------
   const paintLive = () => {
     if (!live) return;
@@ -176,7 +208,7 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
       ac.innerHTML = `<span class="pav">${A.avatar ? `<img src="${esc(A.avatar)}" alt="" width="34" height="34">` : esc((A.name || 'M')[0].toUpperCase())}</span><span class="acn">${esc(A.name || 'Member')}</span>`;
       pill = d.createElement('button'); pill.type = 'button'; pill.className = 'hdr-on'; pill.hidden = true; pill.title = 'Who is online'; pill.innerHTML = '<i aria-hidden="true"></i><b>0</b>'; pill.onclick = toggleMenu;
       live = d.createElement('a'); live.className = 'hdr-lv'; live.hidden = true; live.href = 'index.html#live'; live.innerHTML = '<i aria-hidden="true"></i><b>0</b><span>live</span>';
-      bell = d.createElement('a'); bell.className = 'hdr-i hdr-bell'; bell.href = 'hub-alerts.html'; bell.hidden = true; bell.setAttribute('aria-label', 'Alerts'); bell.title = 'Alerts'; bell.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="hdr-n" hidden></i>';
+      bell = d.createElement('button'); bell.type = 'button'; bell.className = 'hdr-i hdr-bell'; bell.hidden = true; bell.setAttribute('aria-haspopup', 'dialog'); bell.setAttribute('aria-expanded', 'false'); bell.setAttribute('aria-label', 'Alerts'); bell.onclick = toggleBell; bell.title = 'Alerts'; bell.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i class="hdr-n" hidden></i>';
       chat = d.createElement('a'); chat.className = 'hdr-i hdr-chat'; chat.href = 'hub-clubhouse.html#ch-chat'; chat.hidden = true; chat.setAttribute('aria-label', 'Clubhouse feed and messages'); chat.title = 'Clubhouse feed & messages'; chat.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.6A8 8 0 1 1 21 12Z"/></svg><i class="hdr-n" hidden></i>';
       box.append(live, pill, bell, chat); paintLive(); (A.ready || Promise.resolve()).then(paintLive); ac.onclick = toggleMenu; box.appendChild(ac);
       if (viewAs() && realOwner()) { const ribbon = d.createElement('div'); ribbon.className = 'hdr-va'; ribbon.innerHTML = '👁️ Viewing the site as a <b>' + (viewAs() === 'guest' ? 'guest' : 'member') + '</b> <button type="button">Back to owner</button>'; ribbon.querySelector('button').onclick = () => setViewAs(''); d.body.insertBefore(ribbon, d.body.firstChild); }
