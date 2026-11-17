@@ -3,8 +3,10 @@
 // feature switches, preview-as, health, announcements and the issue reporter. Behind its own owner flag `ownerFab`.
 (() => {
   const d = document, w = window;
-  const QUEUES = [['claims', '🪪', 'Player claims', 'staff-desk.html'], ['cards', '🎨', 'Card Studio photos', 'staff-artwork.html'], ['rush', '⚡', 'Rush results', 'staff-desk.html'], ['requests', '📨', 'Requests', 'staff-desk.html'], ['ideas', '💡', 'Ideas', 'staff-content.html']];
-  const LINKS = [['👑', 'Boardroom', 'Club health, recruitment', 'staff-boardroom.html'], ['🎛️', 'Feature flags', 'Who sees what', 'staff-boardroom.html#switches'], ['🩺', 'Health', 'Site, bot and builds', 'staff-boardroom.html#health'], ['📣', 'Announcements', 'Post to the club', 'staff-boardroom.html#announce']];
+  // addresses come from the staff manifest (next/lib/staffmanifest.mjs, staffmanifest.js): a tool is named by id here, never by page
+  const MAN = w.PFStaffNav || { tools: [] }, href = (id) => (MAN.tools.find((t) => t.id === id) || {}).href || 'staff.html';
+  const QUEUES = [['claims', '🪪', 'Player claims', href('desk')], ['cards', '🎨', 'Card Studio photos', href('artwork')], ['rush', '⚡', 'Rush results', href('desk')], ['requests', '📨', 'Requests', href('desk')], ['ideas', '💡', 'Ideas', href('content')]];
+  const LINKS = [['boardroom', 'Club health, recruitment'], ['access', 'Who sees what'], ['health', 'Site, bot and builds'], ['announce', 'Post to the club']].map(([id, sub]) => { const t = MAN.tools.find((x) => x.id === id) || { emoji: '🎛️', label: id }; return [t.emoji, t.label, sub, href(id)]; });
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   // pure: the numbers the badge and the list use (only counts the server sent; anything else is 0)
   const tally = (q) => { const rows = QUEUES.map(([k, i, l, h]) => ({ k, i, l, h, n: Math.max(0, Math.floor(+(q && q[k]) || 0)) })); return { rows, total: rows.reduce((a, r) => a + r.n, 0) }; };
@@ -35,7 +37,7 @@
     const paintPanel = () => {
       const { rows, total } = tally(q), live = rows.filter((r) => r.n), old = oldest(q);
       panel.innerHTML = `<div class="ofab-h"><span class="eyebrow">👑 Owner tools</span><button type="button" class="ofab-x" aria-label="Close">×</button></div>
-<section class="ofab-sec" aria-label="Approvals queue"><a class="ofab-row ofab-top" href="${live[0] ? esc(live[0].h) : 'staff-desk.html'}"><span class="ofab-i" aria-hidden="true">✅</span><span class="ofab-t"><b>Approvals queue</b><small>${q === null ? 'Checking…' : total ? `${total} waiting for a decision` : 'Nothing waiting'}</small></span>${total ? `<em class="ofab-c num">${window.NorexOwnerFab.badge(total)}</em>` : ''}</a>
+<section class="ofab-sec" aria-label="Approvals queue"><a class="ofab-row ofab-top" href="${live[0] ? esc(live[0].h) : esc(href('desk'))}"><span class="ofab-i" aria-hidden="true">✅</span><span class="ofab-t"><b>Approvals queue</b><small>${q === null ? 'Checking…' : total ? `${total} waiting for a decision` : 'Nothing waiting'}</small></span>${total ? `<em class="ofab-c num">${window.NorexOwnerFab.badge(total)}</em>` : ''}</a>
 ${old ? `<a class="ofab-old${old.late ? ' late' : ''}" href="${esc(old.h)}"><span aria-hidden="true">⏳</span><span class="ofab-ot"><small>Waiting longest</small><b>${old.i} ${esc(old.title || old.l)}</b></span><em class="num">${esc(old.age)}</em></a>` : ''}
 ${live.length ? `<ul class="ofab-q">${live.map((r) => `<li><a href="${esc(r.h)}"><span aria-hidden="true">${r.i}</span>${esc(r.l)}<b class="num">${r.n}</b></a></li>`).join('')}</ul>` : ''}</section>
 <ul class="ofab-list">${LINKS.map(([i, t, s, h]) => `<li><a class="ofab-row" href="${h}"><span class="ofab-i" aria-hidden="true">${i}</span><span class="ofab-t"><b>${t}</b><small>${s}</small></span></a></li>`).join('')}

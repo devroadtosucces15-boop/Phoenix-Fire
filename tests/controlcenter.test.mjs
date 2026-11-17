@@ -148,7 +148,7 @@ const page = rd('staff-controlcenter.html'), js = rd('controlcenter.js'), css = 
 const visible = page.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
 t('Control Center page: Phoenix name, no NOREX in anything people read, the scripts are loaded', !/norex/i.test(visible) && /Phoenix Fire/i.test(page) && page.includes('controlcenter.js') && page.includes('orgpanel.js') && page.includes('id="ccLive"'));
 t('Control Center page, script and styles: no NOREX red or blue-black, no club-name leftovers, orange accent', !/#c8352c|#080b11/i.test(page + js + css + org) && /#e8651a/i.test(css) && !/NOREX UNITED/i.test(page + js + css + org));
-t('the page is linked from the staff hub and the Boardroom points to it', /staff-controlcenter\.html/.test(rd('staff.html')) && /staff-controlcenter\.html/.test(rd('boardroom.js')));
+t('the page is linked from the staff hub and the Boardroom points to it', /staff-controlcenter\.html/.test(rd('staff.html')) && /staff-controlcenter\.html/.test(rd('staff-boardroom.html')) && rd('staff-boardroom.html').includes('#boardroom'));
 t('the notification boxes ship in the site and the Hub; no preset dropdown or button wording is left', /data-pm=/.test(rd('alerts.js')) && !/Site \+ DM|DM \+ site/.test(rd('alerts.js') + read('web/notify.js')));
 fs.rmSync(out, { recursive: true, force: true });
 const rq = read('bot/rushqueue.js');

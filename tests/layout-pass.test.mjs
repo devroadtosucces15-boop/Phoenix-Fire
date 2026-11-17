@@ -6,6 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { ROOT } from './mock.mjs';
 import { t, done } from './lib.mjs';
+import * as MAN from '../next/lib/staffmanifest.mjs';
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'lp-'));
 execFileSync(process.execPath, ['next/build.mjs', '--out', out, '--preview'], { cwd: ROOT, stdio: 'pipe' });
@@ -37,9 +38,9 @@ t('locker.css: no card size override sits outside a media query, so the phone ke
 const st = read('staff.html');
 t('staff hub: shared groups for managers, owner-only groups behind .adm-owner', st.includes('Match night') && st.includes('class="adm-g adm-n1 adm-owner"') && st.includes('Owner controls') && st.includes('src="staffhub.js"'));
 t('staff hub: every tile opens a page of its own', (st.match(/class="panel room adm-tile" href="([^"#]+)"/g) ?? []).length >= 9 && !/class="panel room adm-tile" href="#/.test(st));
-const BR = ['switches', 'health', 'announce', 'audit', 'halloffame', 'medals', 'backup', 'organization'];
-t('staff hub: each Boardroom control is its own page that opens its tab', BR.every((k) => html.includes(`staff-${k}.html`) && /name="pf-br-tab" content="[a-z]+"/.test(read(`staff-${k}.html`)) && read(`staff-${k}.html`).includes('br-solo')));
-t('staff hub: the Boardroom page itself is unchanged (no solo tab)', !read('staff-boardroom.html').includes('pf-br-tab'));
+const BR = ['switches', 'health', 'announce', 'audit', 'halloffame', 'medals', 'backup', 'organization']; // the old one-tab Boardroom pages
+t('staff hub: each old Boardroom control page redirects into its Control Center view (PF-022 step 8: no solo tab pages any more)', BR.every((k) => { const f = `staff-${k}.html`, id = MAN.LEGACY_PAGES[f]; return id && read(f).includes(`staff-controlcenter.html#${id}`) && !read(f).includes('pf-br-tab') && !read(f).includes('br-solo'); }));
+t('staff hub: the Boardroom page itself redirects to the Control Center Boardroom view', read('staff-boardroom.html').includes('staff-controlcenter.html#boardroom'));
 t('staff hub: only the owner gets the owner tier (staffhub.js reads the session role)', /A\.role === 'owner'/.test(fs.readFileSync(path.join(out, 'staffhub.js'), 'utf8')));
 
 // ---------- branding: the shared source still carries the NOREX palette until phoenix/build.mjs recolours it (tests/phoenix-brand.test.mjs and leakcheck cover the built output), so here: names only ----------
@@ -51,7 +52,7 @@ const shc = read('staffhub.css');
 t('R24: staff home groups are a dense grid (4 columns from 1100, 2 from 821), double groups span 2, owner group spans the row', st.includes('<div class="adm-groups">') && /adm-n2/.test(st) && /@media\(min-width:1100px\)\{\.adm-groups\{grid-template-columns:repeat\(4,/.test(shc) && /@media\(min-width:821px\)\{\.adm-groups\{grid-template-columns:repeat\(2,/.test(shc) && shc.includes('grid-auto-flow:dense') && /\.adm-groups \.adm-owner\{grid-column:1\/-1\}/.test(shc));
 t('R24: the staff home stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(st.replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(shc));
 // PF-009 R25 (owner approved 2026-11-16): Boardroom link tiles are an equal auto-fill grid; the Switches accordion sits in 2 columns from 1100 with the counts beside the title
-const brj = read('boardroom.js');
+const brj = read('controlcenter.js'); // the grouped switches now live in the Control Center's Site access panel
 t('R25: Boardroom link tiles use an equal auto-fill grid (no auto-fit stretch)', /\.br-tools\{grid-template-columns:repeat\(auto-fill,minmax\(min\(100%,190px\),1fr\)\)\}/.test(lay) && !/\.br-tools\{grid-template-columns:repeat\(auto-fit/.test(lay));
 t('R25: Switches accordion groups sit in a .br-grps 2-column grid from 1100, counts next to the title', brj.includes('class="br-grps"') && /@media\(min-width:1100px\)\{\.br-grps\{display:grid;grid-template-columns:repeat\(2,/.test(lay) && /\.br-grp>summary\{justify-content:flex-start\}/.test(lay) && /\.br-grp>summary:after\{margin-left:auto\}/.test(lay));
 t('R25: the Boardroom output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-boardroom.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));

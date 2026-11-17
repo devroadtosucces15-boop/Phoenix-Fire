@@ -23,7 +23,7 @@ t('squad.html has id="squad" (join.html links squad.html#squad)', has('squad.htm
 t('tactics.html links the two handbook set-piece anchors, and the handbook script creates ids league-setpieces and rush-setpieces', has('tactics.html', /hub-handbook\.html#league-setpieces/) && has('tactics.html', /hub-handbook\.html#rush-setpieces/) && read('handbook.js').includes('id="${mode}-${k}"') && read('handbook.js').includes("['setpieces'"));
 t('stats.html links leaders.html#goals, #assists and #rating', ['goals', 'assists', 'rating'].every((k) => has('stats.html', new RegExp(`leaders\\.html#${k}"`))));
 // R20: staff tab buttons carry data-dl (the tab key) and data-dl-to (the pane), so staff-<page>.html#<tab> opens the tab and scrolls to it
-const STAFF = { 'desk.js': ['claims', 'members', 'requests', 'rush', 'trials', 'notes'], 'tools.js': ['subm', 'reports', 'game', 'bot', 'awards'], 'content.js': ['docs', 'ideas', 'week', 'store'], 'intel.js': ['intel', 'notes', 'burners'], 'schedule.js': ['soon', 'past', 'off'] };
+const STAFF = { 'desk.js': ['claims', 'members', 'requests', 'rush', 'trials', 'notes'], 'tools.js': ['subm', 'reports', 'game', 'awards'], 'content.js': ['docs', 'ideas', 'week', 'store'], 'intel.js': ['intel', 'notes', 'burners'], 'schedule.js': ['soon', 'past', 'off'] };
 for (const [f, keys] of Object.entries(STAFF)) {
   const src = read(f);
   t(`${f}: tab buttons have data-dl="\${k}" and a data-dl-to pane, and every tab key still exists`, /data-tab="\$\{k\}" data-dl="\$\{k\}" data-dl-to="[^"]+"/.test(src) && keys.every((k) => src.includes(`'${k}'`)));

@@ -31,6 +31,15 @@ const P = {
   'i-link': '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
   'i-back': '<path d="M14.5 6l-6 6 6 6"/>',
   'i-ext': '<path d="M8 16L16.5 7.5M9.5 7.5h7v7"/>',
+  'i-inbox': '<path d="M3.5 13.5l2.5-8h12l2.5 8v5.5h-17z"/><path d="M3.5 13.5H9a3 3 0 0 0 6 0h5.5"/>',
+  'i-flag': '<path d="M6 20.5V4M6 5h11l-2.2 3.5L17 12H6"/>',
+  'i-gear': '<circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4L18 18M6 18l1.6-1.6M16.4 7.6L18 6"/>',
+  'i-pad': '<rect x="3" y="7.5" width="18" height="10" rx="5"/><path d="M8 10.5v4M6 12.5h4M15.5 11.5v.1M17.5 13.5v.1"/>',
+  'i-trophy': '<path d="M7.5 4h9v5a4.5 4.5 0 0 1-9 0zM7.5 6H4.5v1.5a3 3 0 0 0 3 3M16.5 6h3v1.5a3 3 0 0 1-3 3M12 13.5V17M8.5 20.5h7M9.5 17h5"/>',
+  'i-pulse': '<path d="M3 12h4l2-6 4 12 2-6h6"/>',
+  'i-megaphone': '<path d="M4 10v4h3l8 4.5v-13L7 10zM18.5 9.5a4 4 0 0 1 0 5"/><path d="M7 14l1 5h2.5l-1-4.5"/>',
+  'i-medal': '<circle cx="12" cy="15" r="5"/><path d="M8.5 3.5L11 10.5M15.5 3.5L13 10.5M12 12.5v5"/>',
+  'i-save': '<path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/>',
   'i-sort': '<path d="M8 4v16M4.5 16.5L8 20l3.5-3.5M16 20V4M12.5 7.5L16 4l3.5 3.5"/>',
 };
 export const ICON_IDS = Object.keys(P);

@@ -9,7 +9,7 @@ const js = rd('next/static/feedbackroom.js'), hub = rd('next/pages/hub.mjs'), cs
 const cfg = JSON.parse(rd('config.json'));
 
 t('flag feedbackRoom is open to members (F1 open-up)', cfg.features.feedbackRoom === 'members' && cfg.features.feedback === 'members');
-t('Boardroom lists the flag with a page link', /'suggestions', 'feedbackRoom'/.test(rd('next/static/boardroom.js')) && /feedbackRoom: \['hub-clubhouse\.html'/.test(rd('next/static/boardroom.js')));
+t('Boardroom lists the flag with a page link', /'suggestions', 'feedbackRoom'/.test(rd('next/lib/flagwhere.mjs')) && /feedbackRoom: \["hub-clubhouse\.html"/.test(rd('next/lib/flagwhere.mjs')));
 t('Clubhouse page: section starts hidden, chip too, script loaded', hub.includes('id="ch-feedback" hidden') && hub.includes('data-fb-chip hidden') && hub.includes('id="chfeedback"') && hub.includes('src="feedbackroom.js"'));
 t('the only API writes are send, react, why, report, read and hide', [...js.matchAll(/post\('(\/api\/[a-z/]+)'/g)].map((m) => m[1]).sort().join() === ['/api/feedback/hide', '/api/feedback/react', '/api/feedback/read', '/api/feedback/report', '/api/feedback/send', '/api/feedback/why'].join());
 t('five reactions, same emoji as web/feedback.js', ['👍', '✅', '❤️', '❌', '😕'].every((e) => js.includes(e)) && /Object\.entries\(REACT\)/.test(js));

@@ -2,7 +2,10 @@
 //   GET  /api/controlcenter            the registry (every command, button, automated post, scheduled job, DM and site section) + the rows set so far + audit
 //   GET  /api/controlcenter/discord    channels and roles of the server, for the pickers
 //   POST /api/controlcenter/save|reset|create     one output row / make a channel or role in Discord
-//   Site access   POST /api/admin/flags, /api/admin/flags/reset   (owner)      Organization   /api/org/config/*  (owner, shared panel next/static/orgpanel.js)
+//   Site access   POST /api/admin/flags, /api/admin/flags/reset   (owner): level buttons, undo, back-to-committed, Go to and Show me (the retired Boardroom Switches tab)
+//   Organization   /api/org/config/*  (owner, shared panel next/static/orgpanel.js)
+//   Bot settings  GET/POST /api/controlcenter/settings[/<area>]   Audit log  GET /api/controlcenter/audit   (next/static/ccsettings.js: the retired Tools Bot tab and Boardroom Audit tab)
+//   Bot commands  the command rules plus Sync to Discord (POST /api/bot/commands/sync): the retired Tools Bot tab's command table
 // A slicer row of buttons swaps the panel in place. Every output panel is the same filterable table; Edit opens the row's editor under it.
 // The same rows are written by the /setup output command, and the Worker reads them at runtime, so a save applies at once (no deploy).
 (() => {
@@ -18,7 +21,7 @@
   const skel = '<div class="dg-skel"><i></i></div>';
 
   const PANELS = [['access', '🎛️', 'Site access', null], ['command', '🤖', 'Bot commands', 'command'], ['component', '🔘', 'Buttons & menus', 'component'], ['automated', '📣', 'Automated posts', 'automated'],
-    ['scheduled', '⏱️', 'Scheduled', 'scheduled'], ['dm', '🔔', 'DMs & notifications', 'dm'], ['org', '🏢', 'Organization', null], ['audit', '🛡️', 'Audit log', null]];
+    ['scheduled', '⏱️', 'Scheduled', 'scheduled'], ['dm', '🔔', 'DMs & notifications', 'dm'], ['settings', '⚙️', 'Bot settings', null], ['org', '🏢', 'Organization', null], ['audit', '🛡️', 'Audit log', null]];
   const WHO = { command: 'Who can use it', component: 'Who can use it', automated: 'Who gets it', scheduled: 'Runs', dm: 'Who gets it' };
   const LEVELS = ['off', 'owner', 'managers', 'members', 'public'];
   const LVL = { off: 'Nobody', owner: 'Owner only', managers: 'Managers + owner', members: 'Signed-in members', public: 'Everyone' };
@@ -26,7 +29,7 @@
   const LISTS = { allow_roles: ['roles', 'Roles who can'], allow_members: ['members', 'Members who can'], deny_roles: ['roles', 'Roles who cannot'], deny_members: ['members', 'Members who cannot'], allow_channels: ['channels', 'Usable only in'], deny_channels: ['channels', 'Never usable in'], post_channels: ['channels', 'Posts go to'] };
 
   const shell = !!root.closest('.cx'); // inside the Control Center shell (ccshell.js) the sidebar picks the panel, so no slicer here
-  const S = { data: null, panel: (location.hash.slice(1) || 'access'), q: '', app: '', state: '', edit: null, draft: null, open: new Set(), discord: null, flagQ: '', err: null };
+  const S = { data: null, panel: (location.hash.slice(1) || 'access'), q: '', app: '', state: '', edit: null, draft: null, open: new Set(), discord: null, flagQ: '', err: null, undo: [] };
   if (!PANELS.some(([k]) => k === S.panel)) S.panel = 'access';
 
   const rowOf = (i) => i.row ?? { enabled: true, rules: {} };
@@ -36,12 +39,39 @@
   const kindOfList = (f) => LISTS[f][0];
 
   // ---------- Site access (the feature levels: who can see each section) ----------
+  // where each feature lives comes from the staff manifest (next/lib/flagwhere.mjs): [page, heading, Control Center tool]
+  const WHERE = (window.PFStaffManifest || {}).where || {};
+  const goTo = (flag) => { const [page, find, hash] = WHERE[flag] || ['index.html', '']; return page + (find ? `?nx=${encodeURIComponent('~' + find)}` : '') + (hash ? '#' + hash : ''); };
+  const VIEWS = [['', '👑', 'Me (owner)', 'Everything I can see'], ['member', '🧑', 'Member', 'A signed-in club member'], ['guest', '👤', 'Guest', 'Someone not signed in']];
+  const nice = (k) => k.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase());
+  function showMe(k) { // open the page the way a member or a guest sees it (display only: the server still treats you as the owner)
+    const [pg, find] = WHERE[k] || ['index.html', ''], dlg = d.createElement('div'); dlg.className = 'br-modal'; dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-label', `Show me ${nice(k)}`);
+    const cur = A?.viewAs || '';
+    dlg.innerHTML = `<div class="br-sheet"><h4>Show me <b>${esc(nice(k))}</b> as…</h4><p class="muted small">Opens ${esc(pg.replace('.html', ''))}${find ? ` at “${esc(find)}”` : ''} and shows it the way that person sees the site. Display only: the server still treats you as the owner. A bar on every page takes you back.</p>
+<div class="br-views">${VIEWS.map(([v, ic, n, sub]) => `<button type="button" data-v="${v}"${v === cur ? ' class="on"' : ''}><span aria-hidden="true">${ic}</span><b>${n}</b><small>${sub}</small></button>`).join('')}</div><button type="button" class="chip" data-x>Cancel</button></div>`;
+    const close = () => { dlg.remove(); d.removeEventListener('keydown', onKey); }, onKey = (e) => { if (e.key === 'Escape') close(); };
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg || e.target.closest('[data-x]')) return close(); const b = e.target.closest('[data-v]'); if (!b) return;
+      try { if (b.dataset.v) { localStorage.setItem('phoenix.viewas', b.dataset.v); localStorage.setItem('phoenix.viewas.t', String(Date.now())); } else { localStorage.removeItem('phoenix.viewas'); localStorage.removeItem('phoenix.viewas.t'); } } catch {}
+      location.href = goTo(k);
+    });
+    d.addEventListener('keydown', onKey); d.body.appendChild(dlg); dlg.querySelector('[data-v]').focus();
+  }
+
   const siteAccess = () => {
     const f = S.data.flags, can = S.data.me.flags, q = S.flagQ.toLowerCase();
-    const rows = S.data.items.filter((i) => i.kind === 'site' && (!q || i.key.toLowerCase().includes(q))).map((i) => { const flag = i.flag, live = f.live[flag] ?? i.level, base = f.committed[flag]; return `<tr><td><b>${esc(flag)}</b>${live !== base ? ' <span class="chip gold">changed</span>' : ''}</td><td class="muted small">${esc(i.summary)}</td><td><div class="seg" role="radiogroup" aria-label="${esc(flag)}">${LEVELS.map((l) => `<button type="button" role="radio" class="${live === l ? 'on' : ''}" aria-checked="${live === l}" data-lvl="${esc(flag)}:${l}"${can ? '' : ' disabled'} title="${esc(LVL[l])}">${l}</button>`).join('')}</div></td><td>${live !== base && can ? `<button class="chip" data-lvlreset="${esc(flag)}">Reset to ${esc(base)}</button>` : ''}</td></tr>`; }).join('');
-    return `<p class="muted small">Who can see each section of the site, per level: <b>${LEVELS.map((l) => `${l} = ${LVL[l]}`).join(' · ')}</b>. ${can ? 'Changes apply on the next page load.' : 'Only the owner changes these; you can see them.'}</p>
-<div class="cc-filters"><input type="search" data-flagq placeholder="Find a section…" value="${esc(S.flagQ)}" aria-label="Find a section"></div>
-<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>Section</th><th>What it is</th><th>Who sees it</th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="4" class="muted">No match.</td></tr>'}</tbody></table></div>`;
+    const sites = S.data.items.filter((i) => i.kind === 'site'), row = (i) => { const flag = i.flag, live = f.live[flag] ?? i.level, base = f.committed[flag]; return `<tr><td><b>${esc(flag)}</b>${live !== base ? ' <span class="chip gold">changed</span>' : ''}</td><td class="muted small">${esc(i.summary)}</td><td><div class="seg" role="radiogroup" aria-label="${esc(flag)}">${LEVELS.map((l) => `<button type="button" role="radio" class="${live === l ? 'on' : ''}" aria-checked="${live === l}" data-lvl="${esc(flag)}:${l}"${can ? '' : ' disabled'} title="${esc(LVL[l])}">${l}</button>`).join('')}</div></td><td>${live !== base && can ? `<button class="chip" data-lvlreset="${esc(flag)}">Reset to ${esc(base)}</button>` : ''}${WHERE[flag] ? `<a class="chip" href="${esc(goTo(flag))}">↗ Go to</a><button type="button" class="chip" data-show="${esc(flag)}">👁 Show me</button>` : ''}</td></tr>`; };
+    const hit = (i) => !q || i.key.toLowerCase().includes(q) || nice(i.flag || '').toLowerCase().includes(q);
+    // collapsible groups with counts (the retired Switches tab's grouping); a switch in no group lands in "Everything else"
+    const groups = ((window.PFStaffManifest || {}).flagGroups || []).map(([t, ks]) => [t, sites.filter((i) => ks.includes(i.flag))]);
+    const used = new Set(groups.flatMap(([, it]) => it.map((i) => i.key))), rest = sites.filter((i) => !used.has(i.key)); if (rest.length) groups.push(['⚙️ Everything else', rest]);
+    const head = '<thead><tr><th>Section</th><th>What it is</th><th>Who sees it</th><th></th></tr></thead>';
+    const html = groups.map(([t, it]) => { const shown = it.filter(hit); if (!shown.length) return ''; const on = it.filter((i) => (f.live[i.flag] ?? i.level) !== 'off').length;
+      return `<details class="br-grp" data-det="g:${esc(t)}"${q || S.open.has('g:' + t) ? ' open' : ''}><summary><span>${esc(t)}</span><small>${shown.length} switch${shown.length === 1 ? '' : 'es'} · ${on} on</small></summary><div class="tablewrap"><table class="tbl cc-tbl">${head}<tbody>${shown.map(row).join('')}</tbody></table></div></details>`; }).join('');
+    const nOver = sites.filter((i) => (f.live[i.flag] ?? i.level) !== f.committed[i.flag]).length;
+    return `<p class="muted small">Who can see each section of the site, per level: <b>${LEVELS.map((l) => `${l} = ${LVL[l]}`).join(' · ')}</b>. ${can ? 'Changes apply on the next page load. “Committed” is the level saved in the club config; new features start at Owner.' : 'Only the owner changes these; you can see them.'}</p>
+<div class="cc-filters"><input type="search" data-flagq placeholder="Find a section…" value="${esc(S.flagQ)}" aria-label="Find a section"><span class="muted small">${sites.length} switches · ${nOver} live override${nOver === 1 ? '' : 's'}</span><button type="button" class="chip" data-undo${S.undo.length && can ? '' : ' disabled'}>↶ Undo${S.undo.length ? ` (${esc(S.undo[S.undo.length - 1].name)})` : ''}</button></div>
+${html ? `<div class="br-grps">${html}</div>` : '<p class="muted small">No switch matches.</p>'}`;
   };
 
   // ---------- one output panel: filters + table + the open editor ----------
@@ -80,7 +110,7 @@
     return `<div class="cc-filters"><input type="search" data-q placeholder="Search ${all.length} items…" value="${esc(S.q)}" aria-label="Search">
 <select data-app aria-label="App"><option value="">All apps</option>${apps.map((a) => `<option value="${esc(a)}"${S.app === a ? ' selected' : ''}>${esc(S.data.apps[a] || a)}</option>`).join('')}</select>
 <select data-state aria-label="State">${[['', 'On and off'], ['on', 'On'], ['off', 'Off'], ['custom', `Changed (${nCustom})`]].map(([v, l]) => `<option value="${v}"${S.state === v ? ' selected' : ''}>${l}</option>`).join('')}</select>
-<span class="muted small">${rows.length} of ${all.length}</span></div>
+<span class="muted small">${rows.length} of ${all.length}</span>${kind === 'command' ? `<button type="button" class="chip" data-sync title="Pushes the command list to Discord and hides staff-only commands from its menu">🔄 Sync to Discord</button>` : ''}</div>
 <div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>${kind === 'dm' ? 'Notification' : 'Name'}</th><th>App</th><th>${kind === 'scheduled' ? 'Schedule' : 'When'}</th><th class="c">On</th><th>${WHO[kind]}</th><th>Channels</th><th></th></tr></thead><tbody>${body || `<tr><td colspan="7">${empty('🔍', 'Nothing matches', 'Clear a filter to see more.')}</td></tr>`}</tbody></table></div>`;
   };
 
@@ -112,6 +142,8 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
   // ---------- the frame ----------
   const auditPanel = () => `<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>When</th><th>Who</th><th>Output</th><th>Change</th></tr></thead><tbody>${S.data.audit.map((a) => { const k = a.after?.key || a.before?.key || ''; const b = a.before, n = a.after; return `<tr><td class="small">${ago(a.at)}</td><td>${esc(a.name || a.user_id)}</td><td class="small">${esc(k)}</td><td class="small">${esc(a.action)}${b && n && b.enabled !== n.enabled ? ` · ${n.enabled ? 'switched on' : 'switched off'}` : ''}</td></tr>`; }).join('') || '<tr><td colspan="4" class="muted">No changes yet.</td></tr>'}</tbody></table></div>`;
   const OP = window.PFOrgPanel ? window.PFOrgPanel({ root, call, toast, esc, ago, empty, skel, act, repaint: () => paint(), active: () => S.panel === 'org' }) : null;
+  const mk = (f, panel) => (window[f] ? window[f]({ root, call, toast, esc, ago, empty, skel, act, repaint: () => paint(), active: () => S.panel === panel }) : null);
+  const CS = mk('PFCCSettings', 'settings'), AU = mk('PFCCAudit', 'audit'); // ccsettings.js: Bot settings and the one audit feed
   function paint() {
     if (!root.isConnected) return;
     if (S.err) { root.innerHTML = empty('🔒', 'Control Center', S.err); return; }
@@ -121,7 +153,8 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
     let body = '';
     if (S.panel === 'access') body = siteAccess();
     else if (S.panel === 'org') body = !S.data.me.org ? empty('🔒', 'Organization', 'Only the owner changes the Discord servers, channels, roles and clubs.') : OP ? OP.html() : empty('⚠️', 'Organization', 'The Organization panel did not load.');
-    else if (S.panel === 'audit') body = auditPanel();
+    else if (S.panel === 'settings') body = CS ? CS.html() : empty('⚠️', 'Bot settings', 'The settings panel did not load.');
+    else if (S.panel === 'audit') body = AU ? AU.html() : auditPanel();
     else body = outputPanel(cur[3]);
     const keep = d.activeElement?.matches?.('[data-q],[data-flagq]') ? d.activeElement.hasAttribute('data-q') ? 'data-q' : 'data-flagq' : null, pos = keep ? d.activeElement.selectionStart : 0;
     root.innerHTML = `${shell ? '' : `<nav class="cc-slicer" role="tablist" aria-label="Control Center panels">${PANELS.map(([k, e, t]) => `<button type="button" role="tab" class="chip${S.panel === k ? ' on' : ''}" aria-selected="${S.panel === k}" data-panel="${k}">${e} ${t}${counts[k] != null ? ` <small>${counts[k]}</small>` : ''}</button>`).join('')}</nav>`}
@@ -143,10 +176,13 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
 
   root.addEventListener('click', (ev) => {
     const t = ev.target.closest('button'); if (!t) return; const k = t.dataset;
-    if (k.panel) { S.panel = k.panel; S.edit = null; S.draft = null; history.replaceState(null, '', `#${k.panel}`); paint(); if (k.panel === 'org' && OP && !OP.O.cfg) OP.load(); return; }
+    if (k.panel) { S.panel = k.panel; S.edit = null; S.draft = null; history.replaceState(null, '', `#${k.panel}`); paint(); if (k.panel === 'org' && OP && !OP.O.cfg) OP.load(); if (k.panel === 'settings' && CS && !CS.S.data) CS.load(); if (k.panel === 'audit' && AU && AU.S.items === null) AU.load(); return; }
     if (k.edit) return openEdit(k.edit);
+    if ('sync' in k) return act(async () => { t.disabled = true; try { const r = await call('/api/bot/commands/sync', {}); toast(`Synced ${r.count} command${r.count === 1 ? '' : 's'} to Discord`); } finally { t.disabled = false; } });
     if ('close' in k) { S.edit = null; S.draft = null; return paint(); }
-    if (k.lvl) { const [flag, level] = k.lvl.split(':'); if (!confirm(`Change “${flag}” to ${level}? ${LVL[level]} will see it from the next page load.`)) return; return act(async () => { const r = await call('/api/admin/flags', { name: flag, level }); S.data.flags.live = r.flags; paint(); toast(`${flag}: ${level}`); }); }
+    if (k.lvl) { const [flag, level] = k.lvl.split(':'); if (!confirm(`Change “${flag}” to ${level}? ${LVL[level]} will see it from the next page load.`)) return; return act(async () => { const prev = S.data.flags.live[flag]; const r = await call('/api/admin/flags', { name: flag, level }); S.data.flags.live = r.flags; if (prev !== level) S.undo.push({ name: flag, level: prev }); paint(); toast(`${flag}: ${level}`); }); }
+    if ('undo' in k) return act(async () => { const u = S.undo.pop(); if (!u) return; const r = await call('/api/admin/flags', { name: u.name, level: u.level }); S.data.flags.live = r.flags; paint(); toast(`${u.name}: back to ${u.level}`); });
+    if (k.show) return showMe(k.show);
     if (k.lvlreset) return act(async () => { const r = await call('/api/admin/flags/reset', { name: k.lvlreset }); S.data.flags.live = r.flags; paint(); toast('Back to the committed level'); });
     if (k.reset) return act(async () => { await call('/api/controlcenter/reset', { key: k.reset }); S.edit = null; S.draft = null; toast('Back to default'); await load(); });
     if (k.rm) { const [f, id] = k.rm.split(/:(.+)/); S.draft.rules[f] = S.draft.rules[f].filter((x) => x !== id); return paint(); }
@@ -184,7 +220,7 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
   root.addEventListener('submit', (ev) => { const f = ev.target.closest('[data-form]'); if (!f) return; ev.preventDefault(); const i = find(f.dataset.form); if (i && S.draft) save(i); });
 
   // the shell drives the panel: PFCC.go('audit') or a #hash change; PFCC.data() hands the loaded registry and audit to the dashboard (one data layer)
-  const go = (k) => { if (!PANELS.some(([p]) => p === k)) return false; S.panel = k; paint(); if (k === 'org' && OP && S.data) OP.load(); return true; };
+  const go = (k) => { if (!PANELS.some(([p]) => p === k)) return false; S.panel = k; paint(); if (k === 'org' && OP && S.data) OP.load(); if (k === 'settings' && CS && !CS.S.data) CS.load(); if (k === 'audit' && AU && AU.S.items === null) AU.load(); return true; };
   window.PFCC = { go, data: () => S.data, reload: () => load(), ready: null };
   window.addEventListener('hashchange', () => { if (!shell) go(location.hash.slice(1)); });
   (async () => {

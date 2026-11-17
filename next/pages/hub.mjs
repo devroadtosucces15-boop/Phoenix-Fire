@@ -3,7 +3,7 @@ import * as W from '../lib/widgets.mjs';
 import { shell, esc, sample, sbt, chip, liveStrip } from '../lib/ui.mjs';
 import { formations } from './stats.mjs';
 import { playstyleBlock } from './tactics.mjs';
-import { hubGroups, SECTIONS, TOOLS } from '../lib/staffmanifest.mjs';
+import { hubGroups, SECTIONS, TOOLS, LEGACY_PAGES, LEGACY_HASH, legacyTarget, redirectHead } from '../lib/staffmanifest.mjs';
 import { sprite, icon } from '../lib/ccsprite.mjs';
 
 const ROOMS = [['hub.html', '🎽', 'My Locker', 'Your card, artwork, stats, trophies and alerts'], ['hub-matchnight.html', '🗓️', 'Match Night', 'RSVP, availability, MOTM votes, ratings, Rush log'], ['hub-squad.html', '🤝', 'Squad Room', 'Team up, awards, predictions, Rush squads and scouting'], ['hub-clubhouse.html', '💬', 'Clubhouse', 'Club feed, ideas board, chat room and who is on Discord'], ['hub-handbook.html', '📜', 'Handbook', 'Club rules, docs and how the site works']];
@@ -154,8 +154,6 @@ const stTile = ([h, e, t, d]) => `<a class="panel room adm-tile" href="${h}"><di
 const stGroup = (e, t, sub, tiles, cls = '') => `<section class="adm-g adm-n${tiles.length}${cls ? ' ' + cls : ''}"><header class="adm-gh"><span aria-hidden="true">${e}</span><div><h2>${t}</h2><p class="muted small">${sub}</p></div></header><div class="adm-grid">${tiles.map(stTile).join('')}</div></section>`;
 // the groups come from the one staff manifest (next/lib/staffmanifest.mjs); the dock lists and the Control Center sidebar read the same file
 export const STAFF_GROUPS = hubGroups(false);
-// owner-only: the Boardroom, one page per tab, and the artwork studio
-export const BR_TABS = { switches: ['🎛️', 'Switches', 'Feature switches', 'Turn features on or off for guests, members and managers'], health: ['🩺', 'Health', 'Health', 'Club health score and recruitment'], announce: ['📣', 'Announce', 'Announce', 'Send club-wide announcements'], audit: ['🛡️', 'Audit', 'Audit log', 'Who changed what'], hof: ['🏛️', 'Hall of Fame', 'Hall of Fame', 'Trophies, legends, awards'], medals: ['🏅', 'Medals', 'Medals', 'Edit and award medals'], backup: ['💾', 'Backup', 'Backup', 'Export and restore club data'], org: ['🏢', 'Organization', 'Organization', 'Channels, roles and club settings'] };
 const OWNER_GROUPS = hubGroups(true);
 export function staff() {
   const body = `<div class="wrap adm-wrap"><div class="adm-plate"><i aria-hidden="true">🧢</i><b role="heading" aria-level="1">Staff hub</b><small data-staff-role>managers and the owner · every tool, grouped, one tap each</small></div>${staffGate}
@@ -177,11 +175,6 @@ export function desk() {
   <div data-for="owner" hidden><div id="dkLive" hidden></div><div id="dkLocal" class="panel sq-empty"><span>🗂️</span><div><b>Sign in to the live Hub</b><p class="muted small">Claims, Rush confirmations, trials and private notes work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
   return hubShell('staff-desk.html', 'Desk', body, { extraHead: '<script src="desk.js" defer></script>' });
 }
-export function tools() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · moderation and settings</div><h2>Tools</h2></div></header>${staffGate}
-  <div data-for="owner" hidden><div id="tlLive" hidden></div><div id="tlLocal" class="panel sq-empty"><span>🛠️</span><div><b>Sign in to the live Hub</b><p class="muted small">Submissions, reported content, game data, bot settings and awards work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
-  return hubShell('staff-tools.html', 'Tools', body, { extraHead: '<script src="tools.js" defer></script>' });
-}
 export function content() {
   const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · club docs and community</div><h2>Content</h2></div></header>${staffGate}
   <div data-for="owner" hidden><div id="ctLive" hidden></div><div id="ctLocal" class="panel sq-empty"><span>📄</span><div><b>Sign in to the live Hub</b><p class="muted small">Club docs and rules, the ideas board, the squad week and media storage work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
@@ -192,28 +185,23 @@ export function insights() {
   <div data-for="owner" hidden><div id="ixLive" hidden></div><div id="ixLocal" class="panel sq-empty"><span>🧭</span><div><b>Sign in to the live Hub</b><p class="muted small">Club Intelligence, the written club notes and the burner tracker work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
   return hubShell('staff-insights.html', 'Insights', body, { extraHead: '<script src="intel.js" defer></script>' });
 }
-export function boardroom(tab = '') {
-  const flags = Object.entries(features);
-  const stub = `<div class="sb">${sbt(C.sr, 'Skill rating', 'gold')}${sbt(C.div || 1, 'Division')}${sbt(players.length, 'Players')}${sbt(C.promotions, 'Promotions')}</div>
-  <div class="grid g2" style="margin-top:20px"><div class="panel"><h3>Recruitment</h3><p class="muted small">${esc(cfg.recruitment?.headline ?? '')} · ${cfg.recruitment?.open ? 'open' : 'closed'}</p><div class="chips" style="margin-top:8px">${(cfg.recruitment?.positions ?? []).map((p) => `<span class="chip gold">${esc(p)}</span>`).join('')}</div></div>
-  <div class="panel"><h3>Feature switches · ${flags.length}</h3><p class="muted small">Who can see each feature on the live site (from the club config). Sign in as the owner to change them.</p><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">${flags.map(([k, v]) => `<span class="pill ${v === 'public' ? 'w' : v === 'owner' ? 's' : ''}">${esc(k)} · ${esc(v)}</span>`).join('')}</div></div></div>`;
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">${tab ? '<a href="staff.html" style="color:inherit">‹ Staff hub</a> · owner' : 'Staff · owner'}</div><h2>${tab ? BR_TABS[tab][2] : 'Boardroom'}</h2></div></header>${staffGate}<div data-for="owner" hidden>
-  <div id="brLive" hidden data-committed="${esc(JSON.stringify(features))}"></div><div id="brLocal">${stub}</div></div></section></div>`;
-  return hubShell('staff-boardroom.html', tab ? BR_TABS[tab][2] : 'Boardroom', body, { bodyExtra: tab ? 'br-solo' : '', extraHead: (tab ? `<meta name="pf-br-tab" content="${tab}"><link rel="stylesheet" href="staffhub.css"><script src="staffhub.js" defer></script>` : '') + '<script src="trophy.js" defer></script><script src="orgpanel.js" defer></script><script src="boardroom.js" defer></script>' });
-}
 // managers and the owner: the Control Center (next/static/controlcenter.js) switches, aims and restricts every output; its Site access and Organization panels are the Boardroom's Switches and Organization
+// PhoenixDeeplink lands #<tool id> (and the old Boardroom and Tools anchors) on the view: every id the shell understands is an alias of the main column
+const DL_TOKENS = [...new Set([...TOOLS.map((t) => t.id), ...Object.values(LEGACY_HASH).flatMap((m) => Object.keys(m).filter(Boolean))])].join(' ');
 export function controlCenter() {
   // the shell (PF-022 step 7): a left sidebar built from the staff manifest, the dashboard home (ccshell.js) and the existing tools mounted as modules (#ccLive: controlcenter.js, orgpanel.js)
   const side = SECTIONS.map(([sid, sname]) => { const tools = TOOLS.filter((t) => t.section === sid); return tools.length ? `<section class="cx-sec"><h3>${esc(sname)}</h3><ul>${tools.map((t) => `<li${t.owner ? ' data-owner hidden' : ''}><a class="cx-nav" href="${esc(t.href)}" data-tool="${esc(t.id)}"${t.module ? ` data-module="${esc(t.module)}"` : ''}>${icon(t.icon)}<span>${esc(t.label)}</span>${t.module ? '' : `<em class="cx-ext" role="img" aria-label="opens its own page">${icon('i-ext')}</em>`}<b class="cx-n" data-n="${esc(t.id)}" hidden></b></a></li>`).join('')}</ul></section>` : ''; }).join('');
   const body = `${sprite()}<div class="wrap cx-wrap">${staffGate}<div data-for="owner" hidden><div class="cx" id="cx" data-cx>
   <div class="cx-bar"><a class="cx-back" href="staff.html">${icon('i-back')}<span>Staff hub</span></a><button type="button" class="cx-menu" id="cxMenu" aria-expanded="false" aria-controls="cxSide">${icon('i-menu')}<span id="cxCur">Dashboard</span></button><button type="button" class="cx-find" id="cxFind" aria-label="Search every tool (Ctrl+K)">${icon('i-search')}<span>Search</span><kbd>Ctrl K</kbd></button></div>
   <aside class="cx-side" id="cxSide" aria-label="Control Center tools"><div class="cx-brand"><img src="crest-sm.png" alt="" width="34" height="34"><div><b>Control Center</b><small>${esc(cfg.siteTitle || 'Club')} staff</small></div></div><nav>${side}</nav></aside>
-  <main class="cx-main" id="cxMain"><h2 class="cx-h" id="cxTitle">Dashboard</h2><p class="cx-sub muted small" id="cxSubtitle">${esc(TOOLS[0].desc)}. Changes made in a tool apply at once: no deploy, no code change.</p>
+  <main class="cx-main" id="cxMain" data-dl="${esc(DL_TOKENS)}"><h2 class="cx-h" id="cxTitle">Dashboard</h2><p class="cx-sub muted small" id="cxSubtitle">${esc(TOOLS[0].desc)}. Changes made in a tool apply at once: no deploy, no code change.</p>
   <section id="cxHome" data-module="home" aria-label="Dashboard"></section>
   <section id="ccLive" hidden></section>
+  <section id="brLive" hidden aria-label="Owner tools"></section>
+  <section id="tlLive" hidden aria-label="Moderation tools"></section>
   <div id="ccLocal" class="panel sq-empty"><span>🎛️</span><div><b>Sign in to the live Hub</b><p class="muted small">The Control Center works on the live bot, so it opens when you are signed in as a manager or the owner.</p></div></div>
   </main><div class="cx-scrim" id="cxScrim" hidden></div></div></div></div>`;
-  return hubShell('staff-controlcenter.html', 'Control Center', body, { bodyExtra: 'cx-page', extraHead: '<link rel="stylesheet" href="controlcenter.css"><link rel="stylesheet" href="ccshell.css"><script src="staffmanifest.js" defer></script><script src="orgpanel.js" defer></script><script src="controlcenter.js" defer></script><script src="ccshell.js" defer></script>' });
+  return hubShell('staff-controlcenter.html', 'Control Center', body, { bodyExtra: 'cx-page', extraHead: '<link rel="stylesheet" href="controlcenter.css"><link rel="stylesheet" href="ccshell.css"><script src="staffmanifest.js" defer></script><script src="orgpanel.js" defer></script><script src="trophy.js" defer></script><script src="ccsettings.js" defer></script><script src="controlcenter.js" defer></script><script src="boardroom.js" defer></script><script src="tools.js" defer></script><script src="ccshell.js" defer></script>' });
 }
 export function artwork() {
   const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · owner</div><h2>Artwork studio</h2></div></header>${staffGate}<div data-for="owner" hidden>
@@ -223,7 +211,15 @@ export function artwork() {
   return hubShell('staff-artwork.html', 'Artwork studio', body, { extraHead: '<script src="cardstudio.js" defer></script>', data: { full: players } });
 }
 
+// a retired staff page (PF-022 step 8): an ordinary page that forwards to the Control Center view for the old address and anchor, and says so if scripts are off
+function movedPage(file) {
+  const to = legacyTarget(file, ''), tool = TOOLS.find((t) => t.id === to.split('#')[1]);
+  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff</div><h2>${esc(tool?.label || 'Control Center')} moved</h2></div></header>
+  <div class="panel sq-empty"><span aria-hidden="true">🎛️</span><div><b>This is now part of the Control Center</b><p class="muted small">Taking you there. <a href="${to}">Open ${esc(tool?.label || 'the Control Center')}</a></p></div></div></section></div>`;
+  return hubShell(file, tool?.label || 'Control Center', body, { extraHead: redirectHead(file) });
+}
+
 export default function (P) {
   P('hub.html', locker()); P('hub-profile.html', locker('me')); P('hub-stats.html', locker('stats')); P('hub-medals.html', locker('medals')); P('hub-cardstudio.html', locker('cards')); P('hub-alerts.html', locker('alerts')); P('hub-matchnight.html', matchNight()); P('hub-squad.html', squadRoom()); P('hub-clubhouse.html', clubhouse()); P('hub-handbook.html', handbook()); P('hub-watchlist.html', watchlist()); P('hub-music.html', music()); P('hub-discoveries.html', discoveries());
-  P('staff.html', staff()); P('staff-dugout.html', dugout()); P('staff-schedule.html', schedule()); P('staff-desk.html', desk()); P('staff-tools.html', tools()); P('staff-content.html', content()); P('staff-boardroom.html', boardroom()); P('staff-controlcenter.html', controlCenter()); for (const k of Object.keys(BR_TABS)) P(`staff-${k === 'hof' ? 'halloffame' : k === 'org' ? 'organization' : k}.html`, boardroom(k)); P('staff-insights.html', insights()); P('staff-artwork.html', artwork());
+  P('staff.html', staff()); P('staff-dugout.html', dugout()); P('staff-schedule.html', schedule()); P('staff-desk.html', desk()); P('staff-content.html', content()); P('staff-controlcenter.html', controlCenter()); for (const f of Object.keys(LEGACY_PAGES)) P(f, movedPage(f)); /* retired staff pages (PF-022 step 8): redirect pages, anchors kept */ P('staff-insights.html', insights()); P('staff-artwork.html', artwork());
 }

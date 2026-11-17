@@ -10,13 +10,13 @@ import { ICON_IDS } from '../next/lib/ccsprite.mjs';
 
 // ---- the manifest itself
 t('manifest: no problems (unique ids and hrefs, known sections and groups, every entry has a target)', MAN.problems().length === 0);
-t('manifest: every tool has an href or a module, and every module is a known kind', MAN.TOOLS.every((x) => x.href || x.module) && MAN.TOOLS.every((x) => !x.module || /^(home|org|controlcenter:\w+)$/.test(x.module)));
+t('manifest: every tool has an href or a module, and every module is a known kind', MAN.TOOLS.every((x) => x.href || x.module) && MAN.TOOLS.every((x) => !x.module || /^(home|org|controlcenter:\w+|br:\w+|tl:\w+)$/.test(x.module)));
 t('manifest: no tool id or href appears twice', new Set(MAN.TOOLS.map((x) => x.id)).size === MAN.TOOLS.length && new Set(MAN.TOOLS.map((x) => x.href)).size === MAN.TOOLS.length);
 t('manifest: a duplicate entry is caught (the check fails on a copy)', (() => { MAN.TOOLS.push({ ...MAN.TOOLS[1] }); const bad = MAN.problems().length > 0; MAN.TOOLS.pop(); return bad; })());
 t('manifest: an entry without a target is caught', (() => { MAN.TOOLS.push({ id: 'zz', label: 'Z', emoji: 'z', icon: 'i-grid', desc: 'x', section: 'inbox' }); const bad = MAN.problems().some((p) => /no target/.test(p)); MAN.TOOLS.pop(); return bad; })());
 t('manifest: every icon names a symbol in the one sprite', MAN.TOOLS.every((x) => ICON_IDS.includes(x.icon)));
 t('manifest: the link resolver finds a tool by id, by page and by module address', MAN.resolve('desk')?.id === 'desk' && MAN.resolve('staff-desk.html')?.id === 'desk' && MAN.resolve('staff-controlcenter.html?tool=audit')?.id === 'audit' && MAN.resolve('nope') === null);
-t('manifest: owner-only tools are Organization and the Boardroom', MAN.TOOLS.filter((x) => x.owner).map((x) => x.id).sort().join() === 'boardroom,org');
+t('manifest: owner-only tools are Organization, the Boardroom and its tools (health, announce, Hall of Fame, medals, backup)', MAN.TOOLS.filter((x) => x.owner).map((x) => x.id).sort().join() === 'announce,backup,boardroom,halloffame,health,medals,org');
 t('manifest: the dock lists and the hub groups come from it (every hub tile href is a manifest tool or the Control Center tile)', MAN.hubGroups(false).concat(MAN.hubGroups(true)).every(([, , , tools]) => tools.every(([h]) => MAN.TOOLS.some((x) => x.href === h) || h === MAN.CC_TILE.href)));
 t('anti-duplication: the dock source and the hub source hold no hand-copied tool list', !/staff-(schedule|dugout|desk|content|artwork|tools|insights)\.html/.test(fs.readFileSync(path.join(ROOT, 'next/static/dock.js'), 'utf8')) && !/\['staff-(schedule|dugout|desk)\.html'/.test(fs.readFileSync(path.join(ROOT, 'next/pages/hub.mjs'), 'utf8')));
 

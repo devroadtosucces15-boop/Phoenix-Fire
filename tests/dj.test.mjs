@@ -48,6 +48,8 @@ const viaWorker = (path, init = {}) => W(path.replace(/^https?:\/\/[^/]+/, ''), 
 const bridge = createBridge({ url: 'https://worker.test', key: env.MUSIC_SHARED_KEY, pushEvery: 60_000, minGap: 0, log: { log() {} },
   fetchImpl: (u, init) => viaWorker(u, init),
   ctx: { rooms: () => [fake], find: (id) => (id === 'T1' ? fake : undefined), resolve: async (q) => (q.includes('bad') ? null : { tracks: [mk('Added')] }), search: async (q) => [{ id: 'https://youtu.be/s', title: 'Found ' + q, artist: 'X', thumb: '', duration: 100 }] } });
+// the snapshot carries startedAt = now (whole seconds) - position, and the fake player does not advance: start the two pushes just after a second boundary so the clock cannot tick between them (this was the intermittent red)
+await new Promise((r) => setTimeout(r, 1000 - (Date.now() % 1000) + 5));
 t('push sends the snapshot to the Worker', await bridge.push(true) === true);
 const alice = await login('701', [], 'Alice');
 t('the site now reads the live room the PC pushed', (await call(alice, '/api/music/rooms')).d?.[0]?.name === 'Phoenix DJ 1 · Lounge');

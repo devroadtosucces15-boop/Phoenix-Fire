@@ -3,7 +3,8 @@
 (() => {
   const d = document, A = window.NorexAuth, API = window.NOREX_API, page = (window.NOREX && window.NOREX.page) || '';
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-  const ROOMS = [['staff-desk.html', '🗂️', 'Desk'], ['staff-tools.html', '🛠️', 'Tools'], ['staff-content.html', '📄', 'Content'], ['staff-schedule.html', '🗓️', 'Schedule'], ['staff-dugout.html', '🧢', 'Dugout'], ['staff-boardroom.html', '👑', 'Boardroom'], ['staff-artwork.html', '🎨', 'Artwork'], ['staff-insights.html', '🔎', 'Insights']];
+  // the staff rooms are the manifest's hub tiles (next/lib/staffmanifest.mjs): one list for the hub, dock, sidebar, search and this compass
+  const ROOMS = ((window.PFStaffNav || {}).tools || []).filter((t) => t.group && t.id !== 'home').map((t) => [t.href, t.emoji, t.label]);
   let fab = null, panel = null, heads = [];
   const root = () => d.querySelector('main') || d.body;
   const collect = () => {
@@ -22,7 +23,7 @@
     panel.innerHTML = `<div class="nv-h"><b>🧭 On this page</b><button type="button" class="nv-x" data-nv-close aria-label="Close navigator">✕</button></div>
 <ol class="nv-list">${heads.length ? heads.map((h, i) => `<li><a href="#${esc(h.id)}" data-i="${i}"${i === cur ? ' class="on" aria-current="location"' : ''}>${esc(h.t)}</a></li>`).join('') : '<li class="nv-none muted">No sections to jump to here.</li>'}</ol>
 <div class="nv-acts"><button type="button" class="nv-b" data-nv-top>⬆️ Top</button><button type="button" class="nv-b" data-nv-end>⬇️ End</button></div>
-<div class="nv-rooms">${ROOMS.map(([h, i, t]) => `<a href="${h}"${h === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${i}</span>${t}</a>`).join('')}</div>`;
+<div class="nv-rooms">${ROOMS.map(([h, i, t]) => `<a href="${h}"${h.split('?')[0] === page ? ' aria-current="page"' : ''}><span aria-hidden="true">${i}</span>${t}</a>`).join('')}</div>`;
     d.body.appendChild(panel); fab.setAttribute('aria-expanded', 'true');
     const smooth = d.documentElement.dataset.motion === 'off' || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
     panel.addEventListener('click', (e) => {

@@ -14,9 +14,10 @@
     const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || 'That did not work (' + r.status + ').'); return j;
   };
   const ago = (t) => { const s = (Date.now() - t) / 1000; return s < 3600 ? Math.max(1, Math.round(s / 60)) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
-  const ROOMS = [['staff-desk.html', '🗂️', 'Desk'], ['staff-tools.html', '🛠️', 'Tools'], ['staff-content.html', '📄', 'Content'], ['staff-schedule.html', '🗓️', 'Schedule'], ['staff-dugout.html', '🧢', 'Dugout'], ['staff-boardroom.html', '👑', 'Boardroom'], ['staff-artwork.html', '🎨', 'Artwork'], ['staff-insights.html', '🧭', 'Insights']];
+  // the staff rooms and the room nearest each page come from the staff manifest (next/lib/staffmanifest.mjs); this file names tools by id only
+  const MAN = (window.PFStaffNav || { tools: [] }), ROOMS = MAN.tools.filter((t) => t.group && t.id !== 'home').map((t) => [t.href, t.emoji, t.label]), href = (id) => (MAN.tools.find((t) => t.id === id) || {}).href;
   // which Staff room is closest to the page you are on (shown first)
-  const NEAR = { 'fixtures.html': 'staff-schedule.html', 'schedule.html': 'staff-schedule.html', 'squad.html': 'staff-artwork.html', 'players.html': 'staff-artwork.html', 'halloffame.html': 'staff-boardroom.html', 'opponents.html': 'staff-insights.html', 'tactics.html': 'staff-dugout.html', 'join.html': 'staff-desk.html' };
+  const NEAR_TOOL = { 'fixtures.html': 'schedule', 'schedule.html': 'schedule', 'squad.html': 'artwork', 'players.html': 'artwork', 'halloffame.html': 'boardroom', 'opponents.html': 'insights', 'tactics.html': 'dugout', 'join.html': 'desk' };
 
   const EDITORS = {
     'news.html': {
@@ -89,7 +90,7 @@
 
   async function open() {
     if (sheet) return;
-    const ed = EDITORS[page], near = NEAR[page];
+    const ed = EDITORS[page], near = href(NEAR_TOOL[page]);
     const rooms = [...ROOMS].sort((a, b) => (b[0] === near) - (a[0] === near));
     sheet = d.createElement('div'); sheet.className = 'mx-sheet gr-sheet'; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-modal', 'true'); sheet.setAttribute('aria-label', 'Edit this page');
     sheet.innerHTML = `<div class="mx-sheet-body"><div class="gr-h"><h3>⚙️ Edit this page</h3><button type="button" class="gr-x" data-gr-close aria-label="Close">✕</button></div>

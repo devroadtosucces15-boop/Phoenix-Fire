@@ -29,14 +29,22 @@
   const hashOf = () => { const tp = new URLSearchParams(location.search).get('tool'); if (tp && !location.hash) history.replaceState(null, '', location.pathname + '#' + tp); const h = location.hash.slice(1), [id, q] = h.split('?'); return { id: id || 'home', q: new URLSearchParams(q || '') }; };
   let cur = 'home';
   const setNav = (id) => { $$('.cx-nav', root).forEach((a) => { if (a.dataset.tool === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); };
+  // old anchors (#switches, #hof, #bot ...) from the retired Boardroom and Tools pages and the owner button: one flat map built from the manifest
+  const ALIAS = Object.assign({}, ...Object.values(MAN.legacyHash || {}).map((m) => Object.fromEntries(Object.entries(m).filter(([k]) => k))));
+  const owner = () => A?.role === 'owner';
+  const kindOf = (t) => (t.module === 'home' ? 'home' : /^(org|controlcenter:)/.test(t.module) ? 'cc' : t.module.split(':')[0]); // home | cc | br (boardroom.js) | tl (tools.js)
   function show(id) {
-    const t = tool(id) && (tool(id).module || id === 'home') ? tool(id) : tool('home'); id = t.id; cur = id;
-    const live = $('#ccLive'), home = $('#cxHome');
+    id = ALIAS[id] || id;
+    let t = tool(id) && (tool(id).module || id === 'home') ? tool(id) : tool('home');
+    if (t.owner && !owner()) t = tool('home'); // owner tools are not opened for a manager, the sidebar already hides them
+    id = t.id; cur = id;
+    const home = $('#cxHome'), hosts = { cc: $('#ccLive'), br: $('#brLive'), tl: $('#tlLive') }, kind = kindOf(t);
     $('#cxTitle').textContent = t.label; $('#cxCur').textContent = t.label; $('#cxSubtitle').textContent = t.desc + '. Changes made in a tool apply at once: no deploy, no code change.';
     setNav(id);
-    const isHome = t.module === 'home';
-    home.hidden = !isHome; if (live) live.hidden = isHome || !ready;
-    if (!isHome) { const panel = t.module === 'org' ? 'org' : t.module.split(':')[1]; w.PFCC?.go(panel); }
+    home.hidden = kind !== 'home'; for (const [k, el] of Object.entries(hosts)) if (el) el.hidden = k !== kind || !ready;
+    if (kind === 'cc') w.PFCC?.go(t.module === 'org' ? 'org' : t.module.split(':')[1]);
+    else if (kind === 'br') w.PFBoardroom?.open(t.module.split(':')[1]);
+    else if (kind === 'tl') w.PFTools?.open(t.module.split(':')[1]);
     else paintHome();
     root.classList.remove('open'); $('#cxScrim').hidden = true; $('#cxMenu').setAttribute('aria-expanded', 'false');
   }
@@ -76,7 +84,7 @@
       hr('pages', 'Pages', pages ? statusOfRun(pages) : statusOfRun(upd), pages ? `${pages.conclusion || pages.status} · ${ago(pages.at)}` : 'deploys with the build', pages?.at, (pages || upd)?.url);
       hr('bot', 'Bot', DL.ping !== null ? 'ok' : 'bad', DL.ping !== null ? `answering · ${DL.ping} ms` : 'not answering', 0, bot?.url);
     }
-    if (DL.queue) for (const [k, v] of Object.entries(DL.queue)) { if (typeof v !== 'number' || k === 'at') continue; const m = QUEUE_TOOL[k] || ['Moderation and tools', k.replace(/_/g, ' '), 'tools']; out.push({ id: 'q:' + k, type: 'queue', what: m[1], detail: `${v} waiting for a decision · ${m[0]}`, who: '', at: DL.queue.at || null, n: v, status: v ? 'bad' : 'ok', tool: m[2] }); }
+    if (DL.queue) for (const [k, v] of Object.entries(DL.queue)) { if (typeof v !== 'number' || k === 'at') continue; const m = QUEUE_TOOL[k] || ['Moderation and tools', k.replace(/_/g, ' '), 'submissions']; out.push({ id: 'q:' + k, type: 'queue', what: m[1], detail: `${v} waiting for a decision · ${m[0]}`, who: '', at: DL.queue.at || null, n: v, status: v ? 'bad' : 'ok', tool: m[2] }); }
     for (const [i, a] of (DL.audit || []).entries()) { const key = a.after?.key || a.before?.key || '', sw = a.before && a.after && a.before.enabled !== a.after.enabled ? (a.after.enabled ? ' · switched on' : ' · switched off') : ''; out.push({ id: 'a:' + i, type: 'change', what: key || a.action, detail: `${a.action}${sw}`, who: String(a.name || a.user_id || ''), at: +a.at || 0, n: 1, status: 'ok', tool: 'audit', day: a.at ? dayOf(+a.at) : '' }); }
     for (const n of DL.notes || []) out.push({ id: 'n:' + n.key, type: 'note', what: n.headline || n.key, detail: n.body || '', who: '', at: n.at || null, n: 1, status: 'ok', tool: 'insights', extra: n.watch });
     return out;

@@ -32,7 +32,7 @@ const stale = [];
 for (const [f, h] of Object.entries(docs)) for (const a of h.matchAll(/href="([\w.-]+\.html)#([\w-]+)"/g)) {
   const [, p, id] = a, d = docs[p];
   if (!d) { stale.push(`${f} -> ${p}#${id}`); continue; }
-  if (d.includes(`id="${id}"`) || d.includes(`data-dl="${id}"`) || d.includes(`data-dl~="${id}`)) continue;
+  if (d.includes(`id="${id}"`) || d.includes(`data-dl="${id}"`) || d.includes(`data-dl~="${id}`) || [...d.matchAll(/data-dl="([^"]*)"/g)].some((m) => m[1].split(' ').includes(id))) continue; // a data-dl may hold several aliases (the Control Center main column)
   if (!(p === 'hub-handbook.html' && /^(league|rush)-setpieces$/.test(id) && js.includes('id="${mode}-${k}"'))) stale.push(`${f} -> ${p}#${id}`);
 }
 t('no stale page.html#anchor link in any built page' + (stale.length ? ': ' + stale.slice(0, 5).join('; ') : ''), stale.length === 0);

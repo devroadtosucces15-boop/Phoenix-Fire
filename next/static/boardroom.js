@@ -1,7 +1,7 @@
-// Staff › Boardroom (Phase C4): the owner's room on the live routes.
-//   Switches  – GET /api/admin/overview (flags, canEditFlags), POST /api/admin/flags {name, level}, /api/admin/flags/reset {name}
+// Staff › Boardroom: the owner's tools, mounted inside the Control Center (PF-022 step 8). One tab per tool, picked by the Control Center sidebar (PFBoardroom.open(tab));
+// the in-page tab chips are hidden there. The Switches, Audit and Organization tabs were retired: the Control Center's Site access, Audit log and Organization panels are the single versions.
+//   Tools     – the owner's finder (every staff tool from the staff manifest, links outside the site, features by name)   GET /api/admin/overview (flags, for the finder)
 //   Health    – GET /api/admin/health (Cloudflare analytics + GitHub Actions + club crawl)
-//   Audit     – activity from /api/admin/overview, GET /api/admin/submissions?type=, GET /api/admin/reports
 //   Announce  – POST /api/notify/announce (preview + confirm), Discord post of a club doc: GET /api/events/discord,
 //               GET /api/docs, POST /api/docs/discord {id, preview} then {id, channel, role}
 //   Hall of Fame – GET /api/hof, POST /api/hof {kind, player|name, title, text, date}, POST /api/hof/remove {id}; each entry gets a
@@ -18,19 +18,8 @@
   const call = (path, body) => (body ? A.call(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) : A.call(path));
   const toast = (m, err) => M?.toast ? M.toast(m, err ? { kind: 'err' } : { kind: 'ok' }) : console.log(m);
   const ago = (t) => { const s = Math.max(1, Math.round((Date.now() - (t > 1e12 ? t : Date.parse(t))) / 1000)); return s < 90 ? 'just now' : s < 5400 ? Math.round(s / 60) + ' min ago' : s < 129600 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
-  let committed = {}; try { committed = JSON.parse(root.dataset.committed || '{}'); } catch {}
-  const LEVELS = ['off', 'owner', 'managers', 'members', 'public'];
-  const LVL_HELP = { off: 'Nobody', owner: 'Owner only', managers: 'Managers and owner', members: 'All signed-in members', public: 'Everyone, even guests' };
-  const GROUPS = [
-    ['🗓️ Match nights', ['events', 'matchNight', 'discordRsvp', 'rosterPicture', 'rushLog', 'rushLfg', 'rushQueue', 'rushBoard', 'seasonCards', 'lockerRoom', 'locker', 'dugout']],
-    ['👤 Players and stats', ['myStats', 'badges', 'profiles', 'leaders', 'hallOfFame', 'scouting', 'trials', 'statInsights', 'insightWidget', 'insights']],
-    ['🛠️ Builds and tactics', ['builder', 'proBuilds', 'tactics', 'gameRules', 'playStyle']],
-    ['💬 Community', ['notifications', 'push', 'reminders', 'suggestions', 'feedbackRoom', 'docs', 'requests', 'hub', 'hubLive', 'awards', 'predictions', 'memberLive', 'watchlist', 'discoveries', 'music', 'fun', 'facesSite']],
-    ['👑 Staff and Discord', ['boardroom', 'managerNotes', 'roleSync', 'discordMatch', 'matchReview', 'matchPicture', 'platformLink', 'liveBanner', 'homeWatch', 'liveAnnounce', 'streamAlerts', 'burners']],
-  ];
   const FREE = { requests: 100000 };
-  const S = { tab: 'tools', open: new Set(),  flags: null, canEdit: false, activity: null, health: undefined, ping: null, filter: '', undo: [], busy: false,
-    aud: { sub: 'log', q: '', type: '', n: 12, subs: {}, subType: 'feedback', reports: null }, err: {},
+  const S = { tab: 'tools', flags: null, health: undefined, ping: null, filter: '', busy: false, err: {},
     ann: { title: '', body: '', audience: 'all', ack: false, preview: false }, docs: null, targets: undefined, dc: { doc: '', channel: '', role: '', preview: null },
     hof: null, hofForm: { kind: 'legend', player: '', name: '', title: '', text: '' },
     med: null, medQ: '', medTier: '', medForm: null, bak: { busy: false, last: null } };
@@ -40,23 +29,15 @@
   const act = async (fn) => { try { await fn(); } catch (er) { toast(er.message, true); } };
   const nice = (k) => k.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase());
 
-  // ---------- where each switch lives (page + the heading to scroll to) and the places the owner works from ----------
-  const WHERE = {
-    events: ['hub-matchnight.html', 'Match night'], matchNight: ['hub-matchnight.html', 'Match night'], rosterPicture: ['hub-matchnight.html', 'Match night'], discordRsvp: ['hub-matchnight.html', 'Match night'], discordMatch: ['hub-matchnight.html', 'Match night'], matchReview: ['hub-matchnight.html', 'Match night'], matchPicture: ['hub-matchnight.html', 'Match night'], rushLog: ['rush.html', ''], rushLfg: ['rush.html', ''], rushQueue: ['rush.html', ''], rushBoard: ['rushboard.html', ''], seasonCards: ['seasoncards.html', ''], lockerRoom: ['hub.html', ''], locker: ['hub.html', ''], dugout: ['staff-dugout.html', ''],
-    myStats: ['hub.html', ''], badges: ['hub.html', 'Medals'], profiles: ['players.html', ''], leaders: ['leaders.html', ''], hallOfFame: ['halloffame.html', ''], scouting: ['scouting.html', ''], trials: ['join.html', ''], statInsights: ['stats.html', ''], insightWidget: ['stats.html', ''], aiInsights: ['stats.html', ''], insights: ['staff-insights.html', ''],
-    builder: ['builds.html', ''], proBuilds: ['builds.html', ''], tactics: ['tactics.html', ''], gameRules: ['updates.html', ''], playStyle: ['playstyle.html', ''], nxStudio: ['studio.html', ''],
-    notifications: ['hub.html', 'Alerts'], push: ['hub.html', 'Alerts'], suggestions: ['hub-clubhouse.html', ''], docs: ['hub-handbook.html', ''], requests: ['join.html', ''], hub: ['hub-clubhouse.html', ''], hubLive: ['hub-clubhouse.html', ''], hubGold: ['hub-clubhouse.html', ''], awards: ['hub-squad.html', ''], predictions: ['hub-squad.html', ''], points: ['hub-squad.html', ''], feed: ['news.html', ''], hotw: ['hub-squad.html', ''], mentions: ['hub-clubhouse.html', ''], messages: ['hub-clubhouse.html', ''], presence: ['hub-clubhouse.html', ''], starRatings: ['hub-matchnight.html', ''], feedback: ['hub.html', ''], recommendations: ['hub-squad.html', ''], ask: ['stats.html', ''], scoutReport: ['scout.html', ''], rushSquads: ['rush.html', ''],
-    boardroom: ['staff-boardroom.html', ''], managerNotes: ['staff-desk.html', ''], roleSync: ['staff-tools.html', ''], platformLink: ['hub.html', ''], liveBanner: ['index.html', ''], homeWatch: ['index.html', ''], liveAnnounce: ['watch.html', ''], streamAlerts: ['staff-tools.html', ''], reminders: ['hub.html', 'Alerts'], feedbackRoom: ['hub-clubhouse.html', ''], burners: ['burners.html', ''], lineupRec: ['staff-dugout.html', ''], editGear: ['staff-tools.html', ''], staffNav: ['staff.html', ''], issueTool: ['index.html', ''], compareView: ['players.html', ''], cardStudio: ['staff-artwork.html', ''], avatarCard: ['hub.html', ''],
-    serverTools: ['staff-tools.html', ''], fun: ['staff-tools.html', ''], discoveries: ['staff-tools.html', ''], watchlist: ['staff-tools.html', ''], memberLive: ['index.html', ''], facesSite: ['hub-clubhouse.html', ''], ownerFab: ['index.html', ''], music: ['hub-music.html', ''],
-  };
-  const go = (page, find) => page + (find ? `?nx=${encodeURIComponent('~' + find)}` : '');
+  // where each switch lives, and the staff pages: one copy in the staff manifest (next/lib/flagwhere.mjs, next/lib/staffmanifest.mjs)
+  const MAN = window.PFStaffManifest || { tools: [], where: {} }, WHERE = MAN.where || {};
+  const go = (page, find, hash) => page + (find ? `?nx=${encodeURIComponent('~' + find)}` : '') + (hash ? '#' + hash : '');
   const LINKS = { discord: '', botPortal: '', apply: '', youtube: '', twitch: '', ...(window.NOREX?.links || {}) }; // from config.json via the page shell; empty = not set
   const TOOLS = [
-    ['🏠 Site pages for staff', [['🧢 Dugout', 'Lineups and match plans', 'staff-dugout.html'], ['🗓️ Schedule', 'Match nights and RSVPs', 'staff-schedule.html'], ['📋 Desk', 'Trials, claims, notes', 'staff-desk.html'], ['🧰 Tools', 'Roles, gear, feedback', 'staff-tools.html'], ['📰 Content', 'News, docs, rules', 'staff-content.html'], ['🧠 Insights', 'Club Intelligence', 'staff-insights.html'], ['🎨 Artwork', 'Card Studio approvals', 'staff-artwork.html'], ['🧭 Staff home', 'Everything staff', 'staff.html']]],
+    ['🏠 Staff tools', MAN.tools.filter((t) => t.id !== 'boardroom').map((t) => [t.emoji + ' ' + t.label, t.desc, t.href])],
     ['🔗 Outside the site', [['💬 Discord server', 'Open the club server', LINKS.discord], ['🤖 Discord bot', 'Developer portal for the bot', LINKS.botPortal], ['☁️ Cloudflare', 'Worker, KV, D1, analytics', 'https://dash.cloudflare.com/'], ['📺 YouTube', LINKS.youtube ? LINKS.youtube.match(/youtube\.com\/(@[\w.-]+)/)?.[1] || 'Channel' : 'Channel', LINKS.youtube], ['🎮 Twitch', LINKS.twitch.match(/twitch\.tv\/([\w]{3,25})/)?.[1] || 'Channel', LINKS.twitch], ['📨 Apply link', 'The Discord invite for new players', LINKS.apply]]],
     ['📊 The public site', [['🏆 Hall of Fame', 'As guests see it', 'halloffame.html'], ['⚽ Squad', 'Card stack', 'squad.html'], ['📈 Stats', 'League and Rush', 'stats.html'], ['🧩 Tactics', 'Formations and 3D pitch', 'tactics.html'], ['🔥 Burners', 'Unofficial clubs', 'burners.html'], ['🚪 Join', 'Recruitment page', 'join.html']]],
   ];
-  const VIEWS = [['', '👑', 'Me (owner)', 'Everything I can see'], ['member', '🧑', 'Member', 'A signed-in club member'], ['guest', '👤', 'Guest', 'Someone not signed in']];
 
   function tools() {
     const q = S.filter.toLowerCase();
@@ -66,45 +47,8 @@
     return `<div class="br-bar"><input type="search" class="br-in" data-filter placeholder="Find a tool or a feature…" value="${esc(S.filter)}" aria-label="Find a tool or feature"></div>
 ${jump.length ? `<h4 class="dk-h">🎯 Features</h4><div class="br-tools">${jump.map((k) => card([nice(k), 'Go to where it lives', go(...WHERE[k])])).join('')}</div>` : ''}
 ${groups.map(([t, it]) => `<h4 class="dk-h">${esc(t)}</h4><div class="br-tools">${it.map(card).join('')}</div>`).join('') || '<p class="muted small">Nothing matches.</p>'}
-<p class="muted small">Every feature switch also has its own <b>Go to</b> and <b>Show me</b> buttons under Switches.</p>`;
+<p class="muted small">Every feature switch also has its own <b>Go to</b> and <b>Show me</b> buttons under Site access in the Control Center.</p>`;
   }
-  function showMe(k) {
-    const [pg, find] = WHERE[k] || ['index.html', '']; const dlg = d.createElement('div'); dlg.className = 'br-modal'; dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-label', `Show me ${nice(k)}`);
-    const cur = window.NorexAuth?.viewAs || '';
-    dlg.innerHTML = `<div class="br-sheet"><h4>Show me <b>${esc(nice(k))}</b> as…</h4><p class="muted small">Opens ${esc(pg.replace('.html', ''))}${find ? ` at “${esc(find)}”` : ''} and shows it the way that person sees the site. Display only: the server still treats you as the owner. A red bar on every page takes you back.</p>
-<div class="br-views">${VIEWS.map(([v, ic, n, sub]) => `<button type="button" data-v="${v}"${v === cur ? ' class="on"' : ''}><span aria-hidden="true">${ic}</span><b>${n}</b><small>${sub}</small></button>`).join('')}</div><button type="button" class="chip" data-x>Cancel</button></div>`;
-    const close = () => { dlg.remove(); d.removeEventListener('keydown', esc_); }; const esc_ = (e) => { if (e.key === 'Escape') close(); };
-    dlg.addEventListener('click', (e) => { if (e.target === dlg || e.target.closest('[data-x]')) return close(); const b = e.target.closest('[data-v]'); if (!b) return; try { if (b.dataset.v) { localStorage.setItem('phoenix.viewas', b.dataset.v); localStorage.setItem('phoenix.viewas.t', String(Date.now())); } else { localStorage.removeItem('phoenix.viewas'); localStorage.removeItem('phoenix.viewas.t'); } } catch {} location.href = go(pg, find); });
-    d.addEventListener('keydown', esc_); d.body.appendChild(dlg); dlg.querySelector('[data-v]').focus();
-  }
-
-  // ---------- ① switches ----------
-  function switches() {
-    if (!S.flags) return S.err.flags ? empty('⚠️', 'Could not load the switches', S.err.flags) : skel;
-    const q = S.filter.toLowerCase(), all = Object.keys(S.flags), used = new Set();
-    const groups = GROUPS.map(([t, ks]) => [t, ks.filter((k) => all.includes(k))]);
-    groups.forEach(([, ks]) => ks.forEach((k) => used.add(k)));
-    const rest = all.filter((k) => !used.has(k)); if (rest.length) groups.push(['⚙️ Everything else', rest]);
-    const row = (k) => {
-      const v = S.flags[k], over = committed[k] !== undefined && committed[k] !== v, w = WHERE[k];
-      return `<div class="br-flag" data-lvl="${esc(v)}"><span class="br-name"><b>${esc(nice(k))}</b><code>${esc(k)}</code>${over ? `<span class="br-over">live override · committed: ${esc(committed[k])}</span>` : ''}</span>
-<span class="br-seg" role="radiogroup" aria-label="${esc(k)}">${LEVELS.map((l) => `<button type="button" role="radio" aria-checked="${l === v}" class="${l === v ? 'on' : ''}" title="${esc(LVL_HELP[l])}" data-flag="${esc(k)}" data-level="${l}"${S.canEdit ? '' : ' disabled'}>${l[0].toUpperCase() + l.slice(1)}</button>`).join('')}</span>
-<span class="br-acts">${w ? `<a class="chip" href="${esc(go(...w))}">↗ Go to</a><button type="button" class="chip" data-show="${esc(k)}">👁 Show me</button>` : ''}${over && S.canEdit ? `<button type="button" class="chip" data-reset="${esc(k)}">↺ Back to committed</button>` : ''}</span></div>`;
-    };
-    const html = groups.map(([t, ks]) => { const hit = ks.filter((k) => !q || k.toLowerCase().includes(q) || nice(k).toLowerCase().includes(q)); if (!hit.length) return ''; const on = ks.filter((k) => S.flags[k] !== 'off').length; return `<details class="br-grp" data-g="${esc(t)}"${q || S.open.has(t) ? ' open' : ''}><summary><span>${esc(t)}</span><small>${hit.length} switch${hit.length === 1 ? '' : 'es'} · ${on} on</small></summary><div class="br-flags">${hit.map(row).join('')}</div></details>`; }).join('');
-    const nOver = all.filter((k) => committed[k] !== undefined && committed[k] !== S.flags[k]).length;
-    return `<div class="br-bar"><input type="search" class="br-in" data-filter placeholder="Find a feature…" value="${esc(S.filter)}" aria-label="Find a feature"><span class="muted small">${all.length} switches · ${nOver} live override${nOver === 1 ? '' : 's'}</span><button type="button" class="chip" data-undo${S.undo.length ? '' : ' disabled'}>↶ Undo${S.undo.length ? ` (${esc(S.undo[S.undo.length - 1].name)})` : ''}</button></div>
-${S.canEdit ? '' : '<p class="muted small">Only the owner can change switches; you can see them.</p>'}
-${html ? `<div class="br-grps">${html}</div>` : '<p class="muted small">No switch matches.</p>'}
-<p class="muted small">A change is live on the next page load, with no deploy. “Committed” is the level saved in the club config. New features start at Owner.</p>`;
-  }
-  async function setFlag(name, level, undo) {
-    const prev = S.flags[name]; if (prev === level || S.busy) return;
-    if (!confirm(`Change “${nice(name)}” from ${prev} to ${level}?\n\n${LVL_HELP[level]} will see it on the live site.`)) return;
-    S.busy = true;
-    try { S.flags = (await call('/api/admin/flags', { name, level })).flags; if (!undo) S.undo.push({ name, level: prev }); toast(`${nice(name)} → ${level}`); } finally { S.busy = false; paint(); }
-  }
-
   // ---------- ② health ----------
   function health() {
     const h = S.health;
@@ -137,38 +81,6 @@ ${runs.length ? `<h4 class="dk-h">Recent runs</h4><ul class="dk-log">${runs.slic
     const t0 = performance.now();
     try { S.health = await call('/api/admin/health'); S.ping = Math.round(performance.now() - t0); S.err.health = ''; } catch (er) { S.health = null; S.ping = null; S.err.health = er.message; }
     if (S.tab === 'health') paint();
-  }
-
-  // ---------- ③ audit ----------
-  const ACT = { 'flag-change': '🎛️', announce: '📣', 'hof-induct': '🏛️', 'hof-moment': '🏛️', 'hof-remove': '🗑️', 'doc-discord': '💬', claim: '🪪', approve: '✅' };
-  function audit() {
-    const a = S.aud, subs = [['log', '🛡️ Activity log'], ['subs', '📥 Submissions'], ['reports', '🚩 Reports']];
-    const tabs = `<div class="chips dk-tabs">${subs.map(([k, n]) => `<button class="chip${a.sub === k ? ' on' : ''}" data-asub="${k}">${n}</button>`).join('')}</div>`;
-    if (a.sub === 'log') {
-      if (!S.activity) return tabs + (S.err.activity ? empty('⚠️', 'Could not load the log', S.err.activity) : skel);
-      const q = a.q.trim().toLowerCase(), types = [...new Set(S.activity.map((x) => x.type))].sort();
-      const hit = S.activity.filter((x) => (!a.type || x.type === a.type) && (!q || `${x.n || ''} ${x.type} ${x.detail || ''}`.toLowerCase().includes(q))), shown = hit.slice(0, a.n);
-      return `${tabs}<div class="br-bar"><input type="search" class="br-in" data-aq placeholder="Search the log…" value="${esc(a.q)}" aria-label="Search the log"><select class="br-in" data-atype aria-label="Type"><option value="">All types</option>${types.map((t) => `<option value="${esc(t)}"${t === a.type ? ' selected' : ''}>${esc(ACT[t] || '•')} ${esc(t)}</option>`).join('')}</select></div>
-<ul class="dk-log">${shown.map((x) => `<li><span>${esc(ACT[x.type] || '•')} <b>${esc(x.n)}</b> ${esc(x.type)}${x.detail ? ` · ${esc(x.detail)}` : ''}</span><small>${esc(ago(x.at))}</small></li>`).join('') || `<li class="muted small">${S.activity.length ? 'No entries match.' : 'Nothing logged yet.'}</li>`}</ul>
-${hit.length > shown.length ? `<button type="button" class="chip" data-amore>Show more (${hit.length - shown.length} left)</button>` : ''}<p class="muted small">Latest ${S.activity.length} entries · ${hit.length} match the filter.</p>`;
-    }
-    if (a.sub === 'subs') {
-      const rows = a.subs[a.subType];
-      return `${tabs}<div class="br-bar"><select class="br-in" data-stype aria-label="Submission type">${['feedback', 'ratings', 'awardVotes', 'predictions', 'suggestions', 'builds'].map((t) => `<option value="${t}"${t === a.subType ? ' selected' : ''}>${esc(nice(t))}</option>`).join('')}</select></div>
-${rows === undefined ? skel : rows === null ? empty('⚠️', 'Could not load these', S.err.subs) : rows.length ? `<ul class="dk-log">${rows.slice(0, 40).map((r) => `<li><span><b>${esc(r.author || '?')}</b>${r.subject ? ` → ${esc(r.subject)}` : ''}${r.hidden ? ' <em class="muted">(hidden)</em>' : ''}<br>${esc(String(r.body ?? r.title ?? '').slice(0, 220))}</span><small>${r.at ? esc(ago(r.at)) : ''}</small></li>`).join('')}</ul>` : empty('📭', 'Nothing here yet', 'No submissions of this type.')}`;
-    }
-    const r = a.reports;
-    return `${tabs}${r === null ? skel : r === false ? empty('⚠️', 'Could not load reports', S.err.reports) : r.length ? `<ul class="dk-log">${r.map((x) => `<li><span>🚩 <b>${esc(x.author)}</b> · ${esc(x.source)}${x.reason ? ` · “${esc(x.reason)}”` : ''}<br>${esc(x.excerpt)}</span><small>${esc(ago(x.at))}</small></li>`).join('')}</ul>` : empty('🎉', 'No reports waiting', 'Nothing has been reported.')}`;
-  }
-  async function loadSubs(t) {
-    S.aud.subs[t] = undefined; paint();
-    try { S.aud.subs[t] = (await call(`/api/admin/submissions?type=${encodeURIComponent(t)}`)).rows; } catch (er) { S.aud.subs[t] = null; S.err.subs = er.message; }
-    paint();
-  }
-  async function loadReports() {
-    if (S.aud.reports) return;
-    try { S.aud.reports = (await call('/api/admin/reports')).items; } catch (er) { S.aud.reports = false; S.err.reports = er.message; }
-    paint();
   }
 
   // ---------- ④ announcements ----------
@@ -303,30 +215,20 @@ ${form}${aw}<div class="br-meds">${hit.map(medCard).join('') || '<p class="muted
     paint();
   }
 
-  // ---------- Organization: the shared panel (next/static/orgpanel.js), also the Control Center's Organization panel ----------
-  const OP = window.PFOrgPanel({ root, call, toast, esc, ago, empty, skel, act, repaint: () => paint(), active: () => S.tab === 'org' });
-  S.org = OP.O; const loadOrg = OP.load, org = OP.html;
-
   // ---------- frame ----------
-  const TABS = [['tools', '🧰 Tools'], ['switches', '🎛️ Switches'], ['health', '🩺 Health'], ['audit', '🛡️ Audit'], ['announce', '📣 Announce'], ['hof', '🏛️ Hall of Fame'], ['medals', '🏅 Medals'], ['backup', '💾 Backup'], ['org', '🏢 Organization']];
+  const TABS = [['tools', '🧰 Tools'], ['health', '🩺 Health'], ['announce', '📣 Announce'], ['hof', '🏛️ Hall of Fame'], ['medals', '🏅 Medals'], ['backup', '💾 Backup']];
   function paint() {
     if (!root.isConnected) return;
-    const keep = d.activeElement?.matches?.('input[data-filter],input[data-aq],input[data-medq]') ? (d.activeElement.dataset.filter !== undefined ? 'data-filter' : d.activeElement.dataset.aq !== undefined ? 'data-aq' : 'data-medq') : null;
-    root.innerHTML = `<div class="chips dk-tabs">${TABS.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}">${n}</button>`).join('')}${S.tab === 'health' ? '<button class="chip" data-hrefresh>↻ Refresh</button>' : ''}</div><div class="dk-pane">${S.tab === 'switches' || S.tab === 'org' ? `<p class="panel small">🎛️ The <b>Control Center</b> now holds this together with every bot command, post, DM and scheduled job: <a href="staff-controlcenter.html#${S.tab === 'org' ? 'org' : 'access'}">open it there →</a> (same settings, same data).</p>` : ''}${{ tools, switches, health, audit, announce, hof, medals, backup, org }[S.tab]()}</div>`;
+    const keep = d.activeElement?.matches?.('input[data-filter],input[data-medq]') ? (d.activeElement.dataset.filter !== undefined ? 'data-filter' : 'data-medq') : null;
+    root.innerHTML = `<div class="chips dk-tabs">${TABS.map(([k, n]) => `<button class="chip${S.tab === k ? ' on' : ''}" data-tab="${k}">${n}</button>`).join('')}${S.tab === 'health' ? '<button class="chip" data-hrefresh>↻ Refresh</button>' : ''}</div><div class="dk-pane">${{ tools, health, announce, hof, medals, backup }[S.tab]()}</div>`;
     if (keep) { const i = root.querySelector(`[${keep}]`); if (i) { i.focus(); const n = i.value.length; i.setSelectionRange(n, n); } }
   }
-  const openTab = (k) => { S.tab = k; paint(); if (k === 'health' && S.health === undefined) loadHealth(); if (k === 'announce') loadAnnounce(); if (k === 'hof') loadHof(); if (k === 'medals') loadMedals(); if (k === 'org') loadOrg(); if (k === 'audit' && S.aud.sub === 'reports') loadReports(); };
+  const openTab = (k) => { S.tab = k; paint(); if (k === 'health' && S.health === undefined) loadHealth(); if (k === 'announce') loadAnnounce(); if (k === 'hof') loadHof(); if (k === 'medals') loadMedals(); };
 
   root.addEventListener('click', (ev) => {
     const t = ev.target.closest('button'); if (!t) return; const k = t.dataset;
-    if (k.show) showMe(k.show);
-    else if (k.tab) openTab(k.tab);
-    else if (k.flag) act(() => setFlag(k.flag, k.level));
-    else if (k.reset) act(async () => { if (!confirm(`Drop the live override for “${nice(k.reset)}” and go back to the committed level (${committed[k.reset]})?`)) return; S.flags = (await call('/api/admin/flags/reset', { name: k.reset })).flags; toast(`${nice(k.reset)}: back to committed`); paint(); });
-    else if ('undo' in k) act(async () => { const u = S.undo.pop(); if (u) await setFlag(u.name, u.level, true); });
+    if (k.tab) openTab(k.tab);
     else if ('hrefresh' in k) loadHealth();
-    else if (k.asub) { S.aud.sub = k.asub; paint(); if (k.asub === 'subs' && S.aud.subs[S.aud.subType] === undefined) loadSubs(S.aud.subType); if (k.asub === 'reports') loadReports(); }
-    else if ('amore' in k) { S.aud.n += 20; paint(); }
     else if (k.ann === 'preview') { readAnn(t.closest('form')); S.ann.preview = !S.ann.preview; paint(); }
     else if (k.ann === 'send') act(async () => {
       readAnn(t.closest('form')); const a = S.ann;
@@ -350,11 +252,9 @@ ${form}${aw}<div class="br-meds">${hit.map(medCard).join('') || '<p class="muted
     else if (k.hofkind) { S.hofForm.kind = k.hofkind; paint(); }
     else if (k.hofdel) act(async () => { if (!confirm(`Remove “${k.name}” from the Hall of Fame? It is kept in the database but disappears from the site.`)) return; S.hof = await call('/api/hof/remove', { id: Number(k.hofdel) }); paint(); toast('Removed'); });
   });
-  root.addEventListener('toggle', (ev) => { const g = ev.target.closest?.('.br-grp'); if (!g || S.filter) return; g.open ? S.open.add(g.dataset.g) : S.open.delete(g.dataset.g); }, true);
   root.addEventListener('input', (ev) => {
     const t = ev.target;
     if (t.matches('[data-filter]')) { S.filter = t.value; paint(); }
-    else if (t.matches('[data-aq]')) { S.aud.q = t.value; S.aud.n = 12; paint(); }
     else if (t.matches('[data-medq]')) { S.medQ = t.value; paint(); }
     else if (t.closest('[data-form="med"]')) { readMed(t.closest('form')); const pv = root.querySelector('.br-medprev'); if (pv) { pv.dataset.tier = S.medForm.tier; pv.innerHTML = `${TR({ shape: window.NorexTrophy?.pick(`${S.medForm.name} ${S.medForm.desc}`, 'medal'), tier: S.medForm.tier, icon: S.medForm.icon, size: 64, label: S.medForm.name || 'Preview' })}<div><b>${esc(S.medForm.name || 'Medal name')}</b><small class="muted">${esc(S.medForm.desc || 'How to get it')} · ${esc(TIER_NAME(S.medForm.tier))} · ${esc(S.med.tiers[S.medForm.tier]?.pts)} pts</small></div>`; } }
     else if (t.closest('[data-form="ann"]')) { S.ann.preview = false; const f = t.closest('form'); readAnn(f); f.querySelector('[data-ann="preview"]').disabled = S.ann.title.trim().length < 3; const s = f.querySelector('[data-ann="send"]'); s.disabled = true; f.querySelector('.br-prev')?.remove(); }
@@ -362,9 +262,7 @@ ${form}${aw}<div class="br-meds">${hit.map(medCard).join('') || '<p class="muted
   });
   root.addEventListener('change', (ev) => {
     const t = ev.target;
-    if (t.matches('[data-atype]')) { S.aud.type = t.value; S.aud.n = 12; paint(); }
-    else if (t.matches('[data-stype]')) { S.aud.subType = t.value; if (S.aud.subs[t.value] === undefined) loadSubs(t.value); else paint(); }
-    else if (t.matches('[data-medtier]')) { S.medTier = t.value; paint(); }
+    if (t.matches('[data-medtier]')) { S.medTier = t.value; paint(); }
     else if (t.matches('[data-awto]')) { S.award.to = t.value; paint(); }
     else if (t.matches('[data-bakfile]')) { if (t.files[0]) planRestore(t.files[0]); }
     else if (t.closest('[data-form="med"]') && (t.name === 'tier' || t.name === 'fact')) { readMed(t.closest('form')); if (t.name === 'fact' && S.medForm.fact === 'manual') S.medForm.goal = 1; paint(); }
@@ -387,17 +285,17 @@ ${form}${aw}<div class="br-meds">${hit.map(medCard).join('') || '<p class="muted
     });
   });
 
-  const load = async () => {
-    try { const ov = await call('/api/admin/overview'); S.flags = ov.flags || null; S.canEdit = !!ov.canEditFlags; S.activity = ov.activity || []; if (!ov.flags) S.err.flags = 'Switches are only shown to the owner.'; }
-    catch (er) { S.err.flags = er.message; S.err.activity = er.message; }
-    paint();
+  const load = async () => { // the feature names the finder searches (the switches themselves are edited in Site access)
+    try { const ov = await call('/api/admin/overview'); S.flags = ov.flags || null; } catch { S.flags = null; }
+    if (S.tab === 'tools') paint();
   };
+  let started = false;
+  const start = () => { if (started) return; started = true; root.hidden = false; paint(); load(); };
+  // the Control Center sidebar opens a tab: PFBoardroom.open('health'); false when the tab does not exist or the viewer is not the owner
+  window.PFBoardroom = { tabs: TABS.map(([k]) => k), open: (k) => { if (!TABS.some(([t]) => t === k) || A.role !== 'owner') return false; start(); openTab(k); return true; } };
   (async () => {
     await A.ready?.catch?.(() => {});
-    if (A.role === 'manager') { const l = d.getElementById('brLocal'); if (l) l.insertAdjacentHTML('afterbegin', '<div class="panel sq-empty" style="margin-bottom:18px"><span>👑</span><div><b>The Boardroom is for the owner</b><p class="muted small">Feature switches, health and the Hall of Fame open for the owner. Managers can use Schedule, Desk and Dugout.</p></div></div>'); }
     if (A.role !== 'owner') return;
-    d.getElementById('brLocal')?.setAttribute('hidden', ''); root.hidden = false; paint();
-    load();
-    const h0 = location.hash.slice(1); if (h0 && TABS.some(([k]) => k === h0)) openTab(h0); // the owner button deep-links to #switches, #health, #announce
+    start();
   })();
 })();

@@ -408,7 +408,7 @@
       "lowHanging": false,
       "percent": 0,
       "verify": true,
-      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT. Step 5 (DJ bridge, push and poll) built on branch pf-022b-dj-bridge: bot/music.js, migration 0068 (not applied), dj/src/bridge.js, bot/djregistry.js, tests/music.test.mjs; owner steps in dj/DEPLOY.md. Backend steps 1-4, 6 (pf-022a) and front end 7-9 (pf-022c) remain. PF-022a (backend steps 1-4, 6) done. Step 7 (pf-022c, 2026-11-16, branch pf-022c-control-center-ui) done: one staff manifest (next/lib/staffmanifest.mjs) read by the hub, dock, sidebar, Ctrl+K search and link resolver; Control Center shell with scoped dark CRM theme, one SVG sprite, cross-filtering dashboard home on existing APIs, existing tools mounted as modules (next/static/ccshell.js, ccshell.css, tests/ccshell.test.mjs). Steps 8 (collapse nav copies, redirects, retire Boardroom Switches/Organization, Tools Bot commands, duplicate Audit tabs) and 9 (permissions, sign-in) are next.",
+      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT. Step 5 (DJ bridge, push and poll) built on branch pf-022b-dj-bridge: bot/music.js, migration 0068 (not applied), dj/src/bridge.js, bot/djregistry.js, tests/music.test.mjs; owner steps in dj/DEPLOY.md. Backend steps 1-4, 6 (pf-022a) and front end 7-9 (pf-022c) remain. PF-022a (backend steps 1-4, 6) done. Step 7 (pf-022c, 2026-11-16, branch pf-022c-control-center-ui) done: one staff manifest (next/lib/staffmanifest.mjs) read by the hub, dock, sidebar, Ctrl+K search and link resolver; Control Center shell with scoped dark CRM theme, one SVG sprite, cross-filtering dashboard home on existing APIs, existing tools mounted as modules (next/static/ccshell.js, ccshell.css, tests/ccshell.test.mjs). Step 8 (pf-022d, 2026-11-17, branch claude/pf-022d-collapse-nav) done: every nav copy reads the staff manifest (hub, dock, owner button, navigator, gear, Boardroom finder), the old staff-switches/health/announce/audit/halloffame/medals/backup/organization/boardroom/tools pages redirect into Control Center views with their anchors, Boardroom Switches/Audit/Organization and the Tools Bot tab are retired into Site access, Audit log, Organization, Bot settings and Bot commands (checklist PLANNING/PF-022-STEP8-CHECKLIST.md, tests/cc-step8.test.mjs). Step 9 (permissions, sign-in) is next.",
       "outcome": "Staff run the club from the Control Center: DJ bridge, permissions and sign-in work end to end.",
       "behavior": "Waits on one owner decision, whether the DJ bridge pushes or polls; the remaining dashboard parts follow that choice.",
       "doneLog": [
@@ -416,6 +416,11 @@
           "date": "2026-11-16",
           "ref": "PF-022a branch claude/pf-022a-cc-backend",
           "what": "Backend steps 1-4 and 6: settings areas behind Control Center routes with the owner/manager split, legacy channel and ping-role fold-in, setting and dj registry kinds, config-only items in D1 (migration 0065, not applied), one audit read. Front end (steps 7-9) is PF-022c."
+        },
+        {
+          "date": "2026-11-17",
+          "ref": "PF-022d branch claude/pf-022d-collapse-nav",
+          "what": "Step 8: one manifest for every staff nav list, old staff pages redirect into the Control Center, retired duplicate Boardroom and Tools tabs mounted once (Site access with groups/undo/Show me, Audit log feed, Bot settings, Submissions, Reports, Boardroom views), anti-duplication and redirect tests, before/after checklist."
         }
       ],
       "plans": []
@@ -795,6 +800,14 @@
     {
       "date": "2026-11-16",
       "text": "tests/brain.test.mjs 'inbox: listed newest first' fails on clean main: note ids are second-resolution plus a random suffix, so two notes made in the same second sort by the suffix. Add a millisecond or counter part to the id (and its ID regex). (tools/brain/inbox.mjs:16,43)"
+    },
+    {
+      "date": "2026-11-17",
+      "text": "intermittently red suites: tests/dj.test.mjs 'identical snapshot is not re-pushed' was a clock flake (startedAt is whole seconds, the fake player does not advance): fixed in PF-022d by starting the pushes just after a second boundary. tests/design.test.mjs (Chrome renderer) fails only inside the Claude sandbox ('Chrome exited'), passes unsandboxed: not a code flake, run it with the sandbox off. cardstudio, brain and forwarder passed repeatedly alone and in the full run here; the forwarder red was real (the Control Center data-dl alias list) and is fixed."
+    },
+    {
+      "date": "2026-11-17",
+      "text": "PF-022 step 9: Boardroom views (health, announce, Hall of Fame, medals, backup) are owner-only by the manifest and the shell only; the per-section permission matrix and sign-in are step 9. Also the Control Center dashboard header repeats the tool description above the Site access intro: trim one in step 9 polish (bot/ccsettings routes are unchanged)."
     }
   ]
 }

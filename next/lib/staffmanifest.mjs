@@ -10,7 +10,11 @@
 //   module   (optional) the Control Center mounts this tool in place: 'home' | 'controlcenter:<panel>' (next/static/controlcenter.js) | 'org' (PFOrgPanel)
 //   group    (optional) the legacy hub/dock group id; tools without one are reached from the sidebar and search only (the hub tile for the whole Control Center covers them)
 //   keys     extra search words
-// Step 8 redirects the old staff-*.html pages to the Control Center and drops the remaining hand copies (ownerfab.js, navigator.js, gear.js, boardroom.js).
+//   legacy   (optional) old page addresses that now redirect to this tool (PF-022 step 8): see LEGACY_PAGES / legacyTarget below
+// Step 8 (done): the old staff-*.html pages redirect here, and ownerfab.js, navigator.js, gear.js, boardroom.js, dock.js read this file instead of keeping their own lists.
+//   module kinds: 'home' | 'org' | 'controlcenter:<panel>' (controlcenter.js) | 'br:<tab>' (boardroom.js, owner) | 'tl:<tab>' (tools.js)
+
+import { WHERE, FLAG_GROUPS } from './flagwhere.mjs';
 
 export const SECTIONS = [
   ['inbox', 'Inbox'], ['match', 'Match nights'], ['people', 'People and moderation'], ['content', 'Club content'], ['bot', 'Bot'],
@@ -38,12 +42,16 @@ export const TOOLS = [
     desc: 'Build the line-up on the real pitch and post it' },
   { id: 'desk', label: 'Desk', emoji: '🗂️', icon: 'i-people', section: 'people', group: 'people', href: 'staff-desk.html', keys: 'claims members requests rush trials notes',
     desc: 'Claims, members, requests, Rush results, trials and private notes' },
-  { id: 'tools', label: 'Tools', emoji: '🛠️', icon: 'i-wrench', section: 'people', group: 'tools', href: 'staff-tools.html', keys: 'submissions reports moderation awards game data',
-    desc: 'Submissions, reported content, game data, bot settings, awards' },
+  { id: 'submissions', label: 'Submissions', emoji: '📥', icon: 'i-inbox', section: 'people', group: 'tools', href: CC + '?tool=submissions', module: 'tl:subm', legacy: ['staff-tools.html'], keys: 'feedback ratings award votes predictions suggestions builds csv',
+    desc: 'Feedback, ratings, award votes, predictions, suggestions and builds, searchable, with CSV export' },
+  { id: 'reports', label: 'Reports', emoji: '🚩', icon: 'i-flag', section: 'people', group: 'tools', href: CC + '?tool=reports', module: 'tl:reports', keys: 'reported content moderation posts messages feedback remove clear',
+    desc: 'Reported posts, feedback and chat messages: clear or remove' },
   { id: 'content', label: 'Content', emoji: '📄', icon: 'i-doc', section: 'content', group: 'content', href: 'staff-content.html', keys: 'docs rules ideas squad week media',
     desc: 'Club docs and rules, ideas board, squad week, media storage' },
   { id: 'artwork', label: 'Artwork', emoji: '🎨', icon: 'i-image', section: 'content', group: 'content', href: 'staff-artwork.html', keys: 'cards player art approve revoke',
     desc: 'Approve, inspect or revoke player card artwork' },
+  { id: 'settings', label: 'Bot settings', emoji: '⚙️', icon: 'i-gear', section: 'bot', href: CC + '?tool=settings', module: 'controlcenter:settings', keys: 'personalisation colour emoji routing routes rush queue welcome leave ping roles profanity streams recruitment match alert',
+    desc: 'Bot look, notification routing, Rush queue, welcome and leave, ping roles, profanity alerts, stream sources, recruitment, match alert' },
   { id: 'command', label: 'Bot commands', emoji: '🤖', icon: 'i-bot', section: 'bot', href: CC + '?tool=command', module: 'controlcenter:command', keys: 'slash commands who can use',
     desc: 'Every slash command: on or off, who can use it, where' },
   { id: 'component', label: 'Buttons and menus', emoji: '🔘', icon: 'i-button', section: 'bot', href: CC + '?tool=component', module: 'controlcenter:component', keys: 'components select',
@@ -56,16 +64,30 @@ export const TOOLS = [
     desc: 'Direct messages and notifications: who gets them, by which method, when' },
   { id: 'music', label: 'Music and DJ', emoji: '🎧', icon: 'i-music', section: 'music', href: 'hub-music.html', keys: 'dj lavalink queue rooms',
     desc: 'The club DJ: rooms, the queue and the player' },
-  { id: 'access', label: 'Site access', emoji: '🎛️', icon: 'i-lock', section: 'site', href: CC + '?tool=access', module: 'controlcenter:access', keys: 'flags features levels who sees',
+  { id: 'access', label: 'Site access', emoji: '🎛️', icon: 'i-lock', section: 'site', href: CC + '?tool=access', module: 'controlcenter:access', legacy: ['staff-switches.html'], keys: 'flags features levels who sees',
     desc: 'Who can see each section of the site, per level' },
+  { id: 'gamedata', label: 'Game data', emoji: '🎮', icon: 'i-pad', section: 'site', group: 'tools', href: CC + '?tool=gamedata', module: 'tl:game', keys: 'level cap patch notes publish',
+    desc: 'The game rules the site shows (level cap): publish a new version or dismiss a found change' },
+  { id: 'awards', label: 'Awards', emoji: '🏆', icon: 'i-trophy', section: 'content', group: 'tools', href: CC + '?tool=awards', module: 'tl:awards', keys: 'weekly awards categories close week channel',
+    desc: 'Award categories, closing the week, where results post' },
   { id: 'insights', label: 'Insights', emoji: '🧭', icon: 'i-chart', section: 'site', group: 'health', href: 'staff-insights.html', keys: 'club intelligence notes burner tracker',
     desc: 'Club Intelligence, written club notes, burner-club tracker' },
-  { id: 'org', label: 'Organization', emoji: '🏢', icon: 'i-org', section: 'org', owner: true, href: CC + '?tool=org', module: 'org', keys: 'discord servers channels roles clubs',
+  { id: 'org', label: 'Organization', emoji: '🏢', icon: 'i-org', section: 'org', owner: true, href: CC + '?tool=org', module: 'org', legacy: ['staff-organization.html'], keys: 'discord servers channels roles clubs',
     desc: 'Discord servers, channels, roles and clubs' },
-  { id: 'audit', label: 'Audit log', emoji: '🛡️', icon: 'i-shield', section: 'system', href: CC + '?tool=audit', module: 'controlcenter:audit', keys: 'who changed what history',
+  { id: 'audit', label: 'Audit log', emoji: '🛡️', icon: 'i-shield', section: 'system', href: CC + '?tool=audit', module: 'controlcenter:audit', legacy: ['staff-audit.html'], keys: 'who changed what history',
     desc: 'Who changed what, newest first' },
-  { id: 'boardroom', label: 'Boardroom', emoji: '👑', icon: 'i-crown', section: 'system', group: 'owner', owner: true, href: 'staff-boardroom.html', keys: 'owner health announce hall of fame medals backup',
-    desc: 'Switches, health, announcements, audit log, Hall of Fame, medals, backup and organization, one page' },
+  { id: 'health', label: 'Health', emoji: '🩺', icon: 'i-pulse', section: 'system', owner: true, href: CC + '?tool=health', module: 'br:health', legacy: ['staff-health.html'], keys: 'site bot builds cloudflare analytics github actions recruitment',
+    desc: 'Site, bot and build health, Cloudflare analytics, recruitment' },
+  { id: 'announce', label: 'Announce', emoji: '📣', icon: 'i-megaphone', section: 'content', owner: true, href: CC + '?tool=announce', module: 'br:announce', legacy: ['staff-announce.html'], keys: 'notify members managers acknowledge discord post doc',
+    desc: 'Send a club-wide announcement, post a club doc to Discord' },
+  { id: 'halloffame', label: 'Hall of Fame', emoji: '🏛️', icon: 'i-trophy', section: 'content', owner: true, href: CC + '?tool=halloffame', module: 'br:hof', legacy: ['staff-halloffame.html'], keys: 'legends moments trophies induct',
+    desc: 'Induct legends, add club moments, remove entries' },
+  { id: 'medals', label: 'Medals', emoji: '🏅', icon: 'i-medal', section: 'content', owner: true, href: CC + '?tool=medals', module: 'br:medals', legacy: ['staff-medals.html'], keys: 'badges award revoke collector',
+    desc: 'Edit and award medals' },
+  { id: 'backup', label: 'Backup', emoji: '💾', icon: 'i-save', section: 'system', owner: true, href: CC + '?tool=backup', module: 'br:backup', legacy: ['staff-backup.html'], keys: 'export restore download json',
+    desc: 'Export and restore switches, medal definitions and the Hall of Fame' },
+  { id: 'boardroom', label: 'Boardroom', emoji: '👑', icon: 'i-crown', section: 'system', group: 'owner', owner: true, href: CC + '?tool=boardroom', module: 'br:tools', legacy: ['staff-boardroom.html'], keys: 'owner tools finder outside links discord cloudflare youtube twitch',
+    desc: 'The owner room: find any tool or feature, links outside the site' },
 ];
 // the whole Control Center is one hub tile (it opens the dashboard); its module tools are reached from the sidebar and search
 export const CC_TILE = { id: 'controlcenter', label: 'Control Center', emoji: '🎛️', group: 'cc', href: CC,
@@ -81,27 +103,64 @@ export const dockGroups = (ownerOnly = false) => hubGroups(ownerOnly).map(([, t,
 /** source text for dock.js: the two lists as literals in the dock's own format, so the dock reads the manifest and holds no copy */
 export function dockLists() {
   const lit = (g) => '[' + g.map(([t, items]) => `[${JSON.stringify(t).replace(/^"|"$/g, "'")}, [${items.map(([h, e, l]) => `['${h}', '${e}', '${l}']`).join(', ')}]]`).join(',\n    ') + ']';
-  return `const STAFF = ${lit(dockGroups(false))};\n  // One Boardroom tile: its tabs (switches, health, announce, audit, hall of fame, medals, backup, organization) stay as deep links inside the page.\n  const OWNER = ${lit(dockGroups(true))};`;
+  return `const STAFF = ${lit(dockGroups(false))};\n  // One Boardroom tile: its tools (health, announce, hall of fame, medals, backup) are Control Center views; Switches, Audit and Organization are the Control Center's own panels.\n  const OWNER = ${lit(dockGroups(true))};`;
 }
 
 /** the browser copy: window.PFStaffManifest = { sections, tools } (ccshell.js: sidebar, search, link resolver) */
-export const manifestJs = () => `window.PFStaffManifest=${JSON.stringify({ sections: SECTIONS, tools: TOOLS })};\n`;
+export const manifestJs = () => `window.PFStaffManifest=${JSON.stringify({ sections: SECTIONS, tools: TOOLS, where: WHERE, flagGroups: FLAG_GROUPS, legacy: LEGACY_PAGES, legacyHash: LEGACY_HASH })};\n`;
+
+// ---------- old pages (PF-022 step 8) ----------
+/** old page file -> the tool it became: derived from each tool's `legacy` list, so a redirect cannot exist without a tool */
+export const LEGACY_PAGES = Object.fromEntries(TOOLS.flatMap((t) => (t.legacy || []).map((f) => [f, t.id])));
+/** old in-page anchors: file -> { oldHash: toolId }. The Boardroom tabs and the Tools tabs were anchors of one page each ('' = no anchor). Every value is a tool id. */
+export const LEGACY_HASH = {
+  'staff-boardroom.html': { '': 'boardroom', tools: 'boardroom', switches: 'access', health: 'health', audit: 'audit', announce: 'announce', hof: 'halloffame', halloffame: 'halloffame', medals: 'medals', backup: 'backup', org: 'org', organization: 'org' },
+  'staff-tools.html': { '': 'submissions', subm: 'submissions', submissions: 'submissions', reports: 'reports', game: 'gamedata', bot: 'settings', awards: 'awards' },
+};
+/** the Control Center address for an old page and anchor ('staff-boardroom.html', 'switches' -> 'staff-controlcenter.html#access'), or null when that page was not retired */
+export function legacyTarget(file, hash = '') {
+  const f = String(file || '').replace(/^\//, ''), h = String(hash || '').replace(/^#/, '').split('?')[0];
+  const id = (LEGACY_HASH[f] && LEGACY_HASH[f][h]) || LEGACY_PAGES[f] || (LEGACY_HASH[f] && LEGACY_HASH[f]['']);
+  return id ? `${CC}#${id}` : null;
+}
+/** what a retired staff page needs in its head: a refresh to the Control Center view for the anchor the visitor came with (query and unknown anchors kept). The page itself
+ *  is an ordinary site page (hub.mjs) saying where the tool moved, so it still reads right without scripts. */
+export function redirectHead(file) {
+  const to = legacyTarget(file, ''); if (!to) throw new Error(`${file} is not a retired staff page`);
+  const map = Object.fromEntries(Object.entries(LEGACY_HASH[file] || {}).map(([k, id]) => [k, `${CC}#${id}`]));
+  return `<meta http-equiv="refresh" content="0;url=${to}"><link rel="canonical" href="${to}"><meta name="robots" content="noindex">
+<script>(function(){var m=${JSON.stringify(map)},d=${JSON.stringify(to)},h=location.hash.slice(1).split('?')[0],o=Object.prototype.hasOwnProperty;location.replace(o.call(m,h)?m[h]:d)})()</script>`;
+}
+
+/** the slim browser copy every page loads for the staff floating tools (owner button, navigator, edit gear): just enough to name and link each tool.
+ *  The full copy above (descriptions, keywords, modules, where, legacy) is only the Control Center's. */
+export const navJs = () => `window.PFStaffNav=${JSON.stringify({ tools: TOOLS.map((t) => ({ id: t.id, label: t.label, emoji: t.emoji, href: t.href, ...(t.group ? { group: t.group } : {}) })) })};\n`;
 
 /** the link resolver: 'desk' | 'staff-desk.html' | 'staff-controlcenter.html#audit' -> the tool, or null */
-export const resolve = (ref) => { const r = String(ref || '').replace(/^\//, ''); return TOOLS.find((t) => t.id === r || t.href === r) || (r === CC ? TOOLS[0] : null); };
+export const resolve = (ref) => {
+  const r = String(ref || '').replace(/^\//, ''), [file, hash = ''] = r.split('#');
+  const direct = TOOLS.find((t) => t.id === r || t.href === r) || (r === CC ? TOOLS[0] : null);
+  if (direct) return direct;
+  if (file === CC && hash) return TOOLS.find((t) => t.id === hash.split('?')[0]) || null; // staff-controlcenter.html#audit
+  const lt = legacyTarget(file, hash); return lt ? TOOLS.find((t) => t.id === lt.split('#')[1]) : null; // an old page or anchor
+};
 
 /** problems with the manifest (empty = fine): duplicates and entries with no target; tests call this */
 export function problems() {
-  const out = [], ids = new Set(), hrefs = new Set(), secs = new Set(SECTIONS.map(([k]) => k)), groups = new Set(GROUPS.map(([k]) => k));
+  const out = [], ids = new Set(), hrefs = new Set(), labels = new Set(), secs = new Set(SECTIONS.map(([k]) => k)), groups = new Set(GROUPS.map(([k]) => k));
   for (const t of TOOLS) {
     for (const k of ['id', 'label', 'emoji', 'icon', 'desc', 'section']) if (!t[k]) out.push(`${t.id || '?'}: missing ${k}`);
     if (!t.href && !t.module) out.push(`${t.id}: no target (href or module)`);
-    if (t.module && !/^(home|org|controlcenter:\w+)$/.test(t.module)) out.push(`${t.id}: unknown module ${t.module}`);
+    if (t.module && !/^(home|org|controlcenter:\w+|br:\w+|tl:\w+)$/.test(t.module)) out.push(`${t.id}: unknown module ${t.module}`);
     if (ids.has(t.id)) out.push(`${t.id}: duplicate id`); ids.add(t.id);
     if (t.href) { if (hrefs.has(t.href)) out.push(`${t.href}: duplicate href`); hrefs.add(t.href); }
     if (!secs.has(t.section)) out.push(`${t.id}: unknown section ${t.section}`);
+    const nm = String(t.label || '').toLowerCase(); if (nm) { if (labels.has(nm)) out.push(`${t.label}: the same tool is listed twice (duplicate label)`); labels.add(nm); }
     if (t.group && !groups.has(t.group)) out.push(`${t.id}: unknown group ${t.group}`);
   }
+  for (const [f, id] of Object.entries(LEGACY_PAGES)) if (!ids.has(id) || TOOLS.some((t) => t.href === f)) out.push(`${f}: legacy page must point at a tool and no longer be a tool address`);
+  for (const [f, m] of Object.entries(LEGACY_HASH)) for (const [h, id] of Object.entries(m)) if (!ids.has(id)) out.push(`${f}#${h}: unknown tool ${id}`);
+  for (const [k, v] of Object.entries(WHERE)) if (!Array.isArray(v) || !v[0] || (v[2] && !ids.has(v[2]))) out.push(`where ${k}: bad entry`);
   if (hrefs.has(CC_TILE.href) === false) out.push('home has no Control Center href');
   return out;
 }
