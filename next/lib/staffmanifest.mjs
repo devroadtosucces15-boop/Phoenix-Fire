@@ -34,64 +34,81 @@ export const GROUPS = [
 
 const CC = 'staff-controlcenter.html';
 export const TOOLS = [
-  { id: 'home', label: 'Dashboard', emoji: '🎛️', icon: 'i-grid', section: 'inbox', href: CC, module: 'home', keys: 'home health insights overview queue',
+  { id: 'home', label: 'Dashboard', emoji: '🎛️', icon: 'i-grid', section: 'inbox', level: 'manager', href: CC, module: 'home', keys: 'home health insights overview queue',
     desc: 'Club health, insights, the approvals queue and recent changes in one view' },
-  { id: 'schedule', label: 'Schedule', emoji: '🗓️', icon: 'i-cal', section: 'match', group: 'match', href: 'staff-schedule.html', keys: 'match night fixtures check in session report',
+  { id: 'schedule', label: 'Schedule', emoji: '🗓️', icon: 'i-cal', section: 'match', level: 'manager', group: 'match', href: 'staff-schedule.html', keys: 'match night fixtures check in session report',
     desc: 'Create, edit and cancel match nights, check in, send session reports' },
-  { id: 'dugout', label: 'Dugout', emoji: '🧢', icon: 'i-pitch', section: 'match', group: 'match', href: 'staff-dugout.html', keys: 'lineup formation pitch xi',
+  { id: 'dugout', label: 'Dugout', emoji: '🧢', icon: 'i-pitch', section: 'match', level: 'manager', group: 'match', href: 'staff-dugout.html', keys: 'lineup formation pitch xi',
     desc: 'Build the line-up on the real pitch and post it' },
-  { id: 'desk', label: 'Desk', emoji: '🗂️', icon: 'i-people', section: 'people', group: 'people', href: 'staff-desk.html', keys: 'claims members requests rush trials notes',
+  { id: 'desk', label: 'Desk', emoji: '🗂️', icon: 'i-people', section: 'people', level: 'manager', group: 'people', href: 'staff-desk.html', keys: 'claims members requests rush trials notes',
     desc: 'Claims, members, requests, Rush results, trials and private notes' },
-  { id: 'submissions', label: 'Submissions', emoji: '📥', icon: 'i-inbox', section: 'people', group: 'tools', href: CC + '?tool=submissions', module: 'tl:subm', legacy: ['staff-tools.html'], keys: 'feedback ratings award votes predictions suggestions builds csv',
+  { id: 'submissions', label: 'Submissions', emoji: '📥', icon: 'i-inbox', section: 'people', level: 'manager', group: 'tools', href: CC + '?tool=submissions', module: 'tl:subm', legacy: ['staff-tools.html'], keys: 'feedback ratings award votes predictions suggestions builds csv',
     desc: 'Feedback, ratings, award votes, predictions, suggestions and builds, searchable, with CSV export' },
-  { id: 'reports', label: 'Reports', emoji: '🚩', icon: 'i-flag', section: 'people', group: 'tools', href: CC + '?tool=reports', module: 'tl:reports', keys: 'reported content moderation posts messages feedback remove clear',
+  { id: 'reports', label: 'Reports', emoji: '🚩', icon: 'i-flag', section: 'people', level: 'manager', group: 'tools', href: CC + '?tool=reports', module: 'tl:reports', keys: 'reported content moderation posts messages feedback remove clear',
     desc: 'Reported posts, feedback and chat messages: clear or remove' },
-  { id: 'content', label: 'Content', emoji: '📄', icon: 'i-doc', section: 'content', group: 'content', href: 'staff-content.html', keys: 'docs rules ideas squad week media',
+  { id: 'content', label: 'Content', emoji: '📄', icon: 'i-doc', section: 'content', level: 'manager', group: 'content', href: 'staff-content.html', keys: 'docs rules ideas squad week media',
     desc: 'Club docs and rules, ideas board, squad week, media storage' },
-  { id: 'artwork', label: 'Artwork', emoji: '🎨', icon: 'i-image', section: 'content', group: 'content', href: 'staff-artwork.html', keys: 'cards player art approve revoke',
+  { id: 'artwork', label: 'Artwork', emoji: '🎨', icon: 'i-image', section: 'content', level: 'manager', group: 'content', href: 'staff-artwork.html', keys: 'cards player art approve revoke',
     desc: 'Approve, inspect or revoke player card artwork' },
-  { id: 'settings', label: 'Bot settings', emoji: '⚙️', icon: 'i-gear', section: 'bot', href: CC + '?tool=settings', module: 'controlcenter:settings', keys: 'personalisation colour emoji routing routes rush queue welcome leave ping roles profanity streams recruitment match alert',
+  { id: 'settings', label: 'Bot settings', emoji: '⚙️', icon: 'i-gear', section: 'bot', level: 'manager', href: CC + '?tool=settings', module: 'controlcenter:settings', keys: 'personalisation colour emoji routing routes rush queue welcome leave ping roles profanity streams recruitment match alert',
     desc: 'Bot look, notification routing, Rush queue, welcome and leave, ping roles, profanity alerts, stream sources, recruitment, match alert' },
-  { id: 'command', label: 'Bot commands', emoji: '🤖', icon: 'i-bot', section: 'bot', href: CC + '?tool=command', module: 'controlcenter:command', keys: 'slash commands who can use',
+  { id: 'command', label: 'Bot commands', emoji: '🤖', icon: 'i-bot', section: 'bot', level: 'manager', href: CC + '?tool=command', module: 'controlcenter:command', keys: 'slash commands who can use',
     desc: 'Every slash command: on or off, who can use it, where' },
-  { id: 'component', label: 'Buttons and menus', emoji: '🔘', icon: 'i-button', section: 'bot', href: CC + '?tool=component', module: 'controlcenter:component', keys: 'components select',
+  { id: 'component', label: 'Buttons and menus', emoji: '🔘', icon: 'i-button', section: 'bot', level: 'manager', href: CC + '?tool=component', module: 'controlcenter:component', keys: 'components select',
     desc: 'Every button and menu the bots show' },
-  { id: 'automated', label: 'Automated posts', emoji: '📣', icon: 'i-post', section: 'bot', href: CC + '?tool=automated', module: 'controlcenter:automated', keys: 'announcements channels cron',
+  { id: 'automated', label: 'Automated posts', emoji: '📣', icon: 'i-post', section: 'bot', level: 'manager', href: CC + '?tool=automated', module: 'controlcenter:automated', keys: 'announcements channels cron',
     desc: 'Every post the bots make on their own, and which channels get it' },
-  { id: 'scheduled', label: 'Scheduled jobs', emoji: '⏱️', icon: 'i-clock', section: 'bot', href: CC + '?tool=scheduled', module: 'controlcenter:scheduled', keys: 'cron timers',
+  { id: 'scheduled', label: 'Scheduled jobs', emoji: '⏱️', icon: 'i-clock', section: 'bot', level: 'manager', href: CC + '?tool=scheduled', module: 'controlcenter:scheduled', keys: 'cron timers',
     desc: 'Timed jobs: on or off' },
-  { id: 'dm', label: 'DMs and notifications', emoji: '🔔', icon: 'i-bell', section: 'bot', href: CC + '?tool=dm', module: 'controlcenter:dm', keys: 'push direct messages methods windows',
+  { id: 'dm', label: 'DMs and notifications', emoji: '🔔', icon: 'i-bell', section: 'bot', level: 'manager', href: CC + '?tool=dm', module: 'controlcenter:dm', keys: 'push direct messages methods windows',
     desc: 'Direct messages and notifications: who gets them, by which method, when' },
-  { id: 'music', label: 'Music and DJ', emoji: '🎧', icon: 'i-music', section: 'music', href: 'hub-music.html', keys: 'dj lavalink queue rooms',
+  { id: 'music', label: 'Music and DJ', emoji: '🎧', icon: 'i-music', section: 'music', level: 'manager', href: 'hub-music.html', keys: 'dj lavalink queue rooms',
     desc: 'The club DJ: rooms, the queue and the player' },
-  { id: 'access', label: 'Site access', emoji: '🎛️', icon: 'i-lock', section: 'site', href: CC + '?tool=access', module: 'controlcenter:access', legacy: ['staff-switches.html'], keys: 'flags features levels who sees',
+  { id: 'access', label: 'Site access', emoji: '🎛️', icon: 'i-lock', section: 'site', level: 'manager', href: CC + '?tool=access', module: 'controlcenter:access', legacy: ['staff-switches.html'], keys: 'flags features levels who sees',
     desc: 'Who can see each section of the site, per level' },
-  { id: 'gamedata', label: 'Game data', emoji: '🎮', icon: 'i-pad', section: 'site', group: 'tools', href: CC + '?tool=gamedata', module: 'tl:game', keys: 'level cap patch notes publish',
+  { id: 'gamedata', label: 'Game data', emoji: '🎮', icon: 'i-pad', section: 'site', level: 'manager', group: 'tools', href: CC + '?tool=gamedata', module: 'tl:game', keys: 'level cap patch notes publish',
     desc: 'The game rules the site shows (level cap): publish a new version or dismiss a found change' },
-  { id: 'awards', label: 'Awards', emoji: '🏆', icon: 'i-trophy', section: 'content', group: 'tools', href: CC + '?tool=awards', module: 'tl:awards', keys: 'weekly awards categories close week channel',
+  { id: 'awards', label: 'Awards', emoji: '🏆', icon: 'i-trophy', section: 'content', level: 'manager', group: 'tools', href: CC + '?tool=awards', module: 'tl:awards', keys: 'weekly awards categories close week channel',
     desc: 'Award categories, closing the week, where results post' },
-  { id: 'insights', label: 'Insights', emoji: '🧭', icon: 'i-chart', section: 'site', group: 'health', href: 'staff-insights.html', keys: 'club intelligence notes burner tracker',
+  { id: 'insights', label: 'Insights', emoji: '🧭', icon: 'i-chart', section: 'site', level: 'manager', group: 'health', href: 'staff-insights.html', keys: 'club intelligence notes burner tracker',
     desc: 'Club Intelligence, written club notes, burner-club tracker' },
-  { id: 'org', label: 'Organization', emoji: '🏢', icon: 'i-org', section: 'org', owner: true, href: CC + '?tool=org', module: 'org', legacy: ['staff-organization.html'], keys: 'discord servers channels roles clubs',
+  { id: 'org', label: 'Organization', emoji: '🏢', icon: 'i-org', section: 'org', level: 'owner', owner: true, href: CC + '?tool=org', module: 'org', legacy: ['staff-organization.html'], keys: 'discord servers channels roles clubs',
     desc: 'Discord servers, channels, roles and clubs' },
-  { id: 'audit', label: 'Audit log', emoji: '🛡️', icon: 'i-shield', section: 'system', href: CC + '?tool=audit', module: 'controlcenter:audit', legacy: ['staff-audit.html'], keys: 'who changed what history',
+  { id: 'audit', label: 'Audit log', emoji: '🛡️', icon: 'i-shield', section: 'system', level: 'manager', href: CC + '?tool=audit', module: 'controlcenter:audit', legacy: ['staff-audit.html'], keys: 'who changed what history',
     desc: 'Who changed what, newest first' },
-  { id: 'health', label: 'Health', emoji: '🩺', icon: 'i-pulse', section: 'system', owner: true, href: CC + '?tool=health', module: 'br:health', legacy: ['staff-health.html'], keys: 'site bot builds cloudflare analytics github actions recruitment',
+  { id: 'health', label: 'Health', emoji: '🩺', icon: 'i-pulse', section: 'system', level: 'owner', owner: true, href: CC + '?tool=health', module: 'br:health', legacy: ['staff-health.html'], keys: 'site bot builds cloudflare analytics github actions recruitment',
     desc: 'Site, bot and build health, Cloudflare analytics, recruitment' },
-  { id: 'announce', label: 'Announce', emoji: '📣', icon: 'i-megaphone', section: 'content', owner: true, href: CC + '?tool=announce', module: 'br:announce', legacy: ['staff-announce.html'], keys: 'notify members managers acknowledge discord post doc',
+  { id: 'announce', label: 'Announce', emoji: '📣', icon: 'i-megaphone', section: 'content', level: 'owner', owner: true, href: CC + '?tool=announce', module: 'br:announce', legacy: ['staff-announce.html'], keys: 'notify members managers acknowledge discord post doc',
     desc: 'Send a club-wide announcement, post a club doc to Discord' },
-  { id: 'halloffame', label: 'Hall of Fame', emoji: '🏛️', icon: 'i-trophy', section: 'content', owner: true, href: CC + '?tool=halloffame', module: 'br:hof', legacy: ['staff-halloffame.html'], keys: 'legends moments trophies induct',
+  { id: 'halloffame', label: 'Hall of Fame', emoji: '🏛️', icon: 'i-trophy', section: 'content', level: 'owner', owner: true, href: CC + '?tool=halloffame', module: 'br:hof', legacy: ['staff-halloffame.html'], keys: 'legends moments trophies induct',
     desc: 'Induct legends, add club moments, remove entries' },
-  { id: 'medals', label: 'Medals', emoji: '🏅', icon: 'i-medal', section: 'content', owner: true, href: CC + '?tool=medals', module: 'br:medals', legacy: ['staff-medals.html'], keys: 'badges award revoke collector',
+  { id: 'medals', label: 'Medals', emoji: '🏅', icon: 'i-medal', section: 'content', level: 'owner', owner: true, href: CC + '?tool=medals', module: 'br:medals', legacy: ['staff-medals.html'], keys: 'badges award revoke collector',
     desc: 'Edit and award medals' },
-  { id: 'backup', label: 'Backup', emoji: '💾', icon: 'i-save', section: 'system', owner: true, href: CC + '?tool=backup', module: 'br:backup', legacy: ['staff-backup.html'], keys: 'export restore download json',
+  { id: 'backup', label: 'Backup', emoji: '💾', icon: 'i-save', section: 'system', level: 'owner', owner: true, href: CC + '?tool=backup', module: 'br:backup', legacy: ['staff-backup.html'], keys: 'export restore download json',
     desc: 'Export and restore switches, medal definitions and the Hall of Fame' },
-  { id: 'boardroom', label: 'Boardroom', emoji: '👑', icon: 'i-crown', section: 'system', group: 'owner', owner: true, href: CC + '?tool=boardroom', module: 'br:tools', legacy: ['staff-boardroom.html'], keys: 'owner tools finder outside links discord cloudflare youtube twitch',
+  { id: 'boardroom', label: 'Boardroom', emoji: '👑', icon: 'i-crown', section: 'system', level: 'owner', group: 'owner', owner: true, href: CC + '?tool=boardroom', module: 'br:tools', legacy: ['staff-boardroom.html'], keys: 'owner tools finder outside links discord cloudflare youtube twitch',
     desc: 'The owner room: find any tool or feature, links outside the site' },
 ];
 // the whole Control Center is one hub tile (it opens the dashboard); its module tools are reached from the sidebar and search
 export const CC_TILE = { id: 'controlcenter', label: 'Control Center', emoji: '🎛️', group: 'cc', href: CC,
   desc: 'Every command, button, automated post, scheduled job, DM and site section: on or off, who gets it, which channels' };
+
+// ---------- the permission matrix (PF-022 step 9) ----------
+// One place decides who may use what. Roles for the Control Center are three: owner, manager, member (members and guests are "member": they use none of it).
+// Choices made where the plan left them open (owner could not be asked): the owner sees every tool, a manager sees the tools whose level is 'manager', a member sees none.
+// The site reads this through window.PFStaffManifest.matrix; the Worker (bot/ccpermissions.js) reads the same TOOLS, so hiding a tab is never the only protection.
+export const CC_ROLES = ['owner', 'manager', 'member'];
+export const LEVELS = ['manager', 'owner'];
+/** the Control Center role for a site role ('guest'|'member'|'claimed' -> 'member'; anything unknown -> 'member'; signed out is null) */
+export const ccRoleOf = (role) => (role == null ? null : role === 'owner' ? 'owner' : role === 'manager' ? 'manager' : 'member');
+/** may this role use this tool (id or tool)? */
+export function mayUse(role, tool) {
+  const t = typeof tool === 'string' ? TOOLS.find((x) => x.id === tool) : tool, r = ccRoleOf(role);
+  if (!t || !r) return false;
+  return r === 'owner' || (r === 'manager' && t.level === 'manager');
+}
+/** the matrix: role -> the tool ids it may use */
+export const matrix = () => Object.fromEntries(CC_ROLES.map((r) => [r, TOOLS.filter((t) => mayUse(r, t)).map((t) => t.id)]));
 
 const legacy = (g) => (g === 'cc' ? [CC_TILE] : TOOLS.filter((t) => t.group === g));
 /** [emoji, title, sub, [[href, emoji, label, desc]]] groups for the staff hub (managers) */
@@ -107,7 +124,7 @@ export function dockLists() {
 }
 
 /** the browser copy: window.PFStaffManifest = { sections, tools } (ccshell.js: sidebar, search, link resolver) */
-export const manifestJs = () => `window.PFStaffManifest=${JSON.stringify({ sections: SECTIONS, tools: TOOLS, where: WHERE, flagGroups: FLAG_GROUPS, legacy: LEGACY_PAGES, legacyHash: LEGACY_HASH })};\n`;
+export const manifestJs = () => `window.PFStaffManifest=${JSON.stringify({ sections: SECTIONS, tools: TOOLS, where: WHERE, flagGroups: FLAG_GROUPS, matrix: matrix(), legacy: LEGACY_PAGES, legacyHash: LEGACY_HASH })};\n`;
 
 // ---------- old pages (PF-022 step 8) ----------
 /** old page file -> the tool it became: derived from each tool's `legacy` list, so a redirect cannot exist without a tool */
@@ -156,6 +173,8 @@ export function problems() {
     if (t.href) { if (hrefs.has(t.href)) out.push(`${t.href}: duplicate href`); hrefs.add(t.href); }
     if (!secs.has(t.section)) out.push(`${t.id}: unknown section ${t.section}`);
     const nm = String(t.label || '').toLowerCase(); if (nm) { if (labels.has(nm)) out.push(`${t.label}: the same tool is listed twice (duplicate label)`); labels.add(nm); }
+    if (!LEVELS.includes(t.level)) out.push(`${t.id}: missing or unknown permission level`);
+    if ((t.level === 'owner') !== !!t.owner) out.push(`${t.id}: level and owner flag disagree`);
     if (t.group && !groups.has(t.group)) out.push(`${t.id}: unknown group ${t.group}`);
   }
   for (const [f, id] of Object.entries(LEGACY_PAGES)) if (!ids.has(id) || TOOLS.some((t) => t.href === f)) out.push(`${f}: legacy page must point at a tool and no longer be a tool address`);

@@ -55,6 +55,7 @@ import { sessionRecapRoute } from './sessionrecap.js';
 import { orgConfigRoute, orgClubsPublicRoute, orgRoutePublicRoute, orgName } from './orgconfig.js';
 import { botCommandsRoute } from './botcommands.js';
 import { controlCenterRoute } from './controlcenter.js';
+import { ccDenied } from './ccpermissions.js';
 import { ccConfigPublicRoute } from './ccsettings.js';
 import { crawlRoute } from './crawl.js';
 import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
@@ -824,6 +825,8 @@ async function route(p, method, body, me, env, loadSite, url) {
   if (cht) return cht;
   const bst = await botSettingsRoute(p, method, body, me, env, log); // P7.5 bot personalisation
   if (bst) return bst;
+  const ccd = ccDenied(me, method, p); // PF-022 step 9: the Control Center permission matrix (also for the moved settings routes), on top of each route's own check
+  if (ccd) return fail(ccd.error, ccd.status);
   const org = await orgConfigRoute(p, method, body, me, env); // Phase 0 organization configuration (owner)
   if (org) return org;
   const rte = await routingRoute(p, method, body, me, env, log); // notification routing table (owner)

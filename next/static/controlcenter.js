@@ -225,7 +225,7 @@ ${isCmd ? `<label class="small">Lowest level <select data-min><option value="">D
   window.addEventListener('hashchange', () => { if (!shell) go(location.hash.slice(1)); });
   (async () => {
     await A.ready?.catch?.(() => {});
-    if (A.role !== 'owner' && A.role !== 'manager') return;
+    if ((A.ccRole || A.role) !== 'owner' && (A.ccRole || A.role) !== 'manager') return;
     d.getElementById('ccLocal')?.setAttribute('hidden', ''); if (!shell) root.hidden = false; paint(); load();
   })();
 })();

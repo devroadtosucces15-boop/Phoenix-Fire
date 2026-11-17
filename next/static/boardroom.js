@@ -292,10 +292,10 @@ ${form}${aw}<div class="br-meds">${hit.map(medCard).join('') || '<p class="muted
   let started = false;
   const start = () => { if (started) return; started = true; root.hidden = false; paint(); load(); };
   // the Control Center sidebar opens a tab: PFBoardroom.open('health'); false when the tab does not exist or the viewer is not the owner
-  window.PFBoardroom = { tabs: TABS.map(([k]) => k), open: (k) => { if (!TABS.some(([t]) => t === k) || A.role !== 'owner') return false; start(); openTab(k); return true; } };
+  window.PFBoardroom = { tabs: TABS.map(([k]) => k), open: (k) => { if (!TABS.some(([t]) => t === k) || (A.ccRole || A.role) !== 'owner') return false; start(); openTab(k); return true; } };
   (async () => {
     await A.ready?.catch?.(() => {});
-    if (A.role !== 'owner') return;
+    if ((A.ccRole || A.role) !== 'owner') return;
     start();
   })();
 })();

@@ -99,6 +99,28 @@
 /* the mounted tools (controlcenter.js, orgpanel.js) keep their own markup; this only sets the frame */
 .cx #ccLive{min-width:0}.cx #ccLive .tablewrap{max-width:100%}
 .cx #ccLive .cc-panel{min-height:0}
+/* signed-out, wrong-role and View as (PF-022 step 9): same dark CRM variant, same Phoenix accents, outside .cx so they stay when the tools are hidden */
+.cx-gate,.cx-view{--cx-p1:rgba(255,255,255,.035);--cx-line:rgba(255,255,255,.1);--cx-tx:var(--cream,#f6ecdd);--cx-mu:rgba(246,236,221,.62);--cx-a:var(--red,#e8741a);--cx-a2:var(--red2,#ff9a2e);--cx-gold:var(--g2,#f3c95c);--cx-glow:var(--redg,rgba(232,116,26,.38));box-sizing:border-box;color:var(--cx-tx);min-width:0}
+.cx-gate *,.cx-view *{box-sizing:border-box}
+.cx-gate{display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;gap:16px;margin:28px 0 48px;padding:32px 20px;border:1px solid var(--cx-line);border-radius:18px;background:radial-gradient(120% 90% at 50% 0,rgba(232,116,26,.14),transparent 60%),var(--cx-p1);box-shadow:0 0 38px -14px var(--cx-glow)}
+.cx-gate[hidden]{display:none}
+.cx-gate-crest{width:56px;height:56px;object-fit:contain;filter:drop-shadow(0 0 14px var(--cx-glow))}
+.cx-gate-t small{display:block;margin-bottom:6px;font:700 12px/1 var(--body,inherit);letter-spacing:.14em;text-transform:uppercase;color:var(--cx-a2)}
+.cx-gate-t h2{margin:0 0 8px;font-size:24px;line-height:1.15}
+.cx-gate-t p{margin:0 auto;max-width:46ch;color:var(--cx-mu);font-size:15px;line-height:1.5}
+.cx-gate-a{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;width:100%;max-width:320px}
+.cx-gate-go,.cx-gate-b{display:flex;align-items:center;justify-content:center;min-height:48px;padding:0 18px;border-radius:12px;font:700 15px/1 var(--body,inherit);text-decoration:none}
+.cx-gate-go{background:linear-gradient(180deg,var(--cx-a2),var(--cx-a));color:var(--ink,#0a0705);box-shadow:0 0 22px -6px var(--cx-glow)}
+.cx-gate-b{border:1px solid var(--cx-line);color:var(--cx-tx);background:var(--cx-p1)}
+.cx-gate-b[hidden]{display:none}
+.cx-view{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:14px 0 0;padding:12px 14px;border:1px solid var(--cx-line);border-radius:14px;background:var(--cx-p1)}
+.cx-view[hidden]{display:none}
+.cx-view>span{font:700 12px/1 var(--body,inherit);letter-spacing:.12em;text-transform:uppercase;color:var(--cx-a2)}
+.cx-view>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.cx-view button{min-height:44px;padding:0 10px;border:1px solid var(--cx-line);border-radius:10px;background:transparent;color:var(--cx-tx);font:600 14px/1 var(--body,inherit);cursor:pointer}
+.cx-view button[aria-pressed="true"]{border-color:var(--cx-a2);background:rgba(232,116,26,.18);color:var(--cx-gold)}
+.cx-view small{color:var(--cx-mu);font-size:12.5px;line-height:1.4}
+.cx-view.on{border-color:var(--cx-gold);box-shadow:0 0 22px -8px var(--cx-glow)}
 @media(min-width:640px){.cx-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}.cx-health{grid-template-columns:repeat(4,minmax(0,1fr))}.cx-find span,.cx-find kbd,.cx-back span{display:inline}
   .cx-bars{height:150px}}
 @media(min-width:900px){
@@ -130,3 +152,4 @@
 .cs-card input[type=checkbox]{width:22px;height:22px;min-height:0}
 .cs-fold{white-space:pre-wrap;overflow-wrap:anywhere}
 @media (min-width:1100px){.cs-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cs-grid>.cs-card[data-area=routes],.cs-grid>.cs-card[data-area=stream_sources]{grid-column:1/-1}}
+@media(min-width:640px){.cx-view{grid-template-columns:auto auto minmax(0,1fr);align-items:center;gap:14px}.cx-view>div{grid-template-columns:repeat(3,auto)}.cx-gate{padding:48px 32px}.cx-gate-a{grid-template-columns:repeat(2,minmax(0,1fr));max-width:420px}}

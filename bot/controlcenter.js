@@ -12,6 +12,7 @@
 import { REGISTRY, REGISTRY_KEYS } from './registry.gen.js';
 import { normalizeRules, loadControls, resetControlsCache, RULE_LISTS, METHODS, LEVEL_LISTS } from './controls.js';
 import { can } from './roles.js';
+import { ccDenied, accessFor } from './ccpermissions.js';
 import { ROLES, flags } from './roles.js';
 import { TYPES } from './notify.js';
 import { CHANNEL_PURPOSE_INFO, loadOrgConfig } from './orgconfig.js';
@@ -83,14 +84,16 @@ const summary = (i, c) => ({ ...i, row: c ? { enabled: c.enabled, rules: c.rules
 
 export async function controlCenterRoute(p, method, body, me, env, url = null) {
   if (!p.startsWith('/api/controlcenter')) return null;
-  if (!can(me, 'controlcenter.manage')) return fail('Managers and the owner only.', 403); // enforced here, not just by hiding the page
+  const denied = ccDenied(me, method, p); // the permission matrix (bot/ccpermissions.js, from the staff manifest): 401 signed out, 403 wrong role. Enforced here, not just by hiding the page
+  if (denied) return fail(denied.error, denied.status);
+  if (!can(me, 'controlcenter.manage')) return fail('Managers and the owner only.', 403);
   if (!env.DB) return fail('The member database is not connected.', 503);
   if (p === '/api/controlcenter' && method === 'GET') {
     const [controls, purposeRows, auditRows, members] = await Promise.all([loadControls(env, { fresh: true }), all(env, 'SELECT purpose, channel_id FROM discord_channels WHERE active = 1').catch(() => []), all(env, "SELECT id, at, user_id, name, action, before, after FROM config_audit WHERE entity = 'output_controls' ORDER BY id DESC LIMIT 80").catch(() => []), all(env, 'SELECT id, name FROM users ORDER BY name LIMIT 800').catch(() => [])]);
     const byPurpose = {};
     for (const r of purposeRows) (byPurpose[r.purpose] ??= []).push(String(r.channel_id));
     return json({
-      me: { manage: true, flags: can(me, 'flags.manage'), org: can(me, 'settings.org') },
+      me: { manage: true, flags: can(me, 'flags.manage'), org: can(me, 'settings.org'), role: me.role, access: accessFor(me), ...(me.realRole ? { realRole: me.realRole } : {}) },
       members, apps: REGISTRY.apps, purposes: CHANNEL_PURPOSE_INFO, purposeChannels: byPurpose, levels: ROLES, methods: METHODS, lists: [...RULE_LISTS, ...LEVEL_LISTS],
       items: REGISTRY.items.map((i) => summary(i, controls.get(i.key))),
       flags: { committed: env._committedFlags ?? flags(env), live: flags(env) },

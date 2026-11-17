@@ -31,12 +31,16 @@
   const setNav = (id) => { $$('.cx-nav', root).forEach((a) => { if (a.dataset.tool === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); }); };
   // old anchors (#switches, #hof, #bot ...) from the retired Boardroom and Tools pages and the owner button: one flat map built from the manifest
   const ALIAS = Object.assign({}, ...Object.values(MAN.legacyHash || {}).map((m) => Object.fromEntries(Object.entries(m).filter(([k]) => k))));
-  const owner = () => A?.role === 'owner';
+  // PF-022 step 9: who may use what comes from the manifest matrix (staffmanifest.js: matrix), for the role the Control Center treats you as (A.ccRole: the owner's View as preview included).
+  // The Worker enforces the same matrix (bot/ccpermissions.js), so this only decides what to show.
+  const eff = () => A?.ccRole || null;
+  const may = (id) => !!(MAN.matrix || {})[eff()]?.includes(id);
+  const owner = () => eff() === 'owner';
   const kindOf = (t) => (t.module === 'home' ? 'home' : /^(org|controlcenter:)/.test(t.module) ? 'cc' : t.module.split(':')[0]); // home | cc | br (boardroom.js) | tl (tools.js)
   function show(id) {
     id = ALIAS[id] || id;
     let t = tool(id) && (tool(id).module || id === 'home') ? tool(id) : tool('home');
-    if (t.owner && !owner()) t = tool('home'); // owner tools are not opened for a manager, the sidebar already hides them
+    if (!may(t.id)) t = tool('home'); // a tool the role may not use is not opened (the sidebar hides it, the Worker refuses it)
     id = t.id; cur = id;
     const home = $('#cxHome'), hosts = { cc: $('#ccLive'), br: $('#brLive'), tl: $('#tlLive') }, kind = kindOf(t);
     $('#cxTitle').textContent = t.label; $('#cxCur').textContent = t.label; $('#cxSubtitle').textContent = t.desc + '. Changes made in a tool apply at once: no deploy, no code change.';
@@ -165,7 +169,7 @@ ${who.length ? `<div class="cx-chips" style="margin-top:10px">${who.map(([n, c])
     if ($('#cxPal')) return; const e = d.createElement('div'); e.className = 'cx-pal'; e.id = 'cxPal';
     e.innerHTML = `<div role="dialog" aria-modal="true" aria-label="Search every tool"><input type="search" placeholder="Search tools, panels and pages…" aria-label="Search tools" autocomplete="off"><ul role="listbox"></ul></div>`; root.appendChild(e);
     const inp = $('input', e), ul = $('ul', e); let sel = 0, hit = [];
-    const owner = A?.role === 'owner', paint = () => { const q = inp.value.trim().toLowerCase(); hit = MAN.tools.filter((t) => (owner || !t.owner) && (!q || `${t.label} ${t.desc} ${t.keys || ''} ${t.section}`.toLowerCase().includes(q))).slice(0, 12); sel = Math.min(sel, Math.max(0, hit.length - 1));
+    const paint = () => { const q = inp.value.trim().toLowerCase(); hit = MAN.tools.filter((t) => may(t.id) && (!q || `${t.label} ${t.desc} ${t.keys || ''} ${t.section}`.toLowerCase().includes(q))).slice(0, 12); sel = Math.min(sel, Math.max(0, hit.length - 1));
       ul.innerHTML = hit.map((t, i) => `<li role="option"><a href="${esc(t.href)}" data-t="${esc(t.id)}" class="${i === sel ? 'sel' : ''}">${ic(t.icon)}<span>${esc(t.label)}</span><small>${esc((MAN.sections.find((s) => s[0] === t.section) || [])[1] || '')}</small></a></li>`).join('') || '<li class="muted" style="padding:14px">No tool matches.</li>'; };
     const close = () => { e.remove(); $('#cxFind')?.focus(); };
     inp.addEventListener('input', () => { sel = 0; paint(); });
@@ -178,11 +182,36 @@ ${who.length ? `<div class="cx-chips" style="margin-top:10px">${who.map(([n, c])
   // ---------- boot: staff only, after the session is known ----------
   let ready = false;
   w.addEventListener('hashchange', () => { const { id, q } = hashOf(); if (id === 'home') fromQuery(q); if (ready) show(id); });
+  // ---------- sign-in, wrong role and View as (PF-022 step 9) ----------
+  const gate = $('#cxGate'), viewBar = $('#cxView');
+  const showGate = (state) => { // out = signed out, role = signed in but not staff, preview = the owner looking as a member
+    const who = (A?.name ? ' as ' + A.name : '') + (A?.roleLabel ? ' (' + A.roleLabel + ')' : '');
+    const G = { out: ['Staff sign-in', 'The Control Center is for managers and the owner. Sign in with Discord to continue; you land back here, on the same tool.', 'Sign in with Discord'],
+      role: ['Managers and the owner only', `You are signed in${who}. The Control Center is for managers and the owner, so none of its tools are open to you.`, ''],
+      preview: ['Previewing as a member', 'This is what a member sees: none of the Control Center. Pick Owner or Manager above to see the tools again.', ''] }[state];
+    gate.dataset.state = state; gate.hidden = false; $('#cxGateT').textContent = G[0]; $('#cxGateP').textContent = G[1];
+    const go = $('#cxGateGo'); go.textContent = G[2] || 'Back to the site';
+    if (G[2]) { go.href = A?.loginUrl ? A.loginUrl() : '#'; go.setAttribute('data-login', ''); } else { go.href = 'index.html'; go.removeAttribute('data-login'); }
+    $('#cxGate .cx-gate-b').hidden = !G[2];
+    $('#cx')?.setAttribute('hidden', ''); root.hidden = true;
+  };
+  const paintView = () => { // the owner's View as strip: real owners only, always reachable so there is a way back
+    if (!viewBar || !A?.session || A.role !== 'owner') return;
+    viewBar.hidden = false; const cur = A.ccView || 'owner';
+    $$('[data-view]', viewBar).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === cur)));
+    $('#cxViewN').textContent = cur === 'owner' ? 'Preview what a manager or a member sees. Requests are answered as that role; your real permissions do not change.' : `Previewing as ${cur === 'manager' ? 'a manager' : 'a member'}: the Worker answers as that role. Your real permissions do not change.`;
+    viewBar.classList.toggle('on', cur !== 'owner');
+  };
+  viewBar?.addEventListener('click', (ev) => { const b = ev.target.closest('[data-view]'); if (b) A.setCcView(b.dataset.view === 'owner' ? '' : b.dataset.view); });
   (async () => {
     await A?.ready?.catch?.(() => {});
-    if (!API || !A?.token || (A.role !== 'owner' && A.role !== 'manager')) return;
-    ready = true; if (A.role === 'owner') $$('[data-owner]', root).forEach((e) => { e.hidden = false; });
-    const { id, q } = hashOf(); fromQuery(q); $('#ccLocal')?.setAttribute('hidden', '');
-    show(id); loadAll();
+    paintView();
+    if (!A?.session) { showGate('out'); return; } // signed out: the sign-in gate
+    if (eff() !== 'owner' && eff() !== 'manager') { showGate(A.ccView === 'member' ? 'preview' : 'role'); return; } // wrong role: no tools, no requests
+    gate.hidden = true;
+    $$('[data-tool]', root).forEach((a) => { const li = a.closest('li'); if (li) li.hidden = !may(a.dataset.tool); });
+    if (!API || !A?.token) return;
+    ready = true;
+    const { id, q } = hashOf(); fromQuery(q); show(id); loadAll();
   })();
 })();

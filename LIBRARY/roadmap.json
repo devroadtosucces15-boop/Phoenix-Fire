@@ -395,7 +395,7 @@
       "title": "Side roadmap Item 5: Control Center CRM dashboard, remaining parts (DJ bridge, permissions, sign-in)",
       "phase": "Side roadmap",
       "area": "`bot/controlcenter.js`, dock",
-      "status": "OPEN",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -406,10 +406,10 @@
       ],
       "fileLane": "`bot/controlcenter.js`, dock",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": true,
-      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT. Step 5 (DJ bridge, push and poll) built on branch pf-022b-dj-bridge: bot/music.js, migration 0068 (not applied), dj/src/bridge.js, bot/djregistry.js, tests/music.test.mjs; owner steps in dj/DEPLOY.md. Backend steps 1-4, 6 (pf-022a) and front end 7-9 (pf-022c) remain. PF-022a (backend steps 1-4, 6) done. Step 7 (pf-022c, 2026-11-16, branch pf-022c-control-center-ui) done: one staff manifest (next/lib/staffmanifest.mjs) read by the hub, dock, sidebar, Ctrl+K search and link resolver; Control Center shell with scoped dark CRM theme, one SVG sprite, cross-filtering dashboard home on existing APIs, existing tools mounted as modules (next/static/ccshell.js, ccshell.css, tests/ccshell.test.mjs). Step 8 (pf-022d, 2026-11-17, branch claude/pf-022d-collapse-nav) done: every nav copy reads the staff manifest (hub, dock, owner button, navigator, gear, Boardroom finder), the old staff-switches/health/announce/audit/halloffame/medals/backup/organization/boardroom/tools pages redirect into Control Center views with their anchors, Boardroom Switches/Audit/Organization and the Tools Bot tab are retired into Site access, Audit log, Organization, Bot settings and Bot commands (checklist PLANNING/PF-022-STEP8-CHECKLIST.md, tests/cc-step8.test.mjs). Step 9 (permissions, sign-in) is next.",
-      "outcome": "Staff run the club from the Control Center: DJ bridge, permissions and sign-in work end to end.",
+      "notes": "Plan section 5 and addenda; R45 landed. Owner decision pending: DJ bridge push or poll. PF-021 done; still waiting on the owner decision, so PF-016 is NEXT. Step 5 (DJ bridge, push and poll) built on branch pf-022b-dj-bridge: bot/music.js, migration 0068 (not applied), dj/src/bridge.js, bot/djregistry.js, tests/music.test.mjs; owner steps in dj/DEPLOY.md. Backend steps 1-4, 6 (pf-022a) and front end 7-9 (pf-022c) remain. PF-022a (backend steps 1-4, 6) done. Step 7 (pf-022c, 2026-11-16, branch pf-022c-control-center-ui) done: one staff manifest (next/lib/staffmanifest.mjs) read by the hub, dock, sidebar, Ctrl+K search and link resolver; Control Center shell with scoped dark CRM theme, one SVG sprite, cross-filtering dashboard home on existing APIs, existing tools mounted as modules (next/static/ccshell.js, ccshell.css, tests/ccshell.test.mjs). Step 8 (pf-022d, 2026-11-17, branch claude/pf-022d-collapse-nav) done: every nav copy reads the staff manifest (hub, dock, owner button, navigator, gear, Boardroom finder), the old staff-switches/health/announce/audit/halloffame/medals/backup/organization/boardroom/tools pages redirect into Control Center views with their anchors, Boardroom Switches/Audit/Organization and the Tools Bot tab are retired into Site access, Audit log, Organization, Bot settings and Bot commands (checklist PLANNING/PF-022-STEP8-CHECKLIST.md, tests/cc-step8.test.mjs). Step 9 (permissions, sign-in) is next. Step 9 (pf-022e, 2026-11-17) done: per-section permission matrix (owner, manager, member) from the manifest `level`, enforced by the Worker (bot/ccpermissions.js: Control Center routes and the moved settings routes, 401 signed out, 403 wrong role) and by the site (sidebar, search, gate); signed-out and wrong-role gate; owner View as (Owner/Manager/Member, sends X-View-As). Choices made without the owner: owner sees everything, manager sees the manager tools, members none. Owner steps to take it live: PLANNING/PF-022-GO-LIVE.md.",
+      "outcome": "Staff run the club from the Control Center: DJ bridge, permissions and sign-in work end to end (live sign-in not yet checked by a real member).",
       "behavior": "Waits on one owner decision, whether the DJ bridge pushes or polls; the remaining dashboard parts follow that choice.",
       "doneLog": [
         {
@@ -421,6 +421,11 @@
           "date": "2026-11-17",
           "ref": "PF-022d branch claude/pf-022d-collapse-nav",
           "what": "Step 8: one manifest for every staff nav list, old staff pages redirect into the Control Center, retired duplicate Boardroom and Tools tabs mounted once (Site access with groups/undo/Show me, Audit log feed, Bot settings, Submissions, Reports, Boardroom views), anti-duplication and redirect tests, before/after checklist."
+        },
+        {
+          "date": "2026-11-17",
+          "ref": "PF-022e branch claude/awesome-heyrovsky-20081e",
+          "what": "Step 9: permission matrix in the staff manifest, enforced in the Worker (bot/ccpermissions.js) and on the site, signed-out and wrong-role gate, owner View as preview, tests/cc-permissions.test.mjs, owner go-live list PLANNING/PF-022-GO-LIVE.md."
         }
       ],
       "plans": []
@@ -430,7 +435,7 @@
       "title": "Side roadmap Item 7: Rush queue and LFG as one matchmaking system",
       "phase": "Side roadmap",
       "area": "`bot/` rush files",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -662,7 +667,7 @@
       "title": "Optional additions R18 to R22 and staff sweep follow-ups R24 to R29",
       "phase": "Match night and upkeep",
       "area": "staff pages",
-      "status": "NEXT",
+      "status": "OPEN",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -675,7 +680,7 @@
       "lowHanging": false,
       "percent": 85,
       "verify": false,
-      "notes": "Split into one session per item when taken. 2026-11-16: R18-R28 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md.",
+      "notes": "Split into one session per item when taken. 2026-11-16: R18-R28 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md. 2026-11-17: R29 (live-data sweep) dropped from NEXT: it needs real Worker data or an owner login. Stays open; take it when the owner supplies live access.",
       "outcome": "The optional additions the owner approved are live, and the remaining follow-ups are listed.",
       "behavior": "R18 to R27 are done: Insights as two columns from 821 px (Health and Month by month left, To do right); staff home groups in a dense 4-column grid, Boardroom equal link tiles with a 2-column Switches accordion, and the Dugout as three equal-height columns (roster, pitch, ready-check) from 1100 px, one column on phones. R28 and R29 are approved and wait to be built one per session.",
       "doneLog": [

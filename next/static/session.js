@@ -23,12 +23,17 @@
   // 👁️ "Preview as" (#53): the owner can look at the site as a member or a guest (menu, gated blocks). Display only – the server still sees the owner.
   const viewAs = realAs === 'owner' && ['member', 'guest'].includes(ls.get('phoenix.viewas')) ? ls.get('phoenix.viewas') : '';
   const as = viewAs || realAs;
+  // PF-022 step 9 – Control Center roles: owner, manager, member (guests and members use none of it). The owner can preview the Control Center as a manager or a member
+  // (phoenix.cc.viewas): the page shows what that role sees AND the requests carry X-View-As, so the Worker answers as that role. Real permissions never change.
+  const ccView = role === 'owner' && ['manager', 'member'].includes(ls.get('phoenix.cc.viewas')) ? ls.get('phoenix.cc.viewas') : '';
+  const ccRole = !session ? null : ccView || (viewAs ? 'member' : role === 'owner' || role === 'manager' ? role : 'member'); // the role the Control Center treats you as
+  const setCcView = (v) => { ls.set('phoenix.cc.viewas', v || null); location.reload(); };
   const loginUrl = () => { keepHash(); return `${API}/auth/login?return=${encodeURIComponent(location.href.split('#')[0])}`; };
   const logout = () => { ls.set(KEY, null); ls.set(OLD, null); ss.set('nx.me', null); location.href = 'index.html'; };
-  const call = async (path, opt = {}) => { const r = await fetch(API + path, { ...opt, headers: { ...(opt.headers || {}), ...(session ? { Authorization: 'Bearer ' + session.token } : {}) }, cache: 'no-store' }); if (!r.ok) { let m = ''; try { m = (await r.json()).error || ''; } catch {} const e = new Error(m || path + ' ' + r.status); e.status = r.status; throw e; } return r.json(); };
+  const call = async (path, opt = {}) => { const r = await fetch(API + path, { ...opt, headers: { ...(opt.headers || {}), ...(session ? { Authorization: 'Bearer ' + session.token } : {}), ...(ccView && /staff-controlcenter/.test(location.pathname) ? { 'X-View-As': ccView } : {}) }, cache: 'no-store' }); if (!r.ok) { let m = ''; try { m = (await r.json()).error || ''; } catch {} const e = new Error(m || path + ' ' + r.status); e.status = r.status; throw e; } return r.json(); };
   let cached = null; try { cached = JSON.parse(ss.get('nx.me') || 'null'); } catch {}
   if (cached && (!session || cached.u !== session.u)) cached = null;
-  const Auth = window.NorexAuth = { session, token: session?.token ?? null, role, as, realAs, viewAs, player: cached?.player ?? null, name: session?.n ?? '', avatar: session?.a ?? '', loginUrl, logout, call };
+  const Auth = window.NorexAuth = { session, token: session?.token ?? null, role, as, realAs, viewAs, ccRole, ccView, setCcView, player: cached?.player ?? null, name: session?.n ?? '', avatar: session?.a ?? '', loginUrl, logout, call };
   // who is this member in the club? (approved claim = their player card)
   Auth.ready = !session ? Promise.resolve() : call('/api/me').then((m) => {
     const claim = m.claim && m.claim.status === 'approved' ? m.claim.player : null;

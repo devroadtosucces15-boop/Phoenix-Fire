@@ -36,7 +36,7 @@
   w.NorexDock = { cleanPins, pinsNav, pinsStaff };
 
   // ---------- who is here ----------
-  const role = () => (A?.token ? A.role : w.NorexAs === 'owner' ? 'owner' : 'guest');
+  const role = () => (A?.token ? (A.ccView || A.role) : w.NorexAs === 'owner' ? 'owner' : 'guest');
   const isStaff = () => role() === 'owner' || role() === 'manager';
   const isOwner = () => role() === 'owner' && !A?.viewAs;
   // the real owner keeps the Preview-as chips while previewing as member or guest, so there is always a way back

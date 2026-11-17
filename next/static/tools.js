@@ -144,10 +144,10 @@ ${pend.length ? `<div class="dk-grid">${pend.map((p) => `<article class="panel d
   let started = false;
   const start = () => { if (started) return; started = true; d.getElementById('tlLocal')?.setAttribute('hidden', ''); root.hidden = false; paint(); };
   // the Control Center sidebar opens a tool: PFTools.open('reports'); false when it does not exist or the viewer is not staff
-  window.PFTools = { tabs: TABS.map(([k]) => k), open: (k) => { if (!TABS.some(([t]) => t === k) || !['manager', 'owner'].includes(A.role)) return false; start(); S.tab = k; paint(); need(k); return true; } };
+  window.PFTools = { tabs: TABS.map(([k]) => k), open: (k) => { if (!TABS.some(([t]) => t === k) || !['manager', 'owner'].includes(A.ccRole || A.role)) return false; start(); S.tab = k; paint(); need(k); return true; } };
   (async () => {
     await A.ready?.catch?.(() => {});
-    if (!['manager', 'owner'].includes(A.role)) return;
+    if (!['manager', 'owner'].includes(A.ccRole || A.role)) return;
     if (!root.closest('.cx')) { start(); need('subm'); } // a stand-alone page keeps the first tab; inside the Control Center the sidebar picks
   })();
 })();
