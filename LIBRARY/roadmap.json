@@ -476,12 +476,14 @@
       ],
       "fileLane": "`bot/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 4,
       "verify": false,
-      "notes": "Plan sections 5c to Item 25. Split into one session per item when taken.",
+      "notes": "Plan sections 5c to Item 25. One session per item. Item 8 duplicate-post fix done 2026-11-17 (bot/once.js claims; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 9 (Translator) is next; PF-024 stays NEXT until Item 25 is done.",
       "outcome": "The bot has fewer, cleaner commands and the planned new features, including a test-view command.",
       "behavior": "Split into one session per plan item when taken; each follows the channel and role from config rule.",
-      "doneLog": [],
+      "doneLog": [
+        "2026-11-17 Item 8 duplicate-post fix"
+      ],
       "plans": []
     },
     {
