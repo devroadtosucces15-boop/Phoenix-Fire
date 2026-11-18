@@ -26,32 +26,39 @@ const CATALOG = [
   { id: 'fwd', label: 'Forward passes', unit: '', dec: 0, rel: true, why: 'Forward passes are how the team gets up the pitch.', fix: 'Look up for the first forward option before you go sideways.', roles: ['MID', 'DEF'] },
   { id: 'pos', label: 'In position', unit: '%', dec: 0, scale: 20, why: 'Holding your position keeps the shape and covers the space teammates leave.', fix: 'Come back to your slot after every attack and keep your marker in view.', roles: ['DEF', 'MID', 'FWD'] },
   { id: 'sot', label: 'Shots on target', unit: '', dec: 0, rel: true, why: 'Only shots on target can score.', fix: 'Take the shot earlier and aim for the corners, not at the keeper.', roles: ['FWD', 'MID'] },
+  { id: 'lost', label: 'Possession lost', unit: '', dec: 0, rel: true, lower: true, why: 'Every ball given away hands the other team an attack.', fix: 'Shield the ball and play the safe pass when you are under pressure.', roles: ['MID', 'DEF', 'FWD'] },
   { id: 'fouls', label: 'Fouls conceded', unit: '', dec: 0, rel: true, lower: true, why: 'Fouls give away free kicks and risk cards.', fix: 'Stay on your feet, jockey and let the ball come to you.', roles: ['DEF', 'MID'] },
 ];
 
+// the one fixed order every card lists the stats in
+const ORDER = ['rating', 'goals', 'assists', 'shots', 'sot', 'pm', 'pass', 'fwd', 'tm', 'tackle', 'int', 'aer', 'won', 'lost', 'pos', 'fouls', 'saves'];
 const GROUP = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD', attacker: 'FWD' };
 export const groupOf = (pos) => GROUP[String(pos ?? '').toLowerCase()] ?? 'MID';
 
-// this match's value and the player's own average for one catalog entry; null when either side is missing (never a made-up zero)
+// This match's value and the player's own average for one catalog entry, each null when EA did not send it (a friendly has no event counters) or he has
+// no history yet: never a made-up zero. Both are read independently so a stat is always listed with whatever exists.
 function read(id, line, p) {
-  const e = line.ev, av = p?.i?.pg, rt = p?.i?.r, s = p?.s;
+  const e = line.ev, av = p?.i?.pg, rt = p?.i?.r, s = p?.s, b = p?.b, gp = s?.gp >= 3 ? s.gp : 0;
+  const ev = (k) => (e && e[k] != null ? n(e[k]) : null);
+  const per = (tot) => (gp && tot != null ? tot / gp : null);
   switch (id) {
-    case 'rating': return s?.gp >= 3 && s.r ? [n(line.r), s.r] : [null, null];
-    case 'goals': return s?.gp >= 3 ? [n(line.g), s.g / s.gp] : [null, null];
-    case 'assists': return s?.gp >= 3 ? [n(line.a), s.a / s.gp] : [null, null];
-    case 'shots': return p?.b ? [n(line.sh), p.b.sh] : [null, null];
-    case 'saves': return p?.b && (n(line.sv) > 0 || p.b.sv >= 1) ? [n(line.sv), p.b.sv] : [null, null];
-    case 'pm': return p?.b && n(line.pa) > 0 ? [n(line.pm), p.b.pm] : [null, null];
-    case 'tm': return p?.b && n(line.ta) > 0 ? [n(line.tm), p.b.tm] : [null, null];
-    case 'pass': return n(line.pa) >= 8 && s?.p ? [pct(line.pm, line.pa), s.p] : [null, null];
-    case 'tackle': return n(line.ta) >= 3 && s?.t ? [pct(line.tm, line.ta), s.t] : [null, null];
-    case 'int': return e && av ? [n(e.int), av.int] : [null, null];
-    case 'aer': return e && av ? [n(e.aer), av.aer] : [null, null];
-    case 'won': return e && av ? [n(e.won), av.won] : [null, null];
-    case 'fwd': return e && av ? [n(e.fwd), av.fwd] : [null, null];
-    case 'pos': return e && e.pos != null && rt?.pos != null ? [n(e.pos), rt.pos] : [null, null];
-    case 'sot': return e && av && (n(line.sh) > 0 || av.sot >= 0.3) ? [n(e.sot), av.sot] : [null, null];
-    case 'fouls': return e && av ? [n(e.fouls), av.fouls] : [null, null];
+    case 'rating': return [line.r != null ? n(line.r) : null, gp && s.r ? s.r : null];
+    case 'goals': return [n(line.g), per(s?.g)];
+    case 'assists': return [n(line.a), per(s?.a)];
+    case 'shots': return [n(line.sh), b?.sh ?? null];
+    case 'sot': return [ev('sot'), av?.sot ?? null];
+    case 'saves': return [n(line.sv), b?.sv ?? null];
+    case 'pm': return [line.pm != null ? n(line.pm) : null, b?.pm ?? null];
+    case 'pass': return [n(line.pa) > 0 ? pct(line.pm, line.pa) : null, s?.p || null];
+    case 'fwd': return [ev('fwd'), av?.fwd ?? null];
+    case 'tm': return [line.tm != null ? n(line.tm) : null, b?.tm ?? null];
+    case 'tackle': return [n(line.ta) > 0 ? pct(line.tm, line.ta) : null, s?.t || null];
+    case 'int': return [ev('int'), av?.int ?? null];
+    case 'aer': return [ev('aer'), av?.aer ?? null];
+    case 'won': return [ev('won'), av?.won ?? null];
+    case 'lost': return [ev('lost'), null];
+    case 'pos': return [ev('pos'), rt?.pos ?? null];
+    case 'fouls': return [ev('fouls'), av?.fouls ?? null];
     default: return [null, null];
   }
 }
@@ -66,21 +73,24 @@ const fmt = (c, v) => (v == null ? '–' : c.dec ? round1(v).toFixed(c.dec) + c.
 export function playerBreakdown(line, p, m = {}) {
   const role = groupOf(line.pos ?? p?.pos);
   const rows = [];
+  // EVERY stat, in the same fixed order, for every player and every match: nothing is chosen or dropped by how the game went. A missing number shows a dash.
   for (const c of CATALOG) {
+    if (c.id === 'saves' && role !== 'GK') continue; // saves belong to the goalkeeper's line; every outfield stat below is always listed
     const [v, avg] = read(c.id, line, p);
-    if (v == null || avg == null) continue;
-    if (c.rel && v === 0 && avg < 0.5) continue; // nothing to judge: he rarely does this and did not do it
-    const dev = deviation(c, v, avg), weight = c.roles.includes(role) ? 1.25 : 1; // the numbers that belong to his job count a little more
-    rows.push({ id: c.id, label: c.label, v, avg, text: fmt(c, v), avgText: fmt(c, avg), dev, rank: dev * weight, tone: Math.abs(dev) < 0.1 ? 'even' : dev > 0 ? 'good' : 'bad', lower: !!c.lower, c });
+    // judged against his own average only when both exist and the sample means something (enough passes or tackles; a rare action he skipped is not a weak spot)
+    const att = c.id === 'pass' ? n(line.pa) >= 8 : c.id === 'tackle' ? n(line.ta) >= 3 : true;
+    const judged = v != null && avg != null && att && !(c.rel && v === 0 && avg < 0.5);
+    const dev = judged ? deviation(c, v, avg) : 0, weight = c.roles.includes(role) ? 1.25 : 1; // the numbers that belong to his job count a little more
+    rows.push({ id: c.id, label: c.label, v, avg, text: fmt(c, v), avgText: avg == null ? '–' : fmt(c, avg), dev, rank: dev * weight, judged, tone: v == null ? 'na' : !judged || Math.abs(dev) < 0.1 ? 'even' : dev > 0 ? 'good' : 'bad', lower: !!c.lower, c });
   }
-  rows.sort((a, b) => b.rank - a.rank);
+  rows.sort((a, b) => ORDER.indexOf(a.id) - ORDER.indexOf(b.id));
   const detail = rows.filter((r) => r.id !== 'rating'); // the rating is the headline; strengths and weak spots are the numbers that make it up
   const strengths = detail.filter((r) => r.tone === 'good'), weak = detail.filter((r) => r.tone === 'bad').sort((a, b) => a.rank - b.rank);
   const even = detail.filter((r) => r.tone === 'even');
 
   // insights: a headline on the night, then up to two weak spots (what it does, what to do, a target) and one strength to keep
   const insights = [];
-  const rate = rows.find((r) => r.id === 'rating');
+  const rate = rows.find((r) => r.id === 'rating' && r.judged);
   const driver = rate && rate.tone === 'good' ? strengths[0] : rate && rate.tone === 'bad' ? weak[0] : null;
   if (rate) {
     const d = round1(rate.v - rate.avg);

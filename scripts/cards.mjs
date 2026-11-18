@@ -190,7 +190,7 @@ const ICON = { check: '✓', team: '◆', flow: '→', goal: '★', shield: '▣
 export function playerMatchCard(m, line, p, club) {
   const bd = playerBreakdown(line, p, m), tr = trend(p), b = band(+line.r, line.mom), s = p?.s?.gp >= 3 ? p.s : null;
   const d = s?.r ? +line.r - s.r : null;
-  const rows = [...bd.rows].filter((r) => r.id !== 'rating').sort((x, y) => y.dev - x.dev).slice(0, 12);
+  const rows = bd.rows.filter((r) => r.id !== 'rating'); // every stat, same order, every game
   const diverge = (r) => { const w = Math.round(Math.min(1, Math.abs(r.dev) / 1.0) * 100); return `<div class="dv"><div class="half l">${r.dev < 0 && r.tone === 'bad' ? `<i class="bad" style="width:${w}%"></i>` : ''}</div><div class="half r">${r.dev > 0 && r.tone === 'good' ? `<i class="good" style="width:${w}%"></i>` : ''}</div></div>`; };
   const facts = [line.g ? `${line.g} goal${line.g > 1 ? 's' : ''}` : '', line.a ? `${line.a} assist${line.a > 1 ? 's' : ''}` : '', line.pa ? `${line.pm}/${line.pa} passes` : '', line.ta ? `${line.tm}/${line.ta} tackles` : '', line.sh ? `${line.sh} shot${line.sh > 1 ? 's' : ''}` : ''].filter(Boolean).join('  ·  ');
   const ins = bd.insights.map((i) => `<div class="in ${i.icon}"><span class="ic">${ICON[i.icon] ?? '◆'}</span><div><b>${esc(i.lead)}</b><p>${esc(i.text)}</p>${i.aim ? `<em>${esc(i.aim)}</em>` : ''}</div></div>`).join('');
@@ -204,7 +204,7 @@ export function playerMatchCard(m, line, p, club) {
 .dl{display:inline-block;padding:6px 16px;border-radius:999px;font:700 22px Inter}.dl.up{background:rgba(75,224,138,.16);color:#4be08a}.dl.dn{background:rgba(255,125,114,.16);color:#ff7d72}.dl.ev{background:rgba(255,255,255,.08);color:var(--soft)}
 .g-h{margin:30px 0 8px;font:700 19px Inter;letter-spacing:.26em;text-transform:uppercase;color:var(--soft)}
 .lg{display:flex;justify-content:space-between;font:700 16px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 6px 300px}
-.rw{display:grid;grid-template-columns:290px 1fr 250px;align-items:center;gap:14px;height:46px}
+.rw{display:grid;grid-template-columns:290px 1fr 250px;align-items:center;gap:14px;height:42px}
 .rw .lb{font:700 20px Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);white-space:nowrap}
 .rw .vl{font:700 30px Oswald;text-align:right}.rw .vl small{font:600 18px Inter;color:var(--soft);margin-left:8px}
 .dv{position:relative;display:grid;grid-template-columns:1fr 1fr;height:16px}.dv:before{content:"";position:absolute;left:50%;top:-9px;bottom:-9px;width:3px;background:var(--g2);border-radius:2px}
@@ -217,7 +217,7 @@ export function playerMatchCard(m, line, p, club) {
 .tn{margin-top:10px;font:700 24px Inter}.tn.up{color:#4be08a}.tn.dn{color:#ff7d72}`,
   `<div class="wrap"><div class="hd"><div><div class="eyebrow">${esc(club?.name ?? SITE)} · Your match</div><h1>${esc(line.n ?? p?.n ?? 'Player')} <span class="chip">${esc(POSLABEL[String(line.pos ?? p?.pos ?? '').toLowerCase()] ?? line.pos ?? '')}</span></h1></div>${crest(club?.crest, club?.name ?? SITE, 130, true)}</div>
 <div class="rt"><div class="big" style="color:${BAND[b]}">${r1(line.r)}</div><div class="sub"><b>${line.mom ? '★ Man of the match' : 'Match rating'}</b>${d != null ? `<span class="dl ${d >= 0.1 ? 'up' : d <= -0.1 ? 'dn' : 'ev'}">${d >= 0.1 ? '▲' : d <= -0.1 ? '▼' : '='} ${Math.abs(d).toFixed(1)} vs your average ${r1(s.r)}</span>` : '<span>Not enough games for an average yet</span>'}<span>${esc(`${RESULT[m.res] ?? ''} ${m.gf}–${m.ga} vs ${m.opp}`)}</span><span>${esc(facts || 'No goals, passes or tackles recorded')}</span></div></div>
-${rows.length ? `<div class="g-h">Strengths and weak spots · this match against your own average</div><div class="lg"><span>◀ below your average</span><span>above your average ▶</span></div>${rows.map((r) => `<div class="rw"><span class="lb">${esc(r.label)}</span>${diverge(r)}<span class="vl" style="color:${r.tone === 'good' ? '#4be08a' : r.tone === 'bad' ? '#ff7d72' : '#cfd8e8'}">${esc(r.text)}<small>avg ${esc(r.avgText)}</small></span></div>`).join('')}` : ''}
+${rows.length ? `<div class="g-h">Every stat · this match against your own average</div><div class="lg"><span>◀ below your average</span><span>above your average ▶</span></div>${rows.map((r) => `<div class="rw"><span class="lb">${esc(r.label)}</span>${diverge(r)}<span class="vl" style="color:${r.tone === 'good' ? '#4be08a' : r.tone === 'bad' ? '#ff7d72' : r.tone === 'na' ? '#6c7890' : '#cfd8e8'}">${esc(r.text)}<small>${r.tone === 'na' ? 'not sent' : r.avg == null ? 'no avg yet' : `avg ${esc(r.avgText)}`}</small></span></div>`).join('')}` : ''}
 <div class="g-h">What it means · and what to do</div>${ins}
 ${t}
 </div><div class="brand">${esc(SITE)}</div>`);
