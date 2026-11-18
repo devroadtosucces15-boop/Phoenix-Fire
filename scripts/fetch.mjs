@@ -21,6 +21,7 @@ import { MAX_BURNERS, burnerStats, mergeMatches, reportMessage, slimBurnerMatch,
 import { postResults } from './lib/resultpost.mjs';
 import { resolveOrgClubs } from './lib/org.mjs';
 import { rawEvents } from './lib/events.mjs';
+import { slimAggregate, seasonBoard } from './lib/matchslim.mjs';
 import { missingKeys, platformProblem } from './lib/schema.mjs';
 
 const API = 'https://proclubs.ea.com/api/fc/';
@@ -112,7 +113,8 @@ function slimMatch(m, matchType, fetchedFrom = null) {
     const { details, ...rest } = c;
     clubs[clubId] = { ...rest, name: details?.name ?? null, kit: details?.customKit ?? null };
   }
-  return { matchId: m.matchId, timestamp: m.timestamp, matchType, fetchedFrom, clubs, players }; // fetchedFrom = source club ID (provenance)
+  const aggregate = slimAggregate(m.aggregate); // EA's own per-club sums, no event buckets (scripts/lib/matchslim.mjs)
+  return { matchId: m.matchId, timestamp: m.timestamp, matchType, fetchedFrom, clubs, players, ...(Object.keys(aggregate).length ? { aggregate } : {}) }; // fetchedFrom = source club ID (provenance)
 }
 
 const homeRoster = new Set(); // lower-case gamertags of home members
@@ -147,6 +149,10 @@ async function fetchClub(id) {
     const hits = (await api('allTimeLeaderboard/search', { clubName: clubInfo.name })) || [];
     const hit = hits.find((h) => String(h.clubId) === id);
     if (hit) record.leaderboard = { currentDivision: hit.currentDivision, bestDivision: hit.bestDivision, points: hit.points };
+    // the running season on its own (the all-time row above spans every season): same shape, season totals; kept beside, never instead
+    const seasonHits = (await api('currentSeasonLeaderboard/search', { clubName: clubInfo.name }).catch(() => null)) || [];
+    const sh = Array.isArray(seasonHits) ? seasonHits.find((h) => String(h.clubId) === id) : null;
+    if (sh) record.seasonBoard = seasonBoard(sh, now);
   }
   writeJson(path.join(DATA, 'clubs', `${id}.json`), record);
 

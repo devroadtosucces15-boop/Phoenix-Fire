@@ -72,9 +72,11 @@ const posts = () => calls.filter((c) => c.url.endsWith('/channels/chan-1/message
 const run = async (features) => { calls.length = 0; await postResults([match()], { config: { siteUrl: 'https://x.test/', features: { discordMatch: 'members', ...features }, hiddenPlayers: [] }, homeId: '100', route: async () => ({ ok: true, channelId: 'chan-1' }), drawn: { dir: out, manifest } }); return posts(); };
 t('flag off (the default): only the result is posted', (await run({})).length === 1);
 const two = await run({ matchReview: 'members' });
-t('flag on: the review is a second post right after the result', two.length === 2);
-const review = JSON.parse(two[1].init.body.get('payload_json'));
-t('… carrying the review picture as an attachment, with a title and no ping', images(review).filter((u) => u.startsWith('attachment://') && !u.endsWith('crest.png')).join() === 'attachment://review-900.png' && two[1].init.body.get('files[1]') && /vs Poundin P\./.test(plainText(review)) && !/@everyone|<@&/.test(JSON.stringify(review)));
+t('flag on: ONE message per game, the review picture rides inside the result post', two.length === 1 && two[0].init.body.get('payload_json').includes('attachment://review-900.png') && !!two[0].init.body.get('files[2]'));
+const split = await run({ matchReview: 'members', matchReviewSplit: true });
+t('matchReviewSplit flag: the old second post comes back', split.length === 2 && !split[0].init.body.get('payload_json').includes('attachment://review-900.png'));
+const review = JSON.parse(split[1].init.body.get('payload_json'));
+t('… carrying the review picture as an attachment, with a title and no ping', images(review).filter((u) => u.startsWith('attachment://') && !u.endsWith('crest.png')).join() === 'attachment://review-900.png' && split[1].init.body.get('files[1]') && /vs Poundin P\./.test(plainText(review)) && !/@everyone|<@&/.test(JSON.stringify(review)));
 const noPic = await (async () => { calls.length = 0; await postResults([match()], { config: { siteUrl: 'https://x.test/', features: { discordMatch: 'members', matchReview: 'members' }, hiddenPlayers: [] }, homeId: '100', route: async () => ({ ok: true, channelId: 'chan-1' }), drawn: { dir: out, manifest: { match: { 900: { score: 'score-900.png', field: 'field-900.png' } } } } }); return posts(); })();
 t('no review picture drawn (abandoned match, or the draw failed): no second post, the result still goes out', noPic.length === 1);
 

@@ -37,6 +37,15 @@ export const EVENT_STATS = [
   ['feedbackBestOptionTaken', 177], ['feedbackShouldHavePassedElsewhere', 182], ['feedbackChoseToPass', 183],
 ];
 
+// Partly known ids (community research, "partial", not confirmed). NEVER decoded or shown on a page: labels only, so the unnamed-id
+// report can say what an id probably is. An id moves into EVENT_STATS only after scripts/lib/validate.mjs agrees with EA's own columns.
+export const CANDIDATE_IDS = {
+  151: 'bad / hospital passes', 121: 'tackle success indicator (tracks 229)', 157: 'crosses attempted, open play', 96: 'red card trigger / severe foul',
+  104: 'times caught offside (count often low)', 49: 'save sub-type', 50: 'save sub-type', 12: 'goal technique', 124: 'goal technique', 137: 'goal technique',
+  140: 'goal technique', 93: 'goal technique', 238: 'goal technique', 123: 'chipped goals', 179: 'feedback: should have shot', 150: 'tiki-taka playstyle pass (uncertain)',
+};
+export const candidateLabel = (id) => CANDIDATE_IDS[id] ?? null;
+
 // Stats that are sums or remainders of the ids above (EA's direction/length events don't always cover every pass).
 const max0 = (n) => Math.max(0, n);
 

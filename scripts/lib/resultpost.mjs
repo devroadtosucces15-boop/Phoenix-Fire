@@ -89,6 +89,10 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const reviewFiles = crestFile ? [crestFile] : [];
       const reviewFile = drawn?.manifest?.match?.[m.matchId]?.review;
       const reviewImg = reviewOn && reviewFile && fs.existsSync(path.join(drawn.dir, reviewFile)) ? (reviewFiles.push({ name: `review-${m.matchId}.png`, path: path.join(drawn.dir, reviewFile) }), { url: `attachment://review-${m.matchId}.png`, alt: 'Match review: what went well, what to work on, next match targets and recommendations for the squad' }) : null;
+      // One message per game: the review picture rides inside the result panel (flag matchReviewSplit = true brings back the old second message).
+      const split = [settings.flags?.matchReviewSplit, config.features?.matchReviewSplit].some((v) => v === true || v === 'true');
+      const merged = !!reviewImg && !split;
+      if (merged) files.push(reviewFiles[reviewFiles.length - 1]);
       const reviewPanel = () => message({ accent: 'red', blocks: [
         tagBlock(tag, kind),
         header({ eyebrow: `${clubName} · Match review`, title: `${clubName} vs ${oppName}`, sub: `Insights and recommendations · <t:${m.timestamp}:f>`, thumb: crestThumb }),
@@ -107,10 +111,12 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         mergedImg ? null : facts([[`${it('goal')} Goals`, list('goals').replace(/\n/g, ', ')], [`${it('assist')} Assists`, list('assists').replace(/\n/g, ', ')], [`${it('motm')} Man of the match`, motm ? `${motm.playername} (${num(motm.rating).toFixed(1)})` : ''], ['📈 Top rated', best ? `${best.playername} (${num(best.rating).toFixed(1)})` : '']]),
         fieldImg ? label('Field view · ratings') : null,
         cards(fieldImg),
+        merged ? label('Match review · what went well, what to work on') : null,
+        merged ? cards(reviewImg) : null,
         footer(mergedImg ? 'Pick your name below to see your own match' : fieldImg ? 'Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match' : 'Pick your name below to see your own match'),
         ...components,
       ] });
-      return { src, matchId: m.matchId, us: num(us.goals), them: num(opp.goals), oppName, ts: m.timestamp, components, files, panel, review: reviewImg ? { panel: reviewPanel, files: reviewFiles } : null, embed: {
+      return { src, matchId: m.matchId, us: num(us.goals), them: num(opp.goals), oppName, ts: m.timestamp, components, files, panel, review: reviewImg && !merged ? { panel: reviewPanel, files: reviewFiles } : null, embed: {
         author: { name: `${tag.important ? '🚨 ' : ''}${tag.label} · ${kind.toUpperCase()}` },
         title: `${settings.emoji ? `${settings.emoji} ` : ''}${clubName} ${us.goals}–${opp.goals} ${oppName}`,
         url,

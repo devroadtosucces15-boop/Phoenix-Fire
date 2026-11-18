@@ -139,3 +139,15 @@ Partly known ids it lists (not decoded there either). They match our biggest unn
 4. **Fix the save source** for keepers (keep EA `saves` and types; drop reliance on ids 202 and 267 in any new output); test in `tests/boxscore.test.mjs`.
 5. **Control Center data tab**: show coverage (37 of 134 matches), unnamed ids by volume and the validator result (PF-022 shell; new view).
 6. Later, own work: opponent columns on the Discord card, a clearer Pos% header, per-90 wording. Each new output gets a Phoenix guard test.
+
+## 7. Status (2026-11-18, owner approved building)
+
+Done and tested (`tests/matchstats-ref.test.mjs`, 20 checks): offside-aware pass check in `scripts/lib/validate.mjs`; candidate id labels
+(`CANDIDATE_IDS`, labels only, never decoded); totals-vs-breakdown and keeper-saves guards; `scripts/lib/ea-assets.mjs` (crest fallback chain,
+division badge, reputation icon, kit colour hex); `aggregate` stored per club (`scripts/lib/matchslim.mjs`, used by `slimMatch`);
+`currentSeasonLeaderboard/search` fetched next to the all-time one into `data/clubs/<id>.json` `seasonBoard` and read as `clubStats.season`;
+`matches[].agg`, `oppCrests`, `oppKit` in `next/lib/data.mjs` (no page reads them yet). Outputs are unchanged except one: the result post and
+its review are now ONE Discord message (flag `matchReviewSplit: true` restores two); `tests/matchreview.test.mjs` and
+`tests/resultpost-brand.test.mjs` updated. Before/after mockups of every stats output are in the owner's private Artifact
+(https://claude.ai/artifact/KvbFVYG6FxzgWK1Qj3hkdZ); wiring the new stats into the real outputs waits for the owner's go.
+Not verified live: the shape of `aggregate` and the season row (EA blocks this sandbox); the first real fetch will show them.

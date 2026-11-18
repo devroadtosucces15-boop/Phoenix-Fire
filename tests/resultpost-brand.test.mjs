@@ -25,10 +25,10 @@ for (const [label, id, ours, theirs] of [['loss', '1', 0, 3], ['win', '2', 3, 0]
   sent.length = 0;
   await postResults([mk(id, ours, theirs)], { config, homeId: '100', route, drawn: { dir, manifest } });
   const posts = sent.filter((c) => c.url.endsWith('/channels/c1/messages'));
-  t(`${label}: result and review both posted`, posts.length === 2);
+  t(`${label}: one message per game, the review rides inside it`, posts.length === 1 && posts[0].init.body.get('payload_json').includes('attachment://review-'));
   for (const [k, c] of posts.entries()) {
     const body = c.init.body, json = body.get('payload_json'), p = JSON.parse(json);
-    const which = k === 0 ? 'result' : 'review';
+    const which = k === 0 ? 'result' : 'review'; // k is always 0 now (merged); kept so a split post would still be checked
     t(`${label} ${which}: accent is Phoenix orange`, p.components.at(-1).accent_color === 0xe8651a);
     t(`${label} ${which}: thumbnail is the attached Phoenix crest`, json.includes('"url":"attachment://crest.png"') && !!body.get('files[0]'));
     t(`${label} ${which}: no opponent crest URL, no NOREX red or blue-black`, !/easports|crestAssetId|c8352c|080b11|ef4444|22c55e/i.test(json) && !json.includes(String(0xc8352c)));

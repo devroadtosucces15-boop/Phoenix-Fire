@@ -3,6 +3,7 @@ import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath }
 import { orgClubsFromDisk, combineOrg, orgOverview } from '../../scripts/lib/org.mjs';
 import { decodeEvents } from '../../scripts/lib/events.mjs';
 import { summarize, coverage } from '../../scripts/lib/intel.mjs';
+import { crestCandidates, kitColorHex } from '../../scripts/lib/ea-assets.mjs';
 const here = path.dirname(fileURLToPath(import.meta.url));
 // the repo root is the nearest parent holding config.json (works from next/ in the repo and through the PLANNING symlink)
 const root = (() => { let p = here; for (let i = 0; i < 6; i++) { if (fs.existsSync(path.join(p, 'config.json')) && fs.existsSync(path.join(p, 'data'))) return p; p = path.dirname(p); } return path.join(here, '..', '..'); })();
@@ -20,6 +21,7 @@ const club = combined.club ?? {};
 export const orgInfo = orgOverview(combined, org);
 const world = J(path.join(root, 'data/world.json'), { clubs: [] });
 const num = (x) => (x == null || x === '' ? 0 : +x || 0);
+const safe = (f) => { try { return f(); } catch { return null; } };
 const LINE = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
 export const ARCH = ['Shot Stopper', 'Sweeper Keeper', 'Progressor', 'Boss', 'Engine', 'Marauder', 'Recycler', 'Maestro', 'Creator', 'Spark', 'Magician', 'Finisher', 'Target'];
 
@@ -38,7 +40,9 @@ for (const m of combined.matches) {
   for (const [pid, p] of Object.entries(m.players?.[CLUB] ?? {})) if (p.playername) pidBy.set(p.playername.toLowerCase(), pid);
   const lines = Object.values(m.players?.[CLUB] ?? {}).map(toLine), olines = Object.values(m.players?.[oppId] ?? {}).map(toLine);
   for (const l of lines) { const a = arch.get(l.n) ?? {}; a[l.arch] = (a[l.arch] || 0) + 1; arch.set(l.n, a); }
-  matches.push({ id: m.matchId ?? f.replace('.json', ''), t: num(m.timestamp), type: m.matchType, src: m.src, sources: m.sources, internal: m.internal, oppId, crest: opp.kit?.crestAssetId ? String(opp.kit.crestAssetId) : '', opp: opp.name ?? `Club ${oppId}`, gf, ga, res: gf > ga ? 'W' : gf < ga ? 'L' : 'D', dnf: Object.values(m.clubs).some((c) => c.winnerByDnf === '1'), full: isFull(m, lines), lines, olines, intel: { us: summarize(lines.map((l) => l.ev)), opp: summarize(olines.map((l) => l.ev)) } });
+  matches.push({ id: m.matchId ?? f.replace('.json', ''), t: num(m.timestamp), type: m.matchType, src: m.src, sources: m.sources, internal: m.internal, oppId, crest: opp.kit?.crestAssetId ? String(opp.kit.crestAssetId) : '', opp: opp.name ?? `Club ${oppId}`, gf, ga, res: gf > ga ? 'W' : gf < ga ? 'L' : 'D', dnf: Object.values(m.clubs).some((c) => c.winnerByDnf === '1'), full: isFull(m, lines), lines, olines, intel: { us: summarize(lines.map((l) => l.ev)), opp: summarize(olines.map((l) => l.ev)) },
+    // EA's own per-club sums (null for games archived before they were kept), the opponent crest fallback chain and kit colour (scripts/lib/ea-assets.mjs); no page reads these yet
+    agg: m.aggregate?.[CLUB] ?? null, oppAgg: m.aggregate?.[oppId] ?? null, oppCrests: crestCandidates({ team: opp.TEAM, crestAssetId: opp.kit?.crestAssetId, selectedKitType: opp.kit?.selectedKitType }), oppKit: safe(() => kitColorHex(opp.kit?.kitColor1)) });
 }
 matches.sort((a, b) => b.t - a.t);
 // team totals for the comparison bars (only fields EA sends)
@@ -66,7 +70,9 @@ export const players = (club.members ?? []).map((m) => {
 
 // ---- club ----
 const o = club.overall ?? {};
-export const clubStats = { name: club.info?.name ?? cfg.siteTitle, sr: num(o.skillRating), div: num(club.leaderboard?.currentDivision), pts: num(club.leaderboard?.points), gp: num(o.gamesPlayed), w: num(o.wins), d: num(o.ties), l: num(o.losses), gf: num(o.goals), ga: num(o.goalsAgainst), streak: num(o.wstreak), unbeaten: num(o.unbeatenstreak), promotions: num(o.promotions), fetched: club.fetchedAt };
+export const clubStats = { name: club.info?.name ?? cfg.siteTitle, sr: num(o.skillRating), div: num(club.leaderboard?.currentDivision), pts: num(club.leaderboard?.points), gp: num(o.gamesPlayed), w: num(o.wins), d: num(o.ties), l: num(o.losses), gf: num(o.goals), ga: num(o.goalsAgainst), streak: num(o.wstreak), unbeaten: num(o.unbeatenstreak), promotions: num(o.promotions), fetched: club.fetchedAt,
+  // the running season on its own (data/clubs/<id>.json seasonBoard, from currentSeasonLeaderboard/search); null until fetched
+  season: club.seasonBoard ?? null };
 export const recent = matches.slice(0, 10);
 // ---- match intelligence (decoded EA event counters), club-wide: our players only, plus how much of the archive carries event data ----
 export const intel = {
