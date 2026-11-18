@@ -6,7 +6,8 @@ import { t, done } from './lib.mjs';
 import { personalEmbed } from '../bot/matchcard.js';
 import { playerIntel } from '../scripts/lib/intel.mjs';
 import { decodeEvents } from '../scripts/lib/events.mjs';
-import { COMPARE_ROWS, TOP_STATS, topRows, compareCard, tableCard } from '../scripts/cards.mjs';
+import { COMPARE_ROWS, TOP_STATS, topRows, compareCard, tableCard, playerMatchCard } from '../scripts/cards.mjs';
+import { playerBreakdown, trend } from '../scripts/lib/playerinsight.mjs';
 
 const src = (f) => fs.readFileSync(ROOT + f, 'utf8');
 const m = { id: '1', res: 'W', gf: 2, ga: 1, opp: 'Them', ts: 1, url: 'https://x/m' };
@@ -43,6 +44,26 @@ t('leaderboards: interceptions, possession won, aerials and positioning, three g
 t('leaderboards: positioning ranks the in-position share; the table card draws it', topRows(squad, 'positioning')[0][1] === 70 && /Best positioning/.test(tableCard(squad, 'positioning', club)));
 const choices = src('bot/commanddefs.js'), worker = src('bot/worker.js');
 t('leaderboards: slash command choices and the Worker know the same four boards', ['interceptions', 'won', 'aerials', 'positioning'].every((k) => choices.includes(`'${k}'`) && worker.includes(`${k}: [`)));
+
+// ---- the drawn player card for "Show my match", the compare header and the leaderboard crest
+const crestClub = { name: 'PHOENIX FIRE', crest: 'data:image/png;base64,AAAA' };
+const hot = { ...lineEv, r: 8.6, ev: { int: 6, aer: 4, won: 7, lost: 1, fwd: 14, pos: 90, sot: 3, fouls: 0 } }; // well above his averages
+const cold = { ...lineEv, r: 5.4, ev: { int: 0, aer: 0, won: 1, lost: 6, fwd: 2, pos: 50, sot: 0, fouls: 4 } }; // well below
+const pb = { ...p, s: { ...p.s, gp: 20 }, tr: [7, 7.2, 6.8, 7.1, 7.4, 7.6, 7.2, 7.8, 7.5, 7.9] };
+const good = playerBreakdown(hot, pb, m), bad = playerBreakdown(cold, pb, m), none = playerBreakdown(lineNo, pb, m);
+t('player insight: a big night puts the rating and counters under strengths; a poor night puts them under weak spots, fouls counted the other way', good.strengths.length >= 4 && good.weak.length === 0 && bad.weak.length >= 4 && bad.weak.some((r) => r.id === 'fouls') && good.strengths.every((r) => r.tone === 'good'));
+t('player insight: each insight says what the number does and one thing to do, with a target for the weak spots', bad.insights.some((x) => x.aim && /next game/.test(x.aim) && x.text.length > 40) && bad.insights.length <= 4);
+t('player insight: a friendly (no counters) judges only rating, passing, tackling and says why the rest is missing, never zeros', none.rows.every((r) => ['rating', 'pass', 'tackle'].includes(r.id)) && none.insights.some((x) => /friendl/i.test(x.lead)));
+t('player insight: no average yet (under 3 games) gives no comparison rows and no crash', playerBreakdown(lineEv, { n: 'New', s: { gp: 1 } }, m).rows.length === 0 && trend({ tr: [7, 7] }) === null);
+t('player insight: the trend compares the last five games with his own average', trend(pb).delta > 0 && trend(pb).points.length === 10);
+const pmc = playerMatchCard(m, hot, pb, crestClub), pmFriendly = playerMatchCard(m, lineNo, pb, crestClub);
+t('player match card: rating, diverging bars against his own average, insights and the rating trend with his average line', ['Your match', 'above your average', 'What it means', 'Rating trend', 'stroke-dasharray'].every((x) => pmc.includes(x)) && /class="dv"/.test(pmc));
+t('player match card: crest on the right, Phoenix name, no NOREX', /class="hd"[\s\S]*data:image\/png/.test(pmc) && /PHOENIX FIRE/.test(pmc) && !/norex|c8352c/i.test(pmc));
+t('player match card: a friendly still draws (no counters, no crash)', /Your match/.test(pmFriendly) && !/class="lb">(Interceptions|Aerial|In position)/.test(pmFriendly));
+t('player match card: drawn for the newest matches through the card jobs; Show my match uses it and falls back to the text embed', /pm-\$\{m\.id\}/.test(src('scripts/cards.mjs')) && /cardUrl\(deck, 'match', matchId, 'pm', key\)/.test(src('bot/matchcard.js')) && /return reply\(personalEmbed/.test(src('bot/matchcard.js')));
+const cmp = compareCard(squad[0], squad[1], crestClub);
+t('compare card: a "Player comparison" title with the crest on the right, the names below the stats', /Player comparison/.test(cmp) && /class="head"[\s\S]*data:image\/png/.test(cmp) && cmp.indexOf('<div class="row">') < cmp.indexOf('<div class="names">') && cmp.indexOf('<h2>Ann') > cmp.indexOf('<div class="row">'));
+t('leaderboard card: the crest sits on the right of the title', /class="lh"[\s\S]*data:image\/png/.test(tableCard(squad, 'interceptions', crestClub)));
 
 // ---- insights fact packs
 const ins = src('bot/statinsights.js');

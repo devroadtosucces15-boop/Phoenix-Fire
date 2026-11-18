@@ -6,7 +6,7 @@
 // Pure functions + one handler – scripts/fetch.mjs imports matchComponents() for the auto-posted results.
 // Only bot-sent messages can carry these (Discord ignores interactive components on plain webhooks).
 
-import { message, header, text, sep, footer, buttons, resultAccent, reply, privateNote } from './ui.js';
+import { message, header, text, sep, footer, buttons, cards, cardUrl, resultAccent, reply, privateNote } from './ui.js';
 
 export const RES_COLOR = { W: 0x22c55e, D: 0xeab308, L: 0xef4444 };
 const RES_WORD = { W: '✅ Win', D: '➖ Draw', L: '❌ Defeat' };
@@ -107,5 +107,12 @@ export async function matchInteraction(i, site, deps) {
   const players = await deps.load('players');
   const p = players.find((x) => x.k === key);
   if (!line) return eph({ content: `📋 **${p?.n ?? 'That player'}** didn't play in this match.${p?.tr?.length ? ` Last rating: ${dot(p.tr.at(-1))} **${r1(p.tr.at(-1))}**.` : ''}` });
+  // the drawn player card (strengths, weak spots, insights, trend) when it exists for this match; the text version otherwise (older matches, no card yet)
+  const deck = await Promise.resolve(deps.load('cards')).catch(() => null), card = cardUrl(deck, 'match', matchId, 'pm', key);
+  if (card) return reply(message({ ephemeral: true, accent: resultAccent(m.res), blocks: [
+    header({ eyebrow: mine ? `${club.name} · ✅ Your verified player` : `${club.name} · Player match`, title: `${line.n} · ${m.gf}–${m.ga} ${m.opp}`.slice(0, 250), sub: `<t:${m.ts}:R>` }),
+    cards({ url: card, alt: `${line.n}: rating, strengths, weak spots and insights for this match against their own average` }),
+    buttons([{ label: 'Match page', url: m.url }, { label: 'Player page', url: `${site}players/${encodeURIComponent(line.k)}.html` }]),
+  ] }));
   return reply(personalEmbed(m, line, p, club, site, { mine }));
 }

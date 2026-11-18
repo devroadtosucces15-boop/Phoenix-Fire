@@ -89,5 +89,5 @@ const cardC = clubCard({ ...clubJson, crest: '' }, ins);
 t('club insight: ten league games at most, pass accuracy per game, shares only from counters', ins && ins.games.length <= 10 && ins.games.every((g) => g.pass == null || (g.pass > 0 && g.pass <= 100)));
 t('club card: one analytics band (bars per game and three donuts), still six tiles and the form row', /class="cbs"/.test(cardC) && (cardC.match(/class="dr"/g) ?? []).length >= 2 && (cardC.match(/<div class="tile[ "]/g) ?? []).length === 6 && /FORM/.test(cardC));
 t('player and club cards: Phoenix, no NOREX', !NOREX.test(cardP + cardC));
-t('cards: template version bumped together with the bot banners', /TEMPLATE_VERSION = 17/.test(fs.readFileSync(`${ROOT}scripts/cards.mjs`, 'utf8')) && /BANNER_V = 17/.test(fs.readFileSync(`${ROOT}bot/ui.js`, 'utf8')));
+t('cards: template version bumped together with the bot banners', /TEMPLATE_VERSION = 18/.test(fs.readFileSync(`${ROOT}scripts/cards.mjs`, 'utf8')) && /BANNER_V = 18/.test(fs.readFileSync(`${ROOT}bot/ui.js`, 'utf8')));
 done();

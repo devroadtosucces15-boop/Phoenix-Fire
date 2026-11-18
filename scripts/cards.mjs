@@ -18,9 +18,10 @@ import { HELP_POSTER_KEYS, HELP_ICON, helpPosterModel } from '../bot/help.js';
 import { buildReview, loadHistory } from './lib/matchreview.mjs';
 import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
+import { playerBreakdown, trend } from './lib/playerinsight.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 17; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 18; // bump to redraw every card after a template change
 // ONE format for every picture in a match post sequence (the match board, the field view, the review): same width, same height, same margins, same
 // header. Discord scales a tall picture down to fit, so pictures of different heights come out at different widths and look misaligned; a fixed canvas
 // keeps them identical in the post. Bump TEMPLATE_VERSION (and BANNER_V in bot/ui.js) with any change here.
@@ -136,7 +137,7 @@ ${markers}</svg>`);
 }
 
 // ---------- player card (stat tiles + rating graph) ----------
-export function ratingGraph(tr, { w = 1080, h = 270 } = {}) {
+export function ratingGraph(tr, { w = 1080, h = 270, avg = null } = {}) {
   const pts = (tr ?? []).slice(-10).map(Number).filter((r) => r > 0);
   if (pts.length < 2) return '';
   const lo = Math.min(5, Math.floor(Math.min(...pts))), hi = 10, L = 60, R = w - 40, T = 50, B = h - 30;
@@ -145,7 +146,7 @@ export function ratingGraph(tr, { w = 1080, h = 270 } = {}) {
   const best = pts.indexOf(Math.max(...pts)), last = pts.length - 1;
   const grid = Array.from({ length: hi - lo + 1 }, (_, k) => lo + k).map((v) => `<line x1="${L}" x2="${R}" y1="${Y(v)}" y2="${Y(v)}" stroke="rgba(255,255,255,.07)"/><text x="${L - 14}" y="${Y(v) + 8}" text-anchor="end" font-family="Inter" font-weight="600" font-size="22" fill="#6c7890">${v}</text>`).join('');
   return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a3d" stop-opacity=".42"/><stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/></linearGradient></defs>
-${grid}<path d="M${X(0)} ${B} L${line.replace(/ /g, ' L')} L${X(last)} ${B} Z" fill="url(#ar)"/>
+${grid}${avg ? `<line x1="${L}" x2="${R}" y1="${Y(avg)}" y2="${Y(avg)}" stroke="#efcf7a" stroke-width="2.5" stroke-dasharray="10 8" opacity=".8"/>` : ''}<path d="M${X(0)} ${B} L${line.replace(/ /g, ' L')} L${X(last)} ${B} Z" fill="url(#ar)"/>
 <polyline points="${line}" fill="none" stroke="#ff8a3d" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
 ${pts.map((r, i) => `<circle cx="${X(i)}" cy="${Y(r)}" r="${i === last ? 11 : 6}" fill="${i === last ? '#efcf7a' : BAND[band(r)]}" stroke="#0b0f16" stroke-width="3"/>`).join('')}
 <text x="${X(best)}" y="${Y(pts[best]) - 18}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="26" fill="#efcf7a">${r1(pts[best])}</text>
@@ -180,6 +181,45 @@ export function playerCard(p, intel = null, squad = null) {
 <div class="head"><h1>${esc(p.n)} <span class="chip">${esc(p.pos ?? '')}</span></h1>${p.ovr ? `<div class="ovr"><b class="gold">${p.ovr}</b><span>OVR</span></div>` : ''}</div>
 <div class="tiles">${tiles.map(([k, v, c]) => `<div class="tile ${c ?? ''}"><b>${esc(v)}</b><span>${k}</span></div>`).join('')}</div>
 ${lower}
+</div><div class="brand">${esc(SITE)}</div>`);
+}
+
+// ---------- player match card (the "Show my match" button): one player's night against his own average ----------
+// Rating and result up top, diverging bars (right = above his own average, left = below), the smart insights, and the rating trend with his average line.
+const ICON = { check: '✓', team: '◆', flow: '→', goal: '★', shield: '▣', chip: 'i' };
+export function playerMatchCard(m, line, p, club) {
+  const bd = playerBreakdown(line, p, m), tr = trend(p), b = band(+line.r, line.mom), s = p?.s?.gp >= 3 ? p.s : null;
+  const d = s?.r ? +line.r - s.r : null;
+  const rows = [...bd.rows].filter((r) => r.id !== 'rating').sort((x, y) => y.dev - x.dev).slice(0, 8);
+  const diverge = (r) => { const w = Math.round(Math.min(1, Math.abs(r.dev) / 1.0) * 100); return `<div class="dv"><div class="half l">${r.dev < 0 && r.tone === 'bad' ? `<i class="bad" style="width:${w}%"></i>` : ''}</div><div class="half r">${r.dev > 0 && r.tone === 'good' ? `<i class="good" style="width:${w}%"></i>` : ''}</div></div>`; };
+  const facts = [line.g ? `${line.g} goal${line.g > 1 ? 's' : ''}` : '', line.a ? `${line.a} assist${line.a > 1 ? 's' : ''}` : '', line.pa ? `${line.pm}/${line.pa} passes` : '', line.ta ? `${line.tm}/${line.ta} tackles` : '', line.sh ? `${line.sh} shot${line.sh > 1 ? 's' : ''}` : ''].filter(Boolean).join('  ·  ');
+  const ins = bd.insights.map((i) => `<div class="in ${i.icon}"><span class="ic">${ICON[i.icon] ?? '◆'}</span><div><b>${esc(i.lead)}</b><p>${esc(i.text)}</p>${i.aim ? `<em>${esc(i.aim)}</em>` : ''}</div></div>`).join('');
+  const t = tr ? `<div class="g-h">Rating trend · last ${tr.points.length} games vs your average ${r1(tr.avg)}</div>${ratingGraph(tr.points, { w: 1080, h: 250, avg: tr.avg })}<div class="tn ${tr.delta >= 0.1 ? 'up' : tr.delta <= -0.1 ? 'dn' : ''}">${tr.delta >= 0.1 ? `Improving: your last 5 average ${r1(tr.last5)}, ${tr.delta.toFixed(1)} above your season average.` : tr.delta <= -0.1 ? `Dipping: your last 5 average ${r1(tr.last5)}, ${Math.abs(tr.delta).toFixed(1)} below your season average.` : `Steady: your last 5 average ${r1(tr.last5)}, level with your season average.`}</div>` : '';
+  return page(`${RING_CSS}
+.wrap{padding:40px 56px 70px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.hd h1{font:700 64px/1 Oswald;text-transform:uppercase;letter-spacing:.02em;margin-top:6px}
+.rt{display:flex;align-items:center;gap:26px;margin-top:22px}.rt .big{font:700 120px/0.9 Oswald}.rt .sub{display:grid;gap:8px}
+.rt .sub b{font:700 26px Inter;letter-spacing:.04em}.rt .sub span{font:600 22px Inter;color:var(--soft)}
+.dl{display:inline-block;padding:6px 16px;border-radius:999px;font:700 22px Inter}.dl.up{background:rgba(75,224,138,.16);color:#4be08a}.dl.dn{background:rgba(255,125,114,.16);color:#ff7d72}.dl.ev{background:rgba(255,255,255,.08);color:var(--soft)}
+.g-h{margin:30px 0 8px;font:700 19px Inter;letter-spacing:.26em;text-transform:uppercase;color:var(--soft)}
+.lg{display:flex;justify-content:space-between;font:700 16px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 6px 300px}
+.rw{display:grid;grid-template-columns:290px 1fr 250px;align-items:center;gap:14px;height:46px}
+.rw .lb{font:700 20px Inter;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);white-space:nowrap}
+.rw .vl{font:700 30px Oswald;text-align:right}.rw .vl small{font:600 18px Inter;color:var(--soft);margin-left:8px}
+.dv{position:relative;display:grid;grid-template-columns:1fr 1fr;height:16px}.dv:before{content:"";position:absolute;left:50%;top:-9px;bottom:-9px;width:3px;background:var(--g2);border-radius:2px}
+.half{display:flex;background:rgba(255,255,255,.06)}.half.l{justify-content:flex-end;border-radius:8px 0 0 8px}.half.r{border-radius:0 8px 8px 0}
+.half i{display:block;height:100%}.half i.good{background:#4be08a;border-radius:0 8px 8px 0}.half i.bad{background:#ff7d72;border-radius:8px 0 0 8px}
+.in{display:grid;grid-template-columns:48px 1fr;gap:16px;padding:16px 0;border-top:1px solid var(--line)}
+.in .ic{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font:700 22px Inter;background:rgba(232,101,26,.18);color:#ff8a3d}
+.in.check .ic,.in.goal .ic{background:rgba(75,224,138,.16);color:#4be08a}.in.shield .ic,.in.flow .ic{background:rgba(255,159,67,.16);color:#ff9f43}
+.in b{display:block;font:700 26px/1.25 Inter}.in p{margin:6px 0 0;font:500 22px/1.4 Inter;color:var(--soft)}.in em{display:block;margin-top:6px;font:700 20px Inter;color:#efcf7a;font-style:normal}
+.tn{margin-top:10px;font:700 24px Inter}.tn.up{color:#4be08a}.tn.dn{color:#ff7d72}`,
+  `<div class="wrap"><div class="hd"><div><div class="eyebrow">${esc(club?.name ?? SITE)} · Your match</div><h1>${esc(line.n ?? p?.n ?? 'Player')} <span class="chip">${esc(POSLABEL[String(line.pos ?? p?.pos ?? '').toLowerCase()] ?? line.pos ?? '')}</span></h1></div>${crest(club?.crest, club?.name ?? SITE, 130, true)}</div>
+<div class="rt"><div class="big" style="color:${BAND[b]}">${r1(line.r)}</div><div class="sub"><b>${line.mom ? '★ Man of the match' : 'Match rating'}</b>${d != null ? `<span class="dl ${d >= 0.1 ? 'up' : d <= -0.1 ? 'dn' : 'ev'}">${d >= 0.1 ? '▲' : d <= -0.1 ? '▼' : '='} ${Math.abs(d).toFixed(1)} vs your average ${r1(s.r)}</span>` : '<span>Not enough games for an average yet</span>'}<span>${esc(`${RESULT[m.res] ?? ''} ${m.gf}–${m.ga} vs ${m.opp}`)}</span><span>${esc(facts || 'No goals, passes or tackles recorded')}</span></div></div>
+${rows.length ? `<div class="g-h">Strengths and weak spots · this match against your own average</div><div class="lg"><span>◀ below your average</span><span>above your average ▶</span></div>${rows.map((r) => `<div class="rw"><span class="lb">${esc(r.label)}</span>${diverge(r)}<span class="vl" style="color:${r.tone === 'good' ? '#4be08a' : r.tone === 'bad' ? '#ff7d72' : '#cfd8e8'}">${esc(r.text)}<small>avg ${esc(r.avgText)}</small></span></div>`).join('')}` : ''}
+<div class="g-h">What it means · and what to do</div>${ins}
+${t}
 </div><div class="brand">${esc(SITE)}</div>`);
 }
 
@@ -244,7 +284,7 @@ export function sessionPicture(recap, club) {
 export const COMPARE_ROWS = (a, b) => [['OVR', a.ovr, b.ovr], ['Games', a.s?.gp, b.s?.gp], ['Goals', a.s?.g, b.s?.g], ['Assists', a.s?.a, b.s?.a], ['Rating', a.s?.r, b.s?.r, 1], ['MOTM', a.s?.m, b.s?.m], ['Pass %', a.s?.p, b.s?.p], ['Tackle %', a.s?.t, b.s?.t], ['Win %', a.s?.w, b.s?.w],
   // from the event counters, only when both players (or one) have them: per game, and the share of the time in position
   ['Interceptions / game', a.i?.pg.int, b.i?.pg.int, 1], ['Aerials / game', a.i?.pg.aer, b.i?.pg.aer, 1], ['Poss. won / game', a.i?.pg.won, b.i?.pg.won, 1], ['In position %', a.i?.r.pos, b.i?.r.pos]];
-export function compareCard(a, b) {
+export function compareCard(a, b, club = null) {
   const rows = COMPARE_ROWS(a, b).filter(([, x, y]) => (+x || 0) + (+y || 0) > 0).map(([k, x, y, dec = 0]) => {
     const hi = Math.max(+x || 0, +y || 0) || 1, xa = +x || 0, ya = +y || 0;
     const side = (v, win, left) => `<div class="bar ${left ? 'l' : 'r'}"><i class="${win ? 'w' : ''}" style="width:${Math.max(3, Math.round((v / hi) * 100))}%"></i></div>`;
@@ -252,18 +292,20 @@ export function compareCard(a, b) {
   }).join('');
   return page(`
 .wrap{padding:44px 60px 70px}
-.top{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:26px}
-.top div:last-child{text-align:right}
-.top h1{font:700 60px/1 Oswald;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.top small{display:block;margin-top:6px;font:700 20px Inter;letter-spacing:.24em;color:var(--soft);text-transform:uppercase}
-.row{display:grid;grid-template-columns:110px 1fr 190px 1fr 110px;align-items:center;column-gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.head{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-bottom:10px}
+.head h1{font:700 64px/1 Oswald;text-transform:uppercase;letter-spacing:.02em;margin-top:6px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:26px;padding-top:22px;border-top:2px solid var(--line)}
+.names div:last-child{text-align:right}
+.names h2{font:700 56px/1 Oswald;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.names small{display:block;margin-top:6px;font:700 20px Inter;letter-spacing:.24em;color:var(--soft);text-transform:uppercase}
+.row{display:grid;grid-template-columns:100px 1fr 260px 1fr 100px;align-items:center;column-gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
 .row b{font:700 44px Oswald;font-variant-numeric:tabular-nums}.row b:first-child{text-align:right}
-.row span{text-align:center;font:700 20px Inter;letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+.row span{text-align:center;font:700 19px Inter;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
 .bar{height:20px;border-radius:10px;background:rgba(255,255,255,.07);display:flex}.bar.l{justify-content:flex-end}
 .bar i{display:block;height:100%;border-radius:10px;background:#3a4a66}.bar i.w{background:linear-gradient(90deg,var(--red),#ff8a3c)}`,
-  `<div class="wrap"><div class="eyebrow">Compare</div>
-<div class="top"><div><h1>${esc(a.n)}</h1><small>${esc(a.pos ?? '')}</small></div><div><h1>${esc(b.n)}</h1><small>${esc(b.pos ?? '')}</small></div></div>
+  `<div class="wrap"><div class="head"><div><div class="eyebrow">${esc(a.sc ?? SITE)} · Compare</div><h1>Player comparison</h1></div>${crest(club?.crest, club?.name ?? SITE, 130, true)}</div>
 ${rows || '<div class="row"><span style="grid-column:1/-1">No stats to compare yet</span></div>'}
+<div class="names"><div><h2>${esc(a.n)}</h2><small>${esc(a.pos ?? '')}</small></div><div><h2>${esc(b.n)}</h2><small>${esc(b.pos ?? '')}</small></div></div>
 </div><div class="brand">${esc(SITE)}</div>`);
 }
 
@@ -298,8 +340,9 @@ h1{font:700 56px/1.05 Oswald;text-transform:uppercase;margin:8px 0 24px}
 .rk.k1{background:var(--gold);color:#2d1f06}.rk.k2{background:#2a3446;color:#e4ebf7}.rk.k3{background:var(--red);color:#fff}
 .nm{font-weight:700;font-size:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-left:8px}
 .meter{position:absolute;left:80px;bottom:0;height:4px;border-radius:3px;background:linear-gradient(90deg,var(--red),#ff8a3c)}.row.first .meter{background:var(--gold)}
+.lh{display:flex;align-items:center;justify-content:space-between;gap:30px}.lh h1{margin-bottom:0}.lh+.r{margin-top:18px}
 .empty{padding:60px 0;color:var(--soft);font-size:30px}`,
-  `<div class="wrap"><div class="eyebrow">${esc(club.name)} · Leaderboard</div><h1>${esc(title)}</h1>
+  `<div class="wrap"><div class="lh"><div><div class="eyebrow">${esc(club.name)} · Leaderboard</div><h1>${esc(title)}</h1></div>${crest(club.crest, club.name, 120, true)}</div>
 <div class="r hd"><span></span><span style="padding-left:8px">Player</span>${COLS.map(([k, , id]) => `<span class="n" style="font:inherit;color:${hot.includes(id) ? '#f08f87' : 'inherit'}">${k}</span>`).join('')}<span class="n" style="font:inherit">${stat === 'ga' ? 'G+A' : 'Total'}</span></div>
 ${rows.length ? rows.map(([p, v], i) => `<div class="r row ${i ? '' : 'first'}"><span class="rk ${i < 3 ? `k${i + 1}` : ''}">${i + 1}</span><span class="nm">${esc(p.n)} <span class="chip">${esc(p.pos ?? '')}</span></span>${COLS.map(([, f, id]) => `<span class="n ${hot.includes(id) ? 'hot' : ''}">${esc(f(p))}</span>`).join('')}<span class="val ${i ? '' : 'gold'}">${(+v).toFixed(dec)}</span><span class="meter" style="width:${Math.max(4, Math.round(900 * v / max))}px"></span></div>`).join('') : '<div class="empty">No games logged yet this season.</div>'}
 </div><div class="brand">${esc(SITE)}</div>`);
@@ -846,6 +889,7 @@ export function cardJobs(club, players, { matches = 10, review = null, picture =
     if (model) jobs.push({ key: ['match', m.id, 'review'], file: `review-${m.id}-${hash([model, club.name, club.crest, pic?.model ?? null])}.png`, html: () => reviewCard(model, club, pic?.model ?? null, pic?.faces) });
     jobs.push({ key: ['match', m.id, 'score'], file: `score-${m.id}-${hash([m, club.name, club.crest])}.png`, html: () => scoreCard(m, club) });
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'field'], file: `field-${m.id}-${hash(m.ps)}.png`, html: () => fieldCard(m) });
+    if (i < REVIEW_MATCHES) for (const line of m.ps ?? []) { const p = players.find((x) => x.k === line.k); if (p?.home) jobs.push({ key: ['match', m.id, 'pm', p.k], file: `pm-${m.id}-${p.k}-${hash([line, m.res, m.gf, m.ga, m.opp, club.name, club.crest, p.s, p.i, (p.tr ?? []).slice(-10)])}.png`, html: () => playerMatchCard(m, line, p, club) }); }
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'box'], file: `box-${m.id}-${hash([m.ps, m.gf, m.ga, m.opp])}.png`, html: () => boxScoreCard(m, club) });
   }
   for (const p of players.filter((x) => x.home && x.s?.gp)) {
@@ -855,11 +899,11 @@ export function cardJobs(club, players, { matches = 10, review = null, picture =
   const regulars = players.filter((x) => x.home && x.s?.gp).sort((a, b) => b.s.gp - a.s.gp).slice(0, COMPARE_PAIRS);
   for (let i = 0; i < regulars.length; i++) for (let j = i + 1; j < regulars.length; j++) {
     const [a, b] = [regulars[i], regulars[j]].sort((x, y) => (x.k < y.k ? -1 : 1));
-    jobs.push({ key: ['compare', a.k, b.k], file: `cmp-${a.k}-${b.k}-${hash([a.n, a.pos, a.ovr, a.s, b.n, b.pos, b.ovr, b.s])}.png`, html: () => compareCard(a, b) });
+    jobs.push({ key: ['compare', a.k, b.k], file: `cmp-${a.k}-${b.k}-${hash([a.n, a.pos, a.ovr, a.s, a.i, b.n, b.pos, b.ovr, b.s, b.i, club.crest])}.png`, html: () => compareCard(a, b, club) });
   }
   for (const stat of Object.keys(TOP_STATS)) {
     const rows = topRows(players, stat).map(([p, v]) => [p.n, p.pos, p.s, v]);
-    jobs.push({ key: ['top', stat], file: `top-${stat}-${hash([rows, club.name])}.png`, html: () => tableCard(players, stat, club) });
+    jobs.push({ key: ['top', stat], file: `top-${stat}-${hash([rows, club.name, club.crest])}.png`, html: () => tableCard(players, stat, club) });
   }
   jobs.push(...eventJobs());
   for (const [name, html] of Object.entries(BANNERS)) jobs.push({ key: ['banner', name], file: `banner-${name}.png`, html });

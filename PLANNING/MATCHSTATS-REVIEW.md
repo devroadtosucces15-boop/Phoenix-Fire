@@ -171,3 +171,8 @@ Not verified live: the shape of `aggregate` and the season row (EA blocks this s
 - Template version 17 (cards) and `BANNER_V` 17.
 - Not done: friendly results are still scored as draws (Inbox line); SoT and Fouls show a dash in the box score until the next build writes them
   into `club.json` `ps[].ev`.
+
+### Round 2 (2026-11-18, branch, awaiting owner go; `tests/matchstats-more.test.mjs`, 26 checks)
+- **Show my match** is now a drawn player card (`playerMatchCard` in `scripts/cards.mjs`, key `['match', id, 'pm', playerKey]`, newest 3 matches): rating against his own average, diverging bars (strengths right, weak spots left), up to four insights from `scripts/lib/playerinsight.mjs` (what the number does, one thing to do, a target), and the rating trend with his average line. The text embed stays as the fallback.
+- **/compare**: "Player comparison" title with the crest on the right, names below the stats. **Leaderboards**: crest on the right of the title.
+- TEMPLATE_VERSION and BANNER_V = 18. The slash command choices for the four new leaderboards still need one re-registration.
