@@ -72,6 +72,8 @@ export const TOOLS = [
     desc: 'Award categories, closing the week, where results post' },
   { id: 'insights', label: 'Insights', emoji: '🧭', icon: 'i-chart', section: 'site', level: 'manager', group: 'health', href: 'staff-insights.html', keys: 'club intelligence notes burner tracker',
     desc: 'Club Intelligence, written club notes, burner-club tracker' },
+  { id: 'counselor', label: 'Counselor', emoji: '🧑‍⚕️', icon: 'i-chart', section: 'site', level: 'manager', href: 'staff-insights.html?tool=counselor', keys: 'server intelligence team mood tendencies anomaly flags',
+    desc: 'How the team is doing and who to check in on: tendencies and flags from a weekly public-channel sample, numbers only' },
   { id: 'org', label: 'Organization', emoji: '🏢', icon: 'i-org', section: 'org', level: 'owner', owner: true, href: CC + '?tool=org', module: 'org', legacy: ['staff-organization.html'], keys: 'discord servers channels roles clubs',
     desc: 'Discord servers, channels, roles and clubs' },
   { id: 'audit', label: 'Audit log', emoji: '🛡️', icon: 'i-shield', section: 'system', level: 'manager', href: CC + '?tool=audit', module: 'controlcenter:audit', legacy: ['staff-audit.html'], keys: 'who changed what history',

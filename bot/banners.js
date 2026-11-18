@@ -29,6 +29,7 @@ export const BANNER_SPEC = {
   insight: { icon: 'spark', title: 'Insights', sub: 'What the numbers say' },
   ask: { icon: 'spark', title: 'Ask Phoenix', sub: 'Answers from the club data' },
   wiki: { icon: 'book', title: 'Phoenix wiki', sub: 'Every bot, one book' },
+  counselor: { icon: 'shield', title: 'Counselor', sub: 'How the team is doing' },
   navigator: { icon: 'search', title: 'Server navigator', sub: 'What every channel is for' },
   pin: { icon: 'bell', title: 'Pinned', sub: 'Kept at the bottom of the channel' },
   quote: { icon: 'spark', title: 'Quote card', sub: 'Words worth keeping' },
@@ -164,7 +165,7 @@ export const BANNER_SPEC = {
 // Slash command → family.
 export const BANNER_BY_COMMAND = {
   club: 'club', last: 'match', results: 'club', player: 'player', compare: 'stats', leaderboard: 'stats', history: 'stats', profile: 'player', me: 'player',
-  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
+  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', counselor: 'counselor', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
   rush: 'rush', queue: 'queue', lfg: 'lfg', host: 'event', lineup: 'lineup', matchday: 'event', intel: 'stats',
   feedback: 'feedback', suggest: 'idea', share: 'fun', discoveries: 'fun', watch: 'live', tag: 'setup', remind: 'remind', site: 'general', avatarcard: 'card',
   jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',

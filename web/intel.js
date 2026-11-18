@@ -18,7 +18,7 @@
   const num = (n) => (n == null ? '–' : Number(n).toLocaleString());
 
   let el = null, ctx = null;
-  const I = { r: null, err: null, open: '', metric: 'site', filter: 'open', busy: '' };
+  const I = { r: null, err: null, open: '', metric: 'site', filter: 'open', busy: '', c: null };
 
   const delta = (now, was) => {
     if (was == null) return '';
@@ -102,6 +102,18 @@ ${hasData ? `<div class="ix-sky" role="img" aria-label="${esc(METRICS.find((m) =
     return `<section class="card ix-sec ix-drill"><div class="ix-h"><h3>${ic} ${esc(name)} in detail</h3><button type="button" class="btn ghost sm" data-area="${k}">Close</button></div>${body}</section>`;
   }
 
+  // ---------- Counselor (PF-024 Item 14): team tendencies and anomaly flags from the weekly public-channel sample; numbers only, no message text ----------
+  function counselor() {
+    const c = I.c;
+    if (!c) return '';
+    const p = c.profile, st = c.status;
+    const body = !p ? `<p class="muted">Nothing sampled yet.${st?.detail ? ' ' + esc(st.detail) : ''}</p>`
+      : `<p class="muted small">${num(p.n)} messages from ${num(p.channelsSampled)} public channels, sampled ${esc(ctx.UI.ago(p.at))}. No message text is stored.</p>
+<ul>${p.tendencies.map((t) => `<li><b>${esc(t.what)}</b><br><span class="muted small">${esc(t.how)}</span></li>`).join('')}</ul>
+<h4>🚩 Flags</h4>${p.flags.length ? `<ul>${p.flags.map((f) => `<li>${esc(f.text.replace(/<[@#](\d+)>/g, (m, id) => (f.channel ? '#' : '@') + id))}<br><span class="muted small">${esc(f.approach)}</span></li>`).join('')}</ul>` : '<p class="muted">No anomalies this week.</p>'}`;
+    return `<section class="card ix-sec" id="counselor"><div class="ix-h"><h3>🧑‍⚕️ Counselor</h3></div>${body}</section>`;
+  }
+
   // ---------- page ----------
   function paint() {
     if (!el?.isConnected) return;
@@ -113,14 +125,17 @@ ${hasData ? `<div class="ix-sky" role="img" aria-label="${esc(METRICS.find((m) =
     el.innerHTML = `<div class="ix">${head}
 <section class="card ix-sec ix-top">${ring()}<div class="ix-sum"><h3>${esc(GRADE_TXT[grade(I.r.overall)])}</h3><p>${summary()}</p></div></section>
 ${gauges()}${drill()}
+${counselor()}
 <div class="ix-grid"><section class="card ix-sec ix-td">${todos()}</section><section class="card ix-sec ix-sk">${skyline()}</section></div></div>`;
   }
 
   async function load() {
     I.busy = 'load'; I.err = null; paint();
     try { I.r = await ctx.call('/api/intel'); } catch (er) { I.err = er.message; if (I.r) ctx.toast(er.message, true); }
+    try { I.c = await ctx.call('/api/intel/counselor'); } catch { I.c = null; } // flag off or not a manager: the section stays out
     I.busy = '';
     paint();
+    if (/tool=counselor/.test(location.search)) $('#counselor', el)?.scrollIntoView?.({ block: 'start' });
   }
   async function act(id, undo) {
     I.busy = id; paint();

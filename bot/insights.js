@@ -6,8 +6,9 @@
 //   weekly (cron, Mondays from 09:00 UTC)   collected in small steps over several cron runs, then DMed to the owner
 //
 // Discord needs DISCORD_BOT_TOKEN plus, in the Discord Developer Portal, **Server Members Intent** (member list)
-// and the bot's View Channels + Read Message History permissions (chat activity). Message text is never read –
-// only who posted and when. Anything the bot can't see is skipped and explained in the report.
+// and the bot's View Channels + Read Message History permissions (chat activity). This report reads only who posted and when,
+// never message text. (Separate feature, PF-024 Item 14, bot/serverintel.js: with the flag `serverIntel` on, the weekly sampler reads a few public-channel
+// messages in memory and keeps numbers only; it is disclosed in the rules and off by default.) Anything the bot can't see is skipped and explained in the report.
 // D1 meta: `insights` (latest report), `insights_hist` (weekly key numbers for trends), `insights_job`, `insights_week`,
 // `insights_acted` (recommendations a manager marked done – BE10, see intelRoute below).
 //

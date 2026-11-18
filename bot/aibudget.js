@@ -6,6 +6,10 @@ import { kvOf } from './kv.js';
 
 export const AI_DAILY_CAP = 6000; // neurons this counter lets the new features use per UTC day (of the 10,000 free)
 export const AI_COST = { text: 250, enhance: 350 }; // estimated neurons per call
+export const AI_POOL = 10000; // the whole free pool per UTC day
+// A feature that must stay small gets its own share of the pool on top of the shared cap (PF-024 Item 14: server intelligence, 20% = 2,000 neurons a day).
+export const FEATURE_SHARE = { intel: 0.2 };
+export const featureCap = (feature) => Math.round(AI_POOL * (FEATURE_SHARE[feature] ?? 1));
 export const AI_COOLDOWN_SEC = 20; // per person, per feature: a held-down button cannot burn the pool
 
 const day = (now) => new Date(now).toISOString().slice(0, 10);
@@ -30,6 +34,11 @@ export async function spendAi(env, { cost = AI_COST.text, who = null, feature = 
   }
   const key = `aibudget:${day(now)}`, used = Number(await kv.get(key)) || 0;
   if (used + cost > cap) return { ok: false, reason: 'budget', used, cap };
+  if (FEATURE_SHARE[feature]) { // the feature's own counter: it may never use more than its share, whatever the shared pool has left
+    const fk = `aibudget:${feature}:${day(now)}`, fused = Number(await kv.get(fk)) || 0, fcap = featureCap(feature);
+    if (fused + cost > fcap) return { ok: false, reason: 'budget', used: fused, cap: fcap };
+    await kv.put(fk, String(fused + cost), { expirationTtl: 2 * 86400 });
+  }
   await kv.put(key, String(used + cost), { expirationTtl: 2 * 86400 });
   return { ok: true, used: used + cost, cap };
 }

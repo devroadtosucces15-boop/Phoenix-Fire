@@ -93,3 +93,28 @@ Owner decisions (defaults built are bold):
 - **Setup helper:** **shows a copyable command line.** Option: a modal that collects the values and posts them back (still cannot run the command for the member; Discord only lets the member submit a command themselves).
 - **Hand-written FAQ:** **none yet; the book's FAQ comes from the guides and the command list.** Option: an FAQ table edited on the site (rules, how to claim a player) that both this book and the navigator read.
 - **Public or private:** **private (only you see it).** Option: a pinned public "start here" copy of the hub in a start channel (pair it with the pin tool from Item 11).
+
+## Item 14: server intelligence and the counselor (code done on branch `pf-024-item14`)
+`/counselor` (tools app, managers only, private reply) and a Counselor section in the site's Intelligence room (`GET /api/intel/counselor`, Control Center tool `counselor`, manager level). Code: `bot/serverintel.js`, test: `tests/serverintel.test.mjs`. Flag `serverIntel` ships **`off`**: the kill switch. No migration (aggregates live in D1 `meta`: `sv_intel`, `sv_intel_job`, `sv_intel_status`). New channel purpose `intel_skip`; new permission `counselor.view` (manager).
+
+What it does: once a week the Worker's 10-minute cron samples about 50 recent messages per **public** text channel (four reads per channel at 03:30, 09:30, 15:30 and 21:30 UTC on four different days) over Discord REST, four channels per run. Each message is turned into numbers on the spot (topic, tone, length, time of day); the text is dropped. What is kept: team topics, mood, activity by time of day, per-channel heat, a small per-member baseline of numbers (4 weeks, then deleted) and anomaly flags. The counselor shows tendencies, how to approach them and flags ("a normally quiet member is suddenly very active", "sounds sharper than their own usual", "a heated channel", "team mood jumped"). It never shows what anyone said or a per-person history. The profile also carries a small `voice` (vibe, topics, busiest time) for the mascot in Item 15.
+
+Guardrails in code (each has a test):
+1. Only public channels: skipped when @everyone cannot view it (category and channel overwrites, base role permissions; unknown = skipped), when its Organization config purpose is a staff one (`manager_alerts`, `logs`, `config_audit`, `system_alerts`, `member_log`, `automod_alerts`, `claims`, `rush_queue_reports`, `recruitment`) or `intel_skip`, when it is age-restricted, or when its name or category looks like staff or private.
+2. Raw message text is never stored or logged: not in D1, KV, a log line, an error or the AI prompt (the test searches all of them for planted text).
+3. Kill switch: flag `serverIntel` (Control Center, Site access) and the scheduled-job switch `job:intelSample`. Both are re-read from D1 before every channel, so switching off stops the next fetch; off means no Discord call.
+4. Counselor is managers only: tendencies and flags, no per-person dossier, no option to ask about one person.
+5. AI budget: at most 20% of the daily pool (2,000 neurons) through the KV counter `aibudget:intel:<day>`; one short call per weekly run. Over budget the run is skipped and the status says so.
+
+Owner steps:
+1. In the Discord Developer Portal (Bot page of the core app) switch on **Message Content Intent**. Without it Discord sends empty text and the run reports "no content" instead of a profile.
+2. Post the disclosure (below) in the rules or server info, **before** the flag goes on.
+3. Deploy the Worker and sync the commands to Discord. No migration.
+4. Optional: in the Organization config add the purpose `intel_skip` to any other channel that is sensitive (staff purposes are always skipped).
+5. Flip `serverIntel` to `owner`, check `/counselor` after the first run, then `managers` if wanted. Flip to `off` any time to stop sampling.
+
+Disclosure wording for the owner to post (not posted):
+> **Server intelligence.** Once a week the Phoenix Fire bot looks at a small sample of recent messages in public channels only, to see which topics come up, when the server is busiest and how the mood is. Messages are read in memory and never saved: only totals are kept (topics, mood, activity by time of day). Staff and private channels are never read. Managers see team tendencies and a few "check in" flags, never what anyone wrote. Questions? Ask a manager.
+
+Owner decisions made (2026-11-18): REST sampling by the Worker (no gateway process), minimal safe baseline, kill switch default off, counselor for managers, 20% AI share. **No member opt-out table** (owner declined): it can be added later as a small table the sampler checks before counting an author, plus `/intel optout`.
+Not built: a gateway process, per-person dossiers, storing any message text, sampling private or staff channels, a member opt-out.

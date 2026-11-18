@@ -31,6 +31,7 @@ import { cardsRoute, cardKit, cardTemplateUpload, cardRequestUpload, cardPhoto, 
 import { lineupSocket } from './events.js';
 import { lockerSocket } from './locker.js';
 import { intelRoute } from './insights.js';
+import { counselorRoute } from './serverintel.js';
 import { awardsRoute, trophies } from './awards.js';
 import { playerInsights } from './aiinsights.js';
 import { statInsightsRoute, statAskRoute, statFeedbackRoute, statCompareRoute, statH2hRoute } from './statinsights.js';
@@ -799,6 +800,8 @@ async function route(p, method, body, me, env, loadSite, url) {
   if (pmr) return pmr;
   const ply = await playsRoute(p, method, body, me, env, log); // BE1 Tactics Studio: plays, versions, assignment, quiz
   if (ply) return ply;
+  const csl = await counselorRoute(p, method, me, env); // PF-024 Item 14 counselor: tendencies and flags for managers
+  if (csl) return csl;
   const itl = await intelRoute(p, method, body, me, env, loadSite, log); // BE10 Club Intelligence: report + act/remind on a recommendation
   if (itl) return itl;
   const bnr = await burnersAdminRoute(p, method, body, me, env, loadSite, log, url); // C5 burner tracker (staff)
