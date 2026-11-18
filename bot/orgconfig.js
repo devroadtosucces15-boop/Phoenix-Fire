@@ -38,7 +38,7 @@ export const CHANNEL_PURPOSE_INFO = {
   hype: 'Hype art posts', voice_recap: 'Voice chat recaps', live_alerts: 'Go-live alerts (falls back to announcements)',
   fun_posts: 'Birthdays and other fun posts (falls back to announcements)', automod_alerts: 'AutoMod alerts',
   rush_queue: 'The Rush queue board (the bot keeps one always-latest board here)', rush_queue_reports: 'Anonymous Rush queue reports for staff', rush_need: '"Need a player" posts from the Rush queue (falls back to the queue channel)',
-  rush_board: 'Rush leaderboard scan posts', season_stats: 'Season stats posts', session_recaps: 'Session recaps: one post after a playing session ends (falls back to match results)', pinned_posts: 'Pinned posts: the channels where managers may pin a message to stay at the bottom', mascot_posts: 'The mascot\'s daily motivational quote (one post a day; none set = no post)', intel_skip: 'Channels server intelligence never samples (add any channel that is private or sensitive; staff purposes are always skipped)',
+  rush_board: 'Rush leaderboard scan posts', season_stats: 'Season stats posts', session_recaps: 'Session recaps: one post after a playing session ends (falls back to match results)', pinned_posts: 'Pinned posts: the channels where managers may pin a message to stay at the bottom', member_bios: 'Player bio cards: one card per member who claimed a player, edited when they update their profile (none set = no cards)', mascot_posts: 'The mascot\'s daily motivational quote (one post a day; none set = no post)', intel_skip: 'Channels server intelligence never samples (add any channel that is private or sensitive; staff purposes are always skipped)',
 };
 // A purpose with no row of its own may fall back to another purpose before giving up (the old behaviour of the posts that used
 // the shared announce channel). Anything not listed has no fallback: if nothing is configured the feature says so.
@@ -271,6 +271,7 @@ const PING_LEGACY = {
   ping_events: async (env) => (await metaJson(env, 'bot_settings')).pingRole,
   ping_rush: async (env) => (await metaJson(env, 'server_tools')).pingRoles?.rush,
   ping_match: async (env) => (await metaJson(env, 'server_tools')).pingRoles?.match,
+  ping_bios: async () => null, // PF-024 Item 16: optional role tagged on a member's FIRST bio card (none = only the player is mentioned)
 };
 export const PING_GROUPS = Object.keys(PING_LEGACY);
 export async function pingRoleFor(env, group) {

@@ -29,6 +29,7 @@ export const BANNER_SPEC = {
   insight: { icon: 'spark', title: 'Insights', sub: 'What the numbers say' },
   ask: { icon: 'spark', title: 'Ask Phoenix', sub: 'Answers from the club data' },
   wiki: { icon: 'book', title: 'Phoenix wiki', sub: 'Every bot, one book' },
+  bio: { icon: 'player', title: 'Player bio', sub: 'Who is who in the squad' },
   mascot: { icon: 'flame', title: 'Mascot', sub: 'Rise. Burn. Repeat.' },
   counselor: { icon: 'shield', title: 'Counselor', sub: 'How the team is doing' },
   navigator: { icon: 'search', title: 'Server navigator', sub: 'What every channel is for' },

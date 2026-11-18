@@ -138,7 +138,10 @@ ${grid ? `<div class="pf-hc-time">${onNow(grid) ? '<span class="pf-live">🟢 Us
 <fieldset><legend>🙋 About me</legend>
 <label class="fld">Bio <textarea id="pf-bio" maxlength="280" rows="3" placeholder="Playstyle, what you bring to the squad, anything…">${esc(p.bio)}</textarea></label>
 <div class="pf-2"><label class="fld">Country <select id="pf-country"><option value="">–</option>${COUNTRIES.map(([c, n]) => `<option value="${c}"${p.country === c ? ' selected' : ''}>${flag(c)} ${esc(n)}</option>`).join('')}</select></label>
-<label class="fld">Favourite real club <input id="pf-club" maxlength="40" value="${esc(p.club)}" placeholder="e.g. Real Madrid"></label></div></fieldset>
+<label class="fld">Favourite real club <input id="pf-club" maxlength="40" value="${esc(p.club)}" placeholder="e.g. Real Madrid"></label></div>
+<div class="pf-2"><label class="fld">Age <input id="pf-age" type="number" min="13" max="99" value="${p.age ?? ''}" placeholder="optional"></label>
+<label class="fld">Language <input id="pf-lang" maxlength="24" value="${esc(p.language || '')}" placeholder="e.g. English, Spanish"></label></div>
+<div class="fld"><span>Show on my Discord bio card</span> ${[['ids', 'Game IDs', true], ['schedule', 'When I play', true], ['country', 'Country', false], ['age', 'Age', false], ['language', 'Language', false]].map(([k, l, d]) => `<label class="chk"><input type="checkbox" data-bio-show="${k}"${(p.bioShow?.[k] ?? d) ? ' checked' : ''}> ${l}</label>`).join(' ')}<small class="muted">The card is posted once you have claimed your player and updates when you save. Age, country and language stay hidden unless ticked.</small></div></fieldset>
 ${badgesOn() ? '<fieldset><legend>🏷️ My tags <small>up to 8 · emoji + colour</small></legend><div id="pf-tags"></div></fieldset>' : ''}
 <fieldset><legend>📍 Positions <small>1st · 2nd · 3rd choice</small></legend>
 <div class="pf-ranks"><span>🏆 League</span>${[0, 1, 2].map((i) => rankSel('positions', LEAGUE_POS, i)).join('')}</div>
@@ -204,6 +207,7 @@ ${window.NXViewer?.flagOn('platformLink') ? `<p class="small muted">✓ PSN, Xbo
     el.oninput = () => readForm();
     function readForm() {
       p.bio = $('#pf-bio', el).value; p.country = $('#pf-country', el).value; p.club = $('#pf-club', el).value;
+      p.age = $('#pf-age', el).value === '' ? null : Number($('#pf-age', el).value); p.language = $('#pf-lang', el).value; p.bioShow = Object.fromEntries($$('[data-bio-show]', el).map((c) => [c.dataset.bioShow, c.checked]));
       p.platform = $('#pf-plat', el).value; p.twitch = $('#pf-twitch', el).value; p.youtube = $('#pf-yt', el).value; p.tz = $('#pf-tz', el).value;
       for (const k of ['positions', 'rushPositions']) p[k] = [0, 1, 2].map((i) => $(`[data-rank="${k}"][data-i="${i}"]`, el).value).filter(Boolean);
       p.ids = Object.fromEntries($$('[data-id]', el).map((i) => [i.dataset.id, i.value.trim()]).filter(([, v]) => v));

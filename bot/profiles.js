@@ -27,7 +27,8 @@ export const profileOut = (r) => r && {
   bio: r.bio, positions: parse(r.positions, []), platform: r.platform, updated: r.updated,
   rushPositions: parse(r.rush_positions, []), tz: r.tz || '', playTimes: parse(r.play_times, null),
   ids: parse(r.ids, {}), twitch: r.twitch || '', kick: r.kick || '', birthday: r.birthday || '', youtube: r.youtube || '', country: r.country || '', club: r.fav_club || '',
-  tags: parse(r.tags, []), verified: parse(r.verified, {}), // P2.4 – { psn|xbox|steam|epic: { name, at } } from Discord
+  tags: parse(r.tags, []), verified: parse(r.verified, {}), age: r.age ?? null, language: r.language || '', bioShow: parse(r.bio_show, {}), // PF-024 Item 16: age and language are shown to others only when bioShow says so (memberCard)
+   // P2.4 – { psn|xbox|steam|epic: { name, at } } from Discord
 };
 
 // ---------- validation (each returns the clean value, or throws a human message) ----------
@@ -106,6 +107,17 @@ function tags(v) {
   }
   return out;
 }
+// PF-024 Item 16 – optional bio card fields. Age is a number the member typed (no birth year is kept); each optional field is hidden unless the member switches it on.
+function age(v) {
+  if (v === null || v === '' || v === undefined) return null;
+  const n = Number(v);
+  if (!Number.isInteger(n) || n < 13 || n > 99) throw new Error('Age: a whole number from 13 to 99, or leave it empty.');
+  return n;
+}
+const language = (v) => clean(v, 24);
+export const BIO_SHOW_KEYS = ['ids', 'schedule', 'country', 'age', 'language'];
+export const BIO_SHOW_DEFAULT = { ids: true, schedule: true, country: false, age: false, language: false };
+const bioShow = (v, cur) => ({ ...BIO_SHOW_DEFAULT, ...cur, ...Object.fromEntries(BIO_SHOW_KEYS.filter((k) => v && typeof v === 'object' && k in v).map((k) => [k, !!v[k]])) });
 function country(v) {
   const x = clean(v, 8).toUpperCase();
   if (!x) return '';
@@ -133,17 +145,27 @@ export async function saveProfile(env, me, body) {
     if (has('country')) p.country = country(body.country);
     if (has('club')) p.club = clean(body.club, 40);
     if (has('tags')) p.tags = tags(body.tags);
+    if (has('age')) p.age = age(body.age);
+    if (has('language')) p.language = language(body.language);
+    if (has('bioShow')) p.bioShow = bioShow(body.bioShow, cur.bioShow);
   } catch (e) { return { error: e.message }; }
   if (p.playTimes && !p.tz) return { error: 'Pick your time zone so others see your play times in theirs.' };
   p.updated = Date.now();
-  await env.DB.prepare(`INSERT INTO profiles (user_id, bio, positions, platform, updated, rush_positions, tz, play_times, ids, twitch, youtube, country, fav_club, tags, kick, birthday)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  await env.DB.prepare(`INSERT INTO profiles (user_id, bio, positions, platform, updated, rush_positions, tz, play_times, ids, twitch, youtube, country, fav_club, tags, kick, birthday, age, language, bio_show)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ON CONFLICT (user_id) DO UPDATE SET bio = excluded.bio, positions = excluded.positions, platform = excluded.platform, updated = excluded.updated,
       rush_positions = excluded.rush_positions, tz = excluded.tz, play_times = excluded.play_times, ids = excluded.ids, twitch = excluded.twitch,
-      youtube = excluded.youtube, country = excluded.country, fav_club = excluded.fav_club, tags = excluded.tags, kick = excluded.kick, birthday = excluded.birthday`)
+      youtube = excluded.youtube, country = excluded.country, fav_club = excluded.fav_club, tags = excluded.tags, kick = excluded.kick, birthday = excluded.birthday, age = excluded.age, language = excluded.language, bio_show = excluded.bio_show`)
     .bind(me.u, p.bio, JSON.stringify(p.positions), p.platform, p.updated, JSON.stringify(p.rushPositions), p.tz,
-      p.playTimes ? JSON.stringify(p.playTimes) : '', JSON.stringify(p.ids), p.twitch, p.youtube, p.country, p.club, JSON.stringify(p.tags ?? []), p.kick, p.birthday).run();
+      p.playTimes ? JSON.stringify(p.playTimes) : '', JSON.stringify(p.ids), p.twitch, p.youtube, p.country, p.club, JSON.stringify(p.tags ?? []), p.kick, p.birthday, p.age ?? null, p.language ?? '', JSON.stringify({ ...BIO_SHOW_DEFAULT, ...(p.bioShow ?? {}) })).run();
   return { profile: p };
+}
+
+// Others never see a member's age or language unless the member switched them on for the bio card.
+function hideBioFields(p, mine) {
+  if (!p || mine) return p;
+  const show = { ...BIO_SHOW_DEFAULT, ...(p.bioShow ?? {}) };
+  return { ...p, age: show.age ? p.age : null, language: show.language ? p.language : '', bioShow: undefined };
 }
 
 // A short summary for the activity log.
@@ -169,7 +191,7 @@ export async function memberCard(env, me, id) {
   return {
     member: { id: u.id, n: u.name, a: u.avatar, tag: u.tag, role, roleLabel: ROLE_LABEL[role], first: u.first_at, last: u.last_at, me: u.id === me.u },
     claim: claim ? { player: claim.player, playerName: claim.player_name } : null,
-    profile: profileOut(prof),
+    profile: hideBioFields(profileOut(prof), id === me.u),
     ...(activity ? { activity } : {}),
     ...(builds ? { builds } : {}),
     ...(badges ? { badges: badges.badges, canRemoveBadges: badges.canRemove, ach } : {}),

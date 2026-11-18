@@ -47,6 +47,7 @@ import { chatRoute, chatSocket } from './chat.js';
 import { mediaUploadRoute } from './media.js';
 import { playsRoute, studioSocket } from './plays.js';
 import { playMediaRoute, playMediaUpload } from './playmedia.js';
+import { postBio } from './biocard.js';
 import { memberCard, profileOut, profileSummary, saveProfile } from './profiles.js';
 import { syncMember } from './discordroles.js';
 import { botSettingsPublicRoute, botSettingsRoute, botFacesRoute } from './settings.js';
@@ -680,7 +681,8 @@ async function route(p, method, body, me, env, loadSite, url) {
     if (error) return fail(error);
     await log(env, me, 'profile', profileSummary(profile));
     if ((await one(env, 'SELECT status FROM claims WHERE user_id = ?', me.u))?.status === 'approved') await rebuildPublic(env);
-    return json({ profile });
+    const bio = await postBio(env, me); // PF-024 Item 16: one bio card in Discord, edited on later saves (a failed post never fails the save)
+    return json({ profile, ...(bio.posted ? { bio: bio.posted } : {}) });
   }
 
   if (p === '/api/member' && method === 'GET') { // P2.1 – hover cards + member profile pages

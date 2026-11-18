@@ -138,3 +138,17 @@ Owner steps:
 4. The banner `banner-mascot.png` is already drawn for the audit; the live site gets it on the next card run in CI.
 
 Not built: reacting when "Phoenix" is mentioned in chat (needs a gateway process and the Message Content intent: a later item if wanted), avatar or meme generation from profile pictures, a member opt-out.
+
+## Item 16: the player bio card (code done on branch `pf-024-item16`)
+When a member who has claimed their player saves their profile on the site, the bot posts one formatted card (Components V2 panel, icons, separators, footer) in the `member_bios` channel and mentions the player. A later save **edits the same message** (no second post, nobody re-pinged); an unchanged save touches nothing; a card deleted in Discord is posted again. Lives in the tools app's output family, flag `bioCard` ships `owner`. Code: `bot/biocard.js`, `bot/profiles.js` (new fields), `web/profile.js` (form), migration `0072_bio_card.sql`, test `tests/biocard.test.mjs`.
+
+Card content: player name and platform, positions, Rush positions, game IDs, play schedule (times in the member's zone) and, only if the member ticks them, country, age and language. Age and language are also hidden from other members' profile cards unless ticked. The member sets all of this in the site profile form ("Show on my Discord bio card"); defaults: game IDs and schedule shown, country, age, language hidden.
+
+Owner steps:
+1. Apply migration `0072_bio_card.sql` (adds `age`, `language`, `bio_show` to `profiles`), deploy the Worker and the site.
+2. In the Organization config add a channel with purpose `member_bios`. Optional: a role in the group `ping_bios` to tag on a member's first card.
+3. Flip `bioCard` to `members` when ready (it is `owner` now). Nothing posts until the channel is set.
+4. The banner `banner-bio.png` is drawn for the audit; the live site gets it on the next card run in CI.
+
+Owner decision (assumed, you said go ahead): "tag everyone" = **the player plus an optional configured role, never @everyone**, and only on the first post. Option: no role ping at all (leave `ping_bios` empty, the default).
+Not built: a /bio slash command to repost on demand, posting when a claim is approved without a profile save, a site toggle to stop the card entirely (a member who never saves a profile gets no card; deleting the Discord message makes the next save post a new one).
