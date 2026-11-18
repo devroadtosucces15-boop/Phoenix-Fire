@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-18T17:20:51.483Z",
+ "fetchedAt": "2026-11-18T17:30:42.835Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1870,7 +1870,7 @@
   {
    "name": "CanerAKC",
    "proPos": "5",
-   "gamesPlayed": "25",
+   "gamesPlayed": "26",
    "goals": "1",
    "assists": "0",
    "manOfTheMatch": "1",
@@ -2128,6 +2128,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-18T17:20:51.483Z"
+  "fetchedAt": "2026-11-18T17:30:42.835Z"
  }
 }
