@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-18T14:40:48.708Z",
+ "fetchedAt": "2026-11-18T14:50:46.424Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -13,22 +13,22 @@
    "seasonalTeamId": "131397",
    "seasonalKitId": "1076404224",
    "selectedKitType": "1",
-   "customKitId": "7644",
+   "customKitId": "7639",
    "kitColor1": "15921906",
    "kitColor2": "14356498",
-   "kitColor3": "15245824",
+   "kitColor3": "14356498",
    "kitColor4": "15245824",
-   "customAwayKitId": "7539",
-   "kitAColor1": "1711155",
-   "kitAColor2": "1485447",
-   "kitAColor3": "16765440",
-   "kitAColor4": "16765440",
+   "customAwayKitId": "7522",
+   "kitAColor1": "10066329",
+   "kitAColor2": "15245824",
+   "kitAColor3": "15245824",
+   "kitAColor4": "15245824",
    "customThirdKitId": "7668",
    "kitThrdColor1": "6316123",
    "kitThrdColor2": "592653",
    "kitThrdColor3": "15245824",
    "kitThrdColor4": "15921906",
-   "dCustomKit": "0",
+   "dCustomKit": "1",
    "customKeeperKitId": "5020",
    "crestColor": "16495884",
    "crestAssetId": "99160802"
@@ -893,12 +893,12 @@
   {
    "name": "junior-Ng69",
    "proPos": "14",
-   "gamesPlayed": "433",
-   "goals": "330",
+   "gamesPlayed": "434",
+   "goals": "331",
    "assists": "195",
    "manOfTheMatch": "60",
    "ratingAve": "7.4",
-   "prevGoals": "2",
+   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
@@ -953,6 +953,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 0,
-  "fetchedAt": "2026-11-18T14:40:48.708Z"
+  "fetchedAt": "2026-11-18T14:50:46.424Z"
  }
 }
