@@ -182,6 +182,8 @@ const clip = (s, n) => (String(s).length > n ? `${String(s).slice(0, n - 1)}…`
 const who = (c) => (/^Owner:/.test(c.description) ? 'Owner only' : /^Managers?:/.test(c.description) ? 'Managers' : 'Everyone');
 const plain = (d) => String(d ?? '').replace(/^(Managers?|Owner):\s*/, '').replace(/\s*\(P\d+\.\d+\)|\s*\(✨ BE9\)/g, '');
 const optLine = (o) => `\`${o.name}\`${o.required ? ' (needed)' : ''} – ${plain(o.description)}`;
+// The book (bot/wikibook.js) reads the same hand-written guides and the same live definitions, so nothing is written twice.
+export { BOTS, defOf, who, plain, clip, optLine };
 
 // What the help poster (scripts/cards.mjs, banner names help-<key>) draws: the app's commands from the live definitions, or the five bots for the hub.
 export const HELP_POSTER_KEYS = ['hub', ...Object.keys(BOTS)];

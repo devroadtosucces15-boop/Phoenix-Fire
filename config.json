@@ -110,6 +110,7 @@
     "quoteCard": "owner",
     "pins": "owner",
     "navigator": "owner",
+    "wiki": "owner",
     "aiInsights": "members",
     "lineupRec": "managers",
     "rosterPicture": "members",

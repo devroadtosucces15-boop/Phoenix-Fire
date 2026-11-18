@@ -49,6 +49,7 @@ import { checkProfanity, cleanBonus, setupAutoMod } from './profanity.js';
 import { checkHype } from './hype.js';
 import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
+import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } from './wikibook.js';
 import { NAV_COMMANDS, NAV_ID, navCommand, navButton, navCron } from './navigator.js';
 import { PIN_COMMANDS, PIN_BUTTON, pinCommand, pinButton, pinTick } from './pins.js';
 import { quoteOn, imagesReady, quoteModel, drawQuote, spendQuote, quoteMessage } from './quotecard.js';
@@ -199,7 +200,7 @@ export default {
       if (!env.DB) return json({ type: 4, data: notice('The member database isn’t connected') });
       return json(await panelInteraction(i, env, await memberOf(i, who, env), site, (f) => load(site, f, ctx)));
     }
-    if (i.type === 2 && HELP_COMMANDS[i.data.name]) return json(helpCommand(i.data.name, env)); // /corehelp … /rushhelp: private, button-driven menus (bot/help.js)
+    if (i.type === 2 && HELP_COMMANDS[i.data.name]) return json(bookOn(env, who) ? await helpBook(i.data.name, i, env, who) : helpCommand(i.data.name, env)); // the wiki book (bot/wikibook.js) once its flag is on // /corehelp … /rushhelp: private, button-driven menus (bot/help.js)
     if (i.type === 3 && HELP_BUTTON.test(i.data?.custom_id ?? '')) return json(helpButton(i, env));
     if (i.type === 2 && STREAM_COMMANDS.has(i.data.name)) return json(await streamCommand(i, env, ctx, who)); // /streamalerts (owner)
     if (i.type === 2 && WATCH_COMMANDS.has(i.data.name)) return json(await watchCommand(i, env, ctx, who)); // /watch /watchlist
@@ -219,6 +220,8 @@ export default {
       return json(await cardOpen(i, env, await memberOf(i, who, env), optId ? i.data.resolved?.attachments?.[optId] : undefined));
     }
     if ((i.type === 3 || i.type === 5) && CARD_ID.test(i.data?.custom_id ?? '')) return json(await cardInteraction(i, env, await memberOf(i, who, env), (f) => load(site, f, ctx)));
+    if (i.type === 2 && WIKI_COMMANDS.has(i.data.name)) return json(await wikiCommand(i, env, who)); // /wiki: the Phoenix book (bot/wikibook.js)
+    if (i.type === 3 && WIKI_ID.test(i.data?.custom_id ?? '')) return json(await wikiButton(i, env, who)); // its pages, jump list and setup helper
     if (i.type === 2 && NAV_COMMANDS.has(i.data.name)) return json(await navCommand(i, env, who)); // /navigator (bot/navigator.js)
     if (i.type === 3 && NAV_ID.test(i.data?.custom_id ?? '')) return json(await navButton(i, env, who)); // its section menu, Q&A and staff buttons
     if (i.type === 2 && PIN_COMMANDS.has(i.data.name)) return json(await pinCommand(i, env, who)); // Pin to bottom (context menu) /unpin (bot/pins.js)

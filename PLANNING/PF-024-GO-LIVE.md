@@ -75,3 +75,21 @@ Owner decisions (defaults built are bold):
 - **No announcement of changes:** **changes are only listed for managers.** Option: post new channels to the announcements channel.
 - **Wiki scope:** **generated from channels and commands only.** Option: add hand-written FAQ entries (rules, how to claim a player) edited on the site; that fits Item 13 (the bot wiki book).
 - **Not built:** reading messages to learn what a channel is really used for (needs the Message Content intent; the guess uses names and topics only), a site page for the map.
+
+## Item 13: the Phoenix wiki book (code done on branch `pf-024-item13`)
+`/wiki [bot] [question]` (tools app, private reply, flag `wiki` ships `owner`). Code: `bot/wikibook.js`, test: `tests/wikibook.test.mjs`. No migration, no route, no new channel purpose, no new permission. The server map for channel answers comes from the navigator's scan when the database is connected; without it the book still answers from the commands and guides.
+
+What it does: one book for all five bots. A chapter per bot: a contents page, the step-by-step guides, then one spread per command. A spread is one private message with a LEFT page (what it is, who can use it, where it fits in a guide) and a RIGHT page (the choices or fields, good-to-know tips, related questions). Back, Next, Contents, Step by step and a jump list turn the pages. The 🧩 setup helper on a command page lets a member pick a subcommand and the optional fields and builds the command line (`/setup channel purpose:‹…› channel:‹#channel›`) ready to type; Discord cannot fill the command box, so the line is shown, not sent. `/wiki question:` answers in the member's words from the guides, the command list and the navigator's server map. Nothing is written twice: the pages come from `bot/help.js` (guides and tips) and `bot/commanddefs.js`, the Q&A from the navigator's `wikiEntries`.
+With the flag on, `/corehelp /statshelp /toolshelp /matchdayhelp /rushhelp` open the book on their own bot; with it off they open the old help menus unchanged.
+
+Owner steps:
+1. Deploy the Worker and sync the commands to Discord (owner step). No migration.
+2. Flip the `wiki` flag to `members` when ready (it is `owner` now). The help commands switch to the book at the same time.
+3. The banner picture `banner-wiki.png` is drawn by the next card run in CI.
+
+Owner decisions (defaults built are bold):
+- **Replace the five help commands:** **keep them, opened on the book once the flag is on.** Option: remove them from Discord and leave only `/wiki` (one command instead of six; members lose the habit of /corehelp).
+- **Two pages:** **a left and a right text block in one message.** Discord has no real two-column layout; the limit is 40 components and 4000 characters, which every page stays under (tested).
+- **Setup helper:** **shows a copyable command line.** Option: a modal that collects the values and posts them back (still cannot run the command for the member; Discord only lets the member submit a command themselves).
+- **Hand-written FAQ:** **none yet; the book's FAQ comes from the guides and the command list.** Option: an FAQ table edited on the site (rules, how to claim a player) that both this book and the navigator read.
+- **Public or private:** **private (only you see it).** Option: a pinned public "start here" copy of the hub in a start channel (pair it with the pin tool from Item 11).
