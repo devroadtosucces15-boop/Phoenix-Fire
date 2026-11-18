@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-18T11:10:42.185Z",
+ "fetchedAt": "2026-11-18T22:30:58.075Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -115,6 +115,42 @@
    "prevGoals9": "0",
    "prevGoals10": "1",
    "favoritePosition": "defender"
+  },
+  {
+   "name": "OH-912",
+   "gamesPlayed": "9",
+   "winRate": "100",
+   "goals": "1",
+   "assists": "5",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "100",
+   "passesMade": "116",
+   "passSuccessRate": "84",
+   "ratingAve": "7.5",
+   "tacklesMade": "10",
+   "tackleSuccessRate": "58",
+   "proName": "O H",
+   "proPos": "25",
+   "proStyle": "0",
+   "proHeight": "169",
+   "proNationality": "42",
+   "proOverall": "77",
+   "proOverallStr": "77",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "1",
+   "prevGoals10": "0",
+   "favoritePosition": "forward"
   },
   {
    "name": "Acider91",
@@ -586,42 +622,6 @@
   },
   {
    "name": "SkinnerLAYDD",
-   "gamesPlayed": "0",
-   "favoritePosition": "",
-   "winRate": "0",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "0",
-   "passSuccessRate": "0",
-   "ratingAve": "0.0",
-   "tacklesMade": "0",
-   "tackleSuccessRate": "0",
-   "proName": "",
-   "proPos": "",
-   "proStyle": "",
-   "proHeight": "",
-   "proNationality": "",
-   "proOverall": "0",
-   "proOverallStr": "",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0"
-  },
-  {
-   "name": "needlehopper_",
    "gamesPlayed": "0",
    "favoritePosition": "",
    "winRate": "0",
@@ -1668,16 +1668,16 @@
  "positionCount": {
   "midfielder": 2,
   "goalkeeper": 3,
-  "forward": 2,
+  "forward": 3,
   "defender": 4
  },
  "career": [
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "196",
+   "gamesPlayed": "201",
    "goals": "31",
-   "assists": "68",
+   "assists": "71",
    "manOfTheMatch": "22",
    "ratingAve": "7.7",
    "prevGoals": "0",
@@ -1692,6 +1692,17 @@
    "manOfTheMatch": "3",
    "ratingAve": "8.2",
    "prevGoals": "4",
+   "favoritePosition": "forward"
+  },
+  {
+   "name": "OH-912",
+   "proPos": "25",
+   "gamesPlayed": "36",
+   "goals": "17",
+   "assists": "18",
+   "manOfTheMatch": "1",
+   "ratingAve": "7.5",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -1747,17 +1758,6 @@
    "manOfTheMatch": "0",
    "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
-   "name": "needlehopper_",
-   "proPos": "14",
-   "gamesPlayed": "6",
-   "goals": "1",
-   "assists": "0",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.2",
-   "prevGoals": "1",
    "favoritePosition": "midfielder"
   },
   {
@@ -1851,11 +1851,11 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "33",
-   "goals": "10",
-   "assists": "3",
+   "gamesPlayed": "38",
+   "goals": "11",
+   "assists": "5",
    "manOfTheMatch": "1",
-   "ratingAve": "7.3",
+   "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -1895,12 +1895,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "195",
-   "goals": "230",
-   "assists": "101",
+   "gamesPlayed": "200",
+   "goals": "231",
+   "assists": "103",
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1916,14 +1916,14 @@
   },
   {
    "name": "CanerAKC",
-   "proPos": "5",
-   "gamesPlayed": "25",
+   "proPos": "14",
+   "gamesPlayed": "28",
    "goals": "1",
    "assists": "0",
    "manOfTheMatch": "1",
    "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "iTry_Clutxh",
@@ -1939,12 +1939,12 @@
   {
    "name": "Froezer",
    "proPos": "25",
-   "gamesPlayed": "200",
-   "goals": "129",
-   "assists": "190",
-   "manOfTheMatch": "24",
+   "gamesPlayed": "208",
+   "goals": "137",
+   "assists": "199",
+   "manOfTheMatch": "26",
    "ratingAve": "8.2",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -1961,7 +1961,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "233",
+   "gamesPlayed": "238",
    "goals": "61",
    "assists": "55",
    "manOfTheMatch": "22",
@@ -2027,10 +2027,10 @@
   {
    "name": "Ghostz_x12",
    "proPos": "25",
-   "gamesPlayed": "34",
-   "goals": "41",
+   "gamesPlayed": "38",
+   "goals": "45",
    "assists": "22",
-   "manOfTheMatch": "5",
+   "manOfTheMatch": "6",
    "ratingAve": "7.9",
    "prevGoals": "0",
    "favoritePosition": "forward"
@@ -2175,6 +2175,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-18T11:10:42.185Z"
+  "fetchedAt": "2026-11-18T22:30:58.075Z"
  }
 }

@@ -4,3 +4,9 @@ export const CHANNEL_PURPOSES = ['announcements', 'match_results', 'match_notifi
 export const PERMISSION_GROUPS = ['owner', 'administrator', 'manager', 'division_manager', 'club_manager', 'player',
   'ping_results', 'ping_events', 'ping_rush', 'ping_match', 'ping_bios', 'ping_birthdays']; // the last three are opt-in ping roles (who gets tagged), not permission levels
 
+
+// Autocomplete for /setup channel purpose: Discord allows 25 fixed choices, we have more, so the picker is typed (matches key and words).
+export function purposeChoices(query = '') {
+  const q = String(query).toLowerCase().trim().replaceAll(' ', '_');
+  return CHANNEL_PURPOSES.filter((p) => !q || p.includes(q)).slice(0, 25).map((p) => ({ name: p.replaceAll('_', ' '), value: p }));
+}

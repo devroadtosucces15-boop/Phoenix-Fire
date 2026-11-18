@@ -37,6 +37,11 @@ export const COMMANDS = [
     { type: SUB, name: 'visible', description: 'Turn the club celebration on or off', options: [{ type: BOOLEAN, name: 'on', description: 'On = celebrated and shown on your bio card', required: true }] },
     { type: SUB, name: 'show', description: 'See what is saved (only you see this)' },
     { type: SUB, name: 'clear', description: 'Delete your saved birthday' }] },
+  // PF-024 Item 25 – the test view (bot/testview.js): managers see a fake, private render of any registered output; nothing is posted, sent or saved.
+  { name: 'testview', description: 'Managers: preview any bot output with its rules, privately (nothing is sent)', contexts: [0], options: [
+    { type: STRING, name: 'output', description: 'The command, post, DM or button to preview', required: true, autocomplete: true },
+    { type: STRING, name: 'variant', description: 'Which sample (win or loss, empty or full)', autocomplete: true },
+    { type: STRING, name: 'as', description: 'See it as another role (default: you)', choices: ['guest', 'member', 'claimed', 'manager', 'owner'].map((v) => ({ name: v, value: v })) }] },
   // PF-024 Item 22 – the emoji and sticker suggester (bot/emoji.js): members suggest, managers review; nothing is imported into the server yet. Limits live in config.json `emojiSuggest`.
   { name: 'emoji', description: 'Suggest an emoji or sticker for the server (managers review it)', contexts: [0], options: [
     { type: SUB, name: 'suggest', description: 'Send an image to the managers', options: [
@@ -133,7 +138,7 @@ export const COMMANDS = [
   },
   { name: 'profile', description: "A member's profile – player, positions, platforms", options: [{ type: USER, name: 'member', description: 'Whose profile (default: yours)' }] },
   { name: 'awards', description: "This week's award ballot and last week's winners" },
-  { name: 'points', description: 'Your total points + breakdown by category (P11.3)' },
+  { name: 'points', description: 'Your balance, season and points breakdown (P11.3, Item 24)' },
   {
     name: 'avatarcard', description: 'Make your club card: pick a photo, a look and your kit (Card Studio)',
     options: [{ type: ATTACHMENT, name: 'image', description: 'Your photo (PNG/JPG/WEBP, 8 MB max). Leave empty to reuse your last one', required: false }],
@@ -273,7 +278,7 @@ export const COMMANDS = [
       ] },
       { type: SUB, name: 'pingroles', description: 'Post the 🔔 ping-role buttons (creates the roles if needed)', options: [{ type: CHANNEL, name: 'channel', description: 'Where to post the panel', required: true, channel_types: [0, 5] }] },
       { type: SUB, name: 'channel', description: 'Set which channel a feature posts in (same setting as Boardroom → Organization)', options: [
-        { type: STRING, name: 'purpose', description: 'What the channel is for', required: true, choices: CHANNEL_PURPOSES.map((p) => ({ name: p.replaceAll('_', ' '), value: p })) },
+        { type: STRING, name: 'purpose', description: 'What the channel is for', required: true, autocomplete: true }, // 25-choice cap: the list is answered by purposeChoices() in bot/orgconsts.js
         { type: CHANNEL, name: 'channel', description: 'The channel (default: this one)', channel_types: [0, 5] },
       ] },
       { type: SUB, name: 'role', description: 'Map a Discord role to a permission group (same setting as Boardroom → Organization)', options: [
@@ -435,7 +440,7 @@ export const APP_COMMANDS = {
   // The five bots (PLANNING/BOT-SPLIT.md): Core = server, site and manager controls · Tools = helpers for members and managers ·
   // Stats = anything that reads numbers · Matchday = running a match night · Rush = 5v5. `fun` is only the old Fun app, kept empty
   // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
-  core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'mascot', 'corehelp'],
+  core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'mascot', 'testview', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
@@ -451,7 +456,7 @@ export const MOVED_FROM = {
 // New commands that exist only once their app is configured (never lent to core).
 export const HELD = new Set(['lfg', 'queue', 'rushladder']);
 // Management commands: hidden from non-staff in Discord (Manage Roles bit) on top of the Worker's can() check.
-export const STAFF_COMMANDS = ['intel', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'setup', 'purge', 'panel', 'host', 'rushladder'];
+export const STAFF_COMMANDS = ['intel', 'burner', 'syncroles', 'exportcontent', 'aispike', 'profanitysetup', 'announce', 'trial', 'discoveries', 'setup', 'purge', 'panel', 'host', 'rushladder', 'testview'];
 
 // ---------- per-command settings → what Discord is told ----------
 // Who may use a command, as the owner sets it in Boardroom → Bot: guest (anyone in the server) · member · claimed (approved player

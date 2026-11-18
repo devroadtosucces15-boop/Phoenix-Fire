@@ -66,7 +66,7 @@ import { gifRoute } from './gif.js';
 import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
 import { issueSave } from './issues.js';
 import { clubLookup } from './clublookup.js';
-import { awardPoints, pointsRoute } from './points.js';
+import { awardRule, pointsRoute, pointsMatchRoute } from './points.js';
 import { musicBridgeRoute, musicRoute } from './music.js';
 import { FLAG_LEVELS, ROLES, ROLE_LABEL, atLeast, can, committedFlags, discordRole, featuresFor, flagOn, flags, loadFlagOverrides, permsFor, sessionRole, viewAsRole, withFlagOverrides } from './roles.js';
 import { healthRoute } from './health.js';
@@ -435,6 +435,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
       return cors(env, await publicRequestRoute(request, env, me, loadSite, log));
     }
     if (url.pathname === '/api/org/route/public') return cors(env, await orgRoutePublicRoute(request, env)); // result posts ask where a purpose goes for a club
+    if (url.pathname === '/api/points/match') return cors(env, await pointsMatchRoute(request, env)); // PF-024 Item 24: match performance rows from the Actions result step (keyed)
     if (url.pathname === '/api/org/cc-config') return cors(env, await ccConfigPublicRoute(request, env)); // the site build and result import read recruitment, match alert and stream links
     if (url.pathname === '/api/org/match-alert') return cors(env, await matchAlertRoute(request, env)); // result import asks the Worker to post the match alert
     if (url.pathname === '/api/org/session-recap') return cors(env, await sessionRecapRoute(request, env)); // the session recap step sends an ended session; the Worker claims it and posts once
@@ -739,7 +740,7 @@ async function route(p, method, body, me, env, loadSite, url) {
           ON CONFLICT (match_id, user_id) DO UPDATE SET player = excluded.player, name = excluded.name, avatar = excluded.avatar, at = excluded.at`,
         String(m.id), me.u, pl.k, me.n, me.a, Date.now());
         await log(env, me, 'vote', `${pl.n} · vs ${m.opp}`);
-        if (!cur) await awardPoints(env, me.u, 'community', 2, `MOTM vote · vs ${m.opp}`); // P11.3 – only on a first vote, not switching picks
+        if (!cur) await awardRule(env, me.u, 'community.motm_vote', `MOTM vote · vs ${m.opp}`); // P11.3 – only on a first vote, not switching picks
       }
     }
     const docs = await votesByMatch(env, recent);

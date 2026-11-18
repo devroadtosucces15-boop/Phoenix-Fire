@@ -16,7 +16,7 @@ import { orgName } from './orgconfig.js';
 import { answerEvents, EVENT_TYPES, eventPost, rsvpRows, setCheckin } from './events.js';
 import { currentRole, log, submitRush, voteView, votesByMatch } from './members.js';
 import { state as awardsState } from './awards.js';
-import { CATEGORIES } from './points.js';
+import { CATEGORIES, CATEGORY_INFO, standing, loadRules } from './points.js';
 import { feedbackRoute, KINDS as FEEDBACK_KINDS } from './feedback.js';
 import { knowledgeRoute } from './docs.js';
 import { notifyRouteAll } from './notify.js';
@@ -248,17 +248,12 @@ export async function memberCommand(i, env, who, site, h) {
   }
   if (name === 'points') {
     if (!flagOn(env, who, 'points')) return say('🔒 The point system is not switched on for you yet.');
-    const u = await one(env, 'SELECT points FROM users WHERE id = ?', me.u);
-    const rows = await all(env, 'SELECT category, SUM(delta) AS pts FROM points_log WHERE user_id = ? GROUP BY category', me.u);
-    const by = Object.fromEntries(CATEGORIES.map((c) => [c, 0]));
-    for (const r of rows) by[r.category] = r.pts;
-    const rank = 1 + (await one(env, 'SELECT COUNT(*) AS n FROM users WHERE points > ?', u?.points ?? 0))?.n;
-    const ICON = { match: '🎮', attendance: '🗓️', community: '💬', behaviour: '🤝' };
-    const LABEL = { match: 'Match performance', attendance: 'Attendance', community: 'Community', behaviour: 'Behaviour' };
+    const st = await standing(env, me.u), econ = flagOn(env, who, 'pointsEconomy'), prices = econ ? (await loadRules(env)).prices : [];
     return reply(message({ ephemeral: true, accent: 'gold', blocks: [
-      header({ eyebrow: brand('My points', env), title: `⭐ ${u?.points ?? 0} points`, sub: `#${rank} on the club leaderboard`, thumb: await faceOf(env, me.u) }),
-      facts(CATEGORIES.map((c) => [`${ICON[c]} ${LABEL[c]}`, `${by[c] ?? 0}`])),
-      footer('Only you can see this'),
+      header({ eyebrow: brand('My points', env), title: `⭐ ${st.balance} points`, sub: `Season ${st.season} · #${st.rank} on the club leaderboard`, thumb: await faceOf(env, me.u) }),
+      facts([['Earned this season', `${st.earned}`], ['Spent', `${st.spent}`], ...CATEGORIES.map((c) => [`${CATEGORY_INFO[c][0]} ${CATEGORY_INFO[c][1]}`, `${st.by[c] ?? 0}`])]),
+      ...(econ ? [text(prices.length ? `**You can spend points on:** ${prices.map((p) => `${p.name} (${p.cost})`).join(' · ')}` : 'Points are credit you can spend. The managers have not listed any prices yet.')] : []),
+      footer('Only you can see this · points reset each season'),
       buttons([{ label: 'Full breakdown', url: `${site}members.html#points` }]),
     ] }));
   }

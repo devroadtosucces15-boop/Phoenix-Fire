@@ -9,7 +9,7 @@ import { t, done } from './lib.mjs';
 
 const NOREX = /norex|c8352c|080b11/i;
 const types = Object.keys(TYPES);
-t('27 notification types', types.length === 27);
+t('28 notification types', types.length === 28);
 t('versions bumped together', BANNER_V === TEMPLATE_VERSION && BANNER_V >= 13);
 
 // (a) every type resolves to a registered picture with alt text
@@ -32,8 +32,8 @@ const real = globalThis.fetch;
 globalThis.fetch = async (url, init) => { sent.push(JSON.parse(init.body)); return Response.json({ id: 'm' }); };
 const r = await deliverDMs(env, 50);
 globalThis.fetch = real;
-t('all 27 DMs went through the one builder', r.sent === 27 && sent.length === 27);
-const ACCENT = { live: 'win', award: 'gold', card: 'gold', predict: 'gold', moderation: 'loss', queue: 'steel', storage: 'steel', test: 'steel' };
+t('all 28 DMs went through the one builder', r.sent === 28 && sent.length === 28);
+const ACCENT = { live: 'win', award: 'gold', card: 'gold', predict: 'gold', points: 'gold', moderation: 'loss', queue: 'steel', storage: 'steel', test: 'steel' };
 const flat = (c) => [c, ...(c.components ?? []).flatMap(flat)];
 sent.forEach((m, i) => {
   const type = types[i], all = flat({ components: m.components }), j = JSON.stringify(m);

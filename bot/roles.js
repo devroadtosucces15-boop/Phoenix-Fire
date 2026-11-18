@@ -55,6 +55,7 @@ export const PERMS = {
   'docs.read': 'member', // P5.2 – members-only docs + Play Style (guests only see items marked public)
   'docs.ack': 'member', // P5.2 – acknowledge the current rules
   'birthday.set': 'member', // PF-024 Item 19 – save, show and hide your own birthday
+  'testview.run': 'manager', // PF-024 Item 25 – /testview: a fake, private render of any registered output with the rules applied
   'emoji.suggest': 'member', // PF-024 Item 22 – suggest an emoji or sticker (members only)
   'emoji.review': 'manager', // PF-024 Item 22 – approve, reject, remove and see every suggestion (Discord card and Control Center)
   'highlight.upload': 'member', // PF-024 Item 18 – upload a highlight clip (members only)
@@ -108,6 +109,7 @@ export const PERMS = {
   'music.view': 'member', // PF-022 DJ bridge: rooms, now playing, queue on the site
   'music.control': 'member', // pause, skip, volume, add and remove through the DJ bridge
   'music.manage': 'manager', // DJ bridge status and command log (Control Center)
+  'points.manage': 'manager', // PF-024 Item 24 – record a spend, see the season ledger (Control Center); resetting the season is owner only
   'points.view': 'member', // P11.3 – point system: my total/breakdown + leaderboard
   'medals.manage': 'owner', // C4 – Boardroom: edit, hide, add and hand out medals (meta `medal_config`)
   'flags.manage': 'owner', // BE5 – Boardroom: live-edit feature flag levels (flag_overrides table)

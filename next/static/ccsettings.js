@@ -41,6 +41,12 @@
 <label class="small">Requirements (one per line) <textarea name="requirements" rows="4"${lock(A)}>${esc((s.requirements || []).join('\n'))}</textarea></label><label class="small">Positions wanted (comma separated, e.g. GK, ST) <input name="positions" value="${esc((s.positions || []).join(', '))}"${lock(A)}></label>${save(A)}</form>`; },
       matchAlert(A) { const s = A.value || {}; return `<form data-cs-form="matchAlert" class="cc-form"><label class="small">Heavy-defeat margin (goals, 0 = never) <input name="loseBy" type="number" min="0" max="20" value="${esc(s.loseBy ?? 3)}"${lock(A)}></label>${save(A)}</form>`; },
       streams(A) { const s = A.value || {}; return `<form data-cs-form="streams" class="cc-form"><label class="small">Twitch link <input name="twitch" type="url" value="${esc(s.twitch || '')}" placeholder="https://www.twitch.tv/yourchannel"${lock(A)}></label><label class="small">YouTube channel link <input name="youtube" type="url" value="${esc(s.youtube || '')}" placeholder="https://www.youtube.com/@handle"${lock(A)}></label>${save(A)}</form>`; },
+      points(A) {
+        const s = A.value || {}, r = s.rules || { amounts: {}, prices: [] }, L = s.labels || {};
+        return `<form data-cs-form="points" class="cc-form"><p class="muted small">Season <b>${esc(s.season || '')}</b>. Points reset each season, are spendable credit and have no daily caps. 0 switches a rule off.</p><div class="cc-cols">${Object.keys(L).map((k) => `<label class="small">${esc(L[k].label)} <input name="amt-${esc(k)}" type="number" min="0" max="1000" value="${esc(r.amounts?.[k] ?? L[k].amount)}"${lock(A)}></label>`).join('')}</div>
+<label class="small">Price list, one item per line as <code>Name | price | note</code> (empty = nothing to spend points on yet) <textarea name="prices" rows="4"${lock(A)}>${esc((r.prices || []).map((p) => `${p.name} | ${p.cost}${p.note ? ' | ' + p.note : ''}`).join('\n'))}</textarea></label>${save(A)}</form>
+${A.canWrite ? `<form data-cs-form="points_spend" class="cc-form"><h4>Record a spend</h4><div class="cc-cols"><label class="small">Member ID <input name="user" required pattern="\\d{5,25}" inputmode="numeric"></label><label class="small">Points <input name="amount" type="number" min="1" required></label><label class="small">What for <input name="item" maxlength="60" required></label></div><div class="cc-actions"><button class="chip" type="submit">Spend</button><button class="chip danger" type="button" data-cs-season>Start a new season (owner)</button></div></form>` : ''}`;
+      },
       stream_sources(A) {
         const list = Array.isArray(A.value) ? A.value : [];
         return `${list.length ? `<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>Channel</th><th>Platform</th><th>Announces</th><th>Posts in</th><th></th></tr></thead><tbody>${list.map((r) => `<tr><td><b>${esc(r.label || r.handle)}</b><div class="muted small">${esc(r.scope)}</div></td><td>${esc(r.platform)}</td><td class="small">${[r.want_live ? 'live' : '', r.want_posts ? 'posts' : ''].filter(Boolean).join(' + ')}</td><td class="small">${esc(chs().find((c) => c.id === r.channel_id)?.name ? '#' + chs().find((c) => c.id === r.channel_id).name : 'ID ' + r.channel_id)}</td><td class="r">${A.canWrite ? `<button type="button" class="chip danger" data-cs-rmsrc="${esc(r.id)}">Remove</button>` : ''}</td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">No sources yet.</p>'}
@@ -63,7 +69,7 @@ ${rows ? `<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>On</th
     function html() {
       if (S.err) return empty('⚠️', 'Could not load the bot settings', S.err);
       if (!S.data) return skel;
-      const A = S.data.areas, order = ['bot', 'routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams'];
+      const A = S.data.areas, order = ['bot', 'routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams', 'points'];
       const fold = S.fold ? `<pre class="muted small cs-fold">${esc(JSON.stringify(S.fold, null, 1))}</pre>` : '';
       return `<p class="muted small">Every bot setting in one place. The owner keeps the bot’s look and the Organization; managers run the rest. Every save is recorded in the Audit log. Command rules are in <b>Bot commands</b>.</p>
 <div class="cs-grid">${order.filter((k) => A[k]).map((k) => (k === 'routes' ? routing(A[k]) : card(k, A[k], FORMS[k](A[k])))).join('')}</div>
@@ -91,12 +97,14 @@ ${rows ? `<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>On</th
       profanity: (f) => ({ channelId: f.get('channelId') || '' }),
       recruitment: (f) => ({ open: f.has('open'), headline: f.get('headline') || '', requirements: String(f.get('requirements') || '').split('\n').map((x) => x.trim()).filter(Boolean), positions: String(f.get('positions') || '').split(',').map((x) => x.trim().toUpperCase()).filter(Boolean) }),
       matchAlert: (f) => ({ loseBy: f.get('loseBy') }),
+      points: (f) => ({ amounts: Object.fromEntries(Object.keys(S.data.areas.points.value.labels || {}).map((k) => [k, f.get('amt-' + k)])), prices: String(f.get('prices') || '').split('\n').map((l) => l.trim()).filter(Boolean).map((l) => { const [name, cost, ...note] = l.split('|').map((x) => x.trim()); return { name, cost, note: note.join(' | ') }; }) }),
+      points_spend: (f) => ({ user: f.get('user'), amount: f.get('amount'), item: f.get('item') }),
       streams: (f) => ({ twitch: f.get('twitch') || '', youtube: f.get('youtube') || '' }),
       stream_sources: (f) => ({ link: f.get('link'), name: f.get('name') || '', what: f.get('what'), channel: f.get('channel') || '', source: f.get('source') }),
     };
     root.addEventListener('submit', (ev) => {
       const f = ev.target.closest('[data-cs-form]'); if (!f || !active()) return; ev.preventDefault();
-      const area = f.dataset.csForm; act(() => post(area, body[area](new FormData(f)), area === 'stream_sources' ? 'Source added' : undefined));
+      const area = f.dataset.csForm; act(() => (area === 'points_spend' ? call('/api/points/admin/spend', body[area](new FormData(f))).then(() => { toast('Spend recorded'); return load(); }) : post(area, body[area](new FormData(f)), area === 'stream_sources' ? 'Source added' : undefined)));
     });
     root.addEventListener('click', (ev) => {
       if (!active()) return; const t = ev.target.closest('button'); if (!t) return;
@@ -104,6 +112,7 @@ ${rows ? `<div class="tablewrap"><table class="tbl cc-tbl"><thead><tr><th>On</th
       else if (t.dataset.csRtdel !== undefined) { readRoutes(); S.rdraft.splice(+t.dataset.csRtdel, 1); repaint(); }
       else if (t.hasAttribute('data-cs-rtsave')) act(async () => { readRoutes(); await post('routes', { rules: S.rdraft }, 'Routing saved'); });
       else if (t.dataset.csRmsrc !== undefined) act(async () => { if (!confirm('Stop announcing this channel? You can add it again later.')) return; await post('stream_sources', { action: 'remove', id: Number(t.dataset.csRmsrc) }, 'Source removed'); });
+      else if (t.hasAttribute('data-cs-season')) act(async () => { const label = prompt('Name of the new season (blank = the next number). Every member starts at 0; this season is archived.'); if (label === null) return; if (prompt('Type RESET to confirm') !== 'RESET') return; await call('/api/points/admin/reset-season', { label, confirm: 'RESET' }); toast('New season started'); await load(); });
       else if (t.hasAttribute('data-cs-fold')) act(async () => { S.busy = true; repaint(); try { S.fold = await call('/api/controlcenter/settings/fold-legacy', {}); toast('Old settings folded in'); await load(); } finally { S.busy = false; repaint(); } });
     });
     root.addEventListener('change', (ev) => { if (active() && ev.target.closest('tr[data-rt]')) { readRoutes(); if (['group', 'method'].includes(ev.target.dataset.rf)) repaint(); } });
