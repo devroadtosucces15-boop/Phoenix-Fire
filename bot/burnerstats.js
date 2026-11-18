@@ -25,7 +25,7 @@ export function slimBurnerMatch(m, id, matchType) {
   const opp = m.clubs[oppId];
   return {
     id: String(m.matchId), ts: num(m.timestamp), type: matchType,
-    res: mine.wins === '1' ? 'W' : mine.losses === '1' ? 'L' : 'D',
+    res: mine.wins === '1' ? 'W' : mine.losses === '1' ? 'L' : opp && num(mine.goals) !== num(opp.goals) ? (num(mine.goals) > num(opp.goals) ? 'W' : 'L') : 'D', // a friendly has no win/loss flag: the goals decide
     gf: num(mine.goals), ga: num(opp?.goals ?? mine.goalsAgainst),
     opp: { id: String(oppId ?? ''), name: opp?.details?.name ?? opp?.name ?? null, crest: opp?.details?.customKit?.crestAssetId ?? null },
     players: Object.entries(m.players?.[id] || {}).map(([pid, p]) => ({

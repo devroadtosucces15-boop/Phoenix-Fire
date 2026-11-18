@@ -6,7 +6,7 @@
 // Pure functions + one handler – scripts/fetch.mjs imports matchComponents() for the auto-posted results.
 // Only bot-sent messages can carry these (Discord ignores interactive components on plain webhooks).
 
-import { message, header, text, sep, footer, buttons, resultAccent, reply, privateNote } from './ui.js';
+import { message, header, text, sep, footer, buttons, cards, cardUrl, resultAccent, reply, privateNote } from './ui.js';
 
 export const RES_COLOR = { W: 0x22c55e, D: 0xeab308, L: 0xef4444 };
 const RES_WORD = { W: '✅ Win', D: '➖ Draw', L: '❌ Defeat' };
@@ -53,6 +53,17 @@ export function personalEmbed(m, line, p, club, site, { mine = false } = {}) {
   if (line.ta != null) fields.push({ name: '🛡️ Tackles', value: `**${line.tm}/${line.ta}**${tacklePct != null ? ` (${tacklePct}%)` : ''}${tacklePct != null ? vs(tacklePct, s?.t, 0, '%') : ''}`, inline: true });
   if (line.sh) fields.push({ name: '🥅 Shots', value: `**${line.sh}**${line.g ? ` · ${pct(line.g, line.sh)}% scored` : ''}`, inline: true });
   if (line.sv) fields.push({ name: '🧤 Saves', value: `**${line.sv}**`, inline: true });
+  // from EA's event counters (league and playoff games; a friendly line has none, so nothing is shown rather than zeros), against the player's own per-game average
+  if (line.ev) {
+    const e = line.ev, av = p?.i?.pg, rt = p?.i?.r;
+    fields.push({ name: '🧭 Interceptions', value: `**${e.int}**${av ? vs(e.int, av.int, 1) : ''}`, inline: true });
+    fields.push({ name: '✈️ Aerial duels won', value: `**${e.aer}**${av ? vs(e.aer, av.aer, 1) : ''}`, inline: true });
+    fields.push({ name: '🔒 Possession', value: `**${e.won}** won · **${e.lost}** lost${av ? vs(e.won, av.won, 1) : ''}`, inline: true });
+    fields.push({ name: '➡️ Forward passes', value: `**${e.fwd}**${av ? vs(e.fwd, av.fwd, 1) : ''}`, inline: true });
+    if (line.sh || e.sot) fields.push({ name: '🎯 Shots on target', value: `**${e.sot}**${line.sh ? ` of ${line.sh}` : ''}`, inline: true });
+    if (e.pos != null) fields.push({ name: '📍 In position', value: `**${e.pos}%**${rt?.pos != null ? vs(e.pos, rt.pos, 0, '%') : ''}`, inline: true });
+    if (e.fouls) fields.push({ name: '🚩 Fouls conceded', value: `**${e.fouls}**`, inline: true });
+  }
   const tr = (p?.tr ?? []).slice(-10);
   if (tr.length) {
     const best = Math.max(...tr);
@@ -96,5 +107,12 @@ export async function matchInteraction(i, site, deps) {
   const players = await deps.load('players');
   const p = players.find((x) => x.k === key);
   if (!line) return eph({ content: `📋 **${p?.n ?? 'That player'}** didn't play in this match.${p?.tr?.length ? ` Last rating: ${dot(p.tr.at(-1))} **${r1(p.tr.at(-1))}**.` : ''}` });
+  // the drawn player card (strengths, weak spots, insights, trend) when it exists for this match; the text version otherwise (older matches, no card yet)
+  const deck = await Promise.resolve(deps.load('cards')).catch(() => null), card = cardUrl(deck, 'match', matchId, 'pm', key);
+  if (card) return reply(message({ ephemeral: true, accent: resultAccent(m.res), blocks: [
+    header({ eyebrow: mine ? `${club.name} · ✅ Your verified player` : `${club.name} · Player match`, title: `${line.n} · ${m.gf}–${m.ga} ${m.opp}`.slice(0, 250), sub: `<t:${m.ts}:R>` }),
+    cards({ url: card, alt: `${line.n}: rating, strengths, weak spots and insights for this match against their own average` }),
+    buttons([{ label: 'Match page', url: m.url }, { label: 'Player page', url: `${site}players/${encodeURIComponent(line.k)}.html` }]),
+  ] }));
   return reply(personalEmbed(m, line, p, club, site, { mine }));
 }

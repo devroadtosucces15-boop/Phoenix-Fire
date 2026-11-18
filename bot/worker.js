@@ -701,13 +701,13 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
       ] });
     }
     case 'results': {
-      const n = Math.min(10, opt.count ?? 5);
-      const card = cardUrl(deck, 'results');
-      const list = club.matches.slice(0, n);
+      const n = Math.min(10, Math.max(1, opt.count ?? 5)); // one drawn card per count (scripts/cards.mjs RESULT_COUNTS): the picture, the title and the W/D/L line always agree
+      const list = club.matches.slice(0, n), card = list.length ? cardUrl(deck, 'results', String(list.length)) : null;
+      const title = list.length === 1 ? 'Last result' : `Last ${list.length} results`;
       return message({ blocks: [
-        header({ eyebrow: brand('Results'), title: `Last ${list.length} results`, sub: list.length ? `${list.filter((m) => m.res === 'W').length}W ${list.filter((m) => m.res === 'D').length}D ${list.filter((m) => m.res === 'L').length}L` : 'No matches yet' }),
-        cards(card && { url: card, alt: 'Recent results' }),
-        (!card || n > 8) && list.length ? text(list.slice(card ? 8 : 0).map((m) => `${RESULT_ICON[m.res]} **${m.gf}–${m.ga}** vs [${m.opp}](${m.url})${m.scorers.length ? ` · ${goalsLine(m)}` : ''}`).join('\n')) : null,
+        header({ eyebrow: brand('Results'), title, sub: list.length ? `${list.filter((m) => m.res === 'W').length}W ${list.filter((m) => m.res === 'D').length}D ${list.filter((m) => m.res === 'L').length}L` : 'No matches yet' }),
+        cards(card && { url: card, alt: title }),
+        !card && list.length ? text(list.map((m) => `${RESULT_ICON[m.res]} **${m.gf}–${m.ga}** vs [${m.opp}](${m.url})${m.scorers.length ? ` · ${goalsLine(m)}` : ''}`).join('\n')) : null,
         footer(updated),
         buttons([{ label: 'All results', url: `${club.url}results.html` }]),
       ] });
@@ -739,7 +739,8 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
     case 'top': {
       const players = (await load(site, 'players', ctx)).filter((p) => p.home && p.s && p.src === 'club');
       const stat = opt.stat ?? 'goals';
-      const F = { goals: ['Top scorers', (p) => p.s.g], assists: ['Most assists', (p) => p.s.a], rating: ['Best average rating (3+ games)', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], motm: ['Most MOTM awards', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp], ga: ['Goals + assists', (p) => p.s.g + p.s.a] };
+      const F = { goals: ['Top scorers', (p) => p.s.g], assists: ['Most assists', (p) => p.s.a], rating: ['Best average rating (3+ games)', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], motm: ['Most MOTM awards', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp],
+        interceptions: ['Interceptions per game', (p) => (p.i?.n >= 3 ? p.i.pg.int : 0), 1], won: ['Possession won per game', (p) => (p.i?.n >= 3 ? p.i.pg.won : 0), 1], aerials: ['Aerial duels won per game', (p) => (p.i?.n >= 3 ? p.i.pg.aer : 0), 1], positioning: ['Best positioning (in position %)', (p) => (p.i?.n >= 3 ? p.i.r.pos ?? 0 : 0)], ga: ['Goals + assists', (p) => p.s.g + p.s.a] };
       const [title, f, dec = 0] = F[stat] ?? F.goals;
       const list = players.map((p) => [p, f(p)]).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).slice(0, 10);
       const card = cardUrl(deck, 'top', stat);
