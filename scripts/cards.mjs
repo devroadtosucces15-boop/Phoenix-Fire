@@ -243,7 +243,7 @@ export function sessionPicture(recap, club) {
 // ---------- compare (bar chart for /compare) ----------
 export const COMPARE_ROWS = (a, b) => [['OVR', a.ovr, b.ovr], ['Games', a.s?.gp, b.s?.gp], ['Goals', a.s?.g, b.s?.g], ['Assists', a.s?.a, b.s?.a], ['Rating', a.s?.r, b.s?.r, 1], ['MOTM', a.s?.m, b.s?.m], ['Pass %', a.s?.p, b.s?.p], ['Tackle %', a.s?.t, b.s?.t], ['Win %', a.s?.w, b.s?.w],
   // from the event counters, only when both players (or one) have them: per game, and the share of the time in position
-  ['Interceptions / game', a.i?.pg.int, b.i?.pg.int, 1], ['Aerial duels / game', a.i?.pg.aer, b.i?.pg.aer, 1], ['Possession won / game', a.i?.pg.won, b.i?.pg.won, 1], ['In position %', a.i?.r.pos, b.i?.r.pos]];
+  ['Interceptions / game', a.i?.pg.int, b.i?.pg.int, 1], ['Aerials / game', a.i?.pg.aer, b.i?.pg.aer, 1], ['Poss. won / game', a.i?.pg.won, b.i?.pg.won, 1], ['In position %', a.i?.r.pos, b.i?.r.pos]];
 export function compareCard(a, b) {
   const rows = COMPARE_ROWS(a, b).filter(([, x, y]) => (+x || 0) + (+y || 0) > 0).map(([k, x, y, dec = 0]) => {
     const hi = Math.max(+x || 0, +y || 0) || 1, xa = +x || 0, ya = +y || 0;

@@ -33,7 +33,7 @@ t('build writes the intel block into players.json for players with counters', /\
 // ---- /compare
 const a = { ovr: 80, s: { gp: 5 }, i: p.i }, b = { ovr: 70, s: { gp: 5 }, i: { n: 3, pg: { int: 1, aer: 2, won: 1, fwd: 5, sot: 0, fouls: 1 }, r: { pass: 70, tackle: 40, fwd: 30, pos: 60 } } };
 const labels = COMPARE_ROWS(a, b).map((r) => r[0]);
-t('compare: interceptions, aerials, possession won and in-position rows added to the same card', ['Interceptions / game', 'Aerial duels / game', 'Possession won / game', 'In position %'].every((l) => labels.includes(l)));
+t('compare: interceptions, aerials, possession won and in-position rows added to the same card', ['Interceptions / game', 'Aerials / game', 'Poss. won / game', 'In position %'].every((l) => labels.includes(l)));
 t('compare: players without counters leave those rows out (filtered like any empty row)', !compareCard({ n: 'A', s: { gp: 1, g: 1 } }, { n: 'B', s: { gp: 1, g: 2 } }).includes('Interceptions'));
 t('compare: the card draws the new rows', /Interceptions \/ game/.test(compareCard({ n: 'A', pos: 'ST', ...a }, { n: 'B', pos: 'ST', ...b })));
 
