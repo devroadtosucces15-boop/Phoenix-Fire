@@ -116,7 +116,7 @@ export function buildReview(m, homeId, { history = [], hide = new Set() } = {}) 
   }
   // ---- from the decoded event counters (only where EA sent them; clean fallback otherwise) ----
   const E = eventSide(all), EO = eventSide(theirs);
-  let ev = null;
+  let ev = null, evMore = null;
   if (E) {
     const o = EO ?? { insideBox: 0, forward: 0, wonHigh: 0, lostLow: 0, ints: 0, aerial: 0, rates: {} };
     ev = { apps: E.apps, of: all.length, rows: [
@@ -128,6 +128,19 @@ export function buildReview(m, homeId, { history = [], hide = new Set() } = {}) 
       { k: 'Players in position', a: E.rates.positioning, b: EO ? o.rates.positioning ?? null : null, u: '%' },
     ] };
     if (EO && E.wonHigh - o.wonHigh >= 3) good.push({ s: 6.5, icon: 'flow', lead: 'We won it high up the pitch.', text: `${E.wonHigh} balls won in their third to ${o.wonHigh}.` });
+    // more conclusions from the same counters: finishing, forward play, the air, discipline, who read whose passes, who won the loose balls
+    const sot = E.t.shotsOnTarget || 0, sotAcc = T.sh >= 3 ? Math.round((sot / T.sh) * 100) : null, fwdG = (EO ? E.forward - o.forward : 0);
+    const aerOf = (x) => (x.t?.aerialDuelsWonAttacking || 0) + (x.t?.aerialDuelsWonDefending || 0), fouls = (x) => x.t?.foulsConceded || 0, intc = (x) => x.t?.interceptions || 0;
+    if (sotAcc != null && sotAcc >= 60) good.push({ s: 7.2, icon: 'goal', lead: 'We hit the target.', text: `${sot} of ${T.sh} shots on target (${sotAcc}%).` });
+    if (sotAcc != null && T.sh >= 4 && sotAcc < 50) work.push({ s: 7.6, kind: 'sotAcc', icon: 'goal', lead: 'Attack: find the target.', text: `${sot} of ${T.sh} shots on target (${sotAcc}%)${EO ? `, ${EO.t?.shotsOnTarget || 0} for them` : ''}.` });
+    if (EO && fwdG >= 8) good.push({ s: 6.8, icon: 'flow', lead: 'We played forward.', text: `${E.forward} forward passes to their ${o.forward}.` });
+    if (EO && aerOf(E) - aerOf(EO) >= 3) good.push({ s: 6.6, icon: 'shield', lead: 'We won the air.', text: `${aerOf(E)} aerial duels won to ${aerOf(EO)}.` });
+    if (EO && aerOf(EO) - aerOf(E) >= 3) work.push({ s: 6.6, kind: 'aerial', icon: 'shield', lead: 'Defenders: contest the headers.', text: `${aerOf(E)} aerial duels won to their ${aerOf(EO)}.` });
+    if (EO && fouls(E) <= 2 && fouls(EO) - fouls(E) >= 4) good.push({ s: 6.4, icon: 'check', lead: 'Clean and disciplined.', text: `${fouls(E)} fouls conceded to their ${fouls(EO)}.` });
+    if (EO && fouls(E) >= 6 && fouls(E) - fouls(EO) >= 3) work.push({ s: 6.3, kind: 'fouls', icon: 'team', lead: 'Team: too many fouls.', text: `${fouls(E)} fouls conceded to their ${fouls(EO)}.` });
+    if (EO && intc(EO) - intc(E) >= 6) work.push({ s: 6.9, kind: 'intercepted', icon: 'flow', lead: 'Midfield: step in earlier.', text: `They intercepted ${intc(EO)} to our ${intc(E)}; they read our passes.` });
+    if (EO && E.rates.possessionWinShare != null && EO.rates.possessionWinShare != null && E.rates.possessionWinShare - EO.rates.possessionWinShare >= 10) good.push({ s: 6.5, icon: 'flow', lead: 'We took the ball back.', text: `${Math.round(E.rates.possessionWinShare)}% of the loose balls won, they won ${Math.round(EO.rates.possessionWinShare)}%.` });
+    evMore = { sot, sotAcc };
     if (E.rates.positioning != null && E.apps >= 6 && E.rates.positioning < 70) work.push({ s: 6, kind: 'position', icon: 'team', lead: 'Team: hold your positions.', text: `In position ${E.rates.positioning}% of the time (event data, ${E.apps} players).` });
     if (EO && E.lostLow >= 10 && E.lostLow - o.lostLow >= 4) work.push({ s: 6.5, kind: 'lostLow', icon: 'shield', lead: 'Defenders and keeper: stop giving it away at the back.', text: `${E.lostLow} balls lost in our own third, they lost ${o.lostLow}.` });
   }
@@ -142,6 +155,7 @@ export function buildReview(m, homeId, { history = [], hide = new Set() } = {}) 
     if (w.kind === 'midShots') next.push({ k: 'Midfield shots', a: L.MID.sh, b: L.MID.sh + 2, u: '' });
     if (w.kind === 'shotsAgainst') next.push({ k: 'Shots against', a: O.sh, b: Math.max(3, O.sh - 3), u: '', lower: true });
     if (w.kind === 'noGoal') next.push({ k: 'Shots', a: T.sh, b: T.sh + 4, u: '' });
+    if (w.kind === 'sotAcc' && evMore) next.push({ k: 'Shots on target', a: evMore.sot, b: Math.max(evMore.sot + 2, Math.ceil(T.sh * 0.55)), u: '' });
   }
   if (next.length < 2 && teamPass != null) next.push({ k: 'Pass accuracy', a: teamPass, b: Math.min(95, up5(teamPass + 4)), u: '%' });
   // ---- squad recommendations (no names) ----
@@ -154,6 +168,9 @@ export function buildReview(m, homeId, { history = [], hide = new Set() } = {}) 
   if (work.some((w) => w.kind === 'midShots' || w.kind === 'noGoal')) recs.push({ icon: 'goal', t: 'Send a second runner', tr: 'One midfielder arrives late at the edge of the box on every attack.', why: why('midShots') ?? why('noGoal') });
   if (work.some((w) => w.kind === 'control')) recs.push({ icon: 'team', t: 'Slow the tempo', tr: 'Keep it in the back line for a few passes before going forward.', why: why('control') });
 
+  if (work.some((w) => w.kind === 'sotAcc')) recs.push({ icon: 'goal', t: 'Pick your spot', tr: 'Take the shot early and aim for the corners, not at the keeper.', why: why('sotAcc') });
+  if (work.some((w) => w.kind === 'aerial')) recs.push({ icon: 'shield', t: 'Cover the high ball', tr: 'Keep a defender goal-side of the long ball and call who goes up.', why: why('aerial') });
+  if (work.some((w) => w.kind === 'fouls')) recs.push({ icon: 'team', t: 'Stay on your feet', tr: 'Jockey and wait; tackle only when the ball is loose.', why: why('fouls') });
   const margin = Math.abs(gf - ga);
   const title = res === 'W' ? (margin >= 3 ? 'Comfortable win' : margin === 2 ? 'Solid win' : 'Narrow win') : res === 'D' ? (gf === 0 ? 'Goalless draw' : 'Level game') : margin >= 3 ? 'Heavy defeat' : margin === 2 ? 'Defeat' : 'Narrow defeat';
   const sub = [ga === 0 ? 'Clean sheet' : null, gf > 0 && T.sh > 0 ? `${gf} goal${gf > 1 ? 's' : ''} from ${T.sh} shot${T.sh === 1 ? '' : 's'}` : null, T.r != null && O.r != null ? `rating ${T.r.toFixed(1)} to ${O.r.toFixed(1)}` : null].filter(Boolean).join(' · ');
@@ -162,6 +179,7 @@ export function buildReview(m, homeId, { history = [], hide = new Set() } = {}) 
     id: String(m.matchId), res, title, sub, opp: them.name ?? 'Opponent',
     shape: { label: `${L.GK.n ? '1-' : ''}${shape.join('-')}`, humans, ai, line: { GK: L.GK.n, DEF: L.DEF.n, MID: L.MID.n, FWD: L.FWD.n }, players: all.map((p) => ({ g: GROUP[p.pos], r: n(p.rating) })) },
     ev,
+    numbers: { shots: [T.sh, O.sh], pass: [teamPass, oppPass], tackle: [tk, oppTk], dribbles: [sum(all, 'dribbles'), sum(theirs, 'dribbles')], attempted: [T.pa, O.pa], saves: [sum(all, 'saves'), sum(theirs, 'saves')] },
     good: good.slice(0, 5).map(({ s, ...x }) => x), work: work.slice(0, 4).map(({ s, kind, ...x }) => x), next: next.slice(0, 3), recs: recs.slice(0, 4),
   };
 }

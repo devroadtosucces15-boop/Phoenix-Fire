@@ -5,7 +5,9 @@
 //   node scripts/cards.mjs --html     also writes each card's HTML next to it (for tweaking templates in a browser)
 // Cards are 1200 px wide: Discord shows them at ~550 px, so nothing in them is set smaller than ~24 px.
 // File names carry a hash of what's drawn, so Discord never shows a stale cached picture after the numbers change.
-import { BOX_COLS } from './lib/boxscore.mjs';
+import { CARD_COLS } from './lib/boxscore.mjs';
+import { decodeEvents } from './lib/events.mjs';
+import { summarize } from './lib/intel.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -18,7 +20,7 @@ import { buildMatchPicture, fetchPlayerFaces } from './lib/matchpicture.mjs';
 import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pictures (line-up pitches, check-in banner)
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 16; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 17; // bump to redraw every card after a template change
 // ONE format for every picture in a match post sequence (the match board, the field view, the review): same width, same height, same margins, same
 // header. Discord scales a tall picture down to fit, so pictures of different heights come out at different widths and look misaligned; a fixed canvas
 // keeps them identical in the post. Bump TEMPLATE_VERSION (and BANNER_V in bot/ui.js) with any change here.
@@ -149,61 +151,93 @@ ${pts.map((r, i) => `<circle cx="${X(i)}" cy="${Y(r)}" r="${i === last ? 11 : 6}
 <text x="${X(best)}" y="${Y(pts[best]) - 18}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="26" fill="#efcf7a">${r1(pts[best])}</text>
 ${best !== last ? `<text x="${X(last)}" y="${Y(pts[last]) - 18}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="26" fill="#fff">${r1(pts[last])}</text>` : ''}</svg>`;
 }
-export function playerCard(p) {
-  const s = p.s ?? {}, graph = ratingGraph(p.tr);
-  const tiles = [['Games', s.gp ?? 0], ['Goals', s.g ?? 0], ['Assists', s.a ?? 0], ['Rating', r1(s.r), 'g'], ['MOTM', s.m ?? 0]];
-  return page(`
+// intel: the player's decoded event summary (scripts/lib/intel.mjs summarize: apps, perApp, rates) or null; squad: the same per-game averages for the whole squad.
+// With intel the lower band holds the rating graph beside donuts and per-game bars (no extra rows of tiles); without it, the graph alone as before.
+const PER_GAME = { interceptions: ['Interceptions', (x) => x.interceptions || 0], aer: ['Aerial duels', (x) => (x.aerialDuelsWonAttacking || 0) + (x.aerialDuelsWonDefending || 0)], won: ['Possession won', (x) => (x.possessionWonDefensiveThird || 0) + (x.possessionWonMiddleThird || 0) + (x.possessionWonAttackingThird || 0)], fwd: ['Forward passes', (x) => x.passesCompletedForward || 0] };
+const tonePct = (v) => (v >= 75 ? '#4be08a' : v >= 55 ? '#ff9f43' : '#ff7d72');
+export function playerCard(p, intel = null, squad = null) {
+  const s = p.s ?? {}, tiles = [['Games', s.gp ?? 0], ['Goals', s.g ?? 0], ['Assists', s.a ?? 0], ['Rating', r1(s.r), 'g'], ['MOTM', s.m ?? 0]];
+  const shown = Math.min(10, (p.tr ?? []).length), rates = intel?.rates;
+  const wide = intel && rates && rates.passAccuracy != null;
+  const graph = wide ? ratingGraph(p.tr, { w: 640, h: 300 }) : ratingGraph(p.tr);
+  const avg = (fn) => (squad?.length ? squad.reduce((t, x) => t + fn(x), 0) / squad.length : 0);
+  const per = (k) => { const [label, fn] = PER_GAME[k], v = fn(intel.perApp ?? {}), a = avg(fn), mx = Math.max(v, a * 1.6, 0.5); return `<div class="pb"><span>${label}</span><div class="bt"><i style="width:${Math.round((v / mx) * 100)}%"></i>${a ? `<u style="left:${Math.round((a / mx) * 100)}%"></u>` : ''}</div><b>${v.toFixed(1)}</b></div>`; };
+  const gauge = (v, label) => (v == null ? '' : `<div class="pg">${ring(v / 100, tonePct(v), `${Math.round(v)}%`, 96, 24)}<span>${label}</span></div>`);
+  const lower = wide
+    ? `<div class="lw"><div><div class="g-h">Match rating · last ${shown}</div>${graph}</div><div class="rp"><div class="g-h">Intelligence · ${intel.apps} games</div><div class="pgs">${gauge(rates.passAccuracy, 'Pass accuracy')}${gauge(rates.tackleWinRate, 'Tackle win')}${gauge(rates.forwardPassShare, 'Forward passes')}${gauge(rates.positioning, 'In position')}</div><div class="g-h" style="margin-top:20px">Per game${squad?.length ? ' · squad tick' : ''}</div>${['interceptions', 'aer', 'won', 'fwd'].map(per).join('')}</div></div>`
+    : (graph ? `<div class="g-h">Match rating · last ${shown}</div>${graph}` : '');
+  return page(`${RING_CSS}
 .wrap{padding:44px 60px 64px}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
 .head h1{font:700 70px/1 Oswald;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:860px}
 .ovr{text-align:right}.ovr b{display:block;font:700 92px/0.9 Oswald}.ovr span{font:700 18px Inter;letter-spacing:.3em;color:var(--soft)}
 .tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:30px}
-.g-h{margin:34px 0 6px;font:700 19px Inter;letter-spacing:.26em;text-transform:uppercase;color:var(--soft)}`,
+.g-h{margin:34px 0 6px;font:700 19px Inter;letter-spacing:.26em;text-transform:uppercase;color:var(--soft)}
+.lw{display:grid;grid-template-columns:640px 1fr;gap:40px}.pgs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}.pg{display:grid;justify-items:center;gap:8px}.pg span{font:700 15px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);text-align:center}
+.pb{display:grid;grid-template-columns:150px 1fr 54px;align-items:center;gap:10px;height:42px}.pb span{font:700 17px Inter;letter-spacing:.1em;text-transform:uppercase;color:var(--soft)}.pb b{font:700 26px Oswald;text-align:right}.bt{position:relative;height:12px;border-radius:6px;background:rgba(255,255,255,.1)}.bt i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:#ff8a3d}.bt u{position:absolute;top:-5px;bottom:-5px;width:3px;background:var(--g2);border-radius:2px}`,
   `<div class="wrap">
 <div class="eyebrow">${esc(p.sc ?? SITE)} · Player card</div>
 <div class="head"><h1>${esc(p.n)} <span class="chip">${esc(p.pos ?? '')}</span></h1>${p.ovr ? `<div class="ovr"><b class="gold">${p.ovr}</b><span>OVR</span></div>` : ''}</div>
 <div class="tiles">${tiles.map(([k, v, c]) => `<div class="tile ${c ?? ''}"><b>${esc(v)}</b><span>${k}</span></div>`).join('')}</div>
-${graph ? `<div class="g-h">Match rating · last ${Math.min(10, (p.tr ?? []).length)}</div>${graph}` : ''}
+${lower}
 </div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- box score (the "Box score" button on a match message) ----------
 // Our side only: the match data carries every player's line for us but nothing for the other team beyond the score.
-const EV_CARD_COLS = BOX_COLS.filter(([k]) => ['int', 'won', 'lost', 'aer'].includes(k)); // the four that fit the 1200 px card
 const pc = (a, b) => (b ? `${Math.round((a / b) * 100)}%` : '–');
+// ONE table: EA's own columns, then (only when a player carries event counters) the Deeper stats columns in the same rows, under a gold header.
 export function boxScoreCard(m, club) {
   const ps = [...(m.ps ?? [])].sort((a, b) => (+b.r || 0) - (+a.r || 0)).slice(0, 11);
   const sum = (f) => (m.ps ?? []).reduce((t, p) => t + (+p[f] || 0), 0);
-  // decoded event columns (scripts/lib/boxscore.mjs) only when at least one player carries EA's event counters; a dash for the rest
-  const evc = (m.ps ?? []).some((p) => p.ev) ? EV_CARD_COLS : [];
-  const cols = `minmax(0,1fr) ${evc.length ? '80px 46px 46px 90px 112px 84px' : '110px 70px 70px 120px 160px 120px'}${evc.map(() => ' 76px').join('')}`;
-  const evCell = (p, k) => `<span class="v ev">${p.ev?.[k] ?? '–'}</span>`;
-  const evTot = (k) => { const have = (m.ps ?? []).filter((p) => p.ev); return `<span>${have.length ? have.reduce((t, p) => t + (p.ev[k] || 0), 0) : '–'}</span>`; };
+  const evc = (m.ps ?? []).some((p) => p.ev) ? CARD_COLS : [];
+  const W = evc.length ? 1500 : 1200;
+  const cols = `minmax(0,1fr) ${evc.length ? '74px 44px 44px 80px 100px 78px' : '110px 70px 70px 120px 160px 120px'}${evc.map(() => ' 76px').join('')}`;
+  const evCell = (p, k) => `<span class="v ev">${p.ev?.[k] ?? '–'}${k === 'pos' && p.ev?.[k] != null ? '%' : ''}</span>`;
+  const have = (m.ps ?? []).filter((p) => p.ev);
+  const evTot = (k) => (!have.length ? '<span>–</span>' : k === 'pos' ? `<span>${Math.round(have.reduce((t, p) => t + (p.ev.pos || 0), 0) / have.length)}%</span>` : `<span>${have.reduce((t, p) => t + (p.ev[k] || 0), 0)}</span>`);
   const rows = ps.map((p) => {
     const b = band(+p.r, p.mom);
     return `<div class="r${p.mom ? ' top' : ''}"><span class="n">${esc(p.n)}${p.pos ? ` <i>${esc(String(p.pos).slice(0, 3).toUpperCase())}</i>` : ''}</span>
 <span class="v big" style="color:${BAND[b]}">${r1(p.r)}</span><span class="v">${p.g ?? 0}</span><span class="v">${p.a ?? 0}</span><span class="v">${pc(p.pm, p.pa)}</span><span class="v">${p.tm ?? 0}/${p.ta ?? 0}</span><span class="v">${p.sh ?? 0}</span>${evc.map(([k]) => evCell(p, k)).join('')}</div>`;
   }).join('');
   return page(`
+body{width:${W}px}
 .wrap{padding:44px 60px 70px}
 .head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
 .head h1{font:700 64px/1 Oswald;text-transform:uppercase;letter-spacing:.02em}
 .head .res{text-align:right}
-.h{display:grid;grid-template-columns:${cols};font:700 19px Inter;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);padding:0 0 12px;border-bottom:1px solid var(--line)}
+.grp{display:grid;grid-template-columns:${cols};column-gap:10px;padding:0 14px;height:30px;align-items:end}.grp span{grid-column:8 / -1;font:700 16px Inter;letter-spacing:.3em;text-transform:uppercase;color:var(--g2);text-align:center;border-bottom:2px solid rgba(239,207,122,.45);padding-bottom:5px}
+.h{display:grid;grid-template-columns:${cols};column-gap:10px;padding:8px 14px 12px;font:700 19px Inter;letter-spacing:${evc.length ? '.14em' : '.2em'};text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line)}
 .r{display:grid;grid-template-columns:${cols};align-items:center;column-gap:10px;padding:13px 14px;margin-top:8px;border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,.04),transparent)}
 .r.top{background:linear-gradient(90deg,rgba(239,207,122,.14),transparent 75%)}
-.n{font:600 30px Inter;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.n i{font:600 19px Oswald;font-style:normal;letter-spacing:.08em;color:var(--g2);background:var(--p3);border-radius:6px;padding:1px 8px;margin-left:8px;vertical-align:3px}
-.v{text-align:right;font:600 30px Oswald;font-variant-numeric:tabular-nums;color:#cfd8e8}.v.ev{color:var(--g2);font-size:26px}${evc.length ? '.n{font-size:26px}.h{font-size:17px;letter-spacing:.12em}' : ''}.v.big{font-size:38px}
+.n{font:600 ${evc.length ? 28 : 30}px Inter;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.n i{font:600 19px Oswald;font-style:normal;letter-spacing:.08em;color:var(--g2);background:var(--p3);border-radius:6px;padding:1px 8px;margin-left:8px;vertical-align:3px}
+.v{text-align:right;font:600 30px Oswald;font-variant-numeric:tabular-nums;color:#cfd8e8}.v.ev{color:var(--g2);font-size:28px}.v.big{font-size:38px}
 .h span:nth-child(n+2){text-align:right}
 .tot{margin-top:18px;padding:16px 14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:${cols};column-gap:10px;font:700 24px Oswald;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
-.tot span:nth-child(n+2){text-align:right;color:var(--text)}`,
+.tot span:nth-child(n+2){text-align:right;color:var(--text)}
+.note{margin-top:22px;font:500 20px Inter;color:var(--soft)}`,
   `<div class="wrap">
 <div class="eyebrow">${esc(club.name)} · Box score</div>
 <div class="head"><h1>${esc(club.name.replace(/\s+FC$/i, ''))} ${m.gf}–${m.ga} ${esc(m.opp)}</h1><div class="res"><span class="pill ${m.res}">${RESULT[m.res] ?? ''}</span></div></div>
+${evc.length ? '<div class="grp"><span>Deeper stats</span></div>' : ''}
 <div class="h"><span>Player</span><span>RTG</span><span>G</span><span>A</span><span>Pass</span><span>Tackles</span><span>Shots</span>${evc.map(([, h]) => `<span>${h}</span>`).join('')}</div>
 ${rows}
 <div class="tot"><span>Team</span><span>${r1((m.ps ?? []).length ? sum('r') / m.ps.length : 0)}</span><span>${sum('g')}</span><span>${sum('a')}</span><span>${pc(sum('pm'), sum('pa'))}</span><span>${sum('tm')}/${sum('ta')}</span><span>${sum('sh')}</span>${evc.map(([k]) => evTot(k)).join('')}</div>
+${evc.length ? `<div class="note">Deeper columns come from EA's event counters for ${have.length} of ${(m.ps ?? []).length} players; they are a breakdown, EA's own columns stay the totals. SoT = shots on target, Fwd = forward passes, Fouls = fouls conceded, Pos% = in position.</div>` : '<div class="note">The deeper columns (SoT, Fwd, Int, Won, Lost, Aer, Fouls, Pos%) appear for league and playoff games: EA sends no event counters for friendlies.</div>'}
 </div><div class="brand">${esc(SITE)}</div>`);
+}
+
+
+// ---------- session recap picture: one row per match with both crests, the score, who scored and the man of the match (no stats) ----------
+export function sessionPicture(recap, club) {
+  const pill = (r) => `<span class="pill ${r}" style="text-align:center;font-size:20px;padding:4px 14px">${{ W: 'WIN', D: 'DRAW', L: 'LOSS' }[r] ?? ''}</span>`;
+  const rows = recap.matches.map((m) => `<div class="row"><span>${pill(m.res)}</span>${crest(club?.crest, club?.name ?? SITE, 60, true)}<span class="sc">${m.gf}–${m.ga}</span>${crest(m.oppCrest, m.opp, 60, false)}<span class="opp"><b>${esc(m.opp)}</b><small>${(m.scorers ?? []).length ? m.scorers.map((x) => `${esc(x.n)}${x.g > 1 ? ` ×${x.g}` : ''}`).join(', ') : 'no scorers'}</small></span><span class="md">${esc(m.mode)}${m.motm ? `<em>★ ${esc(m.motm)}</em>` : ''}</span></div>`).join('');
+  return page(`.wrap{padding:44px 50px 64px}h1{font:700 56px/1.05 Oswald;text-transform:uppercase;margin:8px 0 18px}
+.row{display:grid;grid-template-columns:120px 60px 130px 60px minmax(0,1fr) 230px;align-items:center;gap:16px;height:96px;border-bottom:1px solid var(--line)}
+.sc{font:700 48px Oswald;text-align:center}.opp{min-width:0}.opp b{display:block;font-size:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opp small{display:block;color:var(--soft);font-size:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.md em{display:block;font:600 21px Inter;letter-spacing:0;text-transform:none;color:var(--g2);font-style:normal;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.md{text-align:right;color:var(--mute);font:700 19px Inter;letter-spacing:.14em;text-transform:uppercase}`,
+  `<div class="wrap"><div class="eyebrow">${esc(club?.name ?? SITE)} · Session recap</div><h1>${recap.w} won, ${recap.d} drawn, ${recap.l} lost</h1>${rows}</div><div class="brand">${esc(SITE)}</div>`);
 }
 
 // ---------- compare (bar chart for /compare) ----------
@@ -267,10 +301,27 @@ ${rows.length ? rows.map(([p, v], i) => `<div class="r row ${i ? '' : 'first'}">
 }
 
 // ---------- club card ----------
-export function clubCard(club) {
+// The last league games from club.json ps rows: pass accuracy per game (newest last) and, where EA sent event counters, the in-position and
+// possession-won shares over those games. null when no recent league game has a player line.
+export function clubInsight(club, n = 10) {
+  const games = (club.matches ?? []).filter((m) => m.type !== 'friendly' && m.type !== 'friendlyMatch' && m.ps?.length).slice(0, n).reverse();
+  if (!games.length) return null;
+  const by = games.map((m) => { const pm = m.ps.reduce((t, p) => t + (p.pm || 0), 0), pa = m.ps.reduce((t, p) => t + (p.pa || 0), 0); return { res: m.res, pass: pa ? Math.round((pm / pa) * 1000) / 10 : null }; });
+  const ev = games.flatMap((m) => m.ps.filter((p) => p.ev).map((p) => p.ev));
+  const mean = (a) => (a.length ? Math.round(a.reduce((t, x) => t + x, 0) / a.length) : null);
+  const won = ev.reduce((t, e) => t + (e.won || 0), 0), lost = ev.reduce((t, e) => t + (e.lost || 0), 0), pos = ev.filter((e) => e.pos != null).map((e) => e.pos);
+  const pAll = by.filter((g) => g.pass != null).map((g) => g.pass);
+  return { games: by, passAvg: mean(pAll), inPosition: mean(pos), possWon: won + lost ? Math.round((won / (won + lost)) * 100) : null };
+}
+export function clubCard(club, insight = null) {
   const form = [...(club.form ?? [])].slice(0, 10).reverse(); // oldest → newest, left to right
   const gd = (club.gf ?? 0) - (club.ga ?? 0);
-  return page(`
+  const gauge = (v, label, c) => (v == null ? '' : `<div class="pg">${ring(v / 100, c, `${v}%`, 96, 24)}<span>${label}</span></div>`);
+  const band = insight ? `<div class="an"><div><div class="g-h">Pass accuracy by game</div><div class="cbs">${insight.games.map((g) => `<div class="cb"><b>${g.pass ?? '–'}</b><div class="bc"><i style="height:${g.pass == null ? 0 : Math.max(6, Math.round(((g.pass - 50) / 50) * 100))}%;background:${g.res === 'W' ? '#4be08a' : g.res === 'L' ? '#ff7d72' : '#efcf7a'}"></i></div></div>`).join('')}</div></div><div><div class="g-h">Last ${insight.games.length} league games</div><div class="pgs">${gauge(insight.passAvg, 'Pass accuracy', '#4be08a')}${gauge(insight.inPosition, 'In position', '#efcf7a')}${gauge(insight.possWon, 'Possession won', '#ff8a3d')}</div></div></div>` : '';
+  return page(`${RING_CSS}
+.an{display:grid;grid-template-columns:1fr 430px;gap:44px;margin-top:34px;align-items:end}.an .g-h{font:700 18px Inter;letter-spacing:.26em;text-transform:uppercase;color:var(--soft);margin-bottom:10px}
+.cbs{display:grid;grid-template-columns:repeat(10,1fr);gap:12px;height:150px}.cb{display:grid;grid-template-rows:auto 1fr;gap:6px;justify-items:center}.cb b{font:700 22px Oswald;color:#cfd8e8}.bc{display:flex;align-items:flex-end;width:100%;height:100%;border-radius:8px;background:rgba(255,255,255,.06)}.bc i{display:block;width:100%;border-radius:8px}
+.pgs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pg{display:grid;justify-items:center;gap:8px}.pg span{font:700 15px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);text-align:center}
 .wrap{padding:46px 60px 70px}
 .head{display:grid;grid-template-columns:150px 1fr auto;gap:34px;align-items:center}
 .head h1{font:700 68px/1 Oswald;text-transform:uppercase}
@@ -285,6 +336,7 @@ export function clubCard(club) {
 <div class="tiles"><div class="tile"><b>${club.gp ?? 0}</b><span>Played</span></div><div class="tile w"><b>${club.w ?? 0}</b><span>Won</span></div><div class="tile d"><b>${club.d ?? 0}</b><span>Drawn</span></div><div class="tile l"><b>${club.l ?? 0}</b><span>Lost</span></div>
 <div class="tile"><b>${club.gf ?? 0}</b><span>Scored</span></div><div class="tile g"><b>${gd >= 0 ? '+' : ''}${gd}</b><span>Goal diff</span></div></div>
 ${form.length ? `<div class="form"><span>FORM</span>${form.map((r) => `<i class="${r}">${r}</i>`).join('')}<span style="margin-left:10px">→ NEWEST</span></div>` : ''}
+${band}
 </div><div class="brand">${esc(SITE)}</div>`);
 }
 
@@ -334,42 +386,64 @@ function shapeDiagram(model, w = 600, h = 250) {
   if (model.shape.ai > 0) out += `<rect x="${w * 0.955 - 25}" y="${h * 0.5 - 25}" width="50" height="50" rx="9" fill="none" stroke="#9fb0cf" stroke-width="3" stroke-dasharray="7 6"/><text x="${w * 0.955}" y="${h * 0.5 + 8}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="22" fill="#9fb0cf">AI</text>`;
   return `${out}</svg>`;
 }
-export function reviewCard(model, club) {
-  const head = (icon, t) => `<div class="sh"><span class="si">${rvIcon(icon, '#fff', 26)}</span><b class="osw">${esc(t)}</b></div>`;
-  const row = (r, label) => `<div class="rw"><span class="ri">${rvIcon(r.icon, '#fff', 26)}</span><div><b>${esc(r.lead ?? r.t)}</b><p>${label ? `<i>${label}</i>` : ''}${esc(r.text ?? r.tr)}</p>${r.why ? `<p class="wy">${esc(r.why)}</p>` : ''}</div></div>`;
-  const ring = (t) => { const frac = t.lower ? Math.min(1, t.b / Math.max(1, t.a)) : Math.min(1, t.a / Math.max(1, t.b)); return `<div class="mt2"><b>${t.a}${t.u}</b><i class="bar"><u style="width:${Math.round(Math.max(0.03, frac) * 100)}%;background:#ff8a3d"></u></i></div>`; };
-  const next = model.next.map((t) => `<div class="nx">${ring(t)}<span>${esc(t.k)}</span><b class="osw">${t.lower ? 'Under' : 'Target'} ${t.b}${t.u}</b></div>`).join('');
-  const evv = (v, u) => (v == null ? '–' : `${v}${u ?? ''}`);
-  const evHtml = model.ev
-    ? `<div class="sec">${head('flow', 'From the event data')}<div class="evg">${model.ev.rows.map((r) => `<div class="evt"><span>${esc(r.k)}</span><b class="osw">${evv(r.a, r.u)}<em>${r.b == null ? '' : ` vs ${evv(r.b, r.u)}`}</em></b></div>`).join('')}</div><p class="evn">EA's event counters for ${model.ev.apps} of ${model.ev.of} of our players. Us first, then ${esc(model.opp)}.</p></div>`
-    : `<div class="sec">${head('flow', 'Event data')}<p class="evn">No event counters for this match. EA keeps them only for recent matches and serves just the last 10 per type, so earlier games cannot be filled in.</p></div>`;
+export function reviewCard(model, club, mp = null, faces = new Map()) {
+  const head = (icon, t, sub = '') => `<div class="sh"><span class="si">${rvIcon(icon, '#fff', 26)}</span><b class="osw">${esc(t)}</b>${sub ? `<em>${esc(sub)}</em>` : ''}</div>`;
+  // Every section is a fixed grid, so the picture stays aligned whatever the data: paired good/work rows, always three targets, always six numbers.
+  const item = (r, kind) => (r ? `<div class="it"><span class="ri">${rvIcon(r.icon ?? 'team', '#fff', 26)}</span><div><b>${esc(r.lead ?? r.t)}</b><p>${kind ? `<i>${kind}</i>` : ''}${esc(r.text ?? r.tr)}</p></div></div>` : '<div class="it none"><span class="ri"></span><div><b>Nothing more to flag</b></div></div>');
+  const good = model.good.slice(0, 4), work = model.work.slice(0, 4);
+  const pairs = Array.from({ length: Math.max(good.length, work.length, 1) }, (_, i) => `<div class="pr">${item(good[i])}${item(work[i])}</div>`).join('');
+  const N = model.numbers ?? {}, nv = (k, i) => N[k]?.[i];
+  // next match: three targets; topped up from the team numbers when fewer came out of the review
+  const nx = [...model.next];
+  const topUp = [];
+  if (model.ev?.rows?.find((r) => r.k === 'Players in position')?.a != null) { const a = model.ev.rows.find((r) => r.k === 'Players in position').a; topUp.push({ k: 'In position', a, b: Math.min(95, Math.ceil((a + 6) / 5) * 5), u: '%' }); }
+  if (nv('pass', 0) != null) topUp.push({ k: 'Pass accuracy', a: nv('pass', 0), b: Math.min(95, Math.ceil((nv('pass', 0) + 4) / 5) * 5), u: '%' });
+  if (nv('tackle', 0) != null) topUp.push({ k: 'Tackle success', a: nv('tackle', 0), b: Math.min(90, Math.ceil((nv('tackle', 0) + 8) / 5) * 5), u: '%' });
+  for (const t of topUp) if (nx.length < 3 && !nx.some((x) => x.k === t.k)) nx.push(t);
+  const nxHtml = nx.slice(0, 3).map((t) => { const f = t.lower ? Math.min(1, t.b / Math.max(1, t.a)) : Math.min(1, t.a / Math.max(1, t.b)); return `<div class="nx">${ring(f, '#ff8a3d', `${t.a}${t.u}`, 92, 28)}<span>${esc(t.k)}</span><b class="osw">${t.lower ? 'Under' : 'Target'} ${t.b}${t.u}</b></div>`; }).join('');
+  // the numbers: six slots, each a label over a pair of rings (ours, theirs). Event counters when EA sent them, EA's match numbers otherwise.
+  const TONE = { good: '#4be08a', even: '#b9c4d9', bad: '#ff7d72' };
+  const slot = (label, a, b, { pct = false, lower = false } = {}) => {
+    if (a == null) return `<div class="ns"><span>${esc(label)}</span><div class="np"><i>–</i></div></div>`;
+    const A = +a || 0, B = b == null ? null : +b || 0, sh = (v) => (pct ? v / 100 : v / (((A + (B ?? 0)) || 1))), t = B == null || A === B ? 'even' : (lower ? A < B : A > B) ? 'good' : 'bad', f = (v) => (pct ? `${Math.round(v)}%` : v);
+    return `<div class="ns"><span>${esc(label)}</span><div class="np">${ring(sh(A), TONE[t], f(A), 78, pct ? 21 : 25)}${B == null ? '' : `<i>vs</i>${ring(sh(B), '#6b7da0', f(B), 78, pct ? 21 : 25)}`}</div></div>`;
+  };
+  const slots = model.ev ? model.ev.rows.map((r) => slot(r.k.replace('Players in position', 'In position'), r.a, r.b, { pct: r.u === '%', lower: !!r.lower }))
+    : [slot('Shots', ...N.shots ?? []), slot('Pass accuracy', ...(N.pass ?? []), { pct: true }), slot('Tackle success', ...(N.tackle ?? []), { pct: true }), slot('Dribbles', ...(N.dribbles ?? [])), slot('Passes attempted', ...(N.attempted ?? [])), slot('Saves', ...(N.saves ?? []))];
+  const nsub = model.ev ? `EA event counters for ${model.ev.apps} of ${model.ev.of} of our players · us first, then ${model.opp}` : 'No event counters for this match: EA sends them for league and playoff games only';
+  const recs = model.recs.slice(0, 4);
   const sh = model.shape;
-  return postPage(`
+  // lineup: the field view picture (same marks and colours as the match picture) when the picture model is at hand, the plain shape otherwise
+  let lineup;
+  if (mp) {
+    const fp = matchPicture(mp, club, faces, 'fieldparts');
+    const lnr = mp.lines.map((l) => `<div class="lr">${ring(l.r / 10, BAND[band(l.r)], r1(l.r), 78, 26)}<span>${esc(l.t)}</span></div>`).join('');
+    lineup = { css: fp.css.split('\n').filter((l) => /^\.(fv|pitch|pl|fw|rt|nm|evs|ev|crown|hud|eb)\b/.test(l)).join('\n') + `.lp{width:616px;height:399px;overflow:hidden;border-radius:14px}.lp .fv{zoom:.55;padding:0}.lrs{display:grid;grid-template-columns:repeat(${Math.min(4, Math.max(1, mp.lines.length))},1fr);gap:16px;width:100%}.lr{display:grid;justify-items:center;gap:6px}.lr span{font:700 20px Inter;letter-spacing:.18em;color:var(--soft)}`, left: `<div class="lp">${fp.fv}</div>`, rings: `<div class="lrs">${lnr}</div>` };
+  } else lineup = { css: '', left: shapeDiagram(model, 616, 250), rings: '' };
+  const css = `${RING_CSS}${lineup.css}
 body:before{background:radial-gradient(900px 340px at 50% -12%,rgba(232,101,26,.26),transparent 65%),linear-gradient(180deg,#140c07,#0a0705)}
-.top{padding-bottom:6px}
-.big{font:700 70px/1.05 Oswald;letter-spacing:.03em;margin-top:4px;display:block;text-transform:uppercase}
-.sub{font:600 25px/1.3 Inter;color:var(--soft);margin-top:2px}
-.sec{margin:22px 40px 0}.two{display:grid;grid-template-columns:1fr 1fr;gap:36px;margin:0 40px}.two .sec{margin:22px 0 0}
-.sh{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--line);padding-bottom:9px;margin-bottom:4px}.sh b{font:600 31px/1 Oswald;letter-spacing:.08em}.si{display:inline-flex;width:40px;height:40px;border-radius:11px;background:var(--red);align-items:center;justify-content:center}
-.lu{display:grid;grid-template-columns:600px 1fr;gap:28px;align-items:center;margin-top:12px}.lf{display:grid;gap:4px}.lf b{font:700 76px/1 Oswald;letter-spacing:.04em}.lf span{font:700 26px/1.2 Inter;color:#e1e8f5}.lf em{font:500 21px/1.3 Inter;color:var(--mute);font-style:normal;margin-top:6px}
-.rw{display:grid;grid-template-columns:46px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);align-items:start}.rw:last-child{border-bottom:0}
+.top{padding-bottom:6px}.big{font:700 70px/1.05 Oswald;letter-spacing:.03em;margin-top:4px;display:block;text-transform:uppercase}.sub{font:600 25px/1.3 Inter;color:var(--soft);margin-top:2px}
+.sec{margin:26px 40px 0}.sh{display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--line);padding-bottom:9px;margin-bottom:10px}.sh b{font:600 31px/1 Oswald;letter-spacing:.08em}.sh em{margin-left:auto;font:500 19px Inter;color:var(--mute);font-style:normal}.si{display:inline-flex;width:40px;height:40px;border-radius:11px;background:var(--red);align-items:center;justify-content:center}
+.lu{display:grid;grid-template-columns:616px 1fr;gap:30px;align-items:center}.lside{display:grid;gap:18px;justify-items:start}.lside .shape b{display:block;font:700 84px/1 Oswald;letter-spacing:.04em}.lside .shape span{font:700 26px Inter;color:#e1e8f5}.lside em{font:500 20px/1.3 Inter;color:var(--mute);font-style:normal}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;margin:26px 40px 0}.cols .sh{margin-bottom:0}.pr{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;margin:0 40px}
+.it{display:grid;grid-template-columns:46px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);min-height:112px;align-items:start}.it.none{opacity:.35}
 .ri{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid var(--line);display:grid;place-items:center}
-.rw b{font:800 25px/1.2 Inter;color:#fff;display:block}.rw p{font:500 22px/1.3 Inter;color:#cfd8e8;margin-top:3px}.rw p.wy{font-size:20px;color:var(--mute)}.rw i{font:800 17px Inter;letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:var(--red2);margin-right:10px}
-.mt2{display:grid;justify-items:center;gap:8px;width:100%}.mt2 b{font:700 44px/1 Oswald;color:#fff}.bar{display:block;width:250px;height:14px;border-radius:5px;background:rgba(255,255,255,.1);overflow:hidden}.bar u{display:block;height:100%;border-radius:5px}.mt2.tr{width:auto}.mt2.tr .bar{width:120px}
-.nxh{margin-top:18px}.nxs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:10px}.nxs .mt2{width:auto}.nxs .bar{width:150px}.nx{display:grid;justify-items:center;gap:2px;text-align:center}.nx span{font:700 20px Inter;color:#cfd8e8}.nx b{font:600 24px/1 Oswald;letter-spacing:.04em}
-.evg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 24px;margin-top:10px}.evt{display:grid;gap:2px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid var(--line)}.evt span{font:700 18px Inter;letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}.evt b{font:700 40px/1.1 Oswald;color:#fff}.evt em{font:600 26px Oswald;font-style:normal;color:var(--mute)}.evn{font:500 20px/1.35 Inter;color:var(--mute);margin-top:10px}
-.last{padding-bottom:34px}.rg{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}`,
-  `<div class="top ph"><div class="eyebrow">${esc(club?.name ?? SITE)} · Match review · vs ${esc(model.opp)}</div><div class="big">${esc(model.title)}</div><div class="sub">${esc(model.sub)}</div></div>
-<div class="sec">${head('me', 'How we lined up')}<div class="lu"><div>${shapeDiagram(model, 600, 190)}</div><div class="lf"><b class="osw">${esc(sh.label)}</b><span>${sh.humans} player${sh.humans === 1 ? '' : 's'}${sh.ai ? ` and ${sh.ai} AI slot${sh.ai === 1 ? '' : 's'}` : ''}</span><em>Shape from where the players lined up. EA does not record which slot the AI took.</em></div></div></div>
-<div class="two">
-  <div class="sec">${head('check', 'What went well')}${model.good.slice(0, 4).map((g) => row(g)).join('')}</div>
-  <div class="sec">${head('assist', 'What to work on')}${model.work.map((g) => row(g)).join('')}${next ? `<div class="nxh">${head('goal', 'Next match')}<div class="nxs">${next}</div></div>` : ''}</div>
-</div>
-${evHtml}
-${model.recs.length ? `<div class="sec last">${head('swap', 'Recommendations for the squad')}<div class="rg">${model.recs.map((r) => row(r, 'Try')).join('')}</div></div>` : '<div style="height:34px"></div>'}
+.it b{font:800 25px/1.2 Inter;color:#fff;display:block}.it p{font:500 22px/1.3 Inter;color:#cfd8e8;margin-top:3px}.it i{font:800 17px Inter;letter-spacing:.16em;text-transform:uppercase;font-style:normal;color:var(--red2);margin-right:10px}
+.nxs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px}.nx{display:grid;justify-items:center;gap:6px;text-align:center}.nx span{font:700 21px Inter;color:#cfd8e8}.nx b{font:600 24px/1 Oswald;letter-spacing:.04em}
+.ng{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 24px;margin-top:8px}.ns{display:grid;justify-items:center;gap:8px}.ns>span{font:700 19px Inter;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);text-align:center}.np{display:flex;align-items:center;gap:10px;min-height:78px}.np i{font:600 16px Inter;color:var(--mute);font-style:normal}
+.last{padding-bottom:34px}.rg{display:grid;grid-template-columns:1fr 1fr;gap:0 36px}.rg .it{min-height:132px}`;
+  return postPage(css, `<div class="top ph"><div class="eyebrow">${esc(club?.name ?? SITE)} · Match review · vs ${esc(model.opp)}</div><div class="big">${esc(model.title)}</div><div class="sub">${esc(model.sub)}</div></div>
+<div class="sec">${head('me', 'How we lined up')}<div class="lu"><div>${lineup.left}</div><div class="lside"><div class="shape"><b class="osw">${esc(sh.label)}</b><span>${sh.humans} player${sh.humans === 1 ? '' : 's'}${sh.ai ? ` and ${sh.ai} AI slot${sh.ai === 1 ? '' : 's'}` : ''}</span></div>${lineup.rings}<em>Shape from where the players lined up${mp ? '; the rings are the rating of each line' : ''}. EA does not record which slot the AI took.</em></div></div></div>
+<div class="cols"><div>${head('check', 'What went well')}</div><div>${head('assist', 'What to work on')}</div></div>${pairs}
+<div class="sec">${head('goal', 'Next match')}<div class="nxs">${nxHtml}</div></div>
+<div class="sec">${head('flow', model.ev ? 'From the event data' : 'From the match numbers', nsub)}<div class="ng">${slots.join('')}</div></div>
+<div class="sec last">${head('swap', 'Recommendations for the squad')}<div class="rg">${recs.map((r) => item(r, 'Try')).join('')}${recs.length % 2 ? item(null) : ''}</div></div>
 <div class="fill"></div>`);
 }
 
+// The website's dial (next/lib/widgets.mjs dial + widgets.css): 80 box, r 31, 8 wide round-cap arc over a faint track, value centred. Inline, no card.
+export const ring = (frac, color, label, size = 70, fs = null) => { const r = 31, c = 2 * Math.PI * r, k = Math.max(0.02, Math.min(1, frac)); return `<span class="dr" style="width:${size}px;height:${size}px"><svg viewBox="0 0 80 80" width="${size}" height="${size}" style="transform:rotate(-90deg)"><circle cx="40" cy="40" r="${r}" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="8"/><circle cx="40" cy="40" r="${r}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(c * k).toFixed(1)} ${c.toFixed(1)}"/></svg><b style="font-size:${fs ?? Math.round(size * 0.32)}px">${label}</b></span>`; };
+const RING_CSS = '.dr{position:relative;display:inline-block;flex:none}.dr b{position:absolute;inset:0;display:grid;place-items:center;font-family:Oswald;font-weight:700;font-variant-numeric:tabular-nums;color:#fff}';
 
 // ---------- merged match picture (message 1 of a result): scoreboard → goals and assists + man of the match → stats → rating by line → field view ----------
 // Model from scripts/lib/matchpicture.mjs. faces: Map(EA player key → data URI); anyone without one gets a drawn avatar. Gold is for the
@@ -387,10 +461,10 @@ const GENERIC_BUST = (h = 200) => `<svg viewBox="0 0 200 232" width="${Math.roun
 // part 'board' = scoreboard, goals and assists, man of the match, the stats; part 'pitch' = rating by line, field view, every rating. Both on the POST canvas.
 export function matchPicture(mp, club, faces = new Map(), part = 'board') {
   const TONE = { good: '#4be08a', even: '#efcf7a', bad: '#ff7d72' };
-  // Stat meter: the number, big, over a flat bar (no circles in this design).
-  const donut = (frac, color, label) => `<div class="mt2"><b>${label}</b><i class="bar"><u style="width:${Math.round(Math.max(0.03, Math.min(1, frac)) * 100)}%;background:${color}"></u></i></div>`;
+  // Stat meter: an inline donut with the number in the middle, one per team, no card behind it.
+  const donut = (frac, color, label) => ring(frac, color, label, 70, String(label).includes('%') ? 19 : 23);
   const row = (r) => {
-    const d = r.a - r.b, tol = r.tol ?? 0, tone = Math.abs(d) <= tol ? 'even' : d > 0 ? 'good' : 'bad';
+    const d = r.a - r.b, tol = r.tol ?? 0, tone = Math.abs(d) <= tol ? 'even' : (r.lower ? d < 0 : d > 0) ? 'good' : 'bad';
     const frac = (v) => (r.kind === 'pct' ? v / 100 : r.kind === 'rate' ? v / 10 : v / ((r.a + r.b) || 1));
     const lab = (v) => (r.kind === 'pct' ? `${v}%` : r.kind === 'rate' ? v.toFixed(1) : `${v}`);
     const sign = d > 0 ? '+' : d < 0 ? '−' : '';
@@ -415,9 +489,11 @@ export function matchPicture(mp, club, faces = new Map(), part = 'board') {
     const ev = (p.g ? `<span class="ev">${REVIEW_ICON.goal('#0b0f16', 22)}${p.g > 1 ? `<small>×${p.g}</small>` : ''}</span>` : '') + (p.a ? `<span class="ev as">${REVIEW_ICON.assist('#0b0f16', 22)}</span>` : '');
     return `<div class="pl" style="left:${(x / 105) * 100}%;top:${(y / 68) * 100}%"><div class="fw">${avatar(p, faces, sz, c, big ? 7 : 5)}<span class="rt ${big ? 'g' : ''}" style="${big ? '' : `border-color:${c};color:${c}`}">${r1(p.r)}</span>${ev ? `<span class="evs">${ev}</span>` : ''}${big ? `<span class="crown">${MEDAL('#2d1f06', 30)}</span>` : ''}</div><div class="nm ${big ? 'g' : ''}">${esc(String(p.n).length > 13 ? `${String(p.n).slice(0, 12)}…` : p.n)}</div></div>`;
   }).join('');
-  const ring = `<div class="mt2 tr"><b>${r1(mp.avg)}</b><i class="bar"><u style="width:${Math.round(Math.max(0.03, Math.min(1, mp.avg / 10)) * 100)}%;background:#efcf7a"></u></i></div>`;
+  const teamRing = ring(mp.avg / 10, '#efcf7a', r1(mp.avg), 84, 28);
   const opp = String(mp.opp);
-  const css = `
+  const css = `${RING_CSS}
+.st .sr{flex:none!important;max-height:none!important;height:80px!important}.gm{min-height:196px!important}.st{flex:none!important}.sm{gap:5px!important}.sm span{font-size:22px!important}.chipd{font-size:22px!important;padding:4px 14px 2px!important}
+.dsub{display:flex;justify-content:space-between;align-items:baseline;padding:16px 0 4px;border-top:2px solid rgba(255,255,255,.1);margin-top:6px}.dsub b{font:700 22px Inter;letter-spacing:.26em;text-transform:uppercase;color:#e1e8f5}.dsub span{font:600 18px Inter;color:var(--mute)}.dnote{font:500 20px Inter;color:var(--soft);padding:10px 0 0}
 body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.3),transparent 65%),linear-gradient(180deg,#140c07,#0a0705)}
 .lab{font:700 18px Inter;letter-spacing:.22em;text-transform:uppercase;color:var(--soft)}
 .sb{padding-bottom:0;text-align:center;position:relative}.rl{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;margin:6px 40px 0;padding-bottom:10px}.rr{display:grid;grid-template-columns:70px 1fr 64px 76px;align-items:center;gap:10px;height:58px;border-bottom:1px solid rgba(255,255,255,.07)}.rr b{font:700 30px/1 Oswald}.rr .nm2{font:700 25px Inter;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rr .ps{font:700 18px Inter;letter-spacing:.18em;color:var(--soft)}.rr .ge{font:700 22px Oswald;color:#ffb27a;text-align:right}.ph.pt .big{font:700 52px/1.05 Oswald;letter-spacing:.03em;text-transform:uppercase;margin-top:4px;display:block}
@@ -455,6 +531,8 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
 .hud{position:absolute;display:flex;align-items:center;gap:14px}.hud.l{left:26px;top:22px}.hud.r{right:26px;top:16px;flex-direction:column;gap:2px}
 .eb{font:800 21px Inter;letter-spacing:.3em;text-transform:uppercase;color:#ffffffb8;text-shadow:0 2px 6px #0b0f16}
 .fkey{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 0 34px;font:600 22px Inter;color:#b9c4d9}.fkey i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:9px}`;
+  const dp = mp.deeper;
+  const deeperHtml = dp ? `<div class="dsub"><b>Deeper stats</b><span>${dp.events ? `EA event counters · ${dp.apps} of ${dp.of} of ours, ${dp.appsThem} of ${dp.ofThem} of theirs` : 'from EA match numbers'}</span></div>${dp.rows.map(row).join('')}${dp.events ? '' : '<div class="dnote">Event stats (shots on target, aerials, fouls, possession and more) are not sent for friendlies.</div>'}` : '';
   const boardHtml = `<div class="sb ph">
   <div class="eyebrow">${esc(club?.name ?? SITE)} · ${mp.mode} · ${esc(when(mp.ts))}</div>
   <div class="srow">
@@ -470,16 +548,18 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
 <div class="st">
   <div class="sh"><div class="dc">${crest(club?.crest, club?.name ?? SITE, 54, true)}<span class="lab">${esc(String(club?.name ?? SITE).replace(/\s+FC$/i, '').split(' ')[0])}</span></div><div class="sm"></div><div class="dc">${crest(mp.oppCrest, opp, 54, false)}<span class="lab">${esc(opp.length > 12 ? `${opp.slice(0, 11)}…` : opp)}</span></div></div>
   ${mp.rows.map(row).join('')}
+  ${deeperHtml}
   <div class="key"><span><i style="background:#4be08a"></i>Ahead</span><span><i style="background:#efcf7a"></i>Level</span><span><i style="background:#ff7d72"></i>Behind</span></div>
 </div>`;
   const linesHtml = `<div class="ln4">${mp.lines.map((l) => { const c = BAND[band(l.r)]; return `<div class="ln"><b class="osw" style="color:${c}">${r1(l.r)}</b><div class="lb"><i style="height:${Math.max(20, Math.min(100, Math.round(((l.r - 6) / 2) * 100)))}%;background:${c}"></i></div><span class="lab">${l.t}</span></div>`; }).join('')}<span class="lab cap">Rating by line</span></div>`;
   const fvHtml = `<div class="fv"><div class="pitch"><svg viewBox="0 0 105 68" style="position:absolute;inset:0;width:100%;height:100%"><defs><radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></radialGradient></defs>
 <rect width="105" height="68" fill="#14502e"/>${stripes}<g fill="none" stroke="#ffffffb0" stroke-width=".3"><rect x="1" y="1" width="103" height="66"/><line x1="52.5" y1="1" x2="52.5" y2="67"/><circle cx="52.5" cy="34" r="9.15"/><rect x="1" y="13.84" width="16.5" height="40.32"/><rect x="1" y="24.84" width="5.5" height="18.32"/><rect x="87.5" y="13.84" width="16.5" height="40.32"/><rect x="98.5" y="24.84" width="5.5" height="18.32"/></g><rect width="105" height="68" fill="url(#vig)"/></svg>
-<div class="hud l"><span class="eb">Field view</span></div><div class="hud r">${ring}<span class="eb">Team rating</span></div>${marks}</div>
+<div class="hud l"><span class="eb">Field view</span></div><div class="hud r">${teamRing}<span class="eb">Team rating</span></div>${marks}</div>
 <div class="fkey"><span><i style="background:#efcf7a"></i>Man of the match</span><span><i style="background:#4be08a"></i>7 and up</span><span><i style="background:#ff9f43"></i>6 to 6.9</span><span><i style="background:#ff7d72"></i>Under 6</span></div></div>`;
   const rank = [...mp.players].sort((a, b) => b.r - a.r || String(a.n).localeCompare(String(b.n)));
   const ratings = `<div class="sec" style="margin:14px 40px 0"><div class="lab" style="border-bottom:2px solid var(--line);padding-bottom:8px">Every rating</div></div><div class="rl">${rank.map((p) => { const c = BAND[band(p.r, p.mom)]; return `<div class="rr"><b style="color:${c}">${r1(p.r)}</b><span class="nm2">${esc(p.n)}</span><span class="ps">${esc(POSLABEL[p.pos] ?? '')}</span><span class="ge">${p.g ? `${p.g}G ` : ''}${p.a ? `${p.a}A` : ''}</span></div>`; }).join('')}</div>`;
   const pitchHead = `<div class="ph pt"><div class="eyebrow">${esc(club?.name ?? SITE)} · Field view · vs ${esc(opp)}</div><div class="big">${mp.gf}–${mp.ga} · ${RESULT[mp.res] ?? ''}</div></div>`;
+  if (part === 'fieldparts') return { css, fv: fvHtml.slice(0, fvHtml.indexOf('<div class="fkey">')) + '</div>' }; // the field view alone, for the match review
   return postPage(css, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${boardHtml}<div class="fill"></div>`);
 }
 
@@ -750,20 +830,21 @@ BANNERS.queueflow = queuePoster;
 // review / picture: (matchId) → the match review model or merged-picture model (scripts/lib/matchreview.mjs, matchpicture.mjs), or null;
 // given only by the real build, for the newest few matches.
 const REVIEW_MATCHES = 3;
-export function cardJobs(club, players, { matches = 10, review = null, picture = null } = {}) {
+export function cardJobs(club, players, { matches = 10, review = null, picture = null, intel = null } = {}) {
+  const intelByKey = intel ?? new Map(), squadIntel = [...intelByKey.values()].map((x) => x.perApp ?? {}); // players' decoded event summaries (player card)
   const jobs = [];
   for (const [i, m] of (club.matches ?? []).slice(0, matches).entries()) {
     const model = review && i < REVIEW_MATCHES ? review(m.id) : null;
     const pic = picture && i < REVIEW_MATCHES ? picture(m.id) : null;
     if (pic) jobs.push({ key: ['match', m.id, 'picture'], file: `picture-${m.id}-${hash([pic.model, club.name, club.crest, m.oppCrest, [...pic.faces.keys()]])}.png`, html: () => matchPicture({ ...pic.model, oppCrest: m.oppCrest }, club, pic.faces) });
     if (pic) jobs.push({ key: ['match', m.id, 'pitch'], file: `pitch-${m.id}-${hash([pic.model, club.name, club.crest, [...pic.faces.keys()]])}.png`, html: () => matchPicture({ ...pic.model, oppCrest: m.oppCrest }, club, pic.faces, 'pitch') });
-    if (model) jobs.push({ key: ['match', m.id, 'review'], file: `review-${m.id}-${hash([model, club.name, club.crest])}.png`, html: () => reviewCard(model, club) });
+    if (model) jobs.push({ key: ['match', m.id, 'review'], file: `review-${m.id}-${hash([model, club.name, club.crest, pic?.model ?? null])}.png`, html: () => reviewCard(model, club, pic?.model ?? null, pic?.faces) });
     jobs.push({ key: ['match', m.id, 'score'], file: `score-${m.id}-${hash([m, club.name, club.crest])}.png`, html: () => scoreCard(m, club) });
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'field'], file: `field-${m.id}-${hash(m.ps)}.png`, html: () => fieldCard(m) });
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'box'], file: `box-${m.id}-${hash([m.ps, m.gf, m.ga, m.opp])}.png`, html: () => boxScoreCard(m, club) });
   }
   for (const p of players.filter((x) => x.home && x.s?.gp)) {
-    jobs.push({ key: ['player', p.k], file: `player-${p.k}-${hash([p.n, p.pos, p.ovr, p.s, p.sc, (p.tr ?? []).slice(-10)])}.png`, html: () => playerCard(p) });
+    jobs.push({ key: ['player', p.k], file: `player-${p.k}-${hash([p.n, p.pos, p.ovr, p.s, p.sc, (p.tr ?? []).slice(-10), intelByKey.get(p.k) ?? null])}.png`, html: () => playerCard(p, intelByKey.get(p.k) ?? null, squadIntel) });
   }
   // /compare: every pair among the busiest home players (the bot can't draw on the fly, so the likely pairs are made ahead)
   const regulars = players.filter((x) => x.home && x.s?.gp).sort((a, b) => b.s.gp - a.s.gp).slice(0, COMPARE_PAIRS);
@@ -777,7 +858,7 @@ export function cardJobs(club, players, { matches = 10, review = null, picture =
   }
   jobs.push(...eventJobs());
   for (const [name, html] of Object.entries(BANNERS)) jobs.push({ key: ['banner', name], file: `banner-${name}.png`, html });
-  jobs.push({ key: ['club'], file: `club-${hash([club.name, club.crest, club.division, club.gp, club.w, club.d, club.l, club.gf, club.ga, club.form])}.png`, html: () => clubCard(club) });
+  jobs.push({ key: ['club'], file: `club-${hash([club.name, club.crest, club.division, club.gp, club.w, club.d, club.l, club.gf, club.ga, club.form, clubInsight(club)])}.png`, html: () => clubCard(club, clubInsight(club)) });
   jobs.push({ key: ['results'], file: `results-${hash((club.matches ?? []).slice(0, 8))}.png`, html: () => resultsCard(club) });
   return jobs;
 }
@@ -829,8 +910,17 @@ async function main() {
   // The merged match picture: faces come from the Worker once for the newest matches, then every picture reads them from memory.
   const models = new Map(drawClub.matches.slice(0, REVIEW_MATCHES).map((cm) => [cm.id, rawOf(cm.id)]).filter(([, raw]) => raw).map(([id, raw]) => [id, buildMatchPicture(raw, srcOf.get(id) ?? homeId, { hide })]).filter(([, mp]) => mp));
   const faces = await fetchPlayerFaces(config, [...models.values()].flatMap((mp) => mp.players.map((p) => p.k)));
+  // Per-player event summaries over every archived match that carries counters (the player card's intelligence band; none for friendlies).
+  const intel = (() => {
+    const own = new Set(players.filter((p) => p.home).map((p) => String(p.k))), evs = new Map();
+    for (const f of fs.existsSync(rawDir) ? fs.readdirSync(rawDir).filter((x) => x.endsWith('.json')) : []) {
+      let m; try { m = JSON.parse(fs.readFileSync(path.join(rawDir, f), 'utf8')); } catch { continue; }
+      for (const side of Object.values(m.players ?? {})) for (const [pid, pl] of Object.entries(side)) if (own.has(String(pid)) && pl.evraw) (evs.get(String(pid)) ?? evs.set(String(pid), []).get(String(pid))).push(decodeEvents(pl.evraw));
+    }
+    return new Map([...evs].map(([k, list]) => [k, summarize(list)]).filter(([, v]) => v));
+  })();
   const picture = (id) => (models.has(id) ? { model: models.get(id), faces: new Map([...faces].filter(([k]) => models.get(id).players.some((p) => p.k === k))) } : null);
-  const jobs = cardJobs(drawClub, players, { review, picture });
+  const jobs = cardJobs(drawClub, players, { review, picture, intel });
   const { launchChrome } = await import('./lib/chrome.mjs');
   const chrome = await launchChrome();
   const manifest = { v: TEMPLATE_VERSION, at: Date.now(), base: `${(publicClub.url || '').replace(/\/?$/, '/')}cards/` };

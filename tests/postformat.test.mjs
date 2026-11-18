@@ -50,7 +50,8 @@ if (findChrome()) {
     try {
       const sizes = [];
       for (const html of Object.values(pages)) { const png = await chrome.shot(html, POST.W); sizes.push(`${png.readUInt32BE(16)}x${png.readUInt32BE(20)}`); }
-      t(`board, pitch and review render at the same size (${sizes.join(', ')})`, sizes.every((s) => s === `${POST.W}x${POST.H}`));
+      // board and pitch are the fixed canvas; the review keeps the width and is never shorter, but grows with its content (aligned grids, six numbers, four recommendations)
+      t(`board and pitch render at the same size, the review at the same width and at least as tall (${sizes.join(', ')})`, sizes.slice(0, 2).every((s) => s === `${POST.W}x${POST.H}`) && sizes[2].startsWith(`${POST.W}x`) && +sizes[2].split('x')[1] >= POST.H);
     } finally { await chrome.close(); }
   }
 }

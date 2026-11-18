@@ -3,6 +3,7 @@
 // standout decoded stats (only where EA's event counters exist) and a short "what to work on". Pure: no I/O, no club names, no channel.
 //   config.sessionRecap = { enabled, idleGapMinutes, minMatches, maxAgeHours }   (config.json; defaults below)
 import { decodeEvents } from './events.mjs';
+import { crestCandidates } from './ea-assets.mjs';
 
 const n = (v) => +v || 0;
 export const DEFAULTS = { enabled: true, idleGapMinutes: 45, minMatches: 2, maxAgeHours: 6 };
@@ -46,11 +47,16 @@ export function buildRecap(session, { hide = new Set(), clubName = null } = {}) 
   const src = session.club, per = new Map(); // player → totals over the session
   let w = 0, d = 0, l = 0, gf = 0, ga = 0, cs = 0, shots = 0, evMatches = 0, pm = 0, pa = 0, opm = 0, opa = 0, tm = 0, ta = 0;
   const motm = new Map(), ev = new Map(), matches = [];
+  const tm2 = { sot: 0, shots: 0, sotThem: 0, foulsUs: 0, foulsThem: 0, intUs: 0, intThem: 0, fwdUs: 0, fwdThem: 0, games: 0 }; // team event totals, only from matches where both sides carry counters
   for (const m of session.matches) {
     const us = m.clubs[src], oppId = Object.keys(m.clubs).find((k) => k !== src), them = m.clubs[oppId] ?? {};
     const f = n(us.goals), a = n(us.goalsAgainst ?? them.goals), res = f > a ? 'W' : f < a ? 'L' : 'D';
     f > a ? w++ : f < a ? l++ : d++; gf += f; ga += a; if (a === 0) cs++;
-    matches.push({ id: String(m.matchId), ts: n(m.timestamp), opp: them.name ?? them.details?.name ?? 'Opponent', gf: f, ga: a, res, mode: MODE[m.matchType] ?? 'Match' });
+    const own = Object.entries(m.players[src]).filter(([k, p]) => !hide.has(k.toLowerCase()) && !hide.has(String(p.playername).toLowerCase())).map(([, p]) => p);
+    matches.push({ id: String(m.matchId), ts: n(m.timestamp), opp: them.name ?? them.details?.name ?? 'Opponent', gf: f, ga: a, res, mode: MODE[m.matchType] ?? 'Match',
+      // for the session picture (scripts/cards.mjs sessionPicture): the opponent crest, who scored, who was man of the match. Not sent on to Discord as data.
+      oppCrest: crestCandidates({ team: them.TEAM, crestAssetId: them.kit?.crestAssetId, selectedKitType: them.kit?.selectedKitType })[0],
+      scorers: own.filter((p) => n(p.goals)).map((p) => ({ n: p.playername, g: n(p.goals) })), motm: own.find((p) => p.mom === '1')?.playername ?? null });
     const ours = Object.entries(m.players[src]).filter(([k, p]) => !hide.has(k.toLowerCase()) && !hide.has(String(p.playername).toLowerCase()));
     const theirs = Object.values(m.players?.[oppId] ?? {});
     let hasEv = false;
@@ -68,6 +74,13 @@ export function buildRecap(session, { hide = new Set(), clubName = null } = {}) 
       }
     }
     if (hasEv) evMatches++;
+    const evUs = Object.values(m.players[src]).filter((p) => p.evraw).map((p) => decodeEvents(p.evraw)), evThem = theirs.filter((p) => p.evraw).map((p) => decodeEvents(p.evraw));
+    if (evUs.length && evThem.length) {
+      const sm = (a, k) => a.reduce((t, e) => t + (e[k] || 0), 0);
+      tm2.games++; tm2.sot += sm(evUs, 'shotsOnTarget'); tm2.shots += Object.values(m.players[src]).reduce((t, p) => t + n(p.shots), 0); tm2.sotThem += sm(evThem, 'shotsOnTarget');
+      tm2.foulsUs += sm(evUs, 'foulsConceded'); tm2.foulsThem += sm(evThem, 'foulsConceded'); tm2.intUs += sm(evUs, 'interceptions'); tm2.intThem += sm(evThem, 'interceptions');
+      tm2.fwdUs += sm(evUs, 'passesCompletedForward'); tm2.fwdThem += sm(evThem, 'passesCompletedForward');
+    }
   }
   const players = [...per.values()].map((p) => ({ ...p, avg: p.apps ? p.rt / p.apps : 0 }));
   const n_ = session.matches.length;
@@ -86,7 +99,7 @@ export function buildRecap(session, { hide = new Set(), clubName = null } = {}) 
     const pos = list.filter((r) => r.inP + r.outP >= 20 && r.apps >= Math.min(2, evMatches)).map((r) => ({ ...r, pr: Math.round((100 * r.inP) / (r.inP + r.outP)) })).sort((a, b) => b.pr - a.pr)[0];
     add('Best positioning', pos, (r) => r.pr, '%');
     const all = list.reduce((t, r) => ({ inP: t.inP + r.inP, outP: t.outP + r.outP }), { inP: 0, outP: 0 });
-    standout = { matches: evMatches, of: n_, lines: lines.slice(0, 4), positioning: all.inP + all.outP >= 20 ? pct(all.inP, all.inP + all.outP) : null };
+    standout = { matches: evMatches, of: n_, lines: lines.slice(0, 4), positioning: all.inP + all.outP >= 20 ? pct(all.inP, all.inP + all.outP) : null, team: tm2.games ? { sot: tm2.sot, shots: tm2.shots, sotThem: tm2.sotThem, foulsUs: tm2.foulsUs, foulsThem: tm2.foulsThem } : null };
   }
   // what to work on: a line or the team, never a person
   const work = [], conv = pct(gf, shots), passAcc = pct(pm, pa), oppAcc = pct(opm, opa), tk = pct(tm, ta);
@@ -95,10 +108,17 @@ export function buildRecap(session, { hide = new Set(), clubName = null } = {}) 
   if (tk != null && ta >= 12 && tk < 45) work.push(`Tackling: won ${tm} of ${ta} (${tk}%).`);
   if (passAcc != null && oppAcc != null && oppAcc - passAcc >= 4) work.push(`Passing: ${passAcc}% against their ${oppAcc}%.`);
   if (standout?.positioning != null && standout.positioning < 70) work.push(`Positioning: in position ${standout.positioning}% of the time.`);
+  // from the event counters (league and playoff games; friendlies carry none): finishing on target, discipline, who read whose passes, forward play
+  if (tm2.games) {
+    if (tm2.shots >= 8 && tm2.sot / tm2.shots < 0.5) work.push(`Finish on target: ${tm2.sot} of ${tm2.shots} shots on target (${pct(tm2.sot, tm2.shots)}%).`);
+    if (tm2.foulsUs - tm2.foulsThem >= 3) work.push(`Discipline: ${tm2.foulsUs} fouls conceded to their ${tm2.foulsThem}.`);
+    if (tm2.intThem - tm2.intUs >= 6) work.push(`Midfield: step in earlier, they intercepted ${tm2.intThem} to our ${tm2.intUs}.`);
+    if (tm2.fwdThem - tm2.fwdUs >= 15) work.push(`Play forward more: ${tm2.fwdUs} forward passes to their ${tm2.fwdThem}.`);
+  }
   if (l >= 2 && l > w) work.push(`Results: ${l} defeats in ${n_}. Look at the line-up before the next session.`);
   if (!work.length) work.push(w === n_ ? 'Nothing to fix: keep the standard.' : 'No clear weak spot in the numbers: keep the standard and look at the matches below.');
   return {
     key: session.key, club: src, clubName, start: session.start, end: session.end, count: n_, w, d, l, gf, ga, cs,
-    modes: [...new Set(matches.map((m) => m.mode))], matches, scorers, best, motms, standout, work: work.slice(0, 3),
+    modes: [...new Set(matches.map((m) => m.mode))], matches, scorers, best, motms, standout, work: work.slice(0, 4),
   };
 }

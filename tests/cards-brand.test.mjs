@@ -14,7 +14,7 @@ for (const [n, f] of Object.entries(BANNERS)) t(`banner "${n}" renders without N
 t('stream alerts only link banners that exist', [...fs.readFileSync(new URL('../bot/streamalerts.js', import.meta.url), 'utf8').matchAll(/bannerUrl\(env, [^']*'(\w+)'/g)].every((m) => BANNERS[m[1]]));
 
 t('cards draw the Phoenix crest from the overlay, not site/assets', src.includes("phoenix/overlay/crest-sm.png"));
-t('the merged match picture and review are drawn by cardJobs', /matchPicture\(\{ \.\.\.pic\.model/.test(src) && /reviewCard\(model, club\)/.test(src));
+t('the merged match picture and review are drawn by cardJobs', /matchPicture\(\{ \.\.\.pic\.model/.test(src) && /reviewCard\(model, club/.test(src));
 
 const data = 'data:image/svg+xml,%3Csvg%3E';
 t('header drops a data: picture', !JSON.stringify(header({ title: 'x', thumb: data })).includes('data:'));

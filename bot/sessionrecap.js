@@ -4,7 +4,7 @@
 //   - one recap per session: the session key is CLAIMED in the meta table before anything is posted (atomic insert), a repeat call posts nothing,
 //     and a claim whose post reached no channel is released so the next run can try again
 //   POST /api/org/session-recap  (X-Phoenix-Key)  { recap }   → { posted, claimed, reason? }
-import { message, header, text, facts, footer, label, sep, tagBlock, picture } from './ui.js';
+import { message, header, text, facts, footer, label, sep, tagBlock, picture, cards } from './ui.js';
 import { it } from './icons.js';
 import { orgName, channelsFor } from './orgconfig.js';
 import { sharedKey } from './sharedkey.js';
@@ -21,7 +21,8 @@ export function cleanRecap(r) {
   const count = Math.min(20, Math.max(0, Math.floor(n(r.count))));
   if (!count) return null;
   const standout = r.standout && typeof r.standout === 'object'
-    ? { matches: n(r.standout.matches), of: n(r.standout.of), positioning: r.standout.positioning == null ? null : n(r.standout.positioning), lines: list(r.standout.lines, 4, (x) => ({ k: s(x.k, 40), n: s(x.n, 40), v: n(x.v), u: x.u === '%' ? '%' : '' })) }
+    ? { matches: n(r.standout.matches), of: n(r.standout.of), positioning: r.standout.positioning == null ? null : n(r.standout.positioning), lines: list(r.standout.lines, 4, (x) => ({ k: s(x.k, 40), n: s(x.n, 40), v: n(x.v), u: x.u === '%' ? '%' : '' })),
+      team: r.standout.team && typeof r.standout.team === 'object' ? Object.fromEntries(['sot', 'shots', 'sotThem', 'foulsUs', 'foulsThem'].map((k) => [k, n(r.standout.team[k])])) : null }
     : null;
   return {
     key: String(r.key), club: String(r.key).split(':')[1], tag: r.tag?.label ? { label: s(r.tag.label, 40).toUpperCase(), important: !!r.tag.important } : null,
@@ -31,7 +32,9 @@ export function cleanRecap(r) {
     scorers: list(r.scorers, 5, (p) => ({ n: s(p.n, 40), g: n(p.g), a: n(p.a) })),
     best: list(r.best, 3, (p) => ({ n: s(p.n, 40), avg: n(p.avg), apps: n(p.apps) })),
     motms: list(r.motms, 5, (p) => ({ n: s(p.n, 40), c: n(p.c) })),
-    standout, work: list(r.work, 3, (x) => s(x, 160)),
+    standout, work: list(r.work, 4, (x) => s(x, 160)),
+    // the session picture (crests, scores, scorers) drawn by the Action: a PNG as base64, bounded so a bad call cannot bloat the Worker
+    picture: typeof r.picture === 'string' && /^[A-Za-z0-9+/=]+$/.test(r.picture) && r.picture.length <= 900000 ? r.picture : null,
   };
 }
 
@@ -45,8 +48,9 @@ export function recapMessage(env, r) {
   ].join('\n');
   const best = r.best.map((p) => `**${p.n}** ${p.avg.toFixed(1)} average over ${p.apps}`).join(' · ');
   const motm = r.motms.map((p) => `${it('motm')} **${p.n}**${p.c > 1 ? ` ×${p.c}` : ''}`).join(' · ');
+  const tl = r.standout?.team;
   const stand = r.standout
-    ? [r.standout.lines.map((x) => `**${x.k}** ${x.n} (${x.v}${x.u})`).join('\n'), r.standout.positioning != null ? `Team in position ${r.standout.positioning}% of the time.` : null, `-# From EA's event counters, ${r.standout.matches} of ${r.standout.of} matches.`].filter(Boolean).join('\n')
+    ? [[...r.standout.lines.map((x) => `**${x.k}** ${x.n} (${x.v}${x.u})`), ...(tl ? [`**Shots on target** ${tl.sot} of ${tl.shots}${tl.shots ? ` (${Math.round((100 * tl.sot) / tl.shots)}%)` : ''}, them ${tl.sotThem}`, `**Fouls conceded** ${tl.foulsUs} to their ${tl.foulsThem}`] : [])].join('\n'), r.standout.positioning != null ? `Team in position ${r.standout.positioning}% of the time.` : null, `-# From EA's event counters, ${r.standout.matches} of ${r.standout.of} matches.`].filter(Boolean).join('\n')
     : "No event counters in this session. EA keeps them only for recent matches and serves just the last 10 per type, so earlier games cannot be filled in.";
   return message({
     accent: r.w > r.l ? 'win' : r.w === r.l ? 'gold' : 'red',
@@ -55,7 +59,7 @@ export function recapMessage(env, r) {
       picture(env, 'recap'),
       header({ eyebrow: `${name} · Session recap`, title, sub: `<t:${r.start}:f> to <t:${r.end}:t> · ${r.count} match${r.count === 1 ? '' : 'es'}` }),
       facts([['Record', `${r.w}W ${r.d}D ${r.l}L`], ['Goals', `${r.gf}–${r.ga} (${diff >= 0 ? '+' : '−'}${Math.abs(diff)})`], ['Clean sheets', String(r.cs)]]),
-      sep(), label('Matches'), text(lines),
+      sep(), label('Matches'), r.picture ? cards({ url: 'attachment://session.png', alt: 'Every match of the session: our crest, the result, the score, the opponent crest and name, who scored and the man of the match' }) : text(lines),
       r.scorers.length || r.best.length || r.motms.length ? sep() : null,
       r.scorers.length ? label('Goals and assists') : null, text(perf),
       r.best.length ? label('Best average rating') : null, text(best),
@@ -76,10 +80,15 @@ export async function postSessionRecap(env, recap) {
   if (!env.DISCORD_BOT_TOKEN) return { posted: 0, claimed: false, reason: 'No bot token.' };
   const claim = await env.DB.prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO NOTHING').bind(r.key, String(Date.now())).run();
   if (!claim.meta?.changes) return { posted: 0, claimed: false, reason: 'This session was already recapped.' };
-  const body = JSON.stringify(recapMessage(env, r));
+  const payload = JSON.stringify(recapMessage(env, r));
+  const png = r.picture ? Uint8Array.from(atob(r.picture), (c) => c.charCodeAt(0)) : null;
   let posted = 0;
   for (const ch of channels) {
-    const res = await fetch(`https://discord.com/api/v10/channels/${ch}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body }).catch(() => null);
+    // with a picture the post is multipart (the PNG rides along as attachment://session.png); without one it is the plain JSON post
+    let init;
+    if (png) { const form = new FormData(); form.set('payload_json', payload); form.set('files[0]', new Blob([png], { type: 'image/png' }), 'session.png'); init = { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}` }, body: form }; }
+    else init = { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: payload };
+    const res = await fetch(`https://discord.com/api/v10/channels/${ch}/messages`, init).catch(() => null);
     if (res?.ok) posted++;
   }
   if (!posted) { await env.DB.prepare('DELETE FROM meta WHERE key = ?').bind(r.key).run().catch(() => {}); return { posted: 0, claimed: false, reason: 'Discord refused the post (the bot needs View Channel, Send Messages and Embed Links there).' }; }

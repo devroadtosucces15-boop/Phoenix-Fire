@@ -22,10 +22,15 @@ export const BOX_COLS = [
   ['pos', 'Pos%', 'In position', false, (e) => { const n = (e.inPosition || 0) + (e.outOfPosition || 0); return n ? Math.round(((e.inPosition || 0) / n) * 100) : null; }],
 ];
 
-// decoded ev → { fwd, int, won, lost, aer, pos } or null when the player has no event data.
+// Two more counters the Discord box score card shows in its Deeper stats block (the site table keeps BOX_COLS as it was).
+export const CARD_EXTRA = { sot: (e) => e.shotsOnTarget || 0, fouls: (e) => e.foulsConceded || 0 };
+// The card's deeper columns, left to right: [key, header].
+export const CARD_COLS = [['sot', 'SoT'], ['fwd', 'Fwd'], ['int', 'Int'], ['won', 'Won'], ['lost', 'Lost'], ['aer', 'Aer'], ['fouls', 'Fouls'], ['pos', 'Pos%']];
+
+// decoded ev → { fwd, int, won, lost, aer, pos, sot, fouls } or null when the player has no event data.
 export function boxEv(ev) {
   if (!ev) return null;
-  return Object.fromEntries(BOX_COLS.map(([k, , , , f]) => [k, f(ev)]));
+  return { ...Object.fromEntries(BOX_COLS.map(([k, , , , f]) => [k, f(ev)])), ...Object.fromEntries(Object.entries(CARD_EXTRA).map(([k, f]) => [k, f(ev)])) };
 }
 
 // One cell: the total, and the per-90 value (null for rates and short appearances).

@@ -15,7 +15,7 @@ const r1 = (v) => (+v || 0).toFixed(1);
 const pct = (a, b) => (b ? Math.round((a / b) * 100) : null);
 
 // players: [{ k, n, r, g, a }] of our side in that match. matchUrl: the site's match page (link button).
-export function matchComponents(matchId, players, matchUrl) {
+export function matchComponents(matchId, players, matchUrl, { box = false } = {}) {
   const list = [...players].sort((a, b) => (+b.r || 0) - (+a.r || 0)).slice(0, 25);
   const rows = [];
   if (list.length) rows.push({ type: 1, components: [{
@@ -26,6 +26,7 @@ export function matchComponents(matchId, players, matchUrl) {
     })),
   }] });
   const buttons = [{ type: 2, style: 1, custom_id: `norex:mme:${matchId}`.slice(0, 100), label: 'My match', emoji: { name: '🙋' } }];
+  if (box) buttons.push({ type: 2, style: 2, custom_id: `norex:box:${matchId}`.slice(0, 100), label: 'Box score', emoji: { name: '📊' } }); // opens the drawn box score, privately (bot/worker.js)
   if (matchUrl) buttons.push({ type: 2, style: 5, url: matchUrl, label: 'Match page', emoji: { name: '📋' } });
   rows.push({ type: 1, components: buttons });
   return rows;
