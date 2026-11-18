@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-18T20:30:51.773Z",
+ "fetchedAt": "2026-11-18T20:36:56.273Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -721,14 +721,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "14",
-   "gamesPlayed": "217",
+   "proPos": "0",
+   "gamesPlayed": "218",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "Der_Synnlos",
@@ -766,7 +766,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "111",
+   "gamesPlayed": "112",
    "goals": "13",
    "assists": "9",
    "manOfTheMatch": "3",
@@ -859,6 +859,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-18T20:30:51.773Z"
+  "fetchedAt": "2026-11-18T20:36:56.273Z"
  }
 }
