@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-18T18:00:42.399Z",
+ "fetchedAt": "2026-11-18T18:10:44.189Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1892,12 +1892,12 @@
   {
    "name": "Froezer",
    "proPos": "25",
-   "gamesPlayed": "207",
-   "goals": "135",
-   "assists": "197",
-   "manOfTheMatch": "25",
+   "gamesPlayed": "208",
+   "goals": "137",
+   "assists": "199",
+   "manOfTheMatch": "26",
    "ratingAve": "8.2",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2128,6 +2128,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-18T18:00:42.399Z"
+  "fetchedAt": "2026-11-18T18:10:44.189Z"
  }
 }
