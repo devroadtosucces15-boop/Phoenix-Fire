@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-18T02:10:41.919Z",
+ "fetchedAt": "2026-11-18T02:15:22.378Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2443,5 +2443,20 @@
   "currentDivision": "6",
   "bestDivision": "6",
   "points": "15"
+ },
+ "seasonBoard": {
+  "currentDivision": 2,
+  "points": 66,
+  "gp": 38,
+  "w": 32,
+  "d": 4,
+  "l": 2,
+  "gf": 122,
+  "ga": 26,
+  "cs": 22,
+  "promotions": 4,
+  "relegations": 0,
+  "rep": 2,
+  "fetchedAt": "2026-11-18T02:15:22.378Z"
  }
 }

@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-18T02:10:41.919Z",
+ "fetchedAt": "2026-11-18T02:15:22.378Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -939,5 +939,20 @@
   "currentDivision": "3",
   "bestDivision": "3",
   "points": "32"
+ },
+ "seasonBoard": {
+  "currentDivision": 3,
+  "points": 32,
+  "gp": 45,
+  "w": 22,
+  "d": 7,
+  "l": 16,
+  "gf": 88,
+  "ga": 87,
+  "cs": 13,
+  "promotions": 3,
+  "relegations": 0,
+  "rep": 0,
+  "fetchedAt": "2026-11-18T02:15:22.378Z"
  }
 }

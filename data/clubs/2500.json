@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-18T02:10:41.919Z",
+ "fetchedAt": "2026-11-18T02:15:22.378Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2161,5 +2161,20 @@
   "currentDivision": "6",
   "bestDivision": "3",
   "points": "86"
+ },
+ "seasonBoard": {
+  "currentDivision": 3,
+  "points": 28,
+  "gp": 20,
+  "w": 15,
+  "d": 2,
+  "l": 3,
+  "gf": 58,
+  "ga": 32,
+  "cs": 11,
+  "promotions": 3,
+  "relegations": 0,
+  "rep": 1,
+  "fetchedAt": "2026-11-18T02:15:22.378Z"
  }
 }
