@@ -1,0 +1,41 @@
+name: GIF convert
+
+# PF-024 Item 21. The Worker cannot transcode video, so /gif make parks the waiting Discord reply in D1 (gif_jobs), stores the member's video in R2 and dispatches this job with one
+# input: the job ref (24 hex characters). scripts/gif-convert.mjs pulls the video from the Worker, runs ffmpeg with fixed arguments and posts the GIF (or a failure code) back to the
+# Worker over the keyed /api/gif/* routes, which edits the member's reply. About a minute or two end to end (queue + runner start + apt install + conversion).
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "job ref (24 hex chars)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gif-convert
+  cancel-in-progress: false
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            bot/gifkey.js
+            config.json
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Convert and answer the bot
+        env:
+          GIF_REF: ${{ inputs.ref }}
+          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+        run: node scripts/gif-convert.mjs

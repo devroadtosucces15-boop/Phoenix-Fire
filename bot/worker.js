@@ -52,6 +52,7 @@ import { askAnswer, buildAskContext } from './ask.js';
 import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } from './wikibook.js';
 import { MASCOT_COMMANDS, mascotCommand, mascotDaily } from './mascot.js';
 import { HIGHLIGHT_COMMANDS, highlightCommand } from './highlight.js';
+import { GIF_COMMANDS, GIF_FLAG, gifCommand, gifTick } from './gif.js';
 import { BIRTHDAY_COMMANDS, birthdayCommand } from './birthday.js';
 import { ABSENCE_COMMANDS, ABSENCE_ID, absenceCommand, absenceButton, absenceTick } from './absence.js';
 import { INTEL_COMMANDS, INTEL_ID, intelCron, counselorCommand, counselorButton } from './serverintel.js';
@@ -91,6 +92,7 @@ export default {
       job('sendDueReminders', () => sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
       if (flagOn(env, { role: 'owner' }, 'pins')) job('pinTick', () => pinTick(env).catch((e) => console.log('pin tick failed', e.message))); // PF-024 Item 11: keep pinned posts the newest message
       job('queueTick', () => queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
+      job('gifTick', () => gifTick(env).catch((e) => console.log('gif tick failed', e.message))); // PF-024 Item 21: fail a conversion that never answered (error reply, input deleted)
       return;
     }
     if (flagOn(env, { role: 'owner' }, 'absence')) job('absenceTick', () => absenceTick(env).catch((e) => console.log('absence tick failed', e.message))); // PF-024 Item 17: edit the cards of ended absence notices
@@ -233,6 +235,7 @@ export default {
     if (i.type === 2 && MASCOT_COMMANDS.has(i.data.name)) return json(await mascotCommand(i, env, who)); // /mascot quote | ask | roast | mute (bot/mascot.js)
     if (i.type === 2 && BIRTHDAY_COMMANDS.has(i.data.name)) return json(await birthdayCommand(i, env, who)); // /birthday set | visible | show | clear (bot/birthday.js)
     if (i.type === 2 && HIGHLIGHT_COMMANDS.has(i.data.name)) return json(await highlightCommand(i, env, who, ctx)); // /highlight upload | mine | delete | list (bot/highlight.js)
+    if (i.type === 2 && GIF_COMMANDS.has(i.data.name)) return json(await gifCommand(i, env, who, ctx)); // /gif make | mine | delete | list: the video becomes a GIF in a GitHub Actions job (bot/gif.js)
     if (i.type === 2 && ABSENCE_COMMANDS.has(i.data.name)) return json(await absenceCommand(i, env, who)); // /absence notice | mine | cancel | list (bot/absence.js)
     if (i.type === 3 && ABSENCE_ID.test(i.data?.custom_id ?? '')) return json(await absenceButton(i, env, who)); // the managers' Acknowledge button
     if (i.type === 2 && INTEL_COMMANDS.has(i.data.name)) return json(await counselorCommand(i, env, who)); // /counselor (bot/serverintel.js)

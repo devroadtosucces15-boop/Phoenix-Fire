@@ -10,7 +10,7 @@ The map lives in `bot/commanddefs.js` (`APP_COMMANDS`); routing helpers are in `
 | `stats` | Club and player records | `<PUBLIC_URL>/interactions/stats` |
 | `tools` | Member and manager helpers (feedback, suggest, share, discoveries, tags, remind, site, avatar card, jail, wheel, trivia) | `<PUBLIC_URL>/interactions/tools` |
 | `fun`   | The old Fun app. It maps **0 commands** now (`APP_COMMANDS.fun` is empty); its commands moved to Tools and Stats and `MOVED_FROM` points people there during the transition. Kept so old messages and buttons still answer | `<PUBLIC_URL>/interactions/fun` |
-| `matchday` | Live. Setting up and running one 11v11 match day: `/host`, `/lineup`, `/matchday`, `/absence` (away or playing-less notices to the managers), `/highlight` (store a highlight clip privately), `/birthday` (save, show or hide your birthday), `/matchdayhelp` (see `PLANNING/BOT-SPLIT.md`) | `<PUBLIC_URL>/interactions/matchday` |
+| `matchday` | Live. Setting up and running one 11v11 match day: `/host`, `/lineup`, `/matchday`, `/absence` (away or playing-less notices to the managers), `/gif` (video to GIF through a GitHub Actions job), `/highlight` (store a highlight clip privately), `/birthday` (save, show or hide your birthday), `/matchdayhelp` (see `PLANNING/BOT-SPLIT.md`) | `<PUBLIC_URL>/interactions/matchday` |
 | `rush` | Live. 5v5 Rush: `/rush`, `/lfg`, `/queue`, `/rushhelp` (member-logged games, LFG, the queue board) | `<PUBLIC_URL>/interactions/rush` |
 
 Music/DJ bots are out of scope (they need voice hosting outside the Worker).

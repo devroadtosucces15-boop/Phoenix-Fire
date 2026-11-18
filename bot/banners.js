@@ -31,6 +31,7 @@ export const BANNER_SPEC = {
   wiki: { icon: 'book', title: 'Phoenix wiki', sub: 'Every bot, one book' },
   bio: { icon: 'player', title: 'Player bio', sub: 'Who is who in the squad' },
   highlight: { icon: 'film', title: 'Highlight clip', sub: 'Your best moments, stored safely' },
+  gif: { icon: 'film', title: 'GIF maker', sub: 'Your best moment, on a loop' },
   absence: { icon: 'bell', title: 'Absence notice', sub: 'Who is away, who plays less' },
   mascot: { icon: 'flame', title: 'Mascot', sub: 'Rise. Burn. Repeat.' },
   counselor: { icon: 'shield', title: 'Counselor', sub: 'How the team is doing' },
@@ -169,7 +170,7 @@ export const BANNER_SPEC = {
 // Slash command → family.
 export const BANNER_BY_COMMAND = {
   club: 'club', last: 'match', results: 'club', player: 'player', compare: 'stats', leaderboard: 'stats', history: 'stats', profile: 'player', me: 'player',
-  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', counselor: 'counselor', mascot: 'mascot', absence: 'absence', highlight: 'highlight', birthday: 'birthday', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
+  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', counselor: 'counselor', mascot: 'mascot', absence: 'absence', highlight: 'highlight', gif: 'gif', birthday: 'birthday', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
   rush: 'rush', queue: 'queue', lfg: 'lfg', host: 'event', lineup: 'lineup', matchday: 'event', intel: 'stats',
   feedback: 'feedback', suggest: 'idea', share: 'fun', discoveries: 'fun', watch: 'live', tag: 'setup', remind: 'remind', site: 'general', avatarcard: 'card',
   jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',

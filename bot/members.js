@@ -61,6 +61,7 @@ import { controlCenterRoute } from './controlcenter.js';
 import { ccDenied } from './ccpermissions.js';
 import { ccConfigPublicRoute } from './ccsettings.js';
 import { crawlRoute } from './crawl.js';
+import { gifRoute } from './gif.js';
 import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
 import { issueSave } from './issues.js';
 import { clubLookup } from './clublookup.js';
@@ -441,6 +442,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
     if (url.pathname === '/api/bot/faces') return cors(env, await botFacesRoute(request, env)); // faces for the match picture, drawn in the Action
     if (url.pathname.startsWith('/api/music/bridge/')) return cors(env, await musicBridgeRoute(request, env)); // PF-022 – the DJ app on the owner's PC pushes snapshots and polls commands (keyed)
     if (url.pathname === '/api/crawl') return cors(env, await crawlRoute(request, env)); // P9.1 – fetch.mjs's resumable club-ID crawl checkpoint
+    if (url.pathname.startsWith('/api/gif/')) return cors(env, await gifRoute(request, env)); // PF-024 Item 21 – the GIF converter job pulls the video and posts the GIF back (keyed)
     if (url.pathname === '/api/burners/relay') return cors(env, await burnersRelay(request, env)); // EA relay answer from the Actions job
     if (url.pathname === '/api/burners/tracked') return cors(env, await burnersRoute(request, env)); // burner tracker – fetch.mjs reads the clubs to follow
     if (url.pathname === '/api/clubs/lookup' && request.method === 'GET') return cors(env, await clubLookup(env, url.searchParams.get('q'))); // P9.4 – find any club, indexing it live if needed

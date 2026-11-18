@@ -15,7 +15,8 @@ the Worker and in GitHub) is `bot/SECRETS-REGISTRY.md`; it is the single source 
 | GitHub access | `gh` login on the owner's machine (`gh auth setup-git` makes plain `git push` work) | memory note `git-push-gh-credential` | Re-login if expired |
 | Cloudflare account ID and deploy token | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN` as GitHub secrets; deploys and backups run from GitHub (`bot.yml`, `backup.yml`) | `bot/SECRETS-REGISTRY.md`, "Secrets" | Owner only |
 | Cloudflare analytics token | `CLOUDFLARE_ANALYTICS_TOKEN` in Worker and GitHub | same | Owner |
-| Discord client secret (website login) | `DISCORD_CLIENT_SECRET` in Worker; GitHub for `update.yml` and `ea-relay.yml` | same | Reset in the portal |
+| Discord client secret (website login) | `DISCORD_CLIENT_SECRET` in Worker; GitHub for `update.yml`, `ea-relay.yml` and `gif-convert.yml` | same | Reset in the portal |
+| GitHub dispatch token (Worker starts workflows: site update, EA relay, GIF converter) | `GH_DISPATCH_TOKEN` in Worker; repo name in `bot/wrangler.toml` `GITHUB_REPO` | same | Actions read and write on this repo only; rotate in GitHub settings |
 | Discord webhook for site posts | `DISCORD_WEBHOOK`, GitHub secret read by `update.yml` | same (row added in PF-002; set status not verified) | Owner |
 | Twitch app keys (optional) | `TWITCH_CLIENT_ID`, `TWITCH_CLIENT_SECRET`; without them the bot reads public channel pages | same (optional, status not verified) | Owner |
 | Board OCR reader (optional) | `BOARD_OCR_URL`, `BOARD_OCR_KEY`; dark until both are set (`tools/board-ocr`) | same (optional, not set) | Owner |

@@ -104,7 +104,7 @@ export async function storeClip(env, i, att, o, now = Date.now()) {
   return receiptMessage(env, row, Math.max(0, lim.perDay - used));
 }
 // streams the body through a size and type check (first bytes must match the declared type), never more than the declared length
-function checked(body, len, type) {
+export function checked(body, len, type) {
   let seen = 0, head = new Uint8Array(0), ok = false;
   const check = new TransformStream({
     transform(chunk, c) {

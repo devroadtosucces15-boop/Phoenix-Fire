@@ -57,6 +57,8 @@ export const PERMS = {
   'birthday.set': 'member', // PF-024 Item 19 – save, show and hide your own birthday
   'highlight.upload': 'member', // PF-024 Item 18 – upload a highlight clip (members only)
   'highlight.manage': 'manager', // PF-024 Item 18 – list every stored clip and delete anyone's
+  'gif.make': 'member', // PF-024 Item 21 – turn a short video into a GIF (members only)
+  'gif.manage': 'manager', // PF-024 Item 21 – list every GIF and delete anyone's
   'absence.ack': 'manager', // PF-024 Item 17 – acknowledge an absence notice and see the private reason (the Control Center manager level)
   'mascot.mute': 'manager', // PF-024 Item 15 – mute or unmute the mascot's ask and roast
   'counselor.view': 'manager', // PF-024 Item 14 – the counselor: team tendencies and anomaly flags (numbers only, never message text)

@@ -46,6 +46,15 @@ export const COMMANDS = [
     { type: SUB, name: 'mine', description: 'Your stored clips' },
     { type: SUB, name: 'delete', description: 'Delete a clip (default: your latest; managers can delete any)', options: [{ type: INTEGER, name: 'number', description: 'The clip number from /highlight mine', min_value: 1 }] },
     { type: SUB, name: 'list', description: 'Managers: the latest stored clips' }] },
+  // PF-024 Item 21 – the GIF maker (bot/gif.js): a video of up to 15 seconds becomes a GIF (converted by a GitHub Actions job). Limits live in config.json `gif`.
+  { name: 'gif', description: 'Turn a short video into a GIF others can favourite', contexts: [0], options: [
+    { type: SUB, name: 'make', description: 'Convert a video of up to 15 seconds (MP4, WebM or MOV)', options: [
+      { type: ATTACHMENT, name: 'video', description: 'Your video: MP4, WebM or MOV, 15 seconds at most', required: true },
+      { type: STRING, name: 'title', description: 'A short title (optional)', max_length: 80 },
+      { type: BOOLEAN, name: 'private', description: 'Only you see the result (default: it is posted in the channel)' }] },
+    { type: SUB, name: 'mine', description: 'Your GIFs' },
+    { type: SUB, name: 'delete', description: 'Delete a GIF (default: your latest; managers can delete any)', options: [{ type: INTEGER, name: 'number', description: 'The GIF number from /gif mine', min_value: 1 }] },
+    { type: SUB, name: 'list', description: 'Managers: the latest GIFs' }] },
   // PF-024 Item 17 – the absence notice (bot/absence.js): a member says they will be away or play less; managers get a card to acknowledge. The reason is private to managers.
   { name: 'absence', description: 'Tell the managers you will be away or playing less', contexts: [0], options: [
     { type: SUB, name: 'notice', description: 'File an absence notice (it goes to the managers only)', options: [
@@ -421,7 +430,7 @@ export const APP_COMMANDS = {
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
-  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'birthday', 'matchdayhelp'],
+  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'gif', 'birthday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).
