@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-18T15:10:42.729Z",
+ "fetchedAt": "2026-11-18T15:20:47.571Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1989,14 +1989,14 @@
   },
   {
    "name": "MV33xChris",
-   "proPos": "5",
-   "gamesPlayed": "213",
+   "proPos": "0",
+   "gamesPlayed": "214",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "Ibekayne",
@@ -2110,14 +2110,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "25",
-   "gamesPlayed": "107",
+   "proPos": "5",
+   "gamesPlayed": "108",
    "goals": "13",
    "assists": "8",
    "manOfTheMatch": "3",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "defender"
   },
   {
    "name": "Fez-_-Fez",
@@ -2457,6 +2457,6 @@
   "promotions": 4,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-18T15:10:42.729Z"
+  "fetchedAt": "2026-11-18T15:20:47.571Z"
  }
 }
