@@ -58,6 +58,7 @@ export const WHERE = {
   pins: ["stats.html",""],
   navigator: ["stats.html",""],
   bioCard: ["member.html",""],
+  highlight: ["member.html",""],
   mascot: ["stats.html",""],
   absence: ["staff-insights.html",""],
   serverIntel: ["staff-insights.html",""],

@@ -167,3 +167,23 @@ Owner steps:
 Owner decision (assumed, unclear in the plan): **who counts as a manager for the Acknowledge button and for seeing the reason** = the manager level of the Control Center permission matrix (`absence.ack` is `manager` in `bot/roles.js`, the route is `manager` in `bot/ccpermissions.js`), so the owner and managers, nobody else. Say if you want a narrower group (for example only captains).
 
 Not built (inbox for later): the Dugout/lineup views do not show an "away" badge yet (the data is there: `GET /api/intel/absences` returns `active` per player); a site form to file a notice; a DM to the member when a manager acknowledges.
+
+## Item 18: the highlight clip upload (code done on branch `pf-024-item18`)
+`/highlight` (matchday app: the tools app is at the 25 help-page limit): `upload` (required `clip` attachment, optional `title`, `note`), `mine`, `delete` (default: your latest), `list` (managers). The bot copies the attachment from Discord's CDN into R2 (binding `MEDIA`, key `hl/<random>.<mp4|webm|mov>`), writes a `highlights` row (user, title, note, size, type, created, status `stored`) and answers with a private Phoenix receipt. **Nothing else happens**: the clip is not served on any URL, not posted, not shared (the social automation reads the `stored` rows later). If a channel has the purpose `highlights`, one small card (who, title, size, never the file or a link) is posted there; none set = no post.
+
+Safety built in: only mp4/webm/mov (declared type or extension, then the first bytes must match), only Discord CDN hosts, never more bytes than declared, size cap and per-member daily cap from `config.json` `highlight` (`maxMb` 50, `perDay` 5; hard ceiling 100 MB; copied to the Worker var `HIGHLIGHT` by `bot.yml`), the daily cap is enforced inside the INSERT, the storage guard figure refuses uploads before the free 10 GB is full, the hourly media guard never deletes `hl/` objects, and nothing about a clip (title, note, link) is logged.
+
+Owner steps:
+1. Apply migration `0074_highlights.sql`, deploy the Worker (the next `bot.yml` run also copies `highlight` from config.json into the Worker var), and sync the slash commands (`/highlight`, matchday app).
+2. The R2 binding `MEDIA` (bucket `phoenix-media`) must exist (it does for the feed). With it missing, `/highlight upload` says storage is not switched on.
+3. Optional: in the Organization config add a channel with purpose `highlights` to get the small card. None set = no post.
+4. Flip `highlight` to `members` when ready (it is `owner` now). Flip to `off` to stop it.
+5. The banner `banner-highlight.png` is drawn for the audit; the live site gets it on the next card run in CI.
+
+Owner decisions (assumed safest defaults, say if you want different):
+- **Command name**: `/highlight`. **App**: matchday (tools is full).
+- **Max size and uploads**: 50 MB and 5 clips a day per member. Discord only hands a bot what the uploader's own upload limit allows (typically 10 MB, more with Nitro or boosts); raise `maxMb` in config up to 100 only if the R2 free 10 GB (shared with the feed) allows it. **Length** in seconds is not checked: the Worker cannot read video duration; the size cap is the guard (a later converter step could add it).
+- **Types**: videos only (mp4, webm, mov). Images were mentioned in the plan; they are not accepted here (say if you want them).
+- **Who may upload**: members. **Who may list or delete**: the uploader deletes their own, managers (`highlight.manage`) list and delete any.
+- **Approval**: none needed, the clip is only stored. **Public posting**: none; the file is private. The optional channel card carries no file.
+- **Retention**: clips stay until deleted (no 365-day expiry like feed files); the owner may want a policy once the social step exists.

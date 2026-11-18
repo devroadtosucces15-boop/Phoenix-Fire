@@ -51,6 +51,7 @@ import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
 import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } from './wikibook.js';
 import { MASCOT_COMMANDS, mascotCommand, mascotDaily } from './mascot.js';
+import { HIGHLIGHT_COMMANDS, highlightCommand } from './highlight.js';
 import { ABSENCE_COMMANDS, ABSENCE_ID, absenceCommand, absenceButton, absenceTick } from './absence.js';
 import { INTEL_COMMANDS, INTEL_ID, intelCron, counselorCommand, counselorButton } from './serverintel.js';
 import { NAV_COMMANDS, NAV_ID, navCommand, navButton, navCron } from './navigator.js';
@@ -229,6 +230,7 @@ export default {
     if (i.type === 2 && WIKI_COMMANDS.has(i.data.name)) return json(await wikiCommand(i, env, who)); // /wiki: the Phoenix book (bot/wikibook.js)
     if (i.type === 3 && WIKI_ID.test(i.data?.custom_id ?? '')) return json(await wikiButton(i, env, who)); // its pages, jump list and setup helper
     if (i.type === 2 && MASCOT_COMMANDS.has(i.data.name)) return json(await mascotCommand(i, env, who)); // /mascot quote | ask | roast | mute (bot/mascot.js)
+    if (i.type === 2 && HIGHLIGHT_COMMANDS.has(i.data.name)) return json(await highlightCommand(i, env, who, ctx)); // /highlight upload | mine | delete | list (bot/highlight.js)
     if (i.type === 2 && ABSENCE_COMMANDS.has(i.data.name)) return json(await absenceCommand(i, env, who)); // /absence notice | mine | cancel | list (bot/absence.js)
     if (i.type === 3 && ABSENCE_ID.test(i.data?.custom_id ?? '')) return json(await absenceButton(i, env, who)); // the managers' Acknowledge button
     if (i.type === 2 && INTEL_COMMANDS.has(i.data.name)) return json(await counselorCommand(i, env, who)); // /counselor (bot/serverintel.js)

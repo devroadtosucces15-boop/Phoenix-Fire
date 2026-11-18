@@ -29,6 +29,15 @@ export const COMMANDS = [
       { type: STRING, name: 'message', description: 'What they just said to you: the roast answers at the same energy', max_length: 160 },
       { type: STRING, name: 'level', description: 'How spicy (default light)', choices: [{ value: 'light', name: 'light' }, { value: 'medium', name: 'medium' }, { value: 'spicy', name: 'spicy' }] }] },
     { type: SUB, name: 'mute', description: 'Managers: switch the mascot ask and roast off or on', options: [{ type: BOOLEAN, name: 'on', description: 'Mute (default) or false to bring it back' }] }] },
+  // PF-024 Item 18 – the highlight clip upload (bot/highlight.js): stores a clip privately, nothing is posted or shared. Limits live in config.json `highlight`.
+  { name: 'highlight', description: 'Upload a highlight clip for the club to keep (stored privately)', contexts: [0], options: [
+    { type: SUB, name: 'upload', description: 'Store a clip (MP4, WebM or MOV)', options: [
+      { type: ATTACHMENT, name: 'clip', description: 'Your clip: MP4, WebM or MOV', required: true },
+      { type: STRING, name: 'title', description: 'A short title (optional)', max_length: 80 },
+      { type: STRING, name: 'note', description: 'A note about the clip (optional)', max_length: 300 }] },
+    { type: SUB, name: 'mine', description: 'Your stored clips' },
+    { type: SUB, name: 'delete', description: 'Delete a clip (default: your latest; managers can delete any)', options: [{ type: INTEGER, name: 'number', description: 'The clip number from /highlight mine', min_value: 1 }] },
+    { type: SUB, name: 'list', description: 'Managers: the latest stored clips' }] },
   // PF-024 Item 17 – the absence notice (bot/absence.js): a member says they will be away or play less; managers get a card to acknowledge. The reason is private to managers.
   { name: 'absence', description: 'Tell the managers you will be away or playing less', contexts: [0], options: [
     { type: SUB, name: 'notice', description: 'File an absence notice (it goes to the managers only)', options: [
@@ -404,7 +413,7 @@ export const APP_COMMANDS = {
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
-  matchday: ['host', 'lineup', 'matchday', 'absence', 'matchdayhelp'],
+  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).

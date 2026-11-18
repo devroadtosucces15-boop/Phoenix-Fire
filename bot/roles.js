@@ -54,6 +54,8 @@ export const PERMS = {
   'content.edit': 'manager', // P5.1 / P5.2 – announcements, requirements, rules, FAQ, glossary, Play Style; see who acknowledged the rules
   'docs.read': 'member', // P5.2 – members-only docs + Play Style (guests only see items marked public)
   'docs.ack': 'member', // P5.2 – acknowledge the current rules
+  'highlight.upload': 'member', // PF-024 Item 18 – upload a highlight clip (members only)
+  'highlight.manage': 'manager', // PF-024 Item 18 – list every stored clip and delete anyone's
   'absence.ack': 'manager', // PF-024 Item 17 – acknowledge an absence notice and see the private reason (the Control Center manager level)
   'mascot.mute': 'manager', // PF-024 Item 15 – mute or unmute the mascot's ask and roast
   'counselor.view': 'manager', // PF-024 Item 14 – the counselor: team tendencies and anomaly flags (numbers only, never message text)

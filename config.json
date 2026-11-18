@@ -67,6 +67,7 @@
   "matchAlert": {
     "loseBy": 3
   },
+  "highlight": { "maxMb": 50, "perDay": 5 },
   "features": {
     "rushLog": "members",
     "rushLfg": "owner",
@@ -113,6 +114,7 @@
     "serverIntel": "off",
     "mascot": "off",
     "absence": "owner",
+    "highlight": "owner",
     "bioCard": "owner",
     "wiki": "owner",
     "aiInsights": "members",
