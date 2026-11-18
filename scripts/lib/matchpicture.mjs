@@ -2,6 +2,7 @@
 // rings, rating by line and the field view – ONE picture instead of the score card and the field view. This file builds what goes in it
 // (scripts/cards.mjs matchPicture() draws it) and fetches the faces the Action cannot read from the database itself.
 import { orgKey } from './org.mjs';
+import { eventSide } from './matchreview.mjs';
 
 const n = (v) => +v || 0;
 const GROUP = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
@@ -31,13 +32,30 @@ export function buildMatchPicture(m, homeId, { hide = new Set() } = {}) {
     { k: 'Tackle success', a: pct(tm, ta), b: pct(otm, ota), kind: 'pct', tol: 2 },
     { k: 'Average rating', a: +avgUs.toFixed(1), b: +avgOpp.toFixed(1), kind: 'rate', tol: 0.1 },
   ];
+  // Deeper stats: the same rows, drawn the same way, under their own header. Event counters (EA sends them for league and playoff matches only,
+  // never for friendlies) give six rows; without them only what EA's match numbers carry, plus a note saying why.
+  const E = eventSide(raws), EO = eventSide(theirs), g = (side, k) => side?.t?.[k] || 0;
+  const aer = (side) => g(side, 'aerialDuelsWonAttacking') + g(side, 'aerialDuelsWonDefending');
+  const deeper = E && EO ? { events: true, apps: E.apps, of: all.length, appsThem: EO.apps, ofThem: theirs.length, rows: [
+    { k: 'Shots on target', a: g(E, 'shotsOnTarget'), b: g(EO, 'shotsOnTarget'), kind: 'share' },
+    { k: 'Forward passes', a: g(E, 'passesCompletedForward'), b: g(EO, 'passesCompletedForward'), kind: 'share' },
+    { k: 'Aerial duels won', a: aer(E), b: aer(EO), kind: 'share' },
+    { k: 'Possession won', a: Math.round(E.rates.possessionWinShare ?? 0), b: Math.round(EO.rates.possessionWinShare ?? 0), kind: 'pct', tol: 2 },
+    { k: 'Fouls conceded', a: g(E, 'foulsConceded'), b: g(EO, 'foulsConceded'), kind: 'share', lower: true },
+    { k: 'In position', a: Math.round(E.rates.positioning ?? 0), b: Math.round(EO.rates.positioning ?? 0), kind: 'pct', tol: 2 },
+  ] } : { events: false, rows: [
+    { k: 'Passes attempted', a: pa, b: opa, kind: 'share' },
+    { k: 'Tackles attempted', a: ta, b: ota, kind: 'share' },
+    { k: 'Dribbles', a: sum(raws, 'dribbles'), b: sum(theirs, 'dribbles'), kind: 'share' },
+    { k: 'Saves', a: sum(raws, 'saves'), b: sum(theirs, 'saves'), kind: 'share' },
+  ] };
   const lines = Object.entries(GROUP).map(([pos, t]) => { const ps = all.filter((p) => p.pos === pos); return ps.length ? { t, r: mean(ps.map((p) => p.r)) } : null; }).filter(Boolean);
   const contrib = ours.filter((p) => p.g || p.a).sort((a, b) => (b.g + b.a) - (a.g + a.a) || String(a.n).localeCompare(String(b.n)));
   const motm = ours.find((p) => p.mom) ?? null;
   return {
     id: String(m.matchId), ts: n(m.timestamp), mode: m.matchType === 'playoffMatch' ? 'Playoff' : 'League', res, gf, ga,
     opp: them.name ?? them.details?.name ?? 'Opponent',
-    rows, lines, avg: mean(ours.map((p) => p.r)),
+    rows, deeper, lines, avg: mean(ours.map((p) => p.r)),
     contrib: contrib.map(({ k, n: name, g, a }) => ({ k, n: name, g, a })),
     motm: motm ? { k: motm.k, n: motm.n, r: motm.r } : null,
     players: ours.map(({ k, n: name, pos, r, g, a, mom }) => ({ k, n: name, pos, r, g, a, mom })),

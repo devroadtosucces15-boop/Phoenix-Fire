@@ -69,7 +69,7 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const motm = Object.values(m.players || {}).flatMap((l) => Object.values(l)).find((p) => p.mom === '1');
       const best = [...ours].sort((a, b) => num(b.rating) - num(a.rating))[0];
       const url = site ? `${site}matches/${m.matchId}.html` : undefined;
-      const components = matchComponents(m.matchId, ourIds.map(([k, p]) => ({ k, n: p.playername, r: num(p.rating), g: num(p.goals), a: num(p.assists) })), url);
+      const components = matchComponents(m.matchId, ourIds.map(([k, p]) => ({ k, n: p.playername, r: num(p.rating), g: num(p.goals), a: num(p.assists) })), url, { box: !!drawn?.manifest?.match?.[m.matchId]?.box && fs.existsSync(path.join(drawn.dir, drawn.manifest.match[m.matchId].box)) });
       const clubName = config.siteTitle ?? us.details?.name ?? us.name ?? 'Club'; // our name comes from config (EA's spelling of it can differ)
       // Drawn pictures are attached to the post itself (attachment://), so nothing has to be deployed before Discord can show them.
       const files = crestFile ? [crestFile] : [];

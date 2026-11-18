@@ -151,3 +151,23 @@ its review are now ONE Discord message (flag `matchReviewSplit: true` restores t
 `tests/resultpost-brand.test.mjs` updated. Before/after mockups of every stats output are in the owner's private Artifact
 (https://claude.ai/artifact/KvbFVYG6FxzgWK1Qj3hkdZ); wiring the new stats into the real outputs waits for the owner's go.
 Not verified live: the shape of `aggregate` and the season row (EA blocks this sandbox); the first real fetch will show them.
+
+### Wired 2026-11-18 (owner approved the preview look; `tests/matchstats-wire.test.mjs`, 37 checks)
+
+- **Match picture:** every stat is an inline donut (the website dial, `ring()` in `scripts/cards.mjs`), no card behind it. The deeper stats are extra rows
+  under a "Deeper stats" header in the same list (`mp.deeper` in `scripts/lib/matchpicture.mjs`: six rows with event counters; for friendlies only
+  EA's own numbers plus a note, since friendlies carry no counters).
+- **Box score:** ONE table; the deeper columns (SoT, Fwd, Int, Won, Lost, Aer, Fouls, Pos%) sit in the same rows under a gold header, card widens to
+  1500 px only when counters exist (`CARD_COLS`, `boxEv` gained `sot` and `fouls`). The result post now carries the 📊 Box score button
+  (`matchComponents(..., { box })`, passed from `resultpost.mjs` when the box card was drawn; the `norex:box:` route already existed).
+- **Match review:** fixed grids (paired good and work-on rows, three next-match targets, six number slots), the lineup is the field view, rings
+  instead of tiles. `buildReview` now draws conclusions from the counters: shots on target, forward play, aerial duels, fouls, interceptions,
+  loose balls won; plus a `numbers` model for friendlies. The review card is taller than the 1700 px canvas on busy matches (2144 px worst case).
+- **Session recap:** the Action draws a picture (our crest, result, score, opponent crest, scorers, man of the match, no stats) and the Worker posts it
+  as an attachment in place of the Matches text list (the list stays when no picture was drawn). Standout stats gain shots on target and fouls;
+  What to work on can name finishing, discipline, midfield interceptions and forward passing.
+- **Player and club cards:** no extra tile rows. Player: rating graph beside four donuts and per-game bars with a squad tick. Club: pass accuracy per
+  game as bars under the form row plus three donuts. The results card is unchanged.
+- Template version 17 (cards) and `BANNER_V` 17.
+- Not done: friendly results are still scored as draws (Inbox line); SoT and Fouls show a dash in the box score until the next build writes them
+  into `club.json` `ps[].ev`.
