@@ -5,7 +5,7 @@ import worker from '../bot/worker.js';
 import { t, tt, done } from './lib.mjs';
 import { message, notice, header, buttons, cards, cardUrl, plainText, images, isV2, toLegacy, IS_V2, EPHEMERAL, ACCENT, resultAccent } from '../bot/ui.js';
 import { postEmbed } from '../bot/docs.js';
-import { boxScoreCard, compareCard, scoreCard, fieldCard, fieldSlots, playerCard, tableCard, clubCard, resultsCard, ratingGraph, cardJobs, topRows, esc } from '../scripts/cards.mjs';
+import { boxScoreCard, compareCard, scoreCard, fieldCard, fieldSlots, playerCard, tableCard, TOP_STATS, clubCard, resultsCard, ratingGraph, cardJobs, topRows, esc } from '../scripts/cards.mjs';
 import { shapeReply } from '../bot/botcommands.js';
 import { findChrome, launchChrome } from '../scripts/lib/chrome.mjs';
 
@@ -52,7 +52,7 @@ t('compare: pairs are keyed with the smaller player key first', cardJobs(club, [
 t('box score: one drawn card per match that has player lines', cardJobs(club, players).filter((j) => j.key[2] === 'box').length === club.matches.slice(0, 10).filter((x) => x.ps?.length).length);
 
 const jobs = cardJobs(club, players);
-t('card jobs: score + field per recent match, a card per player, 6 leaderboards, club, results', jobs.some((j) => j.key.join() === `match,${m.id},score`) && jobs.filter((j) => j.key[0] === 'top').length === 6 && jobs.some((j) => j.key[0] === 'club') && jobs.some((j) => j.key[0] === 'results'));
+t('card jobs: score + field per recent match, a card per player, a leaderboard per stat, club, results', jobs.some((j) => j.key.join() === `match,${m.id},score`) && jobs.filter((j) => j.key[0] === 'top').length === Object.keys(TOP_STATS).length && jobs.some((j) => j.key[0] === 'club') && jobs.some((j) => j.key[0] === 'results'));
 const again = cardJobs(club, players), bumped = cardJobs({ ...club, w: club.w + 1 }, players);
 t('file names change only when what is drawn changes', jobs.map((j) => j.file).join() === again.map((j) => j.file).join()
   && jobs.find((j) => j.key[0] === 'club').file !== bumped.find((j) => j.key[0] === 'club').file && jobs.find((j) => j.key[0] === 'results').file === bumped.find((j) => j.key[0] === 'results').file);
@@ -70,7 +70,7 @@ if (findChrome()) {
 
 // ---------- drawn cards in replies (cards.json stubbed) ----------
 const base = `${SITE}cards/`;
-const manifest = { v: 2, base, club: 'club-x.png', results: 'results-x.png', top: { goals: 'top-goals-x.png' }, match: { [club.matches[0].id]: { score: 'score-x.png', field: 'field-x.png' } }, player: { [p.k]: 'player-x.png' } };
+const manifest = { v: 2, base, club: 'club-x.png', results: { 5: 'results-x.png' }, top: { goals: 'top-goals-x.png' }, match: { [club.matches[0].id]: { score: 'score-x.png', field: 'field-x.png' } }, player: { [p.k]: 'player-x.png' } };
 let deck = manifest;
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (url, init) => (String(url).endsWith('api/cards.json') ? (deck ? Response.json(deck) : new Response('nope', { status: 404 })) : realFetch(url, init));

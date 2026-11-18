@@ -176,3 +176,7 @@ Not verified live: the shape of `aggregate` and the season row (EA blocks this s
 - **Show my match** is now a drawn player card (`playerMatchCard` in `scripts/cards.mjs`, key `['match', id, 'pm', playerKey]`, newest 3 matches): rating against his own average, diverging bars (strengths right, weak spots left), up to four insights from `scripts/lib/playerinsight.mjs` (what the number does, one thing to do, a target), and the rating trend with his average line. The text embed stays as the fallback.
 - **/compare**: "Player comparison" title with the crest on the right, names below the stats. **Leaderboards**: crest on the right of the title.
 - TEMPLATE_VERSION and BANNER_V = 18. The slash command choices for the four new leaderboards still need one re-registration.
+
+### Results fix (2026-11-18, owner screenshot of /results)
+- **Friendly scoring bug fixed**: EA sets no win/loss flag on a friendly, so every friendly was a DRAW whatever the score (3–0 labelled DRAW). `result()` in `scripts/build.mjs` (and the burner slimmers) now use EA's flag when sent, else the goals. Real data checked: 3–0 W, 7–0 W, 0–3 L.
+- **/results**: one drawn card per count, 1 to 10 (`RESULT_COUNTS`, key `['results', '<n>']`); the Worker picks the card for exactly the rows it lists, so the title, the picture and the W/D/L line always agree. `tests/results-counts.test.mjs`. TEMPLATE_VERSION and BANNER_V = 19.

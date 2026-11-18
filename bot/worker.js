@@ -694,13 +694,13 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
       ] });
     }
     case 'results': {
-      const n = Math.min(10, opt.count ?? 5);
-      const card = cardUrl(deck, 'results');
-      const list = club.matches.slice(0, n);
+      const n = Math.min(10, Math.max(1, opt.count ?? 5)); // one drawn card per count (scripts/cards.mjs RESULT_COUNTS): the picture, the title and the W/D/L line always agree
+      const list = club.matches.slice(0, n), card = list.length ? cardUrl(deck, 'results', String(list.length)) : null;
+      const title = list.length === 1 ? 'Last result' : `Last ${list.length} results`;
       return message({ blocks: [
-        header({ eyebrow: brand('Results'), title: `Last ${list.length} results`, sub: list.length ? `${list.filter((m) => m.res === 'W').length}W ${list.filter((m) => m.res === 'D').length}D ${list.filter((m) => m.res === 'L').length}L` : 'No matches yet' }),
-        cards(card && { url: card, alt: 'Recent results' }),
-        (!card || n > 8) && list.length ? text(list.slice(card ? 8 : 0).map((m) => `${RESULT_ICON[m.res]} **${m.gf}–${m.ga}** vs [${m.opp}](${m.url})${m.scorers.length ? ` · ${goalsLine(m)}` : ''}`).join('\n')) : null,
+        header({ eyebrow: brand('Results'), title, sub: list.length ? `${list.filter((m) => m.res === 'W').length}W ${list.filter((m) => m.res === 'D').length}D ${list.filter((m) => m.res === 'L').length}L` : 'No matches yet' }),
+        cards(card && { url: card, alt: title }),
+        !card && list.length ? text(list.map((m) => `${RESULT_ICON[m.res]} **${m.gf}–${m.ga}** vs [${m.opp}](${m.url})${m.scorers.length ? ` · ${goalsLine(m)}` : ''}`).join('\n')) : null,
         footer(updated),
         buttons([{ label: 'All results', url: `${club.url}results.html` }]),
       ] });

@@ -21,7 +21,7 @@ import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pi
 import { playerBreakdown, trend } from './lib/playerinsight.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 18; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 19; // bump to redraw every card after a template change
 // ONE format for every picture in a match post sequence (the match board, the field view, the review): same width, same height, same margins, same
 // header. Discord scales a tall picture down to fit, so pictures of different heights come out at different widths and look misaligned; a fixed canvas
 // keeps them identical in the post. Bump TEMPLATE_VERSION (and BANNER_V in bot/ui.js) with any change here.
@@ -389,6 +389,8 @@ ${band}
 }
 
 // ---------- recent results ----------
+// One card per count (1 to 10, see cardJobs) so the picture always shows exactly the number the command asked for, titled to match.
+export const RESULT_COUNTS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 export function resultsCard(club, n = 8) {
   const ms = (club.matches ?? []).slice(0, n);
   return page(`
@@ -398,7 +400,7 @@ h1{font:700 56px/1.05 Oswald;text-transform:uppercase;margin:8px 0 22px}
 .sc{font:700 46px Oswald;font-variant-numeric:tabular-nums;text-align:center}
 .opp{min-width:0}.opp b{display:block;font-weight:700;font-size:30px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opp small{display:block;color:var(--soft);font-size:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dt{text-align:right;color:var(--soft);font-size:22px}`,
-  `<div class="wrap"><div class="eyebrow">${esc(club.name)} · Results</div><h1>Last ${ms.length} matches</h1>
+  `<div class="wrap"><div class="eyebrow">${esc(club.name)} · Results</div><h1>${ms.length === 1 ? 'Last result' : `Last ${ms.length} results`}</h1>
 ${ms.map((m) => `<div class="row"><span class="pill ${m.res}" style="text-align:center">${RESULT[m.res]?.toUpperCase() ?? ''}</span><span class="sc">${m.gf}–${m.ga}</span>${crest(m.oppCrest, m.opp, 58, false)}
 <span class="opp"><b>${esc(m.opp)}</b><small>${(m.scorers ?? []).length ? (m.scorers ?? []).map((s) => `${esc(s.n)}${s.g > 1 ? ` ×${s.g}` : ''}`).join(', ') : 'no scorers'}</small></span><span class="dt">${esc(when(m.ts))}</span></div>`).join('')}
 </div><div class="brand">${esc(SITE)}</div>`);
@@ -908,7 +910,7 @@ export function cardJobs(club, players, { matches = 10, review = null, picture =
   jobs.push(...eventJobs());
   for (const [name, html] of Object.entries(BANNERS)) jobs.push({ key: ['banner', name], file: `banner-${name}.png`, html });
   jobs.push({ key: ['club'], file: `club-${hash([club.name, club.crest, club.division, club.gp, club.w, club.d, club.l, club.gf, club.ga, club.form, clubInsight(club)])}.png`, html: () => clubCard(club, clubInsight(club)) });
-  jobs.push({ key: ['results'], file: `results-${hash((club.matches ?? []).slice(0, 8))}.png`, html: () => resultsCard(club) });
+  for (const n of RESULT_COUNTS) jobs.push({ key: ['results', String(n)], file: `results-${n}-${hash([(club.matches ?? []).slice(0, n), club.name, club.crest])}.png`, html: () => resultsCard(club, n) });
   return jobs;
 }
 const setIn = (o, key, v) => { let x = o; key.slice(0, -1).forEach((k) => (x = x[k] ??= {})); x[key.at(-1)] = v; };

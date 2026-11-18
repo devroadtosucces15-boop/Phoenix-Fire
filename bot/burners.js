@@ -123,7 +123,7 @@ export async function recentOpponents(home = HOME_CLUB, loadSite) {
       if (seen.get(oppId)?.ts >= ts) continue;
       seen.set(oppId, {
         id: oppId, name: opp?.details?.name ?? opp?.name ?? `Club ${oppId}`, crest: opp?.details?.customKit?.crestAssetId ?? null, ts, type,
-        res: mine.wins === '1' ? 'W' : mine.losses === '1' ? 'L' : 'D', gf: Number(mine.goals) || 0, ga: Number(opp?.goals ?? mine.goalsAgainst) || 0,
+        res: mine.wins === '1' ? 'W' : mine.losses === '1' ? 'L' : (Number(mine.goals) || 0) > (Number(opp?.goals ?? mine.goalsAgainst) || 0) ? 'W' : (Number(mine.goals) || 0) < (Number(opp?.goals ?? mine.goalsAgainst) || 0) ? 'L' : 'D', gf: Number(mine.goals) || 0, ga: Number(opp?.goals ?? mine.goalsAgainst) || 0, // a friendly has no win/loss flag: the goals decide
       });
     }
   }
