@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-18T18:20:49.981Z",
+ "fetchedAt": "2026-11-18T18:30:44.396Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1883,14 +1883,14 @@
   },
   {
    "name": "CanerAKC",
-   "proPos": "5",
-   "gamesPlayed": "27",
+   "proPos": "14",
+   "gamesPlayed": "28",
    "goals": "1",
    "assists": "0",
    "manOfTheMatch": "1",
-   "ratingAve": "7.1",
+   "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "iTry_Clutxh",
@@ -2175,6 +2175,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-18T18:20:49.981Z"
+  "fetchedAt": "2026-11-18T18:30:44.396Z"
  }
 }
