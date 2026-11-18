@@ -60,6 +60,7 @@ export const WHERE = {
   bioCard: ["member.html",""],
   highlight: ["member.html",""],
   emoji: ["staff-insights.html",""],
+  testview: ["staff-insights.html",""],
   gif: ["member.html",""],
   birthday: ["member.html",""],
   mascot: ["stats.html",""],

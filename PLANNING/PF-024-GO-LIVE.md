@@ -254,3 +254,16 @@ Owner decisions (assumed safest defaults, say if you want different):
 - **Rejections carry no reason** (one click). Say if you want a reason box on Reject.
 - **Retention**: images stay in R2 until removed; the media storage guard never deletes them.
 - **Not built**: the importer (adding approved images to the server as emoji or stickers), renaming, a reason on rejection, a site page for members.
+
+## Item 25: the test view `/testview` (code done on branch `claude/pf-024-item25-de3706`)
+`/testview output:<any registry output> [variant] [as]` (core app, managers only, ephemeral). It draws a FAKE render of the chosen command, button, automated post or DM from the same captured samples as the Bot Studio gallery (`node tools/bot-studio/studio.mjs testview` writes `bot/testview.gen.js`; the test fails when it is stale or a registry key has neither samples nor a stated reason), above it a header with what is simulated, the rules applied (switch, feature flag, who gets it, where it posts, whether the caller would be blocked and why, delivery methods for DMs) and the lint warnings. Outputs with no sample (timer jobs, settings, DJ commands, site sections, posts that need live data) say "No offline preview" and why. Nothing is posted, sent, saved or spent: rules are read through a read-only sandbox (SELECT only, no R2, KV or AI bindings, a fake fetch), every button and menu in the render is disabled and re-keyed `norex:tv:*`, no mentions.
+
+Owner steps (not done here):
+1. Deploy the Worker and sync the slash commands (`/testview`, core app). No migration, no new Worker route, no new channel purpose.
+2. Flip `testview` to `managers` when ready (it ships `owner`). Flip to `off` to stop it.
+
+Decisions (safe defaults, say if different):
+- **Manager-level only** (`testview.run`); the `as` option shows what another role would get but never exposes anything the caller could not see.
+- **No Control Center site tool** (so no new ROUTES): the command is the whole feature. Card pictures drawn by the card studio are left out of the preview and the header says how many.
+- **No AI**: outputs that need the image or text model are not run; the AI-quota switch the plan mentions is not built.
+- **Not built**: per-test rule overrides beyond `as`, a site page for the test view, an "add a sample" step in `/bot-new` (new outputs get a sample when `studio.mjs capture` and `testview` are rerun).

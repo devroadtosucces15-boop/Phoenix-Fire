@@ -118,6 +118,7 @@
     "absence": "owner",
     "highlight": "owner",
     "emoji": "owner",
+    "testview": "owner",
     "gif": "owner",
     "birthday": "owner",
     "bioCard": "owner",

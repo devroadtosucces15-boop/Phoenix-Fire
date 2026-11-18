@@ -56,6 +56,7 @@ const COMMANDS = {
 
   ${C.b}Design${C.x}
     registry [--check]   write bot/registry.gen.js: every output the Control Center manages (--check only compares)
+    testview [--check]   write bot/testview.gen.js: the sample messages /testview shows (--check only compares)
     new <name>           start a draft message in tools/bot-studio/drafts/<name>.mjs (built with bot/ui.js)
     render <draft.mjs>   draw a draft the way Discord shows it → tools/bot-studio/out/draft.html
     capture [--cards]    refresh the captures from the bot code (--cards also redraws the card images)
@@ -175,6 +176,13 @@ const COMMANDS = {
     const kinds = Object.entries(reg.items.reduce((a, i) => ({ ...a, [i.kind]: (a[i.kind] ?? 0) + 1 }), {})).map(([k, n]) => `${n} ${k}`).join(' · ');
     if (process.argv.includes('--check')) { say(cur === next ? `${C.g}registry is current${C.x}: ${reg.items.length} outputs (${kinds})` : `${C.r}bot/registry.gen.js is stale${C.x}: run node tools/bot-studio/studio.mjs registry`); process.exitCode = cur === next ? 0 : 1; return; }
     fs.writeFileSync(REGISTRY_FILE, next); say(`registry written: ${reg.items.length} outputs (${kinds}) → bot/registry.gen.js`);
+  },
+  async testview() {
+    const { buildSamples, renderSamplesFile, TESTVIEW_FILE } = await import('./lib/testview.mjs');
+    const samples = buildSamples(), next = renderSamplesFile(samples), cur = fs.existsSync(TESTVIEW_FILE) ? fs.readFileSync(TESTVIEW_FILE, 'utf8') : '';
+    const n = Object.values(samples), shown = n.filter((x) => x.variants).length;
+    if (process.argv.includes('--check')) { say(cur === next ? `${C.g}testview samples are current${C.x}: ${shown} previewable, ${n.length - shown} with a reason` : `${C.r}bot/testview.gen.js is stale${C.x}: run node tools/bot-studio/studio.mjs testview`); process.exitCode = cur === next ? 0 : 1; return; }
+    fs.writeFileSync(TESTVIEW_FILE, next); say(`testview samples written: ${shown} previewable, ${n.length - shown} with a reason → bot/testview.gen.js (${Math.round(next.length / 1024)} KB)`);
   },
   async render() {
     if (!args[0]) { say('render needs a draft file. Example: node tools/bot-studio/studio.mjs render tools/bot-studio/drafts/transfer-news.mjs'); process.exitCode = 2; return; }

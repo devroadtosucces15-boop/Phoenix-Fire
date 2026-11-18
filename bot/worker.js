@@ -52,6 +52,7 @@ import { askAnswer, buildAskContext } from './ask.js';
 import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } from './wikibook.js';
 import { MASCOT_COMMANDS, mascotCommand, mascotDaily } from './mascot.js';
 import { HIGHLIGHT_COMMANDS, highlightCommand } from './highlight.js';
+import { TESTVIEW_COMMANDS, TESTVIEW_ID, testviewCommand, testviewButton, testviewChoices } from './testview.js';
 import { EMOJI_COMMANDS, EMOJI_ID, emojiCommand, emojiButton } from './emoji.js';
 import { GIF_COMMANDS, GIF_FLAG, gifCommand, gifTick } from './gif.js';
 import { BIRTHDAY_COMMANDS, birthdayCommand } from './birthday.js';
@@ -169,6 +170,7 @@ export default {
     env = withFlagOverrides(env, await loadFlagOverrides(env)); // the Boardroom's live flag switches apply to Discord too (they used to reach website requests only)
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');
     if (i.type === 4 && i.data?.name === 'setup' && flatOptions(i.data.options).find((o) => o.focused)?.name === 'output') return json({ type: 8, data: { choices: outputChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
+    if (i.type === 4 && i.data?.name === 'testview') return json({ type: 8, data: { choices: testviewChoices(i) } }); // PF-024 Item 25: the output and variant pickers
     if (i.type === 4 && i.data?.name === 'host') return json({ type: 8, data: { choices: zoneChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
     if (i.type === 4 && /^tags?$/.test(i.data?.name) && env.DB) return json({ type: 8, data: { choices: await tagChoices(env, flatOptions(i.data.options).find((o) => o.focused)?.value).catch(() => []) } });
     if (i.type === 4) return json({ type: 8, data: { choices: await autocomplete(i, site, ctx) } });
@@ -235,6 +237,8 @@ export default {
     if (i.type === 3 && WIKI_ID.test(i.data?.custom_id ?? '')) return json(await wikiButton(i, env, who)); // its pages, jump list and setup helper
     if (i.type === 2 && MASCOT_COMMANDS.has(i.data.name)) return json(await mascotCommand(i, env, who)); // /mascot quote | ask | roast | mute (bot/mascot.js)
     if (i.type === 2 && BIRTHDAY_COMMANDS.has(i.data.name)) return json(await birthdayCommand(i, env, who)); // /birthday set | visible | show | clear (bot/birthday.js)
+    if (i.type === 2 && TESTVIEW_COMMANDS.has(i.data.name)) return json(await testviewCommand(i, env, who)); // /testview: a fake private render of any output (bot/testview.js)
+    if (i.type === 3 && TESTVIEW_ID.test(i.data?.custom_id ?? '')) return json(await testviewButton(i, env, who)); // every control in a render is switched off; this only answers if one slips through
     if (i.type === 2 && EMOJI_COMMANDS.has(i.data.name)) return json(await emojiCommand(i, env, who, ctx)); // /emoji suggest | mine | delete | review (bot/emoji.js)
     if (i.type === 3 && EMOJI_ID.test(i.data?.custom_id ?? '')) return json(await emojiButton(i, env, who)); // the managers' Approve and Reject buttons
     if (i.type === 2 && HIGHLIGHT_COMMANDS.has(i.data.name)) return json(await highlightCommand(i, env, who, ctx)); // /highlight upload | mine | delete | list (bot/highlight.js)

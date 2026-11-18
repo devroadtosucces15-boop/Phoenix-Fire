@@ -55,6 +55,7 @@ export const PERMS = {
   'docs.read': 'member', // P5.2 – members-only docs + Play Style (guests only see items marked public)
   'docs.ack': 'member', // P5.2 – acknowledge the current rules
   'birthday.set': 'member', // PF-024 Item 19 – save, show and hide your own birthday
+  'testview.run': 'manager', // PF-024 Item 25 – /testview: a fake, private render of any registered output with the rules applied
   'emoji.suggest': 'member', // PF-024 Item 22 – suggest an emoji or sticker (members only)
   'emoji.review': 'manager', // PF-024 Item 22 – approve, reject, remove and see every suggestion (Discord card and Control Center)
   'highlight.upload': 'member', // PF-024 Item 18 – upload a highlight clip (members only)
