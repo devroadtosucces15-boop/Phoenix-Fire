@@ -30,6 +30,7 @@ export const ROUTES = [
   ['GET', exact('/api/admin/health'), 'health'],
   ['GET', exact('/api/intel/counselor'), 'counselor'], // PF-024 Item 14: team tendencies and anomaly flags (numbers only), managers
   ['GET', exact('/api/intel/absences'), 'absences'], // PF-024 Item 17: absence notices with the private reason, managers
+  ['GET', prefix('/api/emoji/review'), 'emojis'], ['POST', exact('/api/emoji/review/decide'), 'emojis'], // PF-024 Item 22: emoji and sticker suggestions (list, stored image on request, approve or reject), managers
   ['GET', exact('/api/music/status'), 'music'], // the DJ bridge status and command log (music.manage); the member rooms routes stay members'
 ];
 

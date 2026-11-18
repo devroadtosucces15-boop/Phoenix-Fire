@@ -41,6 +41,7 @@ const sample = {
   insight: null, // BE9 stored insight, flag-gated (owner) – embed + tier gate tested in tests/statinsights.test.mjs
   wiki: null, // member DB optional, flag-gated – tests/wikibook.test.mjs (PF-024 Item 13)
   birthday: null, // /birthday set|visible|show|clear, flag-gated – tests/birthday.test.mjs (PF-024 Item 19)
+  emoji: null, // image copy into R2 + member DB, deferred reply, flag-gated – tests/emoji.test.mjs (PF-024 Item 22)
   highlight: null, // clip copy into R2 + member DB, deferred reply, flag-gated – tests/highlight.test.mjs (PF-024 Item 18)
   gif: null, // video → GIF through a GitHub Actions job, deferred reply, flag-gated – tests/gif.test.mjs (PF-024 Item 21)
   absence: null, // member DB + Discord REST, flag-gated – tests/absence.test.mjs (PF-024 Item 17)

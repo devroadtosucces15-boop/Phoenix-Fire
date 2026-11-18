@@ -232,3 +232,25 @@ Owner decisions (assumed safest defaults, say if you want different):
 - **Public by default**: the finished GIF appears in the channel where the command was used so others can favourite it; `private` keeps it to the member. Discord decides this when the reply starts, so the choice cannot change afterwards.
 - **Retention**: the GIF copy in R2 stays until the member or a manager deletes it (the Discord copy is the one people favourite). Videos are never kept.
 - **Not built**: a site page for GIFs, a "post this GIF again" command, audio (GIFs have none), a Control Center tool for GIF limits.
+
+## Item 22: the emoji and sticker suggester (code done on branch `pf-024-item22`)
+`/emoji suggest | mine | delete | review` (matchday app: the tools app is full). `suggest` takes a required `image` attachment, a required `type` (emoji or sticker) and a required `name`. The Worker downloads the file from Discord's CDN, reads the format and the real pixel size from the image's own bytes (the file name and declared type are never trusted), then reserves a `emoji_suggestions` row (status `pending`) with the per-member pending cap and the duplicate-name check inside the INSERT, and stores the image in R2 (`emoji/<32 hex>.<png|jpg|gif>`, binding `MEDIA`). The member gets a private receipt. If the Organization config has a channel for purpose `emoji_review`, one card (name, type, size, who, Approve and Reject buttons, Discord's own attachment preview once) goes there; none set means no card and managers use the Control Center. Managers also have the Control Center section **Emoji and stickers** (Club Intelligence page, `staff-insights.html?tool=emojis`): the list, a "Show image" button that loads the stored image on request, Approve and Reject. Approved images are kept for the future importer. **Nothing is imported into the server and nothing is shown publicly**; the importer is a separate later feature.
+
+Limits (Discord's, checked 2026-11-18): custom emoji **256 KiB**, JPEG, PNG or GIF, animated only as GIF (Discord's emoji docs: https://docs.discord.com/developers/resources/emoji). Sticker **512 KiB**, PNG, APNG or GIF, 320 x 320 recommended (this figure is from my knowledge of Discord's sticker docs; the search this session only found it on a different platform's page, so the importer session should re-check it before it uploads a sticker). Refused outright: SVG, WebP, video, Lottie JSON, JPEG stickers, animated PNG emoji. Pixels (config, `emojiSuggest` in `config.json`): between 32 and 1024 on the long side, and roughly square (long side at most 1.25 times the short). Config can only tighten the size limits, never go above Discord's.
+
+Owner steps (not done here):
+1. Apply migration `0076_emoji_suggestions.sql`, deploy the Worker (the next `bot.yml` run copies `emojiSuggest` from `config.json` into the Worker var `EMOJI_SUGGEST`), and sync the slash commands (`/emoji`, matchday app).
+2. Set the review channel: Organization config, purpose `emoji_review` (a managers-only channel; the bot needs View Channel and Send Messages there). Without it no card is posted.
+3. The R2 binding `MEDIA` (bucket `phoenix-media`) must exist (it does for the feed, Item 18 and Item 21).
+4. Flip `emoji` to `members` when ready (it ships `owner`). Flip to `off` to stop it.
+5. The banner `banner-emoji.png` is drawn for the audit; the live site gets it on the next card run in CI.
+
+Owner decisions (assumed safest defaults, say if you want different):
+- **Who may submit**: any member (`emoji.suggest`), managers review (`emoji.review`: the Control Center manager level). No public gallery: a member sees only their own list.
+- **Name rules**: letters, digits and underscores only (spaces and dashes become underscores, accents dropped, @mentions removed), 2 to 32 characters (30 for a sticker), the Discord rule. A name already waiting or approved for the same kind (any case) is refused. Managers cannot rename yet: reject and ask the member to send it again.
+- **Per-member limit**: 3 suggestions waiting at once (`emojiSuggest.maxPending`, 1 to 20); there is no daily cap.
+- **Withdrawing**: a member removes only a suggestion that is still waiting; an approved image is kept for the importer and only a manager removes it.
+- **The member is not told by DM** when a manager decides: `/emoji mine` shows the status. Say if you want a DM (it would be an owner-controlled DM kind in the DM matrix).
+- **Rejections carry no reason** (one click). Say if you want a reason box on Reject.
+- **Retention**: images stay in R2 until removed; the media storage guard never deletes them.
+- **Not built**: the importer (adding approved images to the server as emoji or stickers), renaming, a reason on rejection, a site page for members.

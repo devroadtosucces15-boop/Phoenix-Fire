@@ -33,6 +33,7 @@ import { lockerSocket } from './locker.js';
 import { intelRoute } from './insights.js';
 import { counselorRoute } from './serverintel.js';
 import { absenceRoute } from './absence.js';
+import { emojiRoute } from './emoji.js';
 import { awardsRoute, trophies } from './awards.js';
 import { playerInsights } from './aiinsights.js';
 import { statInsightsRoute, statAskRoute, statFeedbackRoute, statCompareRoute, statH2hRoute } from './statinsights.js';
@@ -809,6 +810,8 @@ async function route(p, method, body, me, env, loadSite, url) {
   if (csl) return csl;
   const abs = await absenceRoute(p, method, me, env); // PF-024 Item 17: absence notices for managers (reason included)
   if (abs) return abs;
+  const emo = await emojiRoute(p, method, body, me, env, url); // PF-024 Item 22: emoji and sticker review for managers
+  if (emo) return emo;
   const itl = await intelRoute(p, method, body, me, env, loadSite, log); // BE10 Club Intelligence: report + act/remind on a recommendation
   if (itl) return itl;
   const bnr = await burnersAdminRoute(p, method, body, me, env, loadSite, log, url); // C5 burner tracker (staff)

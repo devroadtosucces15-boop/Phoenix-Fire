@@ -56,7 +56,7 @@ const ixJs = fs.readFileSync(ROOT + 'web/intel.js', 'utf8');
 const ixCss = fs.readFileSync(ROOT + 'web/style.css', 'utf8');
 const ixApp = fs.readFileSync(ROOT + 'web/app.js', 'utf8');
 t('board 13: intel.js parses and exposes NXIntel.mount', (() => { try { new Function(ixJs); return ixJs.includes('window.NXIntel = { mount }'); } catch { return false; } })());
-t('board 13: only the BE10 routes – report, act, remind', ["'/api/intel'", "'/api/intel/act'", "'/api/intel/remind'"].every((x) => ixJs.includes(x)) && !/call\('\/api\/(?!intel)/.test(ixJs));
+t('board 13: only the BE10 routes – report, act, remind', ["'/api/intel'", "'/api/intel/act'", "'/api/intel/remind'"].every((x) => ixJs.includes(x)) && !/call\('\/api\/(?!intel|emoji\/review)/.test(ixJs));
 t('board 13: tab needs flag insights + the insights.view perm, and loads assets/intel.js', ixApp.includes("flagOn('insights', baseRole) && S.me?.user?.perms?.includes('insights.view') ? [['intel', '🧭 Intelligence']]") && ixApp.includes('assets/intel.js') && ixApp.includes('NXIntel.mount'));
 t('board 13: ring, four gauges, to-dos, skyline and drill-downs are all rendered', ['function ring()', 'function gauges()', 'function todos()', 'function skyline()', 'function drill()'].every((x) => ixJs.includes(x)) && ['server', 'site', 'admin', 'team'].every((k) => ixJs.includes(`['${k}',`)));
 t('board 13: report text is escaped before the ** emphasis is applied', ixJs.includes("const rich = (s) => esc(s).replace("));

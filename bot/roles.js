@@ -55,6 +55,8 @@ export const PERMS = {
   'docs.read': 'member', // P5.2 – members-only docs + Play Style (guests only see items marked public)
   'docs.ack': 'member', // P5.2 – acknowledge the current rules
   'birthday.set': 'member', // PF-024 Item 19 – save, show and hide your own birthday
+  'emoji.suggest': 'member', // PF-024 Item 22 – suggest an emoji or sticker (members only)
+  'emoji.review': 'manager', // PF-024 Item 22 – approve, reject, remove and see every suggestion (Discord card and Control Center)
   'highlight.upload': 'member', // PF-024 Item 18 – upload a highlight clip (members only)
   'highlight.manage': 'manager', // PF-024 Item 18 – list every stored clip and delete anyone's
   'gif.make': 'member', // PF-024 Item 21 – turn a short video into a GIF (members only)

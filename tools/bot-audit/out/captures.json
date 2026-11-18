@@ -767,7 +767,7 @@
        },
        {
         "type": 10,
-        "content": "> Hard fixtures build soft touches."
+        "content": "> Your next goal is closer than your last miss."
        },
        {
         "type": 14,
@@ -1162,6 +1162,208 @@
  },
  {
   "kind": "slash",
+  "command": "emoji",
+  "trigger": "/emoji suggest image=sample type=emoji name=Sample",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/5/tokzgn0m6d8p3/messages/@original",
+    "body": {
+     "flags": 32832,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "**I need an image**\nAttach a PNG, JPEG or GIF to the command."
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "emoji",
+  "trigger": "/emoji suggest image=sample type=sticker name=Sample",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 5,
+   "data": {
+    "flags": 32832
+   }
+  },
+  "calls": [
+   {
+    "method": "PATCH",
+    "url": "/webhooks/5/tok3q814gjeyqi/messages/@original",
+    "body": {
+     "flags": 32832,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 7108752,
+       "components": [
+        {
+         "type": 10,
+         "content": "**I need an image**\nAttach a PNG, JPEG or GIF to the command."
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   }
+  ]
+ },
+ {
+  "kind": "slash",
+  "command": "emoji",
+  "trigger": "/emoji mine ",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-empty.png?v=16"
+          },
+          "description": "Nothing here yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Your suggestions**\nNone yet. /emoji suggest sends one."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "emoji",
+  "trigger": "/emoji delete ",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-empty.png?v=16"
+          },
+          "description": "Nothing here yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Nothing to delete**\nNo suggestion of yours that is still waiting has that number."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "emoji",
+  "trigger": "/emoji review ",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · EMOJI AND STICKERS\n### Waiting for review"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-emoji.png?v=16"
+          },
+          "description": "Emoji and stickers"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "Nothing is waiting."
+       },
+       {
+        "type": 10,
+        "content": "-# Approve or reject on the cards in the review channel, or in the Control Center."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
   "command": "highlight",
   "trigger": "/highlight upload clip=sample",
   "app": "matchday",
@@ -1175,7 +1377,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/5/tokzgn0m6d8p3/messages/@original",
+    "url": "/webhooks/5/tokclsxv83g80s/messages/@original",
     "body": {
      "flags": 32832,
      "components": [
@@ -1340,7 +1542,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/5/tokyocmxzt7do/messages/@original",
+    "url": "/webhooks/5/toklj57olylqg/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -1466,9 +1668,9 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-general.png?v=16"
+           "url": "http://localhost:4321/cards/banner-gif.png?v=16"
           },
-          "description": "Phoenix Fire"
+          "description": "GIF maker"
          }
         ]
        },
@@ -8701,7 +8903,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/emoji` – Suggest an emoji or sticker for the server (managers review…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
        },
        {
         "type": 14,
@@ -8710,7 +8912,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8813,14 +9015,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -8884,7 +9092,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 2 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8986,14 +9194,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -9048,7 +9262,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/emoji` – Suggest an emoji or sticker for the server (managers review…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
        },
        {
         "type": 14,
@@ -9057,7 +9271,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9160,14 +9374,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -9231,7 +9451,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 2 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9333,14 +9553,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -9395,7 +9621,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/emoji` – Suggest an emoji or sticker for the server (managers review…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
        },
        {
         "type": 14,
@@ -9404,7 +9630,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9507,14 +9733,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -9578,7 +9810,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 3 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9679,14 +9911,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -9750,7 +9988,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 2 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9852,14 +10090,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -9914,7 +10158,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\nJust run it, there is nothing to fill in.\n\n**Good to know**\nShows the lineup for the next event.\n\n**Related questions**\n**How do I: as a player?**\n1. `/matchday next` – The next match night, with your answer buttons right there.\n2. `/matchday schedule` – The ones after that.\n3. `/matchday checkin` – Check…\n**What does /highlight do?**\nUpload a highlight clip for the club to keep (stored privately) (the Phoenix Matchday bot)"
+        "content": "-# RIGHT PAGE ▶\nJust run it, there is nothing to fill in.\n\n**Good to know**\nShows the lineup for the next event.\n\n**Related questions**\n**How do I: as a player?**\n1. `/matchday next` – The next match night, with your answer buttons right there.\n2. `/matchday schedule` – The ones after that.\n3. `/matchday checkin` – Check…\n**What does /emoji do?**\nSuggest an emoji or sticker for the server (managers review it) (the Phoenix Matchday bot)"
        },
        {
         "type": 14,
@@ -9923,7 +10167,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 4 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 4 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -10015,14 +10259,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -10077,7 +10327,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/emoji` – Suggest an emoji or sticker for the server (managers review…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
        },
        {
         "type": 14,
@@ -10086,7 +10336,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -10189,14 +10439,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -10260,7 +10516,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 3 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -10361,14 +10617,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
@@ -12114,7 +12376,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokfzksk68xoe7/messages/@original",
+    "url": "/webhooks/3/tokgj1ookdbepk/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12159,7 +12421,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokdt5wln6mge6/messages/@original",
+    "url": "/webhooks/3/tokav1m6f677lh/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12196,7 +12458,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokbeaj6ny38ji/messages/@original",
+    "url": "/webhooks/3/tok94q3qbxbwrk/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12233,7 +12495,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokqjgdl4uygy/messages/@original",
+    "url": "/webhooks/3/tok86hebzonwmo/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12270,7 +12532,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok9llio4v3qr6/messages/@original",
+    "url": "/webhooks/3/toktih6n406v6/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12307,7 +12569,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokgj1ookdbepk/messages/@original",
+    "url": "/webhooks/3/tokfddfhi3ucf/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12344,7 +12606,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokav1m6f677lh/messages/@original",
+    "url": "/webhooks/3/tok5ygy9xlnezb/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12381,7 +12643,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok94q3qbxbwrk/messages/@original",
+    "url": "/webhooks/3/tokvczm8da5air/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12418,7 +12680,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok86hebzonwmo/messages/@original",
+    "url": "/webhooks/3/tokdijnl8h0y9k/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12463,7 +12725,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/toktih6n406v6/messages/@original",
+    "url": "/webhooks/3/tokv7rm6bg1ri/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12500,7 +12762,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokfddfhi3ucf/messages/@original",
+    "url": "/webhooks/3/tokz2h30xe743/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12537,7 +12799,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok5ygy9xlnezb/messages/@original",
+    "url": "/webhooks/3/tokbi1axyh30xe/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15194,7 +15456,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokt9iipmeoeqs/messages/@original",
+    "url": "/webhooks/3/tokczf6rlw5whc/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15231,7 +15493,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokjfvpyf1qnh/messages/@original",
+    "url": "/webhooks/2/tokdda1tasz4z7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15433,7 +15695,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok1fvwupcrmm9/messages/@original",
+    "url": "/webhooks/2/tok16r5wteazcri/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15604,7 +15866,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok8qac1g4lwai/messages/@original",
+    "url": "/webhooks/2/tokzcbct0a55mk/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15783,7 +16045,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok16r5wteazcri/messages/@original",
+    "url": "/webhooks/1/tokavewdblgjeu/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15820,7 +16082,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokzcbct0a55mk/messages/@original",
+    "url": "/webhooks/1/tokws7a07euj9c/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15857,7 +16119,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokse03tzzfxzh/messages/@original",
+    "url": "/webhooks/1/tokgw7gpa5vwtr/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15894,7 +16156,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokjc2xhwco61/messages/@original",
+    "url": "/webhooks/1/tok6vi8nr44g1/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15931,7 +16193,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokd07qp3sasfl/messages/@original",
+    "url": "/webhooks/1/tok3uu39tgw6c7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -16381,11 +16643,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with pressing the wrong button on a free kick, again."
+        "content": "Charged with leaving the pitch for a snack mid-match."
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1794976063:R>"
+        "content": "**Sentence** 30 min · out <t:1794977043:R>"
        },
        {
         "type": 14,
@@ -16461,11 +16723,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with pressing the wrong button on a free kick, again."
+        "content": "Charged with leaving the pitch for a snack mid-match."
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1794974263:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1794975243:R>"
        },
        {
         "type": 14,
@@ -16534,7 +16796,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1794974263:d> · 30 min · pressing the wrong button on a free kick, again · 💸 bailed\n`PHX-0003` <t:1794973261:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794969261:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794965261:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1794975243:d> · 30 min · leaving the pitch for a snack mid-match · 💸 bailed\n`PHX-0003` <t:1794974241:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794970241:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794966241:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -16698,7 +16960,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794963461:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794964441:R>"
        }
       ]
      }
@@ -16742,7 +17004,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794880661:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793894261:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794881641:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793895241:R>"
        }
       ]
      }
@@ -16786,7 +17048,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794722261:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794723241:R>"
        }
       ]
      }
@@ -16830,7 +17092,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794506261:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794507241:R>"
        }
       ]
      }
@@ -16874,7 +17136,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794254261:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794255241:R>"
        }
       ]
      }
@@ -17271,7 +17533,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which club did Zinedine Zidane leave to join Real Madrid in 2001?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which club is nicknamed “The Old Lady”?"
        },
        {
         "type": 12,
@@ -17286,7 +17548,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · Juventus\n**B** · Inter\n**C** · Barcelona\n**D** · Marseille"
+        "content": "**A** · Inter\n**B** · Napoli\n**C** · Juventus\n**D** · Roma"
        },
        {
         "type": 10,
@@ -17346,22 +17608,22 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 4972682,
+      "accent_color": 16743794,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-success.png?v=16"
+           "url": "http://localhost:4321/cards/banner-notice-error.png?v=16"
           },
-          "description": "Done"
+          "description": "That did not work"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**✅ Right! +10 points**\nA then-record transfer. You have 10 points."
+        "content": "**❌ Not this time – it was C · Juventus**\nLa Vecchia Signora of Turin. You have 0 points."
        }
       ]
      }
@@ -17516,7 +17778,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 2 players on the board"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 1 player on the board"
        },
        {
         "type": 12,
@@ -17531,7 +17793,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **Mike** · 120 pts · 9/12 right\n🥈 **Zub (owner)** · 10 pts · 1/1 right"
+        "content": "🥇 **Mike** · 120 pts · 9/12 right"
        }
       ]
      }
@@ -17558,7 +17820,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokhyj5ln5qx4/messages/@original",
+    "url": "/webhooks/1/tokdrs6j5a656f/messages/@original",
     "body": {
      "components": [
       {
@@ -17606,7 +17868,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokvzulu08s0u/messages/@original",
+    "url": "/webhooks/1/tok32xdh7k587a/messages/@original",
     "body": {
      "components": [
       {
@@ -17654,7 +17916,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokksepl56rg7/messages/@original",
+    "url": "/webhooks/1/tokov8krcyl58/messages/@original",
     "body": {
      "components": [
       {
@@ -18542,7 +18804,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok1bkxlazvjgoj/messages/@original",
+    "url": "/webhooks/1/tokx7ruddt2ve9/messages/@original",
     "body": {
      "components": [
       {
@@ -18931,7 +19193,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794974263:R> · only you can see this"
+        "content": "-# Updated <t:1794975243:R> · only you can see this"
        },
        {
         "type": 1,
@@ -19005,7 +19267,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794973661:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794974641:R>"
          }
         ],
         "accessory": {
@@ -19289,7 +19551,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794974263:R> · only you can see this"
+        "content": "-# Updated <t:1794975243:R> · only you can see this"
        },
        {
         "type": 1,
@@ -19687,7 +19949,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794974263:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794975243:R>"
          }
         ],
         "accessory": {
@@ -20523,7 +20785,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794977863:t> · <t:1794977863:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794978843:t> · <t:1794978843:R>"
        },
        {
         "type": 14,
@@ -20592,7 +20854,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794977863:t> · <t:1794977863:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794978843:t> · <t:1794978843:R>"
        },
        {
         "type": 14,
@@ -20659,7 +20921,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794974863:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794975843:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -20699,7 +20961,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794974863:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794975843:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -20739,7 +21001,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794974863:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794975843:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -20779,7 +21041,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794974863:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794975843:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -22082,7 +22344,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less\n`/highlight` – Upload a highlight clip for the club to keep (stored privat…\n`/emoji` – Suggest an emoji or sticker for the server (managers review…\n`/gif` – Turn a short video into a GIF others can favourite\n`/birthday` – Your birthday: save it, show or hide it (private until you …"
        },
        {
         "type": 14,
@@ -22091,7 +22353,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 9 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 10 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -22194,14 +22456,20 @@
             "default": false
            },
            {
-            "label": "/gif",
+            "label": "/emoji",
             "value": "7",
+            "description": "Suggest an emoji or sticker for the server (managers review it)",
+            "default": false
+           },
+           {
+            "label": "/gif",
+            "value": "8",
             "description": "Turn a short video into a GIF others can favourite",
             "default": false
            },
            {
             "label": "/birthday",
-            "value": "8",
+            "value": "9",
             "description": "Your birthday: save it, show or hide it (private until you turn it on)",
             "default": false
            }
