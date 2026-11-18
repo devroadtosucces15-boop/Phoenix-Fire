@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-18T05:50:50.948Z",
+ "fetchedAt": "2026-11-18T06:00:43.379Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2457,6 +2457,6 @@
   "promotions": 4,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-18T05:50:50.948Z"
+  "fetchedAt": "2026-11-18T06:00:43.379Z"
  }
 }
