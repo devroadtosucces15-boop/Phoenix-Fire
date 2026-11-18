@@ -91,3 +91,51 @@ Where results would land:
 - The box score card is our side only while the site shows both; opponent columns would need card space.
 - Pos% reads like possession; the tooltip says "In position", but a reader could confuse it. Consider a clearer header on the next design pass.
 - No page lists unnamed event ids for the owner; only `scripts/validate-events.mjs` does.
+
+## 6. Findings: comparison with the reference setup (read 2026-11-18)
+
+Source: fc-clubs-api docs (https://1erkandogan.github.io/fc27-clubs-api/), an MIT-licensed unofficial Python client (repo
+1erkandogan/fc27-clubs-api, 38 commits). Pages read: home, Endpoints, Match events, and the repo front page. Not read: the research
+repo it credits (Interactive-63/eafc-pro-clubs-api-research), its fixtures, or its "exploratory findings" section (cut from the excerpt).
+Nothing was run and no dependency is added. It is Python and we are Node, so only its documented facts are usable, not its code.
+
+**Headline: it is the same decode we already have.** Its confirmed table comes from the research project our `scripts/lib/events.mjs`
+already credits (~51,000 player-match rows). Every stat in its confirmed table that I checked is in our `EVENT_STATS` with the same id.
+So the link does not add a better decode. It adds documentation, caveats and a list of partly known ids.
+
+Endpoints: the same eight we use or could use (`clubs/matches`, `clubs/info`, `clubs/overallStats`, `members/stats`,
+`members/career/stats`, both leaderboard searches, `club/playoffAchievements`). We fetch the first four plus members. Facts we lack in docs:
+- `clubs/matches` is capped at 10 per call, no paging, so our archive is the only long history (hourly fetch matters).
+- Each match also carries `aggregate` (EA's per-club sum of the player fields) and `timeAgo`. `slimMatch()` drops both.
+- `result` codes: 1 win, 2 loss, 4 draw, 16385 win by opponent quit, 10 loss by quit. Friendlies send 0 for wins, ties, losses and result,
+  so only goals decide. We already use goals, and `matchType` is "1" league, "5" friendly.
+- Everything is a string. `secondsPlayed` is seconds. `passesmade` includes offside passes (215 + 153).
+
+Differences and contradictions:
+- **Possession:** it documents no possession percentage either, which agrees with ours. Nothing contradicts the unpublished note.
+- **Names:** its `goals` is our `goalsEvent` (214) and its `assists` is our `assistsEvent` (11). Same ids, different names. No change needed.
+- **Totals caveat:** it says EA's named fields are authoritative for totals and events are a breakdown (4 of 59 rows had events far below
+  named fields). Our own check (`node scripts/validate-events.mjs`, 608 rows) agrees: pass attempts match on 472 of 608 rows, tackle
+  attempts on 315, passes completed on 494. We must not present decoded sums as totals where EA's named field exists.
+- **Saves:** it lists `shotsSaved` = id 202 and `goodDirectionSaves` = 267. In our data id 202 matches EA's `saves` on 0 of 37 goalkeeper
+  rows and 267 on 6 of 37, so neither is a reliable save count. Keep EA's `saves` and the five save-type columns as the keeper source.
+- **Goalkeepers:** no decoded keeper-specific events beyond 267. Same save-type fields we store.
+- **Per 90 and units:** it documents no per-90 convention. Ours (5400/secs, null under 600 s) stays our own, labelled as such.
+- **Positioning:** its "in position" id 111 is feedback praise, not a measured share, so our Pos% is a ratio of feedback events. Rename the
+  tooltip, not the maths.
+
+Partly known ids it lists (not decoded there either). They match our biggest unnamed ids:
+121 (tackle success indicator, matches 229 98.5%; ours has 486 hits), 151 (bad passes; 294), 157 (crosses attempted; 182),
+150 (tiki-taka pass; 100), 179 ("Should have shot"; 77), 49 and 50 (save sub-types; 37 and 5), 12, 124, 137, 140, 93, 238, 123
+(goal techniques), 96 and 104 (red card trigger, offside). Still unnamed anywhere I read: 8, 114, 113, 184, 178, 9, 142, 119.
+
+### Prioritised integration (audit only, nothing built)
+1. **Totals vs events rule** (small, high value): decoded sums are a breakdown, EA's named field is the total. Add a test in
+   `tests/boxscore.test.mjs` that no box column or comparison bar presents an event sum as a named total, and a note in the coverage text.
+2. **Store `aggregate` per club** in `slimMatch()` (`scripts/fetch.mjs`): EA's own club sums could replace `teamTotals()` sums and expose the
+   AI-player gap. Check one fetched match first (shape unverified in our data). Extend `tests/eventdecode.test.mjs` and a fixture.
+3. **Candidate tier for partial ids** in `scripts/lib/events.mjs`: label 121, 151, 157 and the others "candidate", never shown on pages until
+   `scripts/lib/validate.mjs` agrees with EA's columns. Extend `tests/events.test.mjs` and `tests/intel.test.mjs`.
+4. **Fix the save source** for keepers (keep EA `saves` and types; drop reliance on ids 202 and 267 in any new output); test in `tests/boxscore.test.mjs`.
+5. **Control Center data tab**: show coverage (37 of 134 matches), unnamed ids by volume and the validator result (PF-022 shell; new view).
+6. Later, own work: opponent columns on the Discord card, a clearer Pos% header, per-90 wording. Each new output gets a Phoenix guard test.
