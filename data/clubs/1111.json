@@ -1,11 +1,11 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-18T21:20:43.969Z",
+ "fetchedAt": "2026-11-18T21:30:41.952Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
-  "regionId": 5719381,
+  "regionId": 4344147,
   "teamId": 11,
   "customKit": {
    "stadName": "The Firepit",
@@ -2199,12 +2199,12 @@
   {
    "name": "AliasX47",
    "proPos": "25",
-   "gamesPlayed": "379",
-   "goals": "458",
-   "assists": "254",
-   "manOfTheMatch": "40",
+   "gamesPlayed": "380",
+   "goals": "459",
+   "assists": "255",
+   "manOfTheMatch": "41",
    "ratingAve": "7.7",
-   "prevGoals": "2",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2221,9 +2221,9 @@
   {
    "name": "CapoGroot",
    "proPos": "14",
-   "gamesPlayed": "47",
+   "gamesPlayed": "48",
    "goals": "3",
-   "assists": "5",
+   "assists": "6",
    "manOfTheMatch": "2",
    "ratingAve": "6.7",
    "prevGoals": "0",
@@ -2265,7 +2265,7 @@
   {
    "name": "Usman4518",
    "proPos": "14",
-   "gamesPlayed": "287",
+   "gamesPlayed": "288",
    "goals": "212",
    "assists": "235",
    "manOfTheMatch": "46",
@@ -2457,6 +2457,6 @@
   "promotions": 4,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-18T21:20:43.969Z"
+  "fetchedAt": "2026-11-18T21:30:41.952Z"
  }
 }
