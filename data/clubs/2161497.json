@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-18T12:50:44.867Z",
+ "fetchedAt": "2026-11-18T13:00:42.484Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -893,12 +893,12 @@
   {
    "name": "junior-Ng69",
    "proPos": "25",
-   "gamesPlayed": "427",
-   "goals": "322",
+   "gamesPlayed": "428",
+   "goals": "323",
    "assists": "189",
    "manOfTheMatch": "57",
    "ratingAve": "7.4",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -953,6 +953,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 0,
-  "fetchedAt": "2026-11-18T12:50:44.867Z"
+  "fetchedAt": "2026-11-18T13:00:42.484Z"
  }
 }
