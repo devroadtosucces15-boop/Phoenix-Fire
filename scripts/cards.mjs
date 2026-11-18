@@ -21,11 +21,11 @@ import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pi
 import { playerBreakdown, trend } from './lib/playerinsight.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 19; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 20; // bump to redraw every card after a template change
 // ONE format for every picture in a match post sequence (the match board, the field view, the review): same width, same height, same margins, same
 // header. Discord scales a tall picture down to fit, so pictures of different heights come out at different widths and look misaligned; a fixed canvas
 // keeps them identical in the post. Bump TEMPLATE_VERSION (and BANNER_V in bot/ui.js) with any change here.
-export const POST = { W: 1200, H: 1700, PAD: 40 };
+export const POST = { W: 1200, H: 1700, PAD: 40, BOARD_W: 2400 }; // the board is two canvases wide, so in Discord it is as wide as the field view and the review side by side
 const W = POST.W;
 // The club's display name for card art, from config.siteTitle (this file stays dependency-free, so it reads config.json itself).
 const SITE = (() => { try { return String(JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8')).siteTitle || '').trim() || 'Club'; } catch { return 'Club'; } })();
@@ -610,7 +610,13 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
   const ratings = `<div class="sec" style="margin:14px 40px 0"><div class="lab" style="border-bottom:2px solid var(--line);padding-bottom:8px">Every rating</div></div><div class="rl">${rank.map((p) => { const c = BAND[band(p.r, p.mom)]; return `<div class="rr"><b style="color:${c}">${r1(p.r)}</b><span class="nm2">${esc(p.n)}</span><span class="ps">${esc(POSLABEL[p.pos] ?? '')}</span><span class="ge">${p.g ? `${p.g}G ` : ''}${p.a ? `${p.a}A` : ''}</span></div>`; }).join('')}</div>`;
   const pitchHead = `<div class="ph pt"><div class="eyebrow">${esc(club?.name ?? SITE)} · Field view · vs ${esc(opp)}</div><div class="big">${mp.gf}–${mp.ga} · ${RESULT[mp.res] ?? ''}</div></div>`;
   if (part === 'fieldparts') return { css, fv: fvHtml.slice(0, fvHtml.indexOf('<div class="fkey">')) + '</div>' }; // the field view alone, for the match review
-  return postPage(css, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${boardHtml}<div class="fill"></div>`);
+  // The board is landscape (2 × POST.W): header and score across the top, goals and man of the match under it, then the main stats on the left and the deeper stats on the right.
+  const wide = `body{width:${POST.BOARD_W}px}.bd{display:grid;grid-template-columns:1fr 1fr;gap:0 80px;flex:1 1 auto;padding:0 40px}.bd .st{margin:18px 0 0!important}.bd .st .sr{height:150px!important}.bd .sh{height:96px}.bw2 .gm{min-height:300px!important}.mid b{font-size:230px!important}.srow{grid-template-columns:1fr 560px 1fr!important}.rt2{display:flex;flex-direction:column;justify-content:flex-start}.rt2 .dsub{margin-top:18px;border-top:2px solid rgba(255,255,255,.1)}.rt2 .sh{display:none}.rt2 .sr{height:150px!important}.rt2 .key{margin-top:auto}`;
+  const iG = boardHtml.indexOf('<div class="gm">'), iS = boardHtml.indexOf('<div class="st">');
+  const sbHtml = boardHtml.slice(0, iG), gmHtml = boardHtml.slice(iG, iS), stInner = boardHtml.slice(iS + '<div class="st">'.length, boardHtml.lastIndexOf('</div>'));
+  const iD = stInner.indexOf('<div class="dsub">'), iK = stInner.indexOf('<div class="key">');
+  const mainStats = iD >= 0 ? stInner.slice(0, iD) : stInner.slice(0, iK), deepStats = (iD >= 0 ? stInner.slice(iD, iK) : '') + stInner.slice(iK);
+  return postPage(part === 'pitch' ? css : css + wide, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${sbHtml}<div class="bw2">${gmHtml.replace('class="gm"', 'class="gm" style="margin:20px 40px 0"')}</div><div class="bd"><div class="st">${mainStats}</div><div class="st rt2">${deepStats}</div></div>`);
 }
 
 // ---------- what gets drawn, and the manifest the bot reads ----------
@@ -982,8 +988,8 @@ async function main() {
       const html = j.html();
       if (process.argv.includes('--html')) fs.writeFileSync(path.join(outDir, j.file.replace(/\.png$/, '.html')), html);
       try {
-        const png = await chrome.shot(html, W);
-        if (/^(picture|pitch|review)-/.test(j.file) && png.readUInt32BE(20) !== POST.H) console.log(`::warning title=Post picture size::${j.file} is ${png.readUInt32BE(16)}x${png.readUInt32BE(20)}, not ${POST.W}x${POST.H}: content too long for the shared canvas`);
+        const png = await chrome.shot(html, /^picture-/.test(j.file) ? POST.BOARD_W : W);
+        if (/^(picture|pitch|review)-/.test(j.file) && png.readUInt32BE(20) !== POST.H) console.log(`::warning title=Post picture size::${j.file} is ${png.readUInt32BE(16)}x${png.readUInt32BE(20)}, not ${/^picture-/.test(j.file) ? POST.BOARD_W : POST.W}x${POST.H}: content too long for the shared canvas`);
         fs.writeFileSync(path.join(outDir, j.file), png);
         setIn(manifest, j.key, j.file);
         drawn++;

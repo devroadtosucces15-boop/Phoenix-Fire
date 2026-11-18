@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { buildMatchPicture, fetchPlayerFaces } from '../scripts/lib/matchpicture.mjs';
-import { matchPicture, cardJobs } from '../scripts/cards.mjs';
+import { matchPicture, cardJobs, POST } from '../scripts/cards.mjs';
 import { postResults } from '../scripts/lib/resultpost.mjs';
 import { plainText, images } from '../bot/ui.js';
 import { call, env, login, W, sqlite } from './mock.mjs';
@@ -75,6 +75,16 @@ t('flag on: one picture instead of two, and only that file is attached', images(
 t('… the title has no score, the "Show my match" menu is still there', /vs Poundin P\./.test(plainText(payload)) && !/3–1/.test(plainText(payload).split('\n')[1] ?? '') && JSON.stringify(payload).includes('norex:mm:900'));
 const fallback = (await run({ matchPicture: 'members' }, { match: { 900: { score: 'score-900.png', field: 'field-900.png' } } }))[0];
 t('flag on but the picture was not drawn: falls back to the two pictures', images(JSON.parse(fallback.init.body.get('payload_json'))).filter((u) => u.startsWith('attachment://') && !u.endsWith('crest.png')).join() === 'attachment://score-900.png,attachment://field-900.png');
+// Layout (owner request): the board alone and wide on top, the field view and the review side by side underneath.
+{
+  const wm = { match: { 900: { picture: 'picture-900.png', pitch: 'pitch-900.png', review: 'review-900.png' } } };
+  for (const f of ['pitch-900.png', 'review-900.png']) fs.writeFileSync(path.join(out, f), 'x');
+  const lp = JSON.parse((await run({ matchPicture: 'members', matchReview: 'members' }, wm))[0].init.body.get('payload_json'));
+  const galleries = []; (function walk(n) { if (Array.isArray(n)) n.forEach(walk); else if (n && typeof n === 'object') { if (n.type === 12) galleries.push(n.items.map((i) => i.media.url.replace('attachment://', ''))); Object.values(n).forEach(walk); } })(lp);
+  const picsOnly = galleries.filter((g) => g.some((u) => /^(picture|pitch|review)-/.test(u)));
+  t('match post: the board alone first, then the field view and the review side by side', JSON.stringify(picsOnly) === JSON.stringify([['picture-900.png'], ['pitch-900.png', 'review-900.png']]));
+  t('the board is drawn two canvases wide so it matches the two pictures under it', POST.BOARD_W === POST.W * 2);
+}
 globalThis.fetch = realFetch;
 
 // Phoenix branding rule: no NOREX name, colour or crest in what this draws; the accent is Phoenix orange.
