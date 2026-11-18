@@ -51,6 +51,7 @@ import { checkVoiceRecap } from './voicerecap.js';
 import { askAnswer, buildAskContext } from './ask.js';
 import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } from './wikibook.js';
 import { MASCOT_COMMANDS, mascotCommand, mascotDaily } from './mascot.js';
+import { ABSENCE_COMMANDS, ABSENCE_ID, absenceCommand, absenceButton, absenceTick } from './absence.js';
 import { INTEL_COMMANDS, INTEL_ID, intelCron, counselorCommand, counselorButton } from './serverintel.js';
 import { NAV_COMMANDS, NAV_ID, navCommand, navButton, navCron } from './navigator.js';
 import { PIN_COMMANDS, PIN_BUTTON, pinCommand, pinButton, pinTick } from './pins.js';
@@ -90,6 +91,7 @@ export default {
       job('queueTick', () => queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
       return;
     }
+    if (flagOn(env, { role: 'owner' }, 'absence')) job('absenceTick', () => absenceTick(env).catch((e) => console.log('absence tick failed', e.message))); // PF-024 Item 17: edit the cards of ended absence notices
     if (flagOn(env, { role: 'owner' }, 'mascot')) job('mascotDaily', () => mascotDaily(env, postEmbed).catch((e) => console.log('mascot daily failed', e.message))); // PF-024 Item 15: one motivational quote a day that never repeats (purpose mascot_posts)
     if (flagOn(env, { role: 'owner' }, 'serverIntel')) job('intelSample', () => intelCron(env).catch((e) => console.log('server intelligence failed', e.message))); // PF-024 Item 14: weekly public-channel sample, numbers only (kill switch: flag serverIntel)
     if (flagOn(env, { role: 'owner' }, 'navigator')) job('navScan', () => navCron(env).catch((e) => console.log('navigator scan failed', e.message))); // PF-024 Item 12: rescan the server about hourly, keep what changed
@@ -227,6 +229,8 @@ export default {
     if (i.type === 2 && WIKI_COMMANDS.has(i.data.name)) return json(await wikiCommand(i, env, who)); // /wiki: the Phoenix book (bot/wikibook.js)
     if (i.type === 3 && WIKI_ID.test(i.data?.custom_id ?? '')) return json(await wikiButton(i, env, who)); // its pages, jump list and setup helper
     if (i.type === 2 && MASCOT_COMMANDS.has(i.data.name)) return json(await mascotCommand(i, env, who)); // /mascot quote | ask | roast | mute (bot/mascot.js)
+    if (i.type === 2 && ABSENCE_COMMANDS.has(i.data.name)) return json(await absenceCommand(i, env, who)); // /absence notice | mine | cancel | list (bot/absence.js)
+    if (i.type === 3 && ABSENCE_ID.test(i.data?.custom_id ?? '')) return json(await absenceButton(i, env, who)); // the managers' Acknowledge button
     if (i.type === 2 && INTEL_COMMANDS.has(i.data.name)) return json(await counselorCommand(i, env, who)); // /counselor (bot/serverintel.js)
     if (i.type === 3 && INTEL_ID.test(i.data?.custom_id ?? '')) return json(await counselorButton(i, env, who)); // its Tendencies / Flags buttons
     if (i.type === 2 && NAV_COMMANDS.has(i.data.name)) return json(await navCommand(i, env, who)); // /navigator (bot/navigator.js)

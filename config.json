@@ -112,6 +112,7 @@
     "navigator": "owner",
     "serverIntel": "off",
     "mascot": "off",
+    "absence": "owner",
     "bioCard": "owner",
     "wiki": "owner",
     "aiInsights": "members",

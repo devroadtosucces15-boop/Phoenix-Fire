@@ -30,6 +30,7 @@ export const BANNER_SPEC = {
   ask: { icon: 'spark', title: 'Ask Phoenix', sub: 'Answers from the club data' },
   wiki: { icon: 'book', title: 'Phoenix wiki', sub: 'Every bot, one book' },
   bio: { icon: 'player', title: 'Player bio', sub: 'Who is who in the squad' },
+  absence: { icon: 'bell', title: 'Absence notice', sub: 'Who is away, who plays less' },
   mascot: { icon: 'flame', title: 'Mascot', sub: 'Rise. Burn. Repeat.' },
   counselor: { icon: 'shield', title: 'Counselor', sub: 'How the team is doing' },
   navigator: { icon: 'search', title: 'Server navigator', sub: 'What every channel is for' },
@@ -167,7 +168,7 @@ export const BANNER_SPEC = {
 // Slash command → family.
 export const BANNER_BY_COMMAND = {
   club: 'club', last: 'match', results: 'club', player: 'player', compare: 'stats', leaderboard: 'stats', history: 'stats', profile: 'player', me: 'player',
-  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', counselor: 'counselor', mascot: 'mascot', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
+  points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', counselor: 'counselor', mascot: 'mascot', absence: 'absence', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
   rush: 'rush', queue: 'queue', lfg: 'lfg', host: 'event', lineup: 'lineup', matchday: 'event', intel: 'stats',
   feedback: 'feedback', suggest: 'idea', share: 'fun', discoveries: 'fun', watch: 'live', tag: 'setup', remind: 'remind', site: 'general', avatarcard: 'card',
   jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',
@@ -177,7 +178,7 @@ export const BANNER_BY_COMMAND = {
 // Button / menu custom_id → family (first match wins).
 export const BANNER_BY_COMPONENT = [
   [/^norex:help:/, 'help'], [/^norex:(mm|mme|box):/, 'match'], [/^pf:rq/, 'queue'], [/^pf:lfg/, 'lfg'], [/^norex:fun:/, 'fun'], [/^norex:dc:/, 'fun'],
-  [/^norex:wl:/, 'live'], [/^norex:sc:/, 'season'], [/^norex:ev:/, 'event'], [/^norex:nav:/, 'navigator'], [/^norex:wiki:/, 'wiki'], [/^norex:pin:/, 'pin'], [/^norex:play:/, 'play'], [/^norex:bn:/, 'burner'], [/^pf:pos/, 'event'],
+  [/^norex:wl:/, 'live'], [/^norex:sc:/, 'season'], [/^norex:ev:/, 'event'], [/^norex:nav:/, 'navigator'], [/^norex:wiki:/, 'wiki'], [/^norex:pin:/, 'pin'], [/^norex:abs:/, 'absence'], [/^norex:play:/, 'play'], [/^norex:bn:/, 'burner'], [/^pf:pos/, 'event'],
   [/^norex:mp:q:cards/, 'card'], [/^norex:mp:q:rush/, 'rush'], [/^norex:mp:q:requests/, 'request'], [/^norex:mp:[ar]:claims/, 'claim'],
   [/^norex:mp:[ar]:ideas/, 'idea'], [/^norex:mp:/, 'staff'], [/^norex:pr:/, 'predict'], [/^norex:rm:/, 'remind'],
 ];

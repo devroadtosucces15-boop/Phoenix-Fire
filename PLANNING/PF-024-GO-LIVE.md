@@ -152,3 +152,18 @@ Owner steps:
 
 Owner decision (assumed, you said go ahead): "tag everyone" = **the player plus an optional configured role, never @everyone**, and only on the first post. Option: no role ping at all (leave `ping_bios` empty, the default).
 Not built: a /bio slash command to repost on demand, posting when a claim is approved without a profile save, a site toggle to stop the card entirely (a member who never saves a profile gets no card; deleting the Discord message makes the next save post a new one).
+
+## Item 17: the absence notice (code done on branch `pf-024-item17`)
+`/absence` (matchday app: the tools app is at the 25 help-page limit, so it was placed beside /lineup and /matchday; the card and its button come from that app): `notice` (type: away, playing less, cannot make matches, other; optional `from` and `until` as 24/12 or 2026-12-24; optional free-text `reason`), `mine`, `cancel`, `list` (managers). A notice posts ONE Phoenix card (Components V2 panel, icons, separators, footer) to the managers' channel with an **Acknowledge** button. Acknowledging edits the same card (who and when). A notice ends on its `until` date (end of that day, UTC) or 30 days after it was filed when no date was given; the 10-minute cron edits the card to "Ended". The member can withdraw a notice and the card says so. Managers also see the list with status on the Control Center tool **Absences** (Staff insights page, `GET /api/intel/absences`, manager level).
+
+Privacy: the free-text reason is private to managers. It is stored in D1, shown only on the managers' card and the manager API, and never in a public post, a log line, a DM, the member's own reply or `/absence mine`. Because the card sits in a Discord channel, **the `absence_notices` channel must be managers-only**.
+
+Owner steps:
+1. Apply migration `0073_absences.sql` (new table `absences`), deploy the Worker and the site, and sync the slash commands to Discord (`/absence`, matchday app).
+2. In the Organization config add a channel with purpose `absence_notices` (managers-only). With none set, `/absence notice` says so and stores nothing.
+3. Flip `absence` to `members` when ready (it is `owner` now). Flip to `off` any time to stop it.
+4. The banner `banner-absence.png` is drawn for the audit; the live site gets it on the next card run in CI.
+
+Owner decision (assumed, unclear in the plan): **who counts as a manager for the Acknowledge button and for seeing the reason** = the manager level of the Control Center permission matrix (`absence.ack` is `manager` in `bot/roles.js`, the route is `manager` in `bot/ccpermissions.js`), so the owner and managers, nobody else. Say if you want a narrower group (for example only captains).
+
+Not built (inbox for later): the Dugout/lineup views do not show an "away" badge yet (the data is there: `GET /api/intel/absences` returns `active` per player); a site form to file a notice; a DM to the member when a manager acknowledges.

@@ -18,7 +18,7 @@
   const num = (n) => (n == null ? '–' : Number(n).toLocaleString());
 
   let el = null, ctx = null;
-  const I = { r: null, err: null, open: '', metric: 'site', filter: 'open', busy: '', c: null };
+  const I = { r: null, err: null, open: '', metric: 'site', filter: 'open', busy: '', c: null, a: null };
 
   const delta = (now, was) => {
     if (was == null) return '';
@@ -114,6 +114,15 @@ ${hasData ? `<div class="ix-sky" role="img" aria-label="${esc(METRICS.find((m) =
     return `<section class="card ix-sec" id="counselor"><div class="ix-h"><h3>🧑‍⚕️ Counselor</h3></div>${body}</section>`;
   }
 
+  // ---------- Absences (PF-024 Item 17): who is away or playing less; the reason is private to managers (this endpoint is manager-only) ----------
+  function absences() {
+    const a = I.a;
+    if (!a) return '';
+    const ST = { open: '🟠 waiting', acknowledged: '✅ acknowledged' };
+    const body = a.absences.length ? `<ul>${a.absences.map((r) => `<li><b>${esc(r.name)}</b> · ${esc(r.kind)} · ${esc(r.from || 'now')} → ${esc(r.until || 'open')} · ${ST[r.status] || esc(r.status)}${r.active ? ' · <b>away now</b>' : ''}${r.reason ? `<br><span class="muted small">${esc(r.reason)}</span>` : ''}</li>`).join('')}</ul>` : '<p class="muted">Nobody has an open notice.</p>';
+    return `<section class="card ix-sec" id="absences"><div class="ix-h"><h3>🌴 Absences</h3></div>${body}</section>`;
+  }
+
   // ---------- page ----------
   function paint() {
     if (!el?.isConnected) return;
@@ -126,6 +135,7 @@ ${hasData ? `<div class="ix-sky" role="img" aria-label="${esc(METRICS.find((m) =
 <section class="card ix-sec ix-top">${ring()}<div class="ix-sum"><h3>${esc(GRADE_TXT[grade(I.r.overall)])}</h3><p>${summary()}</p></div></section>
 ${gauges()}${drill()}
 ${counselor()}
+${absences()}
 <div class="ix-grid"><section class="card ix-sec ix-td">${todos()}</section><section class="card ix-sec ix-sk">${skyline()}</section></div></div>`;
   }
 
@@ -133,8 +143,10 @@ ${counselor()}
     I.busy = 'load'; I.err = null; paint();
     try { I.r = await ctx.call('/api/intel'); } catch (er) { I.err = er.message; if (I.r) ctx.toast(er.message, true); }
     try { I.c = await ctx.call('/api/intel/counselor'); } catch { I.c = null; } // flag off or not a manager: the section stays out
+    try { I.a = await ctx.call('/api/intel/absences'); } catch { I.a = null; } // flag off or not a manager: the section stays out
     I.busy = '';
     paint();
+    if (/tool=absences/.test(location.search)) $('#absences', el)?.scrollIntoView?.({ block: 'start' });
     if (/tool=counselor/.test(location.search)) $('#counselor', el)?.scrollIntoView?.({ block: 'start' });
   }
   async function act(id, undo) {

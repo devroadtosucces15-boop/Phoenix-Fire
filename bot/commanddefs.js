@@ -29,6 +29,16 @@ export const COMMANDS = [
       { type: STRING, name: 'message', description: 'What they just said to you: the roast answers at the same energy', max_length: 160 },
       { type: STRING, name: 'level', description: 'How spicy (default light)', choices: [{ value: 'light', name: 'light' }, { value: 'medium', name: 'medium' }, { value: 'spicy', name: 'spicy' }] }] },
     { type: SUB, name: 'mute', description: 'Managers: switch the mascot ask and roast off or on', options: [{ type: BOOLEAN, name: 'on', description: 'Mute (default) or false to bring it back' }] }] },
+  // PF-024 Item 17 – the absence notice (bot/absence.js): a member says they will be away or play less; managers get a card to acknowledge. The reason is private to managers.
+  { name: 'absence', description: 'Tell the managers you will be away or playing less', contexts: [0], options: [
+    { type: SUB, name: 'notice', description: 'File an absence notice (it goes to the managers only)', options: [
+      { type: STRING, name: 'type', description: 'What is happening', choices: [{ value: 'away', name: 'Away' }, { value: 'less', name: 'Playing less' }, { value: 'matches', name: 'Cannot make matches' }, { value: 'other', name: 'Other' }] },
+      { type: STRING, name: 'from', description: 'First day, e.g. 24/12 or 2026-12-24 (default: now)', max_length: 12 },
+      { type: STRING, name: 'until', description: 'Last day, e.g. 02/01 or 2027-01-02 (default: open, ends after 30 days)', max_length: 12 },
+      { type: STRING, name: 'reason', description: 'Optional. Only managers ever see this', max_length: 300 }] },
+    { type: SUB, name: 'mine', description: 'Your open notices' },
+    { type: SUB, name: 'cancel', description: 'Withdraw a notice (default: your latest)', options: [{ type: INTEGER, name: 'number', description: 'The notice number from /absence mine', min_value: 1 }] },
+    { type: SUB, name: 'list', description: 'Managers: who is away now' }] },
   // PF-024 Item 14 – the counselor (bot/serverintel.js): managers only, tendencies and anomaly flags from a weekly public-channel sample. Private reply.
   { name: 'counselor', description: 'Managers: how the team is doing and who to check in on (numbers only)', default_member_permissions: String(1 << 28), contexts: [0] },
   // PF-024 Item 12 – the server navigator (bot/navigator.js): what every channel is for, plus a Q&A wiki. Private reply.
@@ -394,7 +404,7 @@ export const APP_COMMANDS = {
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
-  matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
+  matchday: ['host', 'lineup', 'matchday', 'absence', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).

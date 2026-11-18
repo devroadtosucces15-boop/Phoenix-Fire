@@ -29,6 +29,7 @@ export const ROUTES = [
   ['POST', prefix('/api/admin/flags'), 'access', 'owner'], // read is open to managers (see which level each feature has); changing one is the owner's
   ['GET', exact('/api/admin/health'), 'health'],
   ['GET', exact('/api/intel/counselor'), 'counselor'], // PF-024 Item 14: team tendencies and anomaly flags (numbers only), managers
+  ['GET', exact('/api/intel/absences'), 'absences'], // PF-024 Item 17: absence notices with the private reason, managers
   ['GET', exact('/api/music/status'), 'music'], // the DJ bridge status and command log (music.manage); the member rooms routes stay members'
 ];
 

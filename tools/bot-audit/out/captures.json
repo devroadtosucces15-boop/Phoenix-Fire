@@ -16,7 +16,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · CLUB\n## PHOENIX FIRE\n-# Division 2 · Skill rating 1886"
+        "content": "-# PHOENIX FIRE · CLUB\n## Phoenix Fire\n-# Division 6 · Skill rating 2153 · 🔥 2 win streak"
        },
        {
         "type": 12,
@@ -25,7 +25,7 @@
           "media": {
            "url": "http://localhost:4321/cards/club-8737b526e0.png"
           },
-          "description": "43 wins, 10 draws, 11 losses"
+          "description": "219 wins, 19 draws, 35 losses"
          }
         ]
        },
@@ -39,13 +39,13 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
           "label": "Club site"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/apply.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
           "label": "Trials"
          }
         ]
@@ -73,229 +73,24 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 4972682,
+      "accent_color": 15716218,
       "components": [
        {
         "type": 10,
-        "content": "**`PHOENIX FIRE`** · LEAGUE"
+        "content": "🚨 **`PHOENIX XI VPG`** · **FRIENDLY** 🚨"
        },
-       {
-        "type": 10,
-        "content": "-# PHOENIX FIRE · MATCH CENTRE · LEAGUE\n## PHOENIX FIRE 3–2 Iron Harbor\n-# <t:1794169239:f> · Win"
-       },
-       {
-        "type": 12,
-        "items": [
-         {
-          "media": {
-           "url": "http://localhost:4321/cards/score-100030000000000-efb08c1e63.png"
-          },
-          "description": "PHOENIX FIRE 3–2 Iron Harbor"
-         }
-        ]
-       },
-       {
-        "type": 10,
-        "content": "**⚽ Goals** Ignis77, Helios_10, NovaCrest\n**📊 Team rating** 7.2"
-       },
-       {
-        "type": 10,
-        "content": "**⭐ Man of the match** Ignis77"
-       },
-       {
-        "type": 14,
-        "divider": true,
-        "spacing": 1
-       },
-       {
-        "type": 10,
-        "content": "-# **FIELD VIEW · RATINGS**"
-       },
-       {
-        "type": 12,
-        "items": [
-         {
-          "media": {
-           "url": "http://localhost:4321/cards/field-100030000000000-c93dbe5657.png"
-          },
-          "description": "Our players on the pitch with their match ratings"
-         }
-        ]
-       },
-       {
-        "type": 10,
-        "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · Updates every 10 min"
-       },
-       {
-        "type": 1,
-        "components": [
-         {
-          "type": 3,
-          "custom_id": "norex:mm:100030000000000",
-          "placeholder": "📊 Show my match – pick your player",
-          "min_values": 1,
-          "max_values": 1,
-          "options": [
-           {
-            "label": "Ignis77",
-            "value": "700188022",
-            "emoji": {
-             "name": "🟢"
-            },
-            "description": "Rating 8.2 · ⚽ 1"
-           },
-           {
-            "label": "Vesper_X",
-            "value": "700344707",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 8.0 · 🎯 1"
-           },
-           {
-            "label": "Helios_10",
-            "value": "700313370",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.5 · ⚽ 1"
-           },
-           {
-            "label": "IronTalon",
-            "value": "700094011",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.4"
-           },
-           {
-            "label": "NovaCrest",
-            "value": "700438718",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.4 · ⚽ 1"
-           },
-           {
-            "label": "BlazeGuard",
-            "value": "700156685",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.2"
-           },
-           {
-            "label": "TalonStrike",
-            "value": "700564066",
-            "emoji": {
-             "name": "🟡"
-            },
-            "description": "Rating 7.1 · 🎯 1"
-           },
-           {
-            "label": "GoldenLoom",
-            "value": "700376044",
-            "emoji": {
-             "name": "🟠"
-            },
-            "description": "Rating 7.0"
-           },
-           {
-            "label": "Rekindle",
-            "value": "700407381",
-            "emoji": {
-             "name": "🟠"
-            },
-            "description": "Rating 6.8"
-           },
-           {
-            "label": "SolarGlove",
-            "value": "700000000",
-            "emoji": {
-             "name": "🟠"
-            },
-            "description": "Rating 6.7"
-           },
-           {
-            "label": "Wildfire_J",
-            "value": "700626740",
-            "emoji": {
-             "name": "🟠"
-            },
-            "description": "Rating 6.5"
-           }
-          ]
-         }
-        ]
-       },
-       {
-        "type": 1,
-        "components": [
-         {
-          "type": 2,
-          "style": 2,
-          "custom_id": "norex:mme:100030000000000",
-          "label": "My match",
-          "emoji": {
-           "name": "🙋"
-          }
-         },
-         {
-          "type": 2,
-          "style": 2,
-          "custom_id": "norex:box:100030000000000",
-          "label": "Box score",
-          "emoji": {
-           "name": "📊"
-          }
-         },
-         {
-          "type": 2,
-          "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
-          "label": "Match report"
-         }
-        ]
-       }
-      ]
-     }
-    ],
-    "allowed_mentions": {
-     "parse": []
-    }
-   }
-  },
-  "calls": []
- },
- {
-  "kind": "component",
-  "trigger": "select norex:mm:100030000000000",
-  "parent": "/last",
-  "label": null,
-  "app": "stats",
-  "command": "last",
-  "status": 200,
-  "response": {
-   "type": 4,
-   "data": {
-    "flags": 32832,
-    "components": [
-     {
-      "type": 17,
-      "accent_color": 4972682,
-      "components": [
        {
         "type": 9,
         "components": [
          {
           "type": 10,
-          "content": "-# PHOENIX FIRE · PLAYER MATCH\n## Ignis77 · 3–2 Iron Harbor\n-# ✅ Win · Defender · <t:1794169239:R>"
+          "content": "-# PHOENIX FIRE · MATCH CENTRE · FRIENDLY\n## Phoenix Fire 3–0 EL DESQUE\n-# <t:1794953157:f> · Draw"
          }
         ],
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -312,7 +107,203 @@
        },
        {
         "type": 10,
-        "content": "**🟢 Rating**\n**8.2** · avg 6.9 ▲\n⭐ **Man of the match**\n\n**⚽ Goals · 🎯 Assists**\n**1** · **0**\navg 0.04 · 0.00 per game\n\n**🅿️ Passes**\n**37/44** (84%) · avg 82% ▲\n\n**🛡️ Tackles**\n**6/10** (60%) · avg 60% ＝\n\n**📈 Last 10 ratings (oldest → newest)**\n🟠🟠🟡🟠🟡🟡🟡🟠🔴🟢\n6.3 · 6.8 · 7.5 · 6.6 · 7.5 · 7.2 · 7.3 · 6.7 · 5.8 · 8.2\nBest **8.2** · season avg **6.9**"
+        "content": "**⚽ Goals** MV33xChris ×2, Dimantu_\n**📊 Team rating** 7.3"
+       },
+       {
+        "type": 10,
+        "content": "**⭐ Man of the match** Marlo7bk"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "`8.6` Marlo7bk\n`8.4` MV33xChris\n`8.0` Dimantu_\n`8.0` Hitchzyy\n`7.8` HristoNL\n`7.8` Bergkamp6317\n`7.7` kingmitch93\n`7.7` Ibekayne\n`7.3` Damlaaa61\n`6.1` ed44ed\n`3.0` EL-nugat"
+       },
+       {
+        "type": 10,
+        "content": "-# Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · Updates every 10 min"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 3,
+          "custom_id": "norex:mm:199420580420120",
+          "placeholder": "📊 Show my match – pick your player",
+          "min_values": 1,
+          "max_values": 1,
+          "options": [
+           {
+            "label": "Marlo7bk",
+            "value": "1007930234696",
+            "emoji": {
+             "name": "🟢"
+            },
+            "description": "Rating 8.6 · 🎯 1"
+           },
+           {
+            "label": "MV33xChris",
+            "value": "1640851384",
+            "emoji": {
+             "name": "🟢"
+            },
+            "description": "Rating 8.4 · ⚽ 2"
+           },
+           {
+            "label": "Dimantu_",
+            "value": "1827145830",
+            "emoji": {
+             "name": "🟢"
+            },
+            "description": "Rating 8.0 · ⚽ 1 · 🎯 1"
+           },
+           {
+            "label": "Hitchzyy",
+            "value": "1010534837334",
+            "emoji": {
+             "name": "🟢"
+            },
+            "description": "Rating 8.0"
+           },
+           {
+            "label": "HristoNL",
+            "value": "1006208965101",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.8"
+           },
+           {
+            "label": "Bergkamp6317",
+            "value": "1007796036245",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.8"
+           },
+           {
+            "label": "kingmitch93",
+            "value": "182169169",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.7"
+           },
+           {
+            "label": "Ibekayne",
+            "value": "1696400622",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.7"
+           },
+           {
+            "label": "Damlaaa61",
+            "value": "1007626573954",
+            "emoji": {
+             "name": "🟡"
+            },
+            "description": "Rating 7.3"
+           },
+           {
+            "label": "ed44ed",
+            "value": "1761731510",
+            "emoji": {
+             "name": "🟠"
+            },
+            "description": "Rating 6.1"
+           },
+           {
+            "label": "EL-nugat",
+            "value": "1004512196620",
+            "emoji": {
+             "name": "🔴"
+            },
+            "description": "Rating 3.0"
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 2,
+          "custom_id": "norex:mme:199420580420120",
+          "label": "My match",
+          "emoji": {
+           "name": "🙋"
+          }
+         },
+         {
+          "type": 2,
+          "style": 5,
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/199420580420120.html",
+          "label": "Match report"
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "component",
+  "trigger": "select norex:mm:199420580420120",
+  "parent": "/last",
+  "label": null,
+  "app": "stats",
+  "command": "last",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15716218,
+      "components": [
+       {
+        "type": 9,
+        "components": [
+         {
+          "type": 10,
+          "content": "-# PHOENIX FIRE · PLAYER MATCH\n## Marlo7bk · 3–0 EL DESQUE\n-# ➖ Draw · Midfielder · <t:1794953157:R>"
+         }
+        ],
+        "accessory": {
+         "type": 11,
+         "media": {
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
+         }
+        }
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-match.png?v=16"
+          },
+          "description": "Match centre"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**🟢 Rating**\n**8.6**\n⭐ **Man of the match**\n\n**⚽ Goals · 🎯 Assists**\n**0** · **1**\n\n**🅿️ Passes**\n**16/20** (80%)\n\n**🛡️ Tackles**\n**3/5** (60%)\n\n**🥅 Shots**\n**1**"
        },
        {
         "type": 14,
@@ -329,13 +320,13 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/199420580420120.html",
           "label": "Match page"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players/700188022.html",
+          "url": "http://localhost:4321/players/1007930234696.html",
           "label": "Player page"
          }
         ]
@@ -352,7 +343,7 @@
  },
  {
   "kind": "component",
-  "trigger": "button norex:mme:100030000000000",
+  "trigger": "button norex:mme:199420580420120",
   "parent": "/last",
   "label": "My match",
   "app": "stats",
@@ -393,59 +384,6 @@
   "calls": []
  },
  {
-  "kind": "component",
-  "trigger": "button norex:box:100030000000000",
-  "parent": "/last",
-  "label": "Box score",
-  "app": "stats",
-  "command": "last",
-  "status": 200,
-  "response": {
-   "type": 4,
-   "data": {
-    "flags": 32832,
-    "components": [
-     {
-      "type": 17,
-      "accent_color": 4972682,
-      "components": [
-       {
-        "type": 10,
-        "content": "-# PHOENIX FIRE · BOX SCORE\n## PHOENIX FIRE 3–2 Iron Harbor\n-# <t:1794169239:f>"
-       },
-       {
-        "type": 12,
-        "items": [
-         {
-          "media": {
-           "url": "http://localhost:4321/cards/box-100030000000000-adec8a6b49.png"
-          },
-          "description": "Every player: rating, goals, assists, passes, tackles and shots"
-         }
-        ]
-       },
-       {
-        "type": 1,
-        "components": [
-         {
-          "type": 2,
-          "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
-          "label": "Match report"
-         }
-        ]
-       }
-      ]
-     }
-    ],
-    "allowed_mentions": {
-     "parse": []
-    }
-   }
-  },
-  "calls": []
- },
- {
   "kind": "slash",
   "command": "results",
   "trigger": "/results",
@@ -462,7 +400,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RESULTS\n## Last 5 results\n-# 4W 0D 1L"
+        "content": "-# PHOENIX FIRE · RESULTS\n## Last 5 results\n-# 0W 4D 1L"
        },
        {
         "type": 12,
@@ -485,7 +423,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/results.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/results.html",
           "label": "All results"
          }
         ]
@@ -503,7 +441,7 @@
  {
   "kind": "slash",
   "command": "player",
-  "trigger": "/player gamertag=SolarGlove",
+  "trigger": "/player gamertag=kingmitch93",
   "app": "stats",
   "status": 200,
   "response": {
@@ -520,13 +458,13 @@
         "components": [
          {
           "type": 10,
-          "content": "-# PHOENIX FIRE · PLAYER CARD\n## SolarGlove · 84 OVR\n-# GK · PHOENIX FIRE"
+          "content": "-# PHOENIX FIRE · PLAYER CARD\n## kingmitch93 · 83 OVR\n-# CM · Phoenix Fire, Phoenix Fire XI, Phoenix FIIre"
          }
         ],
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -535,15 +473,19 @@
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/player-700000000-f710450661.png"
+           "url": "http://localhost:4321/cards/banner-player.png?v=16"
           },
-          "description": "SolarGlove: season stats and match ratings"
+          "description": "Player"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**🌍 Career** 90 games · 0 goals · 0 assists · rating 7.1\n**📈 Last 5** 🟠 6.1  🟡 7.6  🟡 8.0  🟠 6.9  🟠 6.7  → newest"
+        "content": "**Phoenix Fire this season** 196 games · 31 goals · 68 assists · rating 7.7 · MOTM 22"
+       },
+       {
+        "type": 10,
+        "content": "**🌍 Career** 588 games · 93 goals · 204 assists · rating 7.7\n**📈 Last 5** 🟢 8.1  🟢 8.6  🟢 8.9  🟠 6.7  🟢 8.9  → newest"
        },
        {
         "type": 10,
@@ -555,7 +497,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players/700000000.html",
+          "url": "http://localhost:4321/players/182169169.html",
           "label": "Full profile"
          }
         ]
@@ -573,7 +515,7 @@
  {
   "kind": "slash",
   "command": "compare",
-  "trigger": "/compare player1=SolarGlove player2=CinderRock",
+  "trigger": "/compare player1=kingmitch93 player2=rubNiyo",
   "app": "stats",
   "status": 200,
   "response": {
@@ -587,18 +529,22 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · COMPARE\n## SolarGlove vs CinderRock\n-# GK vs CB · club stats this season"
+        "content": "-# PHOENIX FIRE · COMPARE\n## kingmitch93 vs rubNiyo\n-# CM vs CB · club stats this season"
        },
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/cmp-700000000-700062674-66b6aeb243.png"
+           "url": "http://localhost:4321/cards/banner-stats.png?v=16"
           },
-          "description": "SolarGlove and CinderRock compared stat by stat"
+          "description": "Stats"
          }
         ]
+       },
+       {
+        "type": 10,
+        "content": "```\nSTAT        kingmitch93      rubNiyo\nOVR                83           83  \nGames             196 ◀         70  \nGoals              31           32 ◀\nAssists            68 ◀         15  \nRating            7.7 ◀        7.7  \nMOTM               22 ◀          5  \nPass %             75           80 ◀\nTackle %           36 ◀         34  \nWin %              86 ◀         78  \n```"
        },
        {
         "type": 10,
@@ -610,7 +556,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "http://localhost:4321/players.html#compare=700000000,700062674",
+          "url": "http://localhost:4321/players.html#compare=182169169,245256219",
           "label": "Compare on the site"
          }
         ]
@@ -651,7 +597,7 @@
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -672,19 +618,19 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/",
           "label": "Website"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/members.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/members.html",
           "label": "Squad Hub"
          },
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/apply.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/apply.html",
           "label": "Trials"
          }
         ]
@@ -714,7 +660,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokekyva0n7gq/messages/@original",
+    "url": "/webhooks/2/tokieki6f80hg/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -767,7 +713,7 @@
        },
        {
         "type": 10,
-        "content": "> You miss every shot you do not take, and some you do. Take them anyway."
+        "content": "> Rise after every whistle."
        },
        {
         "type": 14,
@@ -989,6 +935,294 @@
        {
         "type": 10,
         "content": "**Mascot muted**\nAsk and roast are off. The daily quote carries on."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "absence",
+  "trigger": "/absence notice type=away",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=16"
+          },
+          "description": "Not set up yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**No absence channel is set**\nA manager sets the channel for absence notices in the Organization config (purpose: absence_notices), then you can file it."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "absence",
+  "trigger": "/absence notice type=less",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=16"
+          },
+          "description": "Not set up yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**No absence channel is set**\nA manager sets the channel for absence notices in the Organization config (purpose: absence_notices), then you can file it."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "absence",
+  "trigger": "/absence notice type=matches",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=16"
+          },
+          "description": "Not set up yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**No absence channel is set**\nA manager sets the channel for absence notices in the Organization config (purpose: absence_notices), then you can file it."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "absence",
+  "trigger": "/absence notice type=other",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=16"
+          },
+          "description": "Not set up yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**No absence channel is set**\nA manager sets the channel for absence notices in the Organization config (purpose: absence_notices), then you can file it."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "absence",
+  "trigger": "/absence mine ",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=16"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Your absence notices**\nNone filed."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "absence",
+  "trigger": "/absence cancel ",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=16"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Nothing to withdraw**\nYou have no open notice."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "absence",
+  "trigger": "/absence list ",
+  "app": "matchday",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · ABSENCES\n### Who is away"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-absence.png?v=16"
+          },
+          "description": "Absence notice"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "Nobody has an open notice."
+       },
+       {
+        "type": 10,
+        "content": "-# Reasons are on each notice card in the managers channel."
        }
       ]
      }
@@ -7923,7 +8157,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less"
        },
        {
         "type": 14,
@@ -7932,7 +8166,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8020,6 +8254,12 @@
             "label": "/matchday",
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
+            "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
             "default": false
            }
           ]
@@ -8082,7 +8322,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 2 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8170,6 +8410,12 @@
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
             "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
+            "default": false
            }
           ]
          }
@@ -8222,7 +8468,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less"
        },
        {
         "type": 14,
@@ -8231,7 +8477,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8319,6 +8565,12 @@
             "label": "/matchday",
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
+            "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
             "default": false
            }
           ]
@@ -8381,7 +8633,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 2 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8469,6 +8721,12 @@
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
             "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
+            "default": false
            }
           ]
          }
@@ -8521,7 +8779,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less"
        },
        {
         "type": 14,
@@ -8530,7 +8788,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8619,6 +8877,12 @@
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
             "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
+            "default": false
            }
           ]
          }
@@ -8680,7 +8944,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 3 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8767,6 +9031,12 @@
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
             "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
+            "default": false
            }
           ]
          }
@@ -8828,7 +9098,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 2 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -8916,6 +9186,12 @@
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
             "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
+            "default": false
            }
           ]
          }
@@ -8977,7 +9253,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 4 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 4 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9055,6 +9331,12 @@
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
             "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
+            "default": false
            }
           ]
          }
@@ -9107,7 +9389,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less"
        },
        {
         "type": 14,
@@ -9116,7 +9398,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9205,6 +9487,12 @@
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
             "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
+            "default": false
            }
           ]
          }
@@ -9266,7 +9554,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 3 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -9352,6 +9640,12 @@
             "label": "/matchday",
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
+            "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
             "default": false
            }
           ]
@@ -11096,7 +11390,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok94a0mc3ivf/messages/@original",
+    "url": "/webhooks/3/tokwjv2pdaavjq/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11141,7 +11435,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokdi86fumfe9/messages/@original",
+    "url": "/webhooks/3/toku4q6kbogteq/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11178,7 +11472,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok266ea3efw6c/messages/@original",
+    "url": "/webhooks/3/tokxg46ri8tdab/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11215,7 +11509,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokal2o4x6jw4/messages/@original",
+    "url": "/webhooks/3/tokwoe717bn0z/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11252,7 +11546,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok7wrbws116j5/messages/@original",
+    "url": "/webhooks/3/tok9ci3hjzpat6/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11289,7 +11583,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok5kbbxwzcfz6/messages/@original",
+    "url": "/webhooks/3/tokaz90pqlnc8/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11326,7 +11620,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokwjv2pdaavjq/messages/@original",
+    "url": "/webhooks/3/tokbdy87nvnk6j/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11363,7 +11657,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/toku4q6kbogteq/messages/@original",
+    "url": "/webhooks/3/tokv09rkt3c9q/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11400,7 +11694,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokxg46ri8tdab/messages/@original",
+    "url": "/webhooks/3/tokpv6p3trxago/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11445,7 +11739,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokwoe717bn0z/messages/@original",
+    "url": "/webhooks/3/tokxfjupjiml2/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11482,7 +11776,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok9ci3hjzpat6/messages/@original",
+    "url": "/webhooks/3/tokcv3kaybbvpt/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11519,7 +11813,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokaz90pqlnc8/messages/@original",
+    "url": "/webhooks/3/tokmdix2vzhar/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12140,7 +12434,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# FlareKing leads with 21"
+        "content": "-# PHOENIX FIRE · LEADERBOARD\n## Top scorers\n-# MV33xChris leads with 76"
        },
        {
         "type": 12,
@@ -12163,7 +12457,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/stats.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/stats.html",
           "label": "All leaderboards"
          }
         ]
@@ -12356,7 +12650,7 @@
        },
        {
         "type": 10,
-        "content": "No winners yet."
+        "content": "👟 **Golden Boot** — [Lucus1997](http://localhost:4321/players/1004882887686.html)\n🦾 **Iron Man** — [KOEN WIE](http://localhost:4321/players/1952070240.html)\n🎩 **Playmaker** — [Dimantu_](http://localhost:4321/players/1827145830.html)\n🌱 **Rising Star** — [ILYM-07](http://localhost:4321/players/1004614724650.html)"
        },
        {
         "type": 1,
@@ -14176,7 +14470,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokosdd0b2m32c/messages/@original",
+    "url": "/webhooks/3/tokggqumoe6uh4/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14213,7 +14507,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokdf15i9i4si7/messages/@original",
+    "url": "/webhooks/2/toktiku4kl6a7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14223,11 +14517,11 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · BURNER CLUBS\n### 🕘 14 clubs Phoenix Fire played lately"
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 25 clubs Phoenix Fire played lately"
         },
         {
          "type": 10,
-         "content": "🔥 **Iron Harbor** · `1115838` · we won 3–2 · League · 9d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 10d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 11d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 13d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 15d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 17d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 18d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 20d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 25d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 30d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 32d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 33d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 35d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 44d ago"
+         "content": "🔥 **EL DESQUE** · `44074` · we drew 3–0 · Friendly · 5h ago\n🔥 **Dark Ritual** · `83362` · we drew 7–0 · Friendly · 6h ago\n🔥 **Schwarz Senegal** · `2155738` · we lost 0–3 · League · 6h ago\n🔥 **SilverArrow** · `4674` · we drew 4–0 · Friendly · 6h ago\n🔥 **SC Ritze** · `1341543` · we drew 1–1 · League · 6h ago\n🔥 **AoAshi** · `1537` · we drew 0–2 · Friendly · 7h ago\n🔥 **Leaked FC** · `362091` · we won 5–2 · League · 7h ago\n🔥 **S1K1S VAR** · `783601` · we won 3–1 · League · 7h ago\n🔥 **Cavaliers** · `22255` · we drew 0–3 · Friendly · 7h ago\n🔥 **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 30h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 30h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 30h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 30h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 31h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 31h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 2d ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 2d ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 2d ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 2d ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 2d ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 2d ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 2d ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 2d ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 2d ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago"
         },
         {
          "type": 10,
@@ -14244,113 +14538,201 @@
            "max_values": 1,
            "options": [
             {
-             "label": "Iron Harbor",
-             "value": "1115838",
-             "description": "1115838 · we won 3–2 · League · 9d ago",
+             "label": "EL DESQUE",
+             "value": "44074",
+             "description": "44074 · we drew 3–0 · Friendly · 5h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Night Owls",
-             "value": "1107919",
-             "description": "1107919 · we lost 1–2 · League · 10d ago",
+             "label": "Dark Ritual",
+             "value": "83362",
+             "description": "83362 · we drew 7–0 · Friendly · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Copperhead FC",
-             "value": "1171271",
-             "description": "1171271 · we won 2–1 · League · 11d ago",
+             "label": "Schwarz Senegal",
+             "value": "2155738",
+             "description": "2155738 · we lost 0–3 · League · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Velvet Thunder",
-             "value": "1147514",
-             "description": "1147514 · we won 4–0 · League · 13d ago",
+             "label": "SilverArrow",
+             "value": "4674",
+             "description": "4674 · we drew 4–0 · Friendly · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Coastline United",
-             "value": "1123757",
-             "description": "1123757 · we won 3–1 · League · 15d ago",
+             "label": "SC Ritze",
+             "value": "1341543",
+             "description": "1341543 · we drew 1–1 · League · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Northgate Elite",
-             "value": "1155433",
-             "description": "1155433 · we drew 0–0 · League · 17d ago",
+             "label": "AoAshi",
+             "value": "1537",
+             "description": "1537 · we drew 0–2 · Friendly · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Silent Wolves",
-             "value": "1139595",
-             "description": "1139595 · we drew 1–1 · League · 18d ago",
+             "label": "Leaked FC",
+             "value": "362091",
+             "description": "362091 · we won 5–2 · League · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Red Mesa Rovers",
-             "value": "1131676",
-             "description": "1131676 · we won 3–1 · League · 20d ago",
+             "label": "S1K1S VAR",
+             "value": "783601",
+             "description": "783601 · we won 3–1 · League · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Frostbite FC",
-             "value": "1100000",
-             "description": "1100000 · we won 5–1 · League · 25d ago",
+             "label": "Cavaliers",
+             "value": "22255",
+             "description": "22255 · we drew 0–3 · Friendly · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Glass Cannons",
-             "value": "1202947",
-             "description": "1202947 · we won 3–0 · League · 30d ago",
+             "label": "HOOPERS ONLY",
+             "value": "91325",
+             "description": "91325 · we drew 5–3 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Lunar Drift",
-             "value": "1163352",
-             "description": "1163352 · we lost 1–2 · League · 32d ago",
+             "label": "IIPWBXMST",
+             "value": "1055",
+             "description": "1055 · we drew 1–1 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Static Noise",
-             "value": "1187109",
-             "description": "1187109 · we lost 1–4 · League · 33d ago",
+             "label": "STARK FC",
+             "value": "34969",
+             "description": "34969 · we drew 3–0 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Bluefin Athletic",
-             "value": "1179190",
-             "description": "1179190 · we won 1–0 · League · 35d ago",
+             "label": "Dutch Despair",
+             "value": "18418",
+             "description": "18418 · we drew 3–0 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Rustbelt Kings",
-             "value": "1195028",
-             "description": "1195028 · we won 2–0 · League · 44d ago",
+             "label": "oCampos eSports",
+             "value": "15609",
+             "description": "15609 · we drew 2–1 · Friendly · 31h ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "LEGACY 1830",
+             "value": "48699",
+             "description": "48699 · we drew 0–1 · Friendly · 31h ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Ameko Army",
+             "value": "751307",
+             "description": "751307 · we won 3–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "NOXION",
+             "value": "2158998",
+             "description": "2158998 · we won 1–0 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Spain X11",
+             "value": "24151",
+             "description": "24151 · we won 6–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FCMeMeMeMee",
+             "value": "98030",
+             "description": "98030 · we won 6–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Usual Suspectz",
+             "value": "1378369",
+             "description": "1378369 · we won 3–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Davslads United",
+             "value": "1705",
+             "description": "1705 · we won 5–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "oh yes my sons",
+             "value": "297158",
+             "description": "297158 · we won 3–0 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "OG b2k",
+             "value": "117777",
+             "description": "117777 · we won 3–0 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Tassive Mitts",
+             "value": "2111007",
+             "description": "2111007 · we won 7–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "W1NTER SOLD1ERS",
+             "value": "1813860",
+             "description": "1813860 · we won 3–0 · League · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14388,7 +14770,7 @@
       "components": [
        {
         "type": 10,
-        "content": "🔥 Now tracking **Iron Harbor** (club 1115838).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c1115838"
+        "content": "🔥 Now tracking **EL DESQUE** (club 44074).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c44074"
        }
       ]
      }
@@ -14415,7 +14797,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tok7pk7keczxpl/messages/@original",
+    "url": "/webhooks/2/tokvr5nscev9lm/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14425,11 +14807,11 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · BURNER CLUBS\n### 🕘 14 clubs Phoenix Fire played lately"
+         "content": "-# STAFF · BURNER CLUBS\n### 🕘 25 clubs Phoenix Fire played lately"
         },
         {
          "type": 10,
-         "content": "✅ **Iron Harbor** · `1115838` · we won 3–2 · League · 9d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 10d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 11d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 13d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 15d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 17d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 18d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 20d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 25d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 30d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 32d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 33d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 35d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 44d ago"
+         "content": "✅ **EL DESQUE** · `44074` · we drew 3–0 · Friendly · 5h ago\n🔥 **Dark Ritual** · `83362` · we drew 7–0 · Friendly · 6h ago\n🔥 **Schwarz Senegal** · `2155738` · we lost 0–3 · League · 6h ago\n🔥 **SilverArrow** · `4674` · we drew 4–0 · Friendly · 6h ago\n🔥 **SC Ritze** · `1341543` · we drew 1–1 · League · 6h ago\n🔥 **AoAshi** · `1537` · we drew 0–2 · Friendly · 7h ago\n🔥 **Leaked FC** · `362091` · we won 5–2 · League · 7h ago\n🔥 **S1K1S VAR** · `783601` · we won 3–1 · League · 7h ago\n🔥 **Cavaliers** · `22255` · we drew 0–3 · Friendly · 7h ago\n🔥 **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 30h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 30h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 30h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 30h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 31h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 31h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 2d ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 2d ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 2d ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 2d ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 2d ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 2d ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 2d ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 2d ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 2d ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago"
         },
         {
          "type": 10,
@@ -14446,113 +14828,201 @@
            "max_values": 1,
            "options": [
             {
-             "label": "Iron Harbor",
-             "value": "1115838",
-             "description": "1115838 · we won 3–2 · League · 9d ago",
+             "label": "EL DESQUE",
+             "value": "44074",
+             "description": "44074 · we drew 3–0 · Friendly · 5h ago",
              "emoji": {
               "name": "✅"
              }
             },
             {
-             "label": "Night Owls",
-             "value": "1107919",
-             "description": "1107919 · we lost 1–2 · League · 10d ago",
+             "label": "Dark Ritual",
+             "value": "83362",
+             "description": "83362 · we drew 7–0 · Friendly · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Copperhead FC",
-             "value": "1171271",
-             "description": "1171271 · we won 2–1 · League · 11d ago",
+             "label": "Schwarz Senegal",
+             "value": "2155738",
+             "description": "2155738 · we lost 0–3 · League · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Velvet Thunder",
-             "value": "1147514",
-             "description": "1147514 · we won 4–0 · League · 13d ago",
+             "label": "SilverArrow",
+             "value": "4674",
+             "description": "4674 · we drew 4–0 · Friendly · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Coastline United",
-             "value": "1123757",
-             "description": "1123757 · we won 3–1 · League · 15d ago",
+             "label": "SC Ritze",
+             "value": "1341543",
+             "description": "1341543 · we drew 1–1 · League · 6h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Northgate Elite",
-             "value": "1155433",
-             "description": "1155433 · we drew 0–0 · League · 17d ago",
+             "label": "AoAshi",
+             "value": "1537",
+             "description": "1537 · we drew 0–2 · Friendly · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Silent Wolves",
-             "value": "1139595",
-             "description": "1139595 · we drew 1–1 · League · 18d ago",
+             "label": "Leaked FC",
+             "value": "362091",
+             "description": "362091 · we won 5–2 · League · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Red Mesa Rovers",
-             "value": "1131676",
-             "description": "1131676 · we won 3–1 · League · 20d ago",
+             "label": "S1K1S VAR",
+             "value": "783601",
+             "description": "783601 · we won 3–1 · League · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Frostbite FC",
-             "value": "1100000",
-             "description": "1100000 · we won 5–1 · League · 25d ago",
+             "label": "Cavaliers",
+             "value": "22255",
+             "description": "22255 · we drew 0–3 · Friendly · 7h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Glass Cannons",
-             "value": "1202947",
-             "description": "1202947 · we won 3–0 · League · 30d ago",
+             "label": "HOOPERS ONLY",
+             "value": "91325",
+             "description": "91325 · we drew 5–3 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Lunar Drift",
-             "value": "1163352",
-             "description": "1163352 · we lost 1–2 · League · 32d ago",
+             "label": "IIPWBXMST",
+             "value": "1055",
+             "description": "1055 · we drew 1–1 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Static Noise",
-             "value": "1187109",
-             "description": "1187109 · we lost 1–4 · League · 33d ago",
+             "label": "STARK FC",
+             "value": "34969",
+             "description": "34969 · we drew 3–0 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Bluefin Athletic",
-             "value": "1179190",
-             "description": "1179190 · we won 1–0 · League · 35d ago",
+             "label": "Dutch Despair",
+             "value": "18418",
+             "description": "18418 · we drew 3–0 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
             },
             {
-             "label": "Rustbelt Kings",
-             "value": "1195028",
-             "description": "1195028 · we won 2–0 · League · 44d ago",
+             "label": "oCampos eSports",
+             "value": "15609",
+             "description": "15609 · we drew 2–1 · Friendly · 31h ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "LEGACY 1830",
+             "value": "48699",
+             "description": "48699 · we drew 0–1 · Friendly · 31h ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Ameko Army",
+             "value": "751307",
+             "description": "751307 · we won 3–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "NOXION",
+             "value": "2158998",
+             "description": "2158998 · we won 1–0 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Spain X11",
+             "value": "24151",
+             "description": "24151 · we won 6–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "FCMeMeMeMee",
+             "value": "98030",
+             "description": "98030 · we won 6–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Usual Suspectz",
+             "value": "1378369",
+             "description": "1378369 · we won 3–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Davslads United",
+             "value": "1705",
+             "description": "1705 · we won 5–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "oh yes my sons",
+             "value": "297158",
+             "description": "297158 · we won 3–0 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "OG b2k",
+             "value": "117777",
+             "description": "117777 · we won 3–0 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "Tassive Mitts",
+             "value": "2111007",
+             "description": "2111007 · we won 7–1 · League · 2d ago",
+             "emoji": {
+              "name": "🔥"
+             }
+            },
+            {
+             "label": "W1NTER SOLD1ERS",
+             "value": "1813860",
+             "description": "1813860 · we won 3–0 · League · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14586,7 +15056,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokgosa3c6z6v6/messages/@original",
+    "url": "/webhooks/2/tokpppse8k0bfb/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14629,7 +15099,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 **Iron Harbor** · `1115838` · ⏳ first collection pending\n🔥 **Sample** · `872273` · ⏳ first collection pending"
+        "content": "🔥 **EL DESQUE** · `44074` · ⏳ first collection pending\n🔥 **Sample** · `872273` · ⏳ first collection pending"
        },
        {
         "type": 10,
@@ -14690,9 +15160,9 @@
           "max_values": 1,
           "options": [
            {
-            "label": "Iron Harbor",
-            "value": "1115838",
-            "description": "club 1115838",
+            "label": "EL DESQUE",
+            "value": "44074",
+            "description": "club 44074",
             "emoji": {
              "name": "🗑️"
             }
@@ -14738,7 +15208,7 @@
       "components": [
        {
         "type": 10,
-        "content": "🗑️ Stopped tracking **Iron Harbor**. Its history stays on the page until the next cleanup – /burner search brings it back."
+        "content": "🗑️ Stopped tracking **EL DESQUE**. Its history stays on the page until the next cleanup – /burner search brings it back."
        }
       ]
      }
@@ -14765,7 +15235,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok10p45hozob3/messages/@original",
+    "url": "/webhooks/1/tokce2mfue0urk/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14802,7 +15272,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokvr5nscev9lm/messages/@original",
+    "url": "/webhooks/1/tokqqeay0wze7n/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14839,7 +15309,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokpppse8k0bfb/messages/@original",
+    "url": "/webhooks/1/tok6ykr3am3a43/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14876,7 +15346,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok5mvgnekzq72/messages/@original",
+    "url": "/webhooks/1/tokjfneuunqdra/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14913,7 +15383,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokbblfenpfnw/messages/@original",
+    "url": "/webhooks/1/tok4oqaozeikzv/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15190,7 +15660,7 @@
  {
   "kind": "slash",
   "command": "trial",
-  "trigger": "/trial gamertag=SolarGlove",
+  "trigger": "/trial gamertag=kingmitch93",
   "app": "core",
   "status": 200,
   "response": {
@@ -15219,7 +15689,7 @@
        },
        {
         "type": 10,
-        "content": "🤷 No trial cards match \"SolarGlove\"."
+        "content": "🤷 No trial cards match \"kingmitch93\"."
        }
       ]
      }
@@ -15251,13 +15721,13 @@
         "components": [
          {
           "type": 10,
-          "content": "-# PHOENIX FIRE · MAN OF THE MATCH VOTE\n## 🌟 MOTM · vs Iron Harbor\n-# 3–2 · 2 votes so far"
+          "content": "-# PHOENIX FIRE · MAN OF THE MATCH VOTE\n## 🌟 MOTM · vs EL DESQUE\n-# 3–0 · 2 votes so far"
          }
         ],
         "accessory": {
          "type": 11,
          "media": {
-          "url": "https://example.invalid/phoenix-fire/assets/crest.png?v=phoenix2"
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/assets/crest.png?v=phoenix2"
          }
         }
        },
@@ -15274,7 +15744,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **SolarGlove** — 1 vote\n🥈 **IronTalon** — 1 vote"
+        "content": "🥇 **kingmitch93** — 1 vote\n🥈 **MV33xChris** — 1 vote"
        },
        {
         "type": 1,
@@ -15288,7 +15758,7 @@
          {
           "type": 2,
           "style": 5,
-          "url": "https://example.invalid/phoenix-fire/matches/100030000000000.html",
+          "url": "https://devroadtosucces15-boop.github.io/Phoenix-Fire/matches/199420580420120.html",
           "label": "Match report"
          }
         ]
@@ -15316,11 +15786,37 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 7108752,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 10,
-        "content": "🤷 No matches found against \"1\"."
+        "content": "-# PHOENIX FIRE · HEAD TO HEAD\n## ⚔️ Phoenix Fire vs S1K1S VAR\n-# 1 game · 1W 0D 0L"
+       },
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-stats.png?v=16"
+          },
+          "description": "Stats"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Goals** 3–1 (+2)\n**Win rate** 100%\n**Last meeting** W 3–1"
+       },
+       {
+        "type": 1,
+        "components": [
+         {
+          "type": 2,
+          "style": 5,
+          "url": "http://localhost:4321/stats.html",
+          "label": "Head to head on the site"
+         }
+        ]
        }
       ]
      }
@@ -15363,11 +15859,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with sending a 4-star skiller on a solo run into three defenders."
+        "content": "Charged with being late to match night with the kettle on."
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1794970941:R>"
+        "content": "**Sentence** 30 min · out <t:1794973484:R>"
        },
        {
         "type": 14,
@@ -15443,11 +15939,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with sending a 4-star skiller on a solo run into three defenders."
+        "content": "Charged with being late to match night with the kettle on."
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1794969141:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1794971684:R>"
        },
        {
         "type": 14,
@@ -15516,7 +16012,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1794969141:d> · 30 min · sending a 4-star skiller on a solo run into three defenders · 💸 bailed\n`PHX-0003` <t:1794968139:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794964139:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794960139:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1794971684:d> · 30 min · being late to match night with the kettle on · 💸 bailed\n`PHX-0003` <t:1794970682:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794966682:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794962682:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -15680,7 +16176,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794958339:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794960882:R>"
        }
       ]
      }
@@ -15724,7 +16220,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794875539:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793889139:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794878082:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793891682:R>"
        }
       ]
      }
@@ -15768,7 +16264,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794717139:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794719682:R>"
        }
       ]
      }
@@ -15812,7 +16308,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794501139:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794503682:R>"
        }
       ]
      }
@@ -15856,7 +16352,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794249139:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794251682:R>"
        }
       ]
      }
@@ -16253,7 +16749,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Who is the only goalkeeper to have won the Ballon d’Or?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 How many Ballon d’Or awards has Lionel Messi won?"
        },
        {
         "type": 12,
@@ -16268,7 +16764,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · Manuel Neuer\n**B** · Gianluigi Buffon\n**C** · Lev Yashin\n**D** · Oliver Kahn"
+        "content": "**A** · 9\n**B** · 7\n**C** · 6\n**D** · 8"
        },
        {
         "type": 10,
@@ -16343,7 +16839,7 @@
        },
        {
         "type": 10,
-        "content": "**❌ Not this time – it was C · Lev Yashin**\nYashin won it in 1963. You have 0 points."
+        "content": "**❌ Not this time – it was D · 8**\nEight, the most by any player. You have 0 points."
        }
       ]
      }
@@ -16540,7 +17036,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokpe90dgk4hs/messages/@original",
+    "url": "/webhooks/1/tokfxpwvu0e5n/messages/@original",
     "body": {
      "components": [
       {
@@ -16588,7 +17084,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokjtrnvhiu3pm/messages/@original",
+    "url": "/webhooks/1/toklpxbpo1ypt/messages/@original",
     "body": {
      "components": [
       {
@@ -16636,7 +17132,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokptqxgkfat7j/messages/@original",
+    "url": "/webhooks/1/tokoywpmoacl9f/messages/@original",
     "body": {
      "components": [
       {
@@ -17524,7 +18020,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokdrs6j5a656f/messages/@original",
+    "url": "/webhooks/1/tokv4e4pqov64i/messages/@original",
     "body": {
      "components": [
       {
@@ -17913,7 +18409,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794969141:R> · only you can see this"
+        "content": "-# Updated <t:1794971684:R> · only you can see this"
        },
        {
         "type": 1,
@@ -17987,7 +18483,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794968539:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794971082:R>"
          }
         ],
         "accessory": {
@@ -18271,7 +18767,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794969141:R> · only you can see this"
+        "content": "-# Updated <t:1794971684:R> · only you can see this"
        },
        {
         "type": 1,
@@ -18669,7 +19165,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794969141:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794971684:R>"
          }
         ],
         "accessory": {
@@ -19505,7 +20001,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794972741:t> · <t:1794972741:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794975284:t> · <t:1794975284:R>"
        },
        {
         "type": 14,
@@ -19574,7 +20070,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794972741:t> · <t:1794972741:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794975284:t> · <t:1794975284:R>"
        },
        {
         "type": 14,
@@ -19641,7 +20137,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794969741:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794972284:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -19681,7 +20177,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794969741:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794972284:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -19721,7 +20217,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794969741:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794972284:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -19761,7 +20257,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794969741:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794972284:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -21064,7 +21560,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/host` – schedule a League or Rush session or friendly – posted with… *(managers)*\n`/lineup` – The lineup for the next event\n`/matchday` – Match days: create one, check in, and see the schedule or w…\n`/absence` – Tell the managers you will be away or playing less"
        },
        {
         "type": 14,
@@ -21073,7 +21569,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 5 · Everyone (managers to create) can use these · only you can see this book"
+        "content": "-# Page 1 of 6 · Everyone (managers to create) can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -21161,6 +21657,12 @@
             "label": "/matchday",
             "value": "4",
             "description": "Match days: create one, check in, and see the schedule or who is in",
+            "default": false
+           },
+           {
+            "label": "/absence",
+            "value": "5",
+            "description": "Tell the managers you will be away or playing less",
             "default": false
            }
           ]
