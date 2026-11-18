@@ -37,6 +37,15 @@ export const COMMANDS = [
     { type: SUB, name: 'visible', description: 'Turn the club celebration on or off', options: [{ type: BOOLEAN, name: 'on', description: 'On = celebrated and shown on your bio card', required: true }] },
     { type: SUB, name: 'show', description: 'See what is saved (only you see this)' },
     { type: SUB, name: 'clear', description: 'Delete your saved birthday' }] },
+  // PF-024 Item 22 – the emoji and sticker suggester (bot/emoji.js): members suggest, managers review; nothing is imported into the server yet. Limits live in config.json `emojiSuggest`.
+  { name: 'emoji', description: 'Suggest an emoji or sticker for the server (managers review it)', contexts: [0], options: [
+    { type: SUB, name: 'suggest', description: 'Send an image to the managers', options: [
+      { type: ATTACHMENT, name: 'image', description: 'PNG, JPEG or GIF (emoji up to 256 KB, sticker up to 512 KB)', required: true },
+      { type: STRING, name: 'type', description: 'Emoji or sticker', required: true, choices: [{ value: 'emoji', name: 'emoji' }, { value: 'sticker', name: 'sticker' }] },
+      { type: STRING, name: 'name', description: 'A short name: letters, digits, underscores (like phoenix_flame)', required: true, max_length: 40 }] },
+    { type: SUB, name: 'mine', description: 'Your suggestions and their status' },
+    { type: SUB, name: 'delete', description: 'Withdraw a suggestion that is still waiting (managers can remove any)', options: [{ type: INTEGER, name: 'number', description: 'The number from /emoji mine', min_value: 1 }] },
+    { type: SUB, name: 'review', description: 'Managers: what is waiting for review' }] },
   // PF-024 Item 18 – the highlight clip upload (bot/highlight.js): stores a clip privately, nothing is posted or shared. Limits live in config.json `highlight`.
   { name: 'highlight', description: 'Upload a highlight clip for the club to keep (stored privately)', contexts: [0], options: [
     { type: SUB, name: 'upload', description: 'Store a clip (MP4, WebM or MOV)', options: [
@@ -430,7 +439,7 @@ export const APP_COMMANDS = {
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
-  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'gif', 'birthday', 'matchdayhelp'],
+  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'emoji', 'gif', 'birthday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).

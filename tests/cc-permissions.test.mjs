@@ -26,7 +26,7 @@ t('matrix: the browser manifest carries the same matrix', MAN.manifestJs().inclu
 t('routes: every route names a manifest tool', ROUTES.every(([, , id]) => MAN.TOOLS.some((x) => x.id === id)));
 t('routes: a route is never more open than its tool (min is the tool level or higher)', ROUTES.every(([, , id, w]) => !(MAN.TOOLS.find((x) => x.id === id).level === 'owner' && w === 'manager')));
 const PATHS = ['/api/controlcenter', '/api/controlcenter/save', '/api/controlcenter/reset', '/api/controlcenter/settings', '/api/controlcenter/settings/bot', '/api/controlcenter/settings/routes', '/api/controlcenter/audit',
-  '/api/controlcenter/discord', '/api/controlcenter/create', '/api/bot/settings', '/api/bot/commands', '/api/bot/commands/sync', '/api/bot/routes', '/api/org/config', '/api/org/config/clubs', '/api/org/diagnostics', '/api/admin/flags', '/api/admin/flags/reset', '/api/admin/health', '/api/music/status', '/api/intel/counselor', '/api/intel/absences'];
+  '/api/controlcenter/discord', '/api/controlcenter/create', '/api/bot/settings', '/api/bot/commands', '/api/bot/commands/sync', '/api/bot/routes', '/api/org/config', '/api/org/config/clubs', '/api/org/diagnostics', '/api/admin/flags', '/api/admin/flags/reset', '/api/admin/health', '/api/music/status', '/api/intel/counselor', '/api/intel/absences', '/api/emoji/review', '/api/emoji/review/file', '/api/emoji/review/decide'];
 const rows = [];
 for (const p of PATHS) for (const m of ['GET', 'POST']) { const r = routeOf(m, p); if (r) rows.push([m, p, r]); }
 t('routes: the matrix covers every Control Center and moved settings path (a path in the list with no route would be unprotected)', PATHS.every((p) => ['GET', 'POST'].some((m) => routeOf(m, p))) && rows.length >= PATHS.length);

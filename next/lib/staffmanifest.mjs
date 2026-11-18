@@ -76,6 +76,8 @@ export const TOOLS = [
     desc: 'How the team is doing and who to check in on: tendencies and flags from a weekly public-channel sample, numbers only' },
   { id: 'absences', label: 'Absences', emoji: '🌴', icon: 'i-chart', section: 'site', level: 'manager', href: 'staff-insights.html?tool=absences', keys: 'absence away vacation play less notice acknowledge lineup',
     desc: 'Who is away or playing less, with the private reason; acknowledged on the Discord card' },
+  { id: 'emojis', label: 'Emoji and stickers', emoji: '😀', icon: 'i-chart', section: 'site', level: 'manager', href: 'staff-insights.html?tool=emojis', keys: 'emoji sticker suggest approve reject review importer',
+    desc: 'Emoji and sticker suggestions from members: look at each image, approve or reject; approved ones are kept for the server importer' },
   { id: 'org', label: 'Organization', emoji: '🏢', icon: 'i-org', section: 'org', level: 'owner', owner: true, href: CC + '?tool=org', module: 'org', legacy: ['staff-organization.html'], keys: 'discord servers channels roles clubs',
     desc: 'Discord servers, channels, roles and clubs' },
   { id: 'audit', label: 'Audit log', emoji: '🛡️', icon: 'i-shield', section: 'system', level: 'manager', href: CC + '?tool=audit', module: 'controlcenter:audit', legacy: ['staff-audit.html'], keys: 'who changed what history',

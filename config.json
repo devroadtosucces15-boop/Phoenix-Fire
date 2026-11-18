@@ -68,6 +68,7 @@
     "loseBy": 3
   },
   "highlight": { "maxMb": 50, "perDay": 5 },
+  "emojiSuggest": { "maxPending": 3, "emojiKb": 256, "stickerKb": 512, "minSide": 32, "maxSide": 1024 },
   "gif": { "maxInMb": 25, "maxOutMb": 8, "perDay": 5, "maxSeconds": 15, "width": 480, "fps": 12, "timeoutMin": 10, "maxWaiting": 4 },
   "features": {
     "rushLog": "members",
@@ -116,6 +117,7 @@
     "mascot": "off",
     "absence": "owner",
     "highlight": "owner",
+    "emoji": "owner",
     "gif": "owner",
     "birthday": "owner",
     "bioCard": "owner",

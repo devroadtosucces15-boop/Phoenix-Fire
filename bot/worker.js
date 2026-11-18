@@ -52,6 +52,7 @@ import { askAnswer, buildAskContext } from './ask.js';
 import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } from './wikibook.js';
 import { MASCOT_COMMANDS, mascotCommand, mascotDaily } from './mascot.js';
 import { HIGHLIGHT_COMMANDS, highlightCommand } from './highlight.js';
+import { EMOJI_COMMANDS, EMOJI_ID, emojiCommand, emojiButton } from './emoji.js';
 import { GIF_COMMANDS, GIF_FLAG, gifCommand, gifTick } from './gif.js';
 import { BIRTHDAY_COMMANDS, birthdayCommand } from './birthday.js';
 import { ABSENCE_COMMANDS, ABSENCE_ID, absenceCommand, absenceButton, absenceTick } from './absence.js';
@@ -234,6 +235,8 @@ export default {
     if (i.type === 3 && WIKI_ID.test(i.data?.custom_id ?? '')) return json(await wikiButton(i, env, who)); // its pages, jump list and setup helper
     if (i.type === 2 && MASCOT_COMMANDS.has(i.data.name)) return json(await mascotCommand(i, env, who)); // /mascot quote | ask | roast | mute (bot/mascot.js)
     if (i.type === 2 && BIRTHDAY_COMMANDS.has(i.data.name)) return json(await birthdayCommand(i, env, who)); // /birthday set | visible | show | clear (bot/birthday.js)
+    if (i.type === 2 && EMOJI_COMMANDS.has(i.data.name)) return json(await emojiCommand(i, env, who, ctx)); // /emoji suggest | mine | delete | review (bot/emoji.js)
+    if (i.type === 3 && EMOJI_ID.test(i.data?.custom_id ?? '')) return json(await emojiButton(i, env, who)); // the managers' Approve and Reject buttons
     if (i.type === 2 && HIGHLIGHT_COMMANDS.has(i.data.name)) return json(await highlightCommand(i, env, who, ctx)); // /highlight upload | mine | delete | list (bot/highlight.js)
     if (i.type === 2 && GIF_COMMANDS.has(i.data.name)) return json(await gifCommand(i, env, who, ctx)); // /gif make | mine | delete | list: the video becomes a GIF in a GitHub Actions job (bot/gif.js)
     if (i.type === 2 && ABSENCE_COMMANDS.has(i.data.name)) return json(await absenceCommand(i, env, who)); // /absence notice | mine | cancel | list (bot/absence.js)

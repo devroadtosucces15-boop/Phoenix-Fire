@@ -123,6 +123,26 @@ ${hasData ? `<div class="ix-sky" role="img" aria-label="${esc(METRICS.find((m) =
     return `<section class="card ix-sec" id="absences"><div class="ix-h"><h3>🌴 Absences</h3></div>${body}</section>`;
   }
 
+  // ---------- Emoji and sticker suggestions (PF-024 Item 22): managers look at each image, then approve or reject; nothing is added to the server from here ----------
+  function emojis() {
+    const e = I.e;
+    if (!e) return '';
+    const ST = { pending: '🟠 waiting', approved: '✅ approved', rejected: '❌ rejected' };
+    const one = (r) => `<li data-emoji="${r.id}"><b>:${esc(r.name)}:</b> · ${r.kind === 'sticker' ? '🏷️ sticker' : '😀 emoji'} · ${esc(r.mime.split('/')[1].toUpperCase())}${r.animated ? ' animated' : ''} ${r.width} x ${r.height} · ${Math.max(1, Math.round(r.size / 1024))} KB · from ${esc(r.user)} · ${ST[r.status] || esc(r.status)}${r.reviewedBy ? ` by ${esc(r.reviewedBy)}` : ''}
+      <span class="ix-img">${I.img?.[r.id] ? `<img src="${esc(I.img[r.id])}" alt="${esc(r.name)}" width="64" height="64" style="object-fit:contain;vertical-align:middle">` : `<button class="btn small ghost" data-emoji-show="${r.id}">Show image</button>`}</span>
+      ${r.status === 'pending' ? `<button class="btn small" data-emoji-ok="${r.id}">Approve</button> <button class="btn small ghost" data-emoji-no="${r.id}">Reject</button>` : ''}</li>`;
+    const body = e.items.length ? `<ul>${e.items.map(one).join('')}</ul>` : '<p class="muted">No suggestions yet.</p>';
+    return `<section class="card ix-sec" id="emojis"><div class="ix-h"><h3>😀 Emoji and stickers</h3></div>${body}<p class="muted small">Limits: emoji ${e.limits.emojiKb} KB, sticker ${e.limits.stickerKb} KB. Approved images are kept for the server importer; nothing is added to the server yet.</p></section>`;
+  }
+  async function decideEmoji(id, action) {
+    try { await ctx.call('/api/emoji/review/decide', { id, action }); ctx.toast(action === 'approve' ? 'Approved' : 'Rejected'); I.e = await ctx.call('/api/emoji/review'); }
+    catch (er) { ctx.toast(er.message, true); try { I.e = await ctx.call('/api/emoji/review'); } catch { /* keep the list */ } }
+    paint();
+  }
+  async function showEmoji(id) {
+    try { const r = await ctx.call(`/api/emoji/review/file?id=${encodeURIComponent(id)}`); (I.img ||= {})[id] = r.dataUrl; paint(); } catch (er) { ctx.toast(er.message, true); }
+  }
+
   // ---------- page ----------
   function paint() {
     if (!el?.isConnected) return;
@@ -136,6 +156,7 @@ ${hasData ? `<div class="ix-sky" role="img" aria-label="${esc(METRICS.find((m) =
 ${gauges()}${drill()}
 ${counselor()}
 ${absences()}
+${emojis()}
 <div class="ix-grid"><section class="card ix-sec ix-td">${todos()}</section><section class="card ix-sec ix-sk">${skyline()}</section></div></div>`;
   }
 
@@ -144,8 +165,10 @@ ${absences()}
     try { I.r = await ctx.call('/api/intel'); } catch (er) { I.err = er.message; if (I.r) ctx.toast(er.message, true); }
     try { I.c = await ctx.call('/api/intel/counselor'); } catch { I.c = null; } // flag off or not a manager: the section stays out
     try { I.a = await ctx.call('/api/intel/absences'); } catch { I.a = null; } // flag off or not a manager: the section stays out
+    try { I.e = await ctx.call('/api/emoji/review'); } catch { I.e = null; } // flag off or not a manager: the section stays out
     I.busy = '';
     paint();
+    if (/tool=emojis/.test(location.search)) $('#emojis', el)?.scrollIntoView?.({ block: 'start' });
     if (/tool=absences/.test(location.search)) $('#absences', el)?.scrollIntoView?.({ block: 'start' });
     if (/tool=counselor/.test(location.search)) $('#counselor', el)?.scrollIntoView?.({ block: 'start' });
   }
@@ -172,6 +195,9 @@ ${absences()}
       if (d.area) { I.open = I.open === d.area ? '' : d.area; paint(); if (I.open) $('.ix-drill', el)?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' }); }
       else if (d.filter) { I.filter = d.filter; paint(); }
       else if (d.metric) { I.metric = d.metric; paint(); }
+      else if (d.emojiOk) decideEmoji(Number(d.emojiOk), 'approve');
+      else if (d.emojiNo) decideEmoji(Number(d.emojiNo), 'reject');
+      else if (d.emojiShow) showEmoji(d.emojiShow);
       else if (d.act) act(d.act, !!d.undo);
       else if (d.remind) remind(d.remind);
       else if (d.ix === 'refresh') load();
