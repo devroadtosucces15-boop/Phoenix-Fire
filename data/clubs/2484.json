@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-18T16:00:43.938Z",
+ "fetchedAt": "2026-11-18T16:10:47.030Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1741,7 +1741,7 @@
   {
    "name": "MV33xChris",
    "proPos": "0",
-   "gamesPlayed": "215",
+   "gamesPlayed": "216",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
@@ -1829,9 +1829,9 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "109",
+   "gamesPlayed": "110",
    "goals": "13",
-   "assists": "8",
+   "assists": "9",
    "manOfTheMatch": "3",
    "ratingAve": "7.1",
    "prevGoals": "0",
@@ -1906,12 +1906,12 @@
   {
    "name": "Froezer",
    "proPos": "25",
-   "gamesPlayed": "200",
-   "goals": "129",
-   "assists": "190",
+   "gamesPlayed": "201",
+   "goals": "131",
+   "assists": "191",
    "manOfTheMatch": "24",
    "ratingAve": "8.2",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2175,6 +2175,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-18T16:00:43.938Z"
+  "fetchedAt": "2026-11-18T16:10:47.030Z"
  }
 }
