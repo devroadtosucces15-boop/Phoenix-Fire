@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-18T21:00:45.669Z",
+ "fetchedAt": "2026-11-18T21:10:42.152Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1881,11 +1881,11 @@
   {
    "name": "CapoGroot",
    "proPos": "14",
-   "gamesPlayed": "46",
+   "gamesPlayed": "47",
    "goals": "3",
    "assists": "5",
-   "manOfTheMatch": "1",
-   "ratingAve": "6.6",
+   "manOfTheMatch": "2",
+   "ratingAve": "6.7",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
@@ -1925,7 +1925,7 @@
   {
    "name": "Usman4518",
    "proPos": "14",
-   "gamesPlayed": "286",
+   "gamesPlayed": "287",
    "goals": "212",
    "assists": "235",
    "manOfTheMatch": "46",
@@ -2128,6 +2128,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-18T21:00:45.669Z"
+  "fetchedAt": "2026-11-18T21:10:42.152Z"
  }
 }
