@@ -53,7 +53,7 @@ const pb = { ...p, s: { ...p.s, gp: 20 }, tr: [7, 7.2, 6.8, 7.1, 7.4, 7.6, 7.2, 
 const good = playerBreakdown(hot, pb, m), bad = playerBreakdown(cold, pb, m), none = playerBreakdown(lineNo, pb, m);
 t('player insight: a big night puts the rating and counters under strengths; a poor night puts them under weak spots, fouls counted the other way', good.strengths.length >= 4 && good.weak.length === 0 && bad.weak.length >= 4 && bad.weak.some((r) => r.id === 'fouls') && good.strengths.every((r) => r.tone === 'good'));
 t('player insight: each insight says what the number does and one thing to do, with a target for the weak spots', bad.insights.some((x) => x.aim && /next game/.test(x.aim) && x.text.length > 40) && bad.insights.length <= 4);
-t('player insight: a friendly (no counters) judges only rating, passing, tackling and says why the rest is missing, never zeros', none.rows.every((r) => ['rating', 'pass', 'tackle'].includes(r.id)) && none.insights.some((x) => /friendl/i.test(x.lead)));
+t('player insight: a friendly (no counters) judges the EA basics only (rating, goals, assists, passing, tackling, shots) and says why the rest is missing, never zeros', none.rows.every((r) => !['int', 'aer', 'won', 'fwd', 'pos', 'sot', 'fouls'].includes(r.id)) && none.insights.some((x) => /friendl/i.test(x.lead)));
 t('player insight: no average yet (under 3 games) gives no comparison rows and no crash', playerBreakdown(lineEv, { n: 'New', s: { gp: 1 } }, m).rows.length === 0 && trend({ tr: [7, 7] }) === null);
 t('player insight: the trend compares the last five games with his own average', trend(pb).delta > 0 && trend(pb).points.length === 10);
 const pmc = playerMatchCard(m, hot, pb, crestClub), pmFriendly = playerMatchCard(m, lineNo, pb, crestClub);

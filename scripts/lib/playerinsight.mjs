@@ -12,6 +12,12 @@ const round1 = (v) => Math.round(v * 10) / 10;
 // id, label, why it matters, what to do, unit, decimals, lower-is-better, the scale of "a big difference" (relative or in points), and which positions care most
 const CATALOG = [
   { id: 'rating', label: 'Rating', unit: '', dec: 1, scale: 1, why: 'EA grades everything you did on the pitch in one number.', fix: 'Win the basics cleanly: simple passes, won duels and staying in position all feed it.', roles: ['FWD', 'MID', 'DEF', 'GK'] },
+  { id: 'goals', label: 'Goals', unit: '', dec: 0, rel: true, why: 'Goals decide games.', fix: 'Get into the box earlier and shoot first time when the chance is on.', roles: ['FWD', 'MID'] },
+  { id: 'assists', label: 'Assists', unit: '', dec: 0, rel: true, why: 'Assists turn possession into goals.', fix: 'Look for the runner behind the line before you pick the safe pass.', roles: ['FWD', 'MID'] },
+  { id: 'shots', label: 'Shots', unit: '', dec: 0, rel: true, why: 'You cannot score without shooting.', fix: 'Shoot when you have the space instead of one more touch.', roles: ['FWD', 'MID'] },
+  { id: 'saves', label: 'Saves', unit: '', dec: 0, rel: true, why: 'Every save keeps the team in the game.', fix: 'Set your feet early and stay big to the shooter.', roles: ['GK'] },
+  { id: 'pm', label: 'Passes made', unit: '', dec: 0, rel: true, why: 'Passes completed are how you keep the ball and set the tempo.', fix: 'Show for the ball more often and play it first time when you can.', roles: ['MID', 'DEF'] },
+  { id: 'tm', label: 'Tackles won', unit: '', dec: 0, rel: true, why: 'Won tackles stop attacks.', fix: 'Pick your moment: close the ball down when the touch is heavy.', roles: ['DEF', 'MID'] },
   { id: 'pass', label: 'Pass accuracy', unit: '%', dec: 0, scale: 20, why: 'Every completed pass keeps the ball and keeps an attack alive.', fix: 'When you are marked, take the safe pass to feet and move; save the risky ball for when you are free.', roles: ['MID', 'DEF'] },
   { id: 'tackle', label: 'Tackle success', unit: '%', dec: 0, scale: 25, why: 'Won tackles end attacks and hand the ball back to the team.', fix: 'Jockey first and only commit when the ball is loose or their touch is heavy.', roles: ['DEF', 'MID'] },
   { id: 'int', label: 'Interceptions', unit: '', dec: 0, rel: true, why: 'Interceptions cut out a pass before it becomes a chance.', fix: 'Stand between the passer and the receiver and read the pass instead of chasing the ball.', roles: ['DEF', 'MID'] },
@@ -31,6 +37,12 @@ function read(id, line, p) {
   const e = line.ev, av = p?.i?.pg, rt = p?.i?.r, s = p?.s;
   switch (id) {
     case 'rating': return s?.gp >= 3 && s.r ? [n(line.r), s.r] : [null, null];
+    case 'goals': return s?.gp >= 3 ? [n(line.g), s.g / s.gp] : [null, null];
+    case 'assists': return s?.gp >= 3 ? [n(line.a), s.a / s.gp] : [null, null];
+    case 'shots': return p?.b ? [n(line.sh), p.b.sh] : [null, null];
+    case 'saves': return p?.b && (n(line.sv) > 0 || p.b.sv >= 1) ? [n(line.sv), p.b.sv] : [null, null];
+    case 'pm': return p?.b && n(line.pa) > 0 ? [n(line.pm), p.b.pm] : [null, null];
+    case 'tm': return p?.b && n(line.ta) > 0 ? [n(line.tm), p.b.tm] : [null, null];
     case 'pass': return n(line.pa) >= 8 && s?.p ? [pct(line.pm, line.pa), s.p] : [null, null];
     case 'tackle': return n(line.ta) >= 3 && s?.t ? [pct(line.tm, line.ta), s.t] : [null, null];
     case 'int': return e && av ? [n(e.int), av.int] : [null, null];
@@ -57,6 +69,7 @@ export function playerBreakdown(line, p, m = {}) {
   for (const c of CATALOG) {
     const [v, avg] = read(c.id, line, p);
     if (v == null || avg == null) continue;
+    if (c.rel && v === 0 && avg < 0.5) continue; // nothing to judge: he rarely does this and did not do it
     const dev = deviation(c, v, avg), weight = c.roles.includes(role) ? 1.25 : 1; // the numbers that belong to his job count a little more
     rows.push({ id: c.id, label: c.label, v, avg, text: fmt(c, v), avgText: fmt(c, avg), dev, rank: dev * weight, tone: Math.abs(dev) < 0.1 ? 'even' : dev > 0 ? 'good' : 'bad', lower: !!c.lower, c });
   }

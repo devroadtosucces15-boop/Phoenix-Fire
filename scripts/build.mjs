@@ -1307,6 +1307,8 @@ write('api/players.json', JSON.stringify(visiblePlayers.map((pl) => ({
   car: pl.career ? { gp: num(pl.career.gamesPlayed), g: num(pl.career.goals), a: num(pl.career.assists), r: num(pl.career.ratingAve), m: num(pl.career.manOfTheMatch) } : null,
   rad: pl.radar, raw: pl.radarRaw, tr: [...pl.apps].reverse().slice(-15).map((x) => x.rating),
   ...(pl.evs?.length ? { i: playerIntel(pl.evs) } : {}),
+  // per-game EA basics over his club games (shots, passes made, tackles made, saves): the averages the player's own match card is judged against
+  ...(() => { const a = pl.apps.filter((x) => x.clubId === (pl.mainClub ?? x.clubId)); if (a.length < 3) return {}; const pg = (f) => Math.round((a.reduce((t, x) => t + (+x[f] || 0), 0) / a.length) * 100) / 100; return { b: { sh: pg('shots'), pm: pg('passes'), tm: pg('tackles'), sv: pg('saves') } }; })(),
 }))));
 // Personal match log for the Squad Hub dashboard (P2.6) and achievements (P2.3 / P4.3): our players' League
 // matches for NOREX, oldest → newest, compact rows (see cols). grp = position group from EA's app position.

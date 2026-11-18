@@ -190,7 +190,7 @@ const ICON = { check: '✓', team: '◆', flow: '→', goal: '★', shield: '▣
 export function playerMatchCard(m, line, p, club) {
   const bd = playerBreakdown(line, p, m), tr = trend(p), b = band(+line.r, line.mom), s = p?.s?.gp >= 3 ? p.s : null;
   const d = s?.r ? +line.r - s.r : null;
-  const rows = [...bd.rows].filter((r) => r.id !== 'rating').sort((x, y) => y.dev - x.dev).slice(0, 8);
+  const rows = [...bd.rows].filter((r) => r.id !== 'rating').sort((x, y) => y.dev - x.dev).slice(0, 12);
   const diverge = (r) => { const w = Math.round(Math.min(1, Math.abs(r.dev) / 1.0) * 100); return `<div class="dv"><div class="half l">${r.dev < 0 && r.tone === 'bad' ? `<i class="bad" style="width:${w}%"></i>` : ''}</div><div class="half r">${r.dev > 0 && r.tone === 'good' ? `<i class="good" style="width:${w}%"></i>` : ''}</div></div>`; };
   const facts = [line.g ? `${line.g} goal${line.g > 1 ? 's' : ''}` : '', line.a ? `${line.a} assist${line.a > 1 ? 's' : ''}` : '', line.pa ? `${line.pm}/${line.pa} passes` : '', line.ta ? `${line.tm}/${line.ta} tackles` : '', line.sh ? `${line.sh} shot${line.sh > 1 ? 's' : ''}` : ''].filter(Boolean).join('  ·  ');
   const ins = bd.insights.map((i) => `<div class="in ${i.icon}"><span class="ic">${ICON[i.icon] ?? '◆'}</span><div><b>${esc(i.lead)}</b><p>${esc(i.text)}</p>${i.aim ? `<em>${esc(i.aim)}</em>` : ''}</div></div>`).join('');
@@ -889,7 +889,7 @@ export function cardJobs(club, players, { matches = 10, review = null, picture =
     if (model) jobs.push({ key: ['match', m.id, 'review'], file: `review-${m.id}-${hash([model, club.name, club.crest, pic?.model ?? null])}.png`, html: () => reviewCard(model, club, pic?.model ?? null, pic?.faces) });
     jobs.push({ key: ['match', m.id, 'score'], file: `score-${m.id}-${hash([m, club.name, club.crest])}.png`, html: () => scoreCard(m, club) });
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'field'], file: `field-${m.id}-${hash(m.ps)}.png`, html: () => fieldCard(m) });
-    if (i < REVIEW_MATCHES) for (const line of m.ps ?? []) { const p = players.find((x) => x.k === line.k); if (p?.home) jobs.push({ key: ['match', m.id, 'pm', p.k], file: `pm-${m.id}-${p.k}-${hash([line, m.res, m.gf, m.ga, m.opp, club.name, club.crest, p.s, p.i, (p.tr ?? []).slice(-10)])}.png`, html: () => playerMatchCard(m, line, p, club) }); }
+    if (i < REVIEW_MATCHES) for (const line of m.ps ?? []) { const p = players.find((x) => x.k === line.k); if (p?.home) jobs.push({ key: ['match', m.id, 'pm', p.k], file: `pm-${m.id}-${p.k}-${hash([line, m.res, m.gf, m.ga, m.opp, club.name, club.crest, p.s, p.i, (p.tr ?? []).slice(-10), p.b])}.png`, html: () => playerMatchCard(m, line, p, club) }); }
     if (m.ps?.length) jobs.push({ key: ['match', m.id, 'box'], file: `box-${m.id}-${hash([m.ps, m.gf, m.ga, m.opp])}.png`, html: () => boxScoreCard(m, club) });
   }
   for (const p of players.filter((x) => x.home && x.s?.gp)) {
