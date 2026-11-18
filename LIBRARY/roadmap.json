@@ -832,6 +832,10 @@
     {
       "date": "2026-11-18",
       "text": "Live pass of the Boardroom (owner login, read-only): the live club docs still hold \"Welcome to NOREX UNITED\" (owner fixes it under Club docs in Content; Worker data, not repo code); Health shows EA data \"unknown\" and a Worker CPU p99 of 1,265,955 ms that looks like a unit or reading error; the Tools Bot tab and Hall of Fame, Medals, Backup and Organization tabs were not checked before they moved into the Control Center."
+    },
+    {
+      "date": "2026-11-18",
+      "text": "Match day and match stats audit ready: PLANNING/MATCHSTATS-REVIEW.md (pipeline, decoded vs unknown ids, link checklist). Waiting for the owner's link to the community decode setup; building starts after it arrives."
     }
   ]
 }
