@@ -32,6 +32,7 @@ import { lfgCommand, lfgButton, lfgExpire, LFG_ID } from './lfg.js';
 import { queueCommand, queueInteraction, queueTick, RQ_ID } from './rushqueue.js';
 import { disabledOutputs, controlOf, decide, componentKey } from './controls.js';
 import { outputChoices } from './controlcenter.js';
+import { purposeChoices } from './orgconsts.js';
 import { unalias } from './merged.js';
 import { boardCommand, seasonCardCommand, seasonCardButton, SEASON_BUTTON } from './rushscan.js';
 import { prefPosSelect, PREF_ID } from './prefpos.js';
@@ -171,6 +172,7 @@ export default {
     }
     env = withFlagOverrides(env, await loadFlagOverrides(env)); // the Boardroom's live flag switches apply to Discord too (they used to reach website requests only)
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');
+    if (i.type === 4 && i.data?.name === 'setup' && flatOptions(i.data.options).find((o) => o.focused)?.name === 'purpose') return json({ type: 8, data: { choices: purposeChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
     if (i.type === 4 && i.data?.name === 'setup' && flatOptions(i.data.options).find((o) => o.focused)?.name === 'output') return json({ type: 8, data: { choices: outputChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
     if (i.type === 4 && i.data?.name === 'testview') return json({ type: 8, data: { choices: testviewChoices(i) } }); // PF-024 Item 25: the output and variant pickers
     if (i.type === 4 && i.data?.name === 'host') return json({ type: 8, data: { choices: zoneChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });

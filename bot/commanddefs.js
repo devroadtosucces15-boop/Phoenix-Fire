@@ -278,7 +278,7 @@ export const COMMANDS = [
       ] },
       { type: SUB, name: 'pingroles', description: 'Post the 🔔 ping-role buttons (creates the roles if needed)', options: [{ type: CHANNEL, name: 'channel', description: 'Where to post the panel', required: true, channel_types: [0, 5] }] },
       { type: SUB, name: 'channel', description: 'Set which channel a feature posts in (same setting as Boardroom → Organization)', options: [
-        { type: STRING, name: 'purpose', description: 'What the channel is for', required: true, choices: CHANNEL_PURPOSES.map((p) => ({ name: p.replaceAll('_', ' '), value: p })) },
+        { type: STRING, name: 'purpose', description: 'What the channel is for', required: true, autocomplete: true }, // 25-choice cap: the list is answered by purposeChoices() in bot/orgconsts.js
         { type: CHANNEL, name: 'channel', description: 'The channel (default: this one)', channel_types: [0, 5] },
       ] },
       { type: SUB, name: 'role', description: 'Map a Discord role to a permission group (same setting as Boardroom → Organization)', options: [
