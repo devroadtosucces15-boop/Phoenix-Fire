@@ -7,7 +7,7 @@
 import { can, flagOn } from './roles.js';
 import { orgName } from './orgconfig.js';
 import { weekOf } from './awards.js';
-import { awardPoints } from './points.js';
+import { awardRule } from './points.js';
 
 const WEEK = 7 * 86400e3, WINDOW = 8, DECAY = 0.85, TREND = 12;
 export const MIN_RATERS = 3;
@@ -106,7 +106,7 @@ export async function ratingsRoute(p, method, body, me, env, loadSite, log, url)
       await run(env, `INSERT INTO star_ratings (week, user_id, player, stars, name, at) VALUES (?, ?, ?, ?, ?, ?)
         ON CONFLICT (week, user_id, player) DO UPDATE SET stars = excluded.stars, at = excluded.at`, week.key, me.u, pl.k, stars, me.n, Date.now());
       await log(env, me, 'star-rate', `${pl.n} · ${stars}★`);
-      if (!already) await awardPoints(env, me.u, 'community', 2, `Rated ${pl.n}`); // P11.3 – only a first rating this week, not changing stars
+      if (!already) await awardRule(env, me.u, 'community.rating', `Rated ${pl.n}`); // P11.3 – only a first rating this week, not changing stars
     }
     return json(await state(env, me, loadSite));
   }

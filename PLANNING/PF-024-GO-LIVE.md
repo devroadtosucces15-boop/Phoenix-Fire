@@ -267,3 +267,23 @@ Decisions (safe defaults, say if different):
 - **No Control Center site tool** (so no new ROUTES): the command is the whole feature. Card pictures drawn by the card studio are left out of the preview and the header says how many.
 - **No AI**: outputs that need the image or text model are not run; the AI-quota switch the plan mentions is not built.
 - **Not built**: per-test rule overrides beyond `as`, a site page for the test view, an "add a sample" step in `/bot-new` (new outputs get a sample when `studio.mjs capture` and `testview` are rerun).
+
+## Item 24: the shared points economy (code done on branch `claude/pf-024-item24-3a6dd8`)
+It extends the P11.3 ledger in `bot/points.js` (one ledger for the bot and the site, no new tables for earning). New: **seasons** (points reset each season; the closed season is archived in `points_seasons`), **spendable credit** (`users.points_spent`, a `spend` entry in `points_log`, the balance never goes below 0, every spend also lands in `config_audit` as `points:spend`), **editable rules** (Control Center, Bot settings, area `points`: what each action pays, 0 = off, plus the price list; saved in `cc_config` row `points`, audited as `cc:points`), a **weekly balance DM** (notification type `points`, Monday from 09:00 UTC, one per member with points: balance, this week by category, rank; the owner switches it, narrows it and sets the methods in the DM matrix), **match performance points** (the result step `scripts/post-results.mjs` sends one keyed POST per new home match to `POST /api/points/match`; the Worker pays played, goals, assists, man of the match and a win once per member per match through the claim link), and **badge points** (each new achievement). There are no daily caps. The old amounts are the defaults (check-in 5, rating 2, MOTM vote 2, clean week 3).
+
+Owner steps (not done here):
+1. Apply migration `0077_points_economy.sql` (adds `users.points_spent`, `points_log.season` and `ref`, a unique once-only index, `points_seasons`). Until then everything of P11.3 keeps working (the award falls back to the old columns).
+2. Deploy the Worker. The new parts sit behind the flag **`pointsEconomy`** (ships `owner`): the owner sees the price list, redeem, the staff tools, and the weekly DM, match points and badge points only start when it is set to `members`. `points` stays `members` as before.
+3. No new secret: the match route's key is derived from the existing `DISCORD_CLIENT_SECRET` (same pattern as `/api/crawl`). The update workflow already passes that secret to the result step.
+4. Set the **price list** (Control Center, Bot settings, Points rules): it ships empty. Members can redeem from it with `POST /api/points/redeem` (a manager sees it as a to-do) and managers can record a spend for anyone in the same card.
+5. Starting the next season is the owner's button in the same card (type RESET to confirm; everyone starts at 0, the old season is kept).
+6. The DM picture `banner-dm-points.png` is drawn for the audit; the live site gets it on the next card run in CI.
+
+Owner decisions (assumed safest defaults, say if you want different):
+- **Who gets the weekly DM**: every member with points or a balance, if their DM matrix row allows it; the default is DM on, and members can untick it in their notification settings.
+- **Match points need a claimed player** (an approved claim, matched by gamertag). Unclaimed players earn nothing.
+- **Badge points** pay the rule amount (3) per new achievement, not the achievement's own leaderboard value; the first sync batch of old achievements pays nothing.
+- **Season names**: `S1` today, the owner can type any name when resetting.
+- **Not built (no source yet)**: points for messages and engagement. Message counts exist only by REST polling (privacy notes of Items 14 and 15); interaction counts could pay per command but that rewards spamming a command, so it is left for a decision. Predictions still pay the amount the prediction scoring computes (not a rule). Games points have rules (`games.played`, `games.won`) ready for the arcade (Item 23).
+- **No manual bonus or deduction yet**: a manager can only record a spend.
+

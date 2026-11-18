@@ -44,6 +44,7 @@ export const WHERE = {
   awards: ["hub-squad.html",""],
   predictions: ["hub-squad.html",""],
   points: ["hub-squad.html",""],
+  pointsEconomy: ["hub-squad.html",""],
   feed: ["news.html",""],
   hotw: ["hub-squad.html",""],
   mentions: ["hub-clubhouse.html",""],

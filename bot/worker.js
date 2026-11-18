@@ -56,6 +56,7 @@ import { TESTVIEW_COMMANDS, TESTVIEW_ID, testviewCommand, testviewButton, testvi
 import { EMOJI_COMMANDS, EMOJI_ID, emojiCommand, emojiButton } from './emoji.js';
 import { GIF_COMMANDS, GIF_FLAG, gifCommand, gifTick } from './gif.js';
 import { BIRTHDAY_COMMANDS, birthdayCommand } from './birthday.js';
+import { weeklyDigest } from './points.js';
 import { ABSENCE_COMMANDS, ABSENCE_ID, absenceCommand, absenceButton, absenceTick } from './absence.js';
 import { INTEL_COMMANDS, INTEL_ID, intelCron, counselorCommand, counselorButton } from './serverintel.js';
 import { NAV_COMMANDS, NAV_ID, navCommand, navButton, navCron } from './navigator.js';
@@ -101,6 +102,7 @@ export default {
     if (flagOn(env, { role: 'owner' }, 'mascot')) job('mascotDaily', () => mascotDaily(env, postEmbed).catch((e) => console.log('mascot daily failed', e.message))); // PF-024 Item 15: one motivational quote a day that never repeats (purpose mascot_posts)
     if (flagOn(env, { role: 'owner' }, 'serverIntel')) job('intelSample', () => intelCron(env).catch((e) => console.log('server intelligence failed', e.message))); // PF-024 Item 14: weekly public-channel sample, numbers only (kill switch: flag serverIntel)
     if (flagOn(env, { role: 'owner' }, 'navigator')) job('navScan', () => navCron(env).catch((e) => console.log('navigator scan failed', e.message))); // PF-024 Item 12: rescan the server about hourly, keep what changed
+    if (flagOn(env, { role: 'owner' }, 'pointsEconomy')) job('pointsWeekly', () => weeklyDigest(env).catch((e) => console.log('weekly points digest failed', e.message))); // PF-024 Item 24: one balance DM per member each Monday (the DM kind `points` is switched in the DM matrix)
     job('updateLive', () => updateLive(env).catch((e) => console.log('live check failed', e.message))); // P1.3 live banner
     job('checkUptime', () => checkUptime(env).catch((e) => console.log('uptime monitor failed', e.message))); // P11.2 24/7 monitor
     job('checkProfanity', () => checkProfanity(env).then(() => cleanBonus(env)).catch((e) => console.log('profanity check failed', e.message))); // P11.4

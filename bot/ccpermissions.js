@@ -31,6 +31,7 @@ export const ROUTES = [
   ['GET', exact('/api/intel/counselor'), 'counselor'], // PF-024 Item 14: team tendencies and anomaly flags (numbers only), managers
   ['GET', exact('/api/intel/absences'), 'absences'], // PF-024 Item 17: absence notices with the private reason, managers
   ['GET', prefix('/api/emoji/review'), 'emojis'], ['POST', exact('/api/emoji/review/decide'), 'emojis'], // PF-024 Item 22: emoji and sticker suggestions (list, stored image on request, approve or reject), managers
+  ['GET', exact('/api/points/admin'), 'settings'], ['POST', exact('/api/points/admin/spend'), 'settings'], ['POST', exact('/api/points/admin/reset-season'), 'settings', 'owner'], // PF-024 Item 24: the points ledger tools (rules are the `points` area of settings); resetting a season is the owner's
   ['GET', exact('/api/music/status'), 'music'], // the DJ bridge status and command log (music.manage); the member rooms routes stay members'
 ];
 

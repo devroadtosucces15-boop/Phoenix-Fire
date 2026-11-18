@@ -12,11 +12,11 @@
 import { can } from './roles.js';
 import { channelFor } from './orgconfig.js';
 import { notify, safely } from './notify.js';
-import { awardPoints } from './points.js';
+import { awardRule } from './points.js';
 
 const API = 'https://discord.com/api/v10';
 const WARN_AT = 3, MUTE_AT = 5, MUTE_HOURS = 24;
-const CLEAN_DAYS = 7, CLEAN_BONUS = 3;
+const CLEAN_DAYS = 7; // the bonus itself is the rule behaviour.clean_streak (bot/points.js, editable in the Control Center)
 const DAY = 86400e3;
 const RULE_NAME = 'PHOENIX FIRE profanity filter';
 const LEGACY_RULE_NAME = 'NOREX profanity filter'; // an AutoMod rule created before the rename is adopted, not duplicated
@@ -111,7 +111,7 @@ export async function cleanBonus(env) {
   const rows = await env.DB.prepare(`SELECT id FROM users WHERE last_at > ? AND (last_clean_bonus_at IS NULL OR last_clean_bonus_at < ?)
     AND id NOT IN (SELECT user_id FROM profanity_log WHERE at > ?) LIMIT 100`).bind(Date.now() - 30 * DAY, cutoff, cutoff).all().then((r) => r.results);
   for (const r of rows) {
-    await awardPoints(env, r.id, 'behaviour', CLEAN_BONUS, `${CLEAN_DAYS} days clean`);
+    await awardRule(env, r.id, 'behaviour.clean_streak', `${CLEAN_DAYS} days clean`);
     await env.DB.prepare('UPDATE users SET last_clean_bonus_at = ? WHERE id = ?').bind(Date.now(), r.id).run();
   }
   return { awarded: rows.length };

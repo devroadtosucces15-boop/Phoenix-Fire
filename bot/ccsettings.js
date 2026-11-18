@@ -13,6 +13,7 @@ import { getToolSettings, saveToolSettings } from './servertools.js';
 import { parseLink, MAX_SOURCES } from './streamalerts.js';
 import { mirrorChannel, setPingRole, foldLegacy, channelFor, PING_GROUPS, CHANNEL_PURPOSE_INFO } from './orgconfig.js';
 import { can } from './roles.js';
+import { loadRules as loadPointsRules, saveRules as savePointsRules, cleanRules as cleanPointsRules, seasonOf, RULE_DEFAULTS } from './points.js';
 import { sharedKey } from './sharedkey.js';
 
 const all = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).all().then((r) => r.results);
@@ -28,12 +29,12 @@ const parse = (s) => { try { return JSON.parse(s); } catch { return null; } };
 //   manager: notification routes, Rush queue timers, welcome / leave / ping roles, profanity alert channel, stream sources, recruitment, match alert, stream links, legacy fold-in
 export const SPLIT = {
   owner: ['bot'],
-  manager: ['routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams'],
+  manager: ['routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams', 'points'],
 };
 // The slash commands that change the same thing (shown beside the setting; both write the same rows).
 export const VIA = {
   bot: [], routes: [], rush: ['/queue settings'], tools: ['/setup leavelog', '/setup welcome', '/setup pingroles'], profanity: ['/profanitysetup'],
-  stream_sources: ['/streamalerts'], recruitment: [], matchAlert: [], streams: [],
+  stream_sources: ['/streamalerts'], recruitment: [], matchAlert: [], streams: [], points: ['/points'],
 };
 export const areaLevel = (area) => (SPLIT.owner.includes(area) ? 'owner' : SPLIT.manager.includes(area) ? 'manager' : null);
 const mayWrite = (me, area) => (areaLevel(area) === 'owner' ? can(me, 'settings.bot') : areaLevel(area) === 'manager' ? can(me, 'controlcenter.manage') : false);
@@ -144,6 +145,16 @@ export const AREAS = {
       await run(env, "INSERT INTO meta (key, value) VALUES ('profanity_config', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value", JSON.stringify({ ...cfg, channelId, ...(channelId !== cfg.channelId ? { lastMessageId: null } : {}) }));
       await mirrorChannel(env, 'automod_alerts', channelId, { explicit: true });
       return { before: { channelId: cfg.channelId ?? '' }, after: { channelId } };
+    },
+  },
+  points: {
+    label: 'Points rules', summary: 'What each action pays, and the price list for spending points (no daily caps; points reset each season)',
+    get: async (env) => ({ rules: await loadPointsRules(env), season: await seasonOf(env), labels: Object.fromEntries(Object.entries(RULE_DEFAULTS).map(([k, [n, t]]) => [k, { amount: n, label: t }])) }),
+    async save(env, b, me) {
+      const cur = await loadPointsRules(env), c = cleanPointsRules(b, cur);
+      if (c.error) return c;
+      await savePointsRules(env, c.rules, me);
+      return { before: cur, after: c.rules };
     },
   },
   stream_sources: {

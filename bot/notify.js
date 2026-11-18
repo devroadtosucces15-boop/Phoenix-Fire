@@ -44,6 +44,7 @@ export const TYPES = {
   award: { icon: '🏆', label: 'Weekly awards – results and my wins', def: 'site' },
   feedback: { icon: '💌', label: 'Anonymous feedback from teammates', def: 'dm' },
   predict: { icon: '🔮', label: 'My prediction points', def: 'site' },
+  points: { icon: '⭐', label: 'Weekly points balance – what I earned and can spend', def: 'dm' }, // PF-024 Item 24 (flag pointsEconomy)
   game: { icon: '🎮', label: 'Game updates – new max level & rules', def: 'site' },
   mention: { icon: '📣', label: 'When someone @mentions me', def: 'dm' },
   message: { icon: '💬', label: 'New DMs and group chat messages', def: 'dm' },
@@ -61,7 +62,7 @@ export const TYPES = {
 };
 const MODES = ['dm', 'site', 'off']; // the OLD per-type setting, still read (and still accepted by POST /api/notify/prefs) so nothing stored breaks
 // Stripe colour of the DM by kind (bot design system): honours gold, good news green, warnings red, staff to-dos steel, the rest club red.
-const DM_ACCENT = { live: 'win', award: 'gold', card: 'gold', predict: 'gold', moderation: 'loss', queue: 'steel', storage: 'steel', test: 'steel' };
+const DM_ACCENT = { live: 'win', award: 'gold', card: 'gold', predict: 'gold', points: 'gold', moderation: 'loss', queue: 'steel', storage: 'steel', test: 'steel' };
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);

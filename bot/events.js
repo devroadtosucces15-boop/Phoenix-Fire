@@ -29,7 +29,7 @@ import { discordTargets, postEmbed } from './docs.js';
 import { message, header, text, sep, facts, footer, buttons, side, thumb, toLegacy, cards, RESULT_ICON, bannerUrl, lineupUrl, autoBanner } from './ui.js';
 import { orgName, channelFor, pingRoleFor } from './orgconfig.js';
 import { facesOf } from './faces.js';
-import { awardPoints } from './points.js';
+import { awardRule } from './points.js';
 import { getBotSettings } from './settings.js';
 import { routeNotification } from './routing.js';
 import { recommendRoute } from './lineuprec.js';
@@ -491,7 +491,7 @@ export async function setCheckin(env, me, row, on, trial = null) {
       ON CONFLICT (event_id, user_id) DO UPDATE SET trial = excluded.trial, name = excluded.name, avatar = excluded.avatar`, row.id, me.u, me.n, me.a ?? null, trial, Date.now());
     if (!already) {
       await run(env, "INSERT INTO event_answer_log (event_id, user_id, name, kind, at) VALUES (?, ?, ?, 'checkin', ?)", row.id, me.u, me.n, Date.now());
-      await awardPoints(env, me.u, 'attendance', 5, `Checked in · ${label(row)}`); // P11.3 – only the first check-in for this night
+      await awardRule(env, me.u, 'attendance.checkin', `Checked in · ${label(row)}`); // P11.3 – only the first check-in for this night
     }
   }
   await refreshCheckinPost(env, row.id);

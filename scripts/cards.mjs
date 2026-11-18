@@ -803,6 +803,7 @@ export const DMS = {
   'dm-award': { art: 'trophy', title: 'Weekly awards', sub: 'The votes are counted', tag: 'Winners' },
   'dm-feedback': { art: 'chat', title: 'Feedback for you', sub: 'Sent anonymously by a teammate', tag: 'Only you' },
   'dm-predict': { art: 'crystal', title: 'Prediction points', sub: 'Your calls just paid off', tag: 'Only you' },
+  'dm-points': { art: 'medal', title: 'Your points', sub: 'This week and what you can spend', tag: 'Only you' },
   'dm-game': { art: 'pad', title: 'Game update', sub: 'New max level or rules', tag: 'EA update' },
   'dm-mention': { art: 'people', title: 'You were mentioned', sub: 'Someone tagged you in the Hub', tag: 'Social' },
   'dm-message': { art: 'inbox', title: 'New message', sub: 'A DM or group chat in the Hub', tag: 'Social' },

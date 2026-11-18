@@ -138,7 +138,7 @@ export const COMMANDS = [
   },
   { name: 'profile', description: "A member's profile – player, positions, platforms", options: [{ type: USER, name: 'member', description: 'Whose profile (default: yours)' }] },
   { name: 'awards', description: "This week's award ballot and last week's winners" },
-  { name: 'points', description: 'Your total points + breakdown by category (P11.3)' },
+  { name: 'points', description: 'Your balance, season and points breakdown (P11.3, Item 24)' },
   {
     name: 'avatarcard', description: 'Make your club card: pick a photo, a look and your kit (Card Studio)',
     options: [{ type: ATTACHMENT, name: 'image', description: 'Your photo (PNG/JPG/WEBP, 8 MB max). Leave empty to reuse your last one', required: false }],

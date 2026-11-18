@@ -9,6 +9,7 @@
 // totals (players.json), confirmed Rush results and member events in D1. Once reached they are stored and never lost.
 import { can, flagOn } from './roles.js';
 import { notify, safely } from './notify.js';
+import { awardRule } from './points.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
@@ -268,6 +269,7 @@ export async function syncAchievements(env, loadSite) {
   for (let i = 0; i < stmts.length; i += 50) await env.DB.batch(stmts.slice(i, i + 50));
   for (const [uid, ids] of news) {
     const a = ACH[ids[0]];
+    if (flagOn(env, { role: 'member' }, 'pointsEconomy')) await safely(awardRule(env, uid, 'badges.achievement', ids.length > 1 ? `${ids.length} achievements unlocked` : `Achievement: ${a.name}`, { times: ids.length })); // PF-024 Item 24
     await safely(notify(env, [uid], { type: 'badge', icon: a.icon, title: ids.length > 1 ? `${ids.length} achievements unlocked – ${a.name} and more` : `Achievement unlocked: ${a.name}`, body: ids.length > 1 ? null : a.desc, link: 'members.html#stats' }));
   }
   return { facts, have };
