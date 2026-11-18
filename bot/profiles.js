@@ -115,8 +115,8 @@ function age(v) {
   return n;
 }
 const language = (v) => clean(v, 24);
-export const BIO_SHOW_KEYS = ['ids', 'schedule', 'country', 'age', 'language'];
-export const BIO_SHOW_DEFAULT = { ids: true, schedule: true, country: false, age: false, language: false };
+export const BIO_SHOW_KEYS = ['ids', 'schedule', 'country', 'age', 'language', 'birthday'];
+export const BIO_SHOW_DEFAULT = { ids: true, schedule: true, country: false, age: false, language: false, birthday: false };
 const bioShow = (v, cur) => ({ ...BIO_SHOW_DEFAULT, ...cur, ...Object.fromEntries(BIO_SHOW_KEYS.filter((k) => v && typeof v === 'object' && k in v).map((k) => [k, !!v[k]])) });
 function country(v) {
   const x = clean(v, 8).toUpperCase();

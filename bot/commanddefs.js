@@ -29,6 +29,14 @@ export const COMMANDS = [
       { type: STRING, name: 'message', description: 'What they just said to you: the roast answers at the same energy', max_length: 160 },
       { type: STRING, name: 'level', description: 'How spicy (default light)', choices: [{ value: 'light', name: 'light' }, { value: 'medium', name: 'medium' }, { value: 'spicy', name: 'spicy' }] }] },
     { type: SUB, name: 'mute', description: 'Managers: switch the mascot ask and roast off or on', options: [{ type: BOOLEAN, name: 'on', description: 'Mute (default) or false to bring it back' }] }] },
+  // PF-024 Item 19 – birthdays (bot/birthday.js): the date is private until the member turns visibility on; no year is kept.
+  { name: 'birthday', description: 'Your birthday: save it, show or hide it (private until you turn it on)', contexts: [0], options: [
+    { type: SUB, name: 'set', description: 'Save your birthday (month and day, no year)', options: [
+      { type: STRING, name: 'date', description: 'Month and day, like 07-14', required: true, max_length: 5 },
+      { type: BOOLEAN, name: 'visible', description: 'Let the club celebrate it (default: keep what you had, hidden at first)' }] },
+    { type: SUB, name: 'visible', description: 'Turn the club celebration on or off', options: [{ type: BOOLEAN, name: 'on', description: 'On = celebrated and shown on your bio card', required: true }] },
+    { type: SUB, name: 'show', description: 'See what is saved (only you see this)' },
+    { type: SUB, name: 'clear', description: 'Delete your saved birthday' }] },
   // PF-024 Item 18 – the highlight clip upload (bot/highlight.js): stores a clip privately, nothing is posted or shared. Limits live in config.json `highlight`.
   { name: 'highlight', description: 'Upload a highlight clip for the club to keep (stored privately)', contexts: [0], options: [
     { type: SUB, name: 'upload', description: 'Store a clip (MP4, WebM or MOV)', options: [
@@ -413,7 +421,7 @@ export const APP_COMMANDS = {
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
-  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'matchdayhelp'],
+  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'birthday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).

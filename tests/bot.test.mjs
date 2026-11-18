@@ -40,6 +40,7 @@ const sample = {
   avatarcard: null, // deferred reply, needs a resolved attachment – tests/avatarcard.test.mjs (P11.5)
   insight: null, // BE9 stored insight, flag-gated (owner) – embed + tier gate tested in tests/statinsights.test.mjs
   wiki: null, // member DB optional, flag-gated – tests/wikibook.test.mjs (PF-024 Item 13)
+  birthday: null, // /birthday set|visible|show|clear, flag-gated – tests/birthday.test.mjs (PF-024 Item 19)
   highlight: null, // clip copy into R2 + member DB, deferred reply, flag-gated – tests/highlight.test.mjs (PF-024 Item 18)
   absence: null, // member DB + Discord REST, flag-gated – tests/absence.test.mjs (PF-024 Item 17)
   mascot: null, // member DB + AI, flag-gated (default off) – tests/mascot.test.mjs (PF-024 Item 15)

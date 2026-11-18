@@ -48,11 +48,11 @@ t('media guard DM uses its own picture (only storage notice)', bannerForDm('stor
 t('hype and voice keep the model picture and fall back to the drawn one', /art \? cards\('attachment:\/\/hype\.png'\) : picture\(env, 'post-hype'\)/.test(src('bot/hype.js')) && /art \? cards\('attachment:\/\/quote\.png'\) : picture\(env, 'post-voice'\)/.test(src('bot/voicerecap.js')));
 
 // channels and roles come from the Organization config, never code
-const FILES = ['bot/live.js', 'bot/memberlive.js', 'bot/hype.js', 'bot/awards.js', 'bot/hotw.js', 'bot/fun.js', 'bot/servertools.js', 'bot/voicerecap.js', 'bot/plays.js', 'bot/squads.js', 'bot/docs.js', 'bot/media.js', 'scripts/updates.mjs', 'bot/burnerstats.js'];
+const FILES = ['bot/live.js', 'bot/memberlive.js', 'bot/hype.js', 'bot/awards.js', 'bot/hotw.js', 'bot/fun.js', 'bot/birthday.js', 'bot/servertools.js', 'bot/voicerecap.js', 'bot/plays.js', 'bot/squads.js', 'bot/docs.js', 'bot/media.js', 'scripts/updates.mjs', 'bot/burnerstats.js'];
 t('no automated-post module holds a channel or role id', FILES.every((f) => !/\b\d{17,20}\b/.test(src(f))));
 t('live and member live read live_alerts from config', /channelFor\(env, 'live_alerts'\)/.test(src('bot/live.js')) && /channelFor\(env, 'live_alerts'\)/.test(src('bot/memberlive.js')));
 t('awards and highlight read their channel from config', /channelFor\(env, 'awards'\)/.test(src('bot/awards.js')) && /channelFor\(env, 'awards'\)/.test(src('bot/hotw.js')));
-t('birthday reads fun_posts from config', /channelFor\(env, 'fun_posts'\)/.test(src('bot/fun.js')));
+t('birthday reads its channel (purpose birthdays) and ping role from config', /channelFor\(env, 'birthdays'\)/.test(src('bot/birthday.js')) && /pingRoleFor\(env, 'ping_birthdays'\)/.test(src('bot/birthday.js')));
 t('hype and voice recap read their channel through the config', /hypeChannel|channelFor/.test(src('bot/hype.js')) && /channelFor|orgconfig/.test(src('bot/voicerecap.js')));
 t('plays, squads and docs take the channel from the manager choice (route body), not code', /target\.channel/.test(src('bot/plays.js')) && /body\.channel/.test(src('bot/squads.js')) && /target\.channel/.test(src('bot/docs.js')));
 done();

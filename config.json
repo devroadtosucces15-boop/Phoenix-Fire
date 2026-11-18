@@ -115,6 +115,7 @@
     "mascot": "off",
     "absence": "owner",
     "highlight": "owner",
+    "birthday": "owner",
     "bioCard": "owner",
     "wiki": "owner",
     "aiInsights": "members",

@@ -8,6 +8,7 @@ import { message, header, text, sep, footer, cards, bannerUrl } from './ui.js';
 import { orgName, channelFor, pingRoleFor } from './orgconfig.js';
 import { discord } from './servertools.js';
 import { BIO_SHOW_DEFAULT, profileOut } from './profiles.js';
+import { prettyDay } from './birthday.js';
 
 export const BIO_FLAG = 'bioCard';
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -47,6 +48,7 @@ export function bioMessage(env, { user, claim, profile, pingRole = null, first =
     show.schedule && sched.length ? ['🕒 Plays', `${sched.join('\n')}${profile.tz ? `\n-# times in ${profile.tz}` : ''}`] : null,
     show.country && profile.country ? ['🌍 Country', `${flagOf(profile.country)} ${profile.country}`] : null,
     show.age && profile.age ? ['🎂 Age', String(profile.age)] : null,
+    show.birthday && prettyDay(profile.birthday) ? ['🎈 Birthday', prettyDay(profile.birthday)] : null, // day and month only, never a year (PF-024 Item 19)
     show.language && profile.language ? ['💬 Language', clip(profile.language, 24)] : null,
   ].filter(Boolean);
   const body = [header({ eyebrow: `${orgName(env)} · Player bio`, title: clip(name, 40), sub: profile.bio ? clip(profile.bio, 120) : 'New bio', thumb: user.avatar ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128` : null, size: 3 }),

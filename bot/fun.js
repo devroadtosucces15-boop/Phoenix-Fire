@@ -3,7 +3,7 @@
 //   /jail @member [reason] [minutes]   lock a mate up for a daft offence – mugshot-style panel, "Post bail", "Rap sheet"
 //   /wheel options:"Jez, Kruger, Davey" [question]   spin a wheel – "Spin again", "Remove <winner> and spin"
 //   /trivia [board]                    a football question with four answer buttons – 10 points for a right answer; `board` = the table
-//   birthdays  the 10-min cron posts one 🎂 panel a day (after 08:00 UTC) for members whose profile has a birthday
+//   birthdays  moved to bot/birthday.js (PF-024 Item 19): one panel a day for members who made their birthday visible
 // Jail counts feed the member profile (GET /api/member → fun.jail, see bot/members.js).
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, facts, footer, sep, buttons, cards, bannerUrl, picture, pictureNote } from './ui.js';
@@ -345,33 +345,5 @@ async function triviaAnswer(i, env, qId, k, now) {
 }
 
 // ---------- birthdays ----------
-// Profiles keep MM-DD only. In a non-leap year 29 Feb is celebrated on 1 March.
-export function birthdaysOn(now) {
-  const d = new Date(now), mo = d.getUTCMonth() + 1, day = d.getUTCDate();
-  const leap = new Date(Date.UTC(d.getUTCFullYear(), 1, 29)).getUTCMonth() === 1;
-  const key = (m, dd) => `${String(m).padStart(2, '0')}-${String(dd).padStart(2, '0')}`;
-  return [key(mo, day), ...(mo === 3 && day === 1 && !leap ? ['02-29'] : [])];
-}
-export function birthdayPanel(rows, env) {
-  return message({ accent: 'gold', blocks: [
-    header({ eyebrow: `${orgName(env).toUpperCase()} · Birthdays`, title: rows.length === 1 ? '🎂 Happy birthday!' : `🎂 ${rows.length} birthdays today`, size: 2 }),
-    picture(env, 'post-birthday'),
-    text(rows.map((r) => `🎉 <@${r.user_id}>`).join('\n')),
-    footer('From everyone at the club – have a good one'),
-  ] });
-}
-export async function birthdayCheck(env, post, now = Date.now()) {
-  if (!env.DB || !env.DISCORD_BOT_TOKEN) return { posted: false };
-  const d = new Date(now);
-  if (d.getUTCHours() < 8) return { posted: false };
-  const day = d.toISOString().slice(0, 10);
-  if ((await env.DB.prepare("SELECT value FROM meta WHERE key = 'fun_birthday_day'").first('value')) === day) return { posted: false };
-  const keys = birthdaysOn(now);
-  const rows = (await env.DB.prepare(`SELECT p.user_id FROM profiles p JOIN users u ON u.id = p.user_id WHERE p.birthday IN (${keys.map(() => '?').join(',')})`).bind(...keys).all()).results ?? [];
-  const channel = (await channelFor(env, 'fun_posts')) || '';
-  // Mark the day first: a failed post is not retried every 10 minutes all day.
-  await env.DB.prepare("INSERT INTO meta (key, value) VALUES ('fun_birthday_day', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").bind(day).run();
-  if (!rows.length || !channel) return { posted: false };
-  const r = await post(env, channel, '', birthdayPanel(rows, env));
-  return { posted: !!r?.ok, count: rows.length };
-}
+// PF-024 Item 19: the single birthday poster now lives in bot/birthday.js (visibility, channel purpose `birthdays`, DM); re-exported so the cron and old imports keep working.
+export { birthdaysOn, birthdayPanel, birthdayCheck } from './birthday.js';

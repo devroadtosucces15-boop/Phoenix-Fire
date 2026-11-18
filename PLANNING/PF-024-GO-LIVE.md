@@ -187,3 +187,21 @@ Owner decisions (assumed safest defaults, say if you want different):
 - **Who may upload**: members. **Who may list or delete**: the uploader deletes their own, managers (`highlight.manage`) list and delete any.
 - **Approval**: none needed, the clip is only stored. **Public posting**: none; the file is private. The optional channel card carries no file.
 - **Retention**: clips stay until deleted (no 365-day expiry like feed files); the owner may want a policy once the social step exists.
+
+## Item 19: birthdays (code done on branch `pf-024-item19`)
+`/birthday` (matchday app): `set date:07-14 [visible]`, `visible on:`, `show`, `clear`; every reply is private to the member. It stores month and day only, in the existing `profiles.birthday` column (the site profile form writes the same field), with the visibility flag in `profiles.bio_show.birthday` (default **off**). **No migration is needed.** The bio card (Item 16) gains a "Birthday" row (day and month, never a year) only when the member turned visibility on.
+The one daily poster is now `bot/birthday.js` (folded in from `bot/fun.js`, which re-exports it): after 08:00 UTC, for members who made it visible, one Phoenix panel in the channel for the purpose `birthdays` (falls back to `fun_posts`, then announcements, by Organization config) that mentions them, an optional ping role (group `ping_birthdays`), plus one private DM per member per year built from real data (joined month, matches, goals, assists, MOTMs from Rush results, badges, points) with a thanks-only fallback. Claims in `meta` (`birthday:<date>`, `birthday-dm:<id>:<year>`) prevent a second post or DM. No channel at all = nothing is posted (the DM still goes).
+
+Owner steps (not done here):
+1. Deploy the Worker and sync the slash commands (`/birthday`, matchday app). No migration.
+2. In the Organization config add a channel with purpose `birthdays` (otherwise the old `fun_posts`/announcements channel is used). Optionally add a role to the group `ping_birthdays` to tag it on the daily card.
+3. Flip `birthday` to `members` when ready (it is `owner` now; the cron runs when `birthday` or the old `fun` flag is on).
+4. The existing banners `banner-birthday.png` / `banner-post-birthday.png` are reused; no new banner.
+
+Owner decisions (assumed safest defaults, say if you want different):
+- **Visibility default**: hidden. Birthdays saved before this change (site profile form) are NOT posted or DMed until the member runs `/birthday visible on` (behaviour change for the old poster). Say if you would rather treat existing saved dates as visible.
+- **Year and age**: never stored, never shown (the bio card still has its separate opt-in age field).
+- **Time zone**: the UTC date, stated in the replies. A per-member time zone would need the profile tz (exists) and a different cron; say if you want it.
+- **Role ping**: off until you configure `ping_birthdays`; never @everyone and the code has no option for it.
+- **Who is celebrated**: only members with visibility on (the DM too: it is a message they opted into). 29 Feb is celebrated on 1 March in non-leap years.
+- **DM stats**: games, goals, assists and MOTMs come from the Rush results in D1 for the member's approved player claim; the Pro Clubs season totals, medals live in site JSON the Worker does not read, so they are left out (inbox).

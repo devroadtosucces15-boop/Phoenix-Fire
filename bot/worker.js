@@ -52,6 +52,7 @@ import { askAnswer, buildAskContext } from './ask.js';
 import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } from './wikibook.js';
 import { MASCOT_COMMANDS, mascotCommand, mascotDaily } from './mascot.js';
 import { HIGHLIGHT_COMMANDS, highlightCommand } from './highlight.js';
+import { BIRTHDAY_COMMANDS, birthdayCommand } from './birthday.js';
 import { ABSENCE_COMMANDS, ABSENCE_ID, absenceCommand, absenceButton, absenceTick } from './absence.js';
 import { INTEL_COMMANDS, INTEL_ID, intelCron, counselorCommand, counselorButton } from './serverintel.js';
 import { NAV_COMMANDS, NAV_ID, navCommand, navButton, navCron } from './navigator.js';
@@ -114,7 +115,7 @@ export default {
     if (flagOn(env, { role: 'owner' }, 'memberLive')) job('memberLiveCron', () => memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
     job('streamAlertsCron', () => streamAlertsCron(env).catch((e) => console.log('stream alerts failed', e.message))); // /streamalerts sources (flag streamAlerts checked inside)
     if (flagOn(env, { role: 'owner' }, 'watchlist')) job('watchlistCron', () => watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
-    if (flagOn(env, { role: 'owner' }, 'fun')) job('birthdayCheck', () => birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
+    if (flagOn(env, { role: 'owner' }, 'fun') || flagOn(env, { role: 'owner' }, 'birthday')) job('birthdayCheck', () => birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
     if (flagOn(env, { role: 'owner' }, 'serverTools')) job('memberWatch', () => memberWatch(env).catch((e) => console.log('member watch failed', e.message))); // leave/join alerts + welcome posts
     if (flagOn(env, { role: 'owner' }, 'cardStudio')) job('generateCards', () => generateCards(env).catch((e) => console.log('card generation failed', e.message))); // Card Studio – approved requests → AI cards (retries included)
     if (off.has('job:siteUpdate') || !env.GH_DISPATCH_TOKEN || !env.GITHUB_REPO) return;
@@ -230,6 +231,7 @@ export default {
     if (i.type === 2 && WIKI_COMMANDS.has(i.data.name)) return json(await wikiCommand(i, env, who)); // /wiki: the Phoenix book (bot/wikibook.js)
     if (i.type === 3 && WIKI_ID.test(i.data?.custom_id ?? '')) return json(await wikiButton(i, env, who)); // its pages, jump list and setup helper
     if (i.type === 2 && MASCOT_COMMANDS.has(i.data.name)) return json(await mascotCommand(i, env, who)); // /mascot quote | ask | roast | mute (bot/mascot.js)
+    if (i.type === 2 && BIRTHDAY_COMMANDS.has(i.data.name)) return json(await birthdayCommand(i, env, who)); // /birthday set | visible | show | clear (bot/birthday.js)
     if (i.type === 2 && HIGHLIGHT_COMMANDS.has(i.data.name)) return json(await highlightCommand(i, env, who, ctx)); // /highlight upload | mine | delete | list (bot/highlight.js)
     if (i.type === 2 && ABSENCE_COMMANDS.has(i.data.name)) return json(await absenceCommand(i, env, who)); // /absence notice | mine | cancel | list (bot/absence.js)
     if (i.type === 3 && ABSENCE_ID.test(i.data?.custom_id ?? '')) return json(await absenceButton(i, env, who)); // the managers' Acknowledge button

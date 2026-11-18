@@ -43,7 +43,7 @@ t('…a bad link is refused and a source can be removed', (await call(mgr, '/api
 t('stream sources with no channel and no live_alerts purpose say where to set it', /No channel is set for live alerts/.test((await call(mgr, '/api/controlcenter/settings/stream_sources', { link: 'https://www.twitch.tv/phoenixfirefc' })).d.error));
 
 // ---------- step 2: legacy fallbacks fold into purposes ----------
-t('hype and voice recap channels, result and reminder channels, and the ping role are all legacy homes the fold-in knows', ['hype', 'voice_recap', 'match_results', 'reminders', 'announcements', 'awards', 'member_log', 'welcome', 'automod_alerts'].every((p) => CHANNEL_PURPOSES.includes(p)) && PING_GROUPS.join() === 'ping_results,ping_events,ping_rush,ping_match,ping_bios' && PING_GROUPS.every((g) => PERMISSION_GROUPS.includes(g)));
+t('hype and voice recap channels, result and reminder channels, and the ping role are all legacy homes the fold-in knows', ['hype', 'voice_recap', 'match_results', 'reminders', 'announcements', 'awards', 'member_log', 'welcome', 'automod_alerts'].every((p) => CHANNEL_PURPOSES.includes(p)) && PING_GROUPS.join() === 'ping_results,ping_events,ping_rush,ping_match,ping_bios,ping_birthdays' && PING_GROUPS.every((g) => PERMISSION_GROUPS.includes(g)));
 sqlite.prepare('DELETE FROM discord_channels').run(); sqlite.prepare('DELETE FROM discord_roles').run();
 setMeta('bot_settings', { resultChannel: '81000001', reminderChannel: '81000002', pingRole: '82000001', color: 'e8651a', emoji: '⚽', autoPosts: { results: true, reminders: true, awards: true } });
 setMeta('announce_channel', '81000003');

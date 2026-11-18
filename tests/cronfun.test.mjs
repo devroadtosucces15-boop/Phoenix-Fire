@@ -12,7 +12,7 @@ const realNow = Date.now, noon = new Date(); noon.setUTCHours(10, 0, 0, 0);
 Date.now = () => noon.getTime(); // the cron only posts after 08:00 UTC
 const d = noon, md = `${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
 sqlite.prepare("INSERT INTO users (id, name, first_at, last_at) VALUES ('600', 'Bday', 1, 1)").run();
-sqlite.prepare('INSERT INTO profiles (user_id, birthday, updated) VALUES (?, ?, 1)').run('600', md);
+sqlite.prepare('INSERT INTO profiles (user_id, birthday, bio_show, updated) VALUES (?, ?, ?, 1)').run('600', md, '{"birthday":true}');
 
 const realFetch = globalThis.fetch;
 const auths = [];
@@ -21,7 +21,7 @@ globalThis.fetch = async (url, init = {}) => {
   return realFetch(url, init).catch(() => new Response('{}', { status: 500 }));
 };
 const run = async (e) => { const p = []; await worker.scheduled({ cron: '*/10 * * * *' }, e, { waitUntil: (x) => p.push(x) }); await Promise.allSettled(p); };
-const reset = () => sqlite.prepare("DELETE FROM meta WHERE key = 'fun_birthday_day'").run();
+const reset = () => sqlite.prepare("DELETE FROM meta WHERE key LIKE 'birthday%'").run();
 
 {
   await run(env);
