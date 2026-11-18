@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-18T21:40:53.529Z",
+ "fetchedAt": "2026-11-18T21:50:42.778Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1675,7 +1675,7 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "198",
+   "gamesPlayed": "199",
    "goals": "31",
    "assists": "71",
    "manOfTheMatch": "22",
@@ -1851,12 +1851,12 @@
   {
    "name": "itsjay030",
    "proPos": "25",
-   "gamesPlayed": "35",
+   "gamesPlayed": "36",
    "goals": "11",
    "assists": "3",
    "manOfTheMatch": "1",
    "ratingAve": "7.4",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1895,12 +1895,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "197",
+   "gamesPlayed": "198",
    "goals": "231",
    "assists": "102",
    "manOfTheMatch": "8",
    "ratingAve": "7.2",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1961,7 +1961,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "235",
+   "gamesPlayed": "236",
    "goals": "61",
    "assists": "55",
    "manOfTheMatch": "22",
@@ -2175,6 +2175,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-18T21:40:53.529Z"
+  "fetchedAt": "2026-11-18T21:50:42.778Z"
  }
 }
