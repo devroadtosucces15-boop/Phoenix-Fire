@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-18T17:00:41.244Z",
+ "fetchedAt": "2026-11-18T17:10:48.199Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -586,42 +586,6 @@
   },
   {
    "name": "SkinnerLAYDD",
-   "gamesPlayed": "0",
-   "favoritePosition": "",
-   "winRate": "0",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "0",
-   "passSuccessRate": "0",
-   "ratingAve": "0.0",
-   "tacklesMade": "0",
-   "tackleSuccessRate": "0",
-   "proName": "",
-   "proPos": "",
-   "proStyle": "",
-   "proHeight": "",
-   "proNationality": "",
-   "proOverall": "0",
-   "proOverallStr": "",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0"
-  },
-  {
-   "name": "needlehopper_",
    "gamesPlayed": "0",
    "favoritePosition": "",
    "winRate": "0",
@@ -1750,17 +1714,6 @@
    "favoritePosition": "midfielder"
   },
   {
-   "name": "needlehopper_",
-   "proPos": "14",
-   "gamesPlayed": "6",
-   "goals": "1",
-   "assists": "0",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.2",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
-  },
-  {
    "name": "Jassan21",
    "proPos": "14",
    "gamesPlayed": "10",
@@ -2175,6 +2128,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-18T17:00:41.244Z"
+  "fetchedAt": "2026-11-18T17:10:48.199Z"
  }
 }
