@@ -732,7 +732,8 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
     case 'top': {
       const players = (await load(site, 'players', ctx)).filter((p) => p.home && p.s && p.src === 'club');
       const stat = opt.stat ?? 'goals';
-      const F = { goals: ['Top scorers', (p) => p.s.g], assists: ['Most assists', (p) => p.s.a], rating: ['Best average rating (3+ games)', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], motm: ['Most MOTM awards', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp], ga: ['Goals + assists', (p) => p.s.g + p.s.a] };
+      const F = { goals: ['Top scorers', (p) => p.s.g], assists: ['Most assists', (p) => p.s.a], rating: ['Best average rating (3+ games)', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], motm: ['Most MOTM awards', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp],
+        interceptions: ['Interceptions per game', (p) => (p.i?.n >= 3 ? p.i.pg.int : 0), 1], won: ['Possession won per game', (p) => (p.i?.n >= 3 ? p.i.pg.won : 0), 1], aerials: ['Aerial duels won per game', (p) => (p.i?.n >= 3 ? p.i.pg.aer : 0), 1], positioning: ['Best positioning (in position %)', (p) => (p.i?.n >= 3 ? p.i.r.pos ?? 0 : 0)], ga: ['Goals + assists', (p) => p.s.g + p.s.a] };
       const [title, f, dec = 0] = F[stat] ?? F.goals;
       const list = players.map((p) => [p, f(p)]).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]).slice(0, 10);
       const card = cardUrl(deck, 'top', stat);

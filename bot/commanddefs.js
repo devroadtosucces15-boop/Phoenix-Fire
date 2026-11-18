@@ -119,7 +119,7 @@ export const COMMANDS = [
     name: 'leaderboard', description: 'League or Rush leaderboards',
     options: [
       { type: STRING, name: 'mode', description: 'League (EA) or Rush (logged)', choices: ['league', 'rush'].map((v) => ({ name: v === 'league' ? 'League' : 'Rush', value: v })) },
-      { type: STRING, name: 'stat', description: 'Which leaderboard', choices: ['goals', 'assists', 'ga', 'rating', 'motm', 'games'].map((v) => ({ name: v === 'ga' ? 'goals + assists' : v, value: v })) },
+      { type: STRING, name: 'stat', description: 'Which leaderboard', choices: ['goals', 'assists', 'ga', 'rating', 'motm', 'games', 'interceptions', 'won', 'aerials', 'positioning'].map((v) => ({ name: v === 'ga' ? 'goals + assists' : v === 'won' ? 'possession won' : v, value: v })) },
     ],
   },
   { name: 'profile', description: "A member's profile – player, positions, platforms", options: [{ type: USER, name: 'member', description: 'Whose profile (default: yours)' }] },

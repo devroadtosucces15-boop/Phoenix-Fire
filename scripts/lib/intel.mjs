@@ -61,3 +61,16 @@ export function coverage(rows) {
   const have = rows.filter((x) => x.hasEv).sort((a, b) => a.t - b.t);
   return { matches: rows.length, withEvents: have.length, since: have.length ? have[0].t : null };
 }
+
+// The small per-player block the Discord outputs read (players.json `i`): appearances with counters, per-game averages of the counters the cards
+// show, and four rates. Computed from the same sums as summarize(); null rates stay null, never 0.
+export function playerIntel(evs) {
+  const { apps, totals } = sumEvents(evs);
+  if (!apps) return null;
+  const g = (k) => totals[k] || 0, pg = (v) => r(v / apps, 2), rt = ratesOf(totals);
+  return {
+    n: apps,
+    pg: { int: pg(g('interceptions')), aer: pg(g('aerialDuelsWonAttacking') + g('aerialDuelsWonDefending')), won: pg(g('possessionWonDefensiveThird') + g('possessionWonMiddleThird') + g('possessionWonAttackingThird')), fwd: pg(g('passesCompletedForward')), sot: pg(g('shotsOnTarget')), fouls: pg(g('foulsConceded')) },
+    r: { pass: rt.passAccuracy, tackle: rt.tackleWinRate, fwd: rt.forwardPassShare, pos: rt.positioning },
+  };
+}

@@ -53,6 +53,17 @@ export function personalEmbed(m, line, p, club, site, { mine = false } = {}) {
   if (line.ta != null) fields.push({ name: '🛡️ Tackles', value: `**${line.tm}/${line.ta}**${tacklePct != null ? ` (${tacklePct}%)` : ''}${tacklePct != null ? vs(tacklePct, s?.t, 0, '%') : ''}`, inline: true });
   if (line.sh) fields.push({ name: '🥅 Shots', value: `**${line.sh}**${line.g ? ` · ${pct(line.g, line.sh)}% scored` : ''}`, inline: true });
   if (line.sv) fields.push({ name: '🧤 Saves', value: `**${line.sv}**`, inline: true });
+  // from EA's event counters (league and playoff games; a friendly line has none, so nothing is shown rather than zeros), against the player's own per-game average
+  if (line.ev) {
+    const e = line.ev, av = p?.i?.pg, rt = p?.i?.r;
+    fields.push({ name: '🧭 Interceptions', value: `**${e.int}**${av ? vs(e.int, av.int, 1) : ''}`, inline: true });
+    fields.push({ name: '✈️ Aerial duels won', value: `**${e.aer}**${av ? vs(e.aer, av.aer, 1) : ''}`, inline: true });
+    fields.push({ name: '🔒 Possession', value: `**${e.won}** won · **${e.lost}** lost${av ? vs(e.won, av.won, 1) : ''}`, inline: true });
+    fields.push({ name: '➡️ Forward passes', value: `**${e.fwd}**${av ? vs(e.fwd, av.fwd, 1) : ''}`, inline: true });
+    if (line.sh || e.sot) fields.push({ name: '🎯 Shots on target', value: `**${e.sot}**${line.sh ? ` of ${line.sh}` : ''}`, inline: true });
+    if (e.pos != null) fields.push({ name: '📍 In position', value: `**${e.pos}%**${rt?.pos != null ? vs(e.pos, rt.pos, 0, '%') : ''}`, inline: true });
+    if (e.fouls) fields.push({ name: '🚩 Fouls conceded', value: `**${e.fouls}**`, inline: true });
+  }
   const tr = (p?.tr ?? []).slice(-10);
   if (tr.length) {
     const best = Math.max(...tr);

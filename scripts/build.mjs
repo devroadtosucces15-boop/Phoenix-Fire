@@ -5,6 +5,7 @@ import { ROOT, DATA, readJson, loadConfig, loadOverrides, num } from './lib.mjs'
 import { orgClubsFromDisk, combineOrg, orgOverview } from './lib/org.mjs';
 import { clubTag } from './lib/clubtag.mjs';
 import { decodeEvents } from './lib/events.mjs';
+import { playerIntel } from './lib/intel.mjs';
 import { boxEv } from './lib/boxscore.mjs';
 import { lineChart, goalBars, donut, radar, spark, pitchMap } from './charts.mjs';
 import { buildUpdates } from './updates-page.mjs';
@@ -166,6 +167,7 @@ for (const m of [...matches].reverse()) {
       pl.name = p.playername;
       nameToKey.set(p.playername.toLowerCase(), pid);
       pl.apps.push(appOf(m, clubId, oppId, p));
+      if (p.evraw) (pl.evs ??= []).push(decodeEvents(p.evraw)); // league and playoff appearances with EA event counters (none for friendlies): players.json `i`
     }
   }
 }
@@ -1304,6 +1306,7 @@ write('api/players.json', JSON.stringify(visiblePlayers.map((pl) => ({
   sc: pl.mainClub ? clubName(pl.mainClub) : null,
   car: pl.career ? { gp: num(pl.career.gamesPlayed), g: num(pl.career.goals), a: num(pl.career.assists), r: num(pl.career.ratingAve), m: num(pl.career.manOfTheMatch) } : null,
   rad: pl.radar, raw: pl.radarRaw, tr: [...pl.apps].reverse().slice(-15).map((x) => x.rating),
+  ...(pl.evs?.length ? { i: playerIntel(pl.evs) } : {}),
 }))));
 // Personal match log for the Squad Hub dashboard (P2.6) and achievements (P2.3 / P4.3): our players' League
 // matches for NOREX, oldest → newest, compact rows (see cols). grp = position group from EA's app position.

@@ -241,7 +241,9 @@ export function sessionPicture(recap, club) {
 }
 
 // ---------- compare (bar chart for /compare) ----------
-export const COMPARE_ROWS = (a, b) => [['OVR', a.ovr, b.ovr], ['Games', a.s?.gp, b.s?.gp], ['Goals', a.s?.g, b.s?.g], ['Assists', a.s?.a, b.s?.a], ['Rating', a.s?.r, b.s?.r, 1], ['MOTM', a.s?.m, b.s?.m], ['Pass %', a.s?.p, b.s?.p], ['Tackle %', a.s?.t, b.s?.t], ['Win %', a.s?.w, b.s?.w]];
+export const COMPARE_ROWS = (a, b) => [['OVR', a.ovr, b.ovr], ['Games', a.s?.gp, b.s?.gp], ['Goals', a.s?.g, b.s?.g], ['Assists', a.s?.a, b.s?.a], ['Rating', a.s?.r, b.s?.r, 1], ['MOTM', a.s?.m, b.s?.m], ['Pass %', a.s?.p, b.s?.p], ['Tackle %', a.s?.t, b.s?.t], ['Win %', a.s?.w, b.s?.w],
+  // from the event counters, only when both players (or one) have them: per game, and the share of the time in position
+  ['Interceptions / game', a.i?.pg.int, b.i?.pg.int, 1], ['Aerial duels / game', a.i?.pg.aer, b.i?.pg.aer, 1], ['Possession won / game', a.i?.pg.won, b.i?.pg.won, 1], ['In position %', a.i?.r.pos, b.i?.r.pos]];
 export function compareCard(a, b) {
   const rows = COMPARE_ROWS(a, b).filter(([, x, y]) => (+x || 0) + (+y || 0) > 0).map(([k, x, y, dec = 0]) => {
     const hi = Math.max(+x || 0, +y || 0) || 1, xa = +x || 0, ya = +y || 0;
@@ -269,6 +271,9 @@ ${rows || '<div class="row"><span style="grid-column:1/-1">No stats to compare y
 export const TOP_STATS = {
   goals: ['Top scorers', (p) => p.s.g], assists: ['Most assists', (p) => p.s.a], ga: ['Goals + assists', (p) => p.s.g + p.s.a],
   rating: ['Best average rating', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], motm: ['Most man of the match', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp],
+  // from EA's event counters (players.json `i`, league and playoff games only): at least 3 games with counters, per game
+  interceptions: ['Interceptions per game', (p) => (p.i?.n >= 3 ? p.i.pg.int : 0), 1], won: ['Possession won per game', (p) => (p.i?.n >= 3 ? p.i.pg.won : 0), 1],
+  aerials: ['Aerial duels won per game', (p) => (p.i?.n >= 3 ? p.i.pg.aer : 0), 1], positioning: ['Best positioning (in position %)', (p) => (p.i?.n >= 3 ? p.i.r.pos ?? 0 : 0)],
 };
 export function topRows(players, stat) {
   const [, f] = TOP_STATS[stat] ?? TOP_STATS.goals;

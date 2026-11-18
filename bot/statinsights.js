@@ -53,6 +53,13 @@ async function clubFacts(loadSite) {
   };
 }
 // id 'latest' (or none) = the newest result; otherwise a match id from club.json's recent list.
+// Our side's totals from EA's event counters (league and playoff matches; friendlies carry none, so the keys are simply absent). Only real sums.
+function eventFacts(ps) {
+  const have = (ps ?? []).filter((x) => x.ev);
+  if (!have.length) return {};
+  const sum = (k) => have.reduce((t, x) => t + (x.ev[k] || 0), 0), pos = have.filter((x) => x.ev.pos != null).map((x) => x.ev.pos);
+  return { eventCountersFromPlayers: have.length, shotsOnTarget: sum('sot'), forwardPasses: sum('fwd'), interceptions: sum('int'), aerialDuelsWon: sum('aer'), possessionWon: sum('won'), possessionLost: sum('lost'), foulsConceded: sum('fouls'), ...(pos.length ? { inPositionPct: Math.round(pos.reduce((a, b) => a + b, 0) / pos.length) } : {}) };
+}
 async function matchFacts(loadSite, id = 'latest') {
   const c = await loadSite('club');
   const m = id === 'latest' ? c.matches?.[0] : c.matches?.find((x) => String(x.id) === String(id));
@@ -64,6 +71,7 @@ async function matchFacts(loadSite, id = 'latest') {
       opponent: m.opp, result: m.res, goalsFor: m.gf, goalsAgainst: m.ga,
       scorers: (m.scorers ?? []).map((s) => `${s.n} (${s.g})`), motm: m.motm ?? null,
       topRated: top ? `${top.n} (${top.r})` : null,
+      ...eventFacts(m.ps),
     },
   };
 }
@@ -76,6 +84,8 @@ async function playerFacts(loadSite, k) {
     facts: {
       position: p.pos, games: s.gp ?? 0, goals: s.g ?? 0, assists: s.a ?? 0, avgRating: s.r ?? null,
       motmCount: s.m ?? 0, passAccuracyPct: s.p ?? null, tacklesPerGame: s.t ?? null, winRatePct: s.w ?? null,
+      // from EA's event counters, per game over the league games that carry them (none for friendlies); absent when the player has none
+      ...(p.i ? { gamesWithEventCounters: p.i.n, interceptionsPerGame: p.i.pg.int, aerialDuelsWonPerGame: p.i.pg.aer, possessionWonPerGame: p.i.pg.won, forwardPassesPerGame: p.i.pg.fwd, shotsOnTargetPerGame: p.i.pg.sot, foulsPerGame: p.i.pg.fouls, tackleWinPct: p.i.r.tackle, forwardPassSharePct: p.i.r.fwd, inPositionPct: p.i.r.pos } : {}),
     },
   };
 }
