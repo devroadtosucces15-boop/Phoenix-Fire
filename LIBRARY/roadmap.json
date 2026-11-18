@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16",
+  "updated": "2026-11-18",
   "items": [
     {
       "id": "PF-001",
@@ -476,7 +476,7 @@
       ],
       "fileLane": "`bot/`",
       "lowHanging": false,
-      "percent": 22,
+      "percent": 33,
       "verify": false,
       "notes": "Plan sections 5c to Item 25. One session per item. Item 8 duplicate-post fix done 2026-11-17 (bot/once.js claims; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 9 Translator done 2026-11-17 (context menu Translate message, /translate, /enhance, /language, bot/aibudget.js KV counter; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 10 Quote card done 2026-11-17 (context menu Quote card, bot/quotecard.js; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 11 wheel + pin tool done 2026-11-17 (animated weighted /wheel with History, Pin to bottom/unpin, migration 0071; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 12 server navigator done 2026-11-17 (/navigator, bot/navigator.js, no migration; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 13 bot wiki book done 2026-11-18 (/wiki, bot/wikibook.js, the five help commands open it once the flag is on; no migration; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 14 (server intelligence) is next and needs the owner's guardrail decisions first; PF-024 stays NEXT until Item 25 is done.",
       "outcome": "The bot has fewer, cleaner commands and the planned new features, including a test-view command.",
@@ -675,7 +675,7 @@
       "title": "Optional additions R18 to R22 and staff sweep follow-ups R24 to R29",
       "phase": "Match night and upkeep",
       "area": "staff pages",
-      "status": "OPEN",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -686,7 +686,7 @@
       ],
       "fileLane": "staff pages",
       "lowHanging": false,
-      "percent": 85,
+      "percent": 100,
       "verify": false,
       "notes": "Split into one session per item when taken. 2026-11-16: R18-R28 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md. 2026-11-17: R29 (live-data sweep) dropped from NEXT: it needs real Worker data or an owner login. Stays open; take it when the owner supplies live access.",
       "outcome": "The optional additions the owner approved are live, and the remaining follow-ups are listed.",
@@ -736,6 +736,11 @@
           "date": "2026-11-16",
           "ref": "PF-009 R28",
           "what": "Tools and Content form controls and tables in the site input style (dark field, line border, gold focus ring, uppercase labels, ruled table with hover, phone tables scroll inside the panel), all from tokens in hubx.css; content.css red accent and meter gradient moved to tokens. Screenshots at 390, 820 and 1440 before and after checked. Test in tests/layout-pass.test.mjs. R29 (live-data sweep) is next."
+        },
+        {
+          "date": "2026-11-18",
+          "ref": "owner direction + live pass",
+          "what": "Closed: R18 to R28 built; R29 dropped because the Boardroom tabs it targeted were retired into the Control Center (PF-022). A read-only live pass of the Boardroom tabs on 2026-11-17 showed Health, Audit, Announce and Switches working on live data; findings are in the Inbox."
         }
       ],
       "plans": []
@@ -821,6 +826,10 @@
     {
       "date": "2026-11-17",
       "text": "PF-022 step 9: Boardroom views (health, announce, Hall of Fame, medals, backup) are owner-only by the manifest and the shell only; the per-section permission matrix and sign-in are step 9. Also the Control Center dashboard header repeats the tool description above the Site access intro: trim one in step 9 polish (bot/ccsettings routes are unchanged)."
+    },
+    {
+      "date": "2026-11-18",
+      "text": "Live pass of the Boardroom (owner login, read-only): the live club docs still hold \"Welcome to NOREX UNITED\" (owner fixes it under Club docs in Content; Worker data, not repo code); Health shows EA data \"unknown\" and a Worker CPU p99 of 1,265,955 ms that looks like a unit or reading error; the Tools Bot tab and Hall of Fame, Medals, Backup and Organization tabs were not checked before they moved into the Control Center."
     }
   ]
 }
