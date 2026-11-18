@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-18T12:40:56.061Z",
+ "fetchedAt": "2026-11-18T12:50:44.867Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2176,14 +2176,14 @@
   },
   {
    "name": "MejMech",
-   "proPos": "14",
-   "gamesPlayed": "624",
+   "proPos": "25",
+   "gamesPlayed": "625",
    "goals": "463",
    "assists": "475",
    "manOfTheMatch": "157",
    "ratingAve": "7.7",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
+   "prevGoals": "0",
+   "favoritePosition": "forward"
   },
   {
    "name": "Lucus1997",
@@ -2457,6 +2457,6 @@
   "promotions": 4,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-18T12:40:56.061Z"
+  "fetchedAt": "2026-11-18T12:50:44.867Z"
  }
 }
