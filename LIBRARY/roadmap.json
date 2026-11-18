@@ -844,6 +844,10 @@
     {
       "date": "2026-11-18",
       "text": "The match review picture (scripts/cards.mjs reviewCard) renders 1736 px tall on the 1700 px post canvas for a match with 3 recommendations plus the event rows (build warns 'content too long for the shared canvas'); trim or let the canvas grow before adding rows."
+    },
+    {
+      "date": "2026-11-18",
+      "text": "Friendlies: the match picture header says LEAGUE for a friendly (scripts/cards.mjs matchPicture eyebrow uses mp.mode), and none of the 29 archived friendlies carries EA event counters, so decoded stats exist only for league and playoff games. Seen in the stats preview artifact."
     }
   ]
 }
