@@ -40,6 +40,7 @@ const sample = {
   avatarcard: null, // deferred reply, needs a resolved attachment – tests/avatarcard.test.mjs (P11.5)
   insight: null, // BE9 stored insight, flag-gated (owner) – embed + tier gate tested in tests/statinsights.test.mjs
   wiki: null, // member DB optional, flag-gated – tests/wikibook.test.mjs (PF-024 Item 13)
+  mascot: null, // member DB + AI, flag-gated (default off) – tests/mascot.test.mjs (PF-024 Item 15)
   counselor: null, // member DB + Discord REST sampling, flag-gated (default off) – tests/serverintel.test.mjs (PF-024 Item 14)
   navigator: null, // member DB + Discord server scan, flag-gated – tests/navigator.test.mjs (PF-024 Item 12)
   'Pin to bottom': null, unpin: null, // managers, flag-gated – tests/wheelpin.test.mjs (PF-024 Item 11)

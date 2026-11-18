@@ -57,6 +57,7 @@ export const WHERE = {
   quoteCard: ["stats.html",""],
   pins: ["stats.html",""],
   navigator: ["stats.html",""],
+  mascot: ["stats.html",""],
   serverIntel: ["staff-insights.html",""],
   wiki: ["stats.html",""],
   scoutReport: ["scout.html",""],

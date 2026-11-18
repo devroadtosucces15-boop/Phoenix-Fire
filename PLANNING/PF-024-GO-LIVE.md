@@ -118,3 +118,23 @@ Disclosure wording for the owner to post (not posted):
 
 Owner decisions made (2026-11-18): REST sampling by the Worker (no gateway process), minimal safe baseline, kill switch default off, counselor for managers, 20% AI share. **No member opt-out table** (owner declined): it can be added later as a small table the sampler checks before counting an author, plus `/intel optout`.
 Not built: a gateway process, per-person dossiers, storing any message text, sampling private or staff channels, a member opt-out.
+
+## Item 15: the mascot and roaster (code done on branch `pf-024-item15`)
+`/mascot quote | ask | roast | mute` (tools app, public replies; mute is managers only). Flag `mascot` ships **`off`** (the kill switch). No migration (D1 `meta` keys `mascot_*`). New channel purpose `mascot_posts`, new permission `mascot.mute` (manager), new cron job `mascotDaily` (Control Center scheduled jobs). Code: `bot/mascot.js`, test: `tests/mascot.test.mjs`.
+
+Owner decisions made (2026-11-18): slash commands only (no gateway, nothing reads chat); roast guardrails as below; **no per-member opt-out**; mascot AI share 20% of the daily pool (2,000 neurons, KV counter `aibudget:mascot:<day>`, separate from Item 14's 20%). Assumed for the open question: the roast uses only the target's display name from the command and Item 14's aggregate mood (never message text, never an avatar); change it if you want avatar jokes later.
+
+What it does:
+- **quote**: today's motivational line (general, football, gaming), one a day, the same all day. The built-in list has 58 lines; each is used once. When they run out the AI writes new ones, each checked against everything used so far, so a line never repeats. The daily post (cron, after 09:00 UTC) goes to the `mascot_posts` channel; none set = no post and the status line in D1 says so.
+- **ask**: an honest, upbeat answer (admits when it does not know). The prompt carries only the club mood word (steady, warm, tense).
+- **roast**: on request only, banter about play and habits. Optional `message` (what they said to you): the reply matches that register but stays clean. Tricks picked at random: name pun, jail joke, empty trophy cabinet, sat-nav passing, late for kick-off. A tense week caps it at "light".
+
+Guardrails in code (each tested): the filter blocks slurs, protected traits (race, religion, sexuality, gender, disability, nationality), looks and weight, family, harm and private details, both in what the person typed and in the AI's answer (a bad answer is replaced by a built-in roast); the roast never names the club; no pings; per-person cooldown (20 s) and at most 3 roasts a day per target; bots are not targets; a manager can mute ask and roast (the quote carries on); AI capped at 20%.
+
+Owner steps:
+1. Deploy the Worker and sync the commands to Discord. No migration.
+2. In the Organization config add a channel with purpose `mascot_posts` for the daily quote.
+3. Flip `mascot` to `owner` to test, then `members`. Flip to `off` any time to stop everything.
+4. The banner `banner-mascot.png` is already drawn for the audit; the live site gets it on the next card run in CI.
+
+Not built: reacting when "Phoenix" is mentioned in chat (needs a gateway process and the Message Content intent: a later item if wanted), avatar or meme generation from profile pictures, a member opt-out.

@@ -54,6 +54,7 @@ export const PERMS = {
   'content.edit': 'manager', // P5.1 / P5.2 – announcements, requirements, rules, FAQ, glossary, Play Style; see who acknowledged the rules
   'docs.read': 'member', // P5.2 – members-only docs + Play Style (guests only see items marked public)
   'docs.ack': 'member', // P5.2 – acknowledge the current rules
+  'mascot.mute': 'manager', // PF-024 Item 15 – mute or unmute the mascot's ask and roast
   'counselor.view': 'manager', // PF-024 Item 14 – the counselor: team tendencies and anomaly flags (numbers only, never message text)
   'navigator.manage': 'manager', // PF-024 Item 12 – staff-only channels in the navigator, "What changed", rescan now
   'pins.manage': 'manager', // PF-024 Item 11 – pin a message to the bottom of an allowed channel, unpin it

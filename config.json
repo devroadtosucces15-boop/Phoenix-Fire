@@ -111,6 +111,7 @@
     "pins": "owner",
     "navigator": "owner",
     "serverIntel": "off",
+    "mascot": "off",
     "wiki": "owner",
     "aiInsights": "members",
     "lineupRec": "managers",

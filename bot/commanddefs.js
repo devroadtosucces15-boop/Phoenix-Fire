@@ -20,6 +20,15 @@ export const COMMANDS = [
   },
   // PF-024 Item 9 – the Translator (bot/translate.js). The message command needs no gateway: Discord resolves the message text into the interaction.
   // PF-024 Item 10 – the Quote card (bot/quotecard.js): right click a message → a clean share picture.
+  // PF-024 Item 15 – the mascot and roaster (bot/mascot.js): slash commands only. quote = today's line, ask = an honest upbeat answer, roast = a playful clap-back on request, mute = managers.
+  { name: 'mascot', description: 'The club mascot: a quote, an honest answer, or a friendly roast', options: [
+    { type: SUB, name: 'quote', description: "Today's motivational line" },
+    { type: SUB, name: 'ask', description: 'Ask the mascot anything (honest answers, upbeat voice)', options: [{ type: STRING, name: 'question', description: 'Your question', required: true, max_length: 300 }] },
+    { type: SUB, name: 'roast', description: 'A playful roast of a clubmate (banter about their play, never personal)', options: [
+      { type: USER, name: 'member', description: 'Who gets it', required: true },
+      { type: STRING, name: 'message', description: 'What they just said to you: the roast answers at the same energy', max_length: 160 },
+      { type: STRING, name: 'level', description: 'How spicy (default light)', choices: [{ value: 'light', name: 'light' }, { value: 'medium', name: 'medium' }, { value: 'spicy', name: 'spicy' }] }] },
+    { type: SUB, name: 'mute', description: 'Managers: switch the mascot ask and roast off or on', options: [{ type: BOOLEAN, name: 'on', description: 'Mute (default) or false to bring it back' }] }] },
   // PF-024 Item 14 – the counselor (bot/serverintel.js): managers only, tendencies and anomaly flags from a weekly public-channel sample. Private reply.
   { name: 'counselor', description: 'Managers: how the team is doing and who to check in on (numbers only)', default_member_permissions: String(1 << 28), contexts: [0] },
   // PF-024 Item 12 – the server navigator (bot/navigator.js): what every channel is for, plus a Q&A wiki. Private reply.
@@ -381,7 +390,7 @@ export const APP_COMMANDS = {
   // The five bots (PLANNING/BOT-SPLIT.md): Core = server, site and manager controls · Tools = helpers for members and managers ·
   // Stats = anything that reads numbers · Matchday = running a match night · Rush = 5v5. `fun` is only the old Fun app, kept empty
   // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
-  core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'corehelp'],
+  core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'mascot', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],

@@ -684,6 +684,270 @@
  },
  {
   "kind": "slash",
+  "command": "mascot",
+  "trigger": "/mascot quote ",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-mascot.png?v=16"
+          }
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · MASCOT\n### Quote of the day"
+       },
+       {
+        "type": 10,
+        "content": "> Win humble, lose curious."
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "-# Rise. Burn. Repeat."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "mascot",
+  "trigger": "/mascot ask question=who has the most assists this season?",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32768,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 15230234,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-mascot.png?v=16"
+          }
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "-# PHOENIX FIRE · MASCOT\n### Mascot says\n-# who has the most assists this season?"
+       },
+       {
+        "type": 10,
+        "content": "{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}"
+       },
+       {
+        "type": 14,
+        "divider": true,
+        "spacing": 1
+       },
+       {
+        "type": 10,
+        "content": "-# Honest, upbeat, and not always right: check anything important with a manager."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "mascot",
+  "trigger": "/mascot roast member=222 level=light",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=16"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Pick a member**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "mascot",
+  "trigger": "/mascot roast member=222 level=medium",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=16"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Pick a member**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "mascot",
+  "trigger": "/mascot roast member=222 level=spicy",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=16"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Pick a member**"
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "mascot",
+  "trigger": "/mascot mute ",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=16"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Mascot muted**\nAsk and roast are off. The daily quote carries on."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
   "command": "counselor",
   "trigger": "/counselor",
   "app": "tools",
@@ -986,7 +1250,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…"
        },
        {
         "type": 14,
@@ -995,7 +1259,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -1125,6 +1389,12 @@
             "label": "/profanitysetup",
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
+            "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            }
           ]
@@ -1187,7 +1457,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 2 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -1317,6 +1587,12 @@
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
+            "default": false
            }
           ]
          }
@@ -1369,7 +1645,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…"
        },
        {
         "type": 14,
@@ -1378,7 +1654,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -1509,6 +1785,12 @@
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
+            "default": false
            }
           ]
          }
@@ -1570,7 +1852,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 2 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -1699,6 +1981,12 @@
             "label": "/profanitysetup",
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
+            "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            }
           ]
@@ -1860,7 +2148,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…"
        },
        {
         "type": 14,
@@ -1869,7 +2157,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -2000,6 +2288,12 @@
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
+            "default": false
            }
           ]
          }
@@ -2061,7 +2355,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 3 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -2181,6 +2475,12 @@
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
+            "default": false
            }
           ]
          }
@@ -2242,7 +2542,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 2 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -2372,6 +2672,12 @@
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
+            "default": false
            }
           ]
          }
@@ -2433,7 +2739,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 4 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 4 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -2553,6 +2859,12 @@
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
+            "default": false
            }
           ]
          }
@@ -2605,7 +2917,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…"
        },
        {
         "type": 14,
@@ -2614,7 +2926,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -2744,6 +3056,12 @@
             "label": "/profanitysetup",
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
+            "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            }
           ]
@@ -10724,7 +11042,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokt5znybblelc/messages/@original",
+    "url": "/webhooks/3/tokc854p7sdftv/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -10769,7 +11087,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokqai1xeb7r3s/messages/@original",
+    "url": "/webhooks/3/tok94a0mc3ivf/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -10806,7 +11124,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokhd9eeyfec2a/messages/@original",
+    "url": "/webhooks/3/tokdi86fumfe9/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -10843,7 +11161,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokvtrydlkibg/messages/@original",
+    "url": "/webhooks/3/tok266ea3efw6c/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -10880,7 +11198,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok54bhsz1urae/messages/@original",
+    "url": "/webhooks/3/tokal2o4x6jw4/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -10917,7 +11235,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok6278i4bu87/messages/@original",
+    "url": "/webhooks/3/tok7wrbws116j5/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -10954,7 +11272,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokc854p7sdftv/messages/@original",
+    "url": "/webhooks/3/tok5kbbxwzcfz6/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -10991,7 +11309,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok94a0mc3ivf/messages/@original",
+    "url": "/webhooks/3/tokwjv2pdaavjq/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11028,7 +11346,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokdi86fumfe9/messages/@original",
+    "url": "/webhooks/3/toku4q6kbogteq/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11073,7 +11391,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok266ea3efw6c/messages/@original",
+    "url": "/webhooks/3/tokxg46ri8tdab/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11110,7 +11428,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokal2o4x6jw4/messages/@original",
+    "url": "/webhooks/3/tokwoe717bn0z/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -11147,7 +11465,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok7wrbws116j5/messages/@original",
+    "url": "/webhooks/3/tok9ci3hjzpat6/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13804,7 +14122,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokxkwb63d9yh/messages/@original",
+    "url": "/webhooks/3/tok6c06jtkxk8p/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13841,7 +14159,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokjgkroum3kz/messages/@original",
+    "url": "/webhooks/2/tokosdd0b2m32c/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13855,7 +14173,7 @@
         },
         {
          "type": 10,
-         "content": "🔥 **EL DESQUE** · `44074` · we drew 3–0 · Friendly · 3h ago\n🔥 **Dark Ritual** · `83362` · we drew 7–0 · Friendly · 4h ago\n🔥 **Schwarz Senegal** · `2155738` · we lost 0–3 · League · 4h ago\n🔥 **SilverArrow** · `4674` · we drew 4–0 · Friendly · 4h ago\n🔥 **SC Ritze** · `1341543` · we drew 1–1 · League · 4h ago\n🔥 **AoAshi** · `1537` · we drew 0–2 · Friendly · 5h ago\n🔥 **Leaked FC** · `362091` · we won 5–2 · League · 5h ago\n🔥 **S1K1S VAR** · `783601` · we won 3–1 · League · 5h ago\n🔥 **Cavaliers** · `22255` · we drew 0–3 · Friendly · 5h ago\n🔥 **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 28h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 28h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 28h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 28h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 29h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 29h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 2d ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 2d ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 2d ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 2d ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 2d ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 2d ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 2d ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 2d ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 2d ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago"
+         "content": "🔥 **EL DESQUE** · `44074` · we drew 3–0 · Friendly · 4h ago\n🔥 **Dark Ritual** · `83362` · we drew 7–0 · Friendly · 4h ago\n🔥 **Schwarz Senegal** · `2155738` · we lost 0–3 · League · 5h ago\n🔥 **SilverArrow** · `4674` · we drew 4–0 · Friendly · 5h ago\n🔥 **SC Ritze** · `1341543` · we drew 1–1 · League · 5h ago\n🔥 **AoAshi** · `1537` · we drew 0–2 · Friendly · 5h ago\n🔥 **Leaked FC** · `362091` · we won 5–2 · League · 5h ago\n🔥 **S1K1S VAR** · `783601` · we won 3–1 · League · 6h ago\n🔥 **Cavaliers** · `22255` · we drew 0–3 · Friendly · 6h ago\n🔥 **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 28h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 29h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 29h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 29h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 30h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 30h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 2d ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 2d ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 2d ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 2d ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 2d ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 2d ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 2d ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 2d ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 2d ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago"
         },
         {
          "type": 10,
@@ -13874,7 +14192,7 @@
             {
              "label": "EL DESQUE",
              "value": "44074",
-             "description": "44074 · we drew 3–0 · Friendly · 3h ago",
+             "description": "44074 · we drew 3–0 · Friendly · 4h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13890,7 +14208,7 @@
             {
              "label": "Schwarz Senegal",
              "value": "2155738",
-             "description": "2155738 · we lost 0–3 · League · 4h ago",
+             "description": "2155738 · we lost 0–3 · League · 5h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13898,7 +14216,7 @@
             {
              "label": "SilverArrow",
              "value": "4674",
-             "description": "4674 · we drew 4–0 · Friendly · 4h ago",
+             "description": "4674 · we drew 4–0 · Friendly · 5h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13906,7 +14224,7 @@
             {
              "label": "SC Ritze",
              "value": "1341543",
-             "description": "1341543 · we drew 1–1 · League · 4h ago",
+             "description": "1341543 · we drew 1–1 · League · 5h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13930,7 +14248,7 @@
             {
              "label": "S1K1S VAR",
              "value": "783601",
-             "description": "783601 · we won 3–1 · League · 5h ago",
+             "description": "783601 · we won 3–1 · League · 6h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13938,7 +14256,7 @@
             {
              "label": "Cavaliers",
              "value": "22255",
-             "description": "22255 · we drew 0–3 · Friendly · 5h ago",
+             "description": "22255 · we drew 0–3 · Friendly · 6h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13954,7 +14272,7 @@
             {
              "label": "IIPWBXMST",
              "value": "1055",
-             "description": "1055 · we drew 1–1 · Friendly · 28h ago",
+             "description": "1055 · we drew 1–1 · Friendly · 29h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13962,7 +14280,7 @@
             {
              "label": "STARK FC",
              "value": "34969",
-             "description": "34969 · we drew 3–0 · Friendly · 28h ago",
+             "description": "34969 · we drew 3–0 · Friendly · 29h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13970,7 +14288,7 @@
             {
              "label": "Dutch Despair",
              "value": "18418",
-             "description": "18418 · we drew 3–0 · Friendly · 28h ago",
+             "description": "18418 · we drew 3–0 · Friendly · 29h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13978,7 +14296,7 @@
             {
              "label": "oCampos eSports",
              "value": "15609",
-             "description": "15609 · we drew 2–1 · Friendly · 29h ago",
+             "description": "15609 · we drew 2–1 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -13986,7 +14304,7 @@
             {
              "label": "LEGACY 1830",
              "value": "48699",
-             "description": "48699 · we drew 0–1 · Friendly · 29h ago",
+             "description": "48699 · we drew 0–1 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14131,7 +14449,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokpj1n72g48ek/messages/@original",
+    "url": "/webhooks/2/tok4nhwh8nabf/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14145,7 +14463,7 @@
         },
         {
          "type": 10,
-         "content": "✅ **EL DESQUE** · `44074` · we drew 3–0 · Friendly · 3h ago\n🔥 **Dark Ritual** · `83362` · we drew 7–0 · Friendly · 4h ago\n🔥 **Schwarz Senegal** · `2155738` · we lost 0–3 · League · 4h ago\n🔥 **SilverArrow** · `4674` · we drew 4–0 · Friendly · 4h ago\n🔥 **SC Ritze** · `1341543` · we drew 1–1 · League · 4h ago\n🔥 **AoAshi** · `1537` · we drew 0–2 · Friendly · 5h ago\n🔥 **Leaked FC** · `362091` · we won 5–2 · League · 5h ago\n🔥 **S1K1S VAR** · `783601` · we won 3–1 · League · 5h ago\n🔥 **Cavaliers** · `22255` · we drew 0–3 · Friendly · 5h ago\n🔥 **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 28h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 28h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 28h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 28h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 29h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 29h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 2d ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 2d ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 2d ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 2d ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 2d ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 2d ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 2d ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 2d ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 2d ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago"
+         "content": "✅ **EL DESQUE** · `44074` · we drew 3–0 · Friendly · 4h ago\n🔥 **Dark Ritual** · `83362` · we drew 7–0 · Friendly · 4h ago\n🔥 **Schwarz Senegal** · `2155738` · we lost 0–3 · League · 5h ago\n🔥 **SilverArrow** · `4674` · we drew 4–0 · Friendly · 5h ago\n🔥 **SC Ritze** · `1341543` · we drew 1–1 · League · 5h ago\n🔥 **AoAshi** · `1537` · we drew 0–2 · Friendly · 5h ago\n🔥 **Leaked FC** · `362091` · we won 5–2 · League · 5h ago\n🔥 **S1K1S VAR** · `783601` · we won 3–1 · League · 6h ago\n🔥 **Cavaliers** · `22255` · we drew 0–3 · Friendly · 6h ago\n🔥 **HOOPERS ONLY** · `91325` · we drew 5–3 · Friendly · 28h ago\n🔥 **IIPWBXMST** · `1055` · we drew 1–1 · Friendly · 29h ago\n🔥 **STARK FC** · `34969` · we drew 3–0 · Friendly · 29h ago\n🔥 **Dutch Despair** · `18418` · we drew 3–0 · Friendly · 29h ago\n🔥 **oCampos eSports** · `15609` · we drew 2–1 · Friendly · 30h ago\n🔥 **LEGACY 1830** · `48699` · we drew 0–1 · Friendly · 30h ago\n🔥 **Ameko Army** · `751307` · we won 3–1 · League · 2d ago\n🔥 **NOXION** · `2158998` · we won 1–0 · League · 2d ago\n🔥 **Spain X11** · `24151` · we won 6–1 · League · 2d ago\n🔥 **FCMeMeMeMee** · `98030` · we won 6–1 · League · 2d ago\n🔥 **Usual Suspectz** · `1378369` · we won 3–1 · League · 2d ago\n🔥 **Davslads United** · `1705` · we won 5–1 · League · 2d ago\n🔥 **oh yes my sons** · `297158` · we won 3–0 · League · 2d ago\n🔥 **OG b2k** · `117777` · we won 3–0 · League · 2d ago\n🔥 **Tassive Mitts** · `2111007` · we won 7–1 · League · 2d ago\n🔥 **W1NTER SOLD1ERS** · `1813860` · we won 3–0 · League · 3d ago"
         },
         {
          "type": 10,
@@ -14164,7 +14482,7 @@
             {
              "label": "EL DESQUE",
              "value": "44074",
-             "description": "44074 · we drew 3–0 · Friendly · 3h ago",
+             "description": "44074 · we drew 3–0 · Friendly · 4h ago",
              "emoji": {
               "name": "✅"
              }
@@ -14180,7 +14498,7 @@
             {
              "label": "Schwarz Senegal",
              "value": "2155738",
-             "description": "2155738 · we lost 0–3 · League · 4h ago",
+             "description": "2155738 · we lost 0–3 · League · 5h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14188,7 +14506,7 @@
             {
              "label": "SilverArrow",
              "value": "4674",
-             "description": "4674 · we drew 4–0 · Friendly · 4h ago",
+             "description": "4674 · we drew 4–0 · Friendly · 5h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14196,7 +14514,7 @@
             {
              "label": "SC Ritze",
              "value": "1341543",
-             "description": "1341543 · we drew 1–1 · League · 4h ago",
+             "description": "1341543 · we drew 1–1 · League · 5h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14220,7 +14538,7 @@
             {
              "label": "S1K1S VAR",
              "value": "783601",
-             "description": "783601 · we won 3–1 · League · 5h ago",
+             "description": "783601 · we won 3–1 · League · 6h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14228,7 +14546,7 @@
             {
              "label": "Cavaliers",
              "value": "22255",
-             "description": "22255 · we drew 0–3 · Friendly · 5h ago",
+             "description": "22255 · we drew 0–3 · Friendly · 6h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14244,7 +14562,7 @@
             {
              "label": "IIPWBXMST",
              "value": "1055",
-             "description": "1055 · we drew 1–1 · Friendly · 28h ago",
+             "description": "1055 · we drew 1–1 · Friendly · 29h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14252,7 +14570,7 @@
             {
              "label": "STARK FC",
              "value": "34969",
-             "description": "34969 · we drew 3–0 · Friendly · 28h ago",
+             "description": "34969 · we drew 3–0 · Friendly · 29h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14260,7 +14578,7 @@
             {
              "label": "Dutch Despair",
              "value": "18418",
-             "description": "18418 · we drew 3–0 · Friendly · 28h ago",
+             "description": "18418 · we drew 3–0 · Friendly · 29h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14268,7 +14586,7 @@
             {
              "label": "oCampos eSports",
              "value": "15609",
-             "description": "15609 · we drew 2–1 · Friendly · 29h ago",
+             "description": "15609 · we drew 2–1 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14276,7 +14594,7 @@
             {
              "label": "LEGACY 1830",
              "value": "48699",
-             "description": "48699 · we drew 0–1 · Friendly · 29h ago",
+             "description": "48699 · we drew 0–1 · Friendly · 30h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -14390,7 +14708,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokvl54b6lczd/messages/@original",
+    "url": "/webhooks/2/tok7pk7keczxpl/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14400,7 +14718,7 @@
        "components": [
         {
          "type": 10,
-         "content": "🔍 EA has no club matching **sample** yet. Names only match clubs Phoenix Fire has played – for any other club paste its **club ID** (`/burner track 1234567`), or try again after their first game."
+         "content": "🔥 Now tracking **Sample** (club 872273).\nThe first collection – squad, history, every match EA still shows – runs in the next couple of minutes, and from then on every game they play gets a stats report **in this channel**.\n📋 http://localhost:4321/burners.html#c872273"
         }
        ]
       }
@@ -14429,11 +14747,11 @@
       "components": [
        {
         "type": 10,
-        "content": "-# STAFF · BURNER CLUBS\n### 🔥 Burner clubs (1/20)"
+        "content": "-# STAFF · BURNER CLUBS\n### 🔥 Burner clubs (2/20)"
        },
        {
         "type": 10,
-        "content": "🔥 **EL DESQUE** · `44074` · ⏳ first collection pending"
+        "content": "🔥 **EL DESQUE** · `44074` · ⏳ first collection pending\n🔥 **Sample** · `872273` · ⏳ first collection pending"
        },
        {
         "type": 10,
@@ -14500,6 +14818,14 @@
             "emoji": {
              "name": "🗑️"
             }
+           },
+           {
+            "label": "Sample",
+            "value": "872273",
+            "description": "club 872273",
+            "emoji": {
+             "name": "🗑️"
+            }
            }
           ]
          }
@@ -14561,7 +14887,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokdf15i9i4si7/messages/@original",
+    "url": "/webhooks/1/toktiku4kl6a7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14598,7 +14924,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok4nhwh8nabf/messages/@original",
+    "url": "/webhooks/1/tok10p45hozob3/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14635,7 +14961,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok7pk7keczxpl/messages/@original",
+    "url": "/webhooks/1/tokvr5nscev9lm/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14672,7 +14998,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokgosa3c6z6v6/messages/@original",
+    "url": "/webhooks/1/tokpppse8k0bfb/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -14682,7 +15008,7 @@
        "components": [
         {
          "type": 10,
-         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 1 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
+         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 0 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
         }
        ]
       }
@@ -14709,7 +15035,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokct9tj21mif5/messages/@original",
+    "url": "/webhooks/1/tok5mvgnekzq72/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15185,11 +15511,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with playing striker like a sweeper."
+        "content": "Charged with rage-quitting at 1–0 up."
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1794966274:R>"
+        "content": "**Sentence** 30 min · out <t:1794968879:R>"
        },
        {
         "type": 14,
@@ -15265,11 +15591,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with playing striker like a sweeper."
+        "content": "Charged with rage-quitting at 1–0 up."
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1794964474:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1794967079:R>"
        },
        {
         "type": 14,
@@ -15338,7 +15664,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1794964474:d> · 30 min · playing striker like a sweeper · 💸 bailed\n`PHX-0003` <t:1794963473:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794959473:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794955473:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1794967079:d> · 30 min · rage-quitting at 1–0 up · 💸 bailed\n`PHX-0003` <t:1794966078:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1794962078:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1794958078:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -15502,7 +15828,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794953673:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1794956278:R>"
        }
       ]
      }
@@ -15546,7 +15872,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794870873:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793884473:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794873478:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793887078:R>"
        }
       ]
      }
@@ -15590,7 +15916,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794712473:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794715078:R>"
        }
       ]
      }
@@ -15634,7 +15960,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794496473:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794499078:R>"
        }
       ]
      }
@@ -15678,7 +16004,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794244473:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794247078:R>"
        }
       ]
      }
@@ -16075,7 +16401,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 In which year was the first World Cup held?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which country won Euro 2024?"
        },
        {
         "type": 12,
@@ -16090,7 +16416,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · 1950\n**B** · 1930\n**C** · 1934\n**D** · 1924"
+        "content": "**A** · Spain\n**B** · Netherlands\n**C** · France\n**D** · England"
        },
        {
         "type": 10,
@@ -16150,22 +16476,22 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 16743794,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=16"
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=16"
           },
-          "description": "That did not work"
+          "description": "Done"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**❌ Not this time – it was B · 1930**\nUruguay hosted and won it. You have 0 points."
+        "content": "**✅ Right! +10 points**\nSpain beat England 2–1 in Berlin. You have 10 points."
        }
       ]
      }
@@ -16320,7 +16646,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 1 player on the board"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 2 players on the board"
        },
        {
         "type": 12,
@@ -16335,7 +16661,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **Mike** · 120 pts · 9/12 right"
+        "content": "🥇 **Mike** · 120 pts · 9/12 right\n🥈 **Zub (owner)** · 10 pts · 1/1 right"
        }
       ]
      }
@@ -16362,7 +16688,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokrjxf4ydvju7/messages/@original",
+    "url": "/webhooks/1/tok4sz6d46i775/messages/@original",
     "body": {
      "components": [
       {
@@ -16410,7 +16736,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokpy8ludceru/messages/@original",
+    "url": "/webhooks/1/tokpe90dgk4hs/messages/@original",
     "body": {
      "components": [
       {
@@ -16458,7 +16784,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokkiqwi1c2r2p/messages/@original",
+    "url": "/webhooks/1/tokjtrnvhiu3pm/messages/@original",
     "body": {
      "components": [
       {
@@ -17346,7 +17672,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokfck035spxw5/messages/@original",
+    "url": "/webhooks/1/tokgsyr3vdnqge/messages/@original",
     "body": {
      "components": [
       {
@@ -17735,7 +18061,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794964474:R> · only you can see this"
+        "content": "-# Updated <t:1794967079:R> · only you can see this"
        },
        {
         "type": 1,
@@ -17809,7 +18135,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794963873:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1794966478:R>"
          }
         ],
         "accessory": {
@@ -18093,7 +18419,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1794964474:R> · only you can see this"
+        "content": "-# Updated <t:1794967079:R> · only you can see this"
        },
        {
         "type": 1,
@@ -18491,7 +18817,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794964474:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1794967079:R>"
          }
         ],
         "accessory": {
@@ -19327,7 +19653,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794968074:t> · <t:1794968074:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794970679:t> · <t:1794970679:R>"
        },
        {
         "type": 14,
@@ -19396,7 +19722,7 @@
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794968074:t> · <t:1794968074:R>"
+        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1794970679:t> · <t:1794970679:R>"
        },
        {
         "type": 14,
@@ -19463,7 +19789,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794965074:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794967679:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -19503,7 +19829,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794965074:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794967679:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -19543,7 +19869,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794965074:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794967679:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -19583,7 +19909,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1794965074:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**Slow down**\nYou can post again <t:1794967679:R>. Your last call is still up – use /lfg cancel to take it down."
        }
       ]
      }
@@ -20190,7 +20516,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…"
        },
        {
         "type": 14,
@@ -20199,7 +20525,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 12 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 13 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -20329,6 +20655,12 @@
             "label": "/profanitysetup",
             "value": "11",
             "description": "create/update the AutoMod profanity rule + alert channel",
+            "default": false
+           },
+           {
+            "label": "/mascot",
+            "value": "12",
+            "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            }
           ]

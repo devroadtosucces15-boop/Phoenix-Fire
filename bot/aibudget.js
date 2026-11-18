@@ -7,8 +7,8 @@ import { kvOf } from './kv.js';
 export const AI_DAILY_CAP = 6000; // neurons this counter lets the new features use per UTC day (of the 10,000 free)
 export const AI_COST = { text: 250, enhance: 350 }; // estimated neurons per call
 export const AI_POOL = 10000; // the whole free pool per UTC day
-// A feature that must stay small gets its own share of the pool on top of the shared cap (PF-024 Item 14: server intelligence, 20% = 2,000 neurons a day).
-export const FEATURE_SHARE = { intel: 0.2 };
+// A feature that must stay small gets its own share of the pool on top of the shared cap (PF-024 Item 14: server intelligence, Item 15: mascot and roast, each 20% = 2,000 neurons a day).
+export const FEATURE_SHARE = { intel: 0.2, mascot: 0.2 };
 export const featureCap = (feature) => Math.round(AI_POOL * (FEATURE_SHARE[feature] ?? 1));
 export const AI_COOLDOWN_SEC = 20; // per person, per feature: a held-down button cannot burn the pool
 

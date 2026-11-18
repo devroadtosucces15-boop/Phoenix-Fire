@@ -476,14 +476,15 @@
       ],
       "fileLane": "`bot/`",
       "lowHanging": false,
-      "percent": 39,
+      "percent": 44,
       "verify": false,
-      "notes": "Plan sections 5c to Item 25. One session per item. Item 8 duplicate-post fix done 2026-11-17 (bot/once.js claims; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 9 Translator done 2026-11-17 (context menu Translate message, /translate, /enhance, /language, bot/aibudget.js KV counter; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 10 Quote card done 2026-11-17 (context menu Quote card, bot/quotecard.js; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 11 wheel + pin tool done 2026-11-17 (animated weighted /wheel with History, Pin to bottom/unpin, migration 0071; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 12 server navigator done 2026-11-17 (/navigator, bot/navigator.js, no migration; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 13 bot wiki book done 2026-11-18 (/wiki, bot/wikibook.js, the five help commands open it once the flag is on; no migration; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 14 server intelligence and counselor done 2026-11-18 (/counselor, bot/serverintel.js, REST sampling by the Worker, flag serverIntel ships off = kill switch, no migration; owner steps and disclosure wording in PLANNING/PF-024-GO-LIVE.md). Item 15 (mascot and roast) is next and needs the owner's guardrail and AI budget decisions; PF-024 stays NEXT until Item 25 is done.",
+      "notes": "Plan sections 5c to Item 25. One session per item. Item 8 duplicate-post fix done 2026-11-17 (bot/once.js claims; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 9 Translator done 2026-11-17 (context menu Translate message, /translate, /enhance, /language, bot/aibudget.js KV counter; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 10 Quote card done 2026-11-17 (context menu Quote card, bot/quotecard.js; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 11 wheel + pin tool done 2026-11-17 (animated weighted /wheel with History, Pin to bottom/unpin, migration 0071; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 12 server navigator done 2026-11-17 (/navigator, bot/navigator.js, no migration; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 13 bot wiki book done 2026-11-18 (/wiki, bot/wikibook.js, the five help commands open it once the flag is on; no migration; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 14 server intelligence and counselor done 2026-11-18 (/counselor, bot/serverintel.js, REST sampling by the Worker, flag serverIntel ships off = kill switch, no migration; owner steps and disclosure wording in PLANNING/PF-024-GO-LIVE.md). Item 15 mascot and roast done 2026-11-18 (/mascot quote|ask|roast|mute, bot/mascot.js, flag mascot ships off, no migration; owner decisions and steps in PLANNING/PF-024-GO-LIVE.md). Item 16 (player bio card) is next; PF-024 stays NEXT until Item 25 is done.",
       "outcome": "The bot has fewer, cleaner commands and the planned new features, including a test-view command.",
       "behavior": "Split into one session per plan item when taken; each follows the channel and role from config rule.",
       "doneLog": [
         "2026-11-17 Item 8 duplicate-post fix",
-        "2026-11-18 Item 14 server intelligence and counselor"
+        "2026-11-18 Item 14 server intelligence and counselor",
+        "2026-11-18 Item 15 mascot and roast"
       ],
       "plans": []
     },
