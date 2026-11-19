@@ -19,7 +19,7 @@ const owner = await login('111', [], 'Owner'), mgr = await login('333', ['mgr'],
 // ---------- rules ----------
 const d = defaultRules();
 t('every rule has a default and the defaults keep the old amounts (check-in 5, rating 2, vote 2, clean week 3)', d.amounts['attendance.checkin'] === 5 && d.amounts['community.rating'] === 2 && d.amounts['community.motm_vote'] === 2 && d.amounts['behaviour.clean_streak'] === 3 && Object.keys(RULE_DEFAULTS).length === Object.keys(d.amounts).length);
-t('the price list starts empty (the owner has not set prices)', d.prices.length === 0);
+t('the price list starts with five PLACEHOLDER prizes that nobody can buy yet', d.prices.length === 5 && d.prices.every((p) => p.status === 'placeholder'));
 t('cleanRules: bad amounts and unknown keys are refused or dropped', !!cleanRules({ amounts: { 'match.goal': -1 } }).error && !!cleanRules({ amounts: { 'match.goal': 5000 } }).error && !('nope' in cleanRules({ amounts: { nope: 3 } }).rules.amounts));
 t('cleanRules: prices need a name and a cost, ids are made unique', !!cleanRules({ prices: [{ name: '', cost: 5 }] }).error && !!cleanRules({ prices: [{ name: 'A', cost: 0 }] }).error && !!cleanRules({ prices: [{ name: 'A', cost: 5 }, { name: 'a', cost: 6 }] }).error && cleanRules({ prices: [{ name: 'Gold Role', cost: '50' }] }).rules.prices[0].id === 'gold-role');
 

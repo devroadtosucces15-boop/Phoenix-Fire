@@ -67,6 +67,7 @@ import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
 import { issueSave } from './issues.js';
 import { clubLookup } from './clublookup.js';
 import { awardRule, pointsRoute, pointsMatchRoute } from './points.js';
+import { availabilityPoint } from './engagement.js';
 import { musicBridgeRoute, musicRoute } from './music.js';
 import { FLAG_LEVELS, ROLES, ROLE_LABEL, atLeast, can, committedFlags, discordRole, featuresFor, flagOn, flags, loadFlagOverrides, permsFor, sessionRole, viewAsRole, withFlagOverrides } from './roles.js';
 import { healthRoute } from './health.js';
@@ -715,6 +716,7 @@ async function route(p, method, body, me, env, loadSite, url) {
             .bind(d, me.u, status, me.n, me.a, Date.now()))),
         env.DB.prepare('DELETE FROM availability WHERE date < ?').bind(old),
       ]);
+      if (status !== 'clear') await availabilityPoint(env, me.u).catch(() => {}); // PF-024 Item 24b: once a week
       await log(env, me, 'availability', `${status === 'clear' ? 'cleared' : status} · ${pick.map((d) => d.slice(5)).join(', ')}`);
     }
     const by = await availByDate(env, dates);
