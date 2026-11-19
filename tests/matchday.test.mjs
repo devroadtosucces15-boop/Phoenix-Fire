@@ -18,7 +18,7 @@ t('matchday owns the match-day commands, rush owns /rush, /lfg and /queue', MOVE
 t('moved commands are off their old apps in the map', !APP_COMMANDS.tools.some((n) => MOVED.includes(n)) && !APP_COMMANDS.stats.includes('rush'));
 t('every moved command remembers where it came from', MOVED.every((n) => MOVED_FROM[n] === 'tools') && MOVED_FROM.rush === 'stats');
 t('new commands are held until their app exists', HELD.has('lfg') && HELD.has('queue') && HELD.has('rushladder') && !MOVED_FROM.lfg && !MOVED_FROM.queue);
-t('/matchday has create, checkin and status; /lfg has now, cancel and list', COMMANDS.find((c) => c.name === 'matchday').options.map((o) => o.name).join() === 'create,checkin,status,schedule,next,who' && COMMANDS.find((c) => c.name === 'lfg').options.map((o) => o.name).join() === 'now,cancel,list');
+t('/matchday has create, checkin and status; /lfg has now, cancel, captain and list', COMMANDS.find((c) => c.name === 'matchday').options.map((o) => o.name).join() === 'create,checkin,status,schedule,next,who' && COMMANDS.find((c) => c.name === 'lfg').options.map((o) => o.name).join() === 'now,cancel,captain,list');
 
 // ---------- nothing changes for members until the apps exist ----------
 const base = { DISCORD_APP_ID: '1', DISCORD_PUBLIC_KEY: 'aa', DISCORD_BOT_TOKEN: 't' };

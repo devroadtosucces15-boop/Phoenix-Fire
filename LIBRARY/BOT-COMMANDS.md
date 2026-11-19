@@ -306,13 +306,17 @@ No commands (kept empty for the transition).
     - `date` (text, optional): YYYY-MM-DD (default: today)
 - **/lfg**: Looking for Rush players: say you are available, or see who is
   - `now` (subcommand, optional): Post that you are available for Rush
-    - `minutes` (number, optional): How long you are around (default 60, max 180)
+    - `minutes` (number, optional): How long you are around to start with (default 30, max 180). You can add an hour on the post.
     - `position` (text, optional, choices: Goalkeeper, Striker, Centre back, Winger, Any position): The Rush position you want tonight (default: your profile position)
     - `note` (text, optional): Position, mode, anything else
   - `cancel` (subcommand, optional): Take your availability down
+  - `captain` (subcommand, optional): Pass the captain role of your lobby to someone in your crew (or give it up)
+    - `member` (user, optional): Who is captain now (default: the first person in your crew)
   - `list` (subcommand, optional): Who is available for Rush right now
 - **/queue**: The Rush queue: see the line, or (managers) post the board and set it up
   - `status` (subcommand, optional): Who is searching and who is next
+  - `captain` (subcommand, optional): Pass the captain role to someone in your crew (or give it up)
+    - `member` (user, optional): Who is captain now (default: the first person in your crew)
   - `board` (subcommand, optional): Managers: post a fresh board in the queue channel(s)
   - `clear` (subcommand, optional): Managers: empty the queue
   - `stop` (subcommand, optional): Managers: stop the queue (members cannot turn it off or back on)
