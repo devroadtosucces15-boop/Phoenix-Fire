@@ -20,7 +20,7 @@ t('off for members while the flag is owner-only', /not switched on/.test(plainTe
 
 const r = await now('now', { note: 'Need a keeper <@everyone>' });
 const post = sqlite.prepare('SELECT * FROM rush_lfg ORDER BY id DESC').get();
-t('now: posts publicly, default 60 minutes, note cleaned of mentions', (r.data.flags & 64) === 0 && post.expires - post.at === 60 * MIN && !/[<>@]/.test(post.note));
+t('now: posts publicly, default 30 minutes, note cleaned of mentions', (r.data.flags & 64) === 0 && post.expires - post.at === 30 * MIN && !/[<>@]/.test(post.note));
 t('now: tags only the Rush role, never everyone', JSON.stringify(r.data.allowed_mentions) === '{"parse":[],"roles":["7002"]}' && r.data.components[0].content === '<@&7002>');
 t('now: I’m in button (no Later), a position, and Phoenix look', /pf:lfg:\d+:in/.test(JSON.stringify(r.data)) && !/pf:lfg:\d+:later/.test(JSON.stringify(r.data)) && /Position/.test(plainText(r.data)) && /PHOENIX FIRE/.test(plainText(r.data)) && !/norex|c8352c/i.test(JSON.stringify(r.data).replace(/norex:\w+(:\w+)*/g, '')) && r.data.components.some((c) => c.accent_color === 0xe8651a));
 t('LFG_ID matches the button ids', LFG_ID.test(`pf:lfg:${post.id}:in`) && !LFG_ID.test('pf:lfg:x:in'));

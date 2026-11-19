@@ -65,7 +65,7 @@ export function advance(q, now) {
   return { queue, lit: [queue.find((e) => e.captain === next.captain)] };
 }
 const without = (q, captain) => renumber(q.filter((e) => e.captain !== String(captain)));
-const find = (q, captain) => q.find((e) => e.captain === String(captain));
+export const find = (q, captain) => q.find((e) => e.captain === String(captain));
 const fin = (res) => { const a = advance(res.queue, res.now); return { ...res, queue: renumber(a.queue), lit: a.lit }; };
 
 export function join(q, { captain, members = [], needs = 0 }, now) {
@@ -121,6 +121,17 @@ export function setMembers(q, captain, members) {
   const crew = crewOf(captain, members);
   const clash = holders(q, [captain, ...crew], captain);
   return clash.length ? { queue: q, error: 'conflict', clash, lit: [] } : { queue: q.map((x) => (x === e ? { ...x, members: crew } : x)), lit: [] };
+}
+// Pass the captain role to someone already in the crew. The old captain stays in the group as a member; place in line, status and timers are untouched.
+// The new captain is the one who searches, invites and presses the board's buttons from now on.
+export function passCaptain(q, from, to) {
+  const e = find(q, from);
+  if (!e) return { queue: q, error: 'absent', lit: [] };
+  to = String(to);
+  if (!e.members.length) return { queue: q, error: 'solo', lit: [] };
+  if (!e.members.includes(to)) return { queue: q, error: 'not-member', lit: [] };
+  const entry = { ...e, captain: to, members: [...e.members.filter((m) => m !== to), String(from)] };
+  return { queue: q.map((x) => (x === e ? entry : x)), lit: [], entry };
 }
 // Take members out of the groups that hold them (the "move them here" answer to a conflict).
 export function release(q, users, except) {
@@ -199,7 +210,7 @@ export function boardMessage(q, { now = Date.now(), org = 'Phoenix Fire', st = s
       buttons([
         !stopped && { label: 'Join queue', emoji: '➕', id: 'pf:rq:join', style: 'ok' }, !stopped && { label: 'Leave', emoji: '🚪', id: 'pf:rq:leave' }, !stopped && { label: 'Edit my crew', emoji: '👥', id: 'pf:rq:crew' },
         !stopped && { label: 'Searching now', emoji: '🔎', id: 'pf:rq:search', style: 'brand' }, !stopped && { label: 'Match found', emoji: '✅', id: 'pf:rq:found', style: 'ok' },
-        !stopped && { label: 'Match failed', emoji: '⚠️', id: 'pf:rq:failed' }, !stopped && { label: 'Need a player', emoji: '🙋', id: 'pf:rq:need' }, { label: 'Report', emoji: '📢', id: 'pf:rq:report', style: 'no' },
+        !stopped && { label: 'Match failed', emoji: '⚠️', id: 'pf:rq:failed' }, !stopped && { label: 'Need a player', emoji: '🙋', id: 'pf:rq:need' }, !stopped && { label: 'Pass captain', emoji: '🎖️', id: 'pf:rq:pass' }, { label: 'Report', emoji: '📢', id: 'pf:rq:report', style: 'no' },
       ]),
     ],
   });
@@ -273,7 +284,7 @@ export const saveSettings = (env, st) => env.DB.prepare("INSERT INTO meta (key, 
 const say = (title, body = '', accent) => reply(notice(title, body, accent ? { accent } : {}));
 // "No channel set" replies come from the Organization config (channelNotice: which purpose, where a manager sets it), never from a hand-written string.
 const noChannel = async (env, purpose) => reply(await channelNotice(env, purpose));
-const rushEnv = (env) => (appConfigured(env, 'rush') && env.BOT_APP !== 'rush' ? appEnv(env, 'rush') : env); // buttons only work on messages the Rush app posted
+export const rushEnv = (env) => (appConfigured(env, 'rush') && env.BOT_APP !== 'rush' ? appEnv(env, 'rush') : env); // buttons only work on messages the Rush app posted
 const BOARD_KEY = 'rq:board:';
 
 // Why a Rush post did not land (owner report 2026-11-13: "Board posted" with nothing in the channel). One failure per channel:
@@ -287,7 +298,7 @@ const whyOf = (err) => { const s = err?.status ?? null; return s === 401 ? 'reje
 const failureOf = (e, ch, err) => ({ ch, why: whyOf(err), status: err?.status ?? null, code: err?.code ?? null, message: String(err?.message ?? err), app: appOfEnv(e), secret: tokenSecret(appOfEnv(e)) });
 const logFailure = (kind, f) => console.log(`rush ${kind} failed`, f.ch ?? '-', f.why, f.status ?? '-', f.why === 'token' ? `${f.secret} is empty` : f.message);
 // Post one message to each channel; never throws. Returns the messages Discord took and one failure per channel it refused.
-async function postAll(e, channels, msg, kind) {
+export async function postAll(e, channels, msg, kind) {
   const noToken = tokenMissing(e), sent = [], failures = [];
   for (const ch of channels) {
     if (noToken) { failures.push({ ...noToken, ch }); logFailure(kind, { ...noToken, ch }); continue; }
@@ -349,7 +360,7 @@ function boardAnswer(r) {
   return say('The board did not post', why);
 }
 // A short ping: the mentions sit above a small steel panel (the only text allowed outside a panel), only those members can be notified.
-const ping = (users, line, accent = 'steel') => message({ accent, ping: users.map(mention).join(' '), mentions: { parse: [], users: users.map(String) }, blocks: [text(line)] });
+export const ping = (users, line, accent = 'steel') => message({ accent, ping: users.map(mention).join(' '), mentions: { parse: [], users: users.map(String) }, blocks: [text(line)] });
 const greenPing = (e, st) => ping(everyone(e), `**You're up.** Start searching in EA, then press **Searching now** (you have ${st.greenRemoveMin} min before the next group goes).`, 'win');
 
 // Cron, every minute: idle timers, the idle hour, then make sure the board is the newest message (one REST read per channel, skipped when the
@@ -397,10 +408,10 @@ const crewPrompt = (mode, title, defaults = []) => reply(message({ ephemeral: tr
 ].flat().filter(Boolean) }));
 const conflictNote = (clash) => `${[...new Set(clash.map((c) => `<@${c.user}> is already in <@${c.captain}>'s group`))].join('; ')}.`;
 
-async function after(env, ctx, work) { const p = work().catch((e) => console.log('rush queue board failed', e.message)); if (ctx?.waitUntil) ctx.waitUntil(p); else await p; }
+export async function after(env, ctx, work) { const p = work().catch((e) => console.log('rush queue board failed', e.message)); if (ctx?.waitUntil) ctx.waitUntil(p); else await p; }
 
 // Apply a queue change, persist it, and put the green light + a fresh board at the bottom.
-async function commit(env, ctx, before, res, now, extra = []) {
+export async function commit(env, ctx, before, res, now, extra = []) {
   await saveQueue(env, before, res.queue);
   await saveState(env, touchState(await getState(env), res.queue, now)); // activity + the open timer (reset when the line empties)
   const st = await getSettings(env);
@@ -467,6 +478,13 @@ export async function queueInteraction(i, env, me, who, ctx, now = Date.now()) {
     await commit(env, ctx, q, { ...res, queue: res.queue }, now);
     if (pend.mode !== 'tonight') await saveCrew(env, uid, pend.members, now);
     return say('✅ Done', 'They were moved into your group.', 'win');
+  }
+  if (action === 'pass') {
+    const e = find(q, uid);
+    if (!e) return say('You are not a captain', 'Only the captain of a group in the queue can pass the role.');
+    if (mode === 'pick') return passCaptainTo(env, ctx, q, uid, picked[0], now);
+    if (!e.members.length) return say('Nobody to pass it to', 'Your group is just you. Add people in **Edit my crew**, or press **Leave**.');
+    return reply(message({ ephemeral: true, accent: 'steel', blocks: [header({ eyebrow: 'Rush queue', title: 'Pass the captain role', sub: 'They search, invite and press the buttons. You stay in the crew.' }), select('pf:rq:pass:pick', 'Who is captain now?', { min: 1, max: 1 })].flat().filter(Boolean) }));
   }
   if (action === 'leave') { const res = leave(q, uid, now); if (res.error) return say(reasons[res.error]); await commit(env, ctx, q, res, now); return say('You left the queue', 'The next group has been given the green light.', 'win'); }
   if (action === 'search') { const res = search(q, uid, now); if (res.error) return say(reasons[res.error]); await bump(env, uid, 'searches', now); await commit(env, ctx, q, res, now); return say('🔎 Searching', 'Good luck. Press **Match found** when EA finds one, or **Match failed** if it does not load.', 'win'); }
@@ -549,6 +567,24 @@ async function finishNeed(env, ctx, q, uid, positions, now) {
   if (!sent.length) return say(`🙋 ${NEED[e.needs]}`, `It shows on the board, but the call did not post:\n${failureLines(failures)}`);
   const missed = failures.length ? `\nIt did not post in every channel:\n${failureLines(failures)}` : '';
   return say(`🙋 ${NEED[e.needs]}`, `Posted${who ? `, ${who} ${who === 1 ? 'audience' : 'audiences'} pinged` : ', nobody is set to be pinged (a manager picks the audience in the Control Center)'}. It closes in ${st.needMin} min.${missed}`, 'win');
+}
+// Give the captain role to a member of your crew (the board's Pass captain button, /queue captain and /lfg captain all land here). No target = give it up
+// to the first person in the crew. The open "Need a player" call moves with the role: it is closed and posted again under the new captain.
+export async function passCaptainTo(env, ctx, q, from, to, now = Date.now()) {
+  const e = find(q, from);
+  if (!e) return say('You are not a captain', 'Only the captain of a group in the queue can pass the role. Join the queue first, or ask your captain.');
+  if (!e.members.length) return say('Nobody to pass it to', 'Your group is just you. Add people in **Edit my crew**, or press **Leave** to step out.');
+  const target = to ? String(to) : e.members[0];
+  const res = passCaptain(q, from, target);
+  if (res.error === 'not-member') return say('They are not in your crew', `<@${target}> has to be in your group first (**Edit my crew**).`);
+  if (res.error) return say(reasons[res.error] ?? 'Could not pass the captain role');
+  const need = await kvOf(env)?.get(NEED_KEY + from, 'json').catch(() => null);
+  await env.DB.prepare("UPDATE rush_need_offers SET status = 'expired' WHERE status = 'open' AND need_id IN (SELECT id FROM rush_needs WHERE captain_id = ?)").bind(String(from)).run().catch(() => null);
+  await closeNeed(env, from); // the old captain's call (post, row) closes; it is re-posted under the new captain below
+  await commit(env, ctx, q, res, now, [ping([target], `<@${from}> passed you the **captain** role. You search, invite and press the buttons now.`)]);
+  await saveCrew(env, target, res.entry.members, now).catch(() => null); // so Join queue works for them next time
+  if (need && res.entry.needs && need.expires > now) await finishNeed(env, ctx, res.queue, target, need.positions ?? [], now);
+  return say('🎖️ Captain passed', `<@${target}> is captain now: they search, invite and press the buttons. You stay in the crew.`, 'win');
 }
 // "I'm in" / "Later" on the call: the post lists the answer, the captain is pinged once, the answerer gets a private note.
 async function needAnswer(env, ctx, captain, uid, answer, q, now) {
@@ -665,7 +701,8 @@ export async function queueCommand(i, env, ctx, me, who, sub, o = {}, now = Date
     if (!q.length) return say('Nobody is in the queue', head || 'Press **Join queue** on the board to go first.');
     return say(`🔥 ${q.length} group${q.length === 1 ? '' : 's'} in line`, `${state.openedAt ? `Open since ${ts(state.openedAt, 'T')} (${ts(state.openedAt, 'R')})\n` : ''}${byOrd(q).map((e) => `${e.status === 'waiting' ? `${positionOf(q, e.captain)}.` : e.status === 'searching' ? '🔎' : '🟢'} ${crewText(e)}\n-# joined ${ts(e.joined_at, 'R')} · ${e.status === 'searching' ? 'searching' : e.status === 'green' ? 'green light' : 'waiting'} since ${ts(e.status_since ?? e.joined_at, 'T')}`).join('\n')}`);
   }
-  if (!staff) return say('Only managers can use that', '`/queue status` shows the line for everyone.');
+  if (sub === 'captain') return passCaptainTo(env, ctx, q, me.u, o.member ? String(o.member) : null, now); // members: pass or give up the captain role
+  if (!staff) return say('Only managers can use that', '`/queue status` shows the line for everyone, `/queue captain` passes your captain role.');
   if (sub === 'board') {
     const r = await refreshBoards(env, { now });
     return r.channels ? boardAnswer(r) : noChannel(env, 'rush_queue');

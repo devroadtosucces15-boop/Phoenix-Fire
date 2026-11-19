@@ -108,7 +108,10 @@ export async function expireNeeds(env, now) {
 
 // Available LFG players who are not in a queue group (the caller passes the user ids that are) and not already offered this need.
 export async function availablePlayers(env, now, busy = []) {
-  const list = await rows(env, "SELECT user_id, name, positions FROM rush_lfg WHERE status = 'open' AND expires > ? ORDER BY at", now);
+  const posted = await rows(env, "SELECT user_id, name, positions FROM rush_lfg WHERE status = 'open' AND expires > ? ORDER BY at", now);
+  // "Alert me" subscribers count as available too (a DM offer they can accept or decline), unless they already have a call up.
+  const alerts = await rows(env, 'SELECT a.user_id, u.name, a.positions FROM rush_lfg_alerts a LEFT JOIN users u ON u.id = a.user_id ORDER BY a.at').catch(() => []);
+  const list = [...posted, ...alerts.filter((a) => !posted.some((p) => String(p.user_id) === String(a.user_id)))];
   const skip = new Set(busy.map(String));
   return list.filter((p) => !skip.has(String(p.user_id))).map((p) => ({ ...p, positions: cleanPositions(p.positions) }));
 }

@@ -28,7 +28,7 @@ import { closeDue } from './awards.js';
 import { hotwDue } from './hotw.js';
 import { scoreDue } from './predict.js';
 import { eventButton, checkinButton, playButton, memberCommand, memberOf, MEMBER_COMMANDS } from './botcmds.js';
-import { lfgCommand, lfgButton, lfgExpire, LFG_ID } from './lfg.js';
+import { lfgCommand, lfgButton, lfgTick, LFG_ID } from './lfg.js';
 import { queueCommand, queueInteraction, queueTick, RQ_ID } from './rushqueue.js';
 import { disabledOutputs, controlOf, decide, componentKey } from './controls.js';
 import { outputChoices } from './controlcenter.js';
@@ -97,6 +97,7 @@ export default {
     if (event?.cron === '* * * * *') { // the 1-minute timer sends /remind reminders and runs the Rush queue tick – everything else stays on the 10-minute one
       job('sendDueReminders', () => sendDueReminders(env).catch((e) => console.log('reminders failed', e.message)));
       if (flagOn(env, { role: 'owner' }, 'pins')) job('pinTick', () => pinTick(env).catch((e) => console.log('pin tick failed', e.message))); // PF-024 Item 11: keep pinned posts the newest message
+      if (flagOn(env, { role: 'owner' }, 'rushLfg')) job('lfgTick', () => lfgTick(env).catch((e) => console.log('rush lfg tick failed', e.message))); // MB5 + PF-027: ended calls close, the poster gets one "still here?" DM, open calls stay the newest message
       job('queueTick', () => queueTick(env).catch((e) => console.log('rush queue tick failed', e.message))); // MB6 idle timers + keep the board the newest message
       job('gifTick', () => gifTick(env).catch((e) => console.log('gif tick failed', e.message))); // PF-024 Item 21: fail a conversion that never answered (error reply, input deleted)
       return;
@@ -124,7 +125,6 @@ export default {
       job('refreshStatInsights', () => refreshStatInsights(env, loadSite).then(() => statInsightWeekly(env, postEmbed)).catch((e) => console.log('stat insights cron failed', e.message))); // BE9
     }
     if (flagOn(env, { role: 'owner' }, 'reminders')) job('remindersCron', () => remindersCron(env, (file) => load(site, file, ctx)).catch((e) => console.log('reminders failed', e.message))); // E3 gentle nudges
-    if (flagOn(env, { role: 'owner' }, 'rushLfg')) job('lfgExpire', () => lfgExpire(env).catch((e) => console.log('rush lfg expiry failed', e.message))); // MB5 calls past their time stop taking answers
     if (flagOn(env, { role: 'owner' }, 'memberLive')) job('memberLiveCron', () => memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
     job('streamAlertsCron', () => streamAlertsCron(env).catch((e) => console.log('stream alerts failed', e.message))); // /streamalerts sources (flag streamAlerts checked inside)
     if (flagOn(env, { role: 'owner' }, 'watchlist')) job('watchlistCron', () => watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
@@ -306,7 +306,7 @@ export default {
       try { return json(await queueInteraction(i, env, await memberOf(i, who, env), who, ctx)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
     if (i.type === 3 && LFG_ID.test(i.data?.custom_id ?? '')) {
-      try { return json(await lfgButton(i, env, await memberOf(i, who, env), who)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+      try { return json(await lfgButton(i, env, await memberOf(i, who, env), who, Date.now(), ctx)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
     if (i.type === 3 && /^norex:ev:\d+:\w+$/.test(i.data?.custom_id ?? '')) { // P3.3 ✅ ❔ ❌ on event posts
       try { return json(await eventButton(i, env, who)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
