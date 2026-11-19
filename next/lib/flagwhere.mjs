@@ -45,6 +45,7 @@ export const WHERE = {
   predictions: ["hub-squad.html",""],
   points: ["hub-squad.html",""],
   pointsEconomy: ["hub-squad.html",""],
+  engagementPoints: ["hub-squad.html",""],
   feed: ["news.html",""],
   hotw: ["hub-squad.html",""],
   mentions: ["hub-clubhouse.html",""],

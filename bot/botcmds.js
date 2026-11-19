@@ -248,7 +248,7 @@ export async function memberCommand(i, env, who, site, h) {
   }
   if (name === 'points') {
     if (!flagOn(env, who, 'points')) return say('🔒 The point system is not switched on for you yet.');
-    const st = await standing(env, me.u), econ = flagOn(env, who, 'pointsEconomy'), prices = econ ? (await loadRules(env)).prices : [];
+    const st = await standing(env, me.u), econ = flagOn(env, who, 'pointsEconomy'), prices = econ ? (await loadRules(env)).prices.filter((x) => x.status === 'approved') : [];
     return reply(message({ ephemeral: true, accent: 'gold', blocks: [
       header({ eyebrow: brand('My points', env), title: `⭐ ${st.balance} points`, sub: `Season ${st.season} · #${st.rank} on the club leaderboard`, thumb: await faceOf(env, me.u) }),
       facts([['Earned this season', `${st.earned}`], ['Spent', `${st.spent}`], ...CATEGORIES.map((c) => [`${CATEGORY_INFO[c][0]} ${CATEGORY_INFO[c][1]}`, `${st.by[c] ?? 0}`])]),

@@ -41,7 +41,7 @@ const metaGet = async (env, key) => { try { return JSON.parse(await env.DB.prepa
 const metaSet = (env, key, v) => env.DB.prepare('INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value').bind(key, JSON.stringify(v)).run();
 export const loadProfile = (env) => (env.DB ? metaGet(env, KEY) : null);
 export const loadStatus = (env) => (env.DB ? metaGet(env, STATUS) : null);
-const snowflake = (ms) => String((BigInt(Math.max(0, Math.floor(ms) - DISCORD_EPOCH)) << 22n));
+export const snowflake = (ms) => String((BigInt(Math.max(0, Math.floor(ms) - DISCORD_EPOCH)) << 22n));
 
 // ---------- one message → numbers (the ONLY place message text is read) ----------
 export const TOPICS = [
@@ -231,7 +231,7 @@ export async function intelCron(env, now = Date.now()) {
   await note_(env, { state: 'ok', detail: `${profile.n} messages summarised from ${profile.channelsSampled} public channels` }, now);
   return { ran: true, done: true, n: profile.n };
 }
-async function purposeMap(env) {
+export async function purposeMap(env) {
   const rows = (await env.DB.prepare('SELECT c.channel_id, c.purpose FROM discord_channels c JOIN discord_servers s ON s.id = c.server_id WHERE c.active = 1 AND s.active = 1').all().catch(() => ({ results: [] }))).results ?? [];
   const m = new Map();
   for (const r of rows) m.set(String(r.channel_id), [...(m.get(String(r.channel_id)) ?? []), r.purpose]);

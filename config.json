@@ -123,6 +123,7 @@
     "arcade": "owner",
     "gif": "owner",
     "birthday": "owner",
+    "engagementPoints": "owner",
     "bioCard": "owner",
     "wiki": "owner",
     "aiInsights": "members",

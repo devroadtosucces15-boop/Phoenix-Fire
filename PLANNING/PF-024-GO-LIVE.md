@@ -300,3 +300,18 @@ Owner steps (not done here):
 **Owner DECISION needed before the Discord Activity part (not built, Discord portal untouched):** where the Activity web app is hosted. An Activity needs a hosted page using Discord's Embedded App SDK plus a realtime backend. Options: (a) the Pages site hosts the Activity page and the `phoenix-bot` Worker hosts a Durable Object room like `ClubRoom` (one account host; the Discord portal needs the Activity URL mapping and Activities enabled); (b) a separate Cloudflare Pages/Worker project for the arcade. Real-time games (cup pong, basketball hoops) need that; the four turn-based games here do not.
 
 Not built: the other six or so games (cup pong, hoops and similar real-time ones need the Activity), a site page or Control Center tool for game records, a rematch button, challenging the whole channel (open lobby), season-based arcade score reset, a per-pair daily cap against two friends farming points (the 10-a-day cap limits it).
+
+## Item 24b: engagement points and placeholder prizes (code done on branch `ops-engagement-points`)
+Owner request (2026-11-19): the club is mainly Rush and Rush cannot be tracked, so points must reward being part of the community, not only League stats; prizes are virtual placeholders for now.
+
+**Engagement points** (`bot/engagement.js`, migration `0079_engagement.sql`, flag `engagementPoints` ships `owner`, test `tests/engagement-points.test.mjs`): every 10 minutes the Worker reads a few PUBLIC text channels over Discord REST (the same public/staff rules as server intelligence, so staff, private, NSFW and `intel_skip` channels are never read) and keeps COUNTS only per member per UTC day: which channels, which hours, how many messages, how many commands. No text is read into anything that survives the loop, stored or logged; no Message Content intent is needed. A finished day pays: being active 3, each extra channel 1 (up to 4), each active hour 1 (up to 6), using a command 1; 5+ active days in a week pays a streak bonus of 10; setting availability on the site pays 3 once a week; checking in to a match night still pays 5. Messages themselves pay nothing, so spamming does not farm points. Every amount is a rule (Control Center, Bot settings, Points rules, `0` = off). Match points are capped per member per week (`match.weekly_cap`, default 40, `0` = no cap) so a day of League cannot outscore a week of community life.
+
+**Placeholder prizes**: the price list now has a status per prize: `placeholder` (an example nobody can buy), `approved` (on sale), `off` (hidden). Five placeholders ship: custom role colour 150, profile flair 100, skip the Rush queue 50, mascot shout-out 125, captain for a night 500. In the Control Center a manager changes the status, price or wording, deletes one or adds one. Managers can also gift a prize for free and refund points after a checkout mistake (both are in the ledger, the audit trail and a DM). Members only see approved prizes.
+
+Owner steps:
+1. Migration `0079` is applied by the bot deploy. 
+2. Update the Item 14 disclosure line (or add one) to say the bot also counts who is active, in which channels and when, as numbers only, never what was said.
+3. Set `engagementPoints` to `owner` (it is) to watch the counts in the first days (Control Center, Insights), then to `members` to start paying. Nothing is paid while it or `pointsEconomy` is owner-only. Nothing is counted for a day until the flag is on.
+4. Choose the amounts you like; approve prizes when you have decided what to hand out.
+
+Not built (owner decisions): voice time (needs a gateway process next to `dj/`), reactions, and counting Rush matches (not trackable).

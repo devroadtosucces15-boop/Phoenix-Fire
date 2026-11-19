@@ -10,6 +10,8 @@
 //   POST /api/points/redeem                members (flag pointsEconomy): { item } spends the price of an item from the price list
 //   GET  /api/points/admin                 managers: rules, season, recent spends, closed seasons
 //   POST /api/points/admin/spend           managers: { user, amount, item, note } record a spend for a member
+//   POST /api/points/admin/refund          managers: { user, amount, item, note } give spent points back (a mistake at checkout)
+//   POST /api/points/admin/gift            managers: { user, item, note } hand over a prize for free
 //   POST /api/points/admin/reset-season    owner: { label, confirm: 'RESET' } archive this season and start a new one
 //   POST /api/points/match                 keyed (X-Phoenix-Key): match performance rows from GitHub Actions (scripts/lib/pointspush.mjs), once per member per match
 // New parts sit behind the flag `pointsEconomy` (owner first); `points` (members) keeps the old view working as before.
@@ -17,9 +19,9 @@ import { can, flagOn } from './roles.js';
 import { notify, notifyManagers } from './notify.js';
 import { sharedKey } from './sharedkey.js';
 
-export const CATEGORIES = ['match', 'attendance', 'community', 'behaviour', 'badges', 'games'];
+export const CATEGORIES = ['match', 'attendance', 'community', 'behaviour', 'badges', 'games', 'engagement'];
 export const CATEGORY_INFO = {
-  match: ['🎮', 'Match performance'], attendance: ['🗓️', 'Attendance'], community: ['💬', 'Community'], behaviour: ['🤝', 'Behaviour'], badges: ['🎖️', 'Badges'], games: ['🕹️', 'Games'],
+  match: ['🎮', 'Match performance'], attendance: ['🗓️', 'Attendance'], community: ['💬', 'Community'], behaviour: ['🤝', 'Behaviour'], badges: ['🎖️', 'Badges'], games: ['🕹️', 'Games'], engagement: ['🔥', 'Community activity'],
 };
 // Every amount a rule can pay. A manager edits these in the Control Center; 0 switches a rule off. [default, what it pays for]. No daily caps.
 export const RULE_DEFAULTS = {
@@ -33,10 +35,29 @@ export const RULE_DEFAULTS = {
   'match.motm': [5, 'Man of the match'],
   'match.win': [3, 'A win'],
   'badges.achievement': [3, 'Each achievement unlocked'],
+  'match.weekly_cap': [40, 'Most match points one member can earn in a week (0 = no cap)'],
+  'engagement.active_day': [3, 'Being active in the Discord server that day (messages pay nothing, the day does)'],
+  'engagement.channel': [1, 'Each extra channel they were active in that day'],
+  'engagement.channel_max': [4, 'Most extra channels counted per day'],
+  'engagement.hour': [1, 'Each hour of the day they were active in'],
+  'engagement.hour_max': [6, 'Most active hours counted per day'],
+  'engagement.command_day': [1, 'Using a bot command that day'],
+  'engagement.availability': [3, 'Setting availability on the site (once a week)'],
+  'engagement.streak_week': [10, 'Active on 5 or more days in a week'],
   'games.played': [1, 'Playing an arcade game (Item 23)'],
   'games.won': [3, 'Winning an arcade game (Item 23)'],
 };
 export const RULE_MAX = 1000, PRICE_MAX = 20;
+// Prizes. status: `placeholder` = an example the managers have not approved (nobody can buy it), `approved` = on sale, `off` = hidden. Nothing here is a real
+// purchase: they are virtual perks a manager hands over by hand. A price saved without a status (older saves) counts as approved.
+export const PRIZE_STATUS = ['placeholder', 'approved', 'off'];
+export const PLACEHOLDER_PRIZES = [
+  { id: 'role-colour', name: 'Custom Discord role colour', cost: 150, note: 'A role colour or title like Inferno or Ember Lord', status: 'placeholder' },
+  { id: 'profile-flair', name: 'Profile flair on the site', cost: 100, note: 'A badge, border or flame effect on their card', status: 'placeholder' },
+  { id: 'rush-skip', name: 'Skip the Rush queue', cost: 50, note: 'Priority in the Rush queue for one session', status: 'placeholder' },
+  { id: 'mascot-shout', name: 'Mascot shout-out', cost: 125, note: 'The mascot posts a custom line about them', status: 'placeholder' },
+  { id: 'captain-night', name: 'Captain for a night', cost: 500, note: 'They pick the line-up for a friendly; managers keep a veto', status: 'placeholder' },
+];
 
 const DAY = 86400e3, WEEK = 7 * DAY, HOUR = 3600e3;
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
@@ -48,7 +69,7 @@ const clean = (s, max) => String(s ?? '').replace(/[\u0000-\u001f<>]/g, ' ').rep
 const int = (v) => (Number.isFinite(Number(v)) && String(v ?? '').trim() !== '' ? Math.floor(Number(v)) : NaN);
 
 // ---------- rules (cc_config row `points`: { amounts, prices }) ----------
-export const defaultRules = () => ({ amounts: Object.fromEntries(Object.entries(RULE_DEFAULTS).map(([k, [n]]) => [k, n])), prices: [] });
+export const defaultRules = () => ({ amounts: Object.fromEntries(Object.entries(RULE_DEFAULTS).map(([k, [n]]) => [k, n])), prices: PLACEHOLDER_PRIZES.map((p) => ({ ...p })) });
 /** validate a rules object from the Control Center → { rules } or { error }. Unknown keys are dropped; the price list may be empty (the owner has not set prices yet). */
 export function cleanRules(b, cur = defaultRules()) {
   const amounts = { ...cur.amounts };
@@ -68,7 +89,9 @@ export function cleanRules(b, cur = defaultRules()) {
       if (!Number.isInteger(cost) || cost < 1 || cost > 100000) return { error: `“${name}” needs a price from 1 to 100000 points.` };
       const id = clean(p?.id || name, 30).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `item-${prices.length + 1}`;
       if (seen.has(id)) return { error: `“${name}” is listed twice.` };
-      seen.add(id); prices.push({ id, name, cost, note: clean(p?.note, 120) });
+      const status = p?.status === undefined || p?.status === '' ? 'approved' : String(p.status);
+      if (!PRIZE_STATUS.includes(status)) return { error: `“${name}” has an unknown status. Use placeholder, approved or off.` };
+      seen.add(id); prices.push({ id, name, cost, note: clean(p?.note, 120), status });
     }
   }
   return { rules: { amounts, prices } };
@@ -251,7 +274,14 @@ export async function pointsMatchRoute(request, env) {
     if (!uid) { unmatched++; continue; }
     const a = matchAward(rules, { played: p.played !== false, goals: Math.max(0, Math.min(30, int(p.goals) || 0)), assists: Math.max(0, Math.min(30, int(p.assists) || 0)), mom: !!p.mom, win: !!b.win });
     if (!a.delta) continue;
-    const n = await awardPoints(env, uid, 'match', a.delta, `Match ${matchId}: ${a.parts.join(', ')}`, `m:${matchId}`);
+    const cap = rules.amounts['match.weekly_cap'];
+    let delta = a.delta;
+    if (cap > 0) { // a full day of League must not outscore a week of community life: one member earns at most `cap` match points a week
+      const got = (await one(env, "SELECT COALESCE(SUM(delta), 0) AS n FROM points_log WHERE user_id = ? AND category = 'match' AND delta > 0 AND at > ?", uid, Date.now() - WEEK).catch(() => null))?.n ?? 0;
+      delta = Math.max(0, Math.min(delta, cap - got));
+    }
+    if (!delta) continue;
+    const n = await awardPoints(env, uid, 'match', delta, `Match ${matchId}: ${a.parts.join(', ')}${delta < a.delta ? ' (weekly cap)' : ''}`, `m:${matchId}`);
     if (n) { awarded += n; members++; }
   }
   return json({ ok: true, awarded, members, unmatched });
@@ -277,6 +307,34 @@ export async function pointsRoute(p, method, body, me, env) {
       await notify(env, [String(body.user)], { type: 'points', title: `${r.spent} points spent: ${clean(body?.item, 60) || 'Spend'}`, body: `Your balance is now ${r.balance} points.`, link: 'members.html#points' }).catch(() => {});
       return json(r);
     }
+    if (p === '/api/points/admin/refund' && method === 'POST') { // a mistake at checkout: give the spent points back (never more than was spent this season)
+      const n = int(body?.amount), uid = String(body?.user ?? '');
+      if (!Number.isInteger(n) || n < 1 || n > 1e6) return fail('Refund a whole number of points, 1 or more.');
+      const u = await one(env, 'SELECT id, name, points_spent FROM users WHERE id = ?', uid).catch(() => null);
+      if (!u) return fail('Member not found.', 404);
+      if (n > u.points_spent) return fail(`Only ${u.points_spent} points were spent this season: refund that or less.`, 409);
+      const label = clean(body?.item, 60) || 'Refund', at = Date.now(), season = await seasonOf(env);
+      await env.DB.batch([
+        env.DB.prepare('UPDATE users SET points_spent = points_spent - ? WHERE id = ?').bind(n, uid),
+        env.DB.prepare("INSERT INTO points_log (user_id, category, delta, reason, at, season) VALUES (?, 'spend', ?, ?, ?, ?)").bind(uid, n, `Refund · ${label}${body?.note ? ' · ' + clean(body.note, 100) : ''}`, at, season),
+        env.DB.prepare('INSERT INTO config_audit (at, user_id, name, entity, entity_id, action, before, after) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').bind(at, String(me.u), me.n ?? '', 'points:spend', uid, 'refund', JSON.stringify({ spent: u.points_spent }), JSON.stringify({ spent: u.points_spent - n, refunded: n, item: label })),
+      ]);
+      await notify(env, [uid], { type: 'points', title: `${n} points given back: ${label}`, body: 'A manager refunded this to your balance.', link: 'members.html#points' }).catch(() => {});
+      return json({ ok: true, refunded: n });
+    }
+    if (p === '/api/points/admin/gift' && method === 'POST') { // hand over a prize for free (it costs the member nothing): a ledger note, the audit trail and a DM
+      const uid = String(body?.user ?? ''), item = clean(body?.item, 60);
+      if (!item) return fail('Say which prize.');
+      const u = await one(env, 'SELECT id FROM users WHERE id = ?', uid).catch(() => null);
+      if (!u) return fail('Member not found.', 404);
+      const at = Date.now(), season = await seasonOf(env);
+      await env.DB.batch([
+        env.DB.prepare("INSERT INTO points_log (user_id, category, delta, reason, at, season) VALUES (?, 'spend', 0, ?, ?, ?)").bind(uid, `Gift · ${item}${body?.note ? ' · ' + clean(body.note, 100) : ''}`, at, season),
+        env.DB.prepare('INSERT INTO config_audit (at, user_id, name, entity, entity_id, action, before, after) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').bind(at, String(me.u), me.n ?? '', 'points:spend', uid, 'gift', '{}', JSON.stringify({ item, free: true })),
+      ]);
+      await notify(env, [uid], { type: 'points', title: `A gift from the managers: ${item}`, body: clean(body?.note, 100) || 'Enjoy it.', link: 'members.html#points' }).catch(() => {});
+      return json({ ok: true, gifted: item });
+    }
     if (p === '/api/points/admin/reset-season' && method === 'POST') {
       if (me.role !== 'owner') return fail('Owner only.', 403);
       if (body?.confirm !== 'RESET') return fail('Type RESET to confirm: every member starts the new season at 0.');
@@ -289,7 +347,8 @@ export async function pointsRoute(p, method, body, me, env) {
   if (p === '/api/points/redeem' && method === 'POST') {
     if (!econ) return fail('Not available yet.', 404);
     const price = (await loadRules(env)).prices.find((x) => x.id === String(body?.item ?? ''));
-    if (!price) return fail('That item is not on the price list.', 404);
+    if (!price || price.status === 'off') return fail('That item is not on the price list.', 404);
+    if (price.status === 'placeholder') return fail('That prize is only an example for now: it cannot be bought yet.', 409);
     const r = await spendPoints(env, me.u, price.cost, price.name, { by: me });
     if (r.error) return fail(r.error, r.status);
     await notifyManagers(env, { type: 'queue', title: `${me.n ?? 'A member'} spent ${price.cost} points on ${price.name}`, body: 'Recorded in the points ledger. Hand it over, then it is done.', link: 'staff-insights.html' }).catch(() => {});
@@ -300,5 +359,5 @@ export async function pointsRoute(p, method, body, me, env) {
   if (p !== '/api/points') return null;
   const s = await standing(env, me.u);
   const recent = await all(env, 'SELECT category, delta, reason, at FROM points_log WHERE user_id = ? ORDER BY id DESC LIMIT 20', me.u);
-  return json({ total: s.earned, season: s.season, spent: s.spent, balance: s.balance, rank: s.rank, by: s.by, recent, ...(econ ? { prices: (await loadRules(env)).prices } : {}) });
+  return json({ total: s.earned, season: s.season, spent: s.spent, balance: s.balance, rank: s.rank, by: s.by, recent, ...(econ ? { prices: (await loadRules(env)).prices.filter((x) => x.status === 'approved') } : {}) });
 }
