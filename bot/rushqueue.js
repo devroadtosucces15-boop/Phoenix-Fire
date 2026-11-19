@@ -16,6 +16,7 @@ import { appEnv, appConfigured, APP_LABEL } from './apps.js';
 import { kvOf } from './kv.js';
 import { RUSH_POSITIONS, ANY, findPlayerLines, saveNeed, openNeeds, closeNeeds, expireNeeds, createOffers, sendOffers, getOffer, saveOffer, answerOffer, posLabel, cleanPositions, lobbyOfferMessage, playerOfferMessage, dm } from './rushmatch.js';
 
+import { syncAvailability } from './lfg.js'; // PF-027: one status per member (an open LFG call turns into "in a lobby" when they join a group and back when the group lets them go)
 export const MAX_CREW = 5; // including the captain
 export const DEFAULTS = { failedPolicy: 'next', greenWarnMin: 1, greenRemoveMin: 2, searchAskMin: 15, searchMaxMin: 60, waitDropMin: 90, pauseMin: 10, idleCloseMin: 60, joinsPerHour: 8, needMin: 60 };
 export const RQ_ID = /^pf:rq:[a-z]+(:[a-z0-9]+){0,2}$/;
@@ -374,6 +375,7 @@ export async function queueTick(env, now = Date.now()) {
   const sw = sweep(before, st, now);
   if (sw.queue !== before) await saveQueue(env, before, sw.queue);
   if (sw.removed.length) await Promise.all(sw.removed.map((e) => closeNeed(env, e.captain)));
+  if (sw.queue !== before) await syncAvailability(env, before, sw.queue, {}, now).catch(() => null); // a group the queue let go of: its players are available again
   const expiredNeeds = await expireNeeds(env, now).catch(() => 0); // an expired call leaves the board banner
   const gone = { idle: 'You were removed from the Rush queue (no answer at the green light). Press **Join queue** to come back.', stuck: `Your search ran past ${st.searchMaxMin} min, so the queue let the next group go. Press **Join queue** to come back.`, stale: 'You were dropped from the Rush queue after a long wait. Press **Join queue** to come back.' };
   const pings = [
@@ -394,6 +396,7 @@ export async function queueTick(env, now = Date.now()) {
     }
   }
   const r = stale ? await refreshBoards(env, { now, pings }) : null; // refreshBoards logs each failure: channel, reason, status
+  await needKeepNewest(env, sw.queue, now).catch((e) => console.log('rush need repost failed', e.message)); // open "Need a player" calls stay the newest message too
   const failures = r?.failures ?? [];
   return { reposted: !!r && r.posted + r.edited > 0, failed: failures.length, failures, warned: sw.warn.length, removed: sw.removed.length, closed: closedNow.closed };
 }
@@ -416,6 +419,7 @@ export async function commit(env, ctx, before, res, now, extra = []) {
   await saveState(env, touchState(await getState(env), res.queue, now)); // activity + the open timer (reset when the line empties)
   const st = await getSettings(env);
   for (const e of before) if (e.needs && !res.queue.some((x) => x.captain === e.captain && x.needs)) await closeNeed(env, e.captain); // its "Need a player" post closes with the need
+  await syncAvailability(env, before, res.queue, { matched: res.waitSec !== undefined }, now).catch((e) => console.log('rush availability sync failed', e.message)); // joined = in a lobby, let go (not a played match) = available again
   const pings = [...extra, ...(res.lit ?? []).map((e) => greenPing(e, st))];
   await after(env, ctx, () => refreshBoards(env, { now, pings }));
 }
@@ -561,7 +565,7 @@ async function finishNeed(env, ctx, q, uid, positions, now) {
   if (!channels.length) return say(`🙋 ${NEED[e.needs]}`, 'It shows on the board. No channel is set for the Rush calls: a manager adds one in the Control Center.', 'steel');
   const expires = now + st.needMin * MIN, post = needMessage(e, { positions, roleIds: aud.roles, userIds: aud.users, now, expires, org: orgName(env), queuePos: positionOf(q, uid), status: e.status });
   const { sent, failures } = await postAll(rushEnv(env), channels, autoBanner(env, post, 'queue'), 'need post');
-  await kvOf(env)?.put(NEED_KEY + uid, JSON.stringify({ posts: sent, positions, answers: [], expires, lobby: e.members, needs: e.needs }), { expirationTtl: st.needMin * 60 + 600 });
+  await kvOf(env)?.put(NEED_KEY + uid, JSON.stringify({ posts: sent, positions, answers: [], expires, lobby: e.members, needs: e.needs, sentAt: now }), { expirationTtl: st.needMin * 60 + 600 });
   await after(env, ctx, () => refreshBoards(env, { now, force: true })); // the call is posted first, then the board goes back to the bottom
   const who = aud.roles.length + aud.users.length;
   if (!sent.length) return say(`🙋 ${NEED[e.needs]}`, `It shows on the board, but the call did not post:\n${failureLines(failures)}`);
@@ -608,6 +612,32 @@ export async function closeNeed(env, captain) {
   await kv.delete(NEED_KEY + captain).catch(() => null);
   const stub = { captain, members: need.lobby ?? [], needs: need.needs ?? 1 };
   for (const p of need.posts ?? []) await discord(rushEnv(env), 'PATCH', `/channels/${p.ch}/messages/${p.id}`, needMessage(stub, { closed: true, answers: need.answers ?? [], org: orgName(env) })).catch(() => null);
+}
+
+// Open "Need a player" calls stay the newest message in their channel: when someone else posted below one, it is sent again at the bottom (quiet: no new ping),
+// the old one is deleted and the stored post is updated. Not within 90 s of the last send, and never in a channel the board owns (the board keeps the bottom there).
+export async function needKeepNewest(env, q, now = Date.now()) {
+  const kv = kvOf(env); if (!kv) return 0;
+  let n = 0, boardChs = null;
+  for (const e of q.filter((x) => x.needs)) {
+    const need = await kv.get(NEED_KEY + e.captain, 'json').catch(() => null);
+    if (!need?.posts?.length || need.expires <= now || now - (need.sentAt ?? 0) < 90e3) continue;
+    boardChs ??= new Set(await postChannels(env, 'auto:rush-board', 'rush_queue'));
+    const posts = []; let moved = 0;
+    for (const p of need.posts) {
+      if (boardChs.has(p.ch)) { posts.push(p); continue; }
+      let last; try { last = (await discord(rushEnv(env), 'GET', `/channels/${p.ch}`))?.last_message_id; } catch { posts.push(p); continue; }
+      if (!last || BigInt(last) <= BigInt(p.id)) { posts.push(p); continue; }
+      const msg = needMessage(e, { positions: need.positions, answers: need.answers ?? [], now, expires: need.expires, org: orgName(env), queuePos: positionOf(q, e.captain), status: e.status });
+      const quiet = { ...msg, components: msg.components.filter((c) => c.type !== 10) };
+      const { sent } = await postAll(rushEnv(env), [p.ch], autoBanner(env, quiet, 'queue'), 'need repost');
+      if (!sent[0]) { posts.push(p); continue; }
+      await discord(rushEnv(env), 'DELETE', `/channels/${p.ch}/messages/${p.id}`).catch(() => null);
+      posts.push(sent[0]); moved++; n++;
+    }
+    if (moved) await kv.put(NEED_KEY + e.captain, JSON.stringify({ ...need, posts, sentAt: now }), { expirationTtl: Math.max(60, Math.ceil((need.expires - now) / 1000) + 600) }).catch(() => null);
+  }
+  return n;
 }
 
 // ---------- one system: the board banner, the matcher and the two-sided accept ----------
@@ -710,11 +740,11 @@ export async function queueCommand(i, env, ctx, me, who, sub, o = {}, now = Date
   if (sub === 'stop') {
     await saveState(env, { ...touchState(state, [], now), closed: 'staff' });
     await Promise.all(q.map((e) => closeNeed(env, e.captain)));
-    await saveQueue(env, q, []); await after(env, ctx, () => refreshBoards(env, { now }));
+    await saveQueue(env, q, []); await syncAvailability(env, q, [], {}, now).catch(() => null); await after(env, ctx, () => refreshBoards(env, { now }));
     return say('⏹ Queue stopped', 'Everyone in line was cleared. Members cannot start it again: use `/queue start`.', 'win');
   }
   if (sub === 'start') { await saveState(env, reopenState(state, now)); await after(env, ctx, () => refreshBoards(env, { now })); return say('▶️ Queue started', 'Members can join again.', 'win'); }
-  if (sub === 'clear') { await Promise.all(q.map((e) => closeNeed(env, e.captain))); await saveQueue(env, q, []); await after(env, ctx, () => refreshBoards(env, { now })); return say('🧹 Queue cleared', 'Everyone presses **Join queue** again.', 'win'); }
+  if (sub === 'clear') { await Promise.all(q.map((e) => closeNeed(env, e.captain))); await saveQueue(env, q, []); await syncAvailability(env, q, [], {}, now).catch(() => null); await after(env, ctx, () => refreshBoards(env, { now })); return say('🧹 Queue cleared', 'Everyone presses **Join queue** again.', 'win'); }
   if (sub === 'remove') {
     const target = String(o.member ?? ''), e = q.find((x) => everyone(x).includes(target));
     if (!e) return say('That member is not in the queue');
