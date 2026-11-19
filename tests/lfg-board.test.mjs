@@ -70,10 +70,13 @@ calls.length = 0;
 r = await press(ann, sel.custom_id, T0, ['ST', 'W']);
 let mine = open();
 t('picking Striker and Winger puts them on the list with both positions (not the profile one)', mine.length === 1 && JSON.parse(mine[0].positions).join() === 'ST,W' && /on the list/.test(T(r)) && mine[0].expires - mine[0].at === 30 * MIN && mine[0].msg_id == null);
-t('the board is posted again at the bottom with the role ping (new call), old copy deleted', posts(CH).length === 1 && /<@&7002>/.test(JSON.stringify(posts(CH)[0].body)) && calls.some((c) => c.method === 'DELETE' && c.path === `/channels/${CH}/messages/${kvBoard.id}`));
+t('the board is posted again at the bottom with the role ping (new call), old copy deleted', posts(CH).length === 2 && /<@&7002>/.test(JSON.stringify(posts(CH)[0].body)) && calls.some((c) => c.method === 'DELETE' && c.path === `/channels/${CH}/messages/${kvBoard.id}`));
 t('the refreshed board lists the player with both positions', /Ann/.test(plainText(posts(CH)[0].body)) && /Striker \/ Winger/.test(plainText(posts(CH)[0].body)) && /Available for Rush \(1\)/.test(plainText(posts(CH)[0].body)));
 const k2 = JSON.parse(await KV.get(BOARD_KEY + CH));
 t('the new board id replaced the old one in KV', k2.id !== kvBoard.id);
+const a1 = posts(CH)[1].body, annKv = JSON.parse(await KV.get('lfg:ann:' + CH));
+t('a second message under the board tags @here and names the newest player and position', /^@here /.test(a1.content) && /Ann/.test(a1.content) && /Striker \/ Winger/.test(a1.content) && a1.allowed_mentions.parse.join() === 'everyone' && !/NOREX/i.test(a1.content));
+t('with nobody else listed it has no "also on the list" line, and it is remembered (KV) as the newest message', !/Also on the list/.test(a1.content) && !!annKv?.id && annKv.uid === '901');
 
 // changing the position later updates the same call, no new ping
 calls.length = 0; latest[CH] = k2.id; // the board is the newest message: edited in place
@@ -128,6 +131,24 @@ t('someone who is not on the list cannot make a lobby', /Tap I’m in first/.tes
 sqlite.exec("INSERT INTO rush_queue (captain_id, members, status, joined_at, ord, status_since) VALUES ('904', '[]', 'waiting', 1, 1, 1)");
 t('a member who is in a lobby cannot go available', /You are in a lobby/.test(T(await press(di, 'pf:lfg:board:in', T0 + 22 * MIN))) && /You are in a lobby/.test(T(await cmd(di, 'now', { position: 'ST' }, T0 + 22 * MIN))));
 sqlite.exec('DELETE FROM rush_queue');
+
+// ---------- the @here announcement under the board ----------
+t('earlier calls each announced themselves', (await KV.get('lfg:ann:' + CH)) != null);
+const prev = JSON.parse(await KV.get('lfg:ann:' + CH)); calls.length = 0;
+await press(di, 'pf:lfg:pos:30', T0 + 23 * MIN, ['GK']);
+const an = posts(CH).find((c) => c.body.content)?.body, anKv = JSON.parse(await KV.get('lfg:ann:' + CH));
+t('the fourth player is announced alone to @here with his position; the rest are only a count', /^@here /.test(an?.content) && /Di/.test(an.content) && /Goalkeeper/.test(an.content) && !/Ann|\bBo\b|Cy/.test(an.content) && /Also on the list with 3 others\./.test(an.content) && an.allowed_mentions.parse.join() === 'everyone');
+t('it comes after the board (second message) and the previous announcement is deleted', posts(CH).findIndex((c) => c.body.content) === posts(CH).findIndex((c) => c.body.components) + 1 && calls.some((c) => c.method === 'DELETE' && c.path.endsWith(`/messages/${prev.id}`)) && anKv.id !== prev.id);
+calls.length = 0; latest[CH] = anKv.id; // the announcement is the newest message: the board is not "buried", nothing is re-posted
+t('with the announcement newest the 1-minute check does nothing', (await lfgBoardTick(env, T0 + 24 * MIN)).refreshed === false && calls.every((c) => c.method === 'GET'));
+calls.length = 0; await press(di, 'pf:lfg:pos:30', T0 + 24 * MIN, ['GK', 'W']);
+t('changing positions on an existing call posts no new announcement and no ping', posts(CH).length === 0 && !calls.some((c) => c.body?.content));
+latest[CH] = '9999999999999999999'; calls.length = 0; await lfgBoardTick(env, T0 + 25 * MIN);
+const re = posts(CH).find((c) => c.body.content)?.body;
+t('when the board has to move, the announcement comes back under it quietly (no @here again)', !!re && !/@here/.test(re.content) && re.allowed_mentions.parse.length === 0 && /Di/.test(re.content));
+await press(di, 'pf:lfg:board:off', T0 + 26 * MIN); calls.length = 0;
+await refreshLfgBoard(env, { now: T0 + 26 * MIN, force: true });
+t('when the announced player goes off the list the announcement is removed', !posts(CH).some((c) => c.body.content) && !JSON.parse((await KV.get('lfg:ann:' + CH)) ?? 'null')?.id);
 
 // ---------- nothing hardcoded ----------
 const src = fs.readFileSync(new URL('../bot/lfgboard.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../bot/lfg.js', import.meta.url), 'utf8');

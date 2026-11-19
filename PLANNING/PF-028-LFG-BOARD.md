@@ -12,6 +12,11 @@
 - **+1 hour**, **Take me off**, **Make a lobby** (asks everyone else on the list by DM; nobody is added unless they accept) and **Alert me** (🔔) are on the board.
 - A member who is in a queue group cannot go available; muted members cannot.
 
+## The @here announcement (PF-028b)
+- A NEW call (not a change of positions) posts a second message right under the board: `@here **Name** is available to play Rush as **positions**. Send them an invite if you can.` plus `-# Also on the list with N others.` Only the newest player is named; everyone else is a count.
+- Only one announcement exists: the next one deletes the previous. If the board has to move to the bottom the announcement comes back under it without the @here. It is removed when its player goes off the list or the call ends.
+- The board stays the "last" message with the announcement under it: the 1-minute check accepts either as the newest. KV `lfg:ann:<channel>` = `{ id, at, uid, body }`. Code: `announcement()` and `refreshLfgBoard(..., { announce })` in `bot/lfgboard.js`. The bot needs Mention Everyone in the channel for @here to ping.
+
 ## How the board stays last
 - The 1-minute job (`lfgTick` → `lfgBoardTick`) reads the channel's newest message id. If something was written under the board it is sent again at the bottom and the old copy is deleted (no ping). When the board is already newest it is only edited in place. A call that ends refreshes the list.
 - KV `lfg:board:<channel>` = `{ id, at }` of the board message.

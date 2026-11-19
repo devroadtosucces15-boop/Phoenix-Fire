@@ -152,7 +152,8 @@ async function goAvailable(env, ctx, me, { positions, minutes = LFG_DEFAULT_MIN,
       .bind(String(me.u), clean(me.n, 40) || 'A member', me.a ?? null, clean(note, 80), null, now, expires, 'open', JSON.stringify(pos)).run();
   }
   await matchNewPlayer(env, now).catch((e) => console.log('rush match failed', e.message)); // a lobby that needs this position is offered the player
-  await after(env, ctx, () => refreshLfgBoard(env, { now, ping: !cur }));
+  const mine = cur ? null : await openPost(env, me.u, now); // a NEW call is announced to @here under the board
+  await after(env, ctx, () => refreshLfgBoard(env, { now, ping: !cur, announce: mine }));
   return say(env, 'cmd-lfg-list', '✅ You are on the list', `**${pos.map(posLabel).join(' / ')}** until <t:${Math.floor(expires / 1000)}:t>. Press **+1 hour** on the board to stay longer or **Take me off** when you are done. You get a DM shortly before it ends.`, 'win');
 }
 // Takes the member's open call down (the board and any older per-post message).
