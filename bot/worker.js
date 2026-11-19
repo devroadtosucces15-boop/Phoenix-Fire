@@ -293,7 +293,7 @@ export default {
     if (i.type === 2 && i.data.name === 'lfg') { // MB5: Rush LFG
       try {
         const sub = i.data.options?.[0];
-        return json(await lfgCommand(i, env, await memberOf(i, who, env), who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value]))));
+        return json(await lfgCommand(i, env, await memberOf(i, who, env), who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value])), Date.now(), ctx));
       } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
     if (i.type === 2 && i.data.name === 'queue') { // MB6: Rush queue manager

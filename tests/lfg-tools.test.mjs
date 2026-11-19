@@ -33,6 +33,16 @@ globalThis.fetch = async (url, init = {}) => {
 };
 const dms = () => calls.filter((c) => c.method === 'POST' && /^\/channels\/dm/.test(c.path));
 const CH = '700200';
+// PF-028: new calls live on the board (no message of their own). These tests cover the per-post messages that already exist (made before the board), so a call
+// is made here the way /lfg now used to: a row plus the Rush app's own post.
+const legacyNow = async (me, o = {}, at = T0) => {
+  sqlite.prepare("UPDATE rush_lfg SET status = 'cancelled' WHERE user_id = ? AND status = 'open'").run(me.u);
+  const res = sqlite.prepare("INSERT INTO rush_lfg (user_id, name, avatar, note, channel, at, expires, status, positions) VALUES (?, ?, null, ?, ?, ?, ?, 'open', '[\"ANY\"]')").run(me.u, me.n, o.note ?? '', CH, at, at + (o.minutes ?? 30) * 60e3);
+  const row = sqlite.prepare('SELECT * FROM rush_lfg WHERE id = ?').get(res.lastInsertRowid);
+  const { sent } = await Q.postAll(Q.rushEnv(env), [CH], lfgMessage(row, [], { now: at }), 'lfg post');
+  sqlite.prepare('UPDATE rush_lfg SET msg_id = ?, posted_at = ? WHERE id = ?').run(sent[0].id, at, row.id);
+  return { data: { flags: 64, components: [{ type: 17, components: [{ type: 10, content: 'posted' }] }] } };
+};
 
 // ---------- pass the captain role: pure ----------
 const base = Q.join(Q.join([], { captain: '701', members: ['702', '703'] }, T0).queue, { captain: '710', members: [] }, T0 + 1).queue;
@@ -68,8 +78,10 @@ sqlite.exec("DELETE FROM rush_queue; DELETE FROM rush_needs; DELETE FROM rush_ne
 
 // ---------- the LFG post: sent by the app, five buttons ----------
 const i = { channel_id: CH, data: {} };
+sqlite.prepare("INSERT OR IGNORE INTO discord_servers (guild_id, display_name) VALUES ('g-tools', 'Test')").run();
+sqlite.prepare("INSERT INTO discord_channels (server_id, channel_id, purpose, scope_type, label, active) VALUES ((SELECT id FROM discord_servers WHERE guild_id = 'g-tools'), '700999', 'rush_lfg', 'org', '', 1)").run();
 calls.length = 0;
-r = await lfgCommand(i, env, ann, ann, 'now', { note: 'keeper please' }, T0);
+r = await legacyNow(ann, { note: 'keeper please' }, T0);
 const post = sqlite.prepare('SELECT * FROM rush_lfg ORDER BY id DESC').get();
 t('/lfg now: the Rush app posts it in the channel, only you see the confirmation', calls.some((c) => c.method === 'POST' && c.path === `/channels/${CH}/messages`) && /posted/i.test(T(r)) && (r.data.flags & 64) !== 0 && !!post.msg_id);
 t('the default call is 30 minutes', post.expires - post.at === 30 * MIN);
@@ -89,7 +101,7 @@ t('Take down: the call is cancelled and its message is edited into the "over" ca
 
 // ---------- the "still here?" DM, once ----------
 sqlite.exec("DELETE FROM rush_lfg; DELETE FROM rush_lfg_answers;");
-await lfgCommand(i, env, ann, ann, 'now', { minutes: 15 }, T0);
+await legacyNow(ann, { minutes: 15 }, T0);
 const p2 = sqlite.prepare('SELECT * FROM rush_lfg ORDER BY id DESC').get();
 calls.length = 0;
 await lfgTick(env, T0 + 6 * MIN); // 9 minutes left: inside the 10-minute window
@@ -102,13 +114,13 @@ t('Keep it up from the DM adds an hour and asks again later', /Added an hour/.te
 
 // ---------- ended calls close their message; open calls stay the newest message ----------
 sqlite.exec("DELETE FROM rush_lfg; DELETE FROM rush_lfg_answers;");
-await lfgCommand(i, env, ann, ann, 'now', { minutes: 30 }, T0);
+await legacyNow(ann, { minutes: 30 }, T0);
 const p3 = sqlite.prepare('SELECT * FROM rush_lfg ORDER BY id DESC').get();
 calls.length = 0;
 await lfgTick(env, T0 + 31 * MIN);
-t('when a call ends its message is edited into the "over" card, once', calls.filter((c) => c.method === 'PATCH').length === 1 && sqlite.prepare('SELECT status FROM rush_lfg WHERE id = ?').get(p3.id).status === 'expired' && sqlite.prepare('SELECT msg_id FROM rush_lfg WHERE id = ?').get(p3.id).msg_id === null);
+t('when a call ends its message is edited into the "over" card, once', calls.filter((c) => c.method === 'PATCH' && c.path.startsWith(`/channels/${CH}/`)).length === 1 && sqlite.prepare('SELECT status FROM rush_lfg WHERE id = ?').get(p3.id).status === 'expired' && sqlite.prepare('SELECT msg_id FROM rush_lfg WHERE id = ?').get(p3.id).msg_id === null);
 sqlite.exec("DELETE FROM rush_lfg;");
-await lfgCommand(i, env, ann, ann, 'now', { minutes: 120 }, T0);
+await legacyNow(ann, { minutes: 120 }, T0);
 const p4 = sqlite.prepare('SELECT * FROM rush_lfg ORDER BY id DESC').get();
 calls.length = 0;
 await lfgTick(env, T0 + 5 * MIN);
@@ -131,7 +143,7 @@ sqlite.exec("DELETE FROM rush_lfg_alerts; DELETE FROM rush_need_offers;");
 
 // ---------- Make a lobby: requests, not automatic adds ----------
 sqlite.exec("DELETE FROM rush_lfg; DELETE FROM rush_lfg_answers; DELETE FROM rush_queue; DELETE FROM rush_lobby_asks;");
-await lfgCommand(i, env, ann, ann, 'now', { minutes: 60 }, T0);
+await legacyNow(ann, { minutes: 60 }, T0);
 const lp = sqlite.prepare('SELECT * FROM rush_lfg ORDER BY id DESC').get();
 await press(bo, `pf:lfg:${lp.id}:in`, T0 + MIN); await press(cy, `pf:lfg:${lp.id}:in`, T0 + MIN);
 t('Make a lobby: someone who has not tapped I\u2019m in cannot start one', /Tap I.m in first/.test(T(await press(di, `pf:lfg:${lp.id}:lobby`, T0 + 2 * MIN))));
@@ -161,13 +173,13 @@ t('a full crew (5) refuses more', await (async () => {
 // ---------- one status per member, and back to available when a group lets them go ----------
 const rowOf = (u) => sqlite.prepare("SELECT * FROM rush_lfg WHERE user_id = ? ORDER BY id DESC").get(u);
 sqlite.exec("DELETE FROM rush_lfg; DELETE FROM rush_lfg_answers; DELETE FROM rush_queue; DELETE FROM rush_lobby_asks;");
-await lfgCommand(i, env, ann, ann, 'now', { minutes: 120 }, T0);
+await legacyNow(ann, { minutes: 120 }, T0);
 let q0 = await Q.loadQueue(env);
 const j1 = Q.join(q0, { captain: '701', members: ['702'] }, T0 + MIN);
 await Q.commit(env, null, q0, j1, T0 + MIN);
 t('joining a group turns your open call into "in a lobby" (and edits its message)', rowOf('701').status === 'matched');
-t('while you are in a lobby you cannot post a new call', /You are in a lobby/.test(T(await lfgCommand(i, env, ann, ann, 'now', {}, T0 + 2 * MIN))));
-await lfgCommand(i, env, di, di, 'now', {}, T0 + 2 * MIN);
+t('while you are in a lobby you cannot go available again', /You are in a lobby/.test(T(await lfgCommand(i, env, ann, ann, 'now', { position: 'ST' }, T0 + 2 * MIN))));
+await legacyNow(di, {}, T0 + 2 * MIN);
 t('/lfg list shows who is available and the lobbies on the board, one line per group', /Ann|Di/.test(T(await lfgCommand(i, env, bo, bo, 'list', {}, T0 + 2 * MIN))) && /<@701>'s lobby/.test(T(await lfgCommand(i, env, bo, bo, 'list', {}, T0 + 2 * MIN))));
 let q1 = await Q.loadQueue(env); calls.length = 0;
 await Q.commit(env, null, q1, Q.leave(q1, '701', T0 + 3 * MIN), T0 + 3 * MIN);

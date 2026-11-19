@@ -3,17 +3,19 @@
 // has a cooldown, moderation-muted members cannot post, and members can mute the alerts in the notification settings (type
 // `lfg`). Flag `rushLfg` (default owner). Dark until the Phoenix Rush app is configured (bot/apps.js HELD).
 import { can, flagOn, muted } from './roles.js';
-import { pingRoleFor } from './orgconfig.js';
+import { pingRoleFor, channelsFor, mirrorChannel, orgName } from './orgconfig.js';
 import { RUSH_POSITIONS, ANY, cleanPositions, posLabel, dm } from './rushmatch.js';
-import { resolveOffer, matchNewPlayer, passCaptainTo, loadQueue, saveQueue, join, setMembers, find, commit, ping, rushEnv, postAll, getState, MAX_CREW } from './rushqueue.js';
+import { resolveOffer, matchNewPlayer, passCaptainTo, loadQueue, saveQueue, join, setMembers, find, commit, ping, rushEnv, postAll, getState, after, MAX_CREW } from './rushqueue.js';
+import { refreshLfgBoard, lfgBoardTick, positionPicker, setupAnswer, posText, MAX_POSITIONS } from './lfgboard.js';
 import { discord } from './servertools.js';
 import { message, header, text, facts, footer, buttons, reply, pictureNote, picture, sep } from './ui.js';
 
 export const LFG_DEFAULT_MIN = 30, LFG_MAX_MIN = 180, LFG_COOLDOWN_MIN = 10;
 export const LFG_EXTEND_MIN = 60, LFG_HARD_MAX_MIN = 360, LFG_ASK_BEFORE_MIN = 10, LFG_REPOST_GAP = 90e3, ASK_TTL_MIN = 15;
 // `later` stays matched only to answer "that option was removed". down / plus = the poster's Take down and +1 hour; keep / done = the "still here?" DM;
-// lobby = Make a lobby; alert = Alert me; ask:y|n:<id> = a lobby request DM (Accept / No thanks).
-export const LFG_ID = /^pf:lfg:(\d+:(in|later|down|plus|keep|done|lobby)|(acc|dec):\d+|alert|ask:(y|n):\d+)$/;
+// lobby = Make a lobby; alert = Alert me; ask:y|n:<id> = a lobby request DM (Accept / No thanks). board:* = the buttons of the live board (bot/lfgboard.js),
+// pos:<minutes> = its position dropdown.
+export const LFG_ID = /^pf:lfg:(\d+:(in|later|down|plus|keep|done|lobby)|(acc|dec):\d+|alert|ask:(y|n):\d+|board:(in|off|plus|lobby)|pos:\d+)$/;
 const MIN = 60e3;
 const clean = (s, n) => String(s ?? '').replace(/[\u0000-\u001f<>@`]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, n);
 
@@ -22,7 +24,6 @@ const say = (env, key, title, body, accent) => reply(pictureNote(env, key, title
 const rows = (env, sql, ...a) => env.DB.prepare(sql).bind(...a).all().then((r) => r.results);
 
 // What a post looks like. `answers` = [{ user_id, name, answer }]. Only the role (if any) may be pinged: never everyone or users.
-const posText = (post) => cleanPositions(post.positions).map(posLabel).join(' / ');
 export function lfgMessage(post, answers = [], { roleId = '', now = Date.now(), env = null } = {}) {
   const open = post.status === 'open' && post.expires > now;
   const names = (a) => answers.filter((x) => x.answer === a).map((x) => x.name);
@@ -59,12 +60,12 @@ async function closeMessage(env, post, status, answers = []) {
 }
 const answersOf = (env, id) => rows(env, 'SELECT user_id, name, answer FROM rush_lfg_answers WHERE lfg_id = ? ORDER BY at', id);
 
-// The 1-minute job: (1) posts that ended turn into the "over" card, (2) the poster gets one "still here?" DM shortly before the end, (3) every open post
+// The 1-minute job: (0, last) the live board is refreshed when a call ended and kept the newest message, (1) posts that ended turn into the "over" card, (2) the poster gets one "still here?" DM shortly before the end, (3) every open post
 // that someone else has posted under is sent again at the bottom and the old one deleted (quiet: no new ping), so it is always the newest message.
 export async function lfgTick(env, now = Date.now()) {
   if (!env.DB) return { closed: 0, asked: 0, resent: 0 };
   const ended = await rows(env, "SELECT * FROM rush_lfg WHERE status = 'open' AND expires <= ? AND msg_id IS NOT NULL", now);
-  await lfgExpire(env, now);
+  const expired = await lfgExpire(env, now);
   for (const p of ended) await closeMessage(env, p, 'expired', await answersOf(env, p.id));
   const soon = await rows(env, "SELECT * FROM rush_lfg WHERE status = 'open' AND asked = 0 AND expires > ? AND expires <= ?", now, now + LFG_ASK_BEFORE_MIN * MIN);
   let asked = 0;
@@ -93,7 +94,8 @@ export async function lfgTick(env, now = Date.now()) {
       resent++;
     }
   }
-  return { closed: ended.length, asked, resent };
+  const board = await lfgBoardTick(env, now, { changed: expired > 0 }).catch((e) => { console.log('lfg board tick failed', e.message); return null; }); // the live board: ended calls leave it, and it stays the newest message
+  return { closed: ended.length, asked, resent, board };
 }
 
 // Repaints a post's message for its new status without forgetting the message (a "matched" call can open again). Never throws.
@@ -115,57 +117,93 @@ export async function syncAvailability(env, before, after, { matched = false } =
     await env.DB.prepare("UPDATE rush_lfg SET status = 'open', asked = 0 WHERE id = ?").bind(p.id).run();
     await repaint(env, p, 'open');
   }
+  if (joined.length || left.length) await refreshLfgBoard(env, { now }).catch(() => null); // the live board shows who is free
   return { joined: joined.length, back: left.length };
 }
 
-// `sub` = now | cancel | list; o = its options by name; me/who resolved by the caller. `now` is injectable for tests.
-export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now()) {
+// ---------- the live board: availability lives here ----------
+const hasBoard = async (env) => (await channelsFor(env, 'rush_lfg').catch(() => [])).length > 0;
+const noBoard = (env) => say(env, 'cmd-problem', 'There is no Rush board yet', 'A manager sets it up with `/lfg setup` in the channel where it should live.');
+const inLobby = async (env, uid) => (await loadQueue(env)).some((e) => [e.captain, ...e.members].includes(String(uid)));
+// What stops a member from going available (null = nothing): a group on the queue board, or a moderation mute.
+async function blocked(env, me) {
+  if (await inLobby(env, me.u)) return say(env, 'cmd-problem', 'You are in a lobby', 'You are already in a group on the queue board. Leave it (or pass the captain role) first, then put yourself on the list.');
+  if (await muted(env, me.u)) return say(env, 'cmd-locked', 'You are muted', 'A manager has muted you; you cannot go available until it ends.');
+  return null;
+}
+const openPost = async (env, uid, now) => (await rows(env, "SELECT * FROM rush_lfg WHERE user_id = ? AND status = 'open' AND expires > ? ORDER BY at DESC", String(uid), now))[0] ?? null;
+const savedPositions = (post) => { try { return JSON.parse(post?.positions ?? '[]'); } catch { return []; } };
+
+// Puts the member on the board (or updates their positions and time) and refreshes it. A NEW call also tags the Rush role (from config) once.
+async function goAvailable(env, ctx, me, { positions, minutes = LFG_DEFAULT_MIN, note = '' }, now) {
+  const stop = await blocked(env, me); if (stop) return stop;
+  const pos = cleanPositions(positions, MAX_POSITIONS), mins = Math.min(LFG_MAX_MIN, Math.max(15, Math.round(Number(minutes) || LFG_DEFAULT_MIN)));
+  const cur = await openPost(env, me.u, now);
+  let expires;
+  if (cur) {
+    expires = Math.min(Math.max(cur.expires, now + mins * MIN), cur.at + LFG_HARD_MAX_MIN * MIN);
+    await env.DB.prepare('UPDATE rush_lfg SET positions = ?, note = ?, expires = ?, asked = 0 WHERE id = ?').bind(JSON.stringify(pos), note ? clean(note, 80) : cur.note ?? '', expires, cur.id).run();
+    if (cur.msg_id) await repaint(env, { ...cur, positions: JSON.stringify(pos), expires }, 'open'); // an older per-post message stays right too
+  } else {
+    const last = await env.DB.prepare('SELECT at FROM rush_lfg WHERE user_id = ? ORDER BY at DESC LIMIT 1').bind(String(me.u)).first();
+    if (last && now - last.at < LFG_COOLDOWN_MIN * MIN) return say(env, 'cmd-problem', 'Slow down', `You can go available again <t:${Math.floor((last.at + LFG_COOLDOWN_MIN * MIN) / 1000)}:R>.`);
+    expires = now + mins * MIN;
+    await env.DB.prepare('INSERT INTO rush_lfg (user_id, name, avatar, note, channel, at, expires, status, positions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(String(me.u), clean(me.n, 40) || 'A member', me.a ?? null, clean(note, 80), null, now, expires, 'open', JSON.stringify(pos)).run();
+  }
+  await matchNewPlayer(env, now).catch((e) => console.log('rush match failed', e.message)); // a lobby that needs this position is offered the player
+  await after(env, ctx, () => refreshLfgBoard(env, { now, ping: !cur }));
+  return say(env, 'cmd-lfg-list', '✅ You are on the list', `**${pos.map(posLabel).join(' / ')}** until <t:${Math.floor(expires / 1000)}:t>. Press **+1 hour** on the board to stay longer or **Take me off** when you are done. You get a DM shortly before it ends.`, 'win');
+}
+// Takes the member's open call down (the board and any older per-post message).
+async function takeDown(env, ctx, me, now) {
+  const mine = await rows(env, "SELECT * FROM rush_lfg WHERE user_id = ? AND status = 'open'", String(me.u));
+  if (!mine.length) return say(env, 'cmd-empty', 'Nothing to take down', 'You are not on the list.');
+  await env.DB.prepare("UPDATE rush_lfg SET status = 'cancelled' WHERE user_id = ? AND status = 'open'").bind(String(me.u)).run();
+  for (const p of mine) await closeMessage(env, p, 'cancelled', await answersOf(env, p.id));
+  await after(env, ctx, () => refreshLfgBoard(env, { now }));
+  return say(env, 'cmd-lfg-off', 'Taken down', 'Your Rush availability is off.', 'win');
+}
+// +1 hour on your own call (to the 6 hour cap).
+async function addHour(env, ctx, me, now) {
+  const post = await openPost(env, me.u, now);
+  if (!post) return say(env, 'cmd-empty', 'You are not on the list', 'Press **I’m in** and pick your position first.');
+  const expires = Math.min(post.expires + LFG_EXTEND_MIN * MIN, post.at + LFG_HARD_MAX_MIN * MIN);
+  if (expires <= post.expires) return say(env, 'cmd-problem', 'That is the longest a call can run', `${LFG_HARD_MAX_MIN / 60} hours in total. Take yourself off and go available again if you are still around.`);
+  await env.DB.prepare('UPDATE rush_lfg SET expires = ?, asked = 0 WHERE id = ?').bind(expires, post.id).run();
+  await after(env, ctx, () => refreshLfgBoard(env, { now }));
+  return say(env, 'cmd-lfg-list', '⏱️ Added an hour', `You are on the list until <t:${Math.floor(expires / 1000)}:t>.`, 'win');
+}
+
+// `sub` = now | cancel | list | setup | captain; o = its options by name; me/who resolved by the caller. `now` is injectable for tests; `ctx` lets the board refresh after the reply.
+export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now(), ctx = null) {
   if (!env.DB) return say(env, 'cmd-problem', 'The member database is not connected', '');
   if (!flagOn(env, who, 'rushLfg')) return say(env, 'cmd-locked', 'Rush LFG is not switched on for you yet', 'Ask a manager.');
   if (!can(who, 'events.rsvp')) return say(env, 'cmd-locked', 'Members only', 'Join the Phoenix Fire server and link your account first.');
   await lfgExpire(env, now);
+  if (sub === 'setup') { // managers: put the live board in a channel (this one unless another is picked); the channel is saved as the Organization purpose `rush_lfg`
+    if (!can(who, 'servertools.setup')) return say(env, 'cmd-locked', 'Only managers can set up the board', 'Ask a manager to run `/lfg setup` in the Rush channel.');
+    const ch = String(o.channel || i.channel_id || '');
+    if (!ch) return say(env, 'cmd-problem', 'Pick a channel', 'Run it in the channel where the board should live, or choose one.');
+    if (!(await mirrorChannel(env, 'rush_lfg', ch, { explicit: true }))) return say(env, 'cmd-problem', 'Could not save that channel', 'This server must be in the Organization config first (Boardroom → Organization → Discord servers).');
+    const a = setupAnswer(await refreshLfgBoard(env, { now, force: true }), ch);
+    if (a.landed && !a.why) return say(env, 'cmd-lfg-list', '✅ The Rush board is live', `It is in <#${ch}>. The bot keeps it the newest message there and takes the old copy away each time. Members use **I’m in** on it; \`/lfg now\` and \`/lfg cancel\` work from now on.`, 'win');
+    return say(env, 'cmd-problem', 'The board did not post', a.why || 'Check the Rush bot can post in that channel.');
+  }
   if (sub === 'list') {
     const open = await rows(env, "SELECT * FROM rush_lfg WHERE status = 'open' AND expires > ? ORDER BY at", now);
-    if (!open.length) return say(env, 'cmd-empty', 'Nobody is available right now', 'Post with /lfg now and the Rush role is tagged.');
+    if (!open.length) return say(env, 'cmd-empty', 'Nobody is available right now', 'Press I’m in on the Rush board.');
     const lobbies = (await loadQueue(env)).map((e) => `🎮 <@${e.captain}>'s lobby · ${e.status === 'green' ? 'green light' : e.status} · ${1 + e.members.length} in the group${e.needs ? ' · needs a player' : ''}`);
     return say(env, 'cmd-lfg-list', `⚡ Available for Rush (${open.length})`, [...open.map((p) => `**${p.name}** · ${posText(p)} · until <t:${Math.floor(p.expires / 1000)}:t>${p.note ? ` · ${p.note}` : ''}`), ...lobbies].join('\n'));
   }
-  if (sub === 'cancel') {
-    const mine = await rows(env, "SELECT * FROM rush_lfg WHERE user_id = ? AND status = 'open'", me.u);
-    const r = await env.DB.prepare("UPDATE rush_lfg SET status = 'cancelled' WHERE user_id = ? AND status = 'open'").bind(me.u).run();
-    for (const p of mine) await closeMessage(env, p, 'cancelled', await answersOf(env, p.id));
-    return (r.meta?.changes ?? r.changes ?? 0) ? say(env, 'cmd-lfg-off', 'Taken down', 'Your Rush availability is off.', 'win') : say(env, 'cmd-empty', 'Nothing to take down', 'You have no open Rush call.');
-  }
-  if (sub === 'now' && (await loadQueue(env)).some((e) => [e.captain, ...e.members].includes(String(me.u)))) return say(env, 'cmd-problem', 'You are in a lobby', 'You are already in a group on the queue board. Leave it (or pass the captain role) first, then post again.');
-  if (sub === 'captain') return passCaptainTo(env, null, await loadQueue(env), me.u, o.member ? String(o.member) : null, now); // pass or give up the captain role of your lobby (same as /queue captain)
-  if (sub !== 'now') return say(env, 'cmd-problem', 'Unknown /lfg command', 'Use now, cancel, list or captain.');
-  if (await muted(env, me.u)) return say(env, 'cmd-locked', 'You are muted', 'A manager has muted you; you cannot post calls until it ends.');
-  const last = await env.DB.prepare('SELECT at FROM rush_lfg WHERE user_id = ? ORDER BY at DESC LIMIT 1').bind(me.u).first();
-  if (last && now - last.at < LFG_COOLDOWN_MIN * MIN) {
-    const free = Math.floor((last.at + LFG_COOLDOWN_MIN * MIN) / 1000);
-    return say(env, 'cmd-problem', 'Slow down', `You can post again <t:${free}:R>. Your last call is still up – use /lfg cancel to take it down.`);
-  }
+  if (sub === 'captain') return passCaptainTo(env, ctx, await loadQueue(env), me.u, o.member ? String(o.member) : null, now); // pass or give up the captain role of your lobby (same as /queue captain)
+  if (sub !== 'now' && sub !== 'cancel') return say(env, 'cmd-problem', 'Unknown /lfg command', 'Use now, cancel, list, captain or (managers) setup.');
+  if (!(await hasBoard(env))) return noBoard(env); // /lfg now and /lfg cancel only work while the live board exists
+  if (sub === 'cancel') return takeDown(env, ctx, me, now);
+  const stop = await blocked(env, me); if (stop) return stop;
   const minutes = Math.min(LFG_MAX_MIN, Math.max(15, Math.round(Number(o.minutes) || LFG_DEFAULT_MIN)));
-  for (const p of await rows(env, "SELECT * FROM rush_lfg WHERE user_id = ? AND status = 'open'", me.u)) await closeMessage(env, p, 'cancelled', []); // a new call replaces the old one
-  await env.DB.prepare("UPDATE rush_lfg SET status = 'cancelled' WHERE user_id = ? AND status = 'open'").bind(me.u).run();
-  const positions = cleanPositions(o.position ? [o.position] : await profilePositions(env, me.u));
-  const post = { positions, user_id: me.u, name: clean(me.n, 40) || 'A member', avatar: me.a ?? null, note: clean(o.note, 80), channel: i.channel_id ?? null, at: now, expires: now + minutes * MIN, status: 'open' };
-  const res = await env.DB.prepare('INSERT INTO rush_lfg (user_id, name, avatar, note, channel, at, expires, status, positions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(post.user_id, post.name, post.avatar, post.note, post.channel, post.at, post.expires, post.status, JSON.stringify(positions)).run();
-  post.id = res.meta?.last_row_id ?? res.lastRowId;
-  const roleId = (await pingRoleFor(env, 'ping_rush')) ?? '';
-  await matchNewPlayer(env, now).catch((e) => console.log('rush match failed', e.message)); // a lobby that needs this position is offered the player
-  // The post is sent by the Rush app so it can be re-sent to stay the newest message and edited when it ends; only you see the confirmation. When the app cannot
-  // post (token, access), the slash reply itself is the post, as before (no re-send, no clean-up).
-  const channel = i.channel_id ? String(i.channel_id) : null;
-  if (channel) {
-    const { sent } = await postAll(rushEnv(env), [channel], lfgMessage(post, [], { roleId, now, env }), 'lfg post');
-    if (sent[0]) {
-      await env.DB.prepare('UPDATE rush_lfg SET msg_id = ?, posted_at = ?, channel = ? WHERE id = ?').bind(sent[0].id, now, channel, post.id).run();
-      return say(env, 'cmd-lfg-list', '⚡ Your call is posted', 'Press **+1 hour** on it if you stay longer, or **Take down** when you are done. You get a DM shortly before it ends.', 'win');
-    }
-  }
-  return reply(lfgMessage(post, [], { roleId, now, env }));
+  if (!o.position) return reply(positionPicker(savedPositions(await openPost(env, me.u, now)), minutes, orgName(env))); // no position given: the same dropdown as the board's I'm in
+  return goAvailable(env, ctx, me, { positions: [o.position], minutes, note: o.note }, now);
 }
 // Their Rush positions from the profile pre-select the choice, but any option is allowed and "Any" too (profile stays unchanged).
 async function profilePositions(env, userId) {
@@ -180,6 +218,15 @@ export async function lfgButton(i, env, me, who, now = Date.now(), ctx = null) {
   const [, , id, answer, askId] = String(i.data?.custom_id).split(':');
   if (id === 'acc' || id === 'dec') return resolveOffer(env, null, answer, 'player', id === 'acc', now); // the player's side of a match offer (DM)
   if (id === 'alert') return toggleAlert(env, me);
+  if (id === 'board') { // the live board's buttons
+    if (!(await hasBoard(env))) return noBoard(env);
+    if (answer === 'off') return takeDown(env, ctx, me, now);
+    if (answer === 'plus') return addHour(env, ctx, me, now);
+    if (answer === 'lobby') { const mine = await openPost(env, me.u, now); return mine ? makeLobby(env, mine, me, who, now, true) : say(env, 'cmd-locked', 'Tap I’m in first', 'Only people on the list can make a lobby.'); }
+    const stop = await blocked(env, me); if (stop) return stop; // answer === 'in': the position dropdown (what they have now is pre-selected)
+    return reply(positionPicker(savedPositions(await openPost(env, me.u, now)), LFG_DEFAULT_MIN, orgName(env)));
+  }
+  if (id === 'pos') return goAvailable(env, ctx, me, { positions: (i.data?.values ?? []).map(String), minutes: Number(answer) || LFG_DEFAULT_MIN }, now); // the dropdown: availability set, board refreshed
   if (id === 'ask') return lobbyAnswer(env, ctx, Number(askId), answer === 'y', me, now);
   if (answer === 'later') return say(env, 'cmd-empty', 'That option was removed', 'Press I’m in, or post your own with /lfg now.');
   const post = await env.DB.prepare('SELECT * FROM rush_lfg WHERE id = ?').bind(Number(id)).first();
@@ -191,12 +238,14 @@ export async function lfgButton(i, env, me, who, now = Date.now(), ctx = null) {
     if (answer === 'down' || answer === 'done') {
       await env.DB.prepare("UPDATE rush_lfg SET status = 'cancelled' WHERE id = ?").bind(post.id).run();
       await closeMessage(env, post, 'cancelled', await answersOf(env, post.id));
+      await after(env, ctx, () => refreshLfgBoard(env, { now }));
       return say(env, 'cmd-lfg-off', 'Taken down', 'Your Rush availability is off.', 'win');
     }
     const cap = post.at + LFG_HARD_MAX_MIN * MIN, expires = Math.min(post.expires + LFG_EXTEND_MIN * MIN, cap);
     if (expires <= post.expires) return say(env, 'cmd-problem', 'That is the longest a call can run', `${LFG_HARD_MAX_MIN / 60} hours in total. Post a fresh one if you are still around.`);
     await env.DB.prepare('UPDATE rush_lfg SET expires = ?, asked = 0 WHERE id = ?').bind(expires, post.id).run();
     const next = { ...post, expires };
+    await after(env, ctx, () => refreshLfgBoard(env, { now }));
     if (answer === 'plus') return { type: 7, data: lfgMessage(next, await answersOf(env, post.id), { roleId: '', now, env }) }; // on the post itself
     return say(env, 'cmd-lfg-list', '⏱️ Added an hour', `Your call now runs until <t:${Math.floor(expires / 1000)}:t>.`, 'win');
   }
@@ -228,16 +277,17 @@ const askMessage = (ask, org = 'Phoenix Fire') => message({ accent: 'red', menti
   footer(`Accept and you are in their group on the queue board. This request runs out in ${ASK_TTL_MIN} minutes.`),
   buttons([{ label: 'Accept', emoji: '✅', style: 'ok', id: `pf:lfg:ask:y:${ask.id}` }, { label: 'No thanks', emoji: '✖️', id: `pf:lfg:ask:n:${ask.id}` }]),
 ] });
-async function makeLobby(env, post, me, who, now) {
+async function makeLobby(env, post, me, who, now, fromBoard = false) { // fromBoard: `post` is the caller's own call and everyone else on the list is asked
   if (!flagOn(env, who, 'rushQueue')) return say(env, 'cmd-locked', 'The Rush queue is not switched on for you yet', 'Ask a manager.');
-  const answers = await answersOf(env, post.id), ins = answers.filter((a) => a.answer === 'in').map((a) => String(a.user_id));
-  if (String(post.user_id) !== String(me.u) && !ins.includes(String(me.u))) return say(env, 'cmd-locked', 'Tap I’m in first', 'Only the poster and the people who said they are in can make a lobby.');
+  const answers = fromBoard ? [] : await answersOf(env, post.id), ins = answers.filter((a) => a.answer === 'in').map((a) => String(a.user_id));
+  if (!fromBoard && String(post.user_id) !== String(me.u) && !ins.includes(String(me.u))) return say(env, 'cmd-locked', 'Tap I’m in first', 'Only the poster and the people who said they are in can make a lobby.');
   const q = await loadQueue(env), state = await getState(env);
   if (state.closed === 'staff' && !q.length) return say(env, 'cmd-locked', 'The queue is stopped', 'A manager stopped it; only a manager can start it again.');
   if (q.some((e) => [e.captain, ...e.members].includes(String(me.u)))) return say(env, 'cmd-problem', 'You are already in a group', 'Leave it first, or use **Edit my crew** on the board.');
   const busy = new Set(q.flatMap((e) => [e.captain, ...e.members]));
-  const people = [...new Set([String(post.user_id), ...ins])].filter((u) => u !== String(me.u) && !busy.has(u)).slice(0, MAX_CREW - 1);
-  if (!people.length) return say(env, 'cmd-empty', 'Nobody to ask yet', 'Ask people to tap **I’m in** first (people already in a group are skipped).');
+  const others = fromBoard ? (await rows(env, "SELECT user_id FROM rush_lfg WHERE status = 'open' AND expires > ? ORDER BY at", now)).map((r) => String(r.user_id)) : [String(post.user_id), ...ins];
+  const people = [...new Set(others)].filter((u) => u !== String(me.u) && !busy.has(u)).slice(0, MAX_CREW - 1);
+  if (!people.length) return say(env, 'cmd-empty', 'Nobody to ask yet', fromBoard ? 'Nobody else is on the list right now (people already in a group are skipped).' : 'Ask people to tap **I’m in** first (people already in a group are skipped).');
   const recent = new Set((await rows(env, "SELECT user_id FROM rush_lobby_asks WHERE captain_id = ? AND status = 'open' AND created_at > ?", String(me.u), now - ASK_TTL_MIN * MIN)).map((r) => String(r.user_id)));
   let sent = 0;
   for (const u of people) {
