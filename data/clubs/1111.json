@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-19T01:20:44.411Z",
+ "fetchedAt": "2026-11-19T01:30:42.821Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2133,9 +2133,9 @@
   {
    "name": "Gravity-_-Snake",
    "proPos": "5",
-   "gamesPlayed": "270",
-   "goals": "275",
-   "assists": "275",
+   "gamesPlayed": "271",
+   "goals": "276",
+   "assists": "279",
    "manOfTheMatch": "29",
    "ratingAve": "7.2",
    "prevGoals": "1",
@@ -2352,14 +2352,14 @@
   },
   {
    "name": "Jaliens45",
-   "proPos": "0",
-   "gamesPlayed": "61",
-   "goals": "8",
+   "proPos": "25",
+   "gamesPlayed": "62",
+   "goals": "10",
    "assists": "8",
    "manOfTheMatch": "3",
    "ratingAve": "6.9",
-   "prevGoals": "0",
-   "favoritePosition": "goalkeeper"
+   "prevGoals": "2",
+   "favoritePosition": "forward"
   },
   {
    "name": "x_MrMike_x",
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-19T01:20:44.411Z"
+  "fetchedAt": "2026-11-19T01:30:42.821Z"
  }
 }
