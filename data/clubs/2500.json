@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-19T18:20:43.370Z",
+ "fetchedAt": "2026-11-19T18:30:42.227Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2068,7 +2068,7 @@
   {
    "name": "Rafid_Sx07",
    "proPos": "5",
-   "gamesPlayed": "379",
+   "gamesPlayed": "381",
    "goals": "73",
    "assists": "90",
    "manOfTheMatch": "33",
@@ -2128,6 +2128,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-19T18:20:43.370Z"
+  "fetchedAt": "2026-11-19T18:30:42.227Z"
  }
 }
