@@ -96,6 +96,28 @@ export async function lfgTick(env, now = Date.now()) {
   return { closed: ended.length, asked, resent };
 }
 
+// Repaints a post's message for its new status without forgetting the message (a "matched" call can open again). Never throws.
+async function repaint(env, post, status) {
+  if (!post?.msg_id || !post.channel) return;
+  try { await discord(rushEnv(env), 'PATCH', `/channels/${post.channel}/messages/${post.msg_id}`, lfgMessage({ ...post, status }, await answersOf(env, post.id), { env })); } catch { /* gone */ }
+}
+// One status per member. Called whenever the queue changes (bot/rushqueue.js commit, the 1-minute tick, stop, clear): people who just joined a group have their open
+// call turned into "in a lobby"; people a group let go of (left, removed, idle, crew edit, stopped; NOT a played match) get their call back if it has time left.
+export async function syncAvailability(env, before, after, { matched = false } = {}, now = Date.now()) {
+  const members = (q) => new Set(q.flatMap((e) => [String(e.captain), ...e.members.map(String)]));
+  const was = members(before), is = members(after);
+  const joined = [...is].filter((u) => !was.has(u)), left = matched ? [] : [...was].filter((u) => !is.has(u));
+  for (const u of joined) for (const p of await rows(env, "SELECT * FROM rush_lfg WHERE user_id = ? AND status = 'open'", u)) {
+    await env.DB.prepare("UPDATE rush_lfg SET status = 'matched' WHERE id = ?").bind(p.id).run();
+    await repaint(env, p, 'matched');
+  }
+  for (const u of left) for (const p of await rows(env, "SELECT * FROM rush_lfg WHERE user_id = ? AND status = 'matched' AND expires > ?", u, now)) {
+    await env.DB.prepare("UPDATE rush_lfg SET status = 'open', asked = 0 WHERE id = ?").bind(p.id).run();
+    await repaint(env, p, 'open');
+  }
+  return { joined: joined.length, back: left.length };
+}
+
 // `sub` = now | cancel | list; o = its options by name; me/who resolved by the caller. `now` is injectable for tests.
 export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now()) {
   if (!env.DB) return say(env, 'cmd-problem', 'The member database is not connected', '');
@@ -105,7 +127,8 @@ export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now())
   if (sub === 'list') {
     const open = await rows(env, "SELECT * FROM rush_lfg WHERE status = 'open' AND expires > ? ORDER BY at", now);
     if (!open.length) return say(env, 'cmd-empty', 'Nobody is available right now', 'Post with /lfg now and the Rush role is tagged.');
-    return say(env, 'cmd-lfg-list', `⚡ Available for Rush (${open.length})`, open.map((p) => `**${p.name}** · ${posText(p)} · until <t:${Math.floor(p.expires / 1000)}:t>${p.note ? ` · ${p.note}` : ''}`).join('\n'));
+    const lobbies = (await loadQueue(env)).map((e) => `🎮 <@${e.captain}>'s lobby · ${e.status === 'green' ? 'green light' : e.status} · ${1 + e.members.length} in the group${e.needs ? ' · needs a player' : ''}`);
+    return say(env, 'cmd-lfg-list', `⚡ Available for Rush (${open.length})`, [...open.map((p) => `**${p.name}** · ${posText(p)} · until <t:${Math.floor(p.expires / 1000)}:t>${p.note ? ` · ${p.note}` : ''}`), ...lobbies].join('\n'));
   }
   if (sub === 'cancel') {
     const mine = await rows(env, "SELECT * FROM rush_lfg WHERE user_id = ? AND status = 'open'", me.u);
@@ -113,6 +136,7 @@ export async function lfgCommand(i, env, me, who, sub, o = {}, now = Date.now())
     for (const p of mine) await closeMessage(env, p, 'cancelled', await answersOf(env, p.id));
     return (r.meta?.changes ?? r.changes ?? 0) ? say(env, 'cmd-lfg-off', 'Taken down', 'Your Rush availability is off.', 'win') : say(env, 'cmd-empty', 'Nothing to take down', 'You have no open Rush call.');
   }
+  if (sub === 'now' && (await loadQueue(env)).some((e) => [e.captain, ...e.members].includes(String(me.u)))) return say(env, 'cmd-problem', 'You are in a lobby', 'You are already in a group on the queue board. Leave it (or pass the captain role) first, then post again.');
   if (sub === 'captain') return passCaptainTo(env, null, await loadQueue(env), me.u, o.member ? String(o.member) : null, now); // pass or give up the captain role of your lobby (same as /queue captain)
   if (sub !== 'now') return say(env, 'cmd-problem', 'Unknown /lfg command', 'Use now, cancel, list or captain.');
   if (await muted(env, me.u)) return say(env, 'cmd-locked', 'You are muted', 'A manager has muted you; you cannot post calls until it ends.');
@@ -237,7 +261,6 @@ async function lobbyAnswer(env, ctx, askId, yes, me, now) {
   const res = cap ? setMembers(q, ask.captain_id, [...cap.members, String(me.u)]) : join(q, { captain: ask.captain_id, members: [String(me.u)] }, now);
   if (res.error) return say(env, 'cmd-problem', 'Could not join that lobby', 'Someone in it is already in another group.');
   await env.DB.prepare("UPDATE rush_lobby_asks SET status = 'accepted' WHERE id = ?").bind(askId).run();
-  await env.DB.prepare("UPDATE rush_lfg SET status = 'matched' WHERE user_id = ? AND status = 'open'").bind(String(me.u)).run(); // their call turns into "in a lobby"
   await commit(env, ctx, q, res, now, [ping([ask.captain_id], `<@${me.u}> accepted your lobby request and is in your crew.`)]);
   return say(env, 'cmd-lfg-list', '✅ You are in the lobby', `You are in <@${ask.captain_id}>'s crew. <@${ask.captain_id}> searches and invites; watch the queue board for your turn.`, 'win');
 }

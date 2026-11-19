@@ -10,6 +10,11 @@ What changed
 - **Alert me**: a DM offer (Accept / No thanks, never an automatic add) when a lobby needs your position, without posting `/lfg now`. Press again to turn off.
 - **Make a lobby**: the poster or anyone who tapped I'm in presses it and becomes the proposed captain. Everyone else on the post gets a DM request (Accept / No thanks, 15 minutes). Only people who accept join; the lobby goes on the queue board with the first accept. Crew size 2 to 5, no position rule.
 
-Not built (owner decisions or later): one unified status per member across LFG and the queue, putting people back to "available" when a lobby falls apart, keeping the "Need a player" posts newest (the board already is), points for filling a lobby.
+Follow-up (same day): the three missing pieces
+- **One status per member**: joining a group (any way: Join queue, Make a lobby, an accepted match offer) turns your open call into "in a lobby" and edits its message; you cannot post a new call while you are in a group; `/lfg list` shows the available people and the lobbies on the board.
+- **Back to available**: when a group lets you go (you leave, a crew edit drops you, the queue removes an idle group, a manager stops or clears the queue) and your call still has time left, it opens again and its message is repainted. A played match (match found) does not put you back, and a call that has run out stays closed.
+- **"Need a player" calls stay the newest message** (`needKeepNewest`, runs with the queue's 1-minute tick): re-sent at the bottom when someone posted below, old one deleted, no new ping, not within 90 seconds of the last send. In a channel the queue board owns, the board keeps the bottom and the call is not moved.
+
+Not built (later): points for filling a lobby.
 
 Owner steps: the bot deploy applies migration 0080. The Rush app needs permission to send, edit and delete messages in the channel where members use `/lfg now` (it already does for the board and the calls).

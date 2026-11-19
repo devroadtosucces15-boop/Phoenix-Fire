@@ -1,6 +1,6 @@
 // PF-027 – LFG and queue tools: pass or give up the captain role (queue and /lfg), Take down, +1 hour, the "still here?" DM, calls that stay the newest
 // message, Alert me, and Make a lobby as DM requests (nobody is added unless they accept).
-import { env, sqlite } from './mock.mjs';
+import { env, sqlite, KV } from './mock.mjs';
 import { t, done } from './lib.mjs';
 import * as Q from '../bot/rushqueue.js';
 import { lfgCommand, lfgButton, lfgTick, lfgMessage, LFG_ID } from '../bot/lfg.js';
@@ -156,6 +156,61 @@ t('a full crew (5) refuses more', await (async () => {
   sqlite.prepare('INSERT OR IGNORE INTO users (id, name, avatar, first_at, last_at) VALUES (?, ?, null, ?, ?)').run('710', 'Solo', T0, T0);
   return /full/.test(T(await press(M('710', 'Solo'), `pf:lfg:ask:y:${sqlite.prepare('SELECT MAX(id) AS id FROM rush_lobby_asks').get().id}`, T0 + 30 * MIN)));
 })());
+
+
+// ---------- one status per member, and back to available when a group lets them go ----------
+const rowOf = (u) => sqlite.prepare("SELECT * FROM rush_lfg WHERE user_id = ? ORDER BY id DESC").get(u);
+sqlite.exec("DELETE FROM rush_lfg; DELETE FROM rush_lfg_answers; DELETE FROM rush_queue; DELETE FROM rush_lobby_asks;");
+await lfgCommand(i, env, ann, ann, 'now', { minutes: 120 }, T0);
+let q0 = await Q.loadQueue(env);
+const j1 = Q.join(q0, { captain: '701', members: ['702'] }, T0 + MIN);
+await Q.commit(env, null, q0, j1, T0 + MIN);
+t('joining a group turns your open call into "in a lobby" (and edits its message)', rowOf('701').status === 'matched');
+t('while you are in a lobby you cannot post a new call', /You are in a lobby/.test(T(await lfgCommand(i, env, ann, ann, 'now', {}, T0 + 2 * MIN))));
+await lfgCommand(i, env, di, di, 'now', {}, T0 + 2 * MIN);
+t('/lfg list shows who is available and the lobbies on the board, one line per group', /Ann|Di/.test(T(await lfgCommand(i, env, bo, bo, 'list', {}, T0 + 2 * MIN))) && /<@701>'s lobby/.test(T(await lfgCommand(i, env, bo, bo, 'list', {}, T0 + 2 * MIN))));
+let q1 = await Q.loadQueue(env); calls.length = 0;
+await Q.commit(env, null, q1, Q.leave(q1, '701', T0 + 3 * MIN), T0 + 3 * MIN);
+t('the group lets you go (left): your call is open again, its message repainted', rowOf('701').status === 'open' && calls.some((c) => c.method === 'PATCH'));
+await Q.commit(env, null, await Q.loadQueue(env), Q.join(await Q.loadQueue(env), { captain: '701', members: [] }, T0 + 4 * MIN), T0 + 4 * MIN);
+q1 = await Q.loadQueue(env);
+await Q.commit(env, null, q1, Q.search(Q.advance(q1, T0 + 4 * MIN).queue, '701', T0 + 5 * MIN), T0 + 5 * MIN).catch(() => null);
+const qs = await Q.loadQueue(env);
+await Q.commit(env, null, qs, Q.matched(qs.map((e) => ({ ...e, status: 'searching', searching_since: T0 + 5 * MIN })), '701', T0 + 9 * MIN), T0 + 9 * MIN);
+t('a played match (match found) does NOT put you back on the list', rowOf('701').status === 'matched');
+sqlite.exec("DELETE FROM rush_queue");
+sqlite.prepare("UPDATE rush_lfg SET status = 'matched', expires = ? WHERE user_id = '701'").run(T0 + 10 * MIN);
+const q2 = Q.join([], { captain: '701', members: [] }, T0 + 5 * MIN); await Q.saveQueue(env, [], q2.queue);
+await Q.commit(env, null, q2.queue, Q.leave(q2.queue, '701', T0 + 20 * MIN), T0 + 20 * MIN);
+t('...and a call that has already run out is not reopened', rowOf('701').status === 'matched');
+sqlite.exec("DELETE FROM rush_queue");
+const q3 = Q.join([], { captain: '701', members: ['702'] }, T0).queue; await Q.saveQueue(env, [], q3);
+sqlite.prepare("INSERT INTO rush_lfg (user_id, name, note, channel, at, expires, status, positions) VALUES ('702', 'Bo', '', ?, ?, ?, 'matched', '[\"ANY\"]')").run(CH, T0, T0 + 600 * MIN);
+await Q.commit(env, null, q3, Q.setMembers(q3, '701', []), T0 + 3 * MIN);
+t('a crew edit that drops you also puts your call back', rowOf('702')?.status === 'open');
+
+// ---------- Need a player calls stay the newest message ----------
+sqlite.exec("DELETE FROM rush_queue");
+sqlite.prepare("INSERT OR IGNORE INTO discord_servers (guild_id, display_name) VALUES ('1600000000000000009', 'Test')").run();
+const sid = sqlite.prepare("SELECT id FROM discord_servers WHERE guild_id = '1600000000000000009'").get().id;
+const NCH = '1600000000000000055';
+const qn = Q.join([], { captain: '701', members: ['702'], needs: 1 }, T0).queue; await Q.saveQueue(env, [], qn);
+const nid = String(1000000000000009999n);
+await KV.put('rq:need:701', JSON.stringify({ posts: [{ ch: NCH, id: nid }], positions: ['ST'], answers: [], expires: T0 + 60 * MIN, lobby: ['702'], needs: 1, sentAt: T0 }));
+latest[NCH] = nid; calls.length = 0;
+t('a call that is already the newest message is not re-sent', (await Q.needKeepNewest(env, await Q.loadQueue(env), T0 + 5 * MIN)) === 0 && !calls.some((c) => c.method === 'POST'));
+latest[NCH] = String(1000000000000009999n + 7n);
+calls.length = 0;
+t('not within 90 seconds of the last send', (await Q.needKeepNewest(env, await Q.loadQueue(env), T0 + 30e3)) === 0);
+const moved = await Q.needKeepNewest(env, await Q.loadQueue(env), T0 + 5 * MIN);
+const np2 = calls.filter((c) => c.method === 'POST' && c.path === `/channels/${NCH}/messages`);
+t('someone posted below a call: it is sent again at the bottom, the old one deleted, no new ping', moved === 1 && np2.length === 1 && calls.some((c) => c.method === 'DELETE' && c.path.endsWith(`/${nid}`)) && !/<@&/.test(JSON.stringify(np2[0].body)));
+const saved = JSON.parse(await KV.get('rq:need:701'));
+t('the stored call points at the new message', saved.posts[0].id !== nid && saved.sentAt === T0 + 5 * MIN);
+sqlite.prepare("INSERT INTO discord_channels (server_id, channel_id, purpose, scope_type, label, active) VALUES (?, ?, 'rush_queue', 'org', '', 1)").run(sid, NCH);
+latest[NCH] = String(1000000000000019999n); calls.length = 0;
+t('in a channel the board owns, the board keeps the bottom (calls are not re-sent there)', (await Q.needKeepNewest(env, await Q.loadQueue(env), T0 + 20 * MIN)) === 0 && !calls.some((c) => c.method === 'POST'));
+sqlite.exec("DELETE FROM rush_queue");
 
 // ---------- code rules ----------
 const src = fs.readFileSync(new URL('../bot/lfg.js', import.meta.url), 'utf8');
