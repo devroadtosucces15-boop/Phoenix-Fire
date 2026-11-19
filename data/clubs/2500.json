@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-19T02:04:14.202Z",
+ "fetchedAt": "2026-11-19T02:10:41.595Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1927,14 +1927,14 @@
   },
   {
    "name": "iTry_Clutxh",
-   "proPos": "5",
-   "gamesPlayed": "32",
+   "proPos": "25",
+   "gamesPlayed": "33",
    "goals": "6",
    "assists": "6",
    "manOfTheMatch": "1",
-   "ratingAve": "7.3",
+   "ratingAve": "7.2",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "forward"
   },
   {
    "name": "Froezer",
@@ -2016,7 +2016,7 @@
   {
    "name": "Jaliens45",
    "proPos": "25",
-   "gamesPlayed": "63",
+   "gamesPlayed": "64",
    "goals": "10",
    "assists": "8",
    "manOfTheMatch": "3",
@@ -2175,6 +2175,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-19T02:04:14.202Z"
+  "fetchedAt": "2026-11-19T02:10:41.595Z"
  }
 }

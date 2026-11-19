@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-19T02:04:14.202Z",
+ "fetchedAt": "2026-11-19T02:10:41.595Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2353,7 +2353,7 @@
   {
    "name": "Jaliens45",
    "proPos": "25",
-   "gamesPlayed": "63",
+   "gamesPlayed": "64",
    "goals": "10",
    "assists": "8",
    "manOfTheMatch": "3",
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-19T02:04:14.202Z"
+  "fetchedAt": "2026-11-19T02:10:41.595Z"
  }
 }
