@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-19T01:00:42.077Z",
+ "fetchedAt": "2026-11-19T01:10:59.866Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1859,7 +1859,7 @@
   {
    "name": "iTry_Clutxh",
    "proPos": "5",
-   "gamesPlayed": "30",
+   "gamesPlayed": "31",
    "goals": "6",
    "assists": "6",
    "manOfTheMatch": "1",
@@ -2128,6 +2128,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-19T01:00:42.077Z"
+  "fetchedAt": "2026-11-19T01:10:59.866Z"
  }
 }
