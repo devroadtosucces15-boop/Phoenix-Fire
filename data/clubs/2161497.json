@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-19T14:20:43.286Z",
+ "fetchedAt": "2026-11-19T14:30:43.345Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -13,22 +13,22 @@
    "seasonalTeamId": "131397",
    "seasonalKitId": "1076404224",
    "selectedKitType": "1",
-   "customKitId": "7605",
+   "customKitId": "7544",
    "kitColor1": "14356498",
    "kitColor2": "15245824",
-   "kitColor3": "15245824",
+   "kitColor3": "14356498",
    "kitColor4": "15245824",
-   "customAwayKitId": "7524",
+   "customAwayKitId": "7522",
    "kitAColor1": "15921906",
-   "kitAColor2": "14356498",
-   "kitAColor3": "14356498",
+   "kitAColor2": "15245824",
+   "kitAColor3": "15245824",
    "kitAColor4": "15245824",
    "customThirdKitId": "7544",
-   "kitThrdColor1": "858595",
+   "kitThrdColor1": "592653",
    "kitThrdColor2": "15245824",
-   "kitThrdColor3": "396864",
+   "kitThrdColor3": "592653",
    "kitThrdColor4": "15245824",
-   "dCustomKit": "0",
+   "dCustomKit": "1",
    "customKeeperKitId": "5003",
    "crestColor": "16495884",
    "crestAssetId": "99160802"
@@ -859,6 +859,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-19T14:20:43.286Z"
+  "fetchedAt": "2026-11-19T14:30:43.345Z"
  }
 }
