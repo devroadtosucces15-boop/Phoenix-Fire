@@ -305,11 +305,13 @@ No commands (kept empty for the transition).
     - `assists` (number, optional): Your assists
     - `date` (text, optional): YYYY-MM-DD (default: today)
 - **/lfg**: Looking for Rush players: say you are available, or see who is
-  - `now` (subcommand, optional): Post that you are available for Rush
+  - `now` (subcommand, optional): Put yourself on the Rush board (you pick your position(s) in a dropdown)
     - `minutes` (number, optional): How long you are around to start with (default 30, max 180). You can add an hour on the post.
     - `position` (text, optional, choices: Goalkeeper, Striker, Centre back, Winger, Any position): The Rush position you want tonight (default: your profile position)
     - `note` (text, optional): Position, mode, anything else
-  - `cancel` (subcommand, optional): Take your availability down
+  - `cancel` (subcommand, optional): Take yourself off the Rush board
+  - `setup` (subcommand, optional): Managers: post the live Rush board in a channel (the bot keeps it the newest message)
+    - `channel` (channel, optional): Default: this channel
   - `captain` (subcommand, optional): Pass the captain role of your lobby to someone in your crew (or give it up)
     - `member` (user, optional): Who is captain now (default: the first person in your crew)
   - `list` (subcommand, optional): Who is available for Rush right now

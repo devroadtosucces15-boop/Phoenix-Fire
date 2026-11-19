@@ -45,7 +45,7 @@ export const INTENTS = [
 // Config purposes that mean the same as a catalogue intent (so a configured channel shows the friendly label).
 const PURPOSE_TO_INTENT = {
   announcements: 'announcements', match_results: 'results', match_notifications: 'matchnight', session_recaps: 'results', recruitment: 'recruitment',
-  welcome: 'welcome', rush_queue: 'rush', rush_need: 'rush', rush_board: 'rush', season_stats: 'rush', manager_alerts: 'staff', logs: 'staff',
+  welcome: 'welcome', rush_queue: 'rush', rush_need: 'rush', rush_lfg: 'rush', rush_board: 'rush', season_stats: 'rush', manager_alerts: 'staff', logs: 'staff',
   config_audit: 'staff', system_alerts: 'staff', member_log: 'staff', automod_alerts: 'staff', claims: 'staff', rush_queue_reports: 'staff',
 };
 const intentByKey = Object.fromEntries(INTENTS.map((i) => [i[0], { key: i[0], label: i[1], blurb: i[2], link: i[4] }]));

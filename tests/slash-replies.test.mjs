@@ -7,6 +7,7 @@ import { BANNERS, SLASH, TEMPLATE_VERSION } from '../scripts/cards.mjs';
 import { BANNER_V, images, plainText } from '../bot/ui.js';
 import { BANNER_SPEC } from '../bot/banners.js';
 import { memberCommand } from '../bot/botcmds.js';
+import { boardMessage } from '../bot/lfgboard.js';
 import { lfgCommand, lfgMessage } from '../bot/lfg.js';
 import { discoveryCommand } from '../bot/discoveries.js';
 import { funCommand } from '../bot/fun.js';
@@ -69,10 +70,16 @@ sqlite.exec(`INSERT INTO meta (key, value) VALUES ('server_tools', '{"pingRoles"
 const lfg = (sub, o = {}, me = member, at = Date.now()) => lfgCommand({ channel_id: '700', data: {} }, E, me, me, sub, o, at).then(data);
 const l0 = await lfg('list');
 t('/lfg list with nobody free: empty picture', has(l0, 'cmd-empty') && priv(l0));
-const l1 = await lfg('now', { note: 'Need a keeper' });
-t('/lfg now: the post carries the Rush picture, stays public, pings only the Rush role from config', has(l1, 'cmd-lfg-post') && !priv(l1) && JSON.stringify(l1.allowed_mentions) === '{"parse":[],"roles":["7002"]}');
-const l2 = await lfg('now', {}, member, Date.now() + 1000);
-t('/lfg now twice: the cooldown reply has a picture, private', has(l2, 'cmd-problem') && priv(l2));
+const lNone = await lfg('now', { position: 'ST' });
+t('/lfg now without a board: the problem picture, private, nothing saved', has(lNone, 'cmd-problem') && priv(lNone) && /no Rush board/i.test(plainText(lNone)));
+sqlite.prepare("INSERT OR IGNORE INTO discord_servers (guild_id, display_name) VALUES ('g-sr', 'Test')").run();
+sqlite.prepare("INSERT INTO discord_channels (server_id, channel_id, purpose, scope_type, label, active) VALUES ((SELECT id FROM discord_servers WHERE guild_id = 'g-sr'), '700', 'rush_lfg', 'org', '', 1)").run();
+const l1 = await lfg('now', { position: 'ST', note: 'Need a keeper' });
+t('/lfg now with a board: a private confirmation with the list picture (the board is the public post)', has(l1, 'cmd-lfg-list') && priv(l1));
+const l1b = await lfg('now', {}, { u: '802', n: 'Bo', role: 'member' });
+t('/lfg now with no position: the private position dropdown', priv(l1b) && /pf:lfg:pos:30/.test(JSON.stringify(l1b)));
+const l2 = await lfg('now', { position: 'ST' }, member, Date.now() + 1000);
+t('/lfg now again while on the list: updates the call, still private', priv(l2) && /on the list/.test(plainText(l2)));
 const l3 = await lfg('list');
 t('/lfg list: the "who is free" picture', has(l3, 'cmd-lfg-list'));
 const l4 = await lfg('cancel');
@@ -83,6 +90,8 @@ flags({ rushLfg: 'owner' });
 t('/lfg switched off: locked picture', has(await lfg('now'), 'cmd-locked'));
 const post = lfgMessage({ id: 1, name: 'Ann', status: 'open', expires: Date.now() + 36e5 }, [], { env: E });
 t('the LFG post is Phoenix and keeps its buttons', has(post, 'cmd-lfg-post') && /pf:lfg:1:in/.test(JSON.stringify(post)) && !leaks(post));
+const lboard = boardMessage([{ id: 1, name: 'Ann', status: 'open', positions: '["ST","W"]', at: 1, expires: Date.now() + 36e5 }], { env: E, org: 'Phoenix Fire' });
+t('the live board is Phoenix, has the Rush picture and its buttons', has(lboard, 'cmd-lfg-post') && /pf:lfg:board:in/.test(JSON.stringify(lboard)) && !leaks(lboard));
 t('the LFG post without SITE_URL still sends (no picture)', images(lfgMessage({ id: 1, name: 'Ann', status: 'open', expires: Date.now() + 36e5 }, [])).length === 0);
 
 // ---------- /trial, /feedback, /suggest, /announce ----------
@@ -163,10 +172,10 @@ t('/tag switched off: locked picture', has(await sv('tag', member, [{ name: 'nam
 t('/tag /remind /setup replies are Phoenix', ![tagPost, tagList, rem, remList, setOff].some(leaks));
 
 // ---------- channels and roles come from config, never code ----------
-const files = ['botcmds', 'host', 'matchday', 'lfg', 'discoveries', 'fun', 'servertools'].map((f) => [f, fs.readFileSync(`bot/${f}.js`, 'utf8')]);
+const files = ['botcmds', 'host', 'matchday', 'lfg', 'lfgboard', 'discoveries', 'fun', 'servertools'].map((f) => [f, fs.readFileSync(`bot/${f}.js`, 'utf8')]);
 t('no code holds a channel or role id', files.every(([, src]) => !/\b\d{17,20}\b/.test(src)));
 t('a discovery is announced in the channel the Organization config names', /channelFor\(env, 'announcements'\)/.test(files.find(([f]) => f === 'discoveries')[1]));
-t('the Rush ping role comes from the Organization config (ping_rush, legacy server tools value as fallback), not from code', /pingRoleFor\(env, 'ping_rush'\)/.test(files.find(([f]) => f === 'lfg')[1]) && /pingRoleFor\(env, o\.mode === 'rush' \? 'ping_rush' : 'ping_match'\)/.test(fs.readFileSync('bot/host.js', 'utf8')));
+t('the Rush ping role comes from the Organization config (ping_rush, legacy server tools value as fallback), not from code', /pingRoleFor\(env, 'ping_rush'\)/.test(files.find(([f]) => f === 'lfgboard')[1]) && /pingRoleFor\(env, o\.mode === 'rush' \? 'ping_rush' : 'ping_match'\)/.test(fs.readFileSync('bot/host.js', 'utf8')));
 t('setup writes channel and role purposes through orgconfig (the same rows as the site)', /setupMapping/.test(files.find(([f]) => f === 'servertools')[1]));
 t('/announce reads its audience through the notify route, not a literal channel', !/discord\.com\/api\/v10\/channels\/\d/.test(files.find(([f]) => f === 'botcmds')[1]));
 done();

@@ -385,12 +385,13 @@ export const COMMANDS = [
   {
     name: 'lfg', description: 'Looking for Rush players: say you are available, or see who is', contexts: [0],
     options: [
-      { type: SUB, name: 'now', description: 'Post that you are available for Rush', options: [
+      { type: SUB, name: 'now', description: 'Put yourself on the Rush board (you pick your position(s) in a dropdown)', options: [
         { type: INTEGER, name: 'minutes', description: 'How long you are around to start with (default 30, max 180). You can add an hour on the post.', min_value: 15, max_value: 180 },
         { type: STRING, name: 'position', description: 'The Rush position you want tonight (default: your profile position)', choices: [{ value: 'GK', name: 'Goalkeeper' }, { value: 'ST', name: 'Striker' }, { value: 'CB', name: 'Centre back' }, { value: 'W', name: 'Winger' }, { value: 'ANY', name: 'Any position' }] },
         { type: STRING, name: 'note', description: 'Position, mode, anything else', max_length: 80 },
       ] },
-      { type: SUB, name: 'cancel', description: 'Take your availability down' },
+      { type: SUB, name: 'cancel', description: 'Take yourself off the Rush board' },
+      { type: SUB, name: 'setup', description: 'Managers: post the live Rush board in a channel (the bot keeps it the newest message)', options: [{ type: CHANNEL, name: 'channel', description: 'Default: this channel' }] },
       { type: SUB, name: 'captain', description: 'Pass the captain role of your lobby to someone in your crew (or give it up)', options: [{ type: USER, name: 'member', description: 'Who is captain now (default: the first person in your crew)' }] },
       { type: SUB, name: 'list', description: 'Who is available for Rush right now' },
     ],
