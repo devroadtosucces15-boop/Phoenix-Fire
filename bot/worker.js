@@ -54,6 +54,7 @@ import { WIKI_COMMANDS, WIKI_ID, wikiCommand, wikiButton, bookOn, helpBook } fro
 import { MASCOT_COMMANDS, mascotCommand, mascotDaily } from './mascot.js';
 import { HIGHLIGHT_COMMANDS, highlightCommand } from './highlight.js';
 import { TESTVIEW_COMMANDS, TESTVIEW_ID, testviewCommand, testviewButton, testviewChoices } from './testview.js';
+import { ARCADE_COMMANDS, ARCADE_ID, arcadeCommand, arcadeButton } from './arcade.js';
 import { EMOJI_COMMANDS, EMOJI_ID, emojiCommand, emojiButton } from './emoji.js';
 import { GIF_COMMANDS, GIF_FLAG, gifCommand, gifTick } from './gif.js';
 import { BIRTHDAY_COMMANDS, birthdayCommand } from './birthday.js';
@@ -243,6 +244,8 @@ export default {
     if (i.type === 2 && BIRTHDAY_COMMANDS.has(i.data.name)) return json(await birthdayCommand(i, env, who)); // /birthday set | visible | show | clear (bot/birthday.js)
     if (i.type === 2 && TESTVIEW_COMMANDS.has(i.data.name)) return json(await testviewCommand(i, env, who)); // /testview: a fake private render of any output (bot/testview.js)
     if (i.type === 3 && TESTVIEW_ID.test(i.data?.custom_id ?? '')) return json(await testviewButton(i, env, who)); // every control in a render is switched off; this only answers if one slips through
+    if (i.type === 2 && ARCADE_COMMANDS.has(i.data.name)) return json(await arcadeCommand(i, env, who)); // /arcade play | top | me (bot/arcade.js)
+    if (i.type === 3 && ARCADE_ID.test(i.data?.custom_id ?? '')) return json(await arcadeButton(i, env, who)); // accept, decline, moves and resign on a game message
     if (i.type === 2 && EMOJI_COMMANDS.has(i.data.name)) return json(await emojiCommand(i, env, who, ctx)); // /emoji suggest | mine | delete | review (bot/emoji.js)
     if (i.type === 3 && EMOJI_ID.test(i.data?.custom_id ?? '')) return json(await emojiButton(i, env, who)); // the managers' Approve and Reject buttons
     if (i.type === 2 && HIGHLIGHT_COMMANDS.has(i.data.name)) return json(await highlightCommand(i, env, who, ctx)); // /highlight upload | mine | delete | list (bot/highlight.js)

@@ -37,6 +37,13 @@ export const COMMANDS = [
     { type: SUB, name: 'visible', description: 'Turn the club celebration on or off', options: [{ type: BOOLEAN, name: 'on', description: 'On = celebrated and shown on your bio card', required: true }] },
     { type: SUB, name: 'show', description: 'See what is saved (only you see this)' },
     { type: SUB, name: 'clear', description: 'Delete your saved birthday' }] },
+  // PF-024 Item 23 – the arcade (bot/arcade.js): turn-based games between two members with buttons in one message. Rules in bot/arcadegames.js.
+  { name: 'arcade', description: 'Play a short game against another member', contexts: [0], options: [
+    { type: SUB, name: 'play', description: 'Challenge a member', options: [
+      { type: STRING, name: 'game', description: 'Which game', required: true, choices: [['ttt', 'Noughts and crosses'], ['c4', 'Connect four'], ['rps', 'Rock paper scissors'], ['pens', 'Penalty shootout']].map(([value, name]) => ({ name, value })) },
+      { type: USER, name: 'opponent', description: 'Who to play', required: true }] },
+    { type: SUB, name: 'top', description: 'The arcade leaderboard (only you see this)' },
+    { type: SUB, name: 'me', description: 'Your arcade record (only you see this)' }] },
   // PF-024 Item 25 – the test view (bot/testview.js): managers see a fake, private render of any registered output; nothing is posted, sent or saved.
   { name: 'testview', description: 'Managers: preview any bot output with its rules, privately (nothing is sent)', contexts: [0], options: [
     { type: STRING, name: 'output', description: 'The command, post, DM or button to preview', required: true, autocomplete: true },
@@ -444,7 +451,7 @@ export const APP_COMMANDS = {
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],
-  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'emoji', 'gif', 'birthday', 'matchdayhelp'],
+  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'emoji', 'gif', 'birthday', 'arcade', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).

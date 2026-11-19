@@ -175,13 +175,13 @@ export const BANNER_BY_COMMAND = {
   points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', counselor: 'counselor', mascot: 'mascot', absence: 'absence', highlight: 'highlight', emoji: 'emoji', gif: 'gif', birthday: 'birthday', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
   rush: 'rush', queue: 'queue', lfg: 'lfg', host: 'event', lineup: 'lineup', matchday: 'event', intel: 'stats',
   feedback: 'feedback', suggest: 'idea', share: 'fun', discoveries: 'fun', watch: 'live', tag: 'setup', remind: 'remind', site: 'general', avatarcard: 'card',
-  testview: 'staff', jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',
+  testview: 'staff', arcade: 'fun', jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',
   exportcontent: 'staff', profanitysetup: 'moderation', syncroles: 'staff', aispike: 'insight',
   corehelp: 'help', statshelp: 'help', toolshelp: 'help', matchdayhelp: 'help', rushhelp: 'help',
 };
 // Button / menu custom_id → family (first match wins).
 export const BANNER_BY_COMPONENT = [
-  [/^norex:help:/, 'help'], [/^norex:(mm|mme|box):/, 'match'], [/^pf:rq/, 'queue'], [/^pf:lfg/, 'lfg'], [/^norex:fun:/, 'fun'], [/^norex:dc:/, 'fun'],
+  [/^norex:help:/, 'help'], [/^norex:(mm|mme|box):/, 'match'], [/^pf:rq/, 'queue'], [/^pf:lfg/, 'lfg'], [/^norex:fun:/, 'fun'], [/^pf:arc:/, 'fun'], [/^norex:dc:/, 'fun'],
   [/^norex:wl:/, 'live'], [/^norex:sc:/, 'season'], [/^norex:ev:/, 'event'], [/^norex:nav:/, 'navigator'], [/^norex:wiki:/, 'wiki'], [/^norex:pin:/, 'pin'], [/^norex:abs:/, 'absence'], [/^norex:play:/, 'play'], [/^norex:bn:/, 'burner'], [/^pf:pos/, 'event'],
   [/^norex:mp:q:cards/, 'card'], [/^norex:mp:q:rush/, 'rush'], [/^norex:mp:q:requests/, 'request'], [/^norex:mp:[ar]:claims/, 'claim'],
   [/^norex:mp:[ar]:ideas/, 'idea'], [/^norex:mp:/, 'staff'], [/^norex:pr:/, 'predict'], [/^norex:rm:/, 'remind'],

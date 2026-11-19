@@ -287,3 +287,16 @@ Owner decisions (assumed safest defaults, say if you want different):
 - **Not built (no source yet)**: points for messages and engagement. Message counts exist only by REST polling (privacy notes of Items 14 and 15); interaction counts could pay per command but that rewards spamming a command, so it is left for a decision. Predictions still pay the amount the prediction scoring computes (not a rule). Games points have rules (`games.played`, `games.won`) ready for the arcade (Item 23).
 - **No manual bonus or deduction yet**: a manager can only record a spend.
 
+
+## Item 23: the arcade (first slice, code done on branch `claude/pf-024-item23-532dc3`)
+`/arcade play <game> <member>`, `/arcade top`, `/arcade me` (matchday app). Four turn-based games played with buttons in one channel message: noughts and crosses, connect four, rock paper scissors (first to 2, picks hidden), penalty shootout (5 kicks each, then sudden death). The starter invites a member (public message that pings them), the invited member accepts or declines, only the two players can press buttons, games time out after a day, a starter may have 3 open games. The rules are pure functions in `bot/arcadegames.js` (no Discord, no D1) so a Discord Activity can reuse them. Records: `arcade_games` (state, winner, moves, compare-and-set `ver`) and the arcade's own `arcade_scores` (win 4, draw 2, loss 1). Shared points use the existing rules `games.played` and `games.won` (`awardRule`, once per game and member through `ref`); a game pays only with at least 4 moves (opening and resigning pays nothing) and at most 10 paid games per member per day.
+
+Owner steps (not done here):
+1. Apply migration `0078_arcade.sql`.
+2. Deploy the Worker, then register the commands (the matchday app's command list gained `arcade`).
+3. The command ships behind the flag **`arcade`** = `owner`; set it to `members` when happy. The points amounts (`games.played` 1, `games.won` 3) are editable in the Control Center points rules.
+4. No channel or role needed: a game is played where it was started. No secret.
+
+**Owner DECISION needed before the Discord Activity part (not built, Discord portal untouched):** where the Activity web app is hosted. An Activity needs a hosted page using Discord's Embedded App SDK plus a realtime backend. Options: (a) the Pages site hosts the Activity page and the `phoenix-bot` Worker hosts a Durable Object room like `ClubRoom` (one account host; the Discord portal needs the Activity URL mapping and Activities enabled); (b) a separate Cloudflare Pages/Worker project for the arcade. Real-time games (cup pong, basketball hoops) need that; the four turn-based games here do not.
+
+Not built: the other six or so games (cup pong, hoops and similar real-time ones need the Activity), a site page or Control Center tool for game records, a rematch button, challenging the whole channel (open lobby), season-based arcade score reset, a per-pair daily cap against two friends farming points (the 10-a-day cap limits it).

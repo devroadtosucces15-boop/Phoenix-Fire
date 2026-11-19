@@ -62,6 +62,7 @@ export const WHERE = {
   highlight: ["member.html",""],
   emoji: ["staff-insights.html",""],
   testview: ["staff-insights.html",""],
+  arcade: ["member.html",""],
   gif: ["member.html",""],
   birthday: ["member.html",""],
   mascot: ["stats.html",""],
