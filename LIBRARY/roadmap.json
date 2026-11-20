@@ -1061,7 +1061,7 @@
       "title": "Forms: 44 px fields with a leading icon, helper and error text, clear button on searches",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -1072,12 +1072,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/forms.js` + `forms.css` (linked in every page head). Text fields and selects are 44 px, textareas 88 px (low-specificity css, `.ph-compact` opts out). Searches get a leading 🔍 icon and a 44 px clear button (Escape clears too); `data-icon` adds an icon to any field. `data-help` gives helper text; `PhoenixForms.setHelp/setError/clearError/validate` write helper and error text under the field, linked with aria-describedby, error role=alert and aria-invalid. Required, email, url, pattern and range fields are checked on blur and clear as the user types. No orange focus ring (owner did not tick it). `tests/forms.test.mjs`. Checked in headless Chromium on a test page and the built players page.",
       "outcome": "Forms are labelled, validated inline and consistent.",
       "behavior": "Orange focus ring not applied (owner did not tick it).",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-037-forms",
+          "what": "forms.js + forms.css: 44 px fields, leading icon, helper and error text, clear button on searches, inline validation; tests/forms.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1087,7 +1093,7 @@
       "title": "Tables and charts: centred columns except the first, captions, keyboard sort, Compare button, number and % on one line",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,
