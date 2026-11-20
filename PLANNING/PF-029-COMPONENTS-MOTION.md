@@ -33,7 +33,7 @@ Source: the owner's answers in the master plan artifact (every option had a live
 | Player cards | C | spring settle, deeper photo layer | none | Glare and shine untouched. |
 | Charts and numbers | C | rolling digits, smooth ring | none | Number and % on one line; goals label and value aligned. |
 | Loading and empty states | C | shimmer placeholders, larger empty icon with a button | none | |
-| Effect budget | C | owner switch Full / Balanced / Off, max 5 at once | none | Default is Full (5 at a time). The owner can pick any level. |
+| Effect budget | C | owner controls: a level for each effect (Full / Balanced / Off) and the budget itself, any number from 5 up to every effect | none | Default is 5 at a time (Full). The owner sets the budget number (minimum 5, no upper limit) and the level of each effect separately. Owner-only, one setting for everyone. |
 | Header, logo, banners | C | logo shortens to PHOENIX on small phones, badge 9+ | none | |
 | Tooltips | C | amber border, keyboard hint | none | Not audited yet; audit in Phase 0. |
 | Motion: player card, scrolling, selection reactions, menu, page transitions, dialogs, loading, charts, celebrations, glow, tabs, island menus, side rail and owner button, header, widgets, status accents | C | as listed in the master plan for each | none | Glow: spotlight inside the hovered panel only (no pointer shadow). |
