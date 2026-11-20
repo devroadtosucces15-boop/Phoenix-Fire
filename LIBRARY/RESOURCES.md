@@ -9,6 +9,7 @@ only when a new group or a new kind of reference appears.
 | Group | Where | Use |
 |---|---|---|
 | Motion and transitions | `PLANNING/RESOURCES.md` | Ideas for dock, scroll and card effects |
+| Club context for other AI models | `PLANNING/resources/ABOUT-PHOENIX-FIRE.md` | Paste into a model that does not know the club |
 | Cost and session rules | `PLANNING/SESSION-HANDOFF.md` | How sessions are run |
 | Worker host move | `PLANNING/WORKER-HOST.md` | Flip steps and owner portal steps |
 | Pre-commit leak check | `PLANNING/PRE-COMMIT-CHECK.md` | Before the final commit |
