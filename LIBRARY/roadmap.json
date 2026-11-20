@@ -1157,7 +1157,7 @@
       "title": "Dialogs and slide-up panels: one dialog, one bottom sheet, focus trap, Back closes",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -1168,12 +1168,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/dialogs.js` + `dialogs.css` (linked in every page head): `PhoenixDialog`. Every existing pop-up (role=dialog aria-modal, .mx-sheet, .cx-drawer, .br-modal, .wtp-modal, #awardfx) is adopted on appearance, no page rewritten: Tab trap, Esc closes, Back (history step) closes the dialog and not the page, focus returns to the opener, grab handle you can drag down on phones, `.br-modal` becomes a bottom sheet on phones. New code: `PhoenixDialog.open({title, html|node, onClose})` and `PhoenixDialog.confirm(msg, {yes, no, danger})` returning a Promise. 44 px taps, Phoenix accent. `tests/dialogs.test.mjs`; checked in headless chromium (focus, trap, Back, focus return).",
       "outcome": "Every pop-up behaves the same.",
       "behavior": "Phone bottom sheet with grab handle (accepted).",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-040-dialogs",
+          "what": "dialogs.js + dialogs.css: one dialog behaviour (trap, Esc, Back closes, focus return, grab-handle bottom sheet) adopted by every existing pop-up; PhoenixDialog.open/confirm; tests/dialogs.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1183,7 +1189,7 @@
       "title": "Chips and tabs new look: segmented bar with sliding highlight, dark amber selected state",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,

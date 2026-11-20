@@ -1,0 +1,31 @@
+/* PF-040 dialogs: one look and one phone behaviour. Bottom sheet with a grab handle at phone width; Phoenix accent from the theme. */
+.ph-grab{display:none;width:44px;height:5px;margin:0 auto 12px;border-radius:3px;background:rgba(232,101,26,.7);touch-action:none;cursor:grab;position:relative}
+.ph-grab::after{content:"";position:absolute;left:-12px;right:-12px;top:-14px;bottom:-14px}
+.ph-has-grab{position:relative}
+@media(max-width:820px){
+  .ph-grab{display:block}
+  .br-modal{align-items:end;padding:0}.br-modal>.br-sheet{width:100%;max-width:none;border-radius:22px 22px 0 0;max-height:86dvh;overflow:auto;padding-bottom:calc(22px + env(safe-area-inset-bottom))}
+  .cx-drawer{touch-action:pan-y}
+}
+.ph-dialog{position:fixed;inset:0;z-index:9986;display:grid;place-items:center;padding:16px;background:rgba(10,7,5,.66);backdrop-filter:blur(4px);animation:phDlgFade .2s both}
+.ph-dialog.out{animation:phDlgFadeOut .2s both}
+.ph-dialog-panel{position:relative;width:min(440px,100%);max-height:86dvh;overflow:auto;overscroll-behavior:contain;padding:22px 20px 20px;background:#111722;border:1px solid rgba(232,101,26,.45);border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.6);color:#fff;font:500 15px/1.45 Inter,system-ui,sans-serif;animation:phDlgIn .28s var(--e-spring,cubic-bezier(.2,.9,.3,1.2)) both}
+.ph-dialog-h{margin:0 44px 10px 0;font:700 19px/1.25 Oswald,Inter,sans-serif;letter-spacing:.02em}
+.ph-dialog-msg{margin:0 40px 16px 0}
+.ph-dialog-x{position:absolute;top:6px;right:6px;min-width:44px;min-height:44px;background:none;border:0;border-radius:10px;color:inherit;font-size:24px;cursor:pointer;opacity:.75}
+.ph-dialog-x:hover{background:rgba(255,255,255,.08);opacity:1}
+.ph-dialog-row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.ph-dialog-btn{min-height:44px;padding:0 18px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:inherit;font:600 14px Inter,system-ui,sans-serif;cursor:pointer}
+.ph-dialog-btn.danger{background:#e8651a;border-color:#e8651a;color:#0a0705}
+.ph-dialog-btn:focus-visible,.ph-dialog-x:focus-visible{outline:2px solid #e8651a;outline-offset:2px}
+@media(max-width:820px){
+  .ph-dialog{place-items:end center;padding:0}
+  .ph-dialog-panel{width:100%;max-width:none;border-radius:22px 22px 0 0;padding-bottom:calc(22px + env(safe-area-inset-bottom));animation-name:phSheetIn}
+  .ph-dialog-panel::before{content:"";display:block;width:44px;height:5px;margin:-8px auto 14px;border-radius:3px;background:rgba(232,101,26,.7)}
+  .ph-dialog-row{flex-direction:column-reverse}.ph-dialog-btn{width:100%}
+}
+@keyframes phDlgFade{from{opacity:0}}@keyframes phDlgFadeOut{to{opacity:0}}
+@keyframes phDlgIn{from{opacity:0;transform:translate3d(0,16px,0) scale(.96)}}
+@keyframes phSheetIn{from{transform:translate3d(0,100%,0)}}
+html[data-motion="off"] .ph-dialog,html[data-motion="off"] .ph-dialog-panel,html[data-motion="calm"] .ph-dialog-panel{animation-duration:.01s}
+@media(prefers-reduced-motion:reduce){.ph-dialog,.ph-dialog-panel{animation-duration:.01s}}

@@ -1,16 +1,16 @@
-Model: sonnet (claude-sonnet-5-5)   Item: PF-040 Dialogs and slide-up panels: one dialog, one bottom sheet, focus trap, Back closes (the NEXT row of LIBRARY/roadmap.json).
+Model: sonnet (claude-sonnet-5-5)   Item: PF-041 Chips and tabs new look: segmented bar with sliding highlight, dark amber selected state (the NEXT row of LIBRARY/roadmap.json).
 
 Repo: /home/mrsuccess/Phoenix-Fire, branch cut from origin/main (use a worktree). Read CLAUDE.md, PLANNING/SESSION-HANDOFF.md sections 1, 3, 4, 5, 6, LIBRARY/README.md, LIBRARY/CLAIMS.md, the PF-039 row of LIBRARY/roadmap.json and PLANNING/PF-029-COMPONENTS-MOTION.md. Add your CLAIMS row before editing.
 
 ## State right now
-- Done: PF-039 (`next/static/notices.js` + `notices.css`, `tests/notices.test.mjs`), PF-029 (tap areas), PF-030 (labels: `tests/a11y-labels.test.mjs`), PF-031 (header fit: `tests/header-fit.test.mjs`), PF-032 (effects), PF-033 (`tests/roving.test.mjs`), PF-034 (menus: `tests/menus-keys.test.mjs`), PF-035 (tooltip), PF-036 (`states.js`, `tests/states.test.mjs`), PF-037 (`next/static/forms.js` + `forms.css`, `tests/forms.test.mjs`), PF-038 (`next/static/tables.js` + `tables.css`, `tests/tables.test.mjs`). Keep all green. `tests/menus.test.mjs` is the older PF-019 test, do not overwrite it.
-- PF-039 left: `PhoenixNotices` (show, ok, err, info, toast, clear, count) is the one notice queue: up to 3 stacked, errors stay (role=alert), `{undo: fn}` adds an Undo button, a progress line pauses on hover and focus. `NorexMotion.toast(msg, {kind, icon, ms})` delegates to it; use `PhoenixNotices` in new code. Not yet wired: real Undo callbacks on destructive actions (delete, remove) on each page; do that when you touch a page.
-- PF-040 scope: see the PF-040 row of LIBRARY/roadmap.json and PLANNING/PF-029-COMPONENTS-MOTION.md (one dialog, one bottom sheet on phones with grab handle, focus trap, Back closes). Many pages have their own sheet/drawer/confirm code (e.g. `ccshell.js` sheet and confirmBox); follow the shared-script pattern (dialogs.js + dialogs.css). Check tests/ for an existing file name before creating a test. Keep notices.test.mjs, tables.test.mjs, forms.test.mjs and the earlier guard tests green.
+- Done: PF-029 to PF-040. PF-040 left: `next/static/dialogs.js` + `dialogs.css` (`tests/dialogs.test.mjs`). `PhoenixDialog` adopts every existing pop-up (role=dialog aria-modal, .mx-sheet, .cx-drawer, .br-modal, .wtp-modal, #awardfx): Tab trap, Esc, Back closes, focus returns, grab handle on phones. New code: `PhoenixDialog.open({title, html|node, onClose})` and `PhoenixDialog.confirm(msg, {yes, no, danger})` (Promise<boolean>). Not wired: page confirm callers (e.g. `ccshell.js` confirmBox) still use their own markup; they work, they are adopted. Notices: `PhoenixNotices` (PF-039), Undo callbacks not yet wired on pages.
+- Keep green: a11y-labels, header-fit, effects, roving (PF-033 keyboard for chips and tabs: do not break `roving.js`), menus-keys, tooltip, states, forms, tables, notices, dialogs.
+- PF-041 scope: see its row in LIBRARY/roadmap.json and PLANNING/PF-029-COMPONENTS-MOTION.md (chips and tabs: segmented bar, sliding highlight, dark amber selected state; the highlight must never cover other options when chips wrap; emoji icons stay). Follow the shared-script pattern (chips.js + chips.css), check tests/ for an existing name first.
 
 ## Do next
-1. One item only, PF-040. Design talk uses screenshots; keyboard logic is checked with tests.
+1. One item only, PF-041. Design talk uses screenshots; keyboard logic is checked with tests; wrapping chips need a screenshot at phone width.
 2. node tools/library/sync.mjs, node tests/library.test.mjs, node phoenix/build.mjs --out site, brand and leak tests, commit, push with gh, merge to main.
-3. PF-040 DONE with doneLog, next item NEXT, write the next prompt, remove your CLAIMS row. Do not start the next item.
+3. PF-041 DONE with doneLog, next item NEXT, write the next prompt, remove your CLAIMS row. Do not start the next item.
 
 ## Gotchas
 - Sandbox blocks writes to the worktree git dir: run git add/commit unsandboxed. `cp` is interactive here; use `command cp -f`.
