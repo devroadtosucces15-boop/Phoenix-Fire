@@ -48,3 +48,28 @@ Source: [motion.dev/examples](https://motion.dev/examples). Saved 2026-11-10.
 - https://motion.dev/examples/vue-mega-menu
 - https://motion.dev/examples/vue-ticker-rtl
 - https://motion.dev/examples/vue-pokopia-modal
+
+## UI component libraries and interaction primitives
+
+Saved 2026-11-20 by the owner, for the design, transition and motion roadmap. Most of these are React; Phoenix is vanilla JS/CSS, so use them for the **pattern, behaviour, accessibility and look**, not the code. Items marked "not reviewed" have only been saved, not studied yet.
+
+### Component systems and headless primitives
+- shadcn/ui: https://ui.shadcn.com (copy-in components built on Radix or Base UI)
+- Base UI: https://base-ui.com (unstyled, accessible primitives)
+- Radix: https://www.radix-ui.com (unstyled, accessible primitives; reference for focus, keyboard and ARIA behaviour)
+
+### Single-purpose interaction pieces
+- Sonner: https://sonner.emilkowal.ski (toasts)
+- Vaul: https://vaul.emilkowal.ski (drawer / bottom sheet)
+- cmdk: https://cmdk.paco.me (command palette)
+- NumberFlow: https://number-flow.barvian.me (animated numbers)
+
+### Animated component galleries and registries
+- Magic UI: https://magicui.design
+- Aceternity UI: https://ui.aceternity.com
+- 21st.dev: https://21st.dev (community component registry)
+- Beautiful UI: https://beautifului.dev (not reviewed)
+- RareUI: https://rareui.in (not reviewed)
+
+### Skills and tooling
+- pick-ui-library skill (Emil Kowalski's skills repo): https://github.com/emilkowalski/skills
