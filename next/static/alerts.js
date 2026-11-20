@@ -96,7 +96,7 @@ ${list.length ? `<div class="al-box">${body}</div>` : `<div class="panel sq-empt
   });
 
   const fail = (el, e) => { el.removeAttribute('aria-busy'); el.innerHTML = `<div class="panel sq-empty"><span>📡</span><div><b>Could not load your alerts</b><p class="muted small">${esc(e?.message || 'The club server did not answer.')}</p><button type="button" class="btn ghost" data-alretry>↻ Try again</button></div></div>`; };
-  const load = () => { M?.skeleton(inbox, 5); M?.skeleton(prefsEl, 4);
+  const load = () => { M?.skeleton(inbox, 5, 'row'); M?.skeleton(prefsEl, 4);
     A.call('/api/notify').then((r) => { N = r; if (location.hash === '#lk-unread') f = 'unread'; put(inbox, inboxHtml()); put(prefsEl, prefsHtml(), paintPush); syncBadge(); }).catch((e) => { fail(inbox, e); prefsEl.innerHTML = ''; }); };
   d.addEventListener('click', (e) => { if (e.target.closest('[data-alretry]')) load(); });
   (A.ready || Promise.resolve()).then(load);
