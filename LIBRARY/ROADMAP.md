@@ -24,7 +24,7 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 55% (items weighted by size: S 1, M 2, L 4).
+Project: 56% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
@@ -32,7 +32,7 @@ Project: 55% (items weighted by size: S 1, M 2, L 4).
 | Project brain | 8 | 8 | 100% | 0 |
 | Side roadmap | 8 | 6 | 87% | 240 |
 | Match night and upkeep | 8 | 5 | 63% | 360 |
-| Components and motion | 18 | 0 | 0% | 2565 |
+| Components and motion | 18 | 1 | 3% | 2505 |
 
 ## Items
 
@@ -64,8 +64,8 @@ Project: 55% (items weighted by size: S 1, M 2, L 4).
 | PF-009 | Optional additions R18 to R22 and staff sweep follow-ups R24 to R29 | DONE 2026-11-18 (owner direction + live pass) | PF-008 | staff pages | sonnet | Split into one session per item when taken. 2026-11-16: R18-R28 done. Owner approved R25 to R29 (R28 look exception) the same day; open: R29 live-data sweep (may need owner portal/login: stop and report what is needed). Checklist PLANNING/STAFF-SWEEP-APPROVAL.md. 2026-11-17: R29 (live-data sweep) dropped from NEXT: it needs real Worker data or an owner login. Stays open; take it when the owner supplies live access. |
 | PF-010 | Theme leftovers: search palette still NOREX-style blue-black; hardcoded gold gradient in `staffhub.css` should come from config | DONE 2026-11-16 (PR (PF-010)) | PF-001 | `next/static/`, `config.json` | sonnet | Brand rule: add a test that fails on the NOREX colour. |
 | PF-026 | Project brain: visual, navigable roadmap (timeline, board, dependency graph, step drawer with outcome and behavior), local live and hosted snapshot | DONE 2026-11-16 (PR (PF-026)) | PF-017 | `tools/brain/`, `LIBRARY/roadmap.json` | opus | Owner request 2026-11-16. Full brief: `PLANNING/PF-026-ROADMAP-VISUAL.md`. Can run beside the PF-008 session; both edit roadmap.json rows, so claim and rebase. |
-| PF-029 | Tap areas to 44 px and double-press guard (gold look unchanged) | NEXT | none | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
-| PF-030 | Labels and announcements: unlabelled fields, icon buttons, table captions, current page, banners | OPEN | none | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
+| PF-029 | Tap areas to 44 px and double-press guard (gold look unchanged) | DONE 2026-11-20 (branch ops-design-audit) | none | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/tap.css` (invisible ::after hit area, only grows controls under 44 px, phones and touch), `next/static/tap.js` (600 ms double-press guard, toggles exempt), `tests/tap-targets.test.mjs`. Measured under-44 targets on Club, Stats, Tactics at 390 px: 118 to 13. Left for later: W/D/L form pips (17 px links in a dense mosaic) and the 3D pitch markers. |
+| PF-030 | Labels and announcements: unlabelled fields, icon buttons, table captions, current page, banners | NEXT | none | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
 | PF-031 | Header fit and badges: avatar never clipped, logo shortens on small phones, alert badge shows 9+ | OPEN | none | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
 | PF-032 | Effects clean-up, fix only: remove the pointer shadow, pause when the tab is hidden, stop endless idle animations | OPEN | none | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
 | PF-033 | Chips and tabs keyboard: arrow, Home and End keys, group roles, last tab remembered (same look) | OPEN | PF-029 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |

@@ -815,7 +815,7 @@
       "title": "Tap areas to 44 px and double-press guard (gold look unchanged)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 4,
@@ -824,12 +824,18 @@
       "dependsOn": [],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/tap.css` (invisible ::after hit area, only grows controls under 44 px, phones and touch), `next/static/tap.js` (600 ms double-press guard, toggles exempt), `tests/tap-targets.test.mjs`. Measured under-44 targets on Club, Stats, Tactics at 390 px: 118 to 13. Left for later: W/D/L form pips (17 px links in a dense mosaic) and the 3D pitch markers.",
       "outcome": "Every button, chip and icon button has a 44 px tap area (invisible padding) and ignores a second press while busy.",
       "behavior": "Same gold buttons and emoji. Busy then done state through one shared helper. A test fails if a tap target is under 44 px on Club, Stats and Tactics at 390 px.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch ops-design-audit",
+          "what": "tap.css hit areas, tap.js double-press guard, tap-targets test; under-44 targets 118 to 13 at 390 px."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -839,7 +845,7 @@
       "title": "Labels and announcements: unlabelled fields, icon buttons, table captions, current page, banners",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "S",
       "effort": 2,
       "importance": 4,
