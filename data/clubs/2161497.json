@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-20T23:00:40.812Z",
+ "fetchedAt": "2026-11-20T23:10:40.634Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -798,14 +798,14 @@
   },
   {
    "name": "junior-Ng69",
-   "proPos": "0",
-   "gamesPlayed": "436",
+   "proPos": "25",
+   "gamesPlayed": "437",
    "goals": "331",
    "assists": "196",
    "manOfTheMatch": "60",
    "ratingAve": "7.4",
    "prevGoals": "0",
-   "favoritePosition": "goalkeeper"
+   "favoritePosition": "forward"
   },
   {
    "name": "WhyYouEatSlap",
@@ -859,6 +859,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-20T23:00:40.812Z"
+  "fetchedAt": "2026-11-20T23:10:40.634Z"
  }
 }
