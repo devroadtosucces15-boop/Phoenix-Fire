@@ -465,7 +465,7 @@
       "title": "Side roadmap Items 8 to 25: bot cleanup and new bot features (including the test-view command)",
       "phase": "Side roadmap",
       "area": "`bot/`",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -1413,7 +1413,7 @@
       "title": "Check that every block hidden for a scroll reveal does show (Stats has 108 at opacity 0 at load)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 3,
@@ -1424,12 +1424,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Leftover of the PF-046 re-audit. Numbers: `PLANNING/PF-029-COMPONENTS-MOTION.md`, section \"PF-046 re-audit\".",
       "outcome": "A test or probe scrolls each main page and fails if a block stays at opacity 0, in print and with ?still.",
       "behavior": "Reveals still run; nothing stays hidden for reduced motion, print, no-JS or ?still.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-048",
+          "what": "Reveal probe tools/effects/reveals.mjs (scroll, ?still and print on 15 pages; fails on any block left at opacity 0) and tests/reveals.test.mjs. Finding: the 108 hidden Stats blocks (45 Club, 20 Tactics) are not stuck on screen (every one shows once scrolled to; none left in ?still), but a printout never scrolls so print showed them at opacity 0. Fixed with one @media print rule in motion.css (screen look unchanged). Result: 0 left hidden in scroll, still and print on all 15 pages."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]

@@ -398,3 +398,5 @@ html.nx-safe #fxov,html.nx-safe[data-tin]::before,html.nx-safe[data-tin]::after{
 @media(min-width:861px){#nx-safe-bar{left:auto;right:18px;bottom:18px;max-width:440px}}
 /* PF-032: pause every animation while the tab is hidden */
 html.pf-hidden,html.pf-hidden *,html.pf-hidden *::before,html.pf-hidden *::after{animation-play-state:paused!important}
+/* PF-048: a printout is never scrolled, so nothing waits for a reveal on paper */
+@media print{html.mx .reveal,html.mx .reveal>.rv-c,html.mx .rv-g>*{opacity:1!important;transform:none!important;clip-path:none!important;transition:none!important}}
