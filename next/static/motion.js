@@ -216,6 +216,8 @@
   addEventListener('pageshow', (e) => { if (e.persisted) $$('[style*="view-transition-name"]').forEach((x) => (x.style.viewTransitionName = '')); });
   // E1: a keyboard user tabbing into a clipped scroll strip (form pills, calendar dots, rating chips) must see what has focus
   d.addEventListener('focusin', (e) => { const t = e.target; if (!t || !t.matches || !t.matches(':focus-visible') || !t.getBoundingClientRect) return; const r = t.getBoundingClientRect(); if (r.width && (r.right > innerWidth || r.left < 0)) t.scrollIntoView({ block: 'nearest', inline: 'nearest' }); });
+  // PF-032: nothing animates while the tab is hidden (CSS pauses every animation under html.pf-hidden)
+  { const hid = () => d.documentElement.classList.toggle('pf-hidden', d.hidden); d.addEventListener('visibilitychange', hid); hid(); }
   // C1: a quick "dark hallway" flash in the section colour when a bottom tab is tapped (and its tail on the next page). Transform/opacity only, ≤350 ms
   const HALL = { club: '#e0574d', matches: '#46c28a', stats: '#62a8ff', tactics: '#b08cff', hub: '#efcf7a' };
   const hall = (col, tail) => { if (mode !== 'full' || !on('glow') || !b.animate) return;

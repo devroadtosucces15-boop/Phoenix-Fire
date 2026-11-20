@@ -165,7 +165,7 @@ html.gyro-on .mh-t img,html.gyro-on .s-crest,html.gyro-on .lg img,html.gyro-on [
 @keyframes tbBar{from{opacity:0;width:6px}}
 .tabbar a:not(.on)::after{content:"";display:block;height:3px;margin-top:3px}
 .tabbar .key{position:relative;animation:keyfloat 3.2s ease-in-out infinite;color:#2d1f06}.tabbar .key svg{position:relative;z-index:1;filter:drop-shadow(0 1px 0 rgba(255,255,255,.5))}
-.tabbar .key .kring{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(239,207,122,.55);animation:keyring 2.6s ease-out infinite;pointer-events:none}.tabbar .key .k2{animation-delay:1.3s}
+.tabbar .key .kring{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(239,207,122,.55);animation:keyring 2.6s ease-out 3 forwards;pointer-events:none}.tabbar .key .k2{animation-delay:1.3s}
 @keyframes keyfloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-6deg)}}
 @keyframes keyring{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.5);opacity:0}}
 html[data-motion=calm] .tabbar .key,html[data-motion=off] .tabbar .key{animation:none}html[data-motion=calm] .tabbar .key .kring,html[data-motion=off] .tabbar .key .kring{display:none}
@@ -400,3 +400,5 @@ html.nx-safe #fxov,html.nx-safe[data-tin]::before,html.nx-safe[data-tin]::after{
 #nx-safe-bar{position:fixed;left:12px;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:9995;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;border-radius:14px;background:rgba(17,23,34,.97);border:1px solid var(--line2);color:#eef2f9;font:500 13.5px Inter;box-shadow:0 12px 30px rgba(0,0,0,.5)}
 #nx-safe-bar span{flex:1 1 0;min-width:0}#nx-safe-bar button{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.08);color:#fff;font:700 13px Inter;cursor:pointer}#nx-safe-bar .x{min-width:44px;padding:0}
 @media(min-width:861px){#nx-safe-bar{left:auto;right:18px;bottom:18px;max-width:440px}}
+/* PF-032: pause every animation while the tab is hidden */
+html.pf-hidden,html.pf-hidden *,html.pf-hidden *::before,html.pf-hidden *::after{animation-play-state:paused!important}
