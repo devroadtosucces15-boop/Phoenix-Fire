@@ -44,9 +44,9 @@ const subPage = shell({ group: 'stats', page: 'stats.html', title: 'x', body: ''
 t('every on link in a section bar has aria-current', !/<nav class="sub"[\s\S]*?<a [^>]*class="on"(?![^>]*aria-current)/.test(subPage));
 
 // banners and toasts are announced: status for notices, alert for errors
-const motion = fs.readFileSync('next/static/motion.js', 'utf8');
+const motion = fs.readFileSync('next/static/notices.js', 'utf8'); // PF-039: the toast queue moved here
 t('toast box is a polite status region', /box\.setAttribute\('role', 'status'\)[\s\S]{0,40}aria-live', 'polite'/.test(motion));
-t('error toasts are role=alert', /kind === 'err'\) t\.setAttribute\('role', 'alert'\)/.test(motion));
+t('error toasts are role=alert', /kind === 'err' \? 'alert'/.test(motion));
 t('join status banner is role=status', /data-join-status role="status"/.test(fs.readFileSync('next/pages/club.mjs', 'utf8')));
 t('owner view banner and notification warnings are role=status', /class="mc-banner" role="status"/.test(fs.readFileSync('web/messages.js', 'utf8')) && !/<p class="nt-warn">/.test(fs.readFileSync('web/notify.js', 'utf8')));
 process.exit(fail ? 1 : 0);

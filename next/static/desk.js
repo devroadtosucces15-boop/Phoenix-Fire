@@ -11,7 +11,7 @@
   if (!API || !A?.token) return;
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const call = (path, body) => (body ? A.call(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) : A.call(path));
-  const toast = (m, err) => M?.toast ? M.toast(m, err ? { kind: 'err' } : { kind: 'ok' }) : console.log(m);
+  const toast = (m, err) => window.PhoenixNotices ? window.PhoenixNotices.toast(m, err) : console.log(m);
   const flagOn = (f) => (A.features || []).includes(f);
   const ago = (t) => { const s = Math.max(1, Math.round((Date.now() - t) / 1000)); return s < 90 ? 'just now' : s < 5400 ? Math.round(s / 60) + ' min ago' : s < 129600 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
   const FUNNEL = [['applied', '📨 Applied'], ['booked', '📅 Booked'], ['trialling', '⚽ On trial'], ['played', '🏁 Played'], ['signed', '✍️ Signed']];

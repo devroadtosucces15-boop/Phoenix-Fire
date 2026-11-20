@@ -123,11 +123,8 @@
   M.haptic = (p = 8) => { if (!on('haptics')) return; try { navigator.vibrate?.(p); } catch {} };
 
   // ================= toasts, alerts, live values =================
-  M.toast = (msg, { kind = '', ms = 3800, icon = kind === 'err' ? '⚠️' : kind === 'ok' ? '✅' : '🔔' } = {}) => {
-    let box = d.getElementById('mx-toasts'); if (!box) { box = d.createElement('div'); box.id = 'mx-toasts'; box.setAttribute('role', 'status'); box.setAttribute('aria-live', 'polite'); b.appendChild(box); }
-    const t = d.createElement('div'); t.className = 'mx-toast ' + kind; if (kind === 'err') t.setAttribute('role', 'alert'); t.innerHTML = `<span aria-hidden="true">${icon}</span><span></span>`; t.lastChild.textContent = msg; box.appendChild(t);
-    const bye = () => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }; t.onclick = bye; setTimeout(bye, ms); return t;
-  };
+  // PF-039: the notice queue lives in notices.js (PhoenixNotices); this keeps the old signature for every page.
+  M.toast = (msg, o = {}) => window.PhoenixNotices ? window.PhoenixNotices.show(msg, o) : (console.log(msg), null);
   const replay = (el, cls) => { if (!el || mode === 'off') return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); el.addEventListener('animationend', () => el.classList.remove(cls), { once: true }); };
   M.ring = (el) => replay(el, 'mx-ring'); M.pulse = (el) => replay(el, 'mx-pulse');
   M.bump = (el, text) => { if (!el || el.textContent === String(text)) return; el.textContent = text; replay(el, 'mx-bump'); };

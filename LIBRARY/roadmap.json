@@ -1042,7 +1042,7 @@
       "lowHanging": false,
       "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/states.js` + `states.css` (linked in every page head). Shimmer placeholders (Phoenix orange sweep, still under reduced motion and calm/off) in four shapes: `M.skeleton(el, rows, shape)` takes line, card, row or table and writes aria-busy plus a screen-reader caption; callers for chat, feed, alerts, squads and plays now use card or row. Empty states (`.sq-empty`, `.nw-empty`, `.hb-empty`) get a bigger icon in a soft Phoenix ring; `PhoenixStates` fills only what is missing (role=status, a reason, one action, default 'Back to Home') and never replaces the page's own wording or button; `emptyHtml` and `skeletonHtml` are the helpers for new code. The three 'Loading\u2026' panels (feedback room, studio media) became skeletons. `tests/states.test.mjs`. Not checked in a real browser.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/states.js` + `states.css` (linked in every page head). Shimmer placeholders (Phoenix orange sweep, still under reduced motion and calm/off) in four shapes: `M.skeleton(el, rows, shape)` takes line, card, row or table and writes aria-busy plus a screen-reader caption; callers for chat, feed, alerts, squads and plays now use card or row. Empty states (`.sq-empty`, `.nw-empty`, `.hb-empty`) get a bigger icon in a soft Phoenix ring; `PhoenixStates` fills only what is missing (role=status, a reason, one action, default 'Back to Home') and never replaces the page's own wording or button; `emptyHtml` and `skeletonHtml` are the helpers for new code. The three 'Loading…' panels (feedback room, studio media) became skeletons. `tests/states.test.mjs`. Not checked in a real browser.",
       "outcome": "Nothing is blank while loading; every empty state says why and offers one action.",
       "behavior": "Shimmer and bigger empty icon as the owner accepted.",
       "doneLog": [
@@ -1074,7 +1074,7 @@
       "lowHanging": false,
       "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/forms.js` + `forms.css` (linked in every page head). Text fields and selects are 44 px, textareas 88 px (low-specificity css, `.ph-compact` opts out). Searches get a leading \ud83d\udd0d icon and a 44 px clear button (Escape clears too); `data-icon` adds an icon to any field. `data-help` gives helper text; `PhoenixForms.setHelp/setError/clearError/validate` write helper and error text under the field, linked with aria-describedby, error role=alert and aria-invalid. Required, email, url, pattern and range fields are checked on blur and clear as the user types. No orange focus ring (owner did not tick it). `tests/forms.test.mjs`. Checked in headless Chromium on a test page and the built players page.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/forms.js` + `forms.css` (linked in every page head). Text fields and selects are 44 px, textareas 88 px (low-specificity css, `.ph-compact` opts out). Searches get a leading 🔍 icon and a 44 px clear button (Escape clears too); `data-icon` adds an icon to any field. `data-help` gives helper text; `PhoenixForms.setHelp/setError/clearError/validate` write helper and error text under the field, linked with aria-describedby, error role=alert and aria-invalid. Required, email, url, pattern and range fields are checked on blur and clear as the user types. No orange focus ring (owner did not tick it). `tests/forms.test.mjs`. Checked in headless Chromium on a test page and the built players page.",
       "outcome": "Forms are labelled, validated inline and consistent.",
       "behavior": "Orange focus ring not applied (owner did not tick it).",
       "doneLog": [
@@ -1125,7 +1125,7 @@
       "title": "Notices: one queue, stacked, errors stay, Undo and progress line",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -1136,12 +1136,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/notices.js` + `notices.css` (linked in every page head): `PhoenixNotices` (show, ok, err, info, toast, clear). One queue, up to 3 stacked (the rest wait), 12 px corners, Phoenix accent, errors stay until dismissed (role=alert), optional Undo button (`{undo: fn}`), progress line that pauses on hover and focus, 44 px tap areas, same icons as before. `NorexMotion.toast` delegates to it, the 8 identical per-page wrappers now call `PhoenixNotices.toast`, old `.mx-toast` css removed. `tests/notices.test.mjs`; the a11y guard now reads notices.js.",
       "outcome": "One toast system replaces the 14 wrappers.",
       "behavior": "Same icons in messages.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-039-notices",
+          "what": "notices.js + notices.css: one queue replacing the toast wrappers, stacked up to 3, errors stay, Undo, progress line; tests/notices.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1151,7 +1157,7 @@
       "title": "Dialogs and slide-up panels: one dialog, one bottom sheet, focus trap, Back closes",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,

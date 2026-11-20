@@ -51,12 +51,8 @@ html[data-motion=calm] .mx-land>*{animation-name:mxFade}
 @keyframes mxPop{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
 @keyframes mxShake{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 
-/* ---------- toasts ---------- */
-#mx-toasts{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9980;display:grid;gap:8px;width:min(420px,calc(100vw - 32px));pointer-events:none}
-@media(max-width:820px){#mx-toasts{bottom:calc(100px + env(safe-area-inset-bottom))}}
-.mx-toast{pointer-events:auto;display:flex;gap:10px;align-items:center;padding:12px 16px;border-radius:14px;background:rgba(17,23,34,.97);border:1px solid rgba(239,207,122,.35);box-shadow:0 18px 40px rgba(0,0,0,.55);font:600 14px Inter;color:#fff;animation:mxToastIn .42s var(--e-spring) both}
-.mx-toast.err{border-color:rgba(200,53,44,.7)}.mx-toast.ok{border-color:rgba(31,157,85,.7)}
-.mx-toast.out{animation:mxToastOut .3s var(--e-in) both}
+/* toasts moved to notices.css (PF-039) */
+/* keyframes kept for #nx-inst */
 @keyframes mxToastIn{from{opacity:0;transform:translate3d(0,24px,0) scale(.94)}}
 @keyframes mxToastOut{to{opacity:0;transform:translate3d(0,12px,0) scale(.96)}}
 

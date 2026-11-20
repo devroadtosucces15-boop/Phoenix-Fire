@@ -6,7 +6,7 @@
   if (!API || !A?.token) return;
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const call = (path, body) => (body ? A.call(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) : A.call(path));
-  const toast = (m, err) => M?.toast ? M.toast(m, err ? { kind: 'err' } : { kind: 'ok' }) : console.log(m);
+  const toast = (m, err) => window.PhoenixNotices ? window.PhoenixNotices.toast(m, err) : console.log(m);
   const TZ = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch { return 'UTC'; } })();
   const PRESETS = [['🏆', 'League night', { type: 'league', time: '20:00', duration: 150, needs: { players: 11 } }], ['⚡', 'Rush session', { type: 'rush', time: '21:00', duration: 90, needs: { players: 5 } }], ['🤝', 'Friendly', { type: 'friendly', time: '20:30', duration: 90, needs: { players: 11 } }], ['🎯', 'Training', { type: 'training', time: '19:30', duration: 60, needs: {} }], ['🧭', 'Trial session', { type: 'trial', time: '20:00', duration: 90, needs: {} }]];
   const S = { ev: null, form: null, report: {}, targets: null, openRep: null, tab: 'soon' };
