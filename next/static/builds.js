@@ -340,7 +340,7 @@ ${masteries.length ? `<div class="bx-mast"><b>🏅 Masteries</b>${masteries.map(
     const all = ea.rows.map((r) => [r.name, r.value, eb.rows.find((q) => q.name === r.name)?.value ?? 0]);
     const aw = all.filter(([, x, y]) => x > y).length, bw = all.filter(([, x, y]) => y > x).length, rows = all.filter(([, x, y]) => cmp.all || x !== y);
     return `<p class="small bx-cmp-sum"><b>A</b> is higher on <b class="num">${aw}</b> attribute${aw === 1 ? '' : 's'}, <b>B</b> on <b class="num">${bw}</b>${all.length - aw - bw ? ` · ${all.length - aw - bw} level` : ''}.</p>
-<div class="bx-cmp-t"><table class="bx-cmpt"><thead><tr><th>A · ${esc(la)}<small>${esc(ea.arch.name)} · L${ea.level}</small></th><th></th><th>B · ${esc(lb)}<small>${esc(eb.arch.name)} · L${eb.level}</small></th></tr></thead>
+<div class="bx-cmp-t"><table class="bx-cmpt"><caption class="sr">Build comparison</caption><thead><tr><th scope="col">A · ${esc(la)}<small>${esc(ea.arch.name)} · L${ea.level}</small></th><th scope="col"></th><th scope="col">B · ${esc(lb)}<small>${esc(eb.arch.name)} · L${eb.level}</small></th></tr></thead>
 <tbody>${line('OVR*', ea.ovr, eb.ovr)}${ea.face.map(([k, v], i) => line(k, v, eb.face[i]?.[1] ?? 0)).join('')}${line('Points left', ea.left, eb.left)}
 <tr class="ex"><td>${ps(ea)}</td><th scope="row">💫 PlayStyles</th><td>${ps(eb)}</td></tr><tr class="ex"><td>${ea.choices.h} cm · ${ea.choices.w} kg</td><th scope="row">📏 Body</th><td>${eb.choices.h} cm · ${eb.choices.w} kg</td></tr>
 <tr class="grp"><th colspan="3">${cmp.all ? 'All attributes' : `Attributes that differ (${rows.length})`}</th></tr>${rows.map(([k, x, y]) => line(k, x, y)).join('') || '<tr><td colspan="3" class="muted">Same attributes.</td></tr>'}</tbody></table></div>`;

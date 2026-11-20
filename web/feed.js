@@ -246,7 +246,7 @@ ${S.more ? '<p class="fd-morebox"><button type="button" class="btn ghost" data-a
     const L = d.limits;
     const pc = (n) => `${Math.min(100, (n / L.free) * 100).toFixed(2)}%`;
     const lvl = d.used >= L.refuse ? 'bad' : d.used >= L.high ? 'warn' : '';
-    const row = (x) => `<li><span class="fd-st-k">${x.kind === 'video' ? '🎬' : '📷'}</span><span class="fd-st-n"><b>${mb(x.size)}</b> · ${esc(x.by)}<small>${esc(x.name || '')} · ${UI.time(x.at)}${x.post ? ` · <a href="#p${x.post}" data-close>post #${x.post}</a>` : ''}</small></span><button type="button" class="btn ghost sm" data-del="${esc(x.key)}">🗑</button></li>`;
+    const row = (x) => `<li><span class="fd-st-k">${x.kind === 'video' ? '🎬' : '📷'}</span><span class="fd-st-n"><b>${mb(x.size)}</b> · ${esc(x.by)}<small>${esc(x.name || '')} · ${UI.time(x.at)}${x.post ? ` · <a href="#p${x.post}" data-close>post #${x.post}</a>` : ''}</small></span><button type="button" class="btn ghost sm" data-del="${esc(x.key)}" aria-label="Delete">🗑</button></li>`;
     const kinds = ['image', 'video'].map((k) => `${k === 'video' ? '🎬 Clips' : '📷 Photos'} <b>${d.byKind[k]?.n ?? 0}</b> · ${mb(d.byKind[k]?.bytes ?? 0)}`).join(' &nbsp;·&nbsp; ');
     return `${d.on ? '' : '<p class="fd-st-off">⚠️ Uploads are off – the R2 bucket isn’t connected to the bot yet. Run the <b>Deploy bot</b> workflow once the Cloudflare token has R2 access.</p>'}
 <div class="fd-st-top"><b class="fd-st-used ${lvl}">${mb(d.used)}</b><span class="muted">of the free ${mb(L.free)} · ${kinds}</span></div>
@@ -286,7 +286,7 @@ ${S.more ? '<p class="fd-morebox"><button type="button" class="btn ghost" data-a
   async function act(a, p, btn) {
     if (a === 'copy') {
       const link = `${location.origin}${location.pathname}#p${p.id}`;
-      try { await navigator.clipboard.writeText(link); toast('Link copied 🔗'); } catch { UI.modal({ title: 'Link to this post', icon: '🔗', body: `<input class="fd-link" readonly value="${esc(link)}" onfocus="this.select()">` }); }
+      try { await navigator.clipboard.writeText(link); toast('Link copied 🔗'); } catch { UI.modal({ title: 'Link to this post', icon: '🔗', body: `<input aria-label="Link to this post" class="fd-link" readonly value="${esc(link)}" onfocus="this.select()">` }); }
     } else if (a === 'edit') {
       let text = p.text, tag = p.tag;
       const v = await UI.modal({

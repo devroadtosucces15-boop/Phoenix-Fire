@@ -19,7 +19,7 @@
   const TAG = { strength: ['💪', 'Strength', 'win'], issue: ['⚠️', 'Issue', 'loss'], trial: ['⚽', 'Trial', 'red'], general: ['📝', 'Note', ''] };
   const tagPill = (t) => UI.pill(TAG[t]?.[1] ?? t, { emoji: TAG[t]?.[0], tone: TAG[t]?.[2] });
   const posChips = (sel = [], name = 'pos') => `<div class="chipset tr-pos" data-chips="${name}">${POS.map((p) => `<button type="button" class="chip${sel.includes(p) ? ' on' : ''}" data-p="${p}">${p}</button>`).join('')}</div>`;
-  const platSel = (v = '') => `<select name="platform" required><option value="">Choose…</option>${PLAT.map((p) => `<option${v === p ? ' selected' : ''}>${p}</option>`).join('')}</select>`;
+  const platSel = (v = '') => `<select aria-label="Platform" name="platform" required><option value="">Choose…</option>${PLAT.map((p) => `<option${v === p ? ' selected' : ''}>${p}</option>`).join('')}</select>`;
   const chipsOf = (el, name = 'pos') => $$(`[data-chips="${name}"] .chip.on`, el).map((b) => b.dataset.p);
   // Positions: tap to toggle, max 3.
   const wireChips = (el, toast) => el.addEventListener('click', (e) => {
@@ -145,7 +145,7 @@ ${t.note ? `<p class="tr-note">${esc(t.note.length > 140 ? t.note.slice(0, 140) 
 ${recs.length ? `<h3>🔭 Recommended by members (${recs.length})</h3><div class="tr-reclist">${recs.map((t) => `<div class="card tr-rec"><div class="row"><b>${esc(t.ea)}</b><div class="nx-pills">${t.platform ? UI.pill(t.platform, { emoji: '🎮' }) : ''}${t.positions.map((p) => UI.pill(p)).join('')}</div><span class="grow"></span>${t.by ? UI.member({ id: t.by.id, n: t.by.n, a: t.by.a, sub: `recommended ${UI.ago(t.at)}` }, { size: 24 }) : ''}</div>
 ${t.note ? `<q>${esc(t.note)}</q>` : ''}<div class="row">${clipLink(t.clips)}${playerLink(t.player, ctx.players)}<span class="grow"></span><button class="btn sm" type="button" data-st="applied" data-id="${t.id}">📝 Make trial card</button><button class="btn ghost sm" type="button" data-st="trialling" data-id="${t.id}">⚽ Start trial</button><button class="btn ghost sm" type="button" data-st="declined" data-id="${t.id}">Decline</button></div></div>`).join('')}</div>` : ''}
 <div class="tr-bar"><div class="chipset">${[['open', 'Open'], ['applied', '📝 Applied'], ['trialling', '⚽ Trialling'], ['signed', '✍️ Signed'], ['released', '👋 Released'], ['declined', '⛔ Declined'], ['all', 'All']].map(([k, l]) => `<button type="button" class="chip${T.filter === k ? ' on' : ''}" data-f="${k}">${l}</button>`).join('')}</div>
-<input class="tr-search" type="search" placeholder="Search EA ID, Discord, position…" value="${esc(T.q)}" data-q><button class="btn sm" type="button" data-add>➕ Add applicant</button></div>
+<input aria-label="Search applicants" class="tr-search" type="search" placeholder="Search EA ID, Discord, position…" value="${esc(T.q)}" data-q><button class="btn sm" type="button" data-add>➕ Add applicant</button></div>
 ${list.length ? `<div class="tr-cards">${list.map((t) => trialCard(t, ctx)).join('')}</div>` : UI.empty({ icon: '🧭', title: all.length ? 'Nothing here' : 'No applicants yet', text: all.length ? 'Try another filter.' : 'Applications from the Trials page, Discord and member tips land here.' })}`;
   }
   async function setStatus(ctx, id, status, reason) {
@@ -213,10 +213,10 @@ ${list.length ? `<div class="tr-cards">${list.map((t) => trialCard(t, ctx)).join
 ${t.note ? `<q>${esc(t.note)}</q>` : ''}
 <div class="row">${(NEXT[t.status] || []).map((s) => `<button class="btn sm${s === 'declined' || s === 'released' ? ' ghost' : ''}" type="button" data-to="${s}">${NEXT_LABEL[s]}</button>`).join('')}</div></div>
 <section><h4>🪪 Player page</h4><div class="row">${pl ? `<a href="${BASE}players/${encodeURIComponent(pl.k)}.html"><b>${esc(pl.n)}</b></a>${pl.s ? `<small class="muted">${esc(pl.pos || '')} · ${pl.s.gp} games · ${Number(pl.s.r).toFixed(1)} avg</small>` : ''}<button class="btn ghost sm" type="button" data-unlink>Unlink</button>`
-    : `<input list="tr-players" data-plink placeholder="Played us? Type their gamertag…" autocomplete="off"><datalist id="tr-players">${ctx.players.slice(0, 3000).map((p) => `<option value="${esc(p.n)}">`).join('')}</datalist><button class="btn ghost sm" type="button" data-link>Link</button>`}</div></section>
+    : `<input aria-label="Played us? Their gamertag" list="tr-players" data-plink placeholder="Played us? Type their gamertag…" autocomplete="off"><datalist id="tr-players">${ctx.players.slice(0, 3000).map((p) => `<option value="${esc(p.n)}">`).join('')}</datalist><button class="btn ghost sm" type="button" data-link>Link</button>`}</div></section>
 <section><h4>⚽ Trial sessions</h4>${sessions.length ? `<ul class="tr-sessions">${sessions.map((s) => `<li><time>${esc(s.date)}</time>${s.result ? `<b>${esc(s.result)}</b>` : ''}${s.rating ? `<span class="rp ${s.rating >= 8 ? 'r-great' : s.rating >= 7 ? 'r-good' : s.rating >= 6 ? 'r-mid' : 'r-low'}">${esc(s.rating)}</span>` : ''}${s.detail ? `<span class="muted">${esc(s.detail)}</span>` : ''}<small class="muted">${esc(s.by || '')}</small></li>`).join('')}</ul>` : '<p class="muted small">No sessions logged yet.</p>'}
-<form class="tr-sess" data-sess><input type="date" name="date" value="${today()}" max="${today()}" required><input name="result" maxlength="80" placeholder="Result, e.g. W 3–1 vs Rivals"><input name="rating" type="number" min="1" max="10" step="0.1" placeholder="Rating"><input name="detail" maxlength="300" placeholder="How did it go?"><button class="btn sm" type="submit">＋ Log session</button></form></section>
-${T.data.canNotes ? `<section><h4>📝 Manager notes <small class="muted">(managers only)</small></h4>${notesList(t.notes, ctx)}<form class="tr-noteform" data-note><textarea name="text" rows="2" maxlength="1000" placeholder="Private note about this trial…" required></textarea><button class="btn sm" type="submit">Add note</button></form></section>` : ''}
+<form class="tr-sess" data-sess><input aria-label="Date" type="date" name="date" value="${today()}" max="${today()}" required><input aria-label="Result" name="result" maxlength="80" placeholder="Result, e.g. W 3–1 vs Rivals"><input aria-label="Rating" name="rating" type="number" min="1" max="10" step="0.1" placeholder="Rating"><input aria-label="Detail" name="detail" maxlength="300" placeholder="How did it go?"><button class="btn sm" type="submit">＋ Log session</button></form></section>
+${T.data.canNotes ? `<section><h4>📝 Manager notes <small class="muted">(managers only)</small></h4>${notesList(t.notes, ctx)}<form class="tr-noteform" data-note><textarea aria-label="Private note about this trial" name="text" rows="2" maxlength="1000" placeholder="Private note about this trial…" required></textarea><button class="btn sm" type="submit">Add note</button></form></section>` : ''}
 <section><h4>🗂 Decision history</h4><ol class="tr-hist">${hist.map((h) => `<li>${stPill(h.status)}<span>${esc(h.by || '')}</span>${h.detail && !SRC[h.detail] ? `<span class="muted">“${esc(h.detail)}”</span>` : ''}<small class="muted">${ago(h.at)}</small></li>`).join('')}</ol></section></div>`;
     };
     const update = async (payload, msg) => {
@@ -270,7 +270,7 @@ ${T.data.canNotes ? `<section><h4>📝 Manager notes <small class="muted">(manag
     if (!(await UI.confirm({ title: 'Delete note?', text: 'It is removed for every manager.', ok: 'Delete', danger: true }))) return;
     try { const r = await ctx.call('/api/notes/delete', { id, all }); done(r.notes); ctx.toast('Note deleted'); } catch (e) { ctx.toast(e.message, true); }
   }
-  const noteForm = (withTags = true) => `<form class="tr-noteform" data-note>${withTags ? `<div class="chipset" data-tagpick>${Object.entries(TAG).filter(([k]) => k !== 'trial').map(([k, [i, l]], x) => `<button type="button" class="chip${x === 0 ? ' on' : ''}" data-tag="${k}">${i} ${l}</button>`).join('')}</div>` : ''}<textarea name="text" rows="3" maxlength="1000" placeholder="Private note – only managers can see it" required></textarea><button class="btn sm" type="submit">Add note</button></form>`;
+  const noteForm = (withTags = true) => `<form class="tr-noteform" data-note>${withTags ? `<div class="chipset" data-tagpick>${Object.entries(TAG).filter(([k]) => k !== 'trial').map(([k, [i, l]], x) => `<button type="button" class="chip${x === 0 ? ' on' : ''}" data-tag="${k}">${i} ${l}</button>`).join('')}</div>` : ''}<textarea aria-label="Private note" name="text" rows="3" maxlength="1000" placeholder="Private note – only managers can see it" required></textarea><button class="btn sm" type="submit">Add note</button></form>`;
   const pickTag = (root) => $('[data-tagpick] .chip.on', root)?.dataset.tag || 'general';
   const wireTagPick = (root) => root.addEventListener('click', (e) => { const b = e.target.closest('[data-tagpick] .chip'); if (!b) return; $$('.chip', b.parentElement).forEach((c) => c.classList.toggle('on', c === b)); });
 
@@ -351,13 +351,13 @@ ${T.data.canNotes ? `<section><h4>📝 Manager notes <small class="muted">(manag
       const list = (N.notes || []).map((n) => ({ ...n, subjectHtml: subj(n) }))
         .filter((n) => (!N.kind || n.kind === N.kind) && (!N.tag || n.tag === N.tag) && words.every((w) => `${n.text} ${n.subjectHtml} ${n.by.n}`.toLowerCase().includes(w)));
       el.innerHTML = `<div class="tr-notes-top"><form class="card tr-noteform" data-note><h3>📝 New note</h3>
-<div class="row"><select name="kind" data-kind><option value="member">👤 Member</option><option value="player">🪪 Squad player</option>${N.trials?.length ? '<option value="trial">🧭 Trial card</option>' : ''}</select>
-<select name="subject" data-subject></select></div>
+<div class="row"><select aria-label="Kind" name="kind" data-kind><option value="member">👤 Member</option><option value="player">🪪 Squad player</option>${N.trials?.length ? '<option value="trial">🧭 Trial card</option>' : ''}</select>
+<select aria-label="Subject" name="subject" data-subject></select></div>
 <div class="chipset" data-tagpick>${Object.entries(TAG).map(([k, [i, l]], x) => `<button type="button" class="chip${x === 0 ? ' on' : ''}" data-tag="${k}">${i} ${l}</button>`).join('')}</div>
-<textarea name="text" rows="3" maxlength="1000" placeholder="Strengths, issues, trial notes… only managers can see this" required></textarea><button class="btn sm" type="submit">Add note</button></form></div>
+<textarea aria-label="Note" name="text" rows="3" maxlength="1000" placeholder="Strengths, issues, trial notes… only managers can see this" required></textarea><button class="btn sm" type="submit">Add note</button></form></div>
 <div class="tr-bar"><div class="chipset">${[['', 'All'], ['member', '👤 Members'], ['player', '🪪 Players'], ['trial', '🧭 Trials']].map(([k, l]) => `<button type="button" class="chip${N.kind === k ? ' on' : ''}" data-kf="${k}">${l}</button>`).join('')}</div>
 <div class="chipset">${Object.entries(TAG).map(([k, [i]]) => `<button type="button" class="chip${N.tag === k ? ' on' : ''}" data-tf="${k}" data-tip="${TAG[k][1]}">${i}</button>`).join('')}</div>
-<input class="tr-search" type="search" placeholder="Search notes…" value="${esc(N.q)}" data-nq></div>
+<input aria-label="Search notes" class="tr-search" type="search" placeholder="Search notes…" value="${esc(N.q)}" data-nq></div>
 ${!N.notes ? UI.skeleton('rows', 3) : list.length ? `<ul class="tr-notes">${list.map((n) => noteLine(n, ctx)).join('')}</ul>` : UI.empty({ icon: '📝', title: N.notes.length ? 'No matching notes' : 'No notes yet', text: 'Private notes about members, players and trialists – timestamped, managers only.' })}`;
       const cc = coachCard();
       if (cc) el.querySelector('.tr-notes-top').after(cc);

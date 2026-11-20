@@ -26,7 +26,7 @@
     picked.forEach((b) => b.players.forEach((p) => take(p, 'bn')));
     const rows = [...by.values()].filter((e) => e.gp).sort((a, b) => b.g + b.a - (a.g + a.a) || b.gp - a.gp).slice(0, 40);
     out.innerHTML = `<div class="bn-wi-stats">${stat('Played', rec.gp)}${stat('Won', rec.w)}${stat('Drawn', rec.d)}${stat('Lost', rec.l)}${stat('Goals', `${rec.gf}–${rec.ga}`)}${stat('Win rate', `${winPct}%`)}</div>
-<div class="tbl"><table><thead><tr><th>Player</th><th>GP</th><th>${(document.body.dataset.club || 'the club')} + B team</th><th>⚽</th><th>🎯</th><th>MOTM</th><th>Rating</th></tr></thead><tbody>${rows.map((e) => `<tr><td><b>${esc(e.n)}</b></td><td>${e.gp}</td><td>${e.nx} + ${e.bn}</td><td>${e.g}</td><td>${e.a}</td><td>${e.motm}</td><td>${e.gp ? (e.rSum / e.gp).toFixed(1) : '–'}</td></tr>`).join('')}</tbody></table></div>`;
+<div class="tbl"><table><caption class="sr">What if: player stats with the B team</caption><thead><tr><th scope="col">Player</th><th scope="col">GP</th><th scope="col">${(document.body.dataset.club || 'the club')} + B team</th><th scope="col">⚽</th><th scope="col">🎯</th><th scope="col">MOTM</th><th scope="col">Rating</th></tr></thead><tbody>${rows.map((e) => `<tr><td><b>${esc(e.n)}</b></td><td>${e.gp}</td><td>${e.nx} + ${e.bn}</td><td>${e.g}</td><td>${e.a}</td><td>${e.motm}</td><td>${e.gp ? (e.rSum / e.gp).toFixed(1) : '–'}</td></tr>`).join('')}</tbody></table></div>`;
   }
   root.addEventListener('change', paint);
 })();

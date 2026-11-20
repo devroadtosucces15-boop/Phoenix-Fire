@@ -27,7 +27,7 @@
   // built once per picked room so the search box keeps focus while the state changes under it
   const build = () => {
     room.innerHTML = `<article class="panel mu-np" data-mu-np></article>
-<div class="panel mu-ctl" aria-label="Controls"><button type="button" class="btn" data-mu-pp></button><button type="button" class="btn ghost" data-mu-skip>⏭ Skip</button><label class="mu-vol"><span aria-hidden="true">🔉</span><input type="range" min="0" max="100" step="5" data-mu-vol aria-label="Volume"><b class="num" data-mu-volv></b></label></div>
+<div class="panel mu-ctl" aria-label="Controls"><button type="button" class="btn" data-mu-pp>▶ Play</button><button type="button" class="btn ghost" data-mu-skip>⏭ Skip</button><label class="mu-vol"><span aria-hidden="true">🔉</span><input type="range" min="0" max="100" step="5" data-mu-vol aria-label="Volume"><b class="num" data-mu-volv></b></label></div>
 <section class="panel mu-search"><label class="eyebrow" for="mu-q">Add a song</label><input id="mu-q" class="mu-q" type="search" placeholder="Search a song to add" autocomplete="off" enterkeyhint="search"><div class="mu-res" data-mu-res aria-live="polite"></div></section>
 <section class="panel mu-queue" data-mu-queue></section>`;
     clearTimeout(qtimer); found = []; qseq++;
