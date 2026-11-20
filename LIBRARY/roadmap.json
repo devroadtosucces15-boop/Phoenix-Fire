@@ -845,7 +845,7 @@
       "title": "Labels and announcements: unlabelled fields, icon buttons, table captions, current page, banners",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 4,
@@ -854,12 +854,18 @@
       "dependsOn": [],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: source scanner `tools/a11y/scan.mjs` and `tests/a11y-labels.test.mjs` (names for icon buttons, labels for fields, captions and header scope for tables, aria-current on dock, header menu and section bar, role=status or alert on toasts and banners). Fixed 52+ fields, 13 icon buttons, 45 tables (visually hidden `caption.sr`), 248 header cells. Left: nothing known; checks are source-level, not a live page probe.",
       "outcome": "Screen readers and keyboards get names and state everywhere: Join and Apply fields, the 21 icon buttons with only a tooltip, table captions and header scope, aria-current on dock and tabs, banner role=status.",
       "behavior": "No visible change. Tests count unlabelled controls and fail above zero on the probed pages.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-030-labels",
+          "what": "Labels, captions, header scope, aria-current on dock and nav, banners announced; test fails on any gap."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -869,7 +875,7 @@
       "title": "Header fit and badges: avatar never clipped, logo shortens on small phones, alert badge shows 9+",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "S",
       "effort": 2,
       "importance": 4,

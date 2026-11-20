@@ -142,7 +142,7 @@
           ? ` · <span class="bd-old bd-break" title="${esc(imp.changes.map((c) => c.text).join(' · '))}">⚠ ${esc(imp.changes[0]?.text ?? 'needs attention')}</span>`
           : ` · <span class="bd-old" title="Made on ${esc(x.version)}">⚠ older rules</span>`) : '';
         return `<li${cur?.id === x.id ? ' class="on"' : ''}><div><b>${esc(x.title)}</b><small class="muted">${esc(archName(x.arch))} · L${x.level}${x.forkedFrom ? ' · 🍴 fork' : ''}${x.posted ? ' · 📣 posted' : ''}${MODES.filter(([k]) => picks[k] === x.id).map(([, ic, l]) => ` · ${ic} my ${l} build`).join('')} · ${UI.ago ? UI.ago(x.updated) : new Date(x.updated).toLocaleDateString()}${badge}</small></div>
-<span class="bd-li-acts">${outdated(x) ? `<button type="button" class="btn sm" data-up="${x.id}" title="Move to ${esc(g.version)} at MAX (L${M.capOf(g)})">⬆ Upgrade</button>` : ''}<button type="button" class="btn sm" data-open="${x.id}">Open</button><button type="button" class="btn ghost sm" data-cmp="${x.id}" title="Compare with the build on screen">⚖️</button><button type="button" class="btn ghost sm" data-copy="${x.id}" title="Duplicate (fork)">🍴</button><button type="button" class="btn ghost sm" data-del="${x.id}" title="Delete" aria-label="Delete ${esc(x.title)}">🗑️</button></span></li>`;
+<span class="bd-li-acts">${outdated(x) ? `<button type="button" class="btn sm" data-up="${x.id}" title="Move to ${esc(g.version)} at MAX (L${M.capOf(g)})">⬆ Upgrade</button>` : ''}<button type="button" class="btn sm" data-open="${x.id}">Open</button><button type="button" class="btn ghost sm" data-cmp="${x.id}" aria-label="Compare with the build on screen" title="Compare with the build on screen">⚖️</button><button type="button" class="btn ghost sm" data-copy="${x.id}" aria-label="Duplicate (fork)" title="Duplicate (fork)">🍴</button><button type="button" class="btn ghost sm" data-del="${x.id}" title="Delete" aria-label="Delete ${esc(x.title)}">🗑️</button></span></li>`;
       }).join('')}</ul>`
         : (UI.empty ? UI.empty({ icon: '📂', title: 'No saved builds yet', text: 'Press 💾 Save on any build and it lands here.' }) : '<p class="muted">No saved builds yet.</p>');
     };
@@ -179,7 +179,7 @@
 
   // ---------- PB.3: post to Pro Builds · PB.4: use as my build ----------
   const modeRadios = (name, pick) => `<div class="chipset" role="radiogroup" aria-label="Mode">${MODES.map(([k, ic, l]) => `<label class="chip pb-radio"><input type="radio" name="${name}" value="${k}"${pick === k ? ' checked' : ''}> ${ic} ${l}</label>`).join('')}</div>`;
-  const posSelect = (pick) => `<select data-pos>${POS.map((p) => `<option${p === pick ? ' selected' : ''}>${p}</option>`).join('')}</select>`;
+  const posSelect = (pick) => `<select aria-label="Position" data-pos>${POS.map((p) => `<option${p === pick ? ' selected' : ''}>${p}</option>`).join('')}</select>`;
   async function post() {
     if (await needLogin('post builds', 'post')) return;
     const ev = M.evaluate(g, b);
@@ -247,7 +247,7 @@
     const line = (k, x, y) => `<tr${x === y ? ' class="same"' : ''}><td class="${x > y ? 'win' : ''}">${x}${d(x, y)}</td><th>${esc(k)}</th><td class="${y > x ? 'win' : ''}">${y}${d(y, x)}</td></tr>`;
     const ps = (ev) => [...ev.choices.plus.map((id) => `${(g.playstyles || []).find((p) => p.id === id)?.name ?? id}+`), ...ev.choices.ps.map((id) => (g.playstyles || []).find((p) => p.id === id)?.name ?? id)].map(esc).join(', ') || '–';
     const rows = ea.rows.map((r, i) => [r.name, r.value, eb.rows[i]?.value ?? 0]).filter(([, x, y]) => all || x !== y);
-    return `<table class="bd-cmp"><thead><tr><th>${esc(la)}<small>${esc(ea.arch.name)} · L${ea.level}</small></th><th></th><th>${esc(lb)}<small>${esc(eb.arch.name)} · L${eb.level}</small></th></tr></thead>
+    return `<table class="bd-cmp"><caption class="sr">Build comparison</caption><thead><tr><th scope="col">${esc(la)}<small>${esc(ea.arch.name)} · L${ea.level}</small></th><th scope="col"></th><th scope="col">${esc(lb)}<small>${esc(eb.arch.name)} · L${eb.level}</small></th></tr></thead>
 <tbody>${line('OVR*', ea.ovr, eb.ovr)}${ea.face.map(([k, v], i) => line(k, v, eb.face[i]?.[1] ?? 0)).join('')}${line('AP left', ea.left, eb.left)}
 <tr class="sub"><td>${ps(ea)}</td><th>💫 PlayStyles</th><td>${ps(eb)}</td></tr><tr class="sub"><td>${ea.choices.h} cm · ${ea.choices.w} kg</td><th>📏 Body</th><td>${eb.choices.h} cm · ${eb.choices.w} kg</td></tr>
 <tr class="grp"><th colspan="3">${all ? 'All attributes' : `Attributes that differ (${rows.length})`}</th></tr>${rows.map(([k, x, y]) => line(k, x, y)).join('') || '<tr><td colspan="3" class="muted">Same attributes.</td></tr>'}</tbody></table>`;

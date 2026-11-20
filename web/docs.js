@@ -132,7 +132,7 @@ ${e.image ? `<img class="dx-preview-img" src="${esc(e.image.url)}" alt="">` : ''
     const load = async () => { S = await call('/api/docs'); paint(); };
     const items = (area) => S.items.filter((x) => x.area === area).sort(area === 'announce' ? (a, b) => b.pinned - a.pinned || b.at - a.at : (a, b) => b.pinned - a.pinned || a.id - b.id);
     const pills = (x) => UI.pills([x.pinned && { label: 'Pinned', emoji: '📌', tone: 'gold' }, false && { label: 'Public', emoji: '🌍', tip: 'Guests see this on the public site' }, S.canEdit && !x.public && { label: 'Members', emoji: '🔒' }, S.canEdit && x.version > 1 && { label: `v${x.version}` }, S.canEdit && x.discord && { label: 'On Discord', emoji: '💬', tone: 'discord', tip: `Posted ${day(x.discord.at)}` }].filter(Boolean));
-    const tools = (x) => (S.canEdit ? `<div class="dx-tools"><button type="button" class="btn sm ghost" data-edit="${x.id}">✏️ Edit</button>${x.version > 1 ? `<button type="button" class="btn sm ghost" data-hist="${x.id}">🕘 History</button>` : ''}${S.canDiscord ? `<button type="button" class="btn sm ghost" data-dc="${x.id}">📣 Discord</button>` : ''}<button type="button" class="btn sm ghost" data-rm="${x.id}">🗑</button></div>` : '');
+    const tools = (x) => (S.canEdit ? `<div class="dx-tools"><button type="button" class="btn sm ghost" data-edit="${x.id}">✏️ Edit</button>${x.version > 1 ? `<button type="button" class="btn sm ghost" data-hist="${x.id}">🕘 History</button>` : ''}${S.canDiscord ? `<button type="button" class="btn sm ghost" data-dc="${x.id}">📣 Discord</button>` : ''}<button type="button" class="btn sm ghost" data-rm="${x.id}" aria-label="Delete">🗑</button></div>` : '');
     const meta = (x) => `<small class="muted dx-meta">${x.by ? `${esc(x.by)} · ` : ''}${day(x.at)}${x.editedAt ? ` · edited ${UI.time(x.editedAt)}${x.editedBy && x.editedBy !== x.by ? ` by ${esc(x.editedBy)}` : ''}` : ''}</small>`;
     const card = (x) => `<article class="card dx-item${x.pinned ? ' pinned' : ''}" id="d-${x.id}"><header><h3>${esc(x.title)}</h3>${pills(x)}</header><div class="md">${md(x.body)}</div><footer>${meta(x)}${tools(x)}</footer></article>`;
     const faq = (x) => `<details class="card dx-faq" id="d-${x.id}"><summary><h3>${esc(x.title)}</h3>${pills(x)}</summary><div class="md">${md(x.body)}</div><footer>${meta(x)}${tools(x)}</footer></details>`;
@@ -304,8 +304,8 @@ ${x.reply ? `<blockquote class="ix-reply"><small>🛡️ ${esc(x.repliedBy || 'M
       const n = (k) => S.items.filter((x) => k === 'all' || x.status === k).length;
       const shown = list();
       el.innerHTML = `<form class="card ix-form" id="ix-form"><h3>💡 Got an idea for the club?</h3>
-<input name="title" maxlength="100" placeholder="Sum it up in a few words" value="${esc(draft.title)}" required>
-<textarea name="body" rows="3" maxlength="1000" placeholder="Details (optional) – what, why, how">${esc(draft.body)}</textarea>
+<input aria-label="Title" name="title" maxlength="100" placeholder="Sum it up in a few words" value="${esc(draft.title)}" required>
+<textarea aria-label="Details" name="body" rows="3" maxlength="1000" placeholder="Details (optional) – what, why, how">${esc(draft.body)}</textarea>
 <div class="row"><label class="dx-check"><input type="checkbox" name="anon"${draft.anon ? ' checked' : ''}> <span>🕶️ Hide my name from other members <small class="muted">(managers still see it)</small></span></label><span class="grow"></span><button class="btn" type="submit">Send idea</button></div></form>
 <div class="ix-bar"><div class="chipset">${[['top', '🔥 Top'], ['new', '🆕 New']].map(([k, l]) => `<button type="button" class="chip${sort === k ? ' on' : ''}" data-sort="${k}">${l}</button>`).join('')}</div>
 <div class="chipset">${[['all', '📋 All'], ...Object.entries(ST).map(([k, [ic, l]]) => [k, `${ic} ${l}`])].map(([k, l]) => `<button type="button" class="chip${filter === k ? ' on' : ''}" data-filter="${k}">${l} <em>${n(k)}</em></button>`).join('')}</div></div>

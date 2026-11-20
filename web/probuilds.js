@@ -87,7 +87,7 @@
 ${i ? `<div class="pb-stats"><span class="pb-ovr"><b>${i.ev.ovr}</b><small>OVR*</small></span>${C.face(i.ev)}</div>` : ''}
 ${x.desc ? `<p class="pb-desc">${esc(x.desc)}${x.more ? '…' : ''}</p>` : ''}
 <footer><button type="button" class="pb-link" data-open>💬 ${x.comments}</button>${x.clip ? `<a class="pb-link" href="${esc(x.clip)}" target="_blank" rel="noopener nofollow ugc">▶ Clip</a>` : ''}<span class="grow"></span>
-${flag('builder') ? `<a class="btn ghost sm" href="${esc(C.builderUrl(x))}" title="Open a copy in the Pro Builder">🧪 Try</a>` : ''}<button type="button" class="btn ghost sm" data-use title="Use as my build">⭐</button></footer></div></article>`;
+${flag('builder') ? `<a class="btn ghost sm" href="${esc(C.builderUrl(x))}" title="Open a copy in the Pro Builder">🧪 Try</a>` : ''}<button type="button" class="btn ghost sm" data-use title="Use as my build" aria-label="Use as my build">⭐</button></footer></div></article>`;
     };
     const archOpts = () => (g.archetypeGroups || []).map((grp) => `<optgroup label="${esc(grp.name)}">${(g.archetypes || []).filter((a) => a.group === grp.id).map((a) => `<option value="${esc(a.id)}"${S.arch === a.id ? ' selected' : ''}>${esc(a.name)}</option>`).join('')}</optgroup>`).join('');
     function paint() {

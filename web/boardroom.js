@@ -45,7 +45,7 @@
   // ---------- ② health ----------
   function health() {
     const h = B.health;
-    const head = '<div class="br-sec-h"><h3>🩺 Health</h3><button type="button" class="btn ghost sm" data-br="health">↻</button></div>';
+    const head = '<div class="br-sec-h"><h3>🩺 Health</h3><button type="button" class="btn ghost sm" data-br="health" aria-label="Refresh health">↻</button></div>';
     if (h === undefined) return head + ctx.UI.skeleton('rows', 3);
     if (h === null) return head + ctx.UI.empty({ icon: '🩺', title: 'Could not load health data', text: 'Try the ↻ button.' });
     const runs = h.actions?.runs || [];
@@ -80,8 +80,8 @@ ${a?.ready ? `${bar('Worker requests', a.requests, FREE.requests, `${a.requests.
     if (!ctx.canAnnounce) return '';
     const a = B.ann;
     return `<div class="br-sec-h"><h3>📣 Announcement</h3></div>
-<input class="br-in" data-ann="title" maxlength="120" placeholder="Title – e.g. Match night moved" value="${esc(a.title)}">
-<textarea class="br-in" data-ann="body" maxlength="1500" rows="3" placeholder="Wednesday 20:00 this week. Hit ✅ in your locker if you can make it.">${esc(a.body)}</textarea>
+<input class="br-in" aria-label="Announcement title" data-ann="title" maxlength="120" placeholder="Title – e.g. Match night moved" value="${esc(a.title)}">
+<textarea class="br-in" aria-label="Announcement text" data-ann="body" maxlength="1500" rows="3" placeholder="Wednesday 20:00 this week. Hit ✅ in your locker if you can make it.">${esc(a.body)}</textarea>
 <div class="br-pills"><button type="button" class="chip${a.audience === 'members' ? ' on' : ''}" data-aud="members">Everyone</button><button type="button" class="chip${a.audience === 'managers' ? ' on' : ''}" data-aud="managers">Managers</button>
 <button type="button" class="chip${a.ack ? ' on' : ''}" data-ack>${a.ack ? '☑' : '☐'} Must acknowledge</button></div>
 <div class="br-preview" aria-label="Preview"><small>Preview · 🔔 alert${a.ack ? ' (stays until they tap “Got it”)' : ''} + Discord DM for members who chose DMs</small>
@@ -96,9 +96,9 @@ ${a?.ready ? `${bar('Worker requests', a.requests, FREE.requests, `${a.requests.
     const pl = squad.find((p) => p.k === B.hof.player);
     return `<div class="br-sec-h"><h3>🏛️ Hall of Fame induction</h3><a class="br-more" href="${ctx.base}halloffame.html">See the hall →</a></div>
 <div class="br-hof"><div class="br-stage${pl ? ' lit' : ''}"><span class="br-beam" aria-hidden="true"></span><div class="br-legend"><span>★</span><small>Legend</small><b>${pl ? esc(pl.n) : 'Choose a player'}</b>${pl?.s ? `<em>${pl.s.gp} games · ${pl.s.g}G ${pl.s.a}A</em>` : ''}</div><span class="br-plinth" aria-hidden="true"></span></div>
-<div class="br-hof-form"><select class="br-in" data-hof="player"><option value="">Pick a player…</option>${squad.map((p) => `<option value="${esc(p.k)}"${p.k === B.hof.player ? ' selected' : ''}>${esc(p.n)}</option>`).join('')}</select>
-<input class="br-in" data-hof="title" maxlength="80" placeholder="Plaque title – e.g. The engine room" value="${esc(B.hof.title)}">
-<textarea class="br-in" data-hof="text" maxlength="400" rows="3" placeholder="Citation – why they’re a legend">${esc(B.hof.text)}</textarea>
+<div class="br-hof-form"><select aria-label="Player" class="br-in" data-hof="player"><option value="">Pick a player…</option>${squad.map((p) => `<option value="${esc(p.k)}"${p.k === B.hof.player ? ' selected' : ''}>${esc(p.n)}</option>`).join('')}</select>
+<input class="br-in" aria-label="Plaque title" data-hof="title" maxlength="80" placeholder="Plaque title – e.g. The engine room" value="${esc(B.hof.title)}">
+<textarea class="br-in" aria-label="Citation" data-hof="text" maxlength="400" rows="3" placeholder="Citation – why they’re a legend">${esc(B.hof.text)}</textarea>
 <button type="button" class="btn sm" data-br="induct"${pl ? '' : ' disabled'}>🏛️ Induct a legend</button><p class="muted small">Their card rises onto the lit plinth on the public Hall of Fame.</p></div></div>`;
   }
 

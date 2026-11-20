@@ -47,7 +47,7 @@ ${d.recent.length ? `<h4>🕐 Earlier this hour</h4><ul>${d.recent.map((u) => ro
     ctx = c;
     const bar = $('header.top .bar');
     if (!bar || $('.pr-wrap', bar)) return;
-    bar.insertAdjacentHTML('beforeend', '<div class="pr-wrap"><button class="pr-btn" type="button" aria-haspopup="true" aria-expanded="false" data-tip="Who’s online"><i aria-hidden="true"></i>…</button><div class="pr-panel" hidden role="dialog" aria-label="Who’s online"></div></div>');
+    bar.insertAdjacentHTML('beforeend', '<div class="pr-wrap"><button class="pr-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Who’s online" data-tip="Who’s online"><i aria-hidden="true"></i>…</button><div class="pr-panel" hidden role="dialog" aria-label="Who’s online"></div></div>');
     btn = $('.pr-btn', bar); panel = $('.pr-panel', bar);
     btn.onclick = (e) => {
       e.stopPropagation(); panel.hidden = !panel.hidden; btn.setAttribute('aria-expanded', !panel.hidden);

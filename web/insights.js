@@ -69,7 +69,7 @@ ${written}
 </div>
 ${ctx.session ? '<button type="button" class="nx-ins-ask-btn">💬 Ask a follow-up</button>' : ''}
 </div>
-${ctx.session ? '<div class="nx-ins-ask" hidden><input type="text" maxlength="200" placeholder="Ask a follow-up…"><button type="button" class="btn small">Ask</button><p class="nx-ins-answer"></p></div>' : ''}`;
+${ctx.session ? '<div class="nx-ins-ask" hidden><input type="text" maxlength="200" placeholder="Ask a follow-up…" aria-label="Ask a follow-up"><button type="button" class="btn small">Ask</button><p class="nx-ins-answer"></p></div>' : ''}`;
       el.innerHTML = DD
         ? `<details class="nx-ins-dd"><summary><span class="nx-ins-kind">${DD}</span><span class="nx-ins-sum">${esc(r.headline)}</span></summary><div class="nx-ins-ddbody">${inner}</div></details>`
         : `<h4>${key.startsWith('note.') ? "✨ Coach's note" : '✨ Insight'}</h4>${inner}`;

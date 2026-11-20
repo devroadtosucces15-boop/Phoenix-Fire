@@ -84,17 +84,17 @@ ${t.kind === 'pose' ? `<input data-f="prompt" value="${esc(t.prompt)}" maxlength
     return `<section class="cs-sec cs-admin"><h4>🛠️ Manage templates</h4>
 <form id="cs-upload" class="cs-form">
 <select name="kind" aria-label="Kind"><option value="bg">Background (${d.size}×${d.size} PNG)</option><option value="pose">Pose (reference image)</option></select>
-<input name="name" placeholder="Name" maxlength="40" required>
-<select name="tier"><option value="free">Free</option><option value="premium">Premium</option></select>
-<input name="cost" type="number" min="1" placeholder="Point cost" hidden>
-<input name="prompt" placeholder='Pose prompt, e.g. "arms crossed"' maxlength="200" hidden>
-<input name="file" type="file" accept="image/png,image/jpeg,image/webp" required>
+<input aria-label="Name" name="name" placeholder="Name" maxlength="40" required>
+<select aria-label="Tier" name="tier"><option value="free">Free</option><option value="premium">Premium</option></select>
+<input aria-label="Point cost" name="cost" type="number" min="1" placeholder="Point cost" hidden>
+<input aria-label="Pose prompt" name="prompt" placeholder='Pose prompt, e.g. "arms crossed"' maxlength="200" hidden>
+<input aria-label="Image file" name="file" type="file" accept="image/png,image/jpeg,image/webp" required>
 <button class="btn" type="submit">⬆ Upload</button></form>
 <h5>Backgrounds</h5><ul class="cs-list">${d.backgrounds.map(row).join('') || '<li class="muted">None yet.</li>'}</ul>
 <h5>Poses</h5><ul class="cs-list">${d.poses.map(row).join('') || '<li class="muted">None yet.</li>'}</ul>
 <h5>🎁 Grant a premium template</h5>
-${premium.length ? `<form id="cs-grant" class="cs-form"><select name="user" required>${d.people.map((u) => `<option value="${esc(u.id)}">${esc(u.name)}</option>`).join('')}</select>
-<select name="template" required>${premium.map((t) => `<option value="${t.id}">${esc(t.name)} (${t.kind === 'bg' ? 'background' : 'pose'})</option>`).join('')}</select>
+${premium.length ? `<form id="cs-grant" class="cs-form"><select aria-label="Member" name="user" required>${d.people.map((u) => `<option value="${esc(u.id)}">${esc(u.name)}</option>`).join('')}</select>
+<select aria-label="Look" name="template" required>${premium.map((t) => `<option value="${t.id}">${esc(t.name)} (${t.kind === 'bg' ? 'background' : 'pose'})</option>`).join('')}</select>
 <button class="btn" type="submit" data-act="grant">Grant</button><button class="btn ghost" type="submit" data-act="revoke">Revoke</button></form>` : '<p class="muted">Add a premium template first.</p>'}</section>`;
   };
 

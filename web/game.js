@@ -83,7 +83,7 @@ ${pend.length ? `<div class="ga-pend">${pend.map((p) => `<div class="card ga-hit
 <div class="wide row"><button class="btn" type="submit"${G.busy ? ' disabled' : ''}>🚀 Publish version</button><button class="btn ghost sm" type="button" data-ga="download">⬇ Current dataset (JSON)</button></div>
 </form>
 <h3 style="margin-top:22px">🗂 History</h3>
-<div class="tbl"><table><thead><tr><th>Version</th><th class="n">Max level</th><th>Status</th><th>Note</th><th>By</th><th>When</th></tr></thead><tbody>${versions.map((v, i) => `<tr${i ? '' : ' class="ga-cur"'}><td><code>${esc(v.version)}</code>${i ? '' : ' <span class="tag home">live</span>'}</td><td class="n"><b>${esc(v.cap ?? '–')}</b></td><td>${v.verified ? `<a href="${esc(v.source)}" target="_blank" rel="noopener">✓ official</a>` : 'unverified'}</td><td>${esc(v.note || '–')}</td><td>${esc(v.by || '–')}</td><td>${v.at ? ago(v.at) : '–'}</td></tr>`).join('')}</tbody></table></div></div>`;
+<div class="tbl"><table><caption class="sr">Game versions</caption><thead><tr><th scope="col">Version</th><th scope="col" class="n">Max level</th><th scope="col">Status</th><th scope="col">Note</th><th scope="col">By</th><th scope="col">When</th></tr></thead><tbody>${versions.map((v, i) => `<tr${i ? '' : ' class="ga-cur"'}><td><code>${esc(v.version)}</code>${i ? '' : ' <span class="tag home">live</span>'}</td><td class="n"><b>${esc(v.cap ?? '–')}</b></td><td>${v.verified ? `<a href="${esc(v.source)}" target="_blank" rel="noopener">✓ official</a>` : 'unverified'}</td><td>${esc(v.note || '–')}</td><td>${esc(v.by || '–')}</td><td>${v.at ? ago(v.at) : '–'}</td></tr>`).join('')}</tbody></table></div></div>`;
   }
 
   function readForm(el) {
