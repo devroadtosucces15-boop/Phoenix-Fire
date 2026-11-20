@@ -52,12 +52,29 @@ const MEMBER = as('500', 'Jez'), MGR = as('900', 'Kruger', ['mgr']);
 t('flag owner: a member is told it isn’t on yet', /switched on/.test(plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'latest', options: [] }])).d.data)));
 setFlags({ watchlist: 'members' });
 await tt('/watchlist: members can’t change it', async () => /Only managers/.test(plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'list' }])).d.data)));
-await tt('/watchlist add: a bad id is explained', async () => /isn’t a channel ID/.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'channel', value: 'nope' }] }])).d.data)));
+await tt('/watchlist add: a bad id is explained', async () => /Can’t add that/.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'link', value: 'nope' }] }])).d.data)));
 await tt('/watchlist add: a channel link works, name kept', async () => {
-  const r = await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'channel', value: `https://www.youtube.com/channel/${UC1}?x=1` }, { name: 'name', value: 'Pitch Co' }] }]);
+  const r = await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'link', value: `https://www.youtube.com/channel/${UC1}?x=1` }, { name: 'name', value: 'Pitch Co' }] }]);
   return /Following Pitch Co/.test(plainText(r.d.data)) && sqlite.prepare('SELECT * FROM watch_creators').get().channel_id === UC1;
 });
 await tt('/watchlist list shows who we follow', async () => /Pitch Co/.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'list' }])).d.data)));
+await tt('/watch add: Twitch with no live-alert channel set says where to set it', async () => /No channel is set for live alerts|live alerts/i.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'platform', value: 'twitch' }, { name: 'link', value: 'https://www.twitch.tv/SomeCreator' }] }])).d.data)) && sqlite.prepare("SELECT COUNT(*) n FROM stream_sources").get().n === 0);
+{
+  const { mirrorChannel } = await import('../bot/orgconfig.js');
+  await mirrorChannel(env, 'live_alerts', '710200123', { explicit: true });
+  await tt('/watch add: a Twitch link follows them for live alerts (platform read from the link)', async () => {
+    const r = await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'link', value: 'https://www.twitch.tv/SomeCreator' }, { name: 'name', value: 'Some Creator' }] }]);
+    const row = sqlite.prepare('SELECT * FROM stream_sources').get();
+    return /Following Some Creator on Twitch/.test(plainText(r.d.data)) && row.platform === 'twitch' && row.handle === 'somecreator' && row.want_live === 1 && row.want_posts === 0 && row.channel_id === '710200123';
+  });
+  await tt('/watch add: a bare name with Kick picked builds their Kick link', async () => {
+    await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'platform', value: 'kick' }, { name: 'link', value: 'KickGuy' }] }]);
+    return sqlite.prepare("SELECT url FROM stream_sources WHERE platform = 'kick'").get()?.url === 'https://kick.com/kickguy';
+  });
+  await tt('/watch add: a platform that does not match the link is refused', async () => /Twitch, but you picked YouTube|Twitch.*YouTube/.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'add', options: [{ name: 'platform', value: 'youtube' }, { name: 'link', value: 'https://www.twitch.tv/other' }] }])).d.data)));
+  await tt('/watch list shows YouTube, Twitch and Kick creators', async () => { const x = plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'list' }])).d.data); return /Pitch Co/.test(x) && /Some Creator/.test(x) && /Twitch/.test(x) && /Kick/.test(x); });
+  await tt('/watch remove stops a Twitch creator by name', async () => /Stopped following/.test(plainText((await cmd(MGR, 'watch', [{ type: 1, name: 'remove', options: [{ name: 'channel', value: 'Some Creator' }] }])).d.data)) && sqlite.prepare("SELECT active FROM stream_sources WHERE platform = 'twitch'").get().active === 0);
+}
 await tt('/watch with nothing yet', async () => /No videos yet/.test(plainText((await cmd(MEMBER, 'watch', [{ type: 1, name: 'latest', options: [] }])).d.data)));
 
 // ---------- the hourly check ----------

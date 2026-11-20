@@ -247,12 +247,13 @@ export const COMMANDS = [
     name: 'watch', description: 'The watch list: latest Pro Clubs videos, and (managers) which creators it follows',
     options: [
       { type: SUB, name: 'latest', description: 'The latest videos the squad follows', options: [{ type: STRING, name: 'topic', description: 'Only one topic', choices: ['builds', 'tactics', 'tips', 'meta', 'news'].map((v) => ({ name: v, value: v })) }] },
-      { type: SUB, name: 'add', description: 'Managers: follow a creator', options: [
-        { type: STRING, name: 'channel', description: 'Their channel ID (starts with UC…) or channel link', required: true, max_length: 120 },
+      { type: SUB, name: 'add', description: 'Managers: follow a creator on YouTube, Twitch or Kick', options: [
+        { type: STRING, name: 'link', description: 'Their channel link (Twitch, YouTube or Kick), a YouTube channel ID (UC…), or just the name with a platform', required: true, max_length: 200 },
+        { type: STRING, name: 'platform', description: 'Where they are (optional when the link says it)', choices: [{ name: 'YouTube (new videos)', value: 'youtube' }, { name: 'Twitch (goes live)', value: 'twitch' }, { name: 'Kick (goes live)', value: 'kick' }] },
         { type: STRING, name: 'name', description: 'How to show their name', max_length: 60 },
       ] },
-      { type: SUB, name: 'remove', description: 'Managers: stop following a creator', options: [{ type: STRING, name: 'channel', description: 'Channel ID or the name shown in /watch list', required: true, max_length: 120 }] },
-      { type: SUB, name: 'list', description: 'Managers: who we follow' },
+      { type: SUB, name: 'remove', description: 'Managers: stop following a creator', options: [{ type: STRING, name: 'channel', description: 'Channel ID, handle or the name shown in /watch list', required: true, max_length: 120 }] },
+      { type: SUB, name: 'list', description: 'Managers: who we follow (YouTube, Twitch, Kick)' },
     ],
   },
   {
