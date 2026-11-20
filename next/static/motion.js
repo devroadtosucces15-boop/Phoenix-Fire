@@ -18,12 +18,16 @@
   const legacy = () => { const o = ls.get('phoenix.motion'), fx = ls.get('phoenix.fx') === 'off', io = ls.get('phoenix.insights') === 'off'; if (!o && !fx && !io) return null;
     const s = parse(o === 'off' ? 'custom:' + FX.join(',') : o === 'calm' || fx ? 'calm' : 'full'); if (io) { s.off.add('insights'); s.p = 'custom'; } return ser(s); };
   let pref = parse(still ? 'custom:' + FX.join(',') : ss.get('phoenix.mx') || ls.get('phoenix.mx') || legacy() || (mqR.matches ? 'calm' : 'full')), mode = 'full';
-  const on = (k) => !pref.off.has(k);
+  // PF-044: the owner's effects config (fxconfig.js) is the ceiling: an effect runs only when the owner has it on and inside the budget.
+  // A visitor's own choice below can only switch more off, never more on. fxs(k) is 1 for Full, 0.5 for Balanced, 0 for Off.
+  const fxs = (k) => (window.PhoenixFx ? window.PhoenixFx.scale(k) : 1);
+  const on = (k) => !pref.off.has(k) && (!window.PhoenixFx || window.PhoenixFx.on(k));
   const apply = () => { mode = pref.p === 'calm' ? 'calm' : on('reveals') ? 'full' : 'off'; H.dataset.motion = mode;
     FX.forEach((k) => (on(k) ? H.removeAttribute('data-fx-' + k) : H.setAttribute('data-fx-' + k, 'off'))); H.classList.toggle('insights-off', !on('insights'));
     b.classList.toggle('lite', mode !== 'full'); b.classList.toggle('rm', mode === 'off'); if (still) b.classList.add('still'); };
   apply(); H.classList.add('mx');
   const changed = () => { apply(); dispatchEvent(new CustomEvent('norex:motion', { detail: mode })); };
+  addEventListener('phoenix:fx', () => changed());   // the owner's setting arrived or changed
   const M = window.NorexMotion = {
     get mode() { return mode; }, get preset() { return pref.p; }, get value() { return ser(pref); }, FX, on,
     // a style ('full' | 'calm' | 'custom') or one effect (set('tilt', false) → Custom). Applies now, for this visit; remember() keeps it.
@@ -177,7 +181,7 @@
     const r = el.getBoundingClientRect(), vw = innerWidth, vh = innerHeight; if (r.width < 8) return;
     const nx = inRail(el) ? Math.max(-1.4, Math.min(1.4, (r.left + r.width / 2 - vw / 2) / (vw / 2))) : 0, ny = Math.max(-1.4, Math.min(1.4, (r.top + r.height / 2 - vh / 2) / (vh / 2)));
     const sc = Math.min(1, r.width / 150);   // tiny cards lean less
-    const ry = (-6 + nx * -11) * sc, rx = (3.5 + ny * 7) * sc;
+    const ts = fxs('tilt') || 1, ry = (-6 + nx * -11) * sc * ts, rx = (3.5 + ny * 7) * sc * ts;
     el.style.transform = `perspective(700px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateZ(0)`;
     el.style.setProperty('--mx', (50 + nx * 38).toFixed(1) + '%'); el.style.setProperty('--my', (30 + ny * 30).toFixed(1) + '%'); el.style.setProperty('--go', '.55'); };
   // glass panels: no tilt, but the light slides across them as you scroll (glare follows position on screen)
@@ -196,7 +200,7 @@
     const gloss = el.querySelector('.gloss i'); let sw = null;
     if (isCard(el) && 'IntersectionObserver' in window) { tio ||= new IntersectionObserver((es) => { es.forEach((e) => (e.isIntersecting ? ambient.add(e.target) : ambient.delete(e.target))); ambAsk(); }, { rootMargin: '120px' }); tio.observe(el); }
     const set = (cx, cy) => { const r = el.getBoundingClientRect(), x = (cx - r.left) / r.width, y = (cy - r.top) / r.height;
-      cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { el.style.transform = `perspective(700px) rotateX(${((.5 - y) * max * 2).toFixed(2)}deg) rotateY(${((x - .5) * max * 2).toFixed(2)}deg) scale(1.03) translateZ(0)`; el.style.setProperty('--mx', x * 100 + '%'); el.style.setProperty('--my', y * 100 + '%'); el.style.setProperty('--go', 1); }); };
+      cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { el.style.transform = `perspective(700px) rotateX(${((.5 - y) * max * 2 * fxs('tilt')).toFixed(2)}deg) rotateY(${((x - .5) * max * 2 * fxs('tilt')).toFixed(2)}deg) scale(1.03) translateZ(0)`; el.style.setProperty('--mx', x * 100 + '%'); el.style.setProperty('--my', y * 100 + '%'); el.style.setProperty('--go', 1); }); };
     const rest = () => { active = false; cancelAnimationFrame(raf); el.classList.remove('live'); el.style.transform = ''; el.style.setProperty('--go', 0); if (isCard(el)) ambAsk(); };
     el.addEventListener('pointerenter', (e) => { if (!on('tilt')) return; active = true; el.classList.add('live'); if (gloss) { sw?.cancel(); sw = gloss.animate([{ transform: 'translateX(-130%)' }, { transform: 'translateX(130%)' }], { duration: 700, easing: 'cubic-bezier(.2,.9,.2,1)' }); } set(e.clientX, e.clientY); });
     el.addEventListener('pointermove', (e) => { if (active) set(e.clientX, e.clientY); });
@@ -206,7 +210,7 @@
   M.tilt = () => { $$('.tilt:not([data-t])').forEach((el) => { el.dataset.t = 1; tilt(el); }); watchGlass(); ambAsk(); }; M.tilt();
 
   // ================= layered parallax =================
-  const par = $$('[data-par]'); if (par.length) { let tick = false; addEventListener('scroll', () => { if (tick || !on('parallax')) return; tick = true; requestAnimationFrame(() => { const y = scrollY; par.forEach((el) => { el.style.transform = `translate3d(0,${(y * +el.dataset.par).toFixed(1)}px,0)`; }); tick = false; }); }, { passive: true });
+  const par = $$('[data-par]'); if (par.length) { let tick = false; addEventListener('scroll', () => { if (tick || !on('parallax')) return; tick = true; requestAnimationFrame(() => { const y = scrollY; par.forEach((el) => { el.style.transform = `translate3d(0,${(y * +el.dataset.par * fxs('parallax')).toFixed(1)}px,0)`; }); tick = false; }); }, { passive: true });
     addEventListener('norex:motion', () => { if (!on('parallax')) par.forEach((el) => (el.style.transform = '')); }); }
 
   // ================= shared-element morph: card -> profile =================

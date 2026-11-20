@@ -15,6 +15,7 @@ import { mirrorChannel, setPingRole, foldLegacy, channelFor, PING_GROUPS, CHANNE
 import { can } from './roles.js';
 import { loadRules as loadPointsRules, saveRules as savePointsRules, cleanRules as cleanPointsRules, seasonOf, RULE_DEFAULTS } from './points.js';
 import { sharedKey } from './sharedkey.js';
+import { DEFAULT_EFFECTS, cleanEffects } from './fxconfig.js';
 
 const all = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).all().then((r) => r.results);
 const one = (env, sql, ...args) => env.DB.prepare(sql).bind(...args).first();
@@ -28,13 +29,13 @@ const parse = (s) => { try { return JSON.parse(s); } catch { return null; } };
 //   owner:   `bot` (embed colour, emoji, which auto-posts run), feature flags and the Organization structure (clubs, servers, role mapping: bot/orgconfig.js, flags in controlcenter.js)
 //   manager: notification routes, Rush queue timers, welcome / leave / ping roles, profanity alert channel, stream sources, recruitment, match alert, stream links, legacy fold-in
 export const SPLIT = {
-  owner: ['bot'],
+  owner: ['bot', 'effects'],
   manager: ['routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams', 'points'],
 };
 // The slash commands that change the same thing (shown beside the setting; both write the same rows).
 export const VIA = {
   bot: [], routes: [], rush: ['/queue settings'], tools: ['/setup leavelog', '/setup welcome', '/setup pingroles'], profanity: ['/profanitysetup'],
-  stream_sources: ['/streamalerts'], recruitment: [], matchAlert: [], streams: [], points: ['/points'],
+  stream_sources: ['/streamalerts'], recruitment: [], matchAlert: [], streams: [], points: ['/points'], effects: [],
 };
 export const areaLevel = (area) => (SPLIT.owner.includes(area) ? 'owner' : SPLIT.manager.includes(area) ? 'manager' : null);
 const mayWrite = (me, area) => (areaLevel(area) === 'owner' ? can(me, 'settings.bot') : areaLevel(area) === 'manager' ? can(me, 'controlcenter.manage') : false);
@@ -43,6 +44,7 @@ const mayWrite = (me, area) => (areaLevel(area) === 'owner' ? can(me, 'settings.
 export const CC_DEFAULTS = {
   recruitment: { open: true, headline: 'Trials are by application only', requirements: ['Active on PS5 / Xbox Series / PC (new gen)', 'Available for regular league nights', 'Mic and Discord for match comms', 'Competitive attitude – we play to win'], positions: ['GK', 'CB', 'CDM', 'CM', 'CAM', 'ST'] },
   matchAlert: { loseBy: 3 },
+  effects: DEFAULT_EFFECTS,
   streams: { youtube: '', twitch: 'https://m.twitch.tv/phoenixfirefc/home' },
 };
 // The saved row only (null when the owner has not applied migration 0065 or nothing was saved): lets a caller fall back to its own source (config.json) before the default.
@@ -59,9 +61,14 @@ export async function ccConfigPublicRoute(request, env) {
   if (!env.DISCORD_CLIENT_SECRET || sharedKey(request) !== await settingsKey(env.DISCORD_CLIENT_SECRET)) return reply({ error: 'Forbidden' }, 403);
   return reply(Object.fromEntries(await Promise.all(Object.keys(CC_DEFAULTS).map(async (k) => [k, await ccConfig(env, k)]))));
 }
+// No key: the site reads it in every visitor's browser. It holds only the budget and the levels, nothing private.
+export async function effectsPublicRoute(env) {
+  return new Response(JSON.stringify(await ccConfig(env, 'effects')), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' } });
+}
 const list = (v, n, len, re) => (Array.isArray(v) ? v : []).map((x) => clean(x, len)).filter((x) => x && (!re || re.test(x))).slice(0, n);
 const CLEAN = {
   recruitment: (b, cur) => ({ open: b.open === undefined ? cur.open : !!b.open, headline: clean(b.headline ?? cur.headline, 120), requirements: b.requirements === undefined ? cur.requirements : list(b.requirements, 10, 120), positions: b.positions === undefined ? cur.positions : list(b.positions, 12, 4, /^[A-Z]{1,4}$/) }),
+  effects: (b, cur) => cleanEffects(b, cur),
   matchAlert: (b, cur) => {
     const n = b.loseBy === undefined ? cur.loseBy : b.loseBy === null || b.loseBy === '' ? 0 : Number(b.loseBy);
     if (!Number.isInteger(n) || n < 0 || n > 20) return { error: 'The margin is a whole number of goals from 0 (never) to 20.' };
@@ -182,9 +189,9 @@ export const AREAS = {
       return { before: null, after: { platform: link.platform, handle: link.handle, label, channel, live: !!wantLive, posts: !!wantPosts } };
     },
   },
-  ...Object.fromEntries(['recruitment', 'matchAlert', 'streams'].map((key) => [key, {
-    label: { recruitment: 'Recruitment', matchAlert: 'Match alert trigger', streams: 'Club stream links' }[key],
-    summary: { recruitment: 'Trials open or closed, headline, requirements, positions', matchAlert: 'Heavy-defeat margin that triggers the match alert (0 = never)', streams: 'The club Twitch and YouTube links shown on the site' }[key],
+  ...Object.fromEntries(['recruitment', 'matchAlert', 'streams', 'effects'].map((key) => [key, {
+    label: { recruitment: 'Recruitment', matchAlert: 'Match alert trigger', streams: 'Club stream links', effects: 'Site effects' }[key],
+    summary: { recruitment: 'Trials open or closed, headline, requirements, positions', matchAlert: 'Heavy-defeat margin that triggers the match alert (0 = never)', streams: 'The club Twitch and YouTube links shown on the site', effects: 'How many effects run at once (5 or more) and the level of each: Full, Balanced or Off. One setting for everyone.' }[key],
     get: (env) => ccConfig(env, key),
     async save(env, b, me) {
       const cur = await ccConfig(env, key), next = CLEAN[key](b, cur);

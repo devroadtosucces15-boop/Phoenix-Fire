@@ -39,6 +39,8 @@
       profanity(A) { const s = A.value || {}; return `<form data-cs-form="profanity" class="cc-form"><label class="small">Alert channel ${chSel('channelId', s.channelId || '', 'None')}</label><p class="muted small">${s.ruleId ? 'The AutoMod rule is set up.' : 'The AutoMod rule itself is created by /profanitysetup in Discord.'}</p>${save(A)}</form>`; },
       recruitment(A) { const s = A.value || {}; return `<form data-cs-form="recruitment" class="cc-form"><label class="cc-lv"><input name="open" type="checkbox"${s.open ? ' checked' : ''}${lock(A)}> Trials are open</label><label class="small">Headline <input name="headline" value="${esc(s.headline || '')}" maxlength="120"${lock(A)}></label>
 <label class="small">Requirements (one per line) <textarea name="requirements" rows="4"${lock(A)}>${esc((s.requirements || []).join('\n'))}</textarea></label><label class="small">Positions wanted (comma separated, e.g. GK, ST) <input name="positions" value="${esc((s.positions || []).join(', '))}"${lock(A)}></label>${save(A)}</form>`; },
+      effects(A) { const s = A.value || {}, E = [['reveals', '🎞️ Reveals & transitions'], ['glow', '💡 Glow & shine'], ['tilt', '🃏 Card tilt'], ['parallax', '🌌 Parallax'], ['bursts', '🎉 Celebration bursts'], ['dockbob', '⬆️ Dock bring-back arrow'], ['gyro', '📱 Phone tilt'], ['haptics', '📳 Haptics'], ['insights', '🧠 Insights']];
+        return `<form data-cs-form="effects" class="cc-form"><p class="muted small">One setting for everyone. The budget is how many effects may run at once; when more are switched on, the ones higher in this list run first.</p><label class="small">Effects at once (5 or more, no upper limit) <input name="budget" type="number" min="5" step="1" value="${esc(s.budget ?? 5)}"${lock(A)}></label>${E.map(([k, t]) => `<label class="small">${t} <select name="fx-${k}"${lock(A)}>${['full', 'balanced', 'off'].map((v) => `<option value="${v}"${(s.levels?.[k] || 'full') === v ? ' selected' : ''}>${v[0].toUpperCase() + v.slice(1)}</option>`).join('')}</select></label>`).join('')}${save(A)}</form>`; },
       matchAlert(A) { const s = A.value || {}; return `<form data-cs-form="matchAlert" class="cc-form"><label class="small">Heavy-defeat margin (goals, 0 = never) <input name="loseBy" type="number" min="0" max="20" value="${esc(s.loseBy ?? 3)}"${lock(A)}></label>${save(A)}</form>`; },
       streams(A) { const s = A.value || {}; return `<form data-cs-form="streams" class="cc-form"><label class="small">Twitch link <input name="twitch" type="url" value="${esc(s.twitch || '')}" placeholder="https://www.twitch.tv/yourchannel"${lock(A)}></label><label class="small">YouTube channel link <input name="youtube" type="url" value="${esc(s.youtube || '')}" placeholder="https://www.youtube.com/@handle"${lock(A)}></label>${save(A)}</form>`; },
       points(A) {
@@ -75,7 +77,7 @@ ${rows ? `<div class="tablewrap"><table class="tbl cc-tbl"><caption class="sr">N
     function html() {
       if (S.err) return empty('⚠️', 'Could not load the bot settings', S.err);
       if (!S.data) return skel;
-      const A = S.data.areas, order = ['bot', 'routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams', 'points'];
+      const A = S.data.areas, order = ['bot', 'routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams', 'effects', 'points'];
       const fold = S.fold ? `<pre class="muted small cs-fold">${esc(JSON.stringify(S.fold, null, 1))}</pre>` : '';
       return `<p class="muted small">Every bot setting in one place. The owner keeps the bot’s look and the Organization; managers run the rest. Every save is recorded in the Audit log. Command rules are in <b>Bot commands</b>.</p>
 <div class="cs-grid">${order.filter((k) => A[k]).map((k) => (k === 'routes' ? routing(A[k]) : card(k, A[k], FORMS[k](A[k])))).join('')}</div>
@@ -103,6 +105,7 @@ ${rows ? `<div class="tablewrap"><table class="tbl cc-tbl"><caption class="sr">N
       profanity: (f) => ({ channelId: f.get('channelId') || '' }),
       recruitment: (f) => ({ open: f.has('open'), headline: f.get('headline') || '', requirements: String(f.get('requirements') || '').split('\n').map((x) => x.trim()).filter(Boolean), positions: String(f.get('positions') || '').split(',').map((x) => x.trim().toUpperCase()).filter(Boolean) }),
       matchAlert: (f) => ({ loseBy: f.get('loseBy') }),
+      effects: (f) => ({ budget: f.get('budget'), levels: Object.fromEntries(['reveals', 'glow', 'tilt', 'parallax', 'bursts', 'dockbob', 'gyro', 'haptics', 'insights'].map((k) => [k, f.get('fx-' + k)])) }),
       points: (f) => ({ amounts: Object.fromEntries(Object.keys(S.data.areas.points.value.labels || {}).map((k) => [k, f.get('amt-' + k)])), prices: f.getAll('pn').map((n, i) => ({ id: f.getAll('pid')[i] || '', name: n, cost: f.getAll('pc')[i], status: f.getAll('ps')[i], note: f.getAll('pt')[i] })).filter((x) => String(x.name).trim()) }),
       points_spend: (f) => ({ user: f.get('user'), amount: f.get('amount'), item: f.get('item') }),
       points_gift: (f) => ({ user: f.get('user'), item: f.get('item'), note: f.get('note') || '' }),

@@ -268,7 +268,7 @@
       h = h && live(); if (h === hidden) return; hidden = h;
       d.documentElement.classList.toggle('tb-hide', h); tb.inert = h; back.hidden = !h;
       clearInterval(bob); bob = 0; back.classList.remove('bob');
-      if (h) bob = setInterval(() => { if (calm() || d.hidden) return; back.classList.remove('bob'); void back.offsetWidth; back.classList.add('bob'); }, TB_BOB_MS);
+      if (h) bob = setInterval(() => { if (calm() || d.hidden || (w.PhoenixFx && !w.PhoenixFx.on('dockbob'))) return; back.classList.remove('bob'); void back.offsetWidth; back.classList.add('bob'); }, TB_BOB_MS);
     };
     const blocked = () => d.documentElement.classList.contains('kb-open') || !!(rp && !rp.hidden) || tb.contains(d.activeElement);
     const step = () => {

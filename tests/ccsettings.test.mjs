@@ -19,7 +19,7 @@ const audited = (area) => sqlite.prepare("SELECT * FROM config_audit WHERE entit
 
 // ---------- step 1: the split and the routes ----------
 t('every area has exactly one level (owner or manager) and the split lists every area', Object.keys(AREAS).every((a) => areaLevel(a)) && [...SPLIT.owner, ...SPLIT.manager].sort().join() === Object.keys(AREAS).sort().join());
-t('only bot personalisation is owner-only; operational settings are the managers\'', SPLIT.owner.join() === 'bot' && ['routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams'].every((a) => SPLIT.manager.includes(a)));
+t('only bot personalisation and the site effects are owner-only; operational settings are the managers\'', SPLIT.owner.join() === 'bot,effects' && ['routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams'].every((a) => SPLIT.manager.includes(a)));
 t('a plain member cannot read or write the settings', (await call(member, '/api/controlcenter/settings')).s === 403 && (await call(member, '/api/controlcenter/settings/rush', { failedPolicy: 'bottom' })).s === 403);
 let r = await call(mgr, '/api/controlcenter/settings');
 t('a manager reads every area, with who may write each', r.s === 200 && Object.keys(AREAS).every((a) => r.d.areas[a]) && r.d.areas.bot.canWrite === false && r.d.areas.routes.canWrite === true && r.d.split.owner[0] === 'bot');
@@ -72,7 +72,7 @@ resetControlsCache();
 // ---------- step 4: config-only items in D1 ----------
 const mig = read('bot/migrations/0065_cc_config.sql');
 t('the migration exists, is not applied by code, creates cc_config and seeds the three items from config.json', /CREATE TABLE IF NOT EXISTS cc_config/.test(mig) && ['recruitment', 'matchAlert', 'streams'].every((k) => mig.includes(JSON.stringify(config[k]).replace(/"([^"]+)":/g, '"$1":'))));
-t('the code defaults equal config.json (so a deployment without the migration behaves the same)', JSON.stringify(CC_DEFAULTS) === JSON.stringify({ recruitment: config.recruitment, matchAlert: config.matchAlert, streams: config.streams }));
+t('the code defaults equal config.json (so a deployment without the migration behaves the same)', JSON.stringify(CC_DEFAULTS) === JSON.stringify({ recruitment: config.recruitment, matchAlert: config.matchAlert, effects: config.effects, streams: config.streams }));
 r = await call(mgr, '/api/controlcenter/settings/matchAlert', { loseBy: 4 });
 t('match alert margin: saved as a D1 row and read by the alert route', r.s === 200 && (await ccStored(env, 'matchAlert')).loseBy === 4 && (await call(mgr, '/api/controlcenter/settings/matchAlert', { loseBy: 99 })).s === 400);
 r = await call(mgr, '/api/controlcenter/settings/recruitment', { open: false, requirements: ['Mic', 'Discord'], positions: ['gk', 'ST'] });
