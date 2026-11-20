@@ -324,6 +324,18 @@ const failureLines = (failures, opts) => [...new Set(failures.map((f) => failure
 // Debounce (Discord allows about 5 posts per 5 seconds in a channel): a second refresh inside BOARD_GAP_MS with nothing to ping edits the
 // board in place instead of deleting and posting again; the next click or the minute tick puts it back at the bottom.
 export const BOARD_GAP_MS = 1500;
+/** Deletes every OTHER recent bot message in `ch` that carries `marker` (a custom id only the board has). Catches old boards the stored id missed
+ *  (an id lost from KV, a board posted by an older version, a failed delete). Needs Read Message History; without it nothing is swept. */
+export async function sweepOld(e, ch, marker, keepId) {
+  const list = await discord(e, 'GET', `/channels/${ch}/messages?limit=25`).catch(() => null);
+  if (!Array.isArray(list)) return 0;
+  let n = 0;
+  for (const m of list) {
+    if (String(m.id) === String(keepId) || !m.author?.bot || !JSON.stringify(m.components ?? []).includes(marker)) continue;
+    await discord(e, 'DELETE', `/channels/${ch}/messages/${m.id}`).then(() => { n++; }, (err) => console.log('board sweep delete failed', ch, m.id, err.message));
+  }
+  return n;
+}
 export async function refreshBoards(env, { now = Date.now(), pings = [], force = false } = {}) {
   const channels = await postChannels(env, 'auto:rush-board', 'rush_queue');
   if (!channels.length) return { channels: 0, posted: 0, edited: 0, failures: [] };
@@ -345,11 +357,11 @@ export async function refreshBoards(env, { now = Date.now(), pings = [], force =
       const ok = await discord(e, 'PATCH', `/channels/${ch}/messages/${old.id}`, { flags: msg.flags, components: msg.components, allowed_mentions: msg.allowed_mentions }).catch(() => null);
       if (ok) { edited++; continue; }
     }
-    if (old?.id) await discord(e, 'DELETE', `/channels/${ch}/messages/${old.id}`).catch(() => null);
+    if (old?.id) await discord(e, 'DELETE', `/channels/${ch}/messages/${old.id}`).catch((err) => console.log('queue board delete failed', ch, err.message));
     for (const p of pings) await discord(e, 'POST', `/channels/${ch}/messages`, p).catch((err) => console.log('rush queue ping failed', err.message));
     const r = await postAll(e, [ch], msg, 'queue board');
     failures.push(...r.failures);
-    if (r.sent[0]) { await kv?.put(BOARD_KEY + ch, JSON.stringify({ id: r.sent[0].id, at: now })); posted++; } // only a board Discord took is remembered
+    if (r.sent[0]) { await kv?.put(BOARD_KEY + ch, JSON.stringify({ id: r.sent[0].id, at: now })); posted++; await sweepOld(e, ch, 'pf:rq:join', r.sent[0].id); } // only a board Discord took is remembered; any older copy still there goes
   }
   return { channels: channels.length, posted, edited, failures };
 }
@@ -371,7 +383,7 @@ export async function queueTick(env, now = Date.now()) {
   const before = await loadQueue(env), state0 = await getState(env), st = await getSettings(env);
   const closedNow = idleClose(state0, before, st, now);
   if (closedNow !== state0) await saveState(env, closedNow);
-  if (!before.length && closedNow === state0) return { skipped: true }; // an empty line costs no REST calls
+  const idle = !before.length && closedNow === state0; // an empty line has nothing to change, but the board must still be the newest message (one REST read)
   const sw = sweep(before, st, now);
   if (sw.queue !== before) await saveQueue(env, before, sw.queue);
   if (sw.removed.length) await Promise.all(sw.removed.map((e) => closeNeed(env, e.captain)));
@@ -391,6 +403,7 @@ export async function queueTick(env, now = Date.now()) {
     const kv = kvOf(env);
     for (const ch of channels) {
       const have = await kv?.get(BOARD_KEY + ch, 'json').catch(() => null);
+      if (idle && !have?.id) continue; // never post a board from nothing: /queue board or the first join does that
       const last = await discord(rushEnv(env), 'GET', `/channels/${ch}`).catch(() => null);
       if (!have?.id || (last?.last_message_id && last.last_message_id !== have.id)) { stale = true; break; }
     }

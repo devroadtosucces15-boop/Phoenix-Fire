@@ -6,7 +6,7 @@
 // Channel and ping role come from the Organization config, never from code. KV `lfg:board:<channel>` = { id, at } of the board message.
 import { channelsFor, pingRoleFor, orgName } from './orgconfig.js';
 import { RUSH_POSITIONS, ANY, cleanPositions, posLabel } from './rushmatch.js';
-import { rushEnv, postAll, failureText } from './rushqueue.js';
+import { rushEnv, postAll, failureText, sweepOld } from './rushqueue.js';
 import { discord } from './servertools.js';
 import { kvOf } from './kv.js';
 import { message, header, text, footer, buttons, picture, sep } from './ui.js';
@@ -87,6 +87,7 @@ export async function refreshLfgBoard(env, { now = Date.now(), ping = false, for
       if (!r.sent[0]) continue;
       if (old?.id) await discord(e, 'DELETE', `/channels/${ch}/messages/${old.id}`).catch(() => null);
       await kv?.put(BOARD_KEY + ch, JSON.stringify({ id: r.sent[0].id, at: now })); posted++; // only a board Discord took is remembered
+      await sweepOld(e, ch, 'pf:lfg:board:in', r.sent[0].id); // any older copy the stored id missed goes too
     }
     // the announcement always sits right under the board: a new one replaces the old; after a move the old one comes back quietly while its person is still listed
     const keep = !fresh && ann?.id && posts.some((p) => p.user_id === ann.uid) ? ann : null;
