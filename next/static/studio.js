@@ -99,7 +99,7 @@ ${users === null ? '<p class="small muted">Loading the squad…</p>' : users ===
 ${S.doc.steps.length ? `<label class="st-chk small"><input type="checkbox" data-strecplay${S.recPlay ? ' checked' : ''}> ▶ Play the keyframes while recording</label>` : ''}
 <p class="tiny muted">${canRec('video') ? 'For a video, pick <b>this tab</b> when the browser asks. ' : 'Video recording needs a computer browser (Chrome, Edge or Firefox). '}Videos up to ${clock(REC_SECS.video)}, voice-overs up to ${clock(REC_SECS.voice)}.</p>`;
     return `<div class="panel" id="st-media"><div class="eyebrow">🎬 Recordings${m?.length ? ` · ${m.length}` : ''}</div><p class="small muted" style="margin:6px 0 10px">Film the board or talk it through. Members watch them on the play.</p>
-${m === null ? '<p class="small muted">Loading…</p>' : m.length ? `<ul class="pb-md st-md">${m.map(row).join('')}</ul>` : '<p class="small muted">None yet.</p>'}<div class="pb-player" id="st-player"></div>${bar}</div>`; };
+${m === null ? `<div aria-busy="true">${window.PhoenixStates ? PhoenixStates.skeletonHtml(2, 'row') : 'Loading…'}</div>` : m.length ? `<ul class="pb-md st-md">${m.map(row).join('')}</ul>` : '<p class="small muted">None yet.</p>'}<div class="pb-player" id="st-player"></div>${bar}</div>`; };
   const ICON = { 'set-piece': '⚽', formation: '🧩', drill: '🏃' }; // bot/plays.js CAT_ICON: the post's title icon
   const s1 = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
   const fileOf = (x) => `${S.play.title.replace(/[^\w-]+/g, '-').slice(0, 40) || 'play'}.${x.type?.includes('mp4') ? (x.kind === 'video' ? 'mp4' : 'm4a') : 'webm'}`;

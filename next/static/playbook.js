@@ -154,7 +154,7 @@ ${p.published ? `<button type="button" class="btn ${p.mine?.learned ? 'ghost' : 
       catch (e) { M?.toast(e.message, { kind: 'err' }); location.hash = ''; }
       return; }
     const id = idOf(); if (!id) { P = null; paintList(land); return; }
-    M?.skeleton(el, 4);
+    M?.skeleton(el, 6, 'card');
     try { P = await A.call(`/api/plays/${id}`); quizOpen = false; buildFrames(); paintView(true); loadMedia(id); el.scrollIntoView?.({ block: 'start' }); }
     catch (e) { P = null; M?.toast(e.status === 404 ? 'That play is not published or was removed' : e.message, { kind: 'err' }); history.replaceState(null, '', location.pathname + location.search); paintList(true); }
   }
