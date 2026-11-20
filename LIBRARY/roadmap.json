@@ -999,7 +999,7 @@
       "title": "Shared tooltip replacing browser titles and the 10 web/*.js copies (amber border, key hint)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -1010,12 +1010,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/tooltip.js` + `tooltip.css` (one shared script and style, linked in every page head): any title or data-tip shows one tooltip (Phoenix accent border via var(--red), dark plate, optional key cap from data-key or aria-keyshortcuts). Mouse hover after 350 ms, keyboard focus at once, Esc hides, touch never shows it. A title is moved to data-tip on first sight so the browser pop-up never doubles; icon-only controls keep it as aria-label; aria-describedby while shown. No page markup rewrites. `tests/tooltip.test.mjs` checks the helpers, wiring and brand. Not checked in a real browser (browser pane refused localhost). The classic web/*.js data-tip copies are not in the Phoenix build and were left alone.",
       "outcome": "One tooltip with hover and keyboard focus.",
       "behavior": "Replaced family by family; each family keeps its screenshot proof.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-035-tooltip",
+          "what": "tooltip.js + tooltip.css: one shared tooltip for title and data-tip (hover, focus, Esc, key hint, Phoenix border); tests/tooltip.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1025,7 +1031,7 @@
       "title": "Loading and empty states: same-shape placeholders with aria-busy, reasons and next steps",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,

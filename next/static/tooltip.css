@@ -1,0 +1,10 @@
+/* PF-035: the one shared tooltip (tooltip.js). Phoenix accent border (var(--red), recoloured by the build), dark plate, optional key cap. */
+.ph-tip{position:fixed;z-index:400;max-width:min(280px,calc(100vw - 16px));padding:6px 10px;border:1px solid var(--red);border-radius:8px;
+  background:var(--p1,#111);color:var(--text);font:500 12.5px/1.35 Inter,system-ui,sans-serif;box-shadow:0 6px 22px rgba(0,0,0,.45);
+  pointer-events:auto;overflow-wrap:anywhere}
+.ph-tip[hidden]{display:none}
+.ph-tip kbd{display:inline-block;margin-left:8px;padding:0 6px;border:1px solid var(--line2);border-radius:5px;background:var(--p3,#222);
+  color:var(--soft);font:600 11px/17px Inter,system-ui,sans-serif;white-space:nowrap;vertical-align:1px}
+@media (prefers-reduced-motion:no-preference){.ph-tip:not([hidden]){animation:ph-tip-in .12s var(--ease,ease-out)}}
+@keyframes ph-tip-in{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+@media (pointer:coarse){.ph-tip{display:none}}
