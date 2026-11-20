@@ -905,7 +905,7 @@
       "title": "Effects clean-up, fix only: remove the pointer shadow, pause when the tab is hidden, stop endless idle animations",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 4,
@@ -914,12 +914,18 @@
       "dependsOn": [],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
       "outcome": "No pointer shadow; nothing animates while hidden; endless animations drop from 19, 11 and 10 to those that mean something (live status).",
       "behavior": "Same look. Counts of running animations are measured before and after on Club, Stats and Tactics.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-032-effects",
+          "what": "Pointer-following spotlight removed (fx.js); html.pf-hidden pauses every animation while the tab is hidden (motion.js, motion.css); decorative idle animations (logo halo/sweep/float, hub key float/rim/halo/gloss/bounce/rings, crest pulse, widget shine/rays/towers) now run 2 to 4 cycles then rest, same look. Endless animations measured at 390 px: Club 18 to 0, Stats 11 to 0, Tactics 10 to 0; running while hidden 0. tools/effects/measure.mjs (headless Chromium, no dependencies); tests/effects.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -929,7 +935,7 @@
       "title": "Chips and tabs keyboard: arrow, Home and End keys, group roles, last tab remembered (same look)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "S",
       "effort": 2,
       "importance": 4,
