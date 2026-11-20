@@ -103,3 +103,16 @@ How to read it:
 - Opacity 0: 108 blocks wait for the scroll reveal (below the fold at load, 2 more than before because the page has grown); they are not stuck, but a "every block reveals" check is a roadmap row.
 - Native selects: the 92 are in markup (control center and filter sheets, hidden at rest). The "8" of Phase 0 counted the ones that show.
 - Frame rate: no page drops below 60 fps in headless Chromium; a real phone is the owner's check.
+
+## PF-047 tap areas (2026-11-20)
+
+`node tools/effects/reaudit.mjs site 5` now counts a control as small only when its real hit area (box plus invisible `::after`, found with `elementFromPoint` around the centre) is under 44 px. A neighbouring control that owns the shared edge counts as fine (no overlap), a fixed bar is ignored, and a link whose match also has a 44 px row on the page counts as an equivalent control (WCAG 2.5.8). It also reports `box` (plain rectangle count, the old measure) and `covered` (controls whose centre is not tappable), and waits up to 8 s for entrance animations before measuring.
+
+| Measure (budget 5 and 14, same) | PF-046 | PF-047 |
+|---|---|---|
+| Hit area under 44 px: Club / Stats / Tactics | 39 / 115 / 34 (box) | 0 / 17 / 2 |
+| Box under 44 px (look unchanged) | 39 / 115 / 34 | 39 / 115 / 34 |
+
+Changes (`next/static/tap.css`, `widgets.css`): grown area raised with `z-index: 1`; `:not(.cs)` exclusion removed (clean-sheet dot now `::before`); mosaic tiles `inset: -2px` so a tile never takes a neighbour's tap. Screenshots at 390 px before and after are identical outside two animated spots (logo glow, live ring), same as run-to-run noise.
+
+Left, owner choice: 17 mosaic tiles on Stats (17 px, 5 px gap) whose match has no larger row on the page: a 7 px gap or 24 px tiles would pass WCAG 2.5.8 but changes the look. 2 pitch markers on Tactics (`button.pc-marker`, their `::after` is the card shine; card glare stays).

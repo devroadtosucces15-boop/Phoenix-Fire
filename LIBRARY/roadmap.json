@@ -1381,7 +1381,7 @@
       "title": "Tap areas left: result pills, game rows, chips and player cards under 44 px on Stats, Club and Tactics",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 3,
@@ -1392,12 +1392,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Leftover of the PF-046 re-audit. Look stays as it is (icons and emoji stay; card glare and shine stay): bigger touch area only, through padding or a hidden hit area, never a visible resize. Numbers: `PLANNING/PF-029-COMPONENTS-MOTION.md`, section \"PF-046 re-audit\".",
       "outcome": "`node tools/effects/reaudit.mjs site 5` shows Stats under 40, Club under 15 and Tactics under 10 tap targets below 44 px.",
       "behavior": "Visible size and look unchanged; touch area grows with padding or a pseudo-element; no overlap with a neighbour.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-047",
+          "what": "Tap areas: the reaudit now measures the real hit area (box plus the invisible ::after), reports the plain box count and controls whose centre is covered, and waits for entrance animations to end. tap.css: the grown area is raised (z-index 1) so a later section cannot cover it, nothing opts out any more (the mosaic clean-sheet dot moved to ::before), and mosaic tiles stop at half the gap so they no longer steal taps from a neighbour. Look is unchanged (before and after screenshots identical outside two animated spots). Tap targets under 44 px at budget 5: Club 39 -> 0, Stats 115 -> 17, Tactics 34 -> 2 (box-only counts stay 39/115/34 by design). Left: 17 mosaic tiles on Stats whose match has no larger row on the page (need a 7 px gap or a bigger tile = visible change, owner choice) and 2 pitch markers on Tactics (their ::after is the card shine)."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1407,7 +1413,7 @@
       "title": "Check that every block hidden for a scroll reveal does show (Stats has 108 at opacity 0 at load)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "S",
       "effort": 2,
       "importance": 3,
