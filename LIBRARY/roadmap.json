@@ -465,7 +465,7 @@
       "title": "Side roadmap Items 8 to 25: bot cleanup and new bot features (including the test-view command)",
       "phase": "Side roadmap",
       "area": "`bot/`",
-      "status": "NEXT",
+      "status": "OPEN",
       "size": "M",
       "effort": 3,
       "importance": 3,
@@ -478,7 +478,7 @@
       "lowHanging": false,
       "percent": 94,
       "verify": false,
-      "notes": "Plan sections 5c to Item 25. One session per item. Item 8 duplicate-post fix done 2026-11-17 (bot/once.js claims; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 9 Translator done 2026-11-17 (context menu Translate message, /translate, /enhance, /language, bot/aibudget.js KV counter; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 10 Quote card done 2026-11-17 (context menu Quote card, bot/quotecard.js; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 11 wheel + pin tool done 2026-11-17 (animated weighted /wheel with History, Pin to bottom/unpin, migration 0071; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 12 server navigator done 2026-11-17 (/navigator, bot/navigator.js, no migration; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 13 bot wiki book done 2026-11-18 (/wiki, bot/wikibook.js, the five help commands open it once the flag is on; no migration; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 14 server intelligence and counselor done 2026-11-18 (/counselor, bot/serverintel.js, REST sampling by the Worker, flag serverIntel ships off = kill switch, no migration; owner steps and disclosure wording in PLANNING/PF-024-GO-LIVE.md). Item 15 mascot and roast done 2026-11-18 (/mascot quote|ask|roast|mute, bot/mascot.js, flag mascot ships off, no migration; owner decisions and steps in PLANNING/PF-024-GO-LIVE.md). Item 16 player bio card done 2026-11-18 (bot/biocard.js, posts then edits one card per member, purpose member_bios, migration 0072; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 17 absence notice done 2026-11-18 (/absence notice|mine|cancel|list, bot/absence.js, managers card with Acknowledge, purpose absence_notices, migration 0073, Control Center tool Absences; owner steps and the manager-level decision in PLANNING/PF-024-GO-LIVE.md). PF-024 stays NEXT until Item 25 is done. Item 18 highlight clip upload done 2026-11-18 (/highlight upload|mine|delete|list in the matchday app, bot/highlight.js, R2 hl/ keys + D1 index, migration 0074, flag highlight owner, limits in config.json highlight; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). Item 19 birthdays done 2026-11-18 (/birthday set|visible|show|clear in the matchday app, bot/birthday.js folded in the old fun poster, purpose birthdays + group ping_birthdays, visibility hidden by default, no migration; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). Item 21 GIF maker done 2026-11-18 (/gif make|mine|delete|list in the matchday app, bot/gif.js, converter is a GitHub Actions job .github/workflows/gif-convert.yml + scripts/gif-convert.mjs, keyed routes /api/gif/*, R2 gifin/ and gif/ keys, migration 0075, flag gif owner, limits in config.json gif; owner steps, Actions limits and decisions in PLANNING/PF-024-GO-LIVE.md). Item 22 emoji and sticker suggester done 2026-11-18 (/emoji suggest|mine|delete|review in the matchday app, bot/emoji.js, R2 emoji/ keys + D1 emoji_suggestions, manager card with Approve and Reject, purpose emoji_review, Control Center tool Emoji and stickers with routes /api/emoji/review*, migration 0076, flag emoji owner, limits in config.json emojiSuggest; the importer is NOT built; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). 14 of 18 items done (Items 8 to 19, 21 and 22 of 8 to 25 = 78%). Next: Item 25 the test-view command, then Item 24 points economy (owner decisions recorded 2026-11-18), then Item 23 arcade last; Item 20 stays blocked on the owner's link. Item 25 test view done 2026-11-18 (/testview output, variant, as; core app, manager only, bot/testview.js; samples generated into bot/testview.gen.js by studio.mjs testview from the same captures as the gallery; read-only sandbox env, inert controls, no site route, no migration; flag testview owner; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 24 points economy done 2026-11-18 (extends bot/points.js: seasonal reset, spendable credit with a spend ledger entry, rules and price list editable in the Control Center, weekly balance DM kind `points`, match performance via keyed POST /api/points/match from the result step, badge points; migration 0077; flag pointsEconomy owner; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). Item 23 arcade first slice done 2026-11-19 (/arcade play | top | me in the matchday app: noughts and crosses, connect four, rock paper scissors, penalty shootout as button games in one channel message, pure rules in bot/arcadegames.js for a later Activity, migration 0078 arcade_games and arcade_scores, arcade score plus the shared points games.played and games.won, flag arcade owner; the other games and the Discord Activity wait for the owner's hosting decision in PLANNING/PF-024-GO-LIVE.md). Items 8 to 19, 21, 22, 23, 24 and 25 are done (17 of 18); Item 20 waits for the owner's link.",
+      "notes": "Plan sections 5c to Item 25. One session per item. Item 8 duplicate-post fix done 2026-11-17 (bot/once.js claims; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 9 Translator done 2026-11-17 (context menu Translate message, /translate, /enhance, /language, bot/aibudget.js KV counter; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 10 Quote card done 2026-11-17 (context menu Quote card, bot/quotecard.js; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 11 wheel + pin tool done 2026-11-17 (animated weighted /wheel with History, Pin to bottom/unpin, migration 0071; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 12 server navigator done 2026-11-17 (/navigator, bot/navigator.js, no migration; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 13 bot wiki book done 2026-11-18 (/wiki, bot/wikibook.js, the five help commands open it once the flag is on; no migration; owner decisions in PLANNING/PF-024-GO-LIVE.md). Item 14 server intelligence and counselor done 2026-11-18 (/counselor, bot/serverintel.js, REST sampling by the Worker, flag serverIntel ships off = kill switch, no migration; owner steps and disclosure wording in PLANNING/PF-024-GO-LIVE.md). Item 15 mascot and roast done 2026-11-18 (/mascot quote|ask|roast|mute, bot/mascot.js, flag mascot ships off, no migration; owner decisions and steps in PLANNING/PF-024-GO-LIVE.md). Item 16 player bio card done 2026-11-18 (bot/biocard.js, posts then edits one card per member, purpose member_bios, migration 0072; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 17 absence notice done 2026-11-18 (/absence notice|mine|cancel|list, bot/absence.js, managers card with Acknowledge, purpose absence_notices, migration 0073, Control Center tool Absences; owner steps and the manager-level decision in PLANNING/PF-024-GO-LIVE.md). PF-024 stays NEXT until Item 25 is done. Item 18 highlight clip upload done 2026-11-18 (/highlight upload|mine|delete|list in the matchday app, bot/highlight.js, R2 hl/ keys + D1 index, migration 0074, flag highlight owner, limits in config.json highlight; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). Item 19 birthdays done 2026-11-18 (/birthday set|visible|show|clear in the matchday app, bot/birthday.js folded in the old fun poster, purpose birthdays + group ping_birthdays, visibility hidden by default, no migration; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). Item 21 GIF maker done 2026-11-18 (/gif make|mine|delete|list in the matchday app, bot/gif.js, converter is a GitHub Actions job .github/workflows/gif-convert.yml + scripts/gif-convert.mjs, keyed routes /api/gif/*, R2 gifin/ and gif/ keys, migration 0075, flag gif owner, limits in config.json gif; owner steps, Actions limits and decisions in PLANNING/PF-024-GO-LIVE.md). Item 22 emoji and sticker suggester done 2026-11-18 (/emoji suggest|mine|delete|review in the matchday app, bot/emoji.js, R2 emoji/ keys + D1 emoji_suggestions, manager card with Approve and Reject, purpose emoji_review, Control Center tool Emoji and stickers with routes /api/emoji/review*, migration 0076, flag emoji owner, limits in config.json emojiSuggest; the importer is NOT built; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). 14 of 18 items done (Items 8 to 19, 21 and 22 of 8 to 25 = 78%). Next: Item 25 the test-view command, then Item 24 points economy (owner decisions recorded 2026-11-18), then Item 23 arcade last; Item 20 stays blocked on the owner's link. Item 25 test view done 2026-11-18 (/testview output, variant, as; core app, manager only, bot/testview.js; samples generated into bot/testview.gen.js by studio.mjs testview from the same captures as the gallery; read-only sandbox env, inert controls, no site route, no migration; flag testview owner; owner steps in PLANNING/PF-024-GO-LIVE.md). Item 24 points economy done 2026-11-18 (extends bot/points.js: seasonal reset, spendable credit with a spend ledger entry, rules and price list editable in the Control Center, weekly balance DM kind `points`, match performance via keyed POST /api/points/match from the result step, badge points; migration 0077; flag pointsEconomy owner; owner steps and decisions in PLANNING/PF-024-GO-LIVE.md). Item 23 arcade first slice done 2026-11-19 (/arcade play | top | me in the matchday app: noughts and crosses, connect four, rock paper scissors, penalty shootout as button games in one channel message, pure rules in bot/arcadegames.js for a later Activity, migration 0078 arcade_games and arcade_scores, arcade score plus the shared points games.played and games.won, flag arcade owner; the other games and the Discord Activity wait for the owner's hosting decision in PLANNING/PF-024-GO-LIVE.md). Items 8 to 19, 21, 22, 23, 24 and 25 are done (17 of 18); Item 20 waits for the owner's link. Moved from NEXT to OPEN 2026-11-20 so the owner-named components and motion work (PF-029 onward) goes first; 17 of 18 items done, Item 20 waits for the owner's link.",
       "outcome": "The bot has fewer, cleaner commands and the planned new features, including a test-view command.",
       "behavior": "Split into one session per plan item when taken; each follows the channel and role from config rule.",
       "doneLog": [
@@ -812,23 +812,23 @@
     },
     {
       "id": "PF-029",
-      "title": "Site components upgrade: buttons, search, forms, chips, tabs, dialogs, menus, notices, tables, cards, charts, loading and empty states, header, tooltips (owner decisions 2026-11-20)",
-      "phase": "Side roadmap",
+      "title": "Tap areas to 44 px and double-press guard (gold look unchanged)",
+      "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
-      "size": "L",
-      "effort": 4,
+      "status": "NEXT",
+      "size": "S",
+      "effort": 2,
       "importance": 4,
-      "estMinutes": 600,
-      "model": "opus",
+      "estMinutes": 60,
+      "model": "sonnet",
       "dependsOn": [],
-      "fileLane": "`next/static/`, `next/lib/`",
-      "lowHanging": false,
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
       "percent": 0,
       "verify": false,
-      "notes": "Owner named this item 2026-11-20 and chose every option. Decisions, accepted and refused look changes and the five alignment rules are in `PLANNING/PF-029-COMPONENTS-MOTION.md`. Phases: 0 foundations (shared tokens, tooltip audit), 1 buttons and tap areas, 2 chips and tabs, 3 notices, 4 dialogs and sheets, 5 search, 6 tables and charts, 7 forms, loading and empty states, 8 header, 9 dock (five items, auto-hide), 10 re-audit. Icons and emoji stay everywhere; card glare and shine stay; layout proposals are parked.",
-      "outcome": "Every shared component works with keyboard and touch, keeps its Phoenix look, icons and emoji, and follows the owner-approved changes only.",
-      "behavior": "Each phase ships alone behind the existing theme layer, with before and after screenshots at 390, 820 and 1440 and a test that fails if a refused look change appears.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Every button, chip and icon button has a 44 px tap area (invisible padding) and ignores a second press while busy.",
+      "behavior": "Same gold buttons and emoji. Busy then done state through one shared helper. A test fails if a tap target is under 44 px on Club, Stats and Tactics at 390 px.",
       "doneLog": [],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
@@ -836,8 +836,390 @@
     },
     {
       "id": "PF-030",
-      "title": "Motion and effects pass: owner-only effects control with budget and per-effect levels, then the approved motion changes (owner decisions 2026-11-20)",
-      "phase": "Side roadmap",
+      "title": "Labels and announcements: unlabelled fields, icon buttons, table captions, current page, banners",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "S",
+      "effort": 2,
+      "importance": 4,
+      "estMinutes": 60,
+      "model": "sonnet",
+      "dependsOn": [],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Screen readers and keyboards get names and state everywhere: Join and Apply fields, the 21 icon buttons with only a tooltip, table captions and header scope, aria-current on dock and tabs, banner role=status.",
+      "behavior": "No visible change. Tests count unlabelled controls and fail above zero on the probed pages.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-031",
+      "title": "Header fit and badges: avatar never clipped, logo shortens on small phones, alert badge shows 9+",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "S",
+      "effort": 2,
+      "importance": 4,
+      "estMinutes": 45,
+      "model": "sonnet",
+      "dependsOn": [],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "The header fits a 375 px screen with the avatar fully inside.",
+      "behavior": "Visible only on small phones. Screenshots at 360, 375 and 390 px.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-032",
+      "title": "Effects clean-up, fix only: remove the pointer shadow, pause when the tab is hidden, stop endless idle animations",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "S",
+      "effort": 2,
+      "importance": 4,
+      "estMinutes": 60,
+      "model": "sonnet",
+      "dependsOn": [],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "No pointer shadow; nothing animates while hidden; endless animations drop from 19, 11 and 10 to those that mean something (live status).",
+      "behavior": "Same look. Counts of running animations are measured before and after on Club, Stats and Tactics.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-033",
+      "title": "Chips and tabs keyboard: arrow, Home and End keys, group roles, last tab remembered (same look)",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "S",
+      "effort": 2,
+      "importance": 4,
+      "estMinutes": 90,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-029"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Filter chips and tab sets work by keyboard and are announced correctly.",
+      "behavior": "Same pills and tabs; highlight never covers another option when chips wrap.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-034",
+      "title": "Menus and dropdowns: arrow keys, Esc, outside tap, focus return (same look)",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "S",
+      "effort": 2,
+      "importance": 4,
+      "estMinutes": 60,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-031"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Account, nav and alert menus can be used by keyboard and touch.",
+      "behavior": "Same menus and look; only keyboard, touch and focus handling change.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-035",
+      "title": "Shared tooltip replacing browser titles and the 10 web/*.js copies (amber border, key hint)",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 120,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-030"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "One tooltip with hover and keyboard focus.",
+      "behavior": "Replaced family by family; each family keeps its screenshot proof.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-036",
+      "title": "Loading and empty states: same-shape placeholders with aria-busy, reasons and next steps",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 120,
+      "model": "sonnet",
+      "dependsOn": [],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Nothing is blank while loading; every empty state says why and offers one action.",
+      "behavior": "Shimmer and bigger empty icon as the owner accepted.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-037",
+      "title": "Forms: 44 px fields with a leading icon, helper and error text, clear button on searches",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 120,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-029"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Forms are labelled, validated inline and consistent.",
+      "behavior": "Orange focus ring not applied (owner did not tick it).",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-038",
+      "title": "Tables and charts: centred columns except the first, captions, keyboard sort, Compare button, number and % on one line",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 150,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-030"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Tables and charts are aligned and accessible.",
+      "behavior": "Alignment rules from the owner (PF-029 doc) are tested.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-039",
+      "title": "Notices: one queue, stacked, errors stay, Undo and progress line",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 150,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-029"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "One toast system replaces the 14 wrappers.",
+      "behavior": "Same icons in messages.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-040",
+      "title": "Dialogs and slide-up panels: one dialog, one bottom sheet, focus trap, Back closes",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 180,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-034"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Every pop-up behaves the same.",
+      "behavior": "Phone bottom sheet with grab handle (accepted).",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-041",
+      "title": "Chips and tabs new look: segmented bar with sliding highlight, dark amber selected state",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 120,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-033"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "The accepted new look for chips and tabs.",
+      "behavior": "Emoji icons stay; no overlapping highlight.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-042",
+      "title": "Search and command palette: groups, key hints, actions, recents",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 180,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-035"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Header search becomes a command palette.",
+      "behavior": "Rows keep their emoji.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-043",
+      "title": "Dock: five items (Club, Matches, Hub centre, Stats, Tactics), auto-hide on scroll with a bobbing bring-back icon",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "M",
+      "effort": 3,
+      "importance": 4,
+      "estMinutes": 180,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-031"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "The phone dock matches the owner decision.",
+      "behavior": "Today dock look kept; live effects enhanced.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-044",
+      "title": "Owner-only effects control: budget (5 or more, default 5) and a level per effect (Full, Balanced, Off), one config read by app.js, motion.js, safe.js and ui.mjs",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "L",
+      "effort": 4,
+      "importance": 4,
+      "estMinutes": 360,
+      "model": "opus",
+      "dependsOn": [
+        "PF-032"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "The owner sets how many effects run and how strong each is; nobody else can.",
+      "behavior": "Effects read one config; a test asserts no more than the budget run at once.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-045",
+      "title": "Motion pass: the accepted new motion (card spring, scroll, selection ripple, transitions, celebrations, glow spotlight, status ping, widgets, menus)",
+      "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
       "status": "OPEN",
       "size": "L",
@@ -846,15 +1228,41 @@
       "estMinutes": 420,
       "model": "opus",
       "dependsOn": [
-        "PF-029"
+        "PF-044"
       ],
-      "fileLane": "`next/static/`, `next/lib/`",
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
       "percent": 0,
       "verify": false,
-      "notes": "Owner chose C (new proposal) for 16 of 19 motion families and B (fix, same look) for buttons, dock and the Hub entrance. One owner-only switch: budget (5 or more, default 5) and a level (Full, Balanced, Off) for each effect. Pointer shadow is removed. Details in `PLANNING/PF-029-COMPONENTS-MOTION.md`.",
-      "outcome": "Motion is faster and smoother, never hides content, respects reduced motion, and only the owner controls effects.",
-      "behavior": "Effects read one budget from config; no module hardcodes its own on or off. Tests assert at most the budget run at once.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Motion is faster and smoother and never hides content.",
+      "behavior": "Card glare and shine unchanged; reduced motion respected.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-046",
+      "title": "Re-audit and report: repeat today's measurements and compare",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "S",
+      "effort": 2,
+      "importance": 4,
+      "estMinutes": 90,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-045"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "outcome": "A before and after report of tap targets, unlabelled controls, running animations and frame rate.",
+      "behavior": "Numbers in this PLANNING file.",
       "doneLog": [],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"

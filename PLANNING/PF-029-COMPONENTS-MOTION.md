@@ -68,3 +68,10 @@ Effects state (feeds PF-030):
 Components probe (15 pages, phone width): 36 form fields (2 unlabelled: Join, Apply), 4 tables (none captioned, 3 without header scope), 8 native selects, empty states on 5 pages.
 
 Next: Phase 1 (buttons and tap areas, gold look kept) and the shared tooltip.
+
+## Roadmap order (lightest first), registered 2026-11-20
+
+Light, mostly invisible (S): PF-029 tap areas, PF-030 labels and announcements, PF-031 header fit, PF-032 effects clean-up (fix only), PF-033 chips and tabs keyboard, PF-034 menus keyboard.
+Medium (M): PF-035 shared tooltip, PF-036 loading and empty states, PF-037 forms, PF-038 tables and charts, PF-039 notices, PF-040 dialogs, PF-041 chips and tabs new look, PF-042 search, PF-043 dock.
+Heavy (L): PF-044 owner-only effects control (budget and per-effect level), PF-045 the accepted motion pass. Last: PF-046 re-audit.
+PF-029 is `NEXT`. The separate PF-029/PF-030 rows registered earlier were replaced by these 18 rows.
