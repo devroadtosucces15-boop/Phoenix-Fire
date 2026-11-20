@@ -117,7 +117,7 @@ export async function syncAvailability(env, before, after, { matched = false } =
     await env.DB.prepare("UPDATE rush_lfg SET status = 'open', asked = 0 WHERE id = ?").bind(p.id).run();
     await repaint(env, p, 'open');
   }
-  if (joined.length || left.length) await refreshLfgBoard(env, { now }).catch(() => null); // the live board shows who is free
+  if (joined.length || left.length) await refreshLfgBoard(env, { now, quiet: true }).catch(() => null); // the list follows the queue, edited in place: a queue click never sends a second message
   return { joined: joined.length, back: left.length };
 }
 

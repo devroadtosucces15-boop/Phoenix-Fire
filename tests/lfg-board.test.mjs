@@ -3,7 +3,7 @@
 // nothing is hardcoded (channel and ping role come from the Organization config).
 import { env, sqlite, KV } from './mock.mjs';
 import { t, done } from './lib.mjs';
-import { lfgCommand, lfgButton, lfgTick, LFG_ID } from '../bot/lfg.js';
+import { lfgCommand, lfgButton, lfgTick, syncAvailability, LFG_ID } from '../bot/lfg.js';
 import { boardMessage, positionPicker, refreshLfgBoard, lfgBoardTick, BOARD_KEY } from '../bot/lfgboard.js';
 import { plainText } from '../bot/ui.js';
 import fs from 'node:fs';
@@ -149,6 +149,11 @@ t('when the board has to move, the announcement comes back under it quietly (no 
 await press(di, 'pf:lfg:board:off', T0 + 26 * MIN); calls.length = 0;
 await refreshLfgBoard(env, { now: T0 + 26 * MIN, force: true });
 t('when the announced player goes off the list the announcement is removed', !posts(CH).some((c) => c.body.content) && !JSON.parse((await KV.get('lfg:ann:' + CH)) ?? 'null')?.id);
+
+// ---------- a queue click only corrects the list in place: no second message ----------
+await press(di, 'pf:lfg:pos:30', T0 + 40 * MIN, ['GK']); latest[CH] = JSON.parse(await KV.get(BOARD_KEY + CH)).id; calls.length = 0;
+await syncAvailability(env, [], [{ captain: '905', members: [], status: 'waiting' }], {}, T0 + 41 * MIN);
+t('when the queue takes a player off the list, the board is edited in place: nothing posted, nothing deleted', posts(CH).length === 0 && !calls.some((c) => c.method === 'DELETE') && calls.some((c) => c.method === 'PATCH' && /\/messages\//.test(c.path)));
 
 // ---------- nothing hardcoded ----------
 const src = fs.readFileSync(new URL('../bot/lfgboard.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../bot/lfg.js', import.meta.url), 'utf8');
