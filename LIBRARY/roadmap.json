@@ -325,7 +325,7 @@
         {
           "date": "2026-11-15",
           "ref": "PR (PF-019)",
-          "what": "Menus show every real page once. Dock and staff hub list the same tiles: Artwork is now a manager tile, Control Center once (Manager view only), one Boardroom tile (its eight tabs stay deep links). Card Studio added to the quick dial (R.lk) and the search palette; fx.js orb hidden when the dock is mounted; dead #artpanel removed; Preview-as chips stay for the real owner while previewing member or guest; mock fixture cardStudio flag is members. tests/menus.test.mjs (16 checks); dock, controlcenter-nav and layout-pass tests updated."
+          "what": "Menus show every real page once. Dock and staff hub list the same tiles: Artwork is now a manager tile, Control Center once (Manager view only), one Boardroom tile (its eight tabs stay deep links). Card Studio added to the quick dial (R.lk) and the search palette; fx.js orb hidden when the dock is mounted; dead #artpanel removed; Preview-as chips stay for the real owner while previewing member or guest; mock fixture cardStudio flag is members. tests/menus-keys.test.mjs (16 checks); dock, controlcenter-nav and layout-pass tests updated."
         }
       ],
       "plans": []
@@ -967,7 +967,7 @@
       "title": "Menus and dropdowns: arrow keys, Esc, outside tap, focus return (same look)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 4,
@@ -978,12 +978,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/menus.js` (one shared script, linked in every page head): Esc closes the open menu, tap or click outside closes it, ArrowDown/ArrowUp/Home/End move through items, ArrowDown on a closed opener opens it, keyboard-opened menus land on the first item, keyboard-closed menus return focus to the opener. Covers account chip, bell, page navigator, dock ring and owner tools; closing goes through the opener's own click. No markup or style changes. `tests/menus-keys.test.mjs` checks key maths and wiring. Not checked in a real browser. The classic `web/app.js` account menu and mega nav are not in the Phoenix build and were left alone.",
       "outcome": "Account, nav and alert menus can be used by keyboard and touch.",
       "behavior": "Same menus and look; only keyboard, touch and focus handling change.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-034-menus",
+          "what": "menus.js: Esc, outside tap, arrow keys and focus return for account, bell, navigator, dock and owner menus; tests/menus-keys.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -993,7 +999,7 @@
       "title": "Shared tooltip replacing browser titles and the 10 web/*.js copies (amber border, key hint)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,
