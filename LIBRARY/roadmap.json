@@ -1349,7 +1349,7 @@
       "title": "Re-audit and report: repeat today's measurements and compare",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 4,
@@ -1360,11 +1360,69 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
       "outcome": "A before and after report of tap targets, unlabelled controls, running animations and frame rate.",
       "behavior": "Numbers in this PLANNING file.",
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-046",
+          "what": "Re-audit: tools/effects/reaudit.mjs repeats the Phase 0 measurements on the built site at budget 5 and 14; before and after table in PLANNING/PF-029-COMPONENTS-MOTION.md. Labels fixed (0 unnamed, 0 unlabelled fields), tap targets under 44 px 54/201/37 -> 39/115/34 (Club/Stats/Tactics), 0 endless animations on Club, Stats, Tactics, 60 fps, 108 blocks at opacity 0 on Stats (scroll reveals). Budget 14 changes nothing at rest. Leftovers registered as PF-047 and PF-048. Open owner decisions: default budget (5 vs 14) and the can-only-lower personal Motion sheet."
+        }
+      ],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-047",
+      "title": "Tap areas left: result pills, game rows, chips and player cards under 44 px on Stats, Club and Tactics",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "NEXT",
+      "size": "S",
+      "effort": 2,
+      "importance": 3,
+      "estMinutes": 90,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-046"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Leftover of the PF-046 re-audit. Look stays as it is (icons and emoji stay; card glare and shine stay): bigger touch area only, through padding or a hidden hit area, never a visible resize. Numbers: `PLANNING/PF-029-COMPONENTS-MOTION.md`, section \"PF-046 re-audit\".",
+      "outcome": "`node tools/effects/reaudit.mjs site 5` shows Stats under 40, Club under 15 and Tactics under 10 tap targets below 44 px.",
+      "behavior": "Visible size and look unchanged; touch area grows with padding or a pseudo-element; no overlap with a neighbour.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-048",
+      "title": "Check that every block hidden for a scroll reveal does show (Stats has 108 at opacity 0 at load)",
+      "phase": "Components and motion",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "S",
+      "effort": 2,
+      "importance": 3,
+      "estMinutes": 90,
+      "model": "sonnet",
+      "dependsOn": [
+        "PF-047"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`, `web/`",
+      "lowHanging": true,
+      "percent": 0,
+      "verify": false,
+      "notes": "Leftover of the PF-046 re-audit. Numbers: `PLANNING/PF-029-COMPONENTS-MOTION.md`, section \"PF-046 re-audit\".",
+      "outcome": "A test or probe scrolls each main page and fails if a block stays at opacity 0, in print and with ?still.",
+      "behavior": "Reveals still run; nothing stays hidden for reduced motion, print, no-JS or ?still.",
       "doneLog": [],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"

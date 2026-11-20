@@ -75,3 +75,31 @@ Light, mostly invisible (S): PF-029 tap areas, PF-030 labels and announcements, 
 Medium (M): PF-035 shared tooltip, PF-036 loading and empty states, PF-037 forms, PF-038 tables and charts, PF-039 notices, PF-040 dialogs, PF-041 chips and tabs new look, PF-042 search, PF-043 dock.
 Heavy (L): PF-044 owner-only effects control (budget and per-effect level), PF-045 the accepted motion pass. Last: PF-046 re-audit.
 PF-029 is `NEXT`. The separate PF-029/PF-030 rows registered earlier were replaced by these 18 rows.
+
+## PF-046 re-audit (2026-11-20): before and after
+
+Tool: `node tools/effects/reaudit.mjs site 5 14` (headless Chromium, phone width 390 x 844, built site opened from `file://`, 4 s per page, not signed in;
+the budget is set through the `phoenix.fxcfg` cache; `PAGES=stats,index` limits the pages). Before = the Phase 0 numbers above. The probe counts visible
+`a[href]`, buttons, role button/tab/menuitem, inputs, selects, summaries.
+
+| Measure | Before (Phase 0) | After, budget 5 | After, budget 14 |
+|---|---|---|---|
+| Effects granted (`PhoenixFx.running()`) | n/a (4 separate readers) | 5 | 14 |
+| Tap targets under 44 px: Club (`index`) | 54 | 39 | 39 |
+| Tap targets under 44 px: Stats | 201 | 115 | 115 |
+| Tap targets under 44 px: Tactics | 37 | 34 | 34 |
+| Unnamed buttons and links (15 pages) | 21 buttons relied on a tooltip only | 0 | 0 |
+| Form fields / without a label (15 pages) | 36 / 2 | 16 / 0 | 16 / 0 |
+| Native selects in markup (15 pages) | 8 | 92 in markup, 0 visible on Club and Stats, 1 on Tactics | same |
+| Running animations: Club / Stats / Tactics | 19 / 11 / 10 (counted as endless) | 18 / 11 / 10 | 18 / 11 / 10 |
+| Endless animations: Club / Stats / Tactics | see above | 0 / 0 / 0 (Hub has 4) | same |
+| Blocks at opacity 0 on Stats | 106 | 108 | 108 |
+| Frame rate (15 pages, 2 s of requestAnimationFrame) | not measured | 60 to 61 fps on every page | 60 to 61 fps |
+
+How to read it:
+- Labels: fixed (Join and Apply fields are labelled, no control is without a name). The field count dropped because the probe only counts visible fields on a signed-out page.
+- Tap targets: improved by about a half on Stats and a quarter on Club but not done. Leftovers on Stats: result pills (`a.W` 43, `a.L` 11, `a.D` 10), game rows (`a.gdb`, `a.srow` 10 each); on Club: `a.fo` 10, `button.rchip` 9, `a.fd` 5; on Tactics: `button.chip` 13, `button.pc` 11. These are the next roadmap rows.
+- Budget 14 changes nothing in this probe: the extra effects (dock arrow, phone tilt, haptics, Insights, spring, ripple, spotlight, ping, pop-in) only act on hover, press, tilt or an open menu, so a still page runs the same animations. Cost shows up in use, not at rest. The budget is still an owner decision (default 5 runs reveals, glow, tilt, parallax, bursts).
+- Opacity 0: 108 blocks wait for the scroll reveal (below the fold at load, 2 more than before because the page has grown); they are not stuck, but a "every block reveals" check is a roadmap row.
+- Native selects: the 92 are in markup (control center and filter sheets, hidden at rest). The "8" of Phase 0 counted the ones that show.
+- Frame rate: no page drops below 60 fps in headless Chromium; a real phone is the owner's check.

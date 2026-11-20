@@ -24,7 +24,7 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 90% (items weighted by size: S 1, M 2, L 4).
+Project: 89% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
@@ -32,7 +32,7 @@ Project: 90% (items weighted by size: S 1, M 2, L 4).
 | Project brain | 8 | 8 | 100% | 0 |
 | Side roadmap | 8 | 6 | 87% | 240 |
 | Match night and upkeep | 8 | 5 | 63% | 360 |
-| Components and motion | 18 | 17 | 97% | 90 |
+| Components and motion | 20 | 18 | 94% | 180 |
 
 ## Items
 
@@ -81,7 +81,9 @@ Project: 90% (items weighted by size: S 1, M 2, L 4).
 | PF-043 | Dock: five items (Club, Matches, Hub centre, Stats, Tactics), auto-hide on scroll with a bobbing bring-back icon | DONE 2026-11-20 (branch pf-043) | PF-031 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
 | PF-044 | Owner-only effects control: budget (5 or more, default 5) and a level per effect (Full, Balanced, Off), one config read by app.js, motion.js, safe.js and ui.mjs | DONE 2026-11-20 (branch pf-044) | PF-032 | `next/static/`, `next/lib/`, `web/` | opus | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
 | PF-045 | Motion pass: the accepted new motion (card spring, scroll, selection ripple, transitions, celebrations, glow spotlight, status ping, widgets, menus) | DONE 2026-11-20 (branch pf-045) | PF-044 | `next/static/`, `next/lib/`, `web/` | opus | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
-| PF-046 | Re-audit and report: repeat today's measurements and compare | NEXT | PF-045 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
+| PF-046 | Re-audit and report: repeat today's measurements and compare | DONE 2026-11-20 (branch pf-046) | PF-045 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
+| PF-047 | Tap areas left: result pills, game rows, chips and player cards under 44 px on Stats, Club and Tactics | NEXT | PF-046 | `next/static/`, `next/lib/`, `web/` | sonnet | Leftover of the PF-046 re-audit. Look stays as it is (icons and emoji stay; card glare and shine stay): bigger touch area only, through padding or a hidden hit area, never a visible resize. Numbers: `PLANNING/PF-029-COMPONENTS-MOTION.md`, section "PF-046 re-audit". |
+| PF-048 | Check that every block hidden for a scroll reveal does show (Stats has 108 at opacity 0 at load) | OPEN | PF-047 | `next/static/`, `next/lib/`, `web/` | sonnet | Leftover of the PF-046 re-audit. Numbers: `PLANNING/PF-029-COMPONENTS-MOTION.md`, section "PF-046 re-audit". |
 
 ## Outcome and behavior
 
@@ -131,6 +133,8 @@ What the owner can do or see when the item is done, and how it works. Optional f
 - **PF-044**: The owner sets how many effects run and how strong each is; nobody else can. _How:_ Effects read one config; a test asserts no more than the budget run at once.
 - **PF-045**: Motion is faster and smoother and never hides content. _How:_ Card glare and shine unchanged; reduced motion respected.
 - **PF-046**: A before and after report of tap targets, unlabelled controls, running animations and frame rate. _How:_ Numbers in this PLANNING file.
+- **PF-047**: `node tools/effects/reaudit.mjs site 5` shows Stats under 40, Club under 15 and Tactics under 10 tap targets below 44 px. _How:_ Visible size and look unchanged; touch area grows with padding or a pseudo-element; no overlap with a neighbour.
+- **PF-048**: A test or probe scrolls each main page and fails if a block stays at opacity 0, in print and with ?still. _How:_ Reveals still run; nothing stays hidden for reduced motion, print, no-JS or ?still.
 
 ## Inbox (found along the way, not yet scheduled)
 
