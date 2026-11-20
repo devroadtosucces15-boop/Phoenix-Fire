@@ -1,0 +1,23 @@
+/* PF-038: tables and charts (tables.js + tables.css). Owner rules (PF-029 doc): every column except the first is centred in its own column,
+   the first column (names) stays left; a number and its unit (the %) sit on one line; labels and values line up. Add .ph-left to a cell or
+   table to keep text columns left. Low specificity (:where) so a page's own table style still wins on colour and spacing. */
+:where(table:not(.ph-left)) :is(th,td):not(:first-child){text-align:center}
+:where(table) :is(th,td):first-child{text-align:left}
+:where(table) .num,:where(table) td.pct,:where(table) [data-unit]{white-space:nowrap;font-variant-numeric:tabular-nums}
+.ph-num{white-space:nowrap;display:inline-flex;align-items:baseline;gap:1px;font-variant-numeric:tabular-nums}
+.ph-num small,.ph-num .u{font-size:.62em;font-weight:600;opacity:.8}
+:where(.wx) :is(.v,.pct,.ring b,.ring span){white-space:nowrap}
+/* 10 px between rows (owner accepted) */
+table.tb.ph-rows,table.ph-rows{border-collapse:separate;border-spacing:0 10px}
+/* keyboard sort */
+.ph-sort{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:0 4px;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;border-radius:8px}
+.ph-sort:hover{color:var(--gold,#efcf7a)}
+.ph-sort:focus-visible{outline:2px solid var(--gold,#efcf7a);outline-offset:1px}
+.ph-sort::after{content:"↕";font-size:.9em;opacity:.35}
+th[aria-sort=ascending] .ph-sort::after{content:"▲";opacity:1;color:var(--gold,#efcf7a)}
+th[aria-sort=descending] .ph-sort::after{content:"▼";opacity:1;color:var(--gold,#efcf7a)}
+/* Compare button per row: a labelled pill with a 44 px tap area */
+table .cmpbtn{width:auto;min-width:44px;height:34px;padding:0 12px;border-radius:999px;font:600 12px Inter,system-ui,sans-serif;letter-spacing:.04em;gap:4px;grid-auto-flow:column;position:relative;box-shadow:none}
+table .cmpbtn::before{content:"";position:absolute;inset:-5px -2px}
+table .cmpbtn::after{content:"Compare"}
+table .cmpbtn.on::after{content:"Added"}

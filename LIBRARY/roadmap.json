@@ -1042,7 +1042,7 @@
       "lowHanging": false,
       "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/states.js` + `states.css` (linked in every page head). Shimmer placeholders (Phoenix orange sweep, still under reduced motion and calm/off) in four shapes: `M.skeleton(el, rows, shape)` takes line, card, row or table and writes aria-busy plus a screen-reader caption; callers for chat, feed, alerts, squads and plays now use card or row. Empty states (`.sq-empty`, `.nw-empty`, `.hb-empty`) get a bigger icon in a soft Phoenix ring; `PhoenixStates` fills only what is missing (role=status, a reason, one action, default 'Back to Home') and never replaces the page's own wording or button; `emptyHtml` and `skeletonHtml` are the helpers for new code. The three 'Loading…' panels (feedback room, studio media) became skeletons. `tests/states.test.mjs`. Not checked in a real browser.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/states.js` + `states.css` (linked in every page head). Shimmer placeholders (Phoenix orange sweep, still under reduced motion and calm/off) in four shapes: `M.skeleton(el, rows, shape)` takes line, card, row or table and writes aria-busy plus a screen-reader caption; callers for chat, feed, alerts, squads and plays now use card or row. Empty states (`.sq-empty`, `.nw-empty`, `.hb-empty`) get a bigger icon in a soft Phoenix ring; `PhoenixStates` fills only what is missing (role=status, a reason, one action, default 'Back to Home') and never replaces the page's own wording or button; `emptyHtml` and `skeletonHtml` are the helpers for new code. The three 'Loading\u2026' panels (feedback room, studio media) became skeletons. `tests/states.test.mjs`. Not checked in a real browser.",
       "outcome": "Nothing is blank while loading; every empty state says why and offers one action.",
       "behavior": "Shimmer and bigger empty icon as the owner accepted.",
       "doneLog": [
@@ -1074,7 +1074,7 @@
       "lowHanging": false,
       "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/forms.js` + `forms.css` (linked in every page head). Text fields and selects are 44 px, textareas 88 px (low-specificity css, `.ph-compact` opts out). Searches get a leading 🔍 icon and a 44 px clear button (Escape clears too); `data-icon` adds an icon to any field. `data-help` gives helper text; `PhoenixForms.setHelp/setError/clearError/validate` write helper and error text under the field, linked with aria-describedby, error role=alert and aria-invalid. Required, email, url, pattern and range fields are checked on blur and clear as the user types. No orange focus ring (owner did not tick it). `tests/forms.test.mjs`. Checked in headless Chromium on a test page and the built players page.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/forms.js` + `forms.css` (linked in every page head). Text fields and selects are 44 px, textareas 88 px (low-specificity css, `.ph-compact` opts out). Searches get a leading \ud83d\udd0d icon and a 44 px clear button (Escape clears too); `data-icon` adds an icon to any field. `data-help` gives helper text; `PhoenixForms.setHelp/setError/clearError/validate` write helper and error text under the field, linked with aria-describedby, error role=alert and aria-invalid. Required, email, url, pattern and range fields are checked on blur and clear as the user types. No orange focus ring (owner did not tick it). `tests/forms.test.mjs`. Checked in headless Chromium on a test page and the built players page.",
       "outcome": "Forms are labelled, validated inline and consistent.",
       "behavior": "Orange focus ring not applied (owner did not tick it).",
       "doneLog": [
@@ -1093,7 +1093,7 @@
       "title": "Tables and charts: centred columns except the first, captions, keyboard sort, Compare button, number and % on one line",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -1104,12 +1104,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/tables.js` + `tables.css` (linked in every page head). Every column except the first is centred, the first stays left (`.ph-left` opts out); numbers and units stay on one line (`.ph-num`, `PhoenixTables.num`, nowrap on `.num`, `.v`, ring figures). Every table gets a caption (page's own, else data-caption, aria-label or nearest heading) and scope=col; column headers with text become 44 px Sort by buttons (Enter/Space), aria-sort, numbers and % sort numerically, dashes stay last, `data-no-sort` opts out. The per-row Compare button is now a labelled pill (+ Compare / + Added) with an invisible 44 px tap area. `.ph-rows` gives 10 px row spacing (opt-in). `tests/tables.test.mjs`. Checked in headless Chromium on a test table; built Stats overview rings keep % on one line.",
       "outcome": "Tables and charts are aligned and accessible.",
       "behavior": "Alignment rules from the owner (PF-029 doc) are tested.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-038-tables",
+          "what": "tables.js + tables.css: centred columns except the first, captions and scope, keyboard sort with aria-sort, Compare pill, number and % on one line; tests/tables.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1119,7 +1125,7 @@
       "title": "Notices: one queue, stacked, errors stay, Undo and progress line",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,
