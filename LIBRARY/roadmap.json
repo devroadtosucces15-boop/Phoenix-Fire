@@ -935,7 +935,7 @@
       "title": "Chips and tabs keyboard: arrow, Home and End keys, group roles, last tab remembered (same look)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "S",
       "effort": 2,
       "importance": 4,
@@ -946,12 +946,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": true,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: `next/static/roving.js` (one shared script, linked in every page head): tab sets get role=tab, aria-selected and roving tabindex, arrows/Home/End move and select, last tab remembered per page (skipped on deep links, opt out with data-no-remember); filter chip rows get role=group with a name, aria-pressed, arrows/Home/End move focus only. No markup or style changes by pages. `tests/roving.test.mjs` runs the script on a fake DOM. Not checked in a real browser.",
       "outcome": "Filter chips and tab sets work by keyboard and are announced correctly.",
       "behavior": "Same pills and tabs; highlight never covers another option when chips wrap.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-033-chips-tabs",
+          "what": "roving.js: chips and tabs keyboard (arrows, Home, End), group and tab roles, aria-selected/pressed follow the highlight, roving tabindex on tab sets, last tab remembered; tests/roving.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -961,7 +967,7 @@
       "title": "Menus and dropdowns: arrow keys, Esc, outside tap, focus return (same look)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "S",
       "effort": 2,
       "importance": 4,
