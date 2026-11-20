@@ -1221,7 +1221,7 @@
       "title": "Search and command palette: groups, key hints, actions, recents",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -1232,12 +1232,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
-      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
+      "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: header palette (`next/static/header.js` + `header.css`, `tests/palette.test.mjs`): groups Recent, Actions, Players, Pages, Menus, Settings with headings; row Enter hint and a move/open/close footer (fine pointer only); in-place actions (copy link, back to top, motion and effects, alerts inbox for members); recents (last 5 picks, key `phoenix.search.recent`, Clear button); 12 px panel, no glow. Emoji kept.",
       "outcome": "Header search becomes a command palette.",
       "behavior": "Rows keep their emoji.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-042",
+          "what": "Command palette: group headings, key hints, actions, recents, 12 px panel without glow; tests/palette.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1247,7 +1253,7 @@
       "title": "Dock: five items (Club, Matches, Hub centre, Stats, Tactics), auto-hide on scroll with a bobbing bring-back icon",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "M",
       "effort": 3,
       "importance": 4,
