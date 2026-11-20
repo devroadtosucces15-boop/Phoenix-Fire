@@ -59,7 +59,7 @@ export function positionPicker(defaults = [], minutes = 30, org = 'Phoenix Fire'
 
 /** Posts the board again at the bottom (delete the old copy) or edits it where it is. Returns { channels, posted, edited, failures }; never throws.
  *  A role ping only goes with a NEW post (`ping`). When the board is already the newest message it is edited in place unless it must carry a ping or `force`. */
-export async function refreshLfgBoard(env, { now = Date.now(), ping = false, force = false, announce = null } = {}) {
+export async function refreshLfgBoard(env, { now = Date.now(), ping = false, force = false, announce = null, quiet = false } = {}) {
   const none = { channels: 0, posted: 0, edited: 0, failures: [] };
   if (!env.DB) return none;
   const channels = await channelsFor(env, 'rush_lfg').catch(() => []);
@@ -74,7 +74,11 @@ export async function refreshLfgBoard(env, { now = Date.now(), ping = false, for
     const old = await kv?.get(BOARD_KEY + ch, 'json').catch(() => null);
     const ann = await kv?.get(ANN_KEY + ch, 'json').catch(() => null);
     let moved = true;
-    if (old?.id && !force && !roleId) {
+    if (quiet) { // a change that came from somewhere else (the queue): only correct the list where it is, never send or move a message
+      if (!old?.id) continue;
+      const ok = await discord(e, 'PATCH', `/channels/${ch}/messages/${old.id}`, { flags: msg.flags, components: msg.components, allowed_mentions: msg.allowed_mentions }).catch(() => null);
+      if (ok) { edited++; moved = false; } else continue;
+    } else if (old?.id && !force && !roleId) {
       const last = await discord(e, 'GET', `/channels/${ch}`).catch(() => null);
       if (last?.last_message_id === old.id || last?.last_message_id === ann?.id || (now >= (old.at ?? 0) && now - (old.at ?? 0) < BOARD_GAP_MS)) {
         const ok = await discord(e, 'PATCH', `/channels/${ch}/messages/${old.id}`, { flags: msg.flags, components: msg.components, allowed_mentions: msg.allowed_mentions }).catch(() => null);
