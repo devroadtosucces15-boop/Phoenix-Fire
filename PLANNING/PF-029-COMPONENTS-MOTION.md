@@ -54,3 +54,17 @@ the dock row above.
 
 When `LIBRARY/CLAIMS.md` no longer lists `LIBRARY/ROADMAP.md`: add PF-029 (components) and PF-030 (motion and effects) to `roadmap.json`,
 run `node tools/library/sync.mjs` and `node tests/library.test.mjs`, then take Phase 0 (shared tokens, one effects switch, tooltip audit).
+
+## Phase 0 audit findings (2026-11-20)
+
+Tooltips (the unchecked item):
+- 132 `title="..."` attributes across `next/pages`, `next/lib`, `next/static` and `web/`. These are browser-default tooltips: slow, mouse only, unstyled.
+- 31 buttons carry a `title`; 21 of them have no `aria-label`, so their only name for a screen reader is the tooltip text.
+- Tooltip code already exists in 10 `web/*.js` files (events, feed, profile, mystats, app, presence, squads, ratings, ui, messages) with no shared component. Phase 0 output: one shared tooltip (hover and keyboard focus, amber border and key hint per the owner's choice), then replace these copies one family at a time.
+
+Effects state (feeds PF-030):
+- Effect preferences are read in four places: `next/static/app.js`, `next/static/motion.js`, `next/static/safe.js` and `next/lib/ui.mjs`. PF-030 replaces them with one owner-set config (budget of 5 or more, level per effect) that all four read.
+
+Components probe (15 pages, phone width): 36 form fields (2 unlabelled: Join, Apply), 4 tables (none captioned, 3 without header scope), 8 native selects, empty states on 5 pages.
+
+Next: Phase 1 (buttons and tap areas, gold look kept) and the shared tooltip.
