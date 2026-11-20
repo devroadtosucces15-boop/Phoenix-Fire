@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18",
+  "updated": "2026-11-20",
   "items": [
     {
       "id": "PF-001",
@@ -809,6 +809,56 @@
         }
       ],
       "plans": []
+    },
+    {
+      "id": "PF-029",
+      "title": "Site components upgrade: buttons, search, forms, chips, tabs, dialogs, menus, notices, tables, cards, charts, loading and empty states, header, tooltips (owner decisions 2026-11-20)",
+      "phase": "Side roadmap",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "L",
+      "effort": 4,
+      "importance": 4,
+      "estMinutes": 600,
+      "model": "opus",
+      "dependsOn": [],
+      "fileLane": "`next/static/`, `next/lib/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Owner named this item 2026-11-20 and chose every option. Decisions, accepted and refused look changes and the five alignment rules are in `PLANNING/PF-029-COMPONENTS-MOTION.md`. Phases: 0 foundations (shared tokens, tooltip audit), 1 buttons and tap areas, 2 chips and tabs, 3 notices, 4 dialogs and sheets, 5 search, 6 tables and charts, 7 forms, loading and empty states, 8 header, 9 dock (five items, auto-hide), 10 re-audit. Icons and emoji stay everywhere; card glare and shine stay; layout proposals are parked.",
+      "outcome": "Every shared component works with keyboard and touch, keeps its Phoenix look, icons and emoji, and follows the owner-approved changes only.",
+      "behavior": "Each phase ships alone behind the existing theme layer, with before and after screenshots at 390, 820 and 1440 and a test that fails if a refused look change appears.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
+    },
+    {
+      "id": "PF-030",
+      "title": "Motion and effects pass: owner-only effects control with budget and per-effect levels, then the approved motion changes (owner decisions 2026-11-20)",
+      "phase": "Side roadmap",
+      "area": "`next/`, `web/`, `phoenix/` shared UI",
+      "status": "OPEN",
+      "size": "L",
+      "effort": 4,
+      "importance": 4,
+      "estMinutes": 420,
+      "model": "opus",
+      "dependsOn": [
+        "PF-029"
+      ],
+      "fileLane": "`next/static/`, `next/lib/`",
+      "lowHanging": false,
+      "percent": 0,
+      "verify": false,
+      "notes": "Owner chose C (new proposal) for 16 of 19 motion families and B (fix, same look) for buttons, dock and the Hub entrance. One owner-only switch: budget (5 or more, default 5) and a level (Full, Balanced, Off) for each effect. Pointer shadow is removed. Details in `PLANNING/PF-029-COMPONENTS-MOTION.md`.",
+      "outcome": "Motion is faster and smoother, never hides content, respects reduced motion, and only the owner controls effects.",
+      "behavior": "Effects read one budget from config; no module hardcodes its own on or off. Tests assert at most the budget run at once.",
+      "doneLog": [],
+      "plans": [
+        "PLANNING/PF-029-COMPONENTS-MOTION.md"
+      ]
     }
   ],
   "inbox": [
