@@ -1,6 +1,6 @@
 // PF-044: the owner-set effects config (budget of 5 or more, a level per effect). Pure, no env. The browser copy is next/static/fxconfig.js
 // (same EFFECTS, LEVELS and MIN_BUDGET; tests/fxconfig.test.mjs keeps them equal).
-export const EFFECTS = ['reveals', 'glow', 'tilt', 'parallax', 'bursts', 'dockbob', 'gyro', 'haptics', 'insights'];
+export const EFFECTS = ['reveals', 'glow', 'tilt', 'parallax', 'bursts', 'dockbob', 'gyro', 'haptics', 'insights', 'spring', 'ripple', 'spotlight', 'ping', 'popin'];
 export const LEVELS = ['full', 'balanced', 'off'];
 export const MIN_BUDGET = 5;
 export const DEFAULT_EFFECTS = { budget: MIN_BUDGET, levels: Object.fromEntries(EFFECTS.map((k) => [k, 'full'])) };

@@ -1,0 +1,21 @@
+/* PF-045 motion pass (counted effects: spring, ripple, spotlight, ping, popin). Phoenix ember accent only. Transform and opacity only. */
+:root{--fxm-ember:232,101,26}
+/* spring: the photo layer sits deeper and shifts against the lean. Glare and shine rules are not touched. */
+html:not([data-fx-spring=off]) .pc-card .art img,html:not([data-fx-spring=off]) .pc-card .art svg,html:not([data-fx-spring=off]) .pc-hero .art img{transform:translate3d(var(--fx-photo-x,0),var(--fx-photo-y,0),0) scale(calc(1 + .03*var(--fx-spring,0)));transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+/* ripple */
+.fxr{position:fixed;z-index:9998;overflow:hidden;pointer-events:none;contain:strict}
+.fxr i{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(var(--fxm-ember),.55),rgba(var(--fxm-ember),0) 70%);transform:scale(0)}
+/* spotlight: inside the hovered panel only */
+.fxs{position:fixed;z-index:9997;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .18s;background:radial-gradient(220px circle at var(--sx,50%) var(--sy,50%),rgba(var(--fxm-ember),.14),transparent 70%);mix-blend-mode:screen}
+/* ping: a status dot sends out one soft ring now and then */
+html:not([data-fx-ping=off]) [data-ping],html:not([data-fx-ping=off]) .live{position:relative}
+html:not([data-fx-ping=off]) [data-ping]::after,html:not([data-fx-ping=off]) .live::after{content:"";position:absolute;inset:-3px;border-radius:inherit;border:2px solid rgb(var(--fxm-ember));opacity:0;pointer-events:none;animation:fxping 2.8s ease-out infinite;animation-iteration-count:infinite}
+html[data-fx-ping=balanced] [data-ping]::after,html[data-fx-ping=balanced] .live::after{animation-duration:4.2s;border-width:1px}
+@keyframes fxping{0%{transform:scale(.8);opacity:.7}60%,100%{transform:scale(calc(1 + .9*var(--fx-ping,1)));opacity:0}}
+/* popin: menus and widgets open with a soft pop */
+html:not([data-fx-popin=off]) .hdr-menu:not([hidden]),html:not([data-fx-popin=off]) .hdr-pal:not([hidden]),html:not([data-fx-popin=off]) [role=menu]:not([hidden]),html:not([data-fx-popin=off]) [data-widget]:not([hidden]){animation:fxpop calc(.22s + .08s*var(--fx-popin,0)) cubic-bezier(.34,1.4,.64,1) both;transform-origin:top right}
+@keyframes fxpop{from{opacity:0;transform:translateY(calc(-8px*var(--fx-popin,1))) scale(calc(1 - .05*var(--fx-popin,1)))}to{opacity:1;transform:none}}
+/* respect the platform and the page's own modes */
+@media (prefers-reduced-motion:reduce){.fxr,.fxs{display:none}html [data-ping]::after,html .live::after{animation:none}html .hdr-menu,html [role=menu],html [data-widget]{animation:none}html .pc-card .art img,html .pc-card .art svg{transform:none;transition:none}}
+html[data-motion=off] .fxr,html[data-motion=off] .fxs{display:none}
+html.pf-hidden [data-ping]::after,html.pf-hidden .live::after{animation-play-state:paused}

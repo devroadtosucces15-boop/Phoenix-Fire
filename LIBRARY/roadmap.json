@@ -1317,7 +1317,7 @@
       "title": "Motion pass: the accepted new motion (card spring, scroll, selection ripple, transitions, celebrations, glow spotlight, status ping, widgets, menus)",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "L",
       "effort": 4,
       "importance": 4,
@@ -1328,12 +1328,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
       "outcome": "Motion is faster and smoother and never hides content.",
       "behavior": "Card glare and shine unchanged; reduced motion respected.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-045",
+          "what": "Motion pass as five counted effects (spring, ripple, spotlight, ping, popin) added to both configs, the owner form and config.json: card spring settle and a deeper photo layer (glare and shine untouched), selection ripple on chips, tabs, options and buttons (own clipped layer, control unchanged), glow spotlight inside the hovered panel only (no pointer shadow), status ping on [data-ping] and .live, soft pop-in for menus and widgets. next/static/fxmotion.js + fxmotion.css, gated with PhoenixFx.on and scaled with PhoenixFx.scale; reduced motion and ?still switch them off. Existing reveals, page hall, count-up, FLIP and submit/burst celebrations stay as the other accepted motion. Default budget 5 still runs only the first five effects (open owner decision: raise the budget to 14 to run all)."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1343,7 +1349,7 @@
       "title": "Re-audit and report: repeat today's measurements and compare",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "S",
       "effort": 2,
       "importance": 4,

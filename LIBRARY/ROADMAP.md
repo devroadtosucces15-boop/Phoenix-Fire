@@ -24,7 +24,7 @@ Models: `sonnet` (claude-sonnet-5-5) for most feature work, checks and docs; `op
 
 ## Progress
 
-Project: 86% (items weighted by size: S 1, M 2, L 4).
+Project: 90% (items weighted by size: S 1, M 2, L 4).
 
 | Phase | Items | Done | Percent | Minutes left (estimate) |
 |---|---|---|---|---|
@@ -32,7 +32,7 @@ Project: 86% (items weighted by size: S 1, M 2, L 4).
 | Project brain | 8 | 8 | 100% | 0 |
 | Side roadmap | 8 | 6 | 87% | 240 |
 | Match night and upkeep | 8 | 5 | 63% | 360 |
-| Components and motion | 18 | 16 | 85% | 510 |
+| Components and motion | 18 | 17 | 97% | 90 |
 
 ## Items
 
@@ -80,8 +80,8 @@ Project: 86% (items weighted by size: S 1, M 2, L 4).
 | PF-042 | Search and command palette: groups, key hints, actions, recents | DONE 2026-11-20 (branch pf-042) | PF-035 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. Done 2026-11-20: header palette (`next/static/header.js` + `header.css`, `tests/palette.test.mjs`): groups Recent, Actions, Players, Pages, Menus, Settings with headings; row Enter hint and a move/open/close footer (fine pointer only); in-place actions (copy link, back to top, motion and effects, alerts inbox for members); recents (last 5 picks, key `phoenix.search.recent`, Clear button); 12 px panel, no glow. Emoji kept. |
 | PF-043 | Dock: five items (Club, Matches, Hub centre, Stats, Tactics), auto-hide on scroll with a bobbing bring-back icon | DONE 2026-11-20 (branch pf-043) | PF-031 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
 | PF-044 | Owner-only effects control: budget (5 or more, default 5) and a level per effect (Full, Balanced, Off), one config read by app.js, motion.js, safe.js and ui.mjs | DONE 2026-11-20 (branch pf-044) | PF-032 | `next/static/`, `next/lib/`, `web/` | opus | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
-| PF-045 | Motion pass: the accepted new motion (card spring, scroll, selection ripple, transitions, celebrations, glow spotlight, status ping, widgets, menus) | NEXT | PF-044 | `next/static/`, `next/lib/`, `web/` | opus | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
-| PF-046 | Re-audit and report: repeat today's measurements and compare | OPEN | PF-045 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
+| PF-045 | Motion pass: the accepted new motion (card spring, scroll, selection ripple, transitions, celebrations, glow spotlight, status ping, widgets, menus) | DONE 2026-11-20 (branch pf-045) | PF-044 | `next/static/`, `next/lib/`, `web/` | opus | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
+| PF-046 | Re-audit and report: repeat today's measurements and compare | NEXT | PF-045 | `next/static/`, `next/lib/`, `web/` | sonnet | Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked. |
 
 ## Outcome and behavior
 

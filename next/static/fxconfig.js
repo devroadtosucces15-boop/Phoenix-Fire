@@ -8,7 +8,7 @@
   const w = window, H = document.documentElement;
   // Priority order: when the budget is smaller than the number of effects switched on, the first ones in this list run.
   // Always-visible motion first, device extras (phone tilt, haptics) and the Insights notes last.
-  const EFFECTS = ['reveals', 'glow', 'tilt', 'parallax', 'bursts', 'dockbob', 'gyro', 'haptics', 'insights'];
+  const EFFECTS = ['reveals', 'glow', 'tilt', 'parallax', 'bursts', 'dockbob', 'gyro', 'haptics', 'insights', 'spring', 'ripple', 'spotlight', 'ping', 'popin'];
   const LEVELS = ['full', 'balanced', 'off'];
   const MIN_BUDGET = 5, DEFAULT_BUDGET = 5;
   const SCALE = { full: 1, balanced: 0.5, off: 0 };

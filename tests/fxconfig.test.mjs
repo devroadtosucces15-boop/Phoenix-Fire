@@ -36,15 +36,15 @@ t('no more effects run at once than the budget (every budget from 5 to 12, all F
   for (let n = 5; n <= 12; n++) { const { fx } = load({ PHOENIX_FX: { budget: n } }); if (fx.running().length > n || fx.running().length > fx.EFFECTS.length) return false; }
   return true;
 })());
-t('default budget runs exactly 5 of the 9 effects, in priority order; the rest are off', (() => {
+t('default budget runs exactly 5 of the 14 effects, in priority order; the rest are off', (() => {
   const { fx } = load(); return fx.running().join() === fx.EFFECTS.slice(0, 5).join() && fx.level(fx.EFFECTS[5]) === 'off' && fx.on(fx.EFFECTS[0]);
 })());
 t('an effect set to Off frees its place for the next one; Off never counts', (() => {
   const { fx } = load({ PHOENIX_FX: { levels: { reveals: 'off' } } }); return fx.running().length === 5 && !fx.on('reveals') && fx.on('dockbob');
 })());
-t('raising the budget to cover every effect runs them all', (() => { const { fx } = load({ PHOENIX_FX: { budget: 9 } }); return fx.running().length === 9; })());
+t('raising the budget to cover every effect runs them all', (() => { const { fx } = load({ PHOENIX_FX: { budget: 14 } }); return fx.running().length === 14; })());
 t('device extras without a device do not use a place (no sensor, no vibration)', (() => {
-  const { fx } = load({ PHOENIX_FX: { budget: 9 }, vibrate: false, gyro: false }); return !fx.on('gyro') && !fx.on('haptics') && fx.running().length === 7;
+  const { fx } = load({ PHOENIX_FX: { budget: 14 }, vibrate: false, gyro: false }); return !fx.on('gyro') && !fx.on('haptics') && fx.running().length === 12;
 })());
 t('?still and safe mode switch every effect off through the same config', (() => {
   const a = load({ search: '?still' }).fx, b = load({ classes: ['nx-safe'] }).fx; return a.running().length === 0 && b.running().length === 0;
@@ -67,6 +67,15 @@ const members = rd('bot/members.js'), cc = rd('bot/ccsettings.js');
 t('the public read has no write path and holds only budget and levels', /\/api\/site\/effects' && request\.method === 'GET'/.test(members) && /effectsPublicRoute\(env\)/.test(members));
 t('no per-user effects choice reaches the budget: the site only reads it (fxconfig.js never POSTs)', !/method:\s*'POST'|method:\s*"POST"/.test(src));
 
+// PF-045: the motion pass is five counted effects, each gated and scaled through the one config
+const fm = rd('next/static/fxmotion.js'), fmc = rd('next/static/fxmotion.css');
+t('PF-045 effects exist in both configs and every one is gated with on() and scaled with scale()', ['spring', 'ripple', 'spotlight', 'ping', 'popin'].every((k) => bot.EFFECTS.includes(k) && load().fx.EFFECTS.includes(k)) && ['spring', 'ripple', 'spotlight'].every((k) => fm.includes(`ok('${k}')`) && fm.includes(`sc('${k}')`)));
+t('ping and popin are CSS keyed on the owner config (data-fx-*) and scaled with --fx-*', /data-fx-ping=off/.test(fmc) && /data-fx-popin=off/.test(fmc) && /--fx-ping/.test(fmc) && /--fx-popin/.test(fmc));
+t('reduced motion switches the new motion off', /prefers-reduced-motion:reduce/.test(fmc) && /rm\(\)/.test(fm));
+t('the owner form lists the new effects and saves them', ['spring', 'ripple', 'spotlight', 'ping', 'popin'].every((k) => rd('next/static/ccsettings.js').includes("'" + k + "'")));
+t('no card glare or shine rule is changed (fxmotion only moves the photo layer)', !/\.gloss|\.glare|--go|--mx/.test(fmc + fm));
+t('the new files load on every page after dock.js', /fxmotion\.css/.test(rd('next/lib/ui.mjs')) && rd('next/lib/ui.mjs').indexOf('src="dock.js"') < rd('next/lib/ui.mjs').indexOf('src="fxmotion.js"'));
+t('Phoenix ember only, no NOREX name or red in the motion files', !/norex|c8352c/i.test(fm + fmc) && /232,101,26/.test(fmc));
 // four readers
 const app = rd('next/static/app.js'), mot = rd('next/static/motion.js'), safe = rd('next/static/safe.js'), ui = rd('next/lib/ui.mjs');
 t('app.js reads the effects config', /PhoenixFx/.test(app));

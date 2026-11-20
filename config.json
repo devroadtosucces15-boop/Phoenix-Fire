@@ -53,7 +53,7 @@
   "members": {
     "api": "https://phoenix-bot.norexunited.workers.dev"
   },
-  "effects": {"budget": 5, "levels": {"reveals": "full", "glow": "full", "tilt": "full", "parallax": "full", "bursts": "full", "dockbob": "full", "gyro": "full", "haptics": "full", "insights": "full"}},
+  "effects": {"budget": 5, "levels": {"reveals": "full", "glow": "full", "tilt": "full", "parallax": "full", "bursts": "full", "dockbob": "full", "gyro": "full", "haptics": "full", "insights": "full", "spring": "full", "ripple": "full", "spotlight": "full", "ping": "full", "popin": "full"}},
   "streams": {
     "youtube": "",
     "twitch": "https://m.twitch.tv/phoenixfirefc/home"
