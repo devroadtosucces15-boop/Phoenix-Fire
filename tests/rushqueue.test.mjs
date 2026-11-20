@@ -82,6 +82,7 @@ env.DISCORD_BOT_TOKEN = 'bot-token';
 env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), rushQueue: 'members', rushLfg: 'owner' });
 const calls = []; let msgN = 0; const chanLast = {};
 let failPost = null; // 401 | 403 | 404: Discord refuses every POST with that status (tests of the failure replies)
+let recent = []; // what GET /channels/<id>/messages returns (the sweep of old boards)
 const realFetch = globalThis.fetch;
 globalThis.fetch = async (url, init = {}) => {
   url = String(url);
@@ -92,6 +93,7 @@ globalThis.fetch = async (url, init = {}) => {
   if (method === 'POST' && /^\/channels\/\d+\/messages$/.test(path)) { const id = `m${++msgN}`; chanLast[path.split('/')[2]] = id; return Response.json({ id }); }
   if (method === 'DELETE') return new Response(null, { status: 204 });
   if (method === 'PATCH') return Response.json({ id: path.split('/').pop() });
+  if (method === 'GET' && /^\/channels\/\d+\/messages\?/.test(path)) return Response.json(recent);
   if (method === 'GET' && /^\/channels\/\d+$/.test(path)) return Response.json({ id: path.split('/')[2], last_message_id: chanLast[path.split('/')[2]] ?? null });
   return Response.json({ message: 'unexpected ' + path }, { status: 404 });
 };
@@ -167,7 +169,18 @@ t('tick: warns the group at the green light after 1 minute', (calls.length = 0, 
 const tk = await Q.queueTick(env, T0 + 8 * MIN + 2 * MIN);
 t('tick: removes an idle group at 2 minutes (notice with a ping to the captain only)', tk.removed === 1 && sqlite.prepare('SELECT COUNT(*) n FROM rush_queue').get().n === 0);
 calls.length = 0;
-t('tick: an empty queue costs no REST calls', (await Q.queueTick(env, T0 + 30 * MIN)).skipped && calls.length === 0);
+{
+  const bd = JSON.parse(await KV.get('rq:board:' + QCH) ?? 'null');
+  calls.length = 0; chanLast[QCH] = bd?.id ?? chanLast[QCH];
+  await Q.queueTick(env, T0 + 30 * MIN);
+  t('tick: an empty queue only reads the channel while the board is the newest message', calls.every((c) => c.method === 'GET') && posts(QCH).length === 0);
+  chanLast[QCH] = '9999999999999999999'; calls.length = 0; // somebody wrote under the board, even with an empty queue
+  recent = [{ id: 'old1', author: { bot: true }, components: [{ components: [{ custom_id: 'pf:rq:join' }] }] }, { id: 'chat1', author: { bot: false }, components: [] }, { id: 'need1', author: { bot: true }, components: [{ custom_id: 'pf:rq:needin:1' }] }];
+  await Q.queueTick(env, T0 + 31 * MIN);
+  t('tick: with an empty queue the board is posted again at the bottom when anyone writes under it', posts(QCH).length === 1 && calls.some((c) => c.method === 'DELETE' && bd?.id && c.path.endsWith('/' + bd.id)));
+  t('a repost also deletes older board copies the stored id missed (and leaves chat and need posts alone)', calls.some((c) => c.method === 'DELETE' && c.path.endsWith('/old1')) && !calls.some((c) => c.method === 'DELETE' && (c.path.endsWith('/chat1') || c.path.endsWith('/need1'))));
+  recent = [];
+}
 
 // ---------- "Need a player" audience, answers, debounce ----------
 await press(p1, 'pf:rq:join', {}, T0 + 49 * MIN);
@@ -245,7 +258,7 @@ t('…the stopped board has no Join button', /stopped/.test(plainText(boardCalls
 t('/queue start lets members join again', /Queue started/.test(T(await cmd(mgr, 'start', {}, T0 + 76 * MIN))) && (await Q.getState(env)).closed === null && sqlite.prepare("SELECT status FROM rush_queue WHERE captain_id = ?").get(p1.u) === undefined && (await press(p1, 'pf:rq:join', {}, T0 + 72 * MIN), sqlite.prepare('SELECT COUNT(*) n FROM rush_queue').get().n === 1));
 await cmd(mgr, 'clear'); await Q.saveState(env, Q.touchState(Q.stateOf(), [], T0 + 80 * MIN));
 calls.length = 0; let it = await Q.queueTick(env, T0 + 80 * MIN + 59 * MIN);
-t('tick: the empty queue stays open before the idle hour (no REST calls)', it.skipped && calls.length === 0);
+t('tick: the empty queue stays open before the idle hour (nothing posted)', !it.closed && posts(QCH).length === 0);
 it = await Q.queueTick(env, T0 + 80 * MIN + 61 * MIN);
 t('tick: after an idle hour it closes itself and the board says so (the idle hour is a setting)', it.closed === 'idle' && /closed/.test(plainText(boardCalls().at(-1).body)) && /idle/.test(T(await cmd(p1, 'status'))));
 t('/queue settings sets the idle hour', /idle/.test(T(await cmd(mgr, 'settings', { idle_minutes: 30 }))) && (await Q.getSettings(env)).idleCloseMin === 30);
