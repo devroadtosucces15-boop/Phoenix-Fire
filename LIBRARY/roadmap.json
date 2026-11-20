@@ -1253,7 +1253,7 @@
       "title": "Dock: five items (Club, Matches, Hub centre, Stats, Tactics), auto-hide on scroll with a bobbing bring-back icon",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "NEXT",
+      "status": "DONE",
       "size": "M",
       "effort": 3,
       "importance": 4,
@@ -1264,12 +1264,18 @@
       ],
       "fileLane": "`next/static/`, `next/lib/`, `web/`",
       "lowHanging": false,
-      "percent": 0,
+      "percent": 100,
       "verify": false,
       "notes": "Part of the components and motion roadmap, lightest fixes first. Owner decisions, accepted and refused look changes and alignment rules: `PLANNING/PF-029-COMPONENTS-MOTION.md`. Icons and emoji stay; card glare and shine stay; layout proposals are parked.",
       "outcome": "The phone dock matches the owner decision.",
       "behavior": "Today dock look kept; live effects enhanced.",
-      "doneLog": [],
+      "doneLog": [
+        {
+          "date": "2026-11-20",
+          "ref": "branch pf-043",
+          "what": "Phone tab bar (five items kept) hides on scroll down and returns on scroll up, at the page ends, with the menu open, keyboard up or focus inside; hidden bar is inert; 44 px gold bring-back arrow bottom centre bobs twice every 7 s (finite, none for calm/off/reduced motion); next/static/dock.js tabHide + dock.css; tests/dock.test.mjs."
+        }
+      ],
       "plans": [
         "PLANNING/PF-029-COMPONENTS-MOTION.md"
       ]
@@ -1279,7 +1285,7 @@
       "title": "Owner-only effects control: budget (5 or more, default 5) and a level per effect (Full, Balanced, Off), one config read by app.js, motion.js, safe.js and ui.mjs",
       "phase": "Components and motion",
       "area": "`next/`, `web/`, `phoenix/` shared UI",
-      "status": "OPEN",
+      "status": "NEXT",
       "size": "L",
       "effort": 4,
       "importance": 4,
