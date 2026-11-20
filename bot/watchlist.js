@@ -1,5 +1,5 @@
 // Watch list – Pro Clubs YouTube videos worth the squad's time, sorted by topic.
-//   managers  /watchlist add <channel id> <name> · remove · list      the creators the bot follows
+//   managers  /watch add <link> [platform] [name] · remove · list    the creators the bot follows: YouTube (new videos, this list) or Twitch / Kick (live alerts, via stream_sources)
 //   members   /watch [topic]                                          the latest videos, newest first
 //   cron      about once an hour: each creator's public RSS feed (no API key) → new videos stored, topic-sorted, and the new
 //             ones posted to the announce channel with "👍 Useful · n" and a Watch button
@@ -8,7 +8,8 @@
 // which `related=<position>` uses (a build page can ask for "CAM" videos). Flag `watchlist` (owner first).
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, sep, footer, buttons, cards } from './ui.js';
-import { orgName, channelFor } from './orgconfig.js';
+import { orgName, channelFor, channelNotice } from './orgconfig.js';
+import { parseLink, streamAlertsOn } from './streamalerts.js';
 import { postEmbed } from './docs.js';
 
 export const WATCH_COMMANDS = new Set(['watchlist', 'watch']);
@@ -116,6 +117,48 @@ function listPanel(rows, topic, env) {
   ] });
 }
 
+
+// ---------- /watch add: YouTube (videos) or Twitch / Kick (live alerts) ----------
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
+const NAME = { youtube: 'YouTube', twitch: 'Twitch', kick: 'Kick' };
+// What they typed + the platform they picked → { platform, handle, url, ytId } or an error line.
+export function readCreator(input, picked) {
+  const s = String(input ?? '').trim();
+  const uc = s.match(/^(?:.*\/channel\/)?(UC[\w-]{22})(?:[/?#].*)?$/)?.[1];
+  if (uc) return picked && picked !== 'youtube' ? { error: `That is a YouTube channel ID, but you picked ${NAME[picked]}.` } : { platform: 'youtube', handle: `channel/${uc}`, url: `https://www.youtube.com/channel/${uc}`, ytId: uc };
+  const link = parseLink(s);
+  if (link) return picked && picked !== link.platform ? { error: `That link is ${NAME[link.platform]}, but you picked ${NAME[picked]}. Change the platform or the link.` } : link;
+  const bare = s.replace(/^@/, '').replace(/[\s/]/g, '');
+  if (picked && /^[A-Za-z0-9._-]{3,30}$/.test(bare)) {
+    const l = parseLink(picked === 'youtube' ? `https://www.youtube.com/@${bare}` : `https://${picked}.${picked === 'kick' ? 'com' : 'tv'}/${bare}`);
+    if (l) return l;
+  }
+  return { error: picked ? `I can’t read that for ${NAME[picked]}. Paste their channel link.` : 'I can’t read that. Paste their Twitch, YouTube or Kick channel link, or pick a platform and type their name.' };
+}
+async function addCreator(i, env, o, now) {
+  const c = readCreator(o.link ?? o.channel, o.platform);
+  if (c.error) return say('Can’t add that', c.error);
+  const name = clean(o.name, 60);
+  const by = i.member?.user?.id ?? '';
+  if (c.platform === 'youtube') {
+    let id = c.ytId;
+    if (!id) id = (await fetch(c.url, { headers: { 'User-Agent': UA, Cookie: 'CONSENT=YES+1; SOCS=CAI' } }).then((r) => r.text(), () => '')).match(/"(?:channelId|externalId)"\s*:\s*"(UC[\w-]{22})"/)?.[1];
+    if (!id) return say('I couldn’t find that YouTube channel', 'Paste the channel link that has /channel/UC… in it, or the 24-character ID (About → Share channel → Copy channel ID).');
+    if ((await one(env, 'SELECT COUNT(*) AS n FROM watch_creators WHERE active = 1'))?.n >= MAX_CREATORS) return say('That’s 30 creators', 'Remove one first.');
+    const shown = name || c.handle.replace(/^@|^channel\//, '');
+    await env.DB.prepare('INSERT INTO watch_creators (channel_id, name, added_by, at, active) VALUES (?, ?, ?, ?, 1) ON CONFLICT (channel_id) DO UPDATE SET name = excluded.name, active = 1').bind(id, shown, by, now).run();
+    return reply(notice(`Following ${shown} on YouTube`, 'Their latest videos appear within the hour; new uploads get posted in the announce channel.', { accent: 'win' }));
+  }
+  // Twitch / Kick: a live alert, posted once each time they go on air (the same machinery as /streamalerts)
+  const channel = await channelFor(env, 'live_alerts');
+  if (!/^\d{5,25}$/.test(String(channel ?? ''))) return reply(await channelNotice(env, 'live_alerts'));
+  if ((await one(env, 'SELECT COUNT(*) AS n FROM stream_sources WHERE active = 1'))?.n >= 40) return say('That’s 40 sources', 'Remove one first.');
+  const shown = name || c.handle;
+  await env.DB.prepare(`INSERT INTO stream_sources (scope, platform, handle, url, label, user_id, channel_id, want_live, want_posts, added_by, at) VALUES ('contributor', ?, ?, ?, ?, NULL, ?, 1, 0, ?, ?)
+    ON CONFLICT (platform, handle, channel_id) DO UPDATE SET label = excluded.label, want_live = 1, active = 1`).bind(c.platform, c.handle, c.url, shown, channel, by, now).run();
+  return reply(notice(`Following ${shown} on ${NAME[c.platform]}`, `I’ll post in <#${channel}> once each time they go live.${streamAlertsOn(env) ? '' : '\nLive alerts are switched off for now (flag `streamAlerts`), so nothing posts yet.'}`, { accent: 'win' }));
+}
+
 export async function watchCommand(i, env, ctx, who, now = Date.now()) {
   if (!flagOn(env, who, 'watchlist')) return say('This isn’t switched on yet', 'The watch list is being tested.');
   if (!env.DB) return say('The member database isn’t connected');
@@ -127,20 +170,17 @@ export async function watchCommand(i, env, ctx, who, now = Date.now()) {
     }
     if (!can(who, 'watchlist.manage')) return say('Only managers can change the watch list', 'Ask a manager to add a creator.');
     const sub = i.data.options?.[0], o = Object.fromEntries((sub?.options ?? []).map((x) => [x.name, x.value]));
-    if (sub?.name === 'add') {
-      const id = String(o.channel ?? '').trim().replace(/^.*\/channel\//, '').replace(/[/?#].*$/, '');
-      if (!/^UC[\w-]{22}$/.test(id)) return say('That isn’t a channel ID', 'It starts with UC and is 24 characters – on the channel page: About → Share channel → Copy channel ID.');
-      if ((await one(env, 'SELECT COUNT(*) AS n FROM watch_creators WHERE active = 1'))?.n >= MAX_CREATORS) return say('That’s 30 creators', 'Remove one first.');
-      const name = clean(o.name, 60) || id;
-      await env.DB.prepare('INSERT INTO watch_creators (channel_id, name, added_by, at, active) VALUES (?, ?, ?, ?, 1) ON CONFLICT (channel_id) DO UPDATE SET name = excluded.name, active = 1').bind(id, name, i.member?.user?.id ?? '', now).run();
-      return reply(notice(`Following ${name}`, 'Their latest videos appear within the hour; new uploads get posted in the announce channel.', { accent: 'win' }));
-    }
+    if (sub?.name === 'add') return addCreator(i, env, o, now);
     if (sub?.name === 'remove') {
-      const r = await env.DB.prepare('UPDATE watch_creators SET active = 0 WHERE channel_id = ? OR lower(name) = lower(?)').bind(String(o.channel ?? ''), String(o.channel ?? '')).run();
-      return r.meta?.changes ? say('Stopped following', 'Their videos stay on the list.') : say('Not found', 'Use the channel ID or the name shown in /watchlist list.');
+      const key = String(o.channel ?? '').trim();
+      const r = await env.DB.prepare('UPDATE watch_creators SET active = 0 WHERE channel_id = ? OR lower(name) = lower(?)').bind(key, key).run();
+      const live = await env.DB.prepare("UPDATE stream_sources SET active = 0 WHERE active = 1 AND platform IN ('twitch', 'kick') AND (handle = lower(?) OR lower(label) = lower(?) OR url = ?)").bind(key.replace(/^.*\/\//, '').replace(/^.*\//, '').toLowerCase(), key, key).run();
+      return r.meta?.changes || live.meta?.changes ? say('Stopped following', r.meta?.changes ? 'Their videos stay on the list.' : 'No more live alerts from them.') : say('Not found', 'Use the channel ID, handle or the name shown in /watch list.');
     }
     const rows = await all(env, 'SELECT * FROM watch_creators WHERE active = 1 ORDER BY name');
-    return reply(message({ ephemeral: true, accent: 'steel', blocks: [header({ eyebrow: 'Staff · Watch list', title: `🎬 ${rows.length} creator${rows.length === 1 ? '' : 's'}`, size: 3 }), text(rows.map((r) => `**${r.name}** · \`${r.channel_id}\``).join('\n') || 'None yet – /watchlist add')] }));
+    const live = await all(env, "SELECT * FROM stream_sources WHERE active = 1 AND platform IN ('twitch', 'kick') ORDER BY label");
+    const lines = [...rows.map((r) => `▶️ **${r.name}** · YouTube · \`${r.channel_id}\``), ...live.map((r) => `🔴 [${r.label}](${r.url}) · ${r.platform === 'kick' ? 'Kick' : 'Twitch'} · live alerts`)];
+    return reply(message({ ephemeral: true, accent: 'steel', blocks: [header({ eyebrow: 'Staff · Watch list', title: `🎬 ${lines.length} creator${lines.length === 1 ? '' : 's'}`, size: 3 }), text(lines.length ? lines.join('\n') : 'Nobody yet. Add one with `/watch add`.')] }));
   } catch (e) {
     return say('Something went wrong', String(e.message ?? e).slice(0, 200));
   }
