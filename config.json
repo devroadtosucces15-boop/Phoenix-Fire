@@ -120,7 +120,7 @@
     "emoji": "owner",
     "pointsEconomy": "owner",
     "testview": "owner",
-    "arcade": "owner",
+    "arcade": "members",
     "gif": "owner",
     "birthday": "owner",
     "engagementPoints": "owner",
