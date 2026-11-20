@@ -140,3 +140,10 @@ button.hdr-bell{font:inherit;color:inherit;cursor:pointer}
 .hdr-bellp .nt{display:grid;gap:2px;min-width:0;flex:1}.hdr-bellp .nt b{font-size:14px}.hdr-bellp .nt span{font-size:13px;color:var(--mute)}
 .hdr-bellp small{color:var(--mute);font-size:12px;white-space:nowrap}
 .hdr-bellp .bempty{padding:18px 16px}
+/* PF-031 header fit: the right-hand group keeps its size and the logo gives way first, so the avatar is never pushed off a 360 to 390 px phone.
+   Below 430 px the second word of the club name is dropped (PHOENIX FIRE shows as PHOENIX); the link keeps the full name as its aria-label. */
+.bar .wrap{min-width:0}
+.bar .lg{flex:0 1 auto;min-width:0}.bar .lg .lg1{overflow:hidden;text-overflow:clip}
+.hdr-r{flex:0 0 auto}
+@media(max-width:430px){.bar .lg .lg2{display:none}.bar .wrap{gap:8px}.hdr-n{top:-5px;right:-5px;min-width:18px;height:18px;font-size:10.5px;line-height:18px;padding:0 4px}}
+@media(max-width:360px){.bar .lg{font-size:17px;gap:6px}.hdr-r{gap:2px}.hdr-s,.hdr-r .ac,.hdr-i,.hdr-on{min-width:38px;min-height:38px}.hdr-r .ac,.hdr-i{width:38px;height:38px}}

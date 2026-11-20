@@ -131,7 +131,8 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
   };
 
   // ---------- 🔔 bell, 💬 clubhouse button, in-app banners ----------
-  const dot = (el, n) => { const i = el?.querySelector('.hdr-n'); if (!i) return; i.hidden = !n; i.textContent = n > 99 ? '99+' : String(n || ''); };
+  const badge = (n) => (n > 9 ? '9+' : String(n || '')); // PF-031: two characters at most so the badge never widens past the button
+  const dot = (el, n) => { const i = el?.querySelector('.hdr-n'); if (!i) return; i.hidden = !n; i.textContent = badge(n); };
   const SEEN = 'phoenix.nseen', seenId = () => { try { return +sessionStorage.getItem(SEEN) || 0; } catch { return 0; } };
   const setSeen = (v) => { try { sessionStorage.setItem(SEEN, String(v)); } catch {} };
   const room = (l) => (l ? window.PhoenixLinks.resolve(l) : '#bell');
