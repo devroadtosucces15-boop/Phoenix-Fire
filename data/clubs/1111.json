@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-21T21:00:40.236Z",
+ "fetchedAt": "2026-11-21T21:10:39.253Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1891,7 +1891,7 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "202",
+   "gamesPlayed": "203",
    "goals": "31",
    "assists": "71",
    "manOfTheMatch": "23",
@@ -1968,7 +1968,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "5",
-   "gamesPlayed": "44",
+   "gamesPlayed": "45",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -2111,7 +2111,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "5",
-   "gamesPlayed": "117",
+   "gamesPlayed": "118",
    "goals": "13",
    "assists": "10",
    "manOfTheMatch": "3",
@@ -2133,7 +2133,7 @@
   {
    "name": "zZ_zid",
    "proPos": "14",
-   "gamesPlayed": "295",
+   "gamesPlayed": "296",
    "goals": "289",
    "assists": "309",
    "manOfTheMatch": "29",
@@ -2177,7 +2177,7 @@
   {
    "name": "MejMech",
    "proPos": "0",
-   "gamesPlayed": "673",
+   "gamesPlayed": "674",
    "goals": "487",
    "assists": "499",
    "manOfTheMatch": "158",
@@ -2199,12 +2199,12 @@
   {
    "name": "AliasX47",
    "proPos": "5",
-   "gamesPlayed": "385",
-   "goals": "464",
-   "assists": "257",
-   "manOfTheMatch": "42",
+   "gamesPlayed": "386",
+   "goals": "466",
+   "assists": "258",
+   "manOfTheMatch": "43",
    "ratingAve": "7.7",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "defender"
   },
   {
@@ -2254,12 +2254,12 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "131",
-   "goals": "47",
+   "gamesPlayed": "132",
+   "goals": "48",
    "assists": "58",
    "manOfTheMatch": "9",
    "ratingAve": "7.6",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2276,7 +2276,7 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "283",
+   "gamesPlayed": "284",
    "goals": "180",
    "assists": "230",
    "manOfTheMatch": "11",
@@ -2287,7 +2287,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "239",
+   "gamesPlayed": "240",
    "goals": "61",
    "assists": "55",
    "manOfTheMatch": "22",
@@ -2309,9 +2309,9 @@
   {
    "name": "SamESKO4",
    "proPos": "14",
-   "gamesPlayed": "142",
+   "gamesPlayed": "143",
    "goals": "147",
-   "assists": "133",
+   "assists": "134",
    "manOfTheMatch": "35",
    "ratingAve": "8.1",
    "prevGoals": "0",
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-21T21:00:40.236Z"
+  "fetchedAt": "2026-11-21T21:10:39.253Z"
  }
 }

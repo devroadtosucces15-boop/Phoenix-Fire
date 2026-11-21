@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-21T21:00:40.236Z",
+ "fetchedAt": "2026-11-21T21:10:39.253Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1459,7 +1459,7 @@
   {
    "name": "kingmitch93",
    "proPos": "14",
-   "gamesPlayed": "202",
+   "gamesPlayed": "203",
    "goals": "31",
    "assists": "71",
    "manOfTheMatch": "23",
@@ -1701,12 +1701,12 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "131",
-   "goals": "47",
+   "gamesPlayed": "132",
+   "goals": "48",
    "assists": "58",
    "manOfTheMatch": "9",
    "ratingAve": "7.6",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -1734,7 +1734,7 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "283",
+   "gamesPlayed": "284",
    "goals": "180",
    "assists": "230",
    "manOfTheMatch": "11",
@@ -1745,7 +1745,7 @@
   {
    "name": "schivera",
    "proPos": "5",
-   "gamesPlayed": "239",
+   "gamesPlayed": "240",
    "goals": "61",
    "assists": "55",
    "manOfTheMatch": "22",
@@ -1893,6 +1893,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-21T21:00:40.236Z"
+  "fetchedAt": "2026-11-21T21:10:39.253Z"
  }
 }
