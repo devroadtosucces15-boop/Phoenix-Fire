@@ -5,7 +5,7 @@ import { env, sqlite, ROOT } from './mock.mjs';
 import { t, tt, done } from './lib.mjs';
 import { plainText } from '../bot/ui.js';
 import { watchInvite, watchPanel, watchCommand, roomTick, liveRoom, roomName, ROOM_GRACE, ROOM_STATUS } from '../bot/streamwatch.js';
-import { livePanel, streamAlertsCron } from '../bot/streamalerts.js';
+import { livePanel, streamAlertsCron, streamPush } from '../bot/streamalerts.js';
 
 env.DISCORD_BOT_TOKEN = 'bot'; env.DISCORD_GUILD_ID = "9990001"; env.DISCORD_APP_ID = '1569450321057550537';
 env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), streamAlerts: 'public' });
@@ -113,6 +113,12 @@ await tt('a room failure never stops the go-live post', async () => {
   reset(); sqlite.prepare('UPDATE stream_sources SET live = 0, live_announced_at = NULL').run(); perm = false;
   const out = await streamAlertsCron(env, T0 + 9e7, globalThis.fetch); perm = true;
   return out.live === 2 && !/Watch in Discord/.test(flat(posts.find((p) => p.channel === '7770001')));
+});
+
+await tt('/streamalerts push on the club source: creates the room if needed and the card carries the Watch button', async () => {
+  reset(); twitchLive = true; const row = sqlite.prepare("SELECT * FROM stream_sources WHERE scope = 'main'").get();
+  const r = await streamPush(env, row, T0, globalThis.fetch), card = posts.find((p) => p.channel === '7770001');
+  return r.live && r.ok && /Watch in Discord/.test(flat(card)) && (await liveRoom(env)) !== null;
 });
 
 // ---------- branding, no hardcoded ids, the Activity page ----------
