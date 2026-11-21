@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-21T20:30:42.872Z",
+ "fetchedAt": "2026-11-21T20:40:46.911Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -710,14 +710,14 @@
   },
   {
    "name": "Bantu Vikng",
-   "proPos": "14",
-   "gamesPlayed": "43",
+   "proPos": "5",
+   "gamesPlayed": "44",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
    "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "defender"
   },
   {
    "name": "MV33xChris",
@@ -765,14 +765,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "14",
-   "gamesPlayed": "116",
+   "proPos": "5",
+   "gamesPlayed": "117",
    "goals": "13",
    "assists": "10",
    "manOfTheMatch": "3",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "defender"
   },
   {
    "name": "Ritzeltod",
@@ -859,6 +859,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-21T20:30:42.872Z"
+  "fetchedAt": "2026-11-21T20:40:46.911Z"
  }
 }
