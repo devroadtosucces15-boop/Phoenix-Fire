@@ -1,14 +1,22 @@
 # Resources and references
 
-Last verified: 2026-11-15
+Last verified: 2026-11-21
 
-Saved links and ideas live in `PLANNING/RESOURCES.md` (motion and transition examples from motion.dev, saved 2026-11-10; Phoenix is vanilla
-JS and CSS, so framework examples are for the technique only). Add new saved links there, grouped by topic with the date, and add a row here
-only when a new group or a new kind of reference appears.
+`PLANNING/RESOURCES.md` is the ranked tool reference: 23 categories, each listing tools best first, with cost tags, how Claude connects
+to each (already connected, hosted MCP, API key, CLI, skill, `llms.txt`) and a connection cheat sheet. Sessions go to the category, take
+rank 1, and move down the list only if it cannot do the job; they do not re-research tools that have a category. All 244 links were checked on
+2026-11-21 (227 answered, 17 are auth or bot-blocked pages that exist, 0 dead). Rank basis and the line format are at the top of that file.
+Add new tools there under the right category with a rank and a connect note, and add a row here only when a new kind of reference appears.
 
 | Group | Where | Use |
 |---|---|---|
-| Motion and transitions | `PLANNING/RESOURCES.md` | Ideas for dock, scroll and card effects |
+| Ranked tool index (categories 1 to 23) | `PLANNING/RESOURCES.md` | Pick the tool by category and rank instead of searching |
+| Motion, scroll, 3D, Lottie (categories 1 to 4) | `PLANNING/RESOURCES.md` | GSAP, Motion, Lenis, Three.js, view transitions, dotLottie |
+| Components, icons, type, color, inspiration (5 to 10) | `PLANNING/RESOURCES.md` | Look and feel of the site, and our installed design libraries |
+| Platform, accessibility, performance (11 to 13) | `PLANNING/RESOURCES.md` | MDN, ARIA patterns, Lighthouse, Playwright |
+| Backend, Discord, security, DevOps, architecture (14 to 18) | `PLANNING/RESOURCES.md` | Workers, D1, Discord docs, OWASP, GitHub, Mermaid |
+| Media generation and editing, assets, agent tooling (19 to 23) | `PLANNING/RESOURCES.md` | Higgsfield, fal, FFmpeg, Context7, MCP |
+| Motion examples from motion.dev | `PLANNING/RESOURCES.md` | Ideas for dock, scroll and card effects (saved 2026-11-10) |
 | Cost and session rules | `PLANNING/SESSION-HANDOFF.md` | How sessions are run |
 | Worker host move | `PLANNING/WORKER-HOST.md` | Flip steps and owner portal steps |
 | Pre-commit leak check | `PLANNING/PRE-COMMIT-CHECK.md` | Before the final commit |

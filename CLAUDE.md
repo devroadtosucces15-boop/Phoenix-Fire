@@ -67,6 +67,9 @@ features add a purpose; they never add a name or ID to code. Add a test that the
 - One master roadmap: `LIBRARY/ROADMAP.md`. One item per session (the `NEXT` row or the one the owner names), in order. Do not branch out; new
   finds go to its Inbox. Small roadmaps merge into it when done.
 - Start from `LIBRARY/README.md` (assets, credentials registry, design, bot commands, site map) instead of surveying the repo.
+- Need a tool, library, API, MCP or CLI (motion, scroll, 3D, components, icons, fonts, testing, Cloudflare, Discord, media generation)? Open
+  `PLANNING/RESOURCES.md`, find the category, take rank 1, and go down the list only if it cannot do the job. Do not re-research a tool that
+  has a category; add what you find there with a rank and a connect note.
 - Keep sessions short (new session at about 100 to 150 turns), check with text before screenshots, but for design talk use screenshots.
 - Before editing, read `LIBRARY/CLAIMS.md`; never edit files another live session claims; message that session instead.
 - Routine work is pre-approved (run, install, commit, push, merge to `main` after the checks); stop only for destructive, money, password or
