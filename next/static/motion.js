@@ -124,7 +124,13 @@
     catch (e) { btn.classList.remove('mx-busy'); btn.classList.add('mx-err'); M.haptic([10, 40, 10]); setTimeout(() => btn.classList.remove('mx-err'), 600); throw e; }
     finally { btn.removeAttribute('aria-busy'); }
   };
-  M.haptic = (p = 8) => { if (!on('haptics')) return; try { navigator.vibrate?.(p); } catch {} };
+  // iPhone Safari has no vibrate(). Its native switch control (<input switch>, iOS 17.4+) gives a light tap when it is toggled from a tap, so a
+  // hidden one stands in: one tick per pulse in the pattern. Best effort: outside a tap, or on older iOS, it is silent and nothing breaks.
+  let tickEl = null;
+  const tick = () => { try { if (!tickEl) { tickEl = d.createElement('label'); tickEl.setAttribute('aria-hidden', 'true'); tickEl.style.cssText = 'position:fixed;left:-99px;top:0;width:1px;height:1px;opacity:0;pointer-events:none';
+      tickEl.innerHTML = '<input type="checkbox" switch tabindex="-1">'; b.appendChild(tickEl); } tickEl.click(); } catch {} };
+  M.haptic = (p = 8) => { if (!on('haptics')) return;
+    try { if (typeof navigator.vibrate === 'function') navigator.vibrate(p); else if (matchMedia('(pointer: coarse)').matches) [].concat(p).filter((_, i) => i % 2 === 0).forEach((_, i) => (i ? setTimeout(tick, i * 70) : tick())); } catch {} };
 
   // ================= toasts, alerts, live values =================
   // PF-039: the notice queue lives in notices.js (PhoenixNotices); this keeps the old signature for every page.
