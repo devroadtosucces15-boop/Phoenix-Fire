@@ -261,11 +261,12 @@
   function tabHide() {
     const tb = d.querySelector('.tabbar'); if (!tb || tb._hide) return; tb._hide = 1;
     const back = d.createElement('button'); back.type = 'button'; back.className = 'tb-back'; back.hidden = true; back.setAttribute('aria-label', 'Show the navigation bar'); back.title = 'Show navigation';
-    back.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7"/></svg>'; d.body.append(back);
-    let hidden = false, last = scrollY, acc = 0, raf = 0, bob = 0;
+    // a low drawer handle on the bottom edge (a lip with a grab bar), not an arrow: tap it or swipe it up to bring the bar back
+    back.innerHTML = '<i aria-hidden="true"></i>'; d.body.append(back);
+    let hidden = false, last = scrollY, acc = 0, raf = 0, bob = 0, tAt = 0;
     const live = () => !!tb.offsetWidth && getComputedStyle(tb).display !== 'none';
     const set = (h) => {
-      h = h && live(); if (h === hidden) return; hidden = h;
+      h = h && live(); if (h === hidden) return; hidden = h; tAt = performance.now();
       d.documentElement.classList.toggle('tb-hide', h); tb.inert = h; back.hidden = !h;
       clearInterval(bob); bob = 0; back.classList.remove('bob');
       if (h) bob = setInterval(() => { if (calm() || d.hidden || (w.PhoenixFx && !w.PhoenixFx.on('dockbob'))) return; back.classList.remove('bob'); void back.offsetWidth; back.classList.add('bob'); }, TB_BOB_MS);
@@ -277,13 +278,19 @@
       const max = d.documentElement.scrollHeight - innerHeight;
       if (y <= TB_FROM || (max > 0 && y >= max - 4)) { set(false); acc = 0; return; }
       acc = Math.sign(dy) === Math.sign(acc) ? acc + dy : dy;
+      // a short cooldown after every slide: a jittery thumb or a page that grows while it loads must not flip the bar back and forth
+      if (performance.now() - tAt < 260) return;
       if (acc > TB_DOWN) set(true); else if (acc < -TB_UP) set(false);
     };
     addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(step); }, { passive: true });
     addEventListener('resize', () => { if (!live()) set(false); });
     tb.addEventListener('focusin', () => set(false));
     back.addEventListener('animationend', () => back.classList.remove('bob'));
-    back.addEventListener('click', () => { set(false); acc = 0; tb.querySelector('a')?.focus({ preventScroll: true }); });
+    // a tap or Enter brings it back; only a keyboard activation moves focus into the bar (focus inside keeps it shown, so a tap must not leave it there)
+    back.addEventListener('click', (e) => { set(false); acc = 0; if (!e.detail) tb.querySelector('a')?.focus({ preventScroll: true }); });
+    let sy = null; back.addEventListener('pointerdown', (e) => { sy = e.clientY; });
+    back.addEventListener('pointermove', (e) => { if (sy != null && sy - e.clientY > 12) { sy = null; set(false); acc = 0; } });
+    back.addEventListener('pointerup', () => { sy = null; }); back.addEventListener('pointercancel', () => { sy = null; });
   }
 
   // ---------- mount ----------
