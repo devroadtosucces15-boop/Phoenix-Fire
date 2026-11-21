@@ -126,6 +126,10 @@ html[data-fx-glow=off] .amb:after,html[data-fx-glow=off] .gloss{opacity:0!import
 html{-webkit-tap-highlight-color:transparent}
 body{touch-action:manipulation}
 input,select,textarea{font-size:max(16px,1em)}                       /* iOS never zooms on focus */
+/* ...but this plain rule lost to about twenty later rules that set 11 to 15px on fields (chat composer, profile form, join form, DM bar, dock note box,
+   staff forms...), so iOS Safari zoomed in on focus and stayed zoomed. On touch screens a field is never under 16px, whatever else says
+   (!important beats the font shorthand wherever it sits). Checkboxes, radios, ranges, files and colour pickers do not zoom, so they keep their size. */
+@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):not([type=color]):not([type=button]):not([type=submit]):not([type=reset]),select,textarea,[contenteditable]:not([contenteditable=false]){font-size:16px!important}}
 .tabbar,.bar,.sub,.seg,.chip,.btn,.keybtn,.rchip,.sdot,.sarrow,.fm,.mx-opt,.ftb{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 img{-webkit-touch-callout:none}
 .tscroll,.spot,.rail,.sub .wrap{overscroll-behavior-x:contain}
