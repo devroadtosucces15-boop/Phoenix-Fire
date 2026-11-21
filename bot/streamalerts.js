@@ -137,7 +137,10 @@ export async function streamAlertsCron(env, now = Date.now(), fetcher = fetch) {
 export async function streamPush(env, src, now = Date.now(), fetcher = fetch) {
   const found = await liveOf({ [src.platform]: src.handle }, fetcher).catch(() => null);
   if (found) await run(env, 'UPDATE stream_sources SET live = 1, live_announced_at = ? WHERE id = ?', now, src.id);
-  const panel = livePanel(src, found ?? { live: false, url: src.url }, siteOf(env), false, env, now); // a manual push: always goes to the source's own channel
+  const club = src.scope === 'main' && src.platform === 'twitch';
+  if (found && club) await roomTick(env, found, now, fetcher).catch(() => null); // make sure the watch room exists, then put its button on the card
+  const watch = found && club ? await watchInvite(env, await liveRoom(env), fetcher).catch(() => ({})) : {};
+  const panel = livePanel(src, found ?? { live: false, url: src.url }, siteOf(env), false, env, now, watch.url); // a manual push: always goes to the source's own channel
   const r = await postEmbed(env, src.channel_id, '', panel, { remember: false });
   return { live: !!found, ok: !!r?.ok, error: r?.error };
 }
