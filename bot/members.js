@@ -75,6 +75,7 @@ import { jailCount, triviaPoints } from './fun.js';
 import { discoveriesRoute } from './discoveries.js';
 import { watchlistRoute } from './watchlist.js';
 import { memberLiveRoute } from './memberlive.js';
+import { streamRoute } from './streamevents.js';
 
 const enc = new TextEncoder();
 const DAY = 86400;
@@ -331,6 +332,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
     if (url.pathname === '/auth/callback') return callback(url, env);
     if (url.pathname === '/api/public') return cors(env, json(await getPublic(env)));
     if (url.pathname === '/api/rush' && request.method === 'GET') return cors(env, json(await getRushPublic(env)));
+    if (url.pathname.startsWith('/api/stream/')) { const sr = await streamRoute(request, env, url); if (sr) return cors(env, sr); } // the stream overlay feed (bot/streamevents.js): its own keys, no member login
     if (url.pathname === '/api/game' && request.method === 'GET') return cors(env, json(await latestGame(env, loadSite)));
     if (url.pathname === '/api/game/changes' && request.method === 'GET') { // PB.6 – public "what changed since version X"
       const d = await gameChanges(env, loadSite, url.searchParams.get('from'));

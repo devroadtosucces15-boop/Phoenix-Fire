@@ -272,6 +272,7 @@ export const COMMANDS = [
       { type: SUB, name: 'test', description: 'Show me the alert card (only I see it)', options: [{ type: INTEGER, name: 'id', description: 'The number from /streamalerts list', required: true, min_value: 1 }] },
     ],
   },
+  { name: 'watchlive', description: 'Watch the club live stream together inside Discord (opens as an Activity in the voice channel)', contexts: [0] },
   { name: 'trivia', description: 'A football trivia question – points for right answers', options: [{ type: SUB, name: 'play', description: 'Ask a question' }, { type: SUB, name: 'board', description: 'The trivia table' }] },
   // Server tools – the Miona / Carl-bot replacements (bot/servertools.js)
   {
@@ -450,7 +451,7 @@ export const APP_COMMANDS = {
   // The five bots (PLANNING/BOT-SPLIT.md): Core = server, site and manager controls · Tools = helpers for members and managers ·
   // Stats = anything that reads numbers · Matchday = running a match night · Rush = 5v5. `fun` is only the old Fun app, kept empty
   // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
-  core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'exportcontent', 'profanitysetup', 'mascot', 'testview', 'corehelp'],
+  core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'watchlive', 'exportcontent', 'profanitysetup', 'mascot', 'testview', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
   fun: [],

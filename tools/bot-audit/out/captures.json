@@ -767,7 +767,7 @@
        },
        {
         "type": 10,
-        "content": "> A red card is a lesson with extra steps."
+        "content": "> You are one session away from a better feeling."
        },
        {
         "type": 14,
@@ -2740,7 +2740,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/watchlive` – Watch the club live stream together inside Discord (opens a…\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
        },
        {
         "type": 14,
@@ -2749,7 +2749,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -2870,26 +2870,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -2953,7 +2959,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 2 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -3073,26 +3079,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -3147,7 +3159,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/watchlive` – Watch the club live stream together inside Discord (opens a…\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
        },
        {
         "type": 14,
@@ -3156,7 +3168,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -3277,26 +3289,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -3360,7 +3378,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 2 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -3480,26 +3498,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -3662,7 +3686,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/watchlive` – Watch the club live stream together inside Discord (opens a…\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
        },
        {
         "type": 14,
@@ -3671,7 +3695,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -3792,26 +3816,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -3875,7 +3905,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 3 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 3 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -3985,26 +4015,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -4068,7 +4104,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 2 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 2 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -4188,26 +4224,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -4271,7 +4313,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 4 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 4 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -4381,26 +4423,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -4455,7 +4503,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/watchlive` – Watch the club live stream together inside Discord (opens a…\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
        },
        {
         "type": 14,
@@ -4464,7 +4512,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -4585,26 +4633,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }
@@ -12366,7 +12420,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Choose one**\n• `/lfg now` – Post that you are available for Rush\n• `/lfg cancel` – Take your availability down\n• `/lfg list` – Who is available for Rush right now\n\n**Good to know**\nYour answer expires. Use `cancel` to leave sooner.\n\n**Related questions**\n**How do I: run a match night?**\n1. `/matchday create` – Pick the kind (league, playoffs, friendly, tournament, VPG) and when. It posts with sign-up buttons. For a League or Rush session with …\n**How do I: find a game?**\n1. `/lfg now` – Say you are free, for how long, with an optional note.\n2. `/lfg list` – See who else is looking.\n3. `/lfg cancel` – Take yourself off when you …"
+        "content": "-# RIGHT PAGE ▶\n**Choose one**\n• `/lfg now` – Put yourself on the Rush board (you pick your position(s) in a dropdown)\n• `/lfg cancel` – Take yourself off the Rush board\n• `/lfg setup` – post the live Rush board in a channel (the bot keeps it the newest message)\n• `/lfg captain` – Pass the captain role of your lobby to someone in your crew (or give it up)\n• `/lfg list` – Who is available for Rush right now\n\n**Good to know**\nYour answer expires. Use `cancel` to leave sooner.\n\n**Related questions**\n**How do I: run a match night?**\n1. `/matchday create` – Pick the kind (league, playoffs, friendly, tournament, VPG) and when. It posts with sign-up buttons. For a League or Rush session with …\n**How do I: find a game?**\n1. `/lfg now` – Say you are free, for how long, with an optional note.\n2. `/lfg list` – See who else is looking.\n3. `/lfg cancel` – Take yourself off when you …"
        },
        {
         "type": 14,
@@ -14272,7 +14326,7 @@
        },
        {
         "type": 10,
-        "content": "**Earned this season** 0\n**Spent** 0\n**🎮 Match performance** 0\n**🗓️ Attendance** 0\n**💬 Community** 0\n**🤝 Behaviour** 0\n**🎖️ Badges** 0\n**🕹️ Games** 0"
+        "content": "**Earned this season** 0\n**Spent** 0\n**🎮 Match performance** 0\n**🗓️ Attendance** 0\n**💬 Community** 0\n**🤝 Behaviour** 0\n**🎖️ Badges** 0\n**🕹️ Games** 0\n**🔥 Community activity** 0"
        },
        {
         "type": 10,
@@ -16081,7 +16135,7 @@
         },
         {
          "type": 10,
-         "content": "🔥 **Iron Harbor** · `1115838` · we won 3–2 · League · 10d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 11d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 12d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 14d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 16d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 18d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 19d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 21d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 26d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 31d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 33d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 34d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 36d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 45d ago"
+         "content": "🔥 **Iron Harbor** · `1115838` · we won 3–2 · League · 13d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 14d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 15d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 17d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 19d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 21d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 22d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 23d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 29d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 34d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 36d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 37d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 39d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 48d ago"
         },
         {
          "type": 10,
@@ -16100,7 +16154,7 @@
             {
              "label": "Iron Harbor",
              "value": "1115838",
-             "description": "1115838 · we won 3–2 · League · 10d ago",
+             "description": "1115838 · we won 3–2 · League · 13d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16108,7 +16162,7 @@
             {
              "label": "Night Owls",
              "value": "1107919",
-             "description": "1107919 · we lost 1–2 · League · 11d ago",
+             "description": "1107919 · we lost 1–2 · League · 14d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16116,7 +16170,7 @@
             {
              "label": "Copperhead FC",
              "value": "1171271",
-             "description": "1171271 · we won 2–1 · League · 12d ago",
+             "description": "1171271 · we won 2–1 · League · 15d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16124,7 +16178,7 @@
             {
              "label": "Velvet Thunder",
              "value": "1147514",
-             "description": "1147514 · we won 4–0 · League · 14d ago",
+             "description": "1147514 · we won 4–0 · League · 17d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16132,7 +16186,7 @@
             {
              "label": "Coastline United",
              "value": "1123757",
-             "description": "1123757 · we won 3–1 · League · 16d ago",
+             "description": "1123757 · we won 3–1 · League · 19d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16140,7 +16194,7 @@
             {
              "label": "Northgate Elite",
              "value": "1155433",
-             "description": "1155433 · we drew 0–0 · League · 18d ago",
+             "description": "1155433 · we drew 0–0 · League · 21d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16148,7 +16202,7 @@
             {
              "label": "Silent Wolves",
              "value": "1139595",
-             "description": "1139595 · we drew 1–1 · League · 19d ago",
+             "description": "1139595 · we drew 1–1 · League · 22d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16156,7 +16210,7 @@
             {
              "label": "Red Mesa Rovers",
              "value": "1131676",
-             "description": "1131676 · we won 3–1 · League · 21d ago",
+             "description": "1131676 · we won 3–1 · League · 23d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16164,7 +16218,7 @@
             {
              "label": "Frostbite FC",
              "value": "1100000",
-             "description": "1100000 · we won 5–1 · League · 26d ago",
+             "description": "1100000 · we won 5–1 · League · 29d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16172,7 +16226,7 @@
             {
              "label": "Glass Cannons",
              "value": "1202947",
-             "description": "1202947 · we won 3–0 · League · 31d ago",
+             "description": "1202947 · we won 3–0 · League · 34d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16180,7 +16234,7 @@
             {
              "label": "Lunar Drift",
              "value": "1163352",
-             "description": "1163352 · we lost 1–2 · League · 33d ago",
+             "description": "1163352 · we lost 1–2 · League · 36d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16188,7 +16242,7 @@
             {
              "label": "Static Noise",
              "value": "1187109",
-             "description": "1187109 · we lost 1–4 · League · 34d ago",
+             "description": "1187109 · we lost 1–4 · League · 37d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16196,7 +16250,7 @@
             {
              "label": "Bluefin Athletic",
              "value": "1179190",
-             "description": "1179190 · we won 1–0 · League · 36d ago",
+             "description": "1179190 · we won 1–0 · League · 39d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16204,7 +16258,7 @@
             {
              "label": "Rustbelt Kings",
              "value": "1195028",
-             "description": "1195028 · we won 2–0 · League · 45d ago",
+             "description": "1195028 · we won 2–0 · League · 48d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16283,7 +16337,7 @@
         },
         {
          "type": 10,
-         "content": "✅ **Iron Harbor** · `1115838` · we won 3–2 · League · 10d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 11d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 12d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 14d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 16d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 18d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 19d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 21d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 26d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 31d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 33d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 34d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 36d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 45d ago"
+         "content": "✅ **Iron Harbor** · `1115838` · we won 3–2 · League · 13d ago\n🔥 **Night Owls** · `1107919` · we lost 1–2 · League · 14d ago\n🔥 **Copperhead FC** · `1171271` · we won 2–1 · League · 15d ago\n🔥 **Velvet Thunder** · `1147514` · we won 4–0 · League · 17d ago\n🔥 **Coastline United** · `1123757` · we won 3–1 · League · 19d ago\n🔥 **Northgate Elite** · `1155433` · we drew 0–0 · League · 21d ago\n🔥 **Silent Wolves** · `1139595` · we drew 1–1 · League · 22d ago\n🔥 **Red Mesa Rovers** · `1131676` · we won 3–1 · League · 23d ago\n🔥 **Frostbite FC** · `1100000` · we won 5–1 · League · 29d ago\n🔥 **Glass Cannons** · `1202947` · we won 3–0 · League · 34d ago\n🔥 **Lunar Drift** · `1163352` · we lost 1–2 · League · 36d ago\n🔥 **Static Noise** · `1187109` · we lost 1–4 · League · 37d ago\n🔥 **Bluefin Athletic** · `1179190` · we won 1–0 · League · 39d ago\n🔥 **Rustbelt Kings** · `1195028` · we won 2–0 · League · 48d ago"
         },
         {
          "type": 10,
@@ -16302,7 +16356,7 @@
             {
              "label": "Iron Harbor",
              "value": "1115838",
-             "description": "1115838 · we won 3–2 · League · 10d ago",
+             "description": "1115838 · we won 3–2 · League · 13d ago",
              "emoji": {
               "name": "✅"
              }
@@ -16310,7 +16364,7 @@
             {
              "label": "Night Owls",
              "value": "1107919",
-             "description": "1107919 · we lost 1–2 · League · 11d ago",
+             "description": "1107919 · we lost 1–2 · League · 14d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16318,7 +16372,7 @@
             {
              "label": "Copperhead FC",
              "value": "1171271",
-             "description": "1171271 · we won 2–1 · League · 12d ago",
+             "description": "1171271 · we won 2–1 · League · 15d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16326,7 +16380,7 @@
             {
              "label": "Velvet Thunder",
              "value": "1147514",
-             "description": "1147514 · we won 4–0 · League · 14d ago",
+             "description": "1147514 · we won 4–0 · League · 17d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16334,7 +16388,7 @@
             {
              "label": "Coastline United",
              "value": "1123757",
-             "description": "1123757 · we won 3–1 · League · 16d ago",
+             "description": "1123757 · we won 3–1 · League · 19d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16342,7 +16396,7 @@
             {
              "label": "Northgate Elite",
              "value": "1155433",
-             "description": "1155433 · we drew 0–0 · League · 18d ago",
+             "description": "1155433 · we drew 0–0 · League · 21d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16350,7 +16404,7 @@
             {
              "label": "Silent Wolves",
              "value": "1139595",
-             "description": "1139595 · we drew 1–1 · League · 19d ago",
+             "description": "1139595 · we drew 1–1 · League · 22d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16358,7 +16412,7 @@
             {
              "label": "Red Mesa Rovers",
              "value": "1131676",
-             "description": "1131676 · we won 3–1 · League · 21d ago",
+             "description": "1131676 · we won 3–1 · League · 23d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16366,7 +16420,7 @@
             {
              "label": "Frostbite FC",
              "value": "1100000",
-             "description": "1100000 · we won 5–1 · League · 26d ago",
+             "description": "1100000 · we won 5–1 · League · 29d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16374,7 +16428,7 @@
             {
              "label": "Glass Cannons",
              "value": "1202947",
-             "description": "1202947 · we won 3–0 · League · 31d ago",
+             "description": "1202947 · we won 3–0 · League · 34d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16382,7 +16436,7 @@
             {
              "label": "Lunar Drift",
              "value": "1163352",
-             "description": "1163352 · we lost 1–2 · League · 33d ago",
+             "description": "1163352 · we lost 1–2 · League · 36d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16390,7 +16444,7 @@
             {
              "label": "Static Noise",
              "value": "1187109",
-             "description": "1187109 · we lost 1–4 · League · 34d ago",
+             "description": "1187109 · we lost 1–4 · League · 37d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16398,7 +16452,7 @@
             {
              "label": "Bluefin Athletic",
              "value": "1179190",
-             "description": "1179190 · we won 1–0 · League · 36d ago",
+             "description": "1179190 · we won 1–0 · League · 39d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16406,7 +16460,7 @@
             {
              "label": "Rustbelt Kings",
              "value": "1195028",
-             "description": "1195028 · we won 2–0 · League · 45d ago",
+             "description": "1195028 · we won 2–0 · League · 48d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16732,7 +16786,7 @@
        "components": [
         {
          "type": 10,
-         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 0 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
+         "content": "✅ Text model (`@cf/meta/llama-3.1-8b-instruct-fp8`) – 1 ms – \"{\"headline\":\"Steady going\",\"body\":\"A quiet week for the numbers.\",\"watch\":\"Keep an eye on the next match.\"}\"\n❌ Image model (`@cf/black-forest-labs/flux-1-schnell`) – 0 ms – failed (failed twice)"
         }
        ]
       }
@@ -17213,7 +17267,7 @@
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1795055332:R>"
+        "content": "**Sentence** 30 min · out <t:1795303242:R>"
        },
        {
         "type": 14,
@@ -17293,7 +17347,7 @@
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1795053532:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1795301442:R>"
        },
        {
         "type": 14,
@@ -17362,7 +17416,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1795053532:d> · 30 min · rage-quitting at 1–0 up · 💸 bailed\n`PHX-0003` <t:1795052531:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1795048531:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1795044531:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1795301442:d> · 30 min · rage-quitting at 1–0 up · 💸 bailed\n`PHX-0003` <t:1795300442:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1795296442:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1795292442:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -17526,7 +17580,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1795042731:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1795290642:R>"
        }
       ]
      }
@@ -17570,7 +17624,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1794959931:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1793973531:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1795207842:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1794221442:R>"
        }
       ]
      }
@@ -17614,7 +17668,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1794801531:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1795049442:R>"
        }
       ]
      }
@@ -17658,7 +17712,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794585531:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1794833442:R>"
        }
       ]
      }
@@ -17702,7 +17756,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794333531:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794581442:R>"
        }
       ]
      }
@@ -18084,6 +18138,46 @@
  },
  {
   "kind": "slash",
+  "command": "watchlive",
+  "trigger": "/watchlive",
+  "app": "core",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-notconfigured.png?v=20"
+          },
+          "description": "Not set up yet"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**No channel is set for stream watch**\nVoice channel where the live-stream Activity opens when the club goes live (a voice channel, not text). A manager adds one in the Boardroom → Organization, or with `/setup channel`."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
   "command": "trivia",
   "trigger": "/trivia play ",
   "app": "tools",
@@ -18099,7 +18193,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Who scored a hat-trick in the 1966 World Cup final?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which club did Zinedine Zidane leave to join Real Madrid in 2001?"
        },
        {
         "type": 12,
@@ -18114,7 +18208,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · Bobby Charlton\n**B** · Geoff Hurst\n**C** · Roger Hunt\n**D** · Bobby Moore"
+        "content": "**A** · Inter\n**B** · Barcelona\n**C** · Marseille\n**D** · Juventus"
        },
        {
         "type": 10,
@@ -18189,7 +18283,7 @@
        },
        {
         "type": 10,
-        "content": "**❌ Not this time – it was B · Geoff Hurst**\nEngland beat West Germany 4–2. You have 0 points."
+        "content": "**❌ Not this time – it was D · Juventus**\nA then-record transfer. You have 0 points."
        }
       ]
      }
@@ -18386,7 +18480,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok33u836n1678/messages/@original",
+    "url": "/webhooks/1/tok1ln8ysha6oo/messages/@original",
     "body": {
      "components": [
       {
@@ -18434,7 +18528,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok1ln8ysha6oo/messages/@original",
+    "url": "/webhooks/1/toktl642gyefg/messages/@original",
     "body": {
      "components": [
       {
@@ -18482,7 +18576,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/toktl642gyefg/messages/@original",
+    "url": "/webhooks/1/tok5i5m8j7b8wt/messages/@original",
     "body": {
      "components": [
       {
@@ -19090,7 +19184,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokkkuldye45se/messages/@original",
+    "url": "/webhooks/1/tokwemf0zxhpxn/messages/@original",
     "body": {
      "components": [
       {
@@ -19479,7 +19573,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1795053532:R> · only you can see this"
+        "content": "-# Updated <t:1795301442:R> · only you can see this"
        },
        {
         "type": 1,
@@ -19553,7 +19647,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1795052931:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1795300842:R>"
          }
         ],
         "accessory": {
@@ -19837,7 +19931,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1795053532:R> · only you can see this"
+        "content": "-# Updated <t:1795301442:R> · only you can see this"
        },
        {
         "type": 1,
@@ -20235,7 +20329,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1795053532:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1795301442:R>"
          }
         ],
         "accessory": {
@@ -21052,122 +21146,26 @@
   "response": {
    "type": 4,
    "data": {
-    "flags": 32768,
+    "flags": 32832,
     "components": [
      {
       "type": 17,
-      "accent_color": 15230234,
+      "accent_color": 7108752,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=20"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=20"
           },
-          "description": "Available for Rush"
+          "description": "Check and try again"
          }
         ]
        },
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1795057132:t> · <t:1795057132:R>"
-       },
-       {
-        "type": 14,
-        "divider": true,
-        "spacing": 1
-       },
-       {
-        "type": 10,
-        "content": "**🎯 Position** Goalkeeper\n**✅ In** –"
-       },
-       {
-        "type": 10,
-        "content": "-# Tap a button to answer"
-       },
-       {
-        "type": 1,
-        "components": [
-         {
-          "type": 2,
-          "style": 3,
-          "custom_id": "pf:lfg:1:in",
-          "label": "I’m in",
-          "emoji": {
-           "name": "✅"
-          }
-         }
-        ]
-       }
-      ]
-     }
-    ],
-    "allowed_mentions": {
-     "parse": []
-    }
-   }
-  },
-  "calls": []
- },
- {
-  "kind": "component",
-  "trigger": "button pf:lfg:1:in",
-  "parent": "/lfg now position=GK",
-  "label": "I’m in",
-  "app": "rush",
-  "command": "lfg",
-  "status": 200,
-  "response": {
-   "type": 7,
-   "data": {
-    "flags": 32768,
-    "components": [
-     {
-      "type": 17,
-      "accent_color": 15230234,
-      "components": [
-       {
-        "type": 12,
-        "items": [
-         {
-          "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=20"
-          },
-          "description": "Available for Rush"
-         }
-        ]
-       },
-       {
-        "type": 10,
-        "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Zub (owner) is available for Rush\n-# Until <t:1795057132:t> · <t:1795057132:R>"
-       },
-       {
-        "type": 14,
-        "divider": true,
-        "spacing": 1
-       },
-       {
-        "type": 10,
-        "content": "**🎯 Position** Goalkeeper\n**✅ In** Zub (owner)"
-       },
-       {
-        "type": 10,
-        "content": "-# Tap a button to answer"
-       },
-       {
-        "type": 1,
-        "components": [
-         {
-          "type": 2,
-          "style": 3,
-          "custom_id": "pf:lfg:1:in",
-          "label": "I’m in",
-          "emoji": {
-           "name": "✅"
-          }
-         }
-        ]
+        "content": "**There is no Rush board yet**\nA manager sets it up with `/lfg setup` in the channel where it should live."
        }
       ]
      }
@@ -21207,7 +21205,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1795054132:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**There is no Rush board yet**\nA manager sets it up with `/lfg setup` in the channel where it should live."
        }
       ]
      }
@@ -21247,7 +21245,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1795054132:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**There is no Rush board yet**\nA manager sets it up with `/lfg setup` in the channel where it should live."
        }
       ]
      }
@@ -21287,7 +21285,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1795054132:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**There is no Rush board yet**\nA manager sets it up with `/lfg setup` in the channel where it should live."
        }
       ]
      }
@@ -21327,7 +21325,7 @@
        },
        {
         "type": 10,
-        "content": "**Slow down**\nYou can post again <t:1795054132:R>. Your last call is still up – use /lfg cancel to take it down."
+        "content": "**There is no Rush board yet**\nA manager sets it up with `/lfg setup` in the channel where it should live."
        }
       ]
      }
@@ -21352,22 +21350,102 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 4972682,
+      "accent_color": 7108752,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-cmd-lfg-off.png?v=20"
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=20"
           },
-          "description": "Call taken down"
+          "description": "Check and try again"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**Taken down**\nYour Rush availability is off."
+        "content": "**There is no Rush board yet**\nA manager sets it up with `/lfg setup` in the channel where it should live."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "lfg",
+  "trigger": "/lfg setup ",
+  "app": "rush",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-cmd-problem.png?v=20"
+          },
+          "description": "Check and try again"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Could not save that channel**\nThis server must be in the Organization config first (Boardroom → Organization → Discord servers)."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "lfg",
+  "trigger": "/lfg captain ",
+  "app": "rush",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-locked.png?v=20"
+          },
+          "description": "Not available"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**You are not a captain**\nOnly the captain of a group in the queue can pass the role. Join the queue first, or ask your captain."
        }
       ]
      }
@@ -21407,7 +21485,7 @@
        },
        {
         "type": 10,
-        "content": "**Nobody is available right now**\nPost with /lfg now and the Rush role is tagged."
+        "content": "**Nobody is available right now**\nPress I’m in on the Rush board."
        }
       ]
      }
@@ -21448,6 +21526,46 @@
        {
         "type": 10,
         "content": "**Nobody is in the queue**\nPress **Join queue** on the board to go first."
+       }
+      ]
+     }
+    ],
+    "allowed_mentions": {
+     "parse": []
+    }
+   }
+  },
+  "calls": []
+ },
+ {
+  "kind": "slash",
+  "command": "queue",
+  "trigger": "/queue captain ",
+  "app": "rush",
+  "status": 200,
+  "response": {
+   "type": 4,
+   "data": {
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-locked.png?v=20"
+          },
+          "description": "Not available"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**You are not a captain**\nOnly the captain of a group in the queue can pass the role. Join the queue first, or ask your captain."
        }
       ]
      }
@@ -21934,7 +22052,7 @@
        },
        {
         "type": 10,
-        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
+        "content": "-# RIGHT PAGE ▶\n**Commands**\n`/syncroles` – give/remove the ✅ Verified role for every player claim *(managers)*\n`/aispike` – one-off test of the Workers AI image + text models *(owner only)*\n`/panel` – everything waiting for a decision – approve or reject right… *(managers)*\n`/announce` – send an announcement to every member (Squad Hub bell + Disc… *(managers)*\n`/trial` – current trial cards, or search by gamertag *(managers)*\n`/setup` – channels, roles, leave/join alerts, welcome posts and the p… *(managers)*\n`/purge` – delete recent messages in this channel *(managers)*\n`/streamalerts` – stream and post alerts for the club channel or contributors *(owner only)*\n`/watchlive` – Watch the club live stream together inside Discord (opens a…\n`/exportcontent` – incremental channel history export to DMs *(owner only)*\n`/profanitysetup` – create/update the AutoMod profanity rule + alert channel *(owner only)*\n`/mascot` – The club mascot: a quote, an honest answer, or a friendly r…\n`/testview` – preview any bot output with its rules, privately (nothing i… *(managers)*"
        },
        {
         "type": 14,
@@ -21943,7 +22061,7 @@
        },
        {
         "type": 10,
-        "content": "-# Page 1 of 14 · Managers and the owner can use these · only you can see this book"
+        "content": "-# Page 1 of 15 · Managers and the owner can use these · only you can see this book"
        },
        {
         "type": 1,
@@ -22064,26 +22182,32 @@
             "default": false
            },
            {
-            "label": "/exportcontent",
+            "label": "/watchlive",
             "value": "10",
+            "description": "Watch the club live stream together inside Discord (opens as an Activity in the voice cha…",
+            "default": false
+           },
+           {
+            "label": "/exportcontent",
+            "value": "11",
             "description": "incremental channel history export to DMs",
             "default": false
            },
            {
             "label": "/profanitysetup",
-            "value": "11",
+            "value": "12",
             "description": "create/update the AutoMod profanity rule + alert channel",
             "default": false
            },
            {
             "label": "/mascot",
-            "value": "12",
+            "value": "13",
             "description": "The club mascot: a quote, an honest answer, or a friendly roast",
             "default": false
            },
            {
             "label": "/testview",
-            "value": "13",
+            "value": "14",
             "description": "preview any bot output with its rules, privately (nothing is sent)",
             "default": false
            }

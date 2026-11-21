@@ -65,7 +65,7 @@ const sample = {
   seasoncard: null, // Phoenix Stats app, members, member DB – tests/rushscan.test.mjs
   rushladder: null, // Phoenix Stats app, dark until configured – tests/rushscan.test.mjs
   panel: null, // managers, member DB – tests/panel.test.mjs
-  jail: null, wheel: null, trivia: null, share: null, discoveries: null, watch: null, streamalerts: null, // tests/discoveries.test.mjs
+  jail: null, wheel: null, trivia: null, share: null, discoveries: null, watch: null, streamalerts: null, watchlive: null, // streamalerts + watchlive: tests/streamwatch.test.mjs
   // fun for members, member DB – tests/fun.test.mjs
 };
 for (const name of Object.keys(sample)) {

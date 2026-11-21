@@ -79,6 +79,7 @@ import { playerFaces } from './faces.js';
 import { zoneChoices } from './host.js';
 import { HELP_COMMANDS, HELP_BUTTON, helpCommand, helpButton } from './help.js';
 import { STREAM_COMMANDS, streamCommand, streamAlertsCron } from './streamalerts.js';
+import { STREAMWATCH_COMMANDS, watchCommand as watchLiveCommand } from './streamwatch.js';
 import { WATCH_COMMANDS, WATCH_BUTTON, watchCommand, watchButton, watchlistCron } from './watchlist.js';
 import { DISCOVERY_COMMANDS, DISCOVERY_BUTTON, discoveryCommand, discoveryButton } from './discoveries.js';
 import { FUN_COMMANDS, FUN_BUTTON, funCommand, funButton, birthdayCheck } from './fun.js';
@@ -227,6 +228,7 @@ export default {
     if (i.type === 2 && HELP_COMMANDS[i.data.name]) return json(bookOn(env, who) ? await helpBook(i.data.name, i, env, who) : helpCommand(i.data.name, env)); // the wiki book (bot/wikibook.js) once its flag is on // /corehelp … /rushhelp: private, button-driven menus (bot/help.js)
     if (i.type === 3 && HELP_BUTTON.test(i.data?.custom_id ?? '')) return json(helpButton(i, env));
     if (i.type === 2 && STREAM_COMMANDS.has(i.data.name)) return json(await streamCommand(i, env, ctx, who)); // /streamalerts (owner)
+    if (i.type === 2 && STREAMWATCH_COMMANDS.has(i.data.name)) return json(await watchLiveCommand(i, env, who)); // /watchlive: the stream as an Activity (members and above)
     if (i.type === 2 && WATCH_COMMANDS.has(i.data.name)) return json(await watchCommand(i, env, ctx, who)); // /watch /watchlist
     if (i.type === 3 && WATCH_BUTTON.test(i.data?.custom_id ?? '')) return json(await watchButton(i, env, who)); // 👍 Useful
     if (i.type === 2 && DISCOVERY_COMMANDS.has(i.data.name)) return json(await discoveryCommand(i, env, ctx, who)); // /share /discoveries
