@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-21T12:10:48.461Z",
+ "fetchedAt": "2026-11-21T12:20:40.413Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2096,14 +2096,14 @@
   },
   {
    "name": "zZ_zid",
-   "proPos": "5",
-   "gamesPlayed": "288",
+   "proPos": "14",
+   "gamesPlayed": "290",
    "goals": "287",
-   "assists": "296",
+   "assists": "297",
    "manOfTheMatch": "29",
    "ratingAve": "7.2",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Ana Montana8022",
@@ -2140,14 +2140,14 @@
   },
   {
    "name": "MejMech",
-   "proPos": "0",
-   "gamesPlayed": "666",
-   "goals": "486",
-   "assists": "498",
+   "proPos": "25",
+   "gamesPlayed": "668",
+   "goals": "487",
+   "assists": "499",
    "manOfTheMatch": "158",
    "ratingAve": "7.6",
    "prevGoals": "1",
-   "favoritePosition": "goalkeeper"
+   "favoritePosition": "forward"
   },
   {
    "name": "Lucus1997",
@@ -2410,6 +2410,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-21T12:10:48.461Z"
+  "fetchedAt": "2026-11-21T12:20:40.413Z"
  }
 }
