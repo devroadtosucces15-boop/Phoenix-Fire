@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-21T11:40:46.567Z",
+ "fetchedAt": "2026-11-21T11:50:39.621Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1829,7 +1829,7 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "47",
+   "gamesPlayed": "48",
    "goals": "10",
    "assists": "20",
    "manOfTheMatch": "2",
@@ -2175,6 +2175,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-21T11:40:46.567Z"
+  "fetchedAt": "2026-11-21T11:50:39.621Z"
  }
 }
