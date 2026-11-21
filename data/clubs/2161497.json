@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-21T21:30:40.555Z",
+ "fetchedAt": "2026-11-21T21:40:46.680Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -711,7 +711,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "5",
-   "gamesPlayed": "45",
+   "gamesPlayed": "46",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -766,7 +766,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "5",
-   "gamesPlayed": "118",
+   "gamesPlayed": "119",
    "goals": "13",
    "assists": "10",
    "manOfTheMatch": "3",
@@ -859,6 +859,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-21T21:30:40.555Z"
+  "fetchedAt": "2026-11-21T21:40:46.680Z"
  }
 }
