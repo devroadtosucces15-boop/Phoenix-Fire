@@ -6,7 +6,7 @@ import { t, tt, done } from './lib.mjs';
 import { COMMANDS } from '../bot/commanddefs.js';
 import { plainText } from '../bot/ui.js';
 import { watchInvite, watchPanel, watchCommand, roomTick, liveRoom, roomName, ROOM_GRACE, ROOM_STATUS } from '../bot/streamwatch.js';
-import { livePanel, streamAlertsCron } from '../bot/streamalerts.js';
+import { livePanel, streamAlertsCron, streamPush } from '../bot/streamalerts.js';
 
 env.DISCORD_BOT_TOKEN = 'bot'; env.DISCORD_GUILD_ID = "9990001"; env.DISCORD_APP_ID = '1569450321057550537';
 env.FEATURES = JSON.stringify({ ...JSON.parse(env.FEATURES), streamAlerts: 'public' });
@@ -117,6 +117,11 @@ await tt('a room failure never stops the go-live post', async () => {
 });
 
 t('every slash command, option and choice description fits Discord\'s 100 character limit (a longer one fails the whole registration)', (() => { const bad = []; const walk = (o, p) => { if (o && typeof o === 'object') { if (typeof o.description === 'string' && o.description.length > 100) bad.push(p); for (const k in o) walk(o[k], `${p}.${o.name ?? k}`); } }; walk(COMMANDS, 'COMMANDS'); return bad.length === 0; })());
+await tt('/streamalerts push on the club source: creates the room if needed and the card carries the Watch button', async () => {
+  reset(); twitchLive = true; const row = sqlite.prepare("SELECT * FROM stream_sources WHERE scope = 'main'").get();
+  const r = await streamPush(env, row, T0, globalThis.fetch), card = posts.find((p) => p.channel === '7770001');
+  return r.live && r.ok && /Watch in Discord/.test(flat(card)) && (await liveRoom(env)) !== null;
+});
 
 // ---------- branding, no hardcoded ids, the Activity page ----------
 const src = fs.readFileSync(ROOT + 'bot/streamwatch.js', 'utf8');
