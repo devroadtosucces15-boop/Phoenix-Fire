@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import { env, sqlite, ROOT } from './mock.mjs';
 import { t, tt, done } from './lib.mjs';
+import { COMMANDS } from '../bot/commanddefs.js';
 import { plainText } from '../bot/ui.js';
 import { watchInvite, watchPanel, watchCommand, roomTick, liveRoom, roomName, ROOM_GRACE, ROOM_STATUS } from '../bot/streamwatch.js';
 import { livePanel, streamAlertsCron } from '../bot/streamalerts.js';
@@ -114,6 +115,8 @@ await tt('a room failure never stops the go-live post', async () => {
   const out = await streamAlertsCron(env, T0 + 9e7, globalThis.fetch); perm = true;
   return out.live === 2 && !/Watch in Discord/.test(flat(posts.find((p) => p.channel === '7770001')));
 });
+
+t('every slash command, option and choice description fits Discord\'s 100 character limit (a longer one fails the whole registration)', (() => { const bad = []; const walk = (o, p) => { if (o && typeof o === 'object') { if (typeof o.description === 'string' && o.description.length > 100) bad.push(p); for (const k in o) walk(o[k], `${p}.${o.name ?? k}`); } }; walk(COMMANDS, 'COMMANDS'); return bad.length === 0; })());
 
 // ---------- branding, no hardcoded ids, the Activity page ----------
 const src = fs.readFileSync(ROOT + 'bot/streamwatch.js', 'utf8');
