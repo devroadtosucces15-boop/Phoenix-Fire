@@ -16,13 +16,13 @@
     const rows = B.cmds.commands.map((c) => `<tr data-cmd="${esc(c.name)}">
 <td><b>/${esc(c.name)}</b><div class="muted small">${esc(c.description)}</div></td>
 <td><input type="checkbox" data-f="enabled"${c.enabled === false ? '' : ' checked'} aria-label="On"></td>
-<td><select data-f="min">${opts(ROLE_OPTS, c.min || (c.staff ? 'manager' : 'guest'))}</select></td>
-<td><select data-f="channel">${chOpts((c.channels || [])[0] || '', 'Any channel')}</select></td>
-<td><select data-f="reply">${opts(REPLY_OPTS, c.reply || 'default')}</select></td>
-<td><select data-f="postTo">${chOpts(c.postTo || '', 'Where it was used')}</select></td></tr>`).join('');
+<td><select aria-label="Who can use it" data-f="min">${opts(ROLE_OPTS, c.min || (c.staff ? 'manager' : 'guest'))}</select></td>
+<td><select aria-label="Only in" data-f="channel">${chOpts((c.channels || [])[0] || '', 'Any channel')}</select></td>
+<td><select aria-label="Reply" data-f="reply">${opts(REPLY_OPTS, c.reply || 'default')}</select></td>
+<td><select aria-label="Post to" data-f="postTo">${chOpts(c.postTo || '', 'Where it was used')}</select></td></tr>`).join('');
     return `<h3>🎛️ Bot commands</h3>
 <p class="muted small">Pick who can use each command, which channel it works in, whether the answer is private, and where it posts. Owners always get through; managers ignore the channel limit. Rules apply the moment you save. <b>Sync to Discord</b> also hides staff-only commands from the command list.${B.cmds.channelsError ? ` <span class="warn">Channel list unavailable: ${esc(B.cmds.channelsError)}</span>` : ''}</p>
-<div class="table-wrap"><table class="tbl"><thead><tr><th>Command</th><th>On</th><th>Who can use it</th><th>Only in</th><th>Reply</th><th>Post to</th></tr></thead><tbody>${rows}</tbody></table></div>
+<div class="table-wrap"><table class="tbl"><caption class="sr">Bot commands</caption><thead><tr><th scope="col">Command</th><th scope="col">On</th><th scope="col">Who can use it</th><th scope="col">Only in</th><th scope="col">Reply</th><th scope="col">Post to</th></tr></thead><tbody>${rows}</tbody></table></div>
 <div class="row" style="margin-top:14px;gap:10px"><button class="btn" data-cmd-save${B.busy ? ' disabled' : ''}>💾 Save commands</button><button class="btn ghost" data-cmd-sync${B.busy ? ' disabled' : ''}>🔄 Sync to Discord</button></div>`;
   }
   function readCmds(el) {

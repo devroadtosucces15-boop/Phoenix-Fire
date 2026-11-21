@@ -1,0 +1,19 @@
+/* PF-039 notices: one queue, stacked up to 3, 12 px corners, errors stay, Undo, progress line. Brand accent from the theme variables. */
+#ph-notices{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9980;display:flex;flex-direction:column-reverse;gap:8px;width:min(420px,calc(100vw - 32px));pointer-events:none}
+@media(max-width:820px){#ph-notices{bottom:calc(100px + env(safe-area-inset-bottom))}}
+.ph-notice{position:relative;overflow:hidden;pointer-events:auto;display:flex;gap:10px;align-items:center;padding:12px 12px 14px 16px;border-radius:12px;background:rgba(17,23,34,.97);border:1px solid rgba(232,101,26,.45);box-shadow:0 18px 40px rgba(0,0,0,.55);font:600 14px Inter,system-ui,sans-serif;color:#fff;cursor:pointer;animation:phNoticeIn .32s var(--e-spring,cubic-bezier(.2,.9,.3,1.2)) both}
+.ph-notice.err{border-color:rgba(232,101,26,.85);border-left-width:4px}
+.ph-notice.ok{border-color:rgba(31,157,85,.7)}
+.ph-notice.ph-out{animation:phNoticeOut .22s ease-in both}
+.ph-n-ic{flex:none}.ph-n-tx{flex:1;min-width:0;overflow-wrap:anywhere}
+.ph-n-undo,.ph-n-x{flex:none;min-width:44px;min-height:44px;margin:-8px 0;background:none;border:0;color:inherit;cursor:pointer;font:inherit;border-radius:8px}
+.ph-n-undo{color:#e8651a;font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:13px;padding:0 10px}
+.ph-n-x{font-size:20px;opacity:.7;margin-right:-4px}.ph-n-x:hover,.ph-n-undo:hover{background:rgba(255,255,255,.08)}
+.ph-n-undo:focus-visible,.ph-n-x:focus-visible{outline:2px solid #e8651a;outline-offset:-2px}
+.ph-n-bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:#e8651a;transform-origin:left;opacity:.85}
+.ph-notice.ok .ph-n-bar{background:#1f9d55}
+@keyframes phNoticeBar{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+@keyframes phNoticeIn{from{opacity:0;transform:translate3d(0,24px,0) scale(.94)}}
+@keyframes phNoticeOut{to{opacity:0;transform:translate3d(0,12px,0) scale(.96)}}
+html[data-motion="off"] .ph-notice,html[data-motion="calm"] .ph-notice{animation-duration:.01s}
+@media(prefers-reduced-motion:reduce){.ph-notice{animation-duration:.01s}}

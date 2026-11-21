@@ -6,7 +6,7 @@
   const d = document, H = d.documentElement;
   const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} } };
   const ss = { get: (k) => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); } catch {} } };
-  const VIEW_KEYS = ['phoenix.viewas', 'phoenix.viewas.t', 'phoenix.motion', 'phoenix.mx', 'phoenix.insights', 'phoenix.fx', 'phoenix.entrance', 'phoenix.gyro', 'phoenix_tx_vert', 'phoenix.stack', 'phoenix.orbit'];
+  const VIEW_KEYS = ['phoenix.viewas', 'phoenix.viewas.t', 'phoenix.motion', 'phoenix.mx', 'phoenix.insights', 'phoenix.fx', 'phoenix.entrance', 'phoenix.gyro', 'phoenix_tx_vert', 'phoenix.stack', 'phoenix.orbit', 'phoenix.fxcfg'];
   const VIEW_MS = 3 * 36e5;
 
   // ---- "view as" never outlives the visit it was set for ----
@@ -49,7 +49,7 @@
   // ---- safe mode: if scripts keep failing, switch every effect off and offer the reset (never loops, never blocks the page) ----
   const seen = new Set(); let t0 = 0, safeOn = false;
   function safeMode() {
-    if (safeOn) return; safeOn = true; H.classList.add('nx-safe'); H.dataset.motion = 'off';
+    if (safeOn) return; safeOn = true; H.classList.add('nx-safe'); H.dataset.motion = 'off'; window.PhoenixFx?.refresh();   // PF-044: the one effects config turns everything off, nothing else decides
     const go = () => {
       if (d.getElementById('nx-safe-bar')) return;
       const bar = d.createElement('div'); bar.id = 'nx-safe-bar'; bar.setAttribute('role', 'status');

@@ -45,7 +45,7 @@
 .wx .radar .leg{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
 .wx .radar .leg button{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:5px 12px;color:#fff;font:600 12px Inter;cursor:pointer}
 .wx .stage3{perspective:800px;height:230px;display:grid;place-items:end center}
-.wx .towers{display:flex;gap:18px;align-items:flex-end;transform-style:preserve-3d;transform:rotateX(-18deg) rotateY(-24deg);animation:spin 14s ease-in-out infinite alternate;padding-bottom:20px}
+.wx .towers{display:flex;gap:18px;align-items:flex-end;transform-style:preserve-3d;transform:rotateX(-18deg) rotateY(-24deg);animation:spin 14s ease-in-out 2 alternate;padding-bottom:20px}
 @keyframes spin{to{transform:rotateX(-18deg) rotateY(24deg)}}
 .wx .tw{width:36px;height:var(--h);position:relative;transform-style:preserve-3d;transform-origin:bottom;animation:grow 1.2s calc(var(--i)*.1s) both cubic-bezier(.2,.8,.2,1)}
 @keyframes grow{from{transform:scaleY(.02)}}
@@ -153,7 +153,7 @@
 .wx .cab b{display:block;font:700 28px Oswald;color:#efcf7a}
 .wx .cab u{text-decoration:none;font:600 11px Inter;letter-spacing:.12em;text-transform:uppercase;color:#c5cdde}
 .wx .cab.dim{opacity:.4;filter:grayscale(1)}
-.wx .shine{animation:shn 3.2s infinite ease-in-out}
+.wx .shine{animation:shn 3.2s 3 ease-in-out}
 @keyframes shn{0%,45%{transform:translateX(0) skewX(-20deg)}100%{transform:translateX(190px) skewX(-20deg)}}
 .wx .medals{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px}
 .wx .md{text-align:center;animation:mdin .8s calc(var(--i)*.1s) both cubic-bezier(.3,1.6,.4,1);transform-origin:top;transition:.4s}
@@ -170,7 +170,7 @@
 .wx .ic:hover svg{transform:rotate(-8deg) scale(1.2);filter:drop-shadow(0 0 8px #efcf7a)}
 /* zn6: no box – the glow and the turning rays fade out towards the edges instead of stopping at a frame */
 .wx .poster{position:relative;display:grid;place-items:center;padding:26px 10px;overflow:hidden;background:radial-gradient(closest-side at 50% 42%,rgba(239,207,122,.26),transparent)}
-.wx .rays{pointer-events:none;position:absolute;inset:-50%;background:repeating-conic-gradient(from 0deg,rgba(239,207,122,.14) 0 8deg,transparent 8deg 20deg);animation:rot 40s linear infinite;-webkit-mask-image:radial-gradient(circle closest-side,#000 14%,transparent 47%);mask-image:radial-gradient(circle closest-side,#000 14%,transparent 47%)}
+.wx .rays{pointer-events:none;position:absolute;inset:-50%;background:repeating-conic-gradient(from 0deg,rgba(239,207,122,.14) 0 8deg,transparent 8deg 20deg);animation:rot 40s linear 2;-webkit-mask-image:radial-gradient(circle closest-side,#000 14%,transparent 47%);mask-image:radial-gradient(circle closest-side,#000 14%,transparent 47%)}
 @keyframes rot{to{transform:rotate(360deg)}}
 .wx .poster .pt{position:relative;text-align:center}
 .wx .poster .pt>span{display:block;font:700 12px Inter;letter-spacing:.3em;color:#efcf7a;margin-bottom:8px}
@@ -286,7 +286,7 @@
 .wx .rbar .w{background:linear-gradient(#59e08f,#1f8f50)}.wx .rbar .d{background:linear-gradient(#f0cf7c,#a8812c)}.wx .rbar .l{background:linear-gradient(#ff8a7e,#b5362e)}
 .wx .rleg{display:flex;gap:16px;flex-wrap:wrap;font:600 12px Inter}.wx .rleg .w{color:#7fd69a}.wx .rleg .d{color:#e8c46a}.wx .rleg .l{color:#e58a7e}
 .wx .mosaic{display:grid;grid-template-columns:repeat(auto-fill,minmax(18px,1fr));gap:5px;margin-top:2px}.wx .mosaic a{aspect-ratio:1;border-radius:5px;position:relative;opacity:0;animation:fi .4s calc(var(--i)*18ms) both;transition:transform .2s}.wx .mosaic a:hover{transform:scale(1.35);z-index:2}
-.wx .mosaic .W{background:linear-gradient(#59e08f,#1f8f50)}.wx .mosaic .D{background:linear-gradient(#f0cf7c,#a8812c)}.wx .mosaic .L{background:linear-gradient(#ff8a7e,#b5362e)}.wx .mosaic .cs:after{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff}
+.wx .mosaic .W{background:linear-gradient(#59e08f,#1f8f50)}.wx .mosaic .D{background:linear-gradient(#f0cf7c,#a8812c)}.wx .mosaic .L{background:linear-gradient(#ff8a7e,#b5362e)}.wx .mosaic .cs:before{content:"";position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff}
 .wx .k-bal{grid-column:span 7}
 .wx .gdv{font:700 34px Oswald!important;color:#efcf7a!important}
 .wx .tug{display:flex;height:46px;border-radius:12px;overflow:hidden;gap:3px}.wx .tug i{display:flex;align-items:center;font:700 22px Oswald;color:#0b0f16;padding:0 14px;transform-origin:left;animation:grow2 1.1s cubic-bezier(.2,.8,.2,1) both}

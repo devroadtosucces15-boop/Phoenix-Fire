@@ -35,7 +35,7 @@
 .hdr-menu .pout{color:#ff9a92!important}
 /* palette */
 .hdr-pal{position:fixed;inset:0;z-index:9995;background:var(--pal-veil,rgba(0,0,0,.94));display:flex;justify-content:center;align-items:flex-start;padding:calc(env(safe-area-inset-top) + 10vh) 12px 12px;contain:layout paint;overscroll-behavior:contain;touch-action:pan-y}
-.hdr-pal .pbox{width:min(560px,100%);max-height:min(70dvh,560px);display:flex;flex-direction:column;background:linear-gradient(180deg,var(--pal-top,var(--p2)),var(--pal-bottom,var(--p1)));border:1px solid var(--line2);border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,.7);overflow:hidden}
+.hdr-pal .pbox{width:min(560px,100%);max-height:min(70dvh,560px);display:flex;flex-direction:column;background:linear-gradient(180deg,var(--pal-top,var(--p2)),var(--pal-bottom,var(--p1)));border:1px solid var(--line2);border-radius:12px;box-shadow:none;overflow:hidden}
 .hdr-pal .pin{display:flex;align-items:center;gap:10px;padding:0 8px 0 16px;border-bottom:1px solid var(--line)}
 .hdr-pal input{flex:1;min-width:0;height:54px;background:none;border:0;outline:0;color:#fff;font:500 16px Inter}
 .hdr-pal .pclose{width:44px;height:44px;border-radius:50%;background:none;border:0;color:var(--soft);font-size:16px;cursor:pointer}
@@ -58,11 +58,11 @@ html.standalone body:has(.hdr-va){--bh:59px}
    The tile is see-through glass gold so the halo and the page show through; a light sweep crosses it every few seconds. */
 .bar .lg{position:relative;isolation:isolate}
 .bar .lg::before{content:"";position:absolute;left:-12px;top:50%;width:68px;height:68px;margin-top:-34px;border-radius:50%;z-index:-1;pointer-events:none;
- background:radial-gradient(circle,rgba(200,53,44,.7),rgba(200,53,44,.24) 48%,transparent 70%);filter:blur(8px);animation:lgHalo 4s ease-in-out infinite}
+ background:radial-gradient(circle,rgba(200,53,44,.7),rgba(200,53,44,.24) 48%,transparent 70%);filter:blur(8px);animation:lgHalo 4s ease-in-out 3}
 .bar .lg img{box-sizing:border-box;width:44px;height:44px;padding:5px;border-radius:13px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));
  background:linear-gradient(115deg,transparent 38%,rgba(255,255,255,.5) 50%,transparent 62%) 130% 0/260% 100% no-repeat,radial-gradient(circle at 30% 20%,rgba(255,241,194,.84) 0,rgba(239,207,122,.74) 40%,rgba(185,138,34,.66) 100%);
  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);
- box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -3px 6px rgba(80,50,0,.28),0 0 0 1px rgba(255,236,170,.5),0 6px 16px -4px rgba(239,207,122,.42);animation:lgSweep 5.5s ease-in-out infinite,lgFloat 6s ease-in-out infinite}
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -3px 6px rgba(80,50,0,.28),0 0 0 1px rgba(255,236,170,.5),0 6px 16px -4px rgba(239,207,122,.42);animation:lgSweep 5.5s ease-in-out 3,lgFloat 6s ease-in-out 3}
 .bar .lg:hover img{animation-duration:1.6s,6s}
 @keyframes lgSweep{0%,55%{background-position:130% 0,0 0}100%{background-position:-60% 0,0 0}}
 @keyframes lgFloat{50%{transform:translateY(-3px)}}
@@ -87,7 +87,7 @@ body:not(.hub-page):after{background:repeating-linear-gradient(45deg,rgba(255,25
 
 /* C4 (wg2): the old hub banner's gold crest as the header logo on every page – it pops in lit (<1 s) and each section adds one small detail of its own,
    like the locker opening. Full motion only; the loops above keep running after the intro. Uses scale/opacity/transform on the ::after only. */
-html[data-motion=full]:not([data-fx-glow=off]) .bar .lg img{scale:1;animation:lgIntro .8s cubic-bezier(.34,1.56,.64,1) both,lgSweep 5.5s ease-in-out .8s infinite,lgFloat 6s ease-in-out .8s infinite}
+html[data-motion=full]:not([data-fx-glow=off]) .bar .lg img{scale:1;animation:lgIntro .8s cubic-bezier(.34,1.56,.64,1) both,lgSweep 5.5s ease-in-out .8s 3,lgFloat 6s ease-in-out .8s 3}
 @keyframes lgIntro{0%{scale:.35;opacity:0;filter:brightness(2.2) drop-shadow(0 0 0 rgba(239,207,122,0))}55%{opacity:1;filter:brightness(1.5) drop-shadow(0 0 16px rgba(239,207,122,.95))}100%{scale:1;filter:brightness(1) drop-shadow(0 3px 8px rgba(0,0,0,.5))}}
 html[data-motion=full]:not([data-fx-glow=off]) .bar .lg::after{content:"";position:absolute;left:0;top:50%;width:44px;height:44px;margin-top:-22px;border-radius:13px;pointer-events:none;z-index:2;opacity:0;--ic:239,207,122;animation:lgRing .85s ease-out .1s both}
 html[data-g=club][data-motion=full] .bar .lg::after{--ic:224,87,77;border:2px solid rgba(var(--ic),.9);border-radius:50%}
@@ -140,3 +140,22 @@ button.hdr-bell{font:inherit;color:inherit;cursor:pointer}
 .hdr-bellp .nt{display:grid;gap:2px;min-width:0;flex:1}.hdr-bellp .nt b{font-size:14px}.hdr-bellp .nt span{font-size:13px;color:var(--mute)}
 .hdr-bellp small{color:var(--mute);font-size:12px;white-space:nowrap}
 .hdr-bellp .bempty{padding:18px 16px}
+/* PF-031 header fit: the right-hand group keeps its size and the logo gives way first, so the avatar is never pushed off a 360 to 390 px phone.
+   Below 430 px the second word of the club name is dropped (PHOENIX FIRE shows as PHOENIX); the link keeps the full name as its aria-label. */
+.bar .wrap{min-width:0}
+.bar .lg{flex:0 1 auto;min-width:0}.bar .lg .lg1{overflow:hidden;text-overflow:clip}
+.hdr-r{flex:0 0 auto}
+@media(max-width:430px){.bar .lg .lg2{display:none}.bar .wrap{gap:8px}.hdr-n{top:-5px;right:-5px;min-width:18px;height:18px;font-size:10.5px;line-height:18px;padding:0 4px}}
+@media(max-width:360px){.bar .lg{font-size:17px;gap:6px}.hdr-r{gap:2px}.hdr-s,.hdr-r .ac,.hdr-i,.hdr-on{min-width:38px;min-height:38px}.hdr-r .ac,.hdr-i{width:38px;height:38px}}
+
+/* PF-042 command palette: 12 px panel, no glow; group headings, key hints, actions, recents */
+.hdr-pal .phd{display:flex;align-items:center;justify-content:space-between}
+.hdr-pal .pclr{min-height:32px;padding:0 8px;background:none;border:0;border-radius:8px;color:var(--mute);font:600 11px Inter;letter-spacing:.04em;text-transform:none;cursor:pointer}
+.hdr-pal .pclr:hover,.hdr-pal .pclr:focus-visible{color:#fff;background:rgba(255,255,255,.08)}
+.hdr-pal .pk{margin-left:auto;display:none;min-width:22px;padding:2px 6px;border:1px solid var(--line2);border-radius:6px;color:var(--soft);font:600 11px Inter;text-align:center}
+.hdr-pal li a.sel .pk{display:inline-block}
+.hdr-pal .pft{display:none;gap:16px;padding:8px 14px;border-top:1px solid var(--line);color:var(--mute);font:500 11.5px Inter}
+.hdr-pal .pft kbd{display:inline-block;min-width:20px;margin-right:4px;padding:1px 5px;border:1px solid var(--line2);border-radius:5px;color:var(--soft);font:600 11px Inter;text-align:center}
+@media(hover:hover) and (pointer:fine){.hdr-pal .pft{display:flex}}
+@media(pointer:coarse){.hdr-pal .pk{display:none!important}}
+.hdr-pal input[type=search]{-webkit-appearance:none;appearance:none}.hdr-pal input::-webkit-search-decoration,.hdr-pal input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}

@@ -273,7 +273,7 @@
     sheet = Object.assign(document.createElement('form'), { className: 'nxr-sheet' }); sheet.dataset.nxr = '';
     sheet.innerHTML = `<div class="nxr-head"><b>#${n}</b> <span>${esc(document.title.replace(/ – .*$/, ''))}</span>${activeTabs().length ? `<small>${esc(activeTabs().join(' · '))}</small>` : ''}</div>
 <div class="nxr-sev">${SEV.map(([k, ic, l], i) => `<label><input type="radio" name="sev" value="${k}"${k === 'wrong' ? ' checked' : ''}><span>${ic} ${l}</span></label>`).join('')}</div>
-<textarea name="note" rows="3" placeholder="What's wrong here? (tap the 🎤 on your keyboard to dictate)"></textarea>
+<textarea aria-label="What is wrong here" name="note" rows="3" placeholder="What's wrong here? (tap the 🎤 on your keyboard to dictate)"></textarea>
 <div class="nxr-row">${SR ? '<button type="button" class="nxr-mic">🎤 Dictate</button>' : ''}<span class="nxr-sp"></span><button type="button" class="nxr-x">Cancel</button><button type="submit" class="nxr-ok">Save #${n}</button></div>`;
     document.body.appendChild(sheet);
     const ta = sheet.querySelector('textarea');

@@ -130,3 +130,16 @@ html[data-motion=calm] .dk-ring.pressed,html[data-motion=off] .dk-ring.pressed{s
 html[data-motion=calm] .dk-dial,html[data-motion=off] .dk-dial{animation:none;transition:none}
 /* the dial stops Lenis, and Lenis's stopped state clips the page's overflow: keep the scrollbar track so a desktop page does not widen by the scrollbar width while the dial is open */
 html.dk-dial-lock.lenis-stopped{overflow-x:clip;overflow-y:scroll}
+
+/* ---------- PF-043: tab bar auto-hide on scroll and the bring-back arrow (dock.js tabHide). Gold #efcf7a on #3a2c0e, ink; no new colours. ---------- */
+html.tb-hide .tabbar{transform:translate3d(0,calc(160% + var(--tbfix,0px)),0);pointer-events:none}
+.tb-back{position:fixed;z-index:9975;left:50%;bottom:calc(10px + env(safe-area-inset-bottom) * .5);width:44px;height:44px;margin-left:-22px;padding:0;border-radius:50%;border:2px solid rgba(239,207,122,.6);background:radial-gradient(circle at 50% 35%,#3a2c0e,var(--ink,#0a0705) 78%);box-shadow:0 8px 20px rgba(0,0,0,.6);display:grid;place-items:center;cursor:pointer;color:#efcf7a;-webkit-tap-highlight-color:transparent;animation:tbBackIn .25s ease-out}
+.tb-back[hidden]{display:none}
+.tb-back svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.tb-back:focus-visible{outline:3px solid #efcf7a;outline-offset:3px}
+.tb-back.bob{animation:tbBob 1.1s ease-in-out 2}
+@keyframes tbBackIn{from{opacity:0;transform:translateY(12px)}}
+@keyframes tbBob{0%,100%{transform:translateY(0)}35%{transform:translateY(-9px)}65%{transform:translateY(-2px)}}
+@media(min-width:821px){.tb-back{display:none}}
+@media(prefers-reduced-motion:reduce){html.tb-hide .tabbar{transition:none}.tb-back,.tb-back.bob{animation:none}}
+html[data-motion=calm] .tb-back,html[data-motion=off] .tb-back,html[data-motion=calm] .tb-back.bob,html[data-motion=off] .tb-back.bob{animation:none}

@@ -165,7 +165,7 @@ ${pub.bench?.length ? `<p class="muted small" style="margin-top:10px">🪑 Bench
       try { S = await busy(t, () => post('/api/squads/prefs', { ids: edit })); edit = null; redraw(); M?.pulse(mounts.squads.querySelector('.sq-prefs')); M?.toast('Teammate picks saved', { kind: 'ok' }); } catch (er) { oops(er); }
     }
   });
-  const loadSquads = () => { const el = mounts.squads; M?.skeleton(el, 4); A.call('/api/squads').then((r) => { S = r; put(el, squadsHtml(), fit); }).catch((e) => { el.removeAttribute('aria-busy'); el.innerHTML = failBox('squads', 'Rush squads', e); }); };
+  const loadSquads = () => { const el = mounts.squads; M?.skeleton(el, 4, 'card'); A.call('/api/squads').then((r) => { S = r; put(el, squadsHtml(), fit); }).catch((e) => { el.removeAttribute('aria-busy'); el.innerHTML = failBox('squads', 'Rush squads', e); }); };
 
   // ---------- 🔭 Scouting (/api/scout, staff also /api/trials counts) ----------
   const STAGE = { recommended: ['🔭', 'Tip received'], applied: ['📝', 'Applied'], booked: ['📅', 'Trial booked'], trialling: ['🎮', 'Trialling'], played: ['✅', 'Trial played'], signed: ['✍️', 'Signed'], released: ['👋', 'Released'], declined: ['✖️', 'Declined'] };

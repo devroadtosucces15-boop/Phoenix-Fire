@@ -258,7 +258,7 @@ ${n ? `<ul class="dl-list">${list.map((m) => `<li>${face(m, 28)}<span class="dl-
 <p class="muted tiny dl-foot">From Discord's public server widget · updates every minute · shows people who are online and allow it.</p></div>`;
     };
     const load = async () => {
-      if (first) M?.skeleton(el, 4);
+      if (first) M?.skeleton(el, 4, 'row');
       try {
         const r = await fetch(url, { cache: 'no-store' }); if (!r.ok) throw new Error(r.status === 403 ? 'The server widget is switched off in Discord.' : `Discord answered ${r.status}`);
         const w = await r.json(), html = paint(w);

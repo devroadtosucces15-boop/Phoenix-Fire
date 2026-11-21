@@ -18,7 +18,7 @@
   const raw = { get: (k, f) => { try { return localStorage.getItem(k) ?? f; } catch { return f; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
   $('#dvNav').value = raw.get('phoenix.nav', 'orb'); $('#dvFx').value = raw.get('phoenix.fx', 'on');
   $('#dvNav').onchange = (e) => { raw.set('phoenix.nav', e.target.value); document.documentElement.dataset.nav = e.target.value; };
-  $('#dvFx').onchange = (e) => { raw.set('phoenix.fx', e.target.value); location.reload(); };
+  $('#dvFx').onchange = (e) => { raw.set('phoenix.fx', e.target.value); window.PhoenixFx?.set(e.target.value === 'off' ? { levels: Object.fromEntries(window.PhoenixFx.EFFECTS.map((k) => [k, 'off'])) } : window.PHOENIX_FX); location.reload(); };   // PF-044: preview switch goes through the one effects config
   }
   // ---- role gating ----
   $$('[data-for]').forEach((el) => { el.hidden = !el.dataset.for.split(/\s+/).includes(me.as); });

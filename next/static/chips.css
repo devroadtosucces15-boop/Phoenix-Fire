@@ -1,0 +1,11 @@
+/* PF-041 chips and tabs: dark amber selected state everywhere; a sliding highlight on single-row bars with one selection.
+   Wrapped or multi-select chips never slide: each selected chip highlights only itself. Icons and emoji untouched. */
+:root{--pc-amber:#3a1c08;--pc-amber2:#552809;--pc-edge:#e8651a;--pc-ink:#ffd6b0}
+html .chip.on,html .chip.active,html .chip[aria-pressed=true],html .cx-chip.on,html .nx-pill.on,html .seg button.on,html [role=tab][aria-selected=true]{background:linear-gradient(180deg,var(--pc-amber2),var(--pc-amber));border-color:var(--pc-edge);color:var(--pc-ink);box-shadow:inset 0 0 0 1px rgba(232,101,26,.28),0 0 14px rgba(232,101,26,.22)}
+.ph-slide{position:relative;isolation:isolate}
+.ph-slide::before{content:"";position:absolute;z-index:-1;left:0;top:0;box-sizing:border-box;width:var(--ph-w,0);height:var(--ph-h,0);transform:translate(var(--ph-x,0),var(--ph-y,0));border-radius:var(--ph-r,999px);background:linear-gradient(180deg,var(--pc-amber2),var(--pc-amber));border:1px solid var(--pc-edge);box-shadow:inset 0 0 0 1px rgba(232,101,26,.28),0 0 14px rgba(232,101,26,.22);opacity:0;pointer-events:none}
+.ph-slide.ph-ready::before{opacity:1}
+.ph-slide.ph-anim::before{transition:transform .34s var(--e-spring,cubic-bezier(.2,.9,.3,1.15)),width .34s var(--e-out,ease),height .34s var(--e-out,ease)}
+.ph-slide.ph-ready>.on,.ph-slide.ph-ready>.chip.on,.ph-slide.ph-ready>[aria-selected=true],.ph-slide.ph-ready>button.on,.ph-slide.ph-ready>[aria-pressed=true]{background:transparent!important;border-color:transparent!important;box-shadow:none!important;color:var(--pc-ink)}
+html[data-motion=off] .ph-slide.ph-anim::before{transition:none}
+@media(prefers-reduced-motion:reduce){.ph-slide.ph-anim::before{transition:none}}

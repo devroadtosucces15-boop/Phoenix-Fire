@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-20T04:10:43.734Z",
+ "fetchedAt": "2026-11-21T17:50:41.577Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -281,42 +281,6 @@
    "proNationality": "14",
    "proOverall": "83",
    "proOverallStr": "83",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
-   "name": "Kolanskiy86",
-   "gamesPlayed": "8",
-   "winRate": "100",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "1",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "30",
-   "passSuccessRate": "90",
-   "ratingAve": "6.2",
-   "tacklesMade": "4",
-   "tackleSuccessRate": "21",
-   "proName": "",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "182",
-   "proNationality": "40",
-   "proOverall": "79",
-   "proOverallStr": "79",
    "manOfTheMatch": "0",
    "redCards": "0",
    "prevGoals": "0",
@@ -766,6 +730,42 @@
   },
   {
    "name": "claudio__1996",
+   "gamesPlayed": "0",
+   "favoritePosition": "",
+   "winRate": "0",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "0",
+   "passSuccessRate": "0",
+   "ratingAve": "0.0",
+   "tacklesMade": "0",
+   "tackleSuccessRate": "0",
+   "proName": "",
+   "proPos": "",
+   "proStyle": "",
+   "proHeight": "",
+   "proNationality": "",
+   "proOverall": "0",
+   "proOverallStr": "",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0"
+  },
+  {
+   "name": "Ana Montana8022",
    "gamesPlayed": "0",
    "favoritePosition": "",
    "winRate": "0",
@@ -1666,7 +1666,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 2,
+  "midfielder": 1,
   "goalkeeper": 3,
   "forward": 3,
   "defender": 4
@@ -1827,6 +1827,17 @@
    "favoritePosition": "defender"
   },
   {
+   "name": "Ana Montana8022",
+   "proPos": "25",
+   "gamesPlayed": "48",
+   "goals": "10",
+   "assists": "20",
+   "manOfTheMatch": "2",
+   "ratingAve": "7.2",
+   "prevGoals": "0",
+   "favoritePosition": "forward"
+  },
+  {
    "name": "MsEfilism",
    "proPos": "25",
    "gamesPlayed": "18",
@@ -1906,8 +1917,8 @@
   {
    "name": "YAMI-_-77",
    "proPos": "14",
-   "gamesPlayed": "281",
-   "goals": "126",
+   "gamesPlayed": "286",
+   "goals": "127",
    "assists": "89",
    "manOfTheMatch": "37",
    "ratingAve": "7.7",
@@ -1928,12 +1939,12 @@
   {
    "name": "iTry_Clutxh",
    "proPos": "25",
-   "gamesPlayed": "33",
-   "goals": "6",
-   "assists": "6",
-   "manOfTheMatch": "1",
-   "ratingAve": "7.2",
-   "prevGoals": "0",
+   "gamesPlayed": "44",
+   "goals": "14",
+   "assists": "13",
+   "manOfTheMatch": "4",
+   "ratingAve": "7.4",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -1968,17 +1979,6 @@
    "ratingAve": "7.2",
    "prevGoals": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "Kolanskiy86",
-   "proPos": "14",
-   "gamesPlayed": "8",
-   "goals": "0",
-   "assists": "0",
-   "manOfTheMatch": "0",
-   "ratingAve": "6.2",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
   },
   {
    "name": "Niala_01",
@@ -2016,7 +2016,7 @@
   {
    "name": "Jaliens45",
    "proPos": "25",
-   "gamesPlayed": "64",
+   "gamesPlayed": "65",
    "goals": "10",
    "assists": "8",
    "manOfTheMatch": "3",
@@ -2175,6 +2175,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-20T04:10:43.734Z"
+  "fetchedAt": "2026-11-21T17:50:41.577Z"
  }
 }

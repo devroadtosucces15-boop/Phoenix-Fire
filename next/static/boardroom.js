@@ -16,7 +16,7 @@
   if (!API || !A?.token) return;
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   const call = (path, body) => (body ? A.call(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }) : A.call(path));
-  const toast = (m, err) => M?.toast ? M.toast(m, err ? { kind: 'err' } : { kind: 'ok' }) : console.log(m);
+  const toast = (m, err) => window.PhoenixNotices ? window.PhoenixNotices.toast(m, err) : console.log(m);
   const ago = (t) => { const s = Math.max(1, Math.round((Date.now() - (t > 1e12 ? t : Date.parse(t))) / 1000)); return s < 90 ? 'just now' : s < 5400 ? Math.round(s / 60) + ' min ago' : s < 129600 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' d ago'; };
   const FREE = { requests: 100000 };
   const S = { tab: 'tools', flags: null, health: undefined, ping: null, filter: '', busy: false, err: {},
@@ -91,8 +91,8 @@ ${runs.length ? `<h4 class="dk-h">Recent runs</h4><ul class="dk-log">${runs.slic
     const T = S.targets;
     return `<div class="grid g2"><form class="panel br-form" data-form="ann"><h4 class="dk-h" style="margin:0">📣 Announce to members</h4>
 <p class="muted small">Goes to the Squad Hub bell and, where they allow it, a Discord DM.</p>
-<input class="br-in" name="title" maxlength="120" placeholder="Title (at least 3 letters)" value="${esc(a.title)}" required>
-<textarea class="br-in" name="body" maxlength="1500" rows="4" placeholder="What do you want to say?">${esc(a.body)}</textarea>
+<input class="br-in" aria-label="Title" name="title" maxlength="120" placeholder="Title (at least 3 letters)" value="${esc(a.title)}" required>
+<textarea class="br-in" aria-label="Announcement text" name="body" maxlength="1500" rows="4" placeholder="What do you want to say?">${esc(a.body)}</textarea>
 <div class="dk-row"><select class="br-in" name="audience" aria-label="Who gets it"><option value="all"${a.audience === 'all' ? ' selected' : ''}>Every member</option><option value="managers"${a.audience === 'managers' ? ' selected' : ''}>Managers only</option></select>
 <label class="small br-chk"><input type="checkbox" name="ack"${a.ack ? ' checked' : ''}> Must be acknowledged</label></div>
 ${a.preview ? `<div class="br-prev"><small class="muted">Preview · what members will see</small><b>📣 ${esc(a.title || 'Title')}</b><p>${esc(a.body || '(no message)')}</p><small>${a.ack ? '✔ They must tap “I have read this”. ' : ''}Sent to ${esc(sendTo)}.</small></div>` : ''}
@@ -120,9 +120,9 @@ ${dc.preview ? `<div class="br-prev">${dc.preview.ping ? `<small class="muted">P
     const h = S.hofForm, players = window.NOREX?.players || [], entry = (x) => `<li><span class="br-tro">${TR({ shape: window.NorexTrophy?.pick(`${x.title || ''} ${x.n}`, x.kind), tier: x.kind === 'legend' ? 'epic' : 'rare', icon: x.kind === 'legend' ? '⭐' : '📜', size: 44, label: x.n })}</span><span>${x.kind === 'legend' ? '⭐' : '📜'} <b>${esc(x.n)}</b>${x.title ? ` · ${esc(x.title)}` : ''}<br><small class="muted">${esc(x.text || '')}</small></span><small>${esc(x.date || '')}${x.by ? ` · ${esc(x.by)}` : ''}</small><button class="chip danger" data-hofdel="${x.id}" data-name="${esc(x.n)}">Remove</button></li>`;
     return `<form class="panel br-form" data-form="hof"><h4 class="dk-h" style="margin:0">Add to the Hall of Fame</h4>
 <div class="chips"><button type="button" class="chip${h.kind === 'legend' ? ' on' : ''}" data-hofkind="legend">⭐ Legend</button><button type="button" class="chip${h.kind === 'moment' ? ' on' : ''}" data-hofkind="moment">📜 Club moment</button></div>
-${h.kind === 'legend' ? `<select class="br-in" name="player" aria-label="Player"><option value="">Pick a player…</option>${players.map((p) => `<option value="${esc(p.k)}"${p.k === h.player ? ' selected' : ''}>${esc(p.n)}</option>`).join('')}</select>` : `<input class="br-in" name="name" maxlength="60" placeholder="Moment title" value="${esc(h.name)}">`}
-<input class="br-in" name="title" maxlength="80" placeholder="${h.kind === 'legend' ? 'Plaque title – e.g. The engine room' : 'Short label (optional)'}" value="${esc(h.title)}">
-<textarea class="br-in" name="text" maxlength="400" rows="3" placeholder="${h.kind === 'legend' ? 'Citation – why they are a legend' : 'What happened?'}">${esc(h.text)}</textarea>
+${h.kind === 'legend' ? `<select class="br-in" name="player" aria-label="Player"><option value="">Pick a player…</option>${players.map((p) => `<option value="${esc(p.k)}"${p.k === h.player ? ' selected' : ''}>${esc(p.n)}</option>`).join('')}</select>` : `<input class="br-in" aria-label="Moment title" name="name" maxlength="60" placeholder="Moment title" value="${esc(h.name)}">`}
+<input class="br-in" aria-label="Title" name="title" maxlength="80" placeholder="${h.kind === 'legend' ? 'Plaque title – e.g. The engine room' : 'Short label (optional)'}" value="${esc(h.title)}">
+<textarea class="br-in" aria-label="Text" name="text" maxlength="400" rows="3" placeholder="${h.kind === 'legend' ? 'Citation – why they are a legend' : 'What happened?'}">${esc(h.text)}</textarea>
 <div class="dk-btns"><button class="btn" type="submit">${h.kind === 'legend' ? '⭐ Induct' : '📜 Add moment'}</button></div></form>
 <h4 class="dk-h">Legends · ${S.hof.legends.length}</h4>${S.hof.legends.length ? `<ul class="dk-log">${S.hof.legends.map(entry).join('')}</ul>` : empty('⭐', 'No legends yet', 'Induct the first one above.')}
 <h4 class="dk-h">Club moments · ${S.hof.moments.length}</h4>${S.hof.moments.length ? `<ul class="dk-log">${S.hof.moments.map(entry).join('')}</ul>` : empty('📜', 'No moments yet', 'Add a milestone above.')}`;

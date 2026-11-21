@@ -1,0 +1,29 @@
+/* PF-029: every tap target reaches 44 px without changing how it looks.
+   An invisible ::after grows the hit area only where the control is smaller than 44 px
+   (min(0px, (44px - size) / -2) is 0 for anything already 44 px or more). Phones and touch only. */
+@media (max-width: 820px), (pointer: coarse) {
+  :where(button.chip, button.rchip, button.ftb, a.ftb, a.chip, button.hdr-s, button.hdr-on, button.hdr-i, a.hdr-i,
+    button.ac, a.srow, button.pc-marker, a.skip, a.on, a.fo, a.fd, a.rcal, a.tlo, a.muted.small, a.W, a.D, a.L,
+    .tap44) {
+    position: relative;
+  }
+  :where(button.chip, button.rchip, button.ftb, a.ftb, a.chip, button.hdr-s, button.hdr-on, button.hdr-i, a.hdr-i,
+    button.ac, a.srow, button.pc-marker, a.skip, a.on, a.fo, a.fd, a.rcal, a.tlo, a.muted.small, a.W, a.D, a.L,
+    .tap44)::after {
+    content: "";
+    position: absolute;
+    inset-block: min(0px, calc((44px - 100%) / -2));
+    inset-inline: min(0px, calc((44px - 100%) / -2));
+    background: transparent;
+    pointer-events: auto;
+    z-index: 1; /* above a later sibling section, so the grown area is really tappable */
+  }
+  /* dense grids: the grown area stops at half the gap, so a tile never steals a tap from its neighbour (each tile's match is also a full row below) */
+  .wx .mosaic a::after { inset: -2px; }
+  /* controls whose ::after is already used get the hit area from ::before-free wrappers or min-height */
+  :where(select.chip, a.btn, a.btn.ghost, button.sdot, a.lg) { min-block-size: 44px; box-sizing: border-box; }
+  button.sdot { min-inline-size: 44px; }
+  nav.sub a, header.bar a.lg { min-block-size: 44px; display: inline-flex; align-items: center; box-sizing: border-box; }
+}
+/* double-press guard: while a press is being handled the control ignores further presses */
+[data-busy="1"] { pointer-events: none; }

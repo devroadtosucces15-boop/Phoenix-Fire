@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-20T04:10:43.734Z",
+ "fetchedAt": "2026-11-21T17:50:41.577Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1125,6 +1125,42 @@
    "favoritePosition": "forward"
   },
   {
+   "name": "Two_K_Two",
+   "gamesPlayed": "17",
+   "winRate": "94",
+   "goals": "1",
+   "assists": "0",
+   "cleanSheetsDef": "10",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "100",
+   "passesMade": "142",
+   "passSuccessRate": "88",
+   "ratingAve": "7.0",
+   "tacklesMade": "12",
+   "tackleSuccessRate": "54",
+   "proName": "S. Sansara",
+   "proPos": "5",
+   "proStyle": "0",
+   "proHeight": "196",
+   "proNationality": "40",
+   "proOverall": "85",
+   "proOverallStr": "85",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "1",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "defender"
+  },
+  {
    "name": "Pain11x",
    "gamesPlayed": "2",
    "winRate": "100",
@@ -1849,7 +1885,7 @@
   "midfielder": 8,
   "goalkeeper": 3,
   "forward": 15,
-  "defender": 6
+  "defender": 7
  },
  "career": [
   {
@@ -2096,22 +2132,22 @@
   },
   {
    "name": "zZ_zid",
-   "proPos": "5",
-   "gamesPlayed": "277",
-   "goals": "284",
-   "assists": "283",
+   "proPos": "14",
+   "gamesPlayed": "294",
+   "goals": "289",
+   "assists": "309",
    "manOfTheMatch": "29",
    "ratingAve": "7.2",
-   "prevGoals": "0",
-   "favoritePosition": "defender"
+   "prevGoals": "2",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "44",
-   "goals": "8",
-   "assists": "18",
-   "manOfTheMatch": "1",
+   "gamesPlayed": "48",
+   "goals": "10",
+   "assists": "20",
+   "manOfTheMatch": "2",
    "ratingAve": "7.2",
    "prevGoals": "0",
    "favoritePosition": "forward"
@@ -2140,14 +2176,14 @@
   },
   {
    "name": "MejMech",
-   "proPos": "5",
-   "gamesPlayed": "636",
-   "goals": "474",
-   "assists": "486",
-   "manOfTheMatch": "157",
-   "ratingAve": "7.7",
+   "proPos": "0",
+   "gamesPlayed": "672",
+   "goals": "487",
+   "assists": "499",
+   "manOfTheMatch": "158",
+   "ratingAve": "7.6",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "goalkeeper"
   },
   {
    "name": "Lucus1997",
@@ -2195,14 +2231,14 @@
   },
   {
    "name": "Peru-Chocolate",
-   "proPos": "14",
-   "gamesPlayed": "244",
+   "proPos": "5",
+   "gamesPlayed": "251",
    "goals": "36",
-   "assists": "30",
-   "manOfTheMatch": "44",
+   "assists": "31",
+   "manOfTheMatch": "45",
    "ratingAve": "7.8",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "defender"
   },
   {
    "name": "leo77romano",
@@ -2218,11 +2254,11 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "118",
-   "goals": "40",
-   "assists": "52",
-   "manOfTheMatch": "6",
-   "ratingAve": "7.5",
+   "gamesPlayed": "130",
+   "goals": "47",
+   "assists": "58",
+   "manOfTheMatch": "9",
+   "ratingAve": "7.6",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2317,7 +2353,7 @@
   {
    "name": "Jaliens45",
    "proPos": "25",
-   "gamesPlayed": "64",
+   "gamesPlayed": "65",
    "goals": "10",
    "assists": "8",
    "manOfTheMatch": "3",
@@ -2348,6 +2384,17 @@
    "favoritePosition": "forward"
   },
   {
+   "name": "Two_K_Two",
+   "proPos": "5",
+   "gamesPlayed": "81",
+   "goals": "8",
+   "assists": "9",
+   "manOfTheMatch": "2",
+   "ratingAve": "7.1",
+   "prevGoals": "0",
+   "favoritePosition": "defender"
+  },
+  {
    "name": "Pain11x",
    "proPos": "25",
    "gamesPlayed": "42",
@@ -2360,14 +2407,14 @@
   },
   {
    "name": "Superdaddysi",
-   "proPos": "25",
-   "gamesPlayed": "58",
-   "goals": "28",
-   "assists": "28",
-   "manOfTheMatch": "15",
-   "ratingAve": "7.7",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
+   "proPos": "14",
+   "gamesPlayed": "67",
+   "goals": "42",
+   "assists": "42",
+   "manOfTheMatch": "19",
+   "ratingAve": "7.9",
+   "prevGoals": "1",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "iAnton18",
@@ -2410,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-20T04:10:43.734Z"
+  "fetchedAt": "2026-11-21T17:50:41.577Z"
  }
 }

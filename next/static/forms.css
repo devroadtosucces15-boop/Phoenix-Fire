@@ -1,0 +1,18 @@
+/* PF-037: forms. Text fields are 44 px tall, searches get a leading icon and a clear button, helper and error text sit under the field.
+   Low specificity (:where) so a page's own field style still wins on colour and width. No orange focus ring: the owner did not tick it. */
+:where(input:not([type=checkbox],[type=radio],[type=file],[type=range],[type=color],[type=hidden],[type=button],[type=submit],[type=reset],[type=image]),select):not(.ph-compact){min-height:44px;box-sizing:border-box}
+:where(textarea):not(.ph-compact){min-height:88px;box-sizing:border-box}
+.ph-fw{position:relative;display:block;min-width:0}
+.ph-fw.flex{flex:1 1 0}
+.ph-fw>input{width:100%}
+.ph-fw.has-icon>input{padding-inline-start:40px}
+.ph-fw.has-clear>input{padding-inline-end:44px}
+.ph-ico{position:absolute;inset-inline-start:13px;top:22px;transform:translateY(-50%);font-size:16px;line-height:1;opacity:.7;pointer-events:none}
+.ph-clear{position:absolute;inset-inline-end:2px;top:0;width:44px;height:44px;display:grid;place-items:center;border:0;background:none;color:#8a8079;font:600 18px/1 Inter,system-ui,sans-serif;cursor:pointer;border-radius:12px;opacity:.75}
+.ph-clear:hover{opacity:1;background:rgba(255,255,255,.06)}
+.ph-clear[hidden]{display:none}
+.ph-msg{display:block;margin:6px 2px 0;font:12.5px/1.4 Inter,system-ui,sans-serif;color:var(--soft,#b9b2ac)}
+.ph-msg.err{color:#ff8a7a}
+.ph-msg.err::before{content:"⚠ ";font-size:11px}
+input[aria-invalid=true],select[aria-invalid=true],textarea[aria-invalid=true]{border-color:#ff8a7a!important}
+input[type=search]::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none}

@@ -111,7 +111,7 @@
     const ev = rows.some((p) => p.evApps);
     if (ev) head.push(['Drb/90', 'Dribbles completed per 90 minutes (EA match events)'], ['2nd A', 'Second assists – the pass before the assist']);
     const sorted = [...rows].sort((a, b) => b.ga - a.ga || b.r - a.r);
-    return `<div class="tbl"><table class="mx-table"><thead><tr>${head.map(([h, tip], i) => `<th${i ? ' class="n"' : ''}${tip ? ` title="${tip}"` : ''}>${h}</th>`).join('')}</tr></thead><tbody>${sorted.map((p) => `<tr${p.apps < need ? ' class="mx-few"' : ''}>
+    return `<div class="tbl"><table class="mx-table"><caption class="sr">Player metrics</caption><thead><tr>${head.map(([h, tip], i) => `<th scope="col"${i ? ' class="n"' : ''}${tip ? ` title="${tip}"` : ''}>${h}</th>`).join('')}</tr></thead><tbody>${sorted.map((p) => `<tr${p.apps < need ? ' class="mx-few"' : ''}>
 <td data-v="${ctx.esc(p.n.toLowerCase())}">${ctx.link(p)}</td>${cell(p.apps)}${cell(p.ga)}${cell(dash(minutes ? p.ga90 : p.gapg), minutes ? p.ga90 : p.gapg)}${cell(dash(p.conv, '%'), p.conv)}${cell(dash(p.inv, '%'), p.inv)}
 ${cell(p.apps >= need ? rp(p.form) : dash(null), p.apps >= need ? p.form : -1)}${cell(p.sd == null ? dash(null) : `±${p.sd.toFixed(2)}`, p.sd == null ? 99 : p.sd)}${cell(p.clutch)}${cell(`${p.streak}${p.bestStreak > p.streak ? ` <small class="muted">(${p.bestStreak})</small>` : ''}`, p.streak)}${cell(p.unbeaten)}${ev ? cell(dash(p.dr90), p.dr90) + cell(dash(p.sa), p.sa) : ''}</tr>`).join('')}</tbody></table></div>
 <p class="small muted">Click a column to sort. Averages (form, consistency, per-90) need ${need}+ games; faded rows have fewer.${ctx.note ? ' ' + ctx.note : ''}</p>`;

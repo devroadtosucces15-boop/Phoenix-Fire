@@ -254,6 +254,38 @@
   }
   let rz = 0; addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { for (const [el, key] of FABS) at(el, key); for (const el of FABS.keys()) settle(el); }); });
 
+  // ---------- PF-043: the phone tab bar hides on scroll down; a small bobbing arrow at the bottom centre brings it back ----------
+  // Scroll down past TB_FROM px hides it, any scroll up (or the top or bottom of the page) shows it. It stays while the menu is open, the keyboard is up or focus is inside it.
+  // Hidden = inert (no focus on invisible links). The arrow is a real button; its bob is two short bounces every TB_BOB_MS (finite, never endless; none for calm or off).
+  const TB_FROM = 120, TB_DOWN = 14, TB_UP = 6, TB_BOB_MS = 7000;
+  function tabHide() {
+    const tb = d.querySelector('.tabbar'); if (!tb || tb._hide) return; tb._hide = 1;
+    const back = d.createElement('button'); back.type = 'button'; back.className = 'tb-back'; back.hidden = true; back.setAttribute('aria-label', 'Show the navigation bar'); back.title = 'Show navigation';
+    back.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7"/></svg>'; d.body.append(back);
+    let hidden = false, last = scrollY, acc = 0, raf = 0, bob = 0;
+    const live = () => !!tb.offsetWidth && getComputedStyle(tb).display !== 'none';
+    const set = (h) => {
+      h = h && live(); if (h === hidden) return; hidden = h;
+      d.documentElement.classList.toggle('tb-hide', h); tb.inert = h; back.hidden = !h;
+      clearInterval(bob); bob = 0; back.classList.remove('bob');
+      if (h) bob = setInterval(() => { if (calm() || d.hidden || (w.PhoenixFx && !w.PhoenixFx.on('dockbob'))) return; back.classList.remove('bob'); void back.offsetWidth; back.classList.add('bob'); }, TB_BOB_MS);
+    };
+    const blocked = () => d.documentElement.classList.contains('kb-open') || !!(rp && !rp.hidden) || tb.contains(d.activeElement);
+    const step = () => {
+      raf = 0; const y = scrollY, dy = y - last; last = y;
+      if (blocked()) { set(false); acc = 0; return; }
+      const max = d.documentElement.scrollHeight - innerHeight;
+      if (y <= TB_FROM || (max > 0 && y >= max - 4)) { set(false); acc = 0; return; }
+      acc = Math.sign(dy) === Math.sign(acc) ? acc + dy : dy;
+      if (acc > TB_DOWN) set(true); else if (acc < -TB_UP) set(false);
+    };
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(step); }, { passive: true });
+    addEventListener('resize', () => { if (!live()) set(false); });
+    tb.addEventListener('focusin', () => set(false));
+    back.addEventListener('animationend', () => back.classList.remove('bob'));
+    back.addEventListener('click', () => { set(false); acc = 0; tb.querySelector('a')?.focus({ preventScroll: true }); });
+  }
+
   // ---------- mount ----------
   const place = (el, panel, open) => { el.setAttribute('aria-expanded', String(open)); panel.hidden = !open; el.classList.toggle('open', open); };
   function mount() {
@@ -279,7 +311,7 @@
       const j = e.target.closest('[data-jump]'); if (j) { e.preventDefault(); const t = d.getElementById(j.getAttribute('href').slice(1)); if (t) { const y = scrollY + t.getBoundingClientRect().top - 90; goto(y); } closeR(); return; }
       const p = e.target.closest('[data-pin]'); if (p) { (p.dataset.ps === 's' ? pinsStaff : pinsNav).toggle(p.dataset.pin, p.dataset.l, p.dataset.e); paint(`[data-pin="${CSS.escape(p.dataset.pin)}"]`); }
     });
-    closeAll = closeR;
+    closeAll = closeR; tabHide();
     addEventListener('scroll', () => { if (!progress.t) progress.t = requestAnimationFrame(() => { progress.t = 0; progress(); }); }, { passive: true }); progress();
 
     // the waiting count for managers and the owner rides on the one badge

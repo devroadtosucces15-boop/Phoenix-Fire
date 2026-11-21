@@ -79,7 +79,7 @@ ${canReadAll ? `<label class="mc-readall" data-tip="Owners/founders can read eve
     return `<section class="mc-thread" data-id="${active}">
 <header class="mc-t-head"><button type="button" class="mc-back" data-act="back" aria-label="Back to chats">←</button>${avatarOf(thread, 34)}<div class="mc-t-title"><b>${esc(thread.name)}</b><small>${thread.kind === 'group' ? `${thread.members.length} member${thread.members.length === 1 ? '' : 's'} · ` : ''}<span class="mc-live${ws?.readyState === 1 && wsFor === active ? ' on' : ''}" data-live>${ws?.readyState === 1 && wsFor === active ? 'Live' : 'Syncing'}</span></small></div>
 <span class="mc-more-wrap"><button type="button" class="mc-more" data-act="menu" aria-label="Chat options" aria-expanded="false">⋯</button><span class="mc-menu" hidden>${thread.kind === 'group' && thread.mine ? '<button type="button" data-act="settings">⚙️ Group settings</button><button type="button" data-act="leave">🚪 Leave group</button>' : '<span class="mc-menu-empty">No options</span>'}</span></span></header>
-${viewingAll ? '<div class="mc-banner">👁 Viewing as owner – read-only, not counted as a reply.</div>' : ''}
+${viewingAll ? '<div class="mc-banner" role="status">👁 Viewing as owner – read-only, not counted as a reply.</div>' : ''}
 <div class="mc-msgs" data-msgs>${msgs.length ? msgs.map(bubble).join('') : `<p class="muted small mc-first">${thread.kind === 'dm' ? 'Say hello 👋' : 'Nobody has said anything yet.'}</p>`}</div>
 <div class="mc-typing" data-typing aria-live="polite"></div>
 ${canPost ? `<form class="mc-compose" id="mc-compose"><textarea name="text" rows="1" maxlength="2000" placeholder="Message…" aria-label="Message" data-mention></textarea><button class="btn sm" type="submit">Send</button></form>` : ''}

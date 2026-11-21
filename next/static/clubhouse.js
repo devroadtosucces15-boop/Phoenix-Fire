@@ -63,7 +63,7 @@ ${open ? thread(p) : top.length ? `<div class="ch-cm">${top.map((c) => `<div cla
 ${F.posts.length ? `<div class="ch-posts">${F.posts.map(card).join('')}</div>${F.more ? '<button type="button" class="btn ghost" data-fmore>Load older posts</button>' : '<p class="muted tiny" style="margin-top:10px">That is everything.</p>'}`
     : `<div class="ch-posts">${empty('📰', F.f === 'mine' ? 'You have not posted yet' : 'Nothing posted here yet', 'Be the first: post a goal, a result or a Rush invite above.')}</div>`}`;
   const loadFeed = async (more = false) => {
-    if (!more) M?.skeleton(feedEl, 5);
+    if (!more) M?.skeleton(feedEl, 3, 'card');
     try {
       const r = await A.call(`/api/feed?f=${F.f}${more && F.next ? `&before=${F.next}` : ''}`);
       F.tags = r.tags || F.tags; F.emoji = r.emoji || F.emoji; F.left = r.left ?? F.left; F.perDay = r.perDay || F.perDay;

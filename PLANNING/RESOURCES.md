@@ -164,6 +164,10 @@ React-origin libraries (technique reference only)
 - https://vaul.emilkowal.ski/ | #3c Vaul [free, OSS] drawer / bottom sheet by Emil Kowalski (built on Radix Dialog). Technique reference for mobile bottom sheets: drag handle, snap points, backdrop scale. React only. Connect: [NONE] use the docs site; see also the Emil Kowalski skills in section 10.
 - https://ui.aceternity.com | #4 Aceternity UI [freemium] effect components. Connect: [NONE].
 - https://21st.dev | #5 21st.dev [freemium] community component registry. Connect: [KEY] `@21st-dev/magic` MCP (6.6k stars, needs a 21st.dev key).
+- https://cmdk.paco.me | #5a cmdk [free, OSS] command palette (search box with a filtered list, keyboard first). React only; copy the behavior for the site search and quick jump. Connect: [NPM] `cmdk`, docs via Context7.
+- https://beautifului.dev | #5b Beautiful UI [free] component gallery. Saved 2026-11-20, not reviewed yet. Connect: [NONE].
+- https://rareui.in | #5c RareUI [free] component gallery. Saved 2026-11-20, not reviewed yet. Connect: [NONE].
+- pick-ui-library skill: lives in https://github.com/emilkowalski/skills (section 10, #10); use it to choose between the libraries above.
 - https://tailwindcss.com | #6 Tailwind CSS v4 [free, OSS] 190M npm/wk. Connect: [NPM] `tailwindcss`; docs via Context7. https://tailwindcss.com/plus | Tailwind Plus [paid] official blocks and templates.
 
 ## 7. Icons

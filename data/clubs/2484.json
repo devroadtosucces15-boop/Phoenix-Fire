@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-20T04:10:43.734Z",
+ "fetchedAt": "2026-11-21T17:50:41.577Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -693,42 +693,6 @@
    "favoritePosition": "midfielder"
   },
   {
-   "name": "Froezer",
-   "gamesPlayed": "3",
-   "winRate": "66",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "2",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "25",
-   "passSuccessRate": "83",
-   "ratingAve": "7.5",
-   "tacklesMade": "2",
-   "tackleSuccessRate": "66",
-   "proName": "Y. Sittdown",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "171",
-   "proNationality": "14",
-   "proOverall": "75",
-   "proOverallStr": "75",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "defender"
-  },
-  {
    "name": "CapoGroot",
    "gamesPlayed": "16",
    "winRate": "62",
@@ -801,7 +765,7 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Voro2rt",
+   "name": "Voro13rs",
    "gamesPlayed": "14",
    "winRate": "92",
    "goals": "18",
@@ -1341,42 +1305,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Two_K_Two",
-   "gamesPlayed": "17",
-   "winRate": "88",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "7",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "133",
-   "passSuccessRate": "84",
-   "ratingAve": "6.8",
-   "tacklesMade": "9",
-   "tackleSuccessRate": "60",
-   "proName": "S. Sansara",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "196",
-   "proNationality": "40",
-   "proOverall": "86",
-   "proOverallStr": "86",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "defender"
-  },
-  {
    "name": "Glekke-93",
    "gamesPlayed": "1",
    "winRate": "100",
@@ -1597,7 +1525,7 @@
   "midfielder": 7,
   "goalkeeper": 4,
   "forward": 14,
-  "defender": 13
+  "defender": 11
  },
  "career": [
   {
@@ -1821,17 +1749,6 @@
    "favoritePosition": "midfielder"
   },
   {
-   "name": "Froezer",
-   "proPos": "25",
-   "gamesPlayed": "208",
-   "goals": "137",
-   "assists": "199",
-   "manOfTheMatch": "26",
-   "ratingAve": "8.2",
-   "prevGoals": "2",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "CapoGroot",
    "proPos": "0",
    "gamesPlayed": "50",
@@ -1854,7 +1771,7 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Voro2rt",
+   "name": "Voro13rs",
    "proPos": "14",
    "gamesPlayed": "329",
    "goals": "440",
@@ -1867,11 +1784,11 @@
   {
    "name": "khytEN_Prodige",
    "proPos": "25",
-   "gamesPlayed": "118",
-   "goals": "40",
-   "assists": "52",
-   "manOfTheMatch": "6",
-   "ratingAve": "7.5",
+   "gamesPlayed": "130",
+   "goals": "47",
+   "assists": "58",
+   "manOfTheMatch": "9",
+   "ratingAve": "7.6",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2019,17 +1936,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Two_K_Two",
-   "proPos": "5",
-   "gamesPlayed": "81",
-   "goals": "8",
-   "assists": "9",
-   "manOfTheMatch": "2",
-   "ratingAve": "7.1",
-   "prevGoals": "0",
-   "favoritePosition": "defender"
-  },
-  {
    "name": "Glekke-93",
    "proPos": "14",
    "gamesPlayed": "107",
@@ -2081,6 +1987,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-20T04:10:43.734Z"
+  "fetchedAt": "2026-11-21T17:50:41.577Z"
  }
 }

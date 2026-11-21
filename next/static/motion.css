@@ -51,12 +51,8 @@ html[data-motion=calm] .mx-land>*{animation-name:mxFade}
 @keyframes mxPop{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
 @keyframes mxShake{0%,100%{transform:none}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 
-/* ---------- toasts ---------- */
-#mx-toasts{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9980;display:grid;gap:8px;width:min(420px,calc(100vw - 32px));pointer-events:none}
-@media(max-width:820px){#mx-toasts{bottom:calc(100px + env(safe-area-inset-bottom))}}
-.mx-toast{pointer-events:auto;display:flex;gap:10px;align-items:center;padding:12px 16px;border-radius:14px;background:rgba(17,23,34,.97);border:1px solid rgba(239,207,122,.35);box-shadow:0 18px 40px rgba(0,0,0,.55);font:600 14px Inter;color:#fff;animation:mxToastIn .42s var(--e-spring) both}
-.mx-toast.err{border-color:rgba(200,53,44,.7)}.mx-toast.ok{border-color:rgba(31,157,85,.7)}
-.mx-toast.out{animation:mxToastOut .3s var(--e-in) both}
+/* toasts moved to notices.css (PF-039) */
+/* keyframes kept for #nx-inst */
 @keyframes mxToastIn{from{opacity:0;transform:translate3d(0,24px,0) scale(.94)}}
 @keyframes mxToastOut{to{opacity:0;transform:translate3d(0,12px,0) scale(.96)}}
 
@@ -165,7 +161,7 @@ html.gyro-on .mh-t img,html.gyro-on .s-crest,html.gyro-on .lg img,html.gyro-on [
 @keyframes tbBar{from{opacity:0;width:6px}}
 .tabbar a:not(.on)::after{content:"";display:block;height:3px;margin-top:3px}
 .tabbar .key{position:relative;animation:keyfloat 3.2s ease-in-out infinite;color:#2d1f06}.tabbar .key svg{position:relative;z-index:1;filter:drop-shadow(0 1px 0 rgba(255,255,255,.5))}
-.tabbar .key .kring{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(239,207,122,.55);animation:keyring 2.6s ease-out infinite;pointer-events:none}.tabbar .key .k2{animation-delay:1.3s}
+.tabbar .key .kring{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(239,207,122,.55);animation:keyring 2.6s ease-out 3 forwards;pointer-events:none}.tabbar .key .k2{animation-delay:1.3s}
 @keyframes keyfloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-6deg)}}
 @keyframes keyring{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.5);opacity:0}}
 html[data-motion=calm] .tabbar .key,html[data-motion=off] .tabbar .key{animation:none}html[data-motion=calm] .tabbar .key .kring,html[data-motion=off] .tabbar .key .kring{display:none}
@@ -400,3 +396,7 @@ html.nx-safe #fxov,html.nx-safe[data-tin]::before,html.nx-safe[data-tin]::after{
 #nx-safe-bar{position:fixed;left:12px;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:9995;display:flex;align-items:center;gap:8px;padding:8px 8px 8px 14px;border-radius:14px;background:rgba(17,23,34,.97);border:1px solid var(--line2);color:#eef2f9;font:500 13.5px Inter;box-shadow:0 12px 30px rgba(0,0,0,.5)}
 #nx-safe-bar span{flex:1 1 0;min-width:0}#nx-safe-bar button{min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.08);color:#fff;font:700 13px Inter;cursor:pointer}#nx-safe-bar .x{min-width:44px;padding:0}
 @media(min-width:861px){#nx-safe-bar{left:auto;right:18px;bottom:18px;max-width:440px}}
+/* PF-032: pause every animation while the tab is hidden */
+html.pf-hidden,html.pf-hidden *,html.pf-hidden *::before,html.pf-hidden *::after{animation-play-state:paused!important}
+/* PF-048: a printout is never scrolled, so nothing waits for a reveal on paper */
+@media print{html.mx .reveal,html.mx .reveal>.rv-c,html.mx .rv-g>*{opacity:1!important;transform:none!important;clip-path:none!important;transition:none!important}}

@@ -17,6 +17,16 @@
     ['Direct messages & chat', 'Clubhouse · chat room and DMs', '💬', { href: 'hub-clubhouse.html#ch-chat' }, 'chat messages dm direct inbox'],
     ['Card Studio', 'My Locker · send a photo for your player card', '🎨', { href: 'hub-cardstudio.html#lk-cards' }, 'card studio artwork portrait photo face avatar player card'],
     ['Ideas & suggestions', 'Clubhouse · suggest something', '💡', { href: 'hub-clubhouse.html#ch-ideas' }, 'ideas suggestions feedback']];
+  // PF-042: real actions (run in place, never navigate) + recents (last 5 picks, this browser only)
+  const ACTIONS = [
+    ['Copy link to this page', 'Action · copy the address', '🔗', 'copy', 'copy link share url address page'],
+    ['Back to top', 'Action · scroll to the top of the page', '⬆️', 'top', 'top scroll up start'],
+    ['Motion & effects', 'Action · animations, glow, tilt, haptics', '🎬', 'motion', 'motion effects animation calm full glow tilt parallax haptics settings'],
+    ['Alerts inbox', 'Action · everything the club sent you', '🔔', 'bell', 'alerts inbox notifications bell unread']];
+  const RKEY = 'phoenix.search.recent';
+  const recents = () => { try { const r = JSON.parse(localStorage.getItem(RKEY) || '[]'); return Array.isArray(r) ? r.filter((x) => x && x.label && (x.act || x.href)).slice(0, 5) : []; } catch { return []; } };
+  const remember = (r) => { try { const k = (x) => x.act || x.href; const rec = { sec: 'Recent', label: r.label, sub: r.sub, emo: r.emo, href: r.href, act: r.act }; localStorage.setItem(RKEY, JSON.stringify([rec, ...recents().filter((x) => k(x) !== k(rec))].slice(0, 5))); } catch {} };
+  const forgetRecents = () => { try { localStorage.removeItem(RKEY); } catch {} };
   const items = () => {
     // Treat the embedded site index as untrusted input: one incomplete player/nav record must
     // never break the whole header (or the page behind the search dialog).
@@ -34,13 +44,14 @@
       sec: 'Players', label: String(p.n), sub: `${p.line || ''} · ${p.ovr ? 'OVR ' + p.ovr : 'unrated'}`,
       href: `player-${slug(p.k)}.html`, emo: '👤', score: 2
     }));
-    const sets = SETTINGS.filter((x) => A?.session || !/alert|chat|feed|messages|ideas|card studio/i.test(x[0] + x[1])).map(([label, sub, emo, t, kw]) => ({
+    const acts = ACTIONS.filter((x) => A?.session || x[3] !== 'bell').map(([label, sub, emo, act, kw]) => ({ sec: 'Actions', label, sub, emo, href: '#', act, kw, score: 1 }));
+    const sets = SETTINGS.filter((x) => !x[3].act).filter((x) => A?.session || !/alert|chat|feed|messages|ideas|card studio/i.test(x[0] + x[1])).map(([label, sub, emo, t, kw]) => ({
       sec: 'Settings', label, sub, emo, href: t.href || '#', act: t.act, kw, score: 1
     }));
     // Each top-level menu keeps its own landing page; child pages keep their own hrefs.
-    return [...people, ...pages, ...menus, ...sets].filter((i) => i.href === '#' ? !!i.act : true);
+    return [...people, ...pages, ...menus, ...acts, ...sets].filter((i) => i.href === '#' ? !!i.act : true);
   };
-  const ORDER = ['Players', 'Pages', 'Menus', 'Settings'];
+  const ORDER = ['Recent', 'Actions', 'Players', 'Pages', 'Menus', 'Settings'];
   let sel = 0, results = [];
   const drawPal = () => {
     if (!pal) return;
@@ -49,14 +60,17 @@
     const q = input.value.trim().toLowerCase();
     const hit = (i) => (i.label + ' ' + i.sub + ' ' + (i.kw || '')).toLowerCase().includes(q);
     const all = items();
-    const list = q ? all.filter(hit).sort((a, b) => (Number(b.label.toLowerCase().startsWith(q)) - Number(a.label.toLowerCase().startsWith(q))) || b.score - a.score).slice(0, 40) : [...all.filter((i) => i.sec === 'Pages').slice(0, 6), ...all.filter((i) => i.sec === 'Settings').slice(0, 3)];
+    const list = q ? all.filter(hit).sort((a, b) => (Number(b.label.toLowerCase().startsWith(q)) - Number(a.label.toLowerCase().startsWith(q))) || b.score - a.score).slice(0, 40) : [...recents(), ...all.filter((i) => i.sec === 'Actions').slice(0, 3), ...all.filter((i) => i.sec === 'Pages').slice(0, 5), ...all.filter((i) => i.sec === 'Settings').slice(0, 2)];
     results = ORDER.flatMap((sec) => list.filter((i) => i.sec === sec).slice(0, q ? 8 : 9));
     sel = 0;
     let n = 0, last = '';
-    listEl.innerHTML = results.map((r) => { const h = r.sec !== last ? `<li class="phd" aria-hidden="true">${esc(r.sec)}</li>` : ''; last = r.sec; return `${h}<li><a href="${esc(r.href)}"${r.act ? ` data-act="${r.act}"` : ''} class="${n++ ? '' : 'sel'}"><span class="pe" aria-hidden="true">${r.emo}</span><span><b>${esc(r.label)}</b><small>${esc(r.sub)}</small></span></a></li>`; }).join('') || '<li class="pnone">No matches – try a player, page or setting.</li>';
+    listEl.innerHTML = results.map((r) => { const h = r.sec !== last ? `<li class="phd" aria-hidden="true">${esc(r.sec)}${r.sec === 'Recent' ? '<button type="button" class="pclr" aria-label="Clear recent searches">Clear</button>' : ''}</li>` : ''; last = r.sec; return `${h}<li><a href="${esc(r.href)}"${r.act ? ` data-act="${r.act}"` : ''} class="${n++ ? '' : 'sel'}"><span class="pe" aria-hidden="true">${r.emo}</span><span><b>${esc(r.label)}</b><small>${esc(r.sub)}</small></span><kbd class="pk" aria-hidden="true">↵</kbd></a></li>`; }).join('') || '<li class="pnone">No matches – try a player, page or setting.</li>';
   };
   const go = (r) => {
     if (!r) return;
+    remember(r);
+    if (r.act === 'copy') { closePal(); try { navigator.clipboard.writeText(location.href).then(() => window.PhoenixNotices?.show?.('Link copied')); } catch {} return; }
+    if (r.act === 'top') { closePal(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
     if (r.act === 'motion') { closePal(); window.NorexMotion?.settings?.(); return; }
     if (r.act === 'bell') { closePal(); window.PhoenixBell?.open(); return; }
     if (typeof r.href === 'string' && r.href && r.href !== '#') location.assign(r.href);
@@ -64,9 +78,9 @@
   const openPal = () => {
     if (!pal) {
       pal = d.createElement('div'); pal.className = 'hdr-pal'; pal.hidden = true; pal.setAttribute('role', 'dialog'); pal.setAttribute('aria-label', 'Search');
-      pal.innerHTML = '<div class="pbox"><div class="pin"><span aria-hidden="true">🔍</span><input type="search" placeholder="Search players, pages and settings" aria-label="Search players, pages and settings" autocomplete="off" enterkeyhint="go"><button type="button" class="pclose" aria-label="Close search">✕</button></div><ul></ul></div>';
+      pal.innerHTML = '<div class="pbox"><div class="pin"><span aria-hidden="true">🔍</span><input type="search" placeholder="Search players, pages and settings" aria-label="Search players, pages and settings" autocomplete="off" enterkeyhint="go"><button type="button" class="pclose" aria-label="Close search">✕</button></div><ul></ul><div class="pft" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div></div>';
       d.body.appendChild(pal);
-      pal.addEventListener('click', (e) => { if (e.target === pal || e.target.closest('.pclose')) closePal(); const a = e.target.closest('a[data-act]'); if (a) { e.preventDefault(); go(results.find((r) => r.act === a.dataset.act)); } });
+      pal.addEventListener('click', (e) => { if (e.target === pal || e.target.closest('.pclose')) closePal(); if (e.target.closest('.pclr')) { e.preventDefault(); forgetRecents(); drawPal(); return; } const a = e.target.closest('a[data-act]'); if (a) { e.preventDefault(); go(results.find((r) => r.act === a.dataset.act)); return; } const l = e.target.closest('li a[href]'); if (l && !l.dataset.act) remember(results.find((r) => r.href === l.getAttribute('href')) || {}); });
       pal.querySelector('input').addEventListener('input', drawPal);
     }
     closeMenu(); pal.hidden = false; const input = pal.querySelector('input'); input.value = ''; drawPal();
@@ -131,7 +145,8 @@ ${realOwner() ? `<div class="pv" role="group" aria-label="Preview as"><span>👁
   };
 
   // ---------- 🔔 bell, 💬 clubhouse button, in-app banners ----------
-  const dot = (el, n) => { const i = el?.querySelector('.hdr-n'); if (!i) return; i.hidden = !n; i.textContent = n > 99 ? '99+' : String(n || ''); };
+  const badge = (n) => (n > 9 ? '9+' : String(n || '')); // PF-031: two characters at most so the badge never widens past the button
+  const dot = (el, n) => { const i = el?.querySelector('.hdr-n'); if (!i) return; i.hidden = !n; i.textContent = badge(n); };
   const SEEN = 'phoenix.nseen', seenId = () => { try { return +sessionStorage.getItem(SEEN) || 0; } catch { return 0; } };
   const setSeen = (v) => { try { sessionStorage.setItem(SEEN, String(v)); } catch {} };
   const room = (l) => (l ? window.PhoenixLinks.resolve(l) : '#bell');

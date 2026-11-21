@@ -146,7 +146,7 @@ main{padding:28px 16px 60px}
   -webkit-mask:linear-gradient(90deg,#000 0,transparent 45%);mask:linear-gradient(90deg,#000 0,transparent 45%)}
 .hero::after{content:"";position:absolute;right:-120px;top:-60px;width:420px;height:140%;z-index:-1;background:var(--red);opacity:.13;transform:skewX(-18deg)}
 .hero-crest{position:relative}
-.hero-crest::before{content:"";position:absolute;inset:10%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--red) 55%,transparent),transparent 70%);filter:blur(24px);animation:pulse 4s ease-in-out infinite}
+.hero-crest::before{content:"";position:absolute;inset:10%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--red) 55%,transparent),transparent 70%);filter:blur(24px);animation:pulse 4s ease-in-out 3}
 .big-crest{position:relative;height:auto;max-height:260px;width:auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.6));animation:float 6s ease-in-out infinite}
 .kicker{margin:0 0 6px;color:#ffb4ad;font-family:var(--head);text-transform:uppercase;letter-spacing:.24em;font-size:14px}
 .stars{display:block;margin:8px 0 2px;color:#fff;letter-spacing:.4em;font-size:18px;text-shadow:0 0 12px color-mix(in srgb,var(--red) 80%,transparent)}
@@ -1646,3 +1646,4 @@ th:last-child,td:last-child{padding-right:16px}
 
 .pod-av{overflow:hidden}
 .pod-av .nx-player-portrait{object-fit:cover;object-position:center top}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}

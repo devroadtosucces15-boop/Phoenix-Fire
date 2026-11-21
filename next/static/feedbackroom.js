@@ -73,7 +73,7 @@
 
   const needsLook = (f) => (f.caution || (f.reportedAt && !f.hidden) ? 1 : 0);
   const modHtml = () => {
-    if (!ALL) return '<div class="panel sq-empty"><span>⏳</span><div><b>Loading…</b></div></div>';
+    if (!ALL) return `<div aria-busy="true">${window.PhoenixStates ? PhoenixStates.skeletonHtml(3, 'row') : 'Loading…'}</div>`;
     const items = [...ALL.items].sort((a, b) => needsLook(b) - needsLook(a) || b.at - a.at);
     return items.length ? `<div class="fb-list">${items.map((f) => `<article class="panel fb-item k-${esc(f.kind)}${needsLook(f) ? ' flag' : ''}">${head(f, `<small><b>${esc(f.fromName)}</b> → <b>${esc(f.toName)}</b>${f.anon ? ' · 🕶️ anonymous to them' : ''}</small>`)}<p>${body(f.text)}</p>
 ${f.caution ? `<p class="fb-note">⚠️ Caution: ${esc(REACT[f.reaction]?.[1] ?? 'unhappy')}${f.reply ? `, they explain: “${esc(f.reply)}”` : ' (no reason given yet)'}</p>` : ''}${f.reportedAt ? `<p class="fb-note">🚩 Reported ${ago(f.reportedAt)}: “${esc(f.report)}”</p>` : ''}
@@ -91,7 +91,7 @@ ${f.caution ? `<p class="fb-note">⚠️ Caution: ${esc(REACT[f.reaction]?.[1] ?
   const loadMod = async () => { if (!S?.canModerate) return; try { ALL = await A.call('/api/feedback/all'); } catch (e) { ALL = { items: [] }; oops(e); } };
   const markRead = async () => { if (view === 'inbox' && S?.unread) { try { S = await post('/api/feedback/read', {}); } catch { /* unread dot just stays */ } } };
   const load = async () => {
-    mount.innerHTML = '<div class="panel sq-empty"><span>⏳</span><div><b>Loading…</b></div></div>';
+    mount.innerHTML = `<div aria-busy="true">${window.PhoenixStates ? PhoenixStates.skeletonHtml(3, 'row') : 'Loading…'}</div>`;
     try {
       [S] = await Promise.all([A.call('/api/feedback'), loadMatches()]);
       if (S.canModerate) loadMod().then(() => view === 'mod' && paint());
