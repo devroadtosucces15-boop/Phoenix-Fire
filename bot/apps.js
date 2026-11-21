@@ -76,6 +76,10 @@ export function registrationPlan(env, settings = {}, only = []) {
 
 // Replaces one app's whole command list with Discord.
 export async function putCommands(appId, token, list) {
+  // An app with Activities on has an Entry Point command (type 4) Discord created; a bulk update that leaves it out is refused (50240), so carry it over.
+  const have = await fetch(`https://discord.com/api/v10/applications/${appId}/commands`, { headers: { Authorization: `Bot ${token}` } }).then((x) => (x.ok ? x.json() : [])).catch(() => []);
+  const entry = (Array.isArray(have) ? have : []).filter((c) => c?.type === 4 && !list.some((l) => l.type === 4));
+  if (entry.length) list = [...list, ...entry];
   const r = await fetch(`https://discord.com/api/v10/applications/${appId}/commands`, {
     method: 'PUT', headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(list),
   });

@@ -5,7 +5,7 @@ import { env as baseEnv, ROOT } from './mock.mjs';
 import worker from '../bot/worker.js';
 import { plainText } from '../bot/ui.js';
 import { COMMANDS, APP_COMMANDS, STAFF_COMMANDS, buildRegistration, HELD } from '../bot/commanddefs.js';
-import { APPS, homeOf, appOf, appCreds, appConfigured, appEnv, appFromPath, servedBy, answeringApp, registrationPlan, tomlVars } from '../bot/apps.js';
+import { APPS, homeOf, appOf, appCreds, appConfigured, appEnv, appFromPath, servedBy, answeringApp, registrationPlan, tomlVars, putCommands } from '../bot/apps.js';
 import { t, tt, done } from './lib.mjs';
 
 // ---------- the map ----------
@@ -84,5 +84,10 @@ await tt('follow-up uses the receiving app\'s id', async () => {
     await Promise.all(waits.splice(0));
     return r.d?.type === 5 && seen.some((u) => u.includes('/webhooks/200/itok')) && !seen.some((u) => u.includes('/webhooks/100/'));
   } finally { globalThis.fetch = real; }
+});
+await tt('registration keeps the Activity Entry Point command (Discord refuses a bulk update without it)', async () => {
+  const real = globalThis.fetch; let sent = null;
+  globalThis.fetch = async (u, i = {}) => (i.method === 'PUT' ? (sent = JSON.parse(i.body), new Response('[]')) : Response.json([{ id: '9', name: 'launch', type: 4, handler: 2, description: '' }, { id: '8', name: 'old', type: 1 }]));
+  try { const r = await putCommands('1', 't', [{ name: 'ping', description: 'x', type: 1 }]); return r.ok && sent.length === 2 && sent.some((c) => c.type === 4 && c.name === 'launch') && !sent.some((c) => c.name === 'old'); } finally { globalThis.fetch = real; }
 });
 done();
