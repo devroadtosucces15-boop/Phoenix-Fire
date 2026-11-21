@@ -1,6 +1,6 @@
 # Favorited resources (ranked by category)
 
-Last researched 2026-11-21. Phoenix is vanilla JS/CSS on Cloudflare Workers (strict CSP, no build framework for the site), so React/Vue examples
+Last researched 2026-11-21; owner-saved links added 2026-11-21 (section 24, plus UI libraries in sections 5 and 6). Phoenix is vanilla JS/CSS on Cloudflare Workers (strict CSP, no build framework for the site), so React/Vue examples
 are for the technique only.
 
 ## How to use this file (sessions: read this first, do not re-research)
@@ -45,6 +45,7 @@ Cost tags: **[free] [freemium] [paid] [OSS]**. Connection tags: **[HAVE]** alrea
 | 21 | Stock assets and data APIs | photos, models, icons API | Poly Haven |
 | 22 | Site builders (reference) | Framer, Webflow | Framer |
 | 23 | Agent tooling, MCP and CLIs | docs bridges, registries, Claude docs | Context7 |
+| 24 | Awwwards collections and examples | saved collections, element examples (stats, transitions, controls, cards, 3D, icons) and studios | Stats and data (24b) |
 
 ## Connection cheat sheet
 
@@ -138,6 +139,7 @@ Text splitting
 - https://www.radix-ui.com | #2 Radix Primitives [free, OSS] 102M npm/wk, 19.5k stars, behavior reference. Connect: [NPM] `@radix-ui/react-*`; docs via Context7.
 - https://react-aria.adobe.com/ | #3 React Aria [free, OSS] 16k stars, strongest accessibility edge-case handling. Connect: [LLMS] react-aria.adobe.com/llms.txt.
 - https://base-ui.com | #4 Base UI [free, OSS] 32M npm/wk, from the MUI/Radix creators. Connect: [NPM] `@base-ui/react`.
+- https://base-ui.com/react/overview/quick-start | #4a Base UI quick start (install, unstyled parts, how to style them). React only, so use it for how each part behaves.
 - https://headlessui.com | #5 Headless UI [free, OSS] 28.8k stars, last push 2026-04. Connect: [NPM] `@headlessui/react`.
 - https://inclusive-components.design | #6 Inclusive Components [free] pattern write-ups.
 
@@ -153,9 +155,13 @@ For vanilla Phoenix (CSS or copy-friendly)
 - https://css-tricks.com | #7 CSS-Tricks [free] guides and almanac. https://codepen.io | #8 CodePen [freemium] live pens; search by tag. Connect: [NONE].
 
 React-origin libraries (technique reference only)
-- https://ui.shadcn.com | #1 shadcn/ui [free, OSS] 129k stars, 19M npm/wk. Connect: [NPM]/[CLI] `shadcn`, [LLMS] ui.shadcn.com/llms.txt, official MCP: `npx shadcn@latest mcp init --client claude` (needs a React project with `components.json`).
+- https://ui.shadcn.com | #1 shadcn/ui [free, OSS] 129k stars, 19M npm/wk. Connect: [HAVE] `shadcn` MCP is connected in this setup (search/view registry items, add commands), [NPM]/[CLI] `shadcn`, [LLMS] ui.shadcn.com/llms.txt, official MCP: `npx shadcn@latest mcp init --client claude` (needs a React project with `components.json`).
+- https://ui.shadcn.com/docs/components | #1a shadcn/ui component list (every component with its markup, props and variants). Use for what a finished widget needs (states, sizes, empty states) and copy the structure into vanilla.
 - https://reactbits.dev | #2 React Bits [free, OSS] 52k stars, animated backgrounds and text effects, installable through the shadcn CLI. Connect: [CLI] shadcn registry.
-- https://magicui.design | #3 Magic UI [freemium] 23k stars, animated landing components. Connect: official MCP repo https://github.com/magicuidesign/mcp (supports Claude), [CLI] `magicui-cli`.
+- https://magicui.design | #3 Magic UI [freemium] 23k stars, animated landing components. Connect: [HAVE] `magicui` MCP is connected in this setup (list/search/get registry items), official MCP repo https://github.com/magicuidesign/mcp (supports Claude), [CLI] `magicui-cli`.
+- https://number-flow.barvian.me/ | #3a NumberFlow [free, OSS] animated number transitions (rolling digits, formatting, trend). Fits player stats, scores and counters on the site. Ships as a web component, so it can run without React; React/Vue/Svelte wrappers exist. Connect: [NPM] `number-flow` / `@number-flow/react` (check the docs for the current package names), docs via Context7.
+- https://sonner.emilkowal.ski/ | #3b Sonner [free, OSS] toast notifications by Emil Kowalski, the reference for stacked, swipe-to-dismiss toasts. React only, so copy the behavior (stack, hover pause, swipe, timing) into the Phoenix toast. Connect: [SKILL] `ask-sonner` is installed; docs site.
+- https://vaul.emilkowal.ski/ | #3c Vaul [free, OSS] drawer / bottom sheet by Emil Kowalski (built on Radix Dialog). Technique reference for mobile bottom sheets: drag handle, snap points, backdrop scale. React only. Connect: [NONE] use the docs site; see also the Emil Kowalski skills in section 10.
 - https://ui.aceternity.com | #4 Aceternity UI [freemium] effect components. Connect: [NONE].
 - https://21st.dev | #5 21st.dev [freemium] community component registry. Connect: [KEY] `@21st-dev/magic` MCP (6.6k stars, needs a 21st.dev key).
 - https://tailwindcss.com | #6 Tailwind CSS v4 [free, OSS] 190M npm/wk. Connect: [NPM] `tailwindcss`; docs via Context7. https://tailwindcss.com/plus | Tailwind Plus [paid] official blocks and templates.
@@ -177,7 +183,8 @@ React-origin libraries (technique reference only)
 ## 9. Design inspiration
 
 Ranked for a sports/esports club site with stats. Connect for all: Firecrawl or Chrome/Playwright to read and screenshot; no official APIs.
-- https://www.awwwards.com | #1 Awwwards [freemium] site of the day, the reference gallery. Connect: community `INSANE0777/Awwwards-mcp` (894 stars, unofficial, check before trusting).
+- https://www.awwwards.com | #1 Awwwards [freemium] site of the day, the reference gallery. Connect: community `INSANE0777/Awwwards-mcp` (894 stars, unofficial, check before trusting). Our saved collections, element examples and sites are in section 24, sorted by what Phoenix needs (stats, transitions, controls, cards, 3D).
+- https://www.fullstack.com/resources/playbooks/design-and-build-web-mobile-app | Design-and-build playbook for web and mobile apps (process from discovery to launch). Process reference for planning a big feature; read it before a new app-sized item.
 - https://mobbin.com | #2 Mobbin [paid] real app and web flows. Connect: [HAVE] Mobbin connector.
 - https://godly.website | #3 Godly (now redirects to recent.design) [free]. https://land-book.com | #4 Land-book [freemium].
 - https://www.siteinspire.com | #5 Siteinspire [free]. https://dribbble.com | #6 Dribbble [freemium], search "esports", "dashboard", "sports stats".
@@ -275,6 +282,7 @@ Ranked for a sports/esports club site with stats. Connect for all: Firecrawl or 
 - https://www.remotion.dev | #3 Remotion [freemium] React video; company licence above 3 employees. Connect: [SKILL] official `npx remotion skills add` or `npx skills add remotion-dev/skills`, [LLMS].
 - https://www.blackmagicdesign.com/products/davinciresolve | #4 DaVinci Resolve [freemium] manual editing, no agent connection.
 - https://www.photopea.com | #5 Photopea. ImageMagick `convert` [HAVE] for batch image jobs.
+- https://studio.youtube.com/ | YouTube Studio [free] upload, edit details and manage the channel's videos (sign in with the channel's own Google account; do not store account choices in the URL). Connect: [NONE] manual owner step.
 
 ## 21. Stock assets and data APIs
 
@@ -292,6 +300,137 @@ Ranked for a sports/esports club site with stats. Connect for all: Firecrawl or 
 - https://code.claude.com/docs | #4 Claude Code docs. https://platform.claude.com/docs/en/home | #5 Claude API docs [LLMS] docs.claude.com/llms.txt.
 - https://github.com/vercel-labs/skills | #6 `skills` CLI (`npx skills add <repo>`), installs skills for 40+ agents. https://github.com/anthropics/skills | #7 Anthropic example skills. https://github.com/anthropics/claude-code | #8 Claude Code repo and issues.
 - https://smithery.ai | #9 Smithery MCP directory. https://glama.ai/mcp/servers | #10 Glama MCP directory. https://cli.github.com | `gh`. https://developers.cloudflare.com/workers/wrangler/commands/ | Wrangler commands.
+
+## 24. Awwwards collections and examples (saved 2026-11-21)
+
+Collections and element examples the owner saved. Labels are read from each URL (the pages were not opened when saving), so open one with
+Firecrawl or Chrome before copying a technique. Duplicates in the original list were merged. Connect for all: [NONE], use Firecrawl/Chrome.
+Pick the subsection that matches the job, then go down it.
+
+### 24a. Collections (browse by topic)
+- https://www.awwwards.com/awwwards/collections/hot-right-now/ | Hot right now.
+- https://www.awwwards.com/awwwards/collections/inspiring-ux-design/ | Inspiring UX design.
+- https://www.awwwards.com/awwwards/collections/layout/ | Layout. Use for page grids and section structure.
+- https://www.awwwards.com/awwwards/collections/responsive-design/ | Responsive design. Use for phone and tablet layouts.
+- https://www.awwwards.com/awwwards/collections/mobile-ui/ | Mobile UI. Use for the phone site and bottom navigation.
+- https://www.awwwards.com/awwwards/collections/the-best-of-navigation/ | Best of navigation. Use for menus and the dock.
+- https://www.awwwards.com/awwwards/collections/transitions/ | Transitions. Use for page and view changes (section 2).
+- https://www.awwwards.com/awwwards/collections/animation/ | Animation.
+- https://www.awwwards.com/awwwards/collections/animation-libraries-examples-inspiration/ | Animation libraries with examples (pairs with section 1).
+- https://www.awwwards.com/awwwards/collections/ai-tools-for-designers/ | AI tools for designers (pairs with section 19).
+- https://www.awwwards.com/mireia_ortega/collections/color-palettes-websites/ | Color palettes on real websites (pairs with section 8).
+
+### 24b. Stats, data, leaderboards and match pages (closest to Phoenix)
+- https://www.awwwards.com/inspiration/leaderboard-and-vital-stats-findra-art | Leaderboard and vital stats (Findra Art). Use for the rankings board.
+- https://www.awwwards.com/inspiration/matchcenter-bayer04-de | Match center (Bayer 04). Use for fixtures, results and match pages.
+- https://www.awwwards.com/inspiration/key-figures-sport-cover | Key figures (Sport Cover). Use for player and club headline numbers.
+- https://www.awwwards.com/inspiration/swsh-results-carousel-swsh | Results carousel (SWSH). Use for recent results.
+- https://www.awwwards.com/inspiration/statistics-table-wheel-of-fortune-by-nextweb | Statistics table (Wheel of Fortune by Nextweb). Use for stat tables.
+- https://www.awwwards.com/inspiration/table-of-active-widgets-wheel-of-fortune-by-nextweb | Table of active widgets (same site).
+- https://www.awwwards.com/inspiration/stats-animation-on-scroll-kin-ecosystem | Stats animation on scroll (Kin Ecosystem). Use for counters that run when seen.
+- https://www.awwwards.com/inspiration/stats-animation-getyourguide-travel-experience-trend-tracker-fall-2024 | Stats animation (GetYourGuide trend tracker).
+- https://www.awwwards.com/inspiration/stats-getyourguide-travel-experience-trend-tracker-fall-2024 | Stats (GetYourGuide trend tracker).
+- https://www.awwwards.com/inspiration/form-getyourguide-travel-experience-trend-tracker-fall-2024 | Form (GetYourGuide trend tracker).
+- https://www.awwwards.com/inspiration/stats-vymex | Stats (Vymex).
+- https://www.awwwards.com/inspiration/statistics-about-product-lazy-ant | Statistics about product (Lazy Ant).
+- https://www.awwwards.com/inspiration/area-market-stats-resider | Area market stats (Resider).
+- https://www.awwwards.com/inspiration/analytics-loook-ai | Analytics (Loook AI).
+- https://www.awwwards.com/inspiration/sales-analytics-delorean-marketplace-1 | Sales analytics (Delorean Marketplace).
+- https://www.awwwards.com/inspiration/chart-bosqar-invest | Chart (Bosqar Invest). Use for chart styling.
+- https://www.awwwards.com/inspiration/data-visualization-moonlet | Data visualization (Moonlet).
+- https://www.awwwards.com/inspiration/data-visualization-page-submission-635655c07c32f004591242 | Data visualization page.
+- https://www.awwwards.com/inspiration/data-dawn-patrol | Data (Dawn Patrol).
+- https://www.awwwards.com/inspiration/kaiterra-by-adchitects-data-stats-on-home-kaiterra-1 | Data stats on the home page (Kaiterra by Adchitects).
+
+### 24c. Page and scene transitions (pairs with section 2)
+- https://www.awwwards.com/inspiration/page-transition-carter-ogunsola | Page transition (Carter Ogunsola).
+- https://www.awwwards.com/inspiration/page-transition-north-2 | Page transition (North).
+- https://www.awwwards.com/inspiration/page-transition-annnimate | Page transition (Annnimate).
+- https://www.awwwards.com/inspiration/custom-page-transitions-the-sugar-coated-cult | Custom page transitions (The Sugar Coated Cult).
+- https://www.awwwards.com/inspiration/page-transitions-under-a-fixed-header-koval-seo-console | Page transitions under a fixed header (Koval SEO Console). Use for a sticky top bar that stays put.
+- https://www.awwwards.com/inspiration/how-it-works-intro-koval-seo-console | How-it-works intro (Koval SEO Console).
+- https://www.awwwards.com/inspiration/seamless-scene-transitions-disrupt-1 | Seamless scene transitions (Disrupt).
+- https://www.awwwards.com/inspiration/transition-animation-zirka-interceptor | Transition animation (Zirka Interceptor).
+- https://www.awwwards.com/inspiration/cards-scroll-transition-justin-jefferson | Cards scroll transition (Justin Jefferson). Use for player cards on scroll.
+- https://www.awwwards.com/inspiration/postcard-to-case-study-danylo-klochko-portfolio | Postcard to case study (Danylo Klochko).
+- https://www.awwwards.com/inspiration/method-equitify-assets | Method (Equitify Assets).
+- https://www.awwwards.com/inspiration/portal-page-transition-shvgvn-frontend-3d | Portal page transition (Shvgvn, 3D).
+- https://www.awwwards.com/inspiration/glass-break-transition-shvgvn-frontend-3d | Glass-break transition (Shvgvn, 3D).
+- https://www.awwwards.com/inspiration/story-in-particles-inacio-nakiti | Story in particles (Inacio Nakiti).
+- https://www.awwwards.com/inspiration/into-full-luka-skhiladze | Into full (Luka Skhiladze).
+- https://www.awwwards.com/inspiration/flight-into-the-about-luka-skhiladze | Flight into the about page (Luka Skhiladze).
+
+### 24d. UI controls, navigation, settings and micro-interactions
+- https://www.awwwards.com/inspiration/navigation-uimaven-art | Navigation (UIMaven Art).
+- https://www.awwwards.com/inspiration/k-command-palette-kamals-folio | Command palette on K (Kamal's Folio). Use for site search and quick jump.
+- https://www.awwwards.com/inspiration/page-controls-microinteractions-platform | Page controls micro-interactions (Platform).
+- https://www.awwwards.com/inspiration/minimalistic-ui-controls-flowerseed | Minimal UI controls (Flowerseed).
+- https://www.awwwards.com/inspiration/technical-settings-theme-switch-saifullah-dev | Technical settings and theme switch (Saifullah Dev).
+- https://www.awwwards.com/inspiration/product-settings-kraa-io | Product settings (Kraa).
+- https://www.awwwards.com/inspiration/the-lab-dark-mode-jerimybrown-com | The lab, dark mode (jerimybrown.com).
+- https://www.awwwards.com/inspiration/cookie-notice-and-settings-spectup | Cookie notice and settings (Spectup).
+- https://www.awwwards.com/inspiration/menu-w-music-performance-modes-alexander-lohn | Menu with music and performance modes (Alexander Lohn). Use for a quality or low-motion switch.
+- https://www.awwwards.com/inspiration/low-performance-mode-pixel-artstyle-penguin-music | Low performance mode, pixel art style (Penguin Music).
+- https://www.awwwards.com/inspiration/screen-effects-glitches-crt-noise-and-scan-lines-chus-margallo-space | Screen effects: glitch, CRT noise, scan lines (Chus Margallo).
+- https://www.awwwards.com/inspiration/media-player-seriti | Media player (Seriti).
+- https://www.awwwards.com/inspiration/built-for-control-freaks-rig-ai | Built for control freaks (Rig AI).
+- https://www.awwwards.com/inspiration/onde-is-a-dispatch-platform-with-a-set-of-mobile-and-web-apps-onde-app | Dispatch platform, mobile and web apps (Onde). Use for app-style dashboards.
+- https://www.awwwards.com/inspiration/viswig-vector-pattern-generator | Vector pattern generator (Viswig).
+- https://www.awwwards.com/inspiration/human-stories-numa | Human stories (Numa).
+- https://www.awwwards.com/inspiration/room-decoration-samu-clima | Room decoration (Samu Clima).
+- https://www.awwwards.com/inspiration/about-telemetry-carter-ogunsola | About telemetry (Carter Ogunsola).
+- https://www.awwwards.com/inspiration/subscription-flywheel-zooms-into-the-footer-doe-x-cymbiotika | Subscription flywheel zooms into the footer (Doe x Cymbiotika).
+
+### 24e. Cards, heroes and shape animation
+- https://www.awwwards.com/inspiration/swsh-card-hover-interaction-swsh | Card hover interaction (SWSH). Use for player card hover.
+- https://www.awwwards.com/inspiration/product-cards-faers | Product cards (Faers).
+- https://www.awwwards.com/inspiration/card-design-pomelo | Card design (Pomelo).
+- https://www.awwwards.com/inspiration/project-cards-problem-build-outcome-https-mananthakkar-dev | Project cards: problem, build, outcome (mananthakkar.dev).
+- https://www.awwwards.com/inspiration/animated-hero-particle-identity-clleancode-partnerships | Animated hero, particle identity (Clleancode).
+- https://www.awwwards.com/inspiration/shape-animation-clleancode-partnerships | Shape animation (Clleancode).
+- https://www.awwwards.com/inspiration/3d-hero-background-assets-north-2 | 3D hero background assets (North).
+- https://www.awwwards.com/inspiration/partners-carousel-liminal-2 | Partners carousel (Liminal). Use for sponsor or partner rows.
+
+### 24f. 3D, WebGL, icons and Lottie (pairs with sections 3, 4 and 7)
+- https://www.awwwards.com/inspiration/webgl-neon-tube-lights-cognichip-aci-enterprise | WebGL neon tube lights (Cognichip).
+- https://www.awwwards.com/inspiration/3d-configurator-memoryquest | 3D configurator (MemoryQuest). Use for the card studio preview idea.
+- https://www.awwwards.com/inspiration/tool-stack-interaction-portfolio-26-1 | Tool stack interaction (Portfolio 26).
+- https://www.awwwards.com/inspiration/lottie-animations-eth-zurich-space | Lottie animations (ETH Zurich Space).
+- https://www.awwwards.com/inspiration/3d-icons-allo | 3D icons (Allo).
+- https://www.awwwards.com/inspiration/3d-icons-of-the-process-soscale | 3D icons of the process (SoScale).
+- https://www.awwwards.com/inspiration/8-bit-icons-ugly-duckling | 8-bit icons (Ugly Duckling). Use for the arcade games.
+- https://www.awwwards.com/inspiration/icons-bpro-better-catering-solutions | Icons (BPro).
+- https://www.awwwards.com/inspiration/website-icons-fitonist | Website icons (Fitonist).
+- https://www.awwwards.com/inspiration/icon-showcase-uicons-2 | Icon showcase (UIcons).
+- https://www.awwwards.com/inspiration/icon-explorer-uicons-2 | Icon explorer (UIcons).
+- https://www.awwwards.com/inspiration/services-assetmetrix | Services (Assetmetrix).
+
+### 24g. Playful, game and gesture ideas
+- https://www.awwwards.com/inspiration/game-modes-physics-shaky | Game modes with physics (Shaky). Use for the arcade page.
+- https://www.awwwards.com/inspiration/birthday-card-reveal-shaky | Birthday card reveal (Shaky). Use for member birthday posts.
+- https://www.awwwards.com/inspiration/break-the-page-inacio-nakiti | Break the page (Inacio Nakiti).
+- https://www.awwwards.com/inspiration/tilt-your-phone-the-head-follows-insert | Tilt your phone, the head follows (Insert). Use for phone gyroscope effects.
+- https://www.awwwards.com/inspiration/ai-character-motion-glinto | AI character motion (Glinto).
+- https://www.awwwards.com/inspiration/on-a-phone-tune-in-the-vault-a-film-s-panel-luka-skhiladze | On a phone, tune in (The Vault, Luka Skhiladze).
+- https://www.awwwards.com/inspiration/zoom-into-the-wear-in-4k-matchball-1 | Zoom into the wear in 4K (Matchball). Use for close-up zoom on a card or kit.
+
+### 24h. Sites and studios to study
+- https://www.awwwards.com/sites/grubogrubo | Grubogrubo.
+- https://www.awwwards.com/sites/justin-jefferson | Justin Jefferson (an athlete site, closest to a player page).
+- https://www.awwwards.com/sites/mayhem-wheels | Mayhem Wheels.
+- https://www.awwwards.com/sites/veo3-ai | Veo3 AI.
+- https://www.awwwards.com/sites/cyera-ai-guardian | Cyera AI Guardian.
+- https://www.awwwards.com/sites/musci-ai-song-generator | Musci AI song generator.
+- https://www.awwwards.com/halaskastudio/ | Halaska Studio profile.
+- https://www.awwwards.com/solt-wagner/ | Solt Wagner profile.
+- https://www.awwwards.com/info-patike/ | Info Patike profile.
+- https://www.awwwards.com/MicrodoseStudio/ | Microdose Studio profile.
+- https://www.awwwards.com/kamalraaj-senthilkumar/ | Kamalraaj Senthilkumar profile.
+- https://www.awwwards.com/lionel-quellery/ | Lionel Quellery profile.
+- https://www.awwwards.com/youmna-magdy/ | Youmna Magdy profile.
+- https://www.awwwards.com/phunk/ | Phunk profile.
+- https://www.awwwards.com/viewsource/ | View Source profile.
+- https://www.awwwards.com/fu-qiao/ | Fu Qiao profile.
 
 ## Motion examples saved from motion.dev (2026-11-10)
 
