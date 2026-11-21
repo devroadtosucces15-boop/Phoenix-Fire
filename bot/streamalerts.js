@@ -13,6 +13,7 @@ import { postEmbed } from './docs.js';
 import { orgName, channelFor, channelNotice } from './orgconfig.js';
 import { liveOf } from './memberlive.js';
 import { parseFeed } from './watchlist.js';
+import { watchInvite } from './streamwatch.js';
 
 export const STREAM_COMMANDS = new Set(['streamalerts']);
 export const streamAlertsOn = (env) => flagOn(env, { role: 'owner' }, 'streamAlerts');
@@ -47,7 +48,7 @@ function preview(src, v, env, now) {
   if (src.platform === 'youtube' && v.url?.includes('watch?v=') && v.live !== false) return `https://i.ytimg.com/vi/${v.url.split('v=')[1]}/maxresdefault_live.jpg`;
   return bannerUrl(env, v.live === false ? 'channel' : 'onair');
 }
-export function livePanel(src, v, site, ephemeral = false, env = null, now = Date.now()) {
+export function livePanel(src, v, site, ephemeral = false, env = null, now = Date.now(), watchUrl = '') {
   const main = src.scope === 'main', on = v.live !== false;
   return message({ accent: on ? 'win' : 'red', ephemeral, mentions: { parse: [] }, blocks: [
     header({ eyebrow: `${orgName(env)} · ${on ? (main ? 'Live' : 'Member live') : 'Channel'} · ${PLATFORM[src.platform]}`, title: on ? `${it('live')} ${who(src, env)} is live` : `${it('live')} ${who(src, env)} on ${PLATFORM[src.platform]}`, sub: on ? v.title || undefined : 'Not live right now', size: 3 }),
@@ -55,7 +56,7 @@ export function livePanel(src, v, site, ephemeral = false, env = null, now = Dat
     facts([['Where', PLATFORM[src.platform]], ['Channel', src.handle.replace(/^channel\//, '')], ['Status', on ? '🟢 On air' : '⚪ Offline'], on && v.game ? ['Playing', v.game] : null, on && v.viewers != null ? ['Viewers', `${v.viewers} when posted`] : null].filter(Boolean)),
     sep(),
     footer(on ? (main ? 'Picture and viewers are a snapshot from when this was posted · drop in and say hello' : `A ${orgName(env)} contributor · snapshot from when this was posted`) : 'Follow the channel to catch the next stream'),
-    buttons([...(main && site ? [{ label: 'Watch on the site', url: `${site}watch.html` }] : []), { label: `Open ${PLATFORM[src.platform]}`, url: v.url || src.url }]),
+    buttons([...(on && watchUrl ? [{ label: 'Watch in Discord', url: watchUrl }] : []), ...(main && site ? [{ label: 'Watch on the site', url: `${site}watch.html` }] : []), { label: `Open ${PLATFORM[src.platform]}`, url: v.url || src.url }]),
   ] });
 }
 export function videoPanel(src, v, ephemeral = false, env = null) {
@@ -87,7 +88,8 @@ async function checkLive(env, src, now, fetcher, out) {
   const recent = src.live_announced_at && now - src.live_announced_at < BLIP_GAP; // a stream that blips off and on is not a new one
   const claim = await run(env, `UPDATE stream_sources SET live = 1${recent ? '' : ', live_announced_at = ?'} WHERE id = ? AND live = 0`, ...(recent ? [] : [now]), src.id);
   if (!claim.meta?.changes || recent) return;
-  const panel = livePanel(src, found, siteOf(env), false, env, now);
+  const watch = src.scope === 'main' && src.platform === 'twitch' ? await watchInvite(env, fetcher).catch(() => ({})) : {}; // the club's own Twitch channel gets the Activity button
+  const panel = livePanel(src, found, siteOf(env), false, env, now, watch.url);
   const r = await postEmbed(env, src.channel_id, '', panel, { remember: false });
   if (r?.ok) out.live++;
   else await run(env, 'UPDATE stream_sources SET live = 0, live_announced_at = ? WHERE id = ?', src.live_announced_at ?? null, src.id); // retry next run

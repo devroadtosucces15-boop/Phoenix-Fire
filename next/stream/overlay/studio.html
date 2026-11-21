@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Overlay Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="overlay-studio.css"></head>
+<body>
+<header class="top"><div><div class="eyebrow">Stream tools</div><h1>Overlay Studio</h1></div><p class="lede">Alerts, goal bars and clip reactions for OBS. Change anything on the left, watch it on the right, then copy a link into an OBS Browser Source.</p></header>
+<div class="wrap">
+  <section class="panel" id="form" aria-label="Settings"></section>
+  <section class="side">
+    <div class="panel"><h2>Live preview</h2><div class="pv"><iframe id="pv" title="Overlay preview"></iframe></div>
+      <h3>Try it</h3><div class="btns" id="tests"></div><div class="btns" id="goaltests"></div><div class="btns" id="chattests"></div></div>
+    <div class="panel"><h2>OBS links</h2><p class="muted">In OBS: <b>Sources → + → Browser</b>, paste a link, set <b>Width 1920, Height 1080</b>, and untick "Shutdown source when not visible" so goals keep counting. The page is transparent.</p><div id="links"></div>
+      <h3>Load a saved link</h3><div class="row"><input id="paste" placeholder="Paste an overlay link or the cfg=… part"><button id="load" type="button">Load</button></div><p class="muted small" id="msg" role="status"></p></div>
+  </section>
+</div>
+<script src="overlay-brand.js"></script><script src="overlay-core.js"></script><script src="overlay-studio.js"></script>
+</body></html>

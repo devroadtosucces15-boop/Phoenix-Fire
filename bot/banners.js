@@ -175,7 +175,7 @@ export const BANNER_BY_COMMAND = {
   points: 'predict', motm: 'award', awards: 'award', insight: 'insight', ask: 'ask', 'Quote card': 'quote', navigator: 'navigator', counselor: 'counselor', mascot: 'mascot', absence: 'absence', highlight: 'highlight', emoji: 'emoji', gif: 'gif', birthday: 'birthday', wiki: 'wiki', 'Pin to bottom': 'pin', unpin: 'pin', 'Translate message': 'translate', translate: 'translate', enhance: 'translate', language: 'translate', burner: 'burner', seasoncard: 'season', rushladder: 'rush',
   rush: 'rush', queue: 'queue', lfg: 'lfg', host: 'event', lineup: 'lineup', matchday: 'event', intel: 'stats',
   feedback: 'feedback', suggest: 'idea', share: 'fun', discoveries: 'fun', watch: 'live', tag: 'setup', remind: 'remind', site: 'general', avatarcard: 'card',
-  testview: 'staff', arcade: 'fun', jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live',
+  testview: 'staff', arcade: 'fun', jail: 'fun', wheel: 'fun', trivia: 'fun', panel: 'staff', announce: 'announce', trial: 'trial', setup: 'setup', purge: 'staff', streamalerts: 'live', watchlive: 'live',
   exportcontent: 'staff', profanitysetup: 'moderation', syncroles: 'staff', aispike: 'insight',
   corehelp: 'help', statshelp: 'help', toolshelp: 'help', matchdayhelp: 'help', rushhelp: 'help',
 };

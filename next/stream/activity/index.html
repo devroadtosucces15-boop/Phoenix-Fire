@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Watch live</title>
+<link rel="stylesheet" href="activity.css"></head>
+<body>
+<!-- The Discord Activity opened by the "Watch in Discord" button (bot/streamwatch.js). Discord's Developer Portal maps this page as the Activity root and /twitch to player.twitch.tv (LIBRARY/STREAM-WATCH.md). -->
+<main class="shell">
+  <header class="bar"><img id="crest" src="crest-sm.png" alt="" width="40" height="40"><div><div id="name" class="name">LIVE</div><div id="motto" class="motto"></div></div><span class="pill">● Live</span></header>
+  <section class="stage" aria-label="Live stream"><iframe id="player" title="Live stream" allow="autoplay; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe><div id="none" class="none" hidden>No stream channel is set up yet.</div></section>
+  <footer class="foot"><span class="hint">Video not showing, or stuck loading?</span><button id="open" type="button">Open on Twitch</button><button id="chat" type="button">Open chat</button></footer>
+</main>
+<script src="overlay-brand.js"></script><script src="activity-config.js"></script><script src="vendor-discord-sdk.min.js"></script><script src="activity.js"></script>
+</body></html>

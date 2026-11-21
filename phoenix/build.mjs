@@ -52,12 +52,22 @@ try {
   if (ui.includes(previewRibbon)) fs.writeFileSync(uiShell, ui.replace(previewRibbon, ''));
   else warn('Preview ribbon markup changed upstream – inspect the Phoenix shell');
   // 4. overlay: badge crest, icons, 3D crest, theme layer
-  for (const f of fs.readdirSync(path.join(here, 'overlay'))) fs.copyFileSync(path.join(here, 'overlay', f), path.join(stage, 'next', f === 'crest.png' ? f : path.join('static', f)));
+  for (const f of fs.readdirSync(path.join(here, 'overlay')).filter((f) => !f.startsWith('.'))) fs.copyFileSync(path.join(here, 'overlay', f), path.join(stage, 'next', f === 'crest.png' ? f : path.join('static', f)));
   // The recorded API answers (phoenix-api.json) come from the Norex worker; give their text the same club names.
   // brand tokens from config.json (gold staff-hub plate, search palette / menu surfaces): the css reads var(--plate-*) and var(--pal-*), never a hex
   { const b = JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')).brand || {}, t = [['plate-top', b.plate?.top], ['plate-bottom', b.plate?.bottom], ['pal-top', b.palette?.top], ['pal-bottom', b.palette?.bottom], ['pal-veil', b.palette?.veil]];
     if (t.some(([, v]) => !v)) throw new Error('config.json brand.plate and brand.palette are required (top, bottom, veil)');
     fs.appendFileSync(path.join(stage, 'next/static/phoenix.css'), `\n/* brand tokens (config.json) */\n:root{${t.map(([k, v]) => `--${k}:${v}`).join(';')}}\n`); }
+  // stream overlay + watch Activity (next/stream/overlay, next/stream/activity): name, motto, colours and the Twitch channel come from config.json here and nowhere else
+  { const rc = JSON.parse(fs.readFileSync(path.join(repo, 'config.json'), 'utf8')), b = rc.brand || {};
+    if (!b.red || !b.ink || !b.motto) throw new Error('config.json brand.red, brand.ink and brand.motto are required (stream overlay)');
+    const brand = (crest) => `/* written by phoenix/build.mjs from config.json */\nwindow.PF_BRAND = ${JSON.stringify({ name: 'PHOENIX FIRE', motto: b.motto, accent: b.red, ink: b.ink, goldTop: b.plate?.top, goldBottom: b.plate?.bottom, crest })};\n`;
+    const sd = path.join(stage, 'next/stream');
+    fs.writeFileSync(path.join(sd, 'overlay/overlay-brand.js'), brand('../crest-sm.png'));
+    fs.writeFileSync(path.join(sd, 'activity/overlay-brand.js'), brand('crest-sm.png'));
+    fs.copyFileSync(path.join(here, 'overlay/crest-sm.png'), path.join(sd, 'activity/crest-sm.png')); // the Activity is mapped to its own folder, so it carries its crest
+    const ch = /twitch\.tv\/(?:popout\/)?([A-Za-z0-9_]{3,25})/i.exec(rc.streams?.twitch ?? '')?.[1]?.toLowerCase() ?? '';
+    fs.writeFileSync(path.join(sd, 'activity/activity-config.js'), `/* written by phoenix/build.mjs from config.json */\nwindow.PF_ACTIVITY = ${JSON.stringify({ channel: ch })};\n`); }
   const mock = path.join(stage, 'next/static/phoenix-api.json');
   if (fs.existsSync(mock)) { let s = fs.readFileSync(mock, 'utf8'); const o = s; for (const [re, to] of names) s = s.replace(re, to); if (s !== o) fs.writeFileSync(mock, s); }
   const appjs = path.join(stage, 'next/static/app.js'), as = fs.readFileSync(appjs, 'utf8');
@@ -136,7 +146,7 @@ try {
     const day = new Date().toISOString().slice(0, 10), esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     const listed = fs.readdirSync(out).filter((f) => swap.indexable(f) && !/name="robots" content="[^"]*noindex/.test(fs.readFileSync(path.join(out, f), 'utf8'))).sort();
     fs.writeFileSync(path.join(out, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${listed.map((f) => `<url><loc>${esc(site + (f === 'index.html' ? '' : f))}</loc><lastmod>${day}</lastmod></url>`).join('\n')}\n</urlset>\n`);
-    fs.writeFileSync(path.join(out, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /hub\nDisallow: /staff\n\nSitemap: ${site}sitemap.xml\n`);
+    fs.writeFileSync(path.join(out, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /hub\nDisallow: /staff\nDisallow: /overlay\nDisallow: /activity\n\nSitemap: ${site}sitemap.xml\n`);
   } else fs.writeFileSync(path.join(out, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
   { // D1: dead legacy addresses (docs, feed, messages, builder, compare, apply, players/<id>, matches/<id>, clubs/<id>) forward to their current page
     const { emitLegacyStubs } = await import(pathToFileURL(path.join(stage, 'next/lib/redirects.mjs')).href);
