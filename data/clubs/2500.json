@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-21T19:50:41.243Z",
+ "fetchedAt": "2026-11-21T19:59:35.856Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -367,6 +367,42 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "forward"
+  },
+  {
+   "name": "SamESKO4",
+   "gamesPlayed": "8",
+   "winRate": "100",
+   "goals": "11",
+   "assists": "6",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "47",
+   "passesMade": "111",
+   "passSuccessRate": "82",
+   "ratingAve": "8.6",
+   "tacklesMade": "8",
+   "tackleSuccessRate": "12",
+   "proName": "",
+   "proPos": "14",
+   "proStyle": "0",
+   "proHeight": "162",
+   "proNationality": "51",
+   "proOverall": "84",
+   "proOverallStr": "84",
+   "manOfTheMatch": "2",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "1",
+   "prevGoals3": "1",
+   "prevGoals4": "0",
+   "prevGoals5": "2",
+   "prevGoals6": "2",
+   "prevGoals7": "2",
+   "prevGoals8": "3",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "MS-05-05",
@@ -910,6 +946,42 @@
   },
   {
    "name": "itsjay030",
+   "gamesPlayed": "0",
+   "favoritePosition": "",
+   "winRate": "0",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "0",
+   "passSuccessRate": "0",
+   "ratingAve": "0.0",
+   "tacklesMade": "0",
+   "tackleSuccessRate": "0",
+   "proName": "",
+   "proPos": "",
+   "proStyle": "",
+   "proHeight": "",
+   "proNationality": "",
+   "proOverall": "0",
+   "proOverallStr": "",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0"
+  },
+  {
+   "name": "MejMech",
    "gamesPlayed": "0",
    "favoritePosition": "",
    "winRate": "0",
@@ -1702,7 +1774,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 2,
+  "midfielder": 3,
   "goalkeeper": 3,
   "forward": 3,
   "defender": 4
@@ -1907,6 +1979,17 @@
    "favoritePosition": "forward"
   },
   {
+   "name": "MejMech",
+   "proPos": "0",
+   "gamesPlayed": "672",
+   "goals": "487",
+   "assists": "499",
+   "manOfTheMatch": "158",
+   "ratingAve": "7.6",
+   "prevGoals": "0",
+   "favoritePosition": "goalkeeper"
+  },
+  {
    "name": "lucheuts24",
    "proPos": "0",
    "gamesPlayed": "91",
@@ -1974,14 +2057,14 @@
   },
   {
    "name": "iTry_Clutxh",
-   "proPos": "25",
-   "gamesPlayed": "44",
+   "proPos": "5",
+   "gamesPlayed": "45",
    "goals": "14",
    "assists": "13",
    "manOfTheMatch": "4",
    "ratingAve": "7.4",
-   "prevGoals": "2",
-   "favoritePosition": "forward"
+   "prevGoals": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "Froezer",
@@ -2035,6 +2118,17 @@
    "assists": "3",
    "manOfTheMatch": "1",
    "ratingAve": "7.1",
+   "prevGoals": "0",
+   "favoritePosition": "forward"
+  },
+  {
+   "name": "SamESKO4",
+   "proPos": "25",
+   "gamesPlayed": "141",
+   "goals": "147",
+   "assists": "133",
+   "manOfTheMatch": "35",
+   "ratingAve": "8.1",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2222,6 +2316,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-21T19:50:41.243Z"
+  "fetchedAt": "2026-11-21T19:59:35.856Z"
  }
 }
