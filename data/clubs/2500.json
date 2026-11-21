@@ -1,11 +1,11 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-21T21:40:46.680Z",
+ "fetchedAt": "2026-11-21T21:50:42.689Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
-  "regionId": 5719381,
+  "regionId": 5457237,
   "teamId": 245,
   "customKit": {
    "stadName": "The Firepit",
@@ -2457,6 +2457,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-21T21:40:46.680Z"
+  "fetchedAt": "2026-11-21T21:50:42.689Z"
  }
 }
