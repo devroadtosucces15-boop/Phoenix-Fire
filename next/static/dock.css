@@ -132,9 +132,12 @@ html[data-motion=calm] .dk-dial,html[data-motion=off] .dk-dial{animation:none;tr
 html.dk-dial-lock.lenis-stopped{overflow-x:clip;overflow-y:scroll}
 
 /* ---------- PF-043: tab bar auto-hide on scroll and the bring-back arrow (dock.js tabHide). Gold #efcf7a on #3a2c0e, ink; no new colours. ---------- */
-html.tb-hide .tabbar{transform:translate3d(0,calc(160% + var(--tbfix,0px)),0);pointer-events:none}
+/* Hidden means invisible, not only slid down: if iOS ever puts the fixed layer in the wrong place the bar still cannot show mid-page (visibility flips after the slide, and back at once on show). */
+html.tb-hide .tabbar{transform:translate3d(0,calc(160% + var(--tbfix,0px)),0);pointer-events:none;visibility:hidden;transition:transform .3s var(--e-out,ease),visibility 0s linear .3s}
+/* the handle can only exist while the bar is hidden: both follow the same html class, so they can never show together */
+html:not(.tb-hide) .tb-back{display:none}
 /* the handle: a low lip on the bottom edge with a grab bar. The button is 44 px tall for the thumb; the lip you see is the lower 28 px of it. Tap or swipe up. */
-.tb-back{position:fixed;z-index:9975;left:50%;bottom:0;width:84px;height:calc(44px + env(safe-area-inset-bottom) * .5);margin-left:-42px;padding:0;border:0;background:none;color:#efcf7a;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;animation:tbBackIn .25s ease-out}
+.tb-back{position:fixed;z-index:9975;left:50%;bottom:calc(0px - var(--tbfix,0px));width:84px;height:calc(44px + env(safe-area-inset-bottom) * .5);margin-left:-42px;padding:0;border:0;background:none;color:#efcf7a;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;animation:tbBackIn .25s ease-out}
 .tb-back::before{content:"";position:absolute;left:0;right:0;bottom:0;height:calc(28px + env(safe-area-inset-bottom) * .5);border-radius:16px 16px 0 0;border:1px solid rgba(239,207,122,.55);border-bottom:0;background:linear-gradient(180deg,#3a2c0e,var(--ink,#0a0705));box-shadow:0 -6px 18px rgba(0,0,0,.55)}
 .tb-back i{position:absolute;left:50%;bottom:calc(10px + env(safe-area-inset-bottom) * .5);width:32px;height:4px;margin-left:-16px;border-radius:4px;background:currentColor}
 .tb-back[hidden]{display:none}
