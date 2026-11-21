@@ -13,7 +13,7 @@ import { postEmbed } from './docs.js';
 import { orgName, channelFor, channelNotice } from './orgconfig.js';
 import { liveOf } from './memberlive.js';
 import { parseFeed } from './watchlist.js';
-import { watchInvite } from './streamwatch.js';
+import { watchInvite, roomTick, liveRoom } from './streamwatch.js';
 
 export const STREAM_COMMANDS = new Set(['streamalerts']);
 export const streamAlertsOn = (env) => flagOn(env, { role: 'owner' }, 'streamAlerts');
@@ -83,12 +83,14 @@ const isShort = (id, fetcher) => fetcher(`https://www.youtube.com/shorts/${id}`,
 
 async function checkLive(env, src, now, fetcher, out) {
   const found = await liveOf({ [src.platform]: src.handle }, fetcher).catch(() => null);
+  const club = src.scope === 'main' && src.platform === 'twitch'; // the club's own Twitch channel gets the watch room (bot/streamwatch.js)
+  if (club) await roomTick(env, found, now, fetcher).catch((e) => console.log('watch room failed', e.message));
   if (!found) { if (src.live) await run(env, 'UPDATE stream_sources SET live = 0 WHERE id = ?', src.id); return; }
   if (src.live) return; // still the same stream
   const recent = src.live_announced_at && now - src.live_announced_at < BLIP_GAP; // a stream that blips off and on is not a new one
   const claim = await run(env, `UPDATE stream_sources SET live = 1${recent ? '' : ', live_announced_at = ?'} WHERE id = ? AND live = 0`, ...(recent ? [] : [now]), src.id);
   if (!claim.meta?.changes || recent) return;
-  const watch = src.scope === 'main' && src.platform === 'twitch' ? await watchInvite(env, fetcher).catch(() => ({})) : {}; // the club's own Twitch channel gets the Activity button
+  const watch = club ? await watchInvite(env, await liveRoom(env), fetcher).catch(() => ({})) : {};
   const panel = livePanel(src, found, siteOf(env), false, env, now, watch.url);
   const r = await postEmbed(env, src.channel_id, '', panel, { remember: false });
   if (r?.ok) out.live++;
