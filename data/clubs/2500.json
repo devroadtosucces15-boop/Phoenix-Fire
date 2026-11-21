@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-21T19:59:35.856Z",
+ "fetchedAt": "2026-11-21T20:03:10.459Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2316,6 +2316,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-21T19:59:35.856Z"
+  "fetchedAt": "2026-11-21T20:03:10.459Z"
  }
 }
