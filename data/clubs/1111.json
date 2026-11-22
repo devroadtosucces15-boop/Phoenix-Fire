@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-22T18:20:42.206Z",
+ "fetchedAt": "2026-11-22T18:30:41.557Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2133,12 +2133,12 @@
   {
    "name": "zZ_zid",
    "proPos": "25",
-   "gamesPlayed": "299",
-   "goals": "292",
+   "gamesPlayed": "300",
+   "goals": "293",
    "assists": "310",
    "manOfTheMatch": "29",
    "ratingAve": "7.2",
-   "prevGoals": "2",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2177,12 +2177,12 @@
   {
    "name": "MejMech",
    "proPos": "25",
-   "gamesPlayed": "692",
-   "goals": "506",
-   "assists": "525",
+   "gamesPlayed": "693",
+   "goals": "508",
+   "assists": "526",
    "manOfTheMatch": "158",
    "ratingAve": "7.6",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2199,9 +2199,9 @@
   {
    "name": "AliasX47",
    "proPos": "14",
-   "gamesPlayed": "395",
+   "gamesPlayed": "396",
    "goals": "476",
-   "assists": "266",
+   "assists": "267",
    "manOfTheMatch": "47",
    "ratingAve": "7.7",
    "prevGoals": "0",
@@ -2352,14 +2352,14 @@
   },
   {
    "name": "Jaliens45",
-   "proPos": "14",
-   "gamesPlayed": "75",
+   "proPos": "5",
+   "gamesPlayed": "76",
    "goals": "14",
    "assists": "19",
    "manOfTheMatch": "5",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "defender"
   },
   {
    "name": "x_MrMike_x",
@@ -2430,10 +2430,10 @@
   {
    "name": "Morpho Vs All",
    "proPos": "14",
-   "gamesPlayed": "397",
+   "gamesPlayed": "398",
    "goals": "196",
    "assists": "139",
-   "manOfTheMatch": "53",
+   "manOfTheMatch": "54",
    "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-22T18:20:42.206Z"
+  "fetchedAt": "2026-11-22T18:30:41.557Z"
  }
 }
