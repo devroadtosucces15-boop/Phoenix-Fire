@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-22T13:50:42.257Z",
+ "fetchedAt": "2026-11-22T14:00:46.170Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2144,12 +2144,12 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "53",
-   "goals": "18",
-   "assists": "27",
+   "gamesPlayed": "54",
+   "goals": "20",
+   "assists": "29",
    "manOfTheMatch": "2",
    "ratingAve": "7.2",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-22T13:50:42.257Z"
+  "fetchedAt": "2026-11-22T14:00:46.170Z"
  }
 }
