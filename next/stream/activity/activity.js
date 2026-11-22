@@ -8,11 +8,19 @@
   var root = document.documentElement.style; if (B.accent) root.setProperty('--accent', B.accent); if (B.ink) root.setProperty('--ink', B.ink); if (B.goldTop) root.setProperty('--gold', B.goldTop);
   $('name').textContent = (B.name || 'Live') + ' · LIVE'; $('motto').textContent = B.motto || ''; if (B.crest) $('crest').src = B.crest;
 
+  // Same player URL the club site uses (muted, so phones allow autoplay). Inside Discord it first goes through the mapped proxy (/.proxy/twitch -> player.twitch.tv);
+  // "Try another way" switches to the direct address, and any address Discord blocks is named under the player so it can be mapped.
+  var ways = inDiscord ? ['proxy', 'direct'] : ['direct'], way = 0;
+  function load() {
+    var q = '?channel=' + encodeURIComponent(channel) + '&parent=' + encodeURIComponent(location.hostname) + '&autoplay=true&muted=true';
+    $('player').src = (ways[way] === 'proxy' ? '/.proxy/twitch/' : 'https://player.twitch.tv/') + q;
+  }
+  if (inDiscord && window.matchMedia && matchMedia('(pointer: coarse)').matches) document.documentElement.classList.add('phone');
   if (!channel) { $('player').hidden = true; $('none').hidden = false; }
   else {
-    // Inside Discord every outside address has to go through the Activity's mapped proxy (/.proxy/twitch -> player.twitch.tv); Twitch wants the page host as `parent`.
-    var q = '?channel=' + encodeURIComponent(channel) + '&parent=' + encodeURIComponent(location.hostname) + '&autoplay=true&muted=false';
-    $('player').src = (inDiscord ? '/.proxy/twitch/' : 'https://player.twitch.tv/') + q;
+    load();
+    if (ways.length > 1) { $('retry').hidden = false; $('retry').onclick = function () { way = (way + 1) % ways.length; $('blocked').textContent = ''; load(); $('hint').textContent = 'Trying the ' + ways[way] + ' way…'; }; }
+    document.addEventListener('securitypolicyviolation', function (e) { var t = e.blockedURI || e.violatedDirective; $('blocked').textContent = 'Blocked by Discord: ' + String(t).slice(0, 80); });
   }
 
   function open(url) { if (sdk) sdk.commands.openExternalLink({ url: url }).catch(function () {}); else window.open(url, '_blank', 'noopener'); }

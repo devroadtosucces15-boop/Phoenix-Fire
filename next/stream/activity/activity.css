@@ -11,3 +11,5 @@ html, body { height: 100%; background: radial-gradient(900px 500px at 85% -10%, 
 button { font: 600 14px/1 Inter, sans-serif; color: var(--cream); background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 246, 226, .18); border-radius: 10px; padding: 11px 16px; min-height: 40px; cursor: pointer; }
 button:hover { border-color: var(--accent); } button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; } #open { background: var(--accent); color: var(--ink); border-color: var(--accent); }
 [hidden] { display: none !important; }
+[hidden] { display: none !important; }
+.phone .shell { padding-top: max(52px, env(safe-area-inset-top)); } /* Discord's phone app draws the Activity under the status bar */
