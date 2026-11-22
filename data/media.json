@@ -1,47 +1,4 @@
 {
  "youtube": [],
- "twitch": [
-  {
-   "kind": "video",
-   "id": "2936717270",
-   "title": "Phoenix Fire - Test",
-   "secs": 2776,
-   "thumb": "https://static-cdn.jtvnw.net/cf_vods/d2nvs31859zcd8/f89b5c1ed7e34d56869c_phoenixfirefc_320003362647_1795304337//thumb/thumb0-480x272.jpg"
-  },
-  {
-   "kind": "video",
-   "id": "2936541851",
-   "title": "Phoenix Fire | EA FC Pro Clubs | Rise. Burn. Repeat.",
-   "secs": 10208,
-   "thumb": "https://static-cdn.jtvnw.net/cf_vods/d3fi1amfgojobc/cb7550d007416fc9cc19_phoenixfirefc_319433343973_1795293762//thumb/thumb0-480x272.jpg"
-  },
-  {
-   "kind": "video",
-   "id": "2934059362",
-   "title": "Phoenix Fire | EA FC Pro Clubs | Rise. Burn. Repeat.",
-   "secs": 4329,
-   "thumb": "https://static-cdn.jtvnw.net/cf_vods/d3fi1amfgojobc/4b33cf9de6f049056413_phoenixfirefc_319282718439_1795117101//thumb/thumb0-480x272.jpg"
-  },
-  {
-   "kind": "video",
-   "id": "2932664174",
-   "title": "Phoenix Fire | EA FC Pro Clubs | Rise. Burn. Repeat.",
-   "secs": 9125,
-   "thumb": "https://static-cdn.jtvnw.net/cf_vods/d3fi1amfgojobc/aaa7f3870a18390a73c9_phoenixfirefc_319264753255_1795032848//thumb/thumb0-480x272.jpg"
-  },
-  {
-   "kind": "video",
-   "id": "2931683689",
-   "title": "Phoenix Fire | EA FC Pro Clubs | Rise. Burn. Repeat.",
-   "secs": 6145,
-   "thumb": "https://static-cdn.jtvnw.net/cf_vods/d3fi1amfgojobc/86b6c6efc75938111606_phoenixfirefc_319252045415_1794947173//thumb/thumb0-480x272.jpg"
-  },
-  {
-   "kind": "video",
-   "id": "2931674407",
-   "title": "Phoenix Fire | EA FC Pro Clubs | Rise. Burn. Repeat.",
-   "secs": 381,
-   "thumb": "https://static-cdn.jtvnw.net/cf_vods/d3fi1amfgojobc/c2213efbe003baf24206_phoenixfirefc_319251881319_1794946466//thumb/thumb0-480x272.jpg"
-  }
- ]
+ "twitch": []
 }
