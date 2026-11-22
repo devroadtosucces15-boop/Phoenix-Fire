@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-22T17:40:40.049Z",
+ "fetchedAt": "2026-11-22T17:50:38.820Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2132,14 +2132,14 @@
   },
   {
    "name": "zZ_zid",
-   "proPos": "14",
-   "gamesPlayed": "297",
-   "goals": "289",
-   "assists": "309",
+   "proPos": "25",
+   "gamesPlayed": "298",
+   "goals": "290",
+   "assists": "310",
    "manOfTheMatch": "29",
    "ratingAve": "7.2",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "prevGoals": "1",
+   "favoritePosition": "forward"
   },
   {
    "name": "Ana Montana8022",
@@ -2177,12 +2177,12 @@
   {
    "name": "MejMech",
    "proPos": "25",
-   "gamesPlayed": "690",
-   "goals": "503",
+   "gamesPlayed": "691",
+   "goals": "506",
    "assists": "524",
    "manOfTheMatch": "158",
    "ratingAve": "7.6",
-   "prevGoals": "0",
+   "prevGoals": "3",
    "favoritePosition": "forward"
   },
   {
@@ -2199,12 +2199,12 @@
   {
    "name": "AliasX47",
    "proPos": "14",
-   "gamesPlayed": "393",
+   "gamesPlayed": "394",
    "goals": "476",
-   "assists": "262",
+   "assists": "265",
    "manOfTheMatch": "47",
    "ratingAve": "7.7",
-   "prevGoals": "2",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
@@ -2430,12 +2430,12 @@
   {
    "name": "Morpho Vs All",
    "proPos": "14",
-   "gamesPlayed": "395",
-   "goals": "195",
-   "assists": "138",
-   "manOfTheMatch": "51",
+   "gamesPlayed": "396",
+   "goals": "196",
+   "assists": "139",
+   "manOfTheMatch": "52",
    "ratingAve": "7.3",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "midfielder"
   }
  ],
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-22T17:40:40.049Z"
+  "fetchedAt": "2026-11-22T17:50:38.820Z"
  }
 }
