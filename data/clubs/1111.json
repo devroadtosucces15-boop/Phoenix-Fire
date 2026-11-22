@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-22T12:50:45.536Z",
+ "fetchedAt": "2026-11-22T13:00:41.045Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2177,12 +2177,12 @@
   {
    "name": "MejMech",
    "proPos": "25",
-   "gamesPlayed": "685",
-   "goals": "499",
-   "assists": "520",
+   "gamesPlayed": "686",
+   "goals": "500",
+   "assists": "521",
    "manOfTheMatch": "158",
    "ratingAve": "7.6",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2430,12 +2430,12 @@
   {
    "name": "Morpho Vs All",
    "proPos": "25",
-   "gamesPlayed": "393",
-   "goals": "193",
+   "gamesPlayed": "394",
+   "goals": "195",
    "assists": "138",
    "manOfTheMatch": "51",
    "ratingAve": "7.3",
-   "prevGoals": "3",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   }
  ],
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-22T12:50:45.536Z"
+  "fetchedAt": "2026-11-22T13:00:41.045Z"
  }
 }
