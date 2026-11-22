@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-22T02:40:43.223Z",
+ "fetchedAt": "2026-11-22T02:50:42.359Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -151,42 +151,6 @@
    "prevGoals9": "1",
    "prevGoals10": "1",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "OH-912",
-   "gamesPlayed": "8",
-   "winRate": "100",
-   "goals": "6",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "50",
-   "passesMade": "102",
-   "passSuccessRate": "79",
-   "ratingAve": "7.4",
-   "tacklesMade": "7",
-   "tackleSuccessRate": "30",
-   "proName": "O H",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "169",
-   "proNationality": "42",
-   "proOverall": "77",
-   "proOverallStr": "77",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "1",
-   "prevGoals4": "2",
-   "prevGoals5": "1",
-   "prevGoals6": "1",
-   "prevGoals7": "1",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "forward"
   },
   {
    "name": "NTRS-Y",
@@ -1452,7 +1416,7 @@
  "positionCount": {
   "midfielder": 6,
   "goalkeeper": 4,
-  "forward": 13,
+  "forward": 12,
   "defender": 11
  },
  "career": [
@@ -1488,17 +1452,6 @@
    "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "OH-912",
-   "proPos": "25",
-   "gamesPlayed": "36",
-   "goals": "17",
-   "assists": "18",
-   "manOfTheMatch": "1",
-   "ratingAve": "7.5",
-   "prevGoals": "1",
-   "favoritePosition": "forward"
   },
   {
    "name": "NTRS-Y",
@@ -1893,6 +1846,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-22T02:40:43.223Z"
+  "fetchedAt": "2026-11-22T02:50:42.359Z"
  }
 }
