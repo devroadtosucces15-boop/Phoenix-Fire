@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-22T00:20:42.877Z",
+ "fetchedAt": "2026-11-22T00:30:40.289Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2204,7 +2204,7 @@
   {
    "name": "Jaliens45",
    "proPos": "25",
-   "gamesPlayed": "65",
+   "gamesPlayed": "66",
    "goals": "10",
    "assists": "8",
    "manOfTheMatch": "3",
@@ -2363,6 +2363,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-22T00:20:42.877Z"
+  "fetchedAt": "2026-11-22T00:30:40.289Z"
  }
 }
