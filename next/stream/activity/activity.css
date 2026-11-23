@@ -14,3 +14,4 @@ button:hover { border-color: var(--accent); } button:focus-visible { outline: 2p
 [hidden] { display: none !important; }
 .phone .shell { padding-top: max(52px, env(safe-area-inset-top)); } /* Discord's phone app draws the Activity under the status bar */
 #blocked { flex: 1 0 100%; order: -1; margin: 0; font-size: 12px; overflow-wrap: anywhere; } #blocked:empty { display: none; }
+.stage .shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
