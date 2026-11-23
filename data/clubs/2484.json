@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-23T21:33:12.509Z",
+ "fetchedAt": "2026-11-23T21:40:54.752Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1233,42 +1233,6 @@
    "favoritePosition": ""
   },
   {
-   "name": "Panorave",
-   "gamesPlayed": "16",
-   "winRate": "87",
-   "goals": "4",
-   "assists": "18",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "44",
-   "passesMade": "264",
-   "passSuccessRate": "72",
-   "ratingAve": "8.0",
-   "tacklesMade": "17",
-   "tackleSuccessRate": "41",
-   "proName": "Pano",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "40",
-   "proOverall": "85",
-   "proOverallStr": "85",
-   "manOfTheMatch": "0",
-   "redCards": "1",
-   "prevGoals": "1",
-   "prevGoals1": "1",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "1",
-   "prevGoals6": "1",
-   "prevGoals7": "1",
-   "prevGoals8": "1",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
    "name": "Haverigg",
    "gamesPlayed": "29",
    "winRate": "96",
@@ -1414,7 +1378,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 6,
+  "midfielder": 5,
   "goalkeeper": 4,
   "forward": 12,
   "defender": 11
@@ -1806,17 +1770,6 @@
    "favoritePosition": "midfielder"
   },
   {
-   "name": "Panorave",
-   "proPos": "25",
-   "gamesPlayed": "205",
-   "goals": "125",
-   "assists": "193",
-   "manOfTheMatch": "34",
-   "ratingAve": "7.9",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "Haverigg",
    "proPos": "5",
    "gamesPlayed": "35",
@@ -1846,6 +1799,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-23T21:33:12.509Z"
+  "fetchedAt": "2026-11-23T21:40:54.752Z"
  }
 }

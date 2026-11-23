@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-23T21:33:12.509Z",
+ "fetchedAt": "2026-11-23T21:40:54.752Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1780,11 +1780,11 @@
   {
    "name": "Acider91",
    "proPos": "0",
-   "gamesPlayed": "55",
+   "gamesPlayed": "56",
    "goals": "0",
    "assists": "0",
-   "manOfTheMatch": "2",
-   "ratingAve": "6.1",
+   "manOfTheMatch": "3",
+   "ratingAve": "6.2",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
@@ -2269,6 +2269,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-23T21:33:12.509Z"
+  "fetchedAt": "2026-11-23T21:40:54.752Z"
  }
 }
