@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-23T19:20:45.202Z",
+ "fetchedAt": "2026-11-23T19:30:47.118Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -28,7 +28,7 @@
    "kitThrdColor2": "592653",
    "kitThrdColor3": "16696614",
    "kitThrdColor4": "15921906",
-   "dCustomKit": "3",
+   "dCustomKit": "1",
    "customKeeperKitId": "5007",
    "crestColor": "16495884",
    "crestAssetId": "99160802"
@@ -2269,6 +2269,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-23T19:20:45.202Z"
+  "fetchedAt": "2026-11-23T19:30:47.118Z"
  }
 }
