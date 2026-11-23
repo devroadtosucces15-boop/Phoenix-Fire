@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-23T17:50:44.289Z",
+ "fetchedAt": "2026-11-23T18:00:46.013Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -1533,12 +1533,12 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "148",
+   "gamesPlayed": "149",
    "goals": "83",
    "assists": "63",
    "manOfTheMatch": "24",
-   "ratingAve": "7.6",
-   "prevGoals": "2",
+   "ratingAve": "7.5",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -1753,7 +1753,7 @@
   {
    "name": "Damlaaa61",
    "proPos": "5",
-   "gamesPlayed": "206",
+   "gamesPlayed": "207",
    "goals": "44",
    "assists": "46",
    "manOfTheMatch": "37",
@@ -1846,6 +1846,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-23T17:50:44.289Z"
+  "fetchedAt": "2026-11-23T18:00:46.013Z"
  }
 }
