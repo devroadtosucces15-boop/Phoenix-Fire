@@ -8,19 +8,22 @@
   var root = document.documentElement.style; if (B.accent) root.setProperty('--accent', B.accent); if (B.ink) root.setProperty('--ink', B.ink); if (B.goldTop) root.setProperty('--gold', B.goldTop);
   $('name').textContent = (B.name || 'Live') + ' · LIVE'; $('motto').textContent = B.motto || ''; if (B.crest) $('crest').src = B.crest;
 
-  // Same player URL the club site uses (muted, so phones allow autoplay). Inside Discord it first goes through the mapped proxy (/.proxy/twitch -> player.twitch.tv);
-  // "Try another way" switches to the direct address, and any address Discord blocks is named under the player so it can be mapped.
-  var ways = inDiscord ? ['proxy', 'direct'] : ['direct'], way = 0;
-  function load() {
-    var q = '?channel=' + encodeURIComponent(channel) + '&parent=' + encodeURIComponent(location.hostname) + '&autoplay=true&muted=true';
-    $('player').src = (ways[way] === 'proxy' ? '/.proxy/twitch/' : 'https://player.twitch.tv/') + q;
-  }
+  // Inside Discord only the mapped proxy works (/.proxy/twitch -> player.twitch.tv); Discord blocks direct outside addresses. A plain browser (testing) goes direct.
+  // The line under the player says what the proxy answered, so a blank player can be told apart: mapping missing, Twitch refusing, or the player's own files not loading.
+  var base = inDiscord ? '/.proxy/twitch/' : 'https://player.twitch.tv/';
+  function status(t) { $('blocked').textContent = t; }
   if (inDiscord && window.matchMedia && matchMedia('(pointer: coarse)').matches) document.documentElement.classList.add('phone');
   if (!channel) { $('player').hidden = true; $('none').hidden = false; }
   else {
-    load();
-    if (ways.length > 1) { $('retry').hidden = false; $('retry').onclick = function () { way = (way + 1) % ways.length; $('blocked').textContent = ''; load(); $('hint').textContent = 'Trying the ' + ways[way] + ' way…'; }; }
-    document.addEventListener('securitypolicyviolation', function (e) { var t = e.blockedURI || e.violatedDirective; $('blocked').textContent = 'Blocked by Discord: ' + String(t).slice(0, 80); });
+    var q = '?channel=' + encodeURIComponent(channel) + '&parent=' + encodeURIComponent(location.hostname) + '&autoplay=true&muted=true';
+    $('player').src = base + q;
+    if (inDiscord && window.fetch) fetch(base + q, { credentials: 'omit' }).then(function (r) {
+      return r.text().then(function (body) {
+        var rel = (body.match(/(?:src|href)=["']\/(?!\/)/g) || []).length;
+        status('Proxy answered ' + r.status + (rel ? ' · the player asks for ' + rel + ' files by root path (they resolve on this Activity, not Twitch)' : ''));
+      });
+    }).catch(function (e) { status('Proxy could not be reached: ' + String(e && e.message || e).slice(0, 60)); });
+    document.addEventListener('securitypolicyviolation', function (e) { status('Blocked by Discord: ' + (e.effectiveDirective || e.violatedDirective || '') + ' ' + String(e.blockedURI || 'unknown address').slice(0, 70)); });
   }
 
   function open(url) { if (sdk) sdk.commands.openExternalLink({ url: url }).catch(function () {}); else window.open(url, '_blank', 'noopener'); }
