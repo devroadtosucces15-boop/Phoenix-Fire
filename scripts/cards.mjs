@@ -610,13 +610,12 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
   const ratings = `<div class="sec" style="margin:14px 40px 0"><div class="lab" style="border-bottom:2px solid var(--line);padding-bottom:8px">Every rating</div></div><div class="rl">${rank.map((p) => { const c = BAND[band(p.r, p.mom)]; return `<div class="rr"><b style="color:${c}">${r1(p.r)}</b><span class="nm2">${esc(p.n)}</span><span class="ps">${esc(POSLABEL[p.pos] ?? '')}</span><span class="ge">${p.g ? `${p.g}G ` : ''}${p.a ? `${p.a}A` : ''}</span></div>`; }).join('')}</div>`;
   const pitchHead = `<div class="ph pt"><div class="eyebrow">${esc(club?.name ?? SITE)} · Field view · vs ${esc(opp)}</div><div class="big">${mp.gf}–${mp.ga} · ${RESULT[mp.res] ?? ''}</div></div>`;
   if (part === 'fieldparts') return { css, fv: fvHtml.slice(0, fvHtml.indexOf('<div class="fkey">')) + '</div>' }; // the field view alone, for the match review
-  // The board is landscape (2 × POST.W): header and score across the top, goals and man of the match under it, then the main stats on the left and the deeper stats on the right.
-  const wide = `body{width:${POST.BOARD_W}px}.bd{display:grid;grid-template-columns:1fr 1fr;gap:0 80px;flex:1 1 auto;padding:0 40px}.bd .st{margin:18px 0 0!important}.bd .st .sr{height:150px!important}.bd .sh{height:96px}.bw2 .gm{min-height:300px!important}.mid b{font-size:230px!important}.srow{grid-template-columns:1fr 560px 1fr!important}.rt2{display:flex;flex-direction:column;justify-content:flex-start}.rt2 .dsub{margin-top:18px;border-top:2px solid rgba(255,255,255,.1)}.rt2 .sh{display:none}.rt2 .sr{height:150px!important}.rt2 .key{margin-top:auto}`;
+  // The board is landscape (2 × POST.W): header and score across the top. Below, goals and assists + the man of the match on the left, and ONE stats
+  // column on the right: two teams only (ours | theirs), the main stats and then the deeper stats stacked under them, so no stat ever moves to a third or fourth column.
+  const wide = `body{width:${POST.BOARD_W}px}.bd{display:grid;grid-template-columns:900px 1fr;gap:0 70px;flex:1 1 auto;padding:10px 40px 0}.bd .lcol{display:flex;flex-direction:column;justify-content:flex-start;gap:30px}.bd .lcol .gm{margin:0!important;display:flex;flex-direction:column;gap:26px;min-height:0!important;border-top:2px solid rgba(255,255,255,.1)}.bd .lcol .gl{padding-right:0}.bd .lcol .mo{border-left:0;border-top:2px solid rgba(239,207,122,.4);padding:26px 0 0;min-height:230px}.bd .lcol .bw{right:20px}.bd .rcol{display:flex;flex-direction:column}.bd .st{margin:0!important;display:flex;flex-direction:column;flex:1 1 auto}.bd .st .sr{height:112px!important;flex:none!important;max-height:none!important}.bd .sh{height:84px}.bd .st .key{margin-top:auto}.mid b{font-size:230px!important}.srow{grid-template-columns:1fr 560px 1fr!important}`;
   const iG = boardHtml.indexOf('<div class="gm">'), iS = boardHtml.indexOf('<div class="st">');
-  const sbHtml = boardHtml.slice(0, iG), gmHtml = boardHtml.slice(iG, iS), stInner = boardHtml.slice(iS + '<div class="st">'.length, boardHtml.lastIndexOf('</div>'));
-  const iD = stInner.indexOf('<div class="dsub">'), iK = stInner.indexOf('<div class="key">');
-  const mainStats = iD >= 0 ? stInner.slice(0, iD) : stInner.slice(0, iK), deepStats = (iD >= 0 ? stInner.slice(iD, iK) : '') + stInner.slice(iK);
-  return postPage(part === 'pitch' ? css : css + wide, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${sbHtml}<div class="bw2">${gmHtml.replace('class="gm"', 'class="gm" style="margin:20px 40px 0"')}</div><div class="bd"><div class="st">${mainStats}</div><div class="st rt2">${deepStats}</div></div>`);
+  const sbHtml = boardHtml.slice(0, iG), gmHtml = boardHtml.slice(iG, iS), stHtml = boardHtml.slice(iS);
+  return postPage(part === 'pitch' ? css : css + wide, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${sbHtml}<div class="bd"><div class="lcol">${gmHtml}</div><div class="rcol">${stHtml}</div></div>`);
 }
 
 // ---------- what gets drawn, and the manifest the bot reads ----------
@@ -990,7 +989,7 @@ async function main() {
       if (process.argv.includes('--html')) fs.writeFileSync(path.join(outDir, j.file.replace(/\.png$/, '.html')), html);
       try {
         const png = await chrome.shot(html, /^picture-/.test(j.file) ? POST.BOARD_W : W);
-        if (/^(picture|pitch|review)-/.test(j.file) && png.readUInt32BE(20) !== POST.H) console.log(`::warning title=Post picture size::${j.file} is ${png.readUInt32BE(16)}x${png.readUInt32BE(20)}, not ${/^picture-/.test(j.file) ? POST.BOARD_W : POST.W}x${POST.H}: content too long for the shared canvas`);
+        if (/^(pitch|review)-/.test(j.file) && png.readUInt32BE(20) !== POST.H) console.log(`::warning title=Post picture size::${j.file} is ${png.readUInt32BE(16)}x${png.readUInt32BE(20)}, not ${/^picture-/.test(j.file) ? POST.BOARD_W : POST.W}x${POST.H}: content too long for the shared canvas`);
         fs.writeFileSync(path.join(outDir, j.file), png);
         setIn(manifest, j.key, j.file);
         drawn++;

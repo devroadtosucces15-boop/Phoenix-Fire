@@ -135,10 +135,11 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
         footer: { text: `${tag.label} · ${kind} match` },
       } };
     });
-  // A "role" equal to the server's own ID is @everyone: <@&id> renders as "@@everyone" and pings nobody, so say it the way Discord expects.
+  // Result posts never ping @everyone or @here. A "role" equal to the server's own ID IS @everyone, so it is treated as no ping; a real role still pings.
   const everyone = !!settings.pingRole && settings.pingRole === settings.guildId;
-  const pingContent = everyone ? '@everyone' : settings.pingRole ? `<@&${settings.pingRole}>` : undefined;
-  const allowedMentions = everyone ? { parse: ['everyone'] } : settings.pingRole ? { roles: [settings.pingRole] } : { parse: [] };
+  const realRole = settings.pingRole && !everyone ? settings.pingRole : null;
+  const pingContent = realRole ? `<@&${realRole}>` : undefined;
+  const allowedMentions = realRole ? { roles: [realRole] } : { parse: [] };
   const missing = []; // destinations that did not resolve – reported, never replaced by another channel
   const report = (src, why) => { missing.push({ club: src, purpose: 'match_results', why }); console.warn(`Result post skipped for club ${src}: ${why}`); };
   if (interactive) {
