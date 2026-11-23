@@ -25,6 +25,10 @@ A bot cannot open an Activity by itself: Discord only launches one from a person
 3. Give the bot Manage Channels, Create Invite and Set Voice Channel Status. Add the club's Twitch source with `/streamalerts add` (source Main club) so the go-live check runs.
 4. When live, join the room, run `/watchlive` (or press the card's button).
 
+## Proxy only (2026-11-23)
+
+Inside Discord the page uses only the mapped proxy (`/.proxy/twitch/` to `player.twitch.tv`); the "Try another way" button and the direct address are gone, because Discord blocks direct outside addresses. A plain browser (testing) still goes direct. A line under the player reports what the proxy answered (HTTP status, and how many files the player asks for by root path, which would resolve on this Activity instead of Twitch) or what Discord blocked (directive and address). The owner saw "Blocked by Discord" with no address, so the line now names the directive too.
+
 ## Not verified
 
 The Twitch player was checked in a normal browser only. Inside Discord the player page loads further scripts from other Twitch hosts, and Discord's sandbox blocks any

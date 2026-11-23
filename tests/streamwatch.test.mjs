@@ -131,6 +131,8 @@ t('/watchlive is registered with no owner-only permission bit', (() => { const s
 t('/setup channel lets the owner pick a voice channel or category for stream_watch', /channel_types: \[0, 5, 2, 4\]/.test(fs.readFileSync(ROOT + 'bot/commanddefs.js', 'utf8')));
 for (const f of ['index.html', 'activity.js', 'activity.css', 'activity-config.js']) t(`activity/${f}: no NOREX name, red or blue-black`, !/norex|#c8352c|#080b11/i.test(fs.readFileSync(ROOT + 'next/stream/activity/' + f, 'utf8')));
 t('the Activity reads its channel from config (no channel name in the page code)', !/phoenixfire/i.test(fs.readFileSync(ROOT + 'next/stream/activity/activity.js', 'utf8')) && /channel: ''/.test(fs.readFileSync(ROOT + 'next/stream/activity/activity-config.js', 'utf8')));
-t('inside Discord the player goes through the mapped /.proxy/twitch path', /\/\.proxy\/twitch\//.test(fs.readFileSync(ROOT + 'next/stream/activity/activity.js', 'utf8')));
+const actJs = fs.readFileSync(ROOT + 'next/stream/activity/activity.js', 'utf8');
+t('inside Discord the player goes through the mapped /.proxy/twitch path', /\/\.proxy\/twitch\//.test(actJs));
+t('inside Discord there is only the proxy way (no direct switch, no retry button)', !/retry|ways\b/.test(actJs) && !/id="retry"/.test(fs.readFileSync(ROOT + 'next/stream/activity/index.html', 'utf8')) && /inDiscord \? '\/\.proxy\/twitch\/' : 'https:\/\/player\.twitch\.tv\//.test(actJs));
 if (fs.existsSync(ROOT + 'site/phoenix/activity/activity-config.js')) t('built: the Activity channel is the one in config.json streams.twitch', fs.readFileSync(ROOT + 'site/phoenix/activity/activity-config.js', 'utf8').includes(JSON.parse(fs.readFileSync(ROOT + 'config.json', 'utf8')).streams.twitch.match(/twitch\.tv\/([A-Za-z0-9_]+)/)[1].toLowerCase()));
 done();
