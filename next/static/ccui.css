@@ -35,11 +35,14 @@
 .cu-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start}
 .cu-card{position:relative;min-width:0;border:1px solid var(--cu-line);border-radius:var(--cu-r);background:linear-gradient(180deg,var(--cx-p2),var(--cx-p1));overflow:hidden;
   transition:border-color var(--cu-t) var(--cu-ease),box-shadow var(--cu-t) var(--cu-ease),background var(--cu-t) var(--cu-ease)}
-.cu-card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--cx-mu);opacity:.35;transition:background var(--cu-t),opacity var(--cu-t),box-shadow var(--cu-t)}
-.cu-card.is-on::before{background:var(--cu-a);opacity:1;box-shadow:0 0 14px var(--cu-glow)}
+/* state shows in the icon tile (a status dot) and a faint tint, not in a bar down the side */
+.cu-ic{position:relative}
+.cu-ic::after{content:"";position:absolute;right:-3px;top:-3px;width:11px;height:11px;border-radius:50%;background:var(--cx-mu);border:2px solid #14100c;opacity:.5;transition:background var(--cu-t),opacity var(--cu-t),box-shadow var(--cu-t)}
+.cu-card.is-on .cu-ic::after{background:var(--cx-ok);opacity:1;box-shadow:0 0 10px var(--cx-ok)}
+.cu-card.is-plain .cu-ic::after{display:none}
+.cu-card.is-on{background:linear-gradient(180deg,color-mix(in srgb,var(--cx-a) 8%,var(--cx-p2)),var(--cx-p1))}
 .cu-card:hover{border-color:color-mix(in srgb,var(--cx-a) 40%,var(--cu-line))}
 .cu-card[data-open]{border-color:color-mix(in srgb,var(--cx-a) 55%,var(--cu-line));box-shadow:0 18px 40px -22px rgba(0,0,0,.8),0 0 0 1px color-mix(in srgb,var(--cx-a) 18%,transparent)}
-.cu-card.is-plain::before{background:var(--cx-a2);opacity:.7}
 .cu-card.is-off .cu-ic,.cu-card.is-off .cu-t{opacity:.62}
 .cu-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:4px 12px;align-items:center;padding:14px 12px 14px 18px}
 .cu-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--cx-a) 14%,transparent);border:1px solid color-mix(in srgb,var(--cx-a) 28%,transparent);font-size:20px;line-height:1;transition:opacity var(--cu-t),transform .3s var(--cu-spring)}

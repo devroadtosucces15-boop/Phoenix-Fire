@@ -26,6 +26,7 @@ t('style: the accordion animates height with grid rows, the switch moves with th
 t('style: motion is off for prefers-reduced-motion and for the site Motion setting (off and calm)', /prefers-reduced-motion:reduce/.test(css) && /html\[data-motion=off\]/.test(css) && /html\[data-motion=calm\]/.test(css));
 t('style: every touch target is 40px or more (switch, drop-down arrow, fields, buttons, pills)', /\.cu-x\{[^}]*width:44px;height:44px/.test(css) && /min-height:46px/.test(css) && /\.cc-sw\{[^}]*height:32px/.test(css) && /min-height:44px/.test(css) && /\.cc-lv[^{]*\{[^}]*min-height:40px/.test(css));
 t('style: phone first, two columns from 760px, cards in two columns from 1100px with an open card on the full row', /@media\(min-width:760px\)/.test(css) && /@media\(min-width:1100px\)\{[^@]*\.cu-grid\{grid-template-columns:repeat\(2/.test(css) && /\.cu-card\[data-open\]\{grid-column:1\/-1\}/.test(css));
+t('style: no side-tab accent bar on a card (state is a dot and a tint)', !/\.cu-card[^{]*::before\{[^}]*(left:0|width:3px)/.test(css) && /\.cu-ic::after/.test(css));
 t('style: no left panel and no drawer anywhere in the kit', !/translateX\(-/.test(css) && !/\.cx-side|drawer/.test(css));
 t('style: tables turn into labelled row cards (cu-rows everywhere, cc-tbl on phones)', /\.cu-rows td\[data-l\]::before/.test(css) && /data-l/.test(js));
 
