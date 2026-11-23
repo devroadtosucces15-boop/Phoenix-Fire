@@ -16,14 +16,23 @@
   if (!channel) { $('player').hidden = true; $('none').hidden = false; }
   else {
     var q = '?channel=' + encodeURIComponent(channel) + '&parent=' + encodeURIComponent(location.hostname) + '&autoplay=true&muted=true';
+    var log = [], t0 = Date.now(); // every step is written on screen, so a blank player says how far it got (read the line in a screenshot)
+    function note(s) { log.push(Math.round((Date.now() - t0) / 100) / 10 + 's ' + s); status(log.slice(-4).join(' · ')); }
+    note('page ' + (inDiscord ? 'in Discord' : 'in a browser'));
+    $('player').addEventListener('load', function () { note('player frame loaded'); });
     $('player').src = base + q;
-    if (inDiscord && window.fetch) fetch(base + q, { credentials: 'omit' }).then(function (r) {
-      return r.text().then(function (body) {
-        var rel = (body.match(/(?:src|href)=["']\/(?!\/)/g) || []).length;
-        status('Proxy answered ' + r.status + (rel ? ' · the player asks for ' + rel + ' files by root path (they resolve on this Activity, not Twitch)' : ''));
-      });
-    }).catch(function (e) { status('Proxy could not be reached: ' + String(e && e.message || e).slice(0, 60)); });
-    document.addEventListener('securitypolicyviolation', function (e) { status('Blocked by Discord: ' + (e.effectiveDirective || e.violatedDirective || '') + ' ' + String(e.blockedURI || 'unknown address').slice(0, 70)); });
+    if (inDiscord && window.fetch) {
+      note('asking the proxy');
+      var ctl = window.AbortController ? new AbortController() : null, timer = setTimeout(function () { note('proxy gave no answer in 8s'); if (ctl) ctl.abort(); }, 8000);
+      fetch(base + q, { credentials: 'omit', signal: ctl ? ctl.signal : undefined }).then(function (r) {
+        clearTimeout(timer);
+        return r.text().then(function (body) {
+          var rel = (body.match(/(?:src|href)=["']\/(?!\/)/g) || []).length;
+          note('proxy ' + r.status + ' ' + (r.headers.get('content-type') || '').split(';')[0] + ' ' + body.length + ' bytes' + (rel ? ', ' + rel + ' root-path files' : ''));
+        });
+      }).catch(function (e) { clearTimeout(timer); note('proxy error ' + String(e && e.message || e).slice(0, 40)); });
+    }
+    document.addEventListener('securitypolicyviolation', function (e) { note('Discord blocked ' + (e.effectiveDirective || e.violatedDirective || '') + ' ' + String(e.blockedURI || 'unknown').slice(0, 60)); });
   }
 
   function open(url) { if (sdk) sdk.commands.openExternalLink({ url: url }).catch(function () {}); else window.open(url, '_blank', 'noopener'); }
