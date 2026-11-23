@@ -89,7 +89,7 @@ ${s === 'failed' ? '<p class="small">A manager has been told and can try again. 
 ${s === 'approved' || s === 'generating' || s === 'pending' ? `<p class="small muted">⏱️ ${r?.queue ? `Place ${r.queue.position} in line, about ${r.queue.etaMinutes} min once a manager approves it.` : 'Usually a few minutes.'}${s === 'pending' ? '' : ' This page checks again by itself.'}</p>` : ''}
 ${!open && s === 'done' ? `<p class="small muted">Your next request opens on ${esc(nextFirst())}.</p>` : ''}
 ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto ? `<div class="cs-mine">${fig('photo', r.id, 'The photo you sent')}</div>` : ''}
-<div class="sq-acts">${s === 'pending' ? '<button type="button" class="btn ghost" data-cscancel>✖ Cancel request</button>' : ''}${waiting ? `<a class="btn ghost" href="staff-artwork.html">📥 ${waiting} waiting for staff ›</a>` : ''}</div></div>`; };
+<div class="sq-acts">${s === 'pending' ? '<button type="button" class="btn ghost" data-cscancel>✖ Cancel request</button>' : ''}${waiting ? `<a class="btn ghost" href="staff-controlcenter.html?tool=artwork">📥 ${waiting} waiting for staff ›</a>` : ''}</div></div>`; };
   // No preview before approval: the card only shows once the finished portrait exists (kit number + export live here).
   const previewHtml = () => { const r = R?.request; if (!(r?.status === 'done' && r.hasPortrait)) return '';
     return `<div class="panel cs-prev"><div class="eyebrow">👀 Your player card</div><div class="cs-card" id="cs-card">${cardBox(true)}</div>
@@ -125,7 +125,7 @@ ${r && ['pending', 'approved', 'generating', 'failed'].includes(s) && r.hasPhoto
     try { const on = flagOn('cardStudio');
       const [t, r] = await Promise.all([on ? A.call('/api/cards/templates') : null, on ? A.call('/api/cards/request') : null]);
       T = t; R = r; waiting = 0;
-      if (T?.manage) A.call('/api/cards/requests').then((q) => { const n = q.requests.filter((x) => x.status === 'pending' || x.status === 'review').length; if (n !== waiting) { waiting = n; const a = $('.cs-stat .sq-acts', meEl); if (a && n) { a.insertAdjacentHTML('beforeend', `<a class="btn ghost" href="staff-artwork.html">📥 ${n} waiting for staff ›</a>`); } } }).catch(() => {});
+      if (T?.manage) A.call('/api/cards/requests').then((q) => { const n = q.requests.filter((x) => x.status === 'pending' || x.status === 'review').length; if (n !== waiting) { waiting = n; const a = $('.cs-stat .sq-acts', meEl); if (a && n) { a.insertAdjacentHTML('beforeend', `<a class="btn ghost" href="staff-controlcenter.html?tool=artwork">📥 ${n} waiting for staff ›</a>`); } } }).catch(() => {});
       for (const k of ['bg', 'pose']) if (sel[k] && !(T?.[k === 'bg' ? 'backgrounds' : 'poses'] || []).some((x) => x.id === sel[k] && !x.locked)) sel[k] = null;
       paintMe(!quiet);
     } catch (e) { fail(meEl, 'Card Studio', e); }

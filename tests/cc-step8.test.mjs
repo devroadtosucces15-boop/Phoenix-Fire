@@ -27,10 +27,10 @@ t('anti-dup: a retired page that is also a tool address fails (it would be liste
 t('anti-dup: every icon of every tool is in the one sprite', MAN.TOOLS.every((x) => ICON_IDS.includes(x.icon)));
 t('anti-dup: the hub tiles and the dock lists are the same tools, each once', (() => { const hub = MAN.hubGroups(false).concat(MAN.hubGroups(true)).flatMap(([, , , x]) => x.map((r) => r[0])), dock = MAN.dockGroups(false).concat(MAN.dockGroups(true)).flatMap(([, x]) => x.map((r) => r[0])); return dupes(hub).length === 0 && dupes(dock).length === 0 && hub.sort().join() === dock.sort().join(); })());
 t('anti-dup: no floating tool, dock or Boardroom script keeps a hand-copied list of staff pages (they read the manifest)', ['next/static/ownerfab.js', 'next/static/navigator.js', 'next/static/gear.js', 'next/static/boardroom.js', 'next/static/dock.js', 'next/static/tools.js'].every((f) => !/['"`]staff-(desk|tools|content|schedule|dugout|boardroom|artwork|insights|switches|health|announce|audit|halloffame|medals|backup|organization)\.html/.test(src(f).replace(/\/\/.*$/gm, ''))));
-t('anti-dup: hub.mjs builds its staff tiles from the manifest and holds no tile list of its own', /hubGroups\(false\)/.test(src('next/pages/hub.mjs')) && !/BR_TABS/.test(src('next/pages/hub.mjs')));
+t('anti-dup: hub.mjs builds the decks and tool rows from the manifest and holds no tile list of its own', /SECTIONS\.map/.test(src('next/pages/hub.mjs')) && /TOOLS/.test(src('next/pages/hub.mjs')) && !/BR_TABS/.test(src('next/pages/hub.mjs')) && !/\['staff-(schedule|dugout|desk)\.html'/.test(src('next/pages/hub.mjs')));
 t('anti-dup: the staff pages the shell knows are one list (navigator, gear and the owner button read staffnav.js, a slice of the same manifest)', ['ownerfab.js', 'navigator.js', 'gear.js'].every((f) => read(f).includes('PFStaffNav')) && read('staffnav.js') === MAN.navJs() && JSON.parse(read('staffnav.js').replace(/^window\.PFStaffNav=|;\s*$/g, '')).tools.length === MAN.TOOLS.length);
 t('anti-dup: one Control Center tile in the dock (Manager list), one Boardroom tile (owner list)', (() => { const d = read('dock.js'), staff = d.match(/const STAFF = [\s\S]*?\];\n/)[0], owner = d.match(/const OWNER = [\s\S]*?\];\n/)[0]; return (staff.match(/'staff-controlcenter\.html', '🎛️'/g) || []).length === 1 && !/'staff-controlcenter\.html', '🎛️'/.test(owner) && (owner.match(/Boardroom/g) || []).length === 1; })());
-t('anti-dup: the sidebar lists every manifest tool once; owner-only tools stay hidden until the session says owner', MAN.TOOLS.every((x) => (read('staff-controlcenter.html').match(new RegExp(`data-tool="${x.id}"`, 'g')) || []).length === 1) && MAN.TOOLS.filter((x) => x.owner).every((x) => new RegExp(`<li data-owner hidden><a class="cx-nav" href="[^"]*" data-tool="${x.id}"`).test(read('staff-controlcenter.html'))));
+t('anti-dup: the tool rows list every manifest tool once (Home is the Overview deck); owner-only tools stay hidden until the session says owner', MAN.TOOLS.filter((x) => x.id !== 'home').every((x) => (read('staff-controlcenter.html').match(new RegExp(`data-tool="${x.id}"`, 'g')) || []).length === 1) && MAN.TOOLS.filter((x) => x.owner).every((x) => new RegExp(`<a class="cx-nav" href="[^"]*" data-tool="${x.id}"[^>]*data-owner`).test(read('staff-controlcenter.html'))));
 
 // ---------- 2. every old URL lands on the right Control Center view ----------
 const OLD = [
@@ -42,7 +42,7 @@ const OLD = [
 ];
 const landed = (file, hash) => { // run the page's own redirect script with a fake location, return where it sends the visitor
   const h = read(file), code = h.match(/<script>(\(function\(\)\{var m=[\s\S]*?\}\)\(\))<\/script>/)?.[1]; if (!code) return null;
-  let to = null; vm.runInNewContext(code, { location: { hash: hash ? '#' + hash : '', replace: (u) => { to = u; } } }); return to;
+  let to = null; vm.runInNewContext(code, { URLSearchParams, location: { hash: hash ? '#' + hash : '', search: '', replace: (u) => { to = u; } } }); return to;
 };
 for (const [file, hash, id] of OLD) {
   const tool = MAN.TOOLS.find((x) => x.id === id);

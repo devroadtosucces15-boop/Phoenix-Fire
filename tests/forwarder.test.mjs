@@ -19,7 +19,7 @@ for (const [k, target] of Object.entries(map)) {
   if (!fs.existsSync(path.join(out, page))) { bad.push(`${k} -> ${target} (no page)`); continue; }
   if (!id || id === 'bell') continue; // #bell: the header's own notifications panel opens on it (header.js)
   const s = read(page);
-  if (!(s.includes(`id="${id}"`) || s.includes(`data-dl="${id}"`) || s.includes(`data-dl~="${id}`))) bad.push(`${k} -> ${target} (no id)`);
+  if (!(s.includes(`id="${id}"`) || s.includes(`data-dl="${id}"`) || s.includes(`data-dl~="${id}`) || [...s.matchAll(/data-dl="([^"]*)"/g)].some((m) => m[1].split(" ").includes(id)))) bad.push(`${k} -> ${target} (no id)`);
 }
 t('every forwarder target page and anchor exists in the build' + (bad.length ? ': ' + bad.join('; ') : ''), bad.length === 0);
 t('unknown hashes and the claim flow stay on members.html (the forwarder returns before replace)', html.includes('if(!o.call(m,h))return;') && html.includes('location.replace('));

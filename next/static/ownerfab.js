@@ -4,7 +4,7 @@
 (() => {
   const d = document, w = window;
   // addresses come from the staff manifest (next/lib/staffmanifest.mjs, staffmanifest.js): a tool is named by id here, never by page
-  const MAN = w.PFStaffNav || { tools: [] }, href = (id) => (MAN.tools.find((t) => t.id === id) || {}).href || 'staff.html';
+  const MAN = w.PFStaffNav || { tools: [] }, href = (id) => (MAN.tools.find((t) => t.id === id) || {}).href || 'staff-controlcenter.html';
   const QUEUES = [['claims', '🪪', 'Player claims', href('desk')], ['cards', '🎨', 'Card Studio photos', href('artwork')], ['rush', '⚡', 'Rush results', href('desk')], ['requests', '📨', 'Requests', href('desk')], ['ideas', '💡', 'Ideas', href('content')]];
   const LINKS = [['boardroom', 'Club health, recruitment'], ['access', 'Who sees what'], ['health', 'Site, bot and builds'], ['announce', 'Post to the club']].map(([id, sub]) => { const t = MAN.tools.find((x) => x.id === id) || { emoji: '🎛️', label: id }; return [t.emoji, t.label, sub, href(id)]; });
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);

@@ -20,6 +20,8 @@ export const ROUTES = [
   ['POST', prefix('/api/controlcenter/settings'), 'settings'], // the area's own level (owner for `bot`) is checked by saveArea on top
   ['GET', exact('/api/controlcenter/audit'), 'audit'],
   ['GET', exact('/api/controlcenter/discord'), 'settings'],
+  ['GET', exact('/api/controlcenter/requests'), 'home'], // the counts on the Overview and the deck badges (bot/ccrequests.js)
+  ['GET', exact('/api/controlcenter/media'), 'media'], ['POST', exact('/api/controlcenter/media/remove'), 'media'], // every GIF and highlight clip, and taking one down
   ['POST', exact('/api/controlcenter/create'), 'settings'],
   // the moved settings routes: still in the Worker, still owner-only, now stated by the same matrix
   ['GET', exact('/api/bot/settings'), 'settings', 'owner'], ['POST', exact('/api/bot/settings'), 'settings', 'owner'],

@@ -9,7 +9,7 @@ export const HASH_MAP = {
   schedule: 'hub-matchnight.html#mn-week', events: 'hub-matchnight.html#mn-week', rsvp: 'hub-matchnight.html#mn-week', motm: 'hub-matchnight.html#mn-motm', vote: 'hub-matchnight.html#mn-motm', rush: 'hub-matchnight.html#mn-rush',
   awards: 'hub-squad.html#sq-awards', predict: 'hub-squad.html#sq-predict', squads: 'hub-squad.html#sq-squads', teamup: 'hub-squad.html#sq-team', recs: 'hub-squad.html#sq-team', scout: 'hub-squad.html#sq-scout',
   ideas: 'hub-clubhouse.html#ch-ideas', suggestions: 'hub-clubhouse.html#ch-ideas', feedback: 'hub-clubhouse.html#ch-feedback', clubhouse: 'hub-clubhouse.html',
-  docs: 'hub-handbook.html#hb-docs', handbook: 'hub-handbook.html', manager: 'staff.html', portal: 'staff.html', 'portal-reports': 'staff.html', trials: 'staff-desk.html',
+  docs: 'hub-handbook.html#hb-docs', handbook: 'hub-handbook.html', manager: 'staff-controlcenter.html', portal: 'staff-controlcenter.html', 'portal-reports': 'staff-controlcenter.html#reports', trials: 'staff-controlcenter.html#desk',
 };
 // members.html#<prefix>-<id> (matches by prefix: schedule-12 → the week view)
 export const HASH_PREFIX = { schedule: 'hub-matchnight.html#mn-week', event: 'hub-matchnight.html#mn-week' };

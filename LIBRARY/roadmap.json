@@ -1481,6 +1481,14 @@
     {
       "date": "2026-11-18",
       "text": "Friendlies: the match picture header says LEAGUE for a friendly (scripts/cards.mjs matchPicture eyebrow uses mp.mode), and none of the 29 archived friendlies carries EA event counters, so decoded stats exist only for league and playoff games. Seen in the stats preview artifact."
+    },
+    {
+      "date": "2026-11-23",
+      "text": "Builds page still has a Managers box (feature or unpost another member's build, /api/probuilds/feature and /unpost, next/static/builds.js): move it into a Control Center tool (found in the Control Center deck layout work, see PLANNING/CONTROL-CENTER.md)."
+    },
+    {
+      "date": "2026-11-23",
+      "text": "Failing before the deck layout work (not caused by it): tests/layout-r2 R35 (header icon size), next-quality perf (scripts over 330 KB average), engagement-points (weekly pay on setting availability), events calendar, lfg muted member, rushscan second save, design renderer (needs Chrome)."
     }
   ]
 }

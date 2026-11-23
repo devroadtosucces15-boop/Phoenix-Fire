@@ -351,7 +351,7 @@ export async function pointsRoute(p, method, body, me, env) {
     if (price.status === 'placeholder') return fail('That prize is only an example for now: it cannot be bought yet.', 409);
     const r = await spendPoints(env, me.u, price.cost, price.name, { by: me });
     if (r.error) return fail(r.error, r.status);
-    await notifyManagers(env, { type: 'queue', title: `${me.n ?? 'A member'} spent ${price.cost} points on ${price.name}`, body: 'Recorded in the points ledger. Hand it over, then it is done.', link: 'staff-insights.html' }).catch(() => {});
+    await notifyManagers(env, { type: 'queue', title: `${me.n ?? 'A member'} spent ${price.cost} points on ${price.name}`, body: 'Recorded in the points ledger. Hand it over, then it is done.', link: 'staff-controlcenter.html#settings' }).catch(() => {});
     return json({ ...r, item: price.name });
   }
   if (method !== 'GET') return fail('Not found', 404);
