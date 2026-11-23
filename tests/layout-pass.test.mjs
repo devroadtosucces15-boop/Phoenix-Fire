@@ -54,7 +54,7 @@ t('R24: the staff home stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.t
 // PF-009 R25 (owner approved 2026-11-16): Boardroom link tiles are an equal auto-fill grid; the Switches accordion sits in 2 columns from 1100 with the counts beside the title
 const brj = read('controlcenter.js'); // the grouped switches now live in the Control Center's Site access panel
 t('R25: Boardroom link tiles use an equal auto-fill grid (no auto-fit stretch)', /\.br-tools\{grid-template-columns:repeat\(auto-fill,minmax\(min\(100%,190px\),1fr\)\)\}/.test(lay) && !/\.br-tools\{grid-template-columns:repeat\(auto-fit/.test(lay));
-t('R25: Switches accordion groups sit in a .br-grps 2-column grid from 1100, counts next to the title', brj.includes('class="br-grps"') && /@media\(min-width:1100px\)\{\.br-grps\{display:grid;grid-template-columns:repeat\(2,/.test(lay) && /\.br-grp>summary\{justify-content:flex-start\}/.test(lay) && /\.br-grp>summary:after\{margin-left:auto\}/.test(lay));
+t('R25 (control cards): site access groups are collapsible, counts next to the title, and the cards sit in a 2-column grid from 1100', read('controlcenter.js').includes('class="cu-group"') && /@media\(min-width:1100px\)\{[^@]*\.cu-grid\{grid-template-columns:repeat\(2,/.test(read('ccui.css')) && /\.cu-group>summary small\{margin-left:auto/.test(read('ccui.css')));
 t('R25: the Boardroom output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-boardroom.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
 // PF-009 R26 (owner approved 2026-11-16): Dugout is three equal-height columns from 1100 (roster / pitch / ready-check); phone stays one column
 const dgj = read('dugout.js');

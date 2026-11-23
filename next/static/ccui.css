@@ -1,0 +1,208 @@
+/* Control Center UI kit (2026-11-23). ONE look for every control in the Control Center: a card with an icon, a name, what it does, status chips, an animated switch,
+   and a drop-down panel (the accordion) that holds the variables as fields, pickers and chips. Everything is scoped under .cx so no other page changes.
+   Colours come from the shell tokens (--cx-*, which read the Phoenix theme), never a hardcoded club colour. Motion uses the site curves (--ease, --spring) and is
+   switched off by prefers-reduced-motion and by the site Motion setting (html[data-motion=off|calm]).
+   Techniques taken from PLANNING/RESOURCES.md: shadcn Switch / Accordion / Field structure, Uiverse switch feel, Emil Kowalski timing (ease-out 150-250 ms, springs only on
+   state changes), Vaul-style rounded sheets for the pickers, APG disclosure semantics (a real button with aria-expanded). Mobile first: the base rules are the phone layout. */
+.cx{--cu-r:16px;--cu-line:var(--cx-line);--cu-a:var(--cx-a);--cu-a2:var(--cx-a2);--cu-t:.22s;--cu-ease:var(--ease,cubic-bezier(.2,.9,.2,1));--cu-spring:var(--spring,cubic-bezier(.34,1.56,.64,1));
+  --cu-on:color-mix(in srgb,var(--cx-a) 22%,transparent);--cu-glow:var(--cx-glow,rgba(232,116,26,.38))}
+
+/* ---------- the toolbar: search, segmented state filter, app select ---------- */
+.cu-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 16px}
+.cu-search{position:relative;flex:1 1 240px;min-width:0}
+.cu-search svg{position:absolute;left:14px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--cx-mu);pointer-events:none}
+.cu-search input{width:100%;padding-left:42px!important}
+.cu-count{font:600 12.5px/1 var(--body,inherit);color:var(--cx-mu);white-space:nowrap}
+.cu-seg{display:inline-flex;padding:4px;border:1px solid var(--cu-line);border-radius:14px;background:var(--cx-p1);gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.cu-seg::-webkit-scrollbar{display:none}
+.cu-seg button{position:relative;min-height:38px;padding:0 14px;border:0;border-radius:10px;background:transparent;color:var(--cx-mu);font:600 13px/1 var(--body,inherit);cursor:pointer;white-space:nowrap;
+  transition:background var(--cu-t) var(--cu-ease),color var(--cu-t) var(--cu-ease),transform .12s var(--cu-ease)}
+.cu-seg button:hover{color:var(--cx-tx)}
+.cu-seg button:active{transform:scale(.96)}
+.cu-seg button[aria-pressed=true],.cu-seg button[aria-checked=true]{background:linear-gradient(180deg,color-mix(in srgb,var(--cx-a) 45%,transparent),color-mix(in srgb,var(--cx-a) 18%,transparent));color:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--cx-a) 55%,transparent),0 6px 16px -8px var(--cu-glow)}
+.cu-seg button:disabled{opacity:.45;cursor:not-allowed}
+
+/* ---------- groups ---------- */
+.cu-groups{display:grid;gap:22px}
+.cu-group>summary,.cu-gh{display:flex;align-items:center;gap:10px;min-height:44px;margin:0 0 10px;padding:0 4px;list-style:none;cursor:pointer;font:700 12.5px/1.2 var(--body,inherit);letter-spacing:.1em;text-transform:uppercase;color:var(--cx-a2)}
+.cu-group>summary::-webkit-details-marker{display:none}
+.cu-group>summary small{margin-left:auto;font:600 12px/1 var(--body,inherit);letter-spacing:0;text-transform:none;color:var(--cx-mu)}
+.cu-group>summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--cx-mu);border-bottom:2px solid var(--cx-mu);transform:rotate(45deg);transition:transform var(--cu-t) var(--cu-ease);margin:-4px 4px 0 6px}
+.cu-group[open]>summary::after{transform:rotate(-135deg);margin-top:4px}
+.cu-group>summary:focus-visible{outline:2px solid var(--cx-a2);outline-offset:2px;border-radius:8px}
+
+/* ---------- the control card ---------- */
+.cu-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start}
+.cu-card{position:relative;min-width:0;border:1px solid var(--cu-line);border-radius:var(--cu-r);background:linear-gradient(180deg,var(--cx-p2),var(--cx-p1));overflow:hidden;
+  transition:border-color var(--cu-t) var(--cu-ease),box-shadow var(--cu-t) var(--cu-ease),background var(--cu-t) var(--cu-ease)}
+.cu-card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--cx-mu);opacity:.35;transition:background var(--cu-t),opacity var(--cu-t),box-shadow var(--cu-t)}
+.cu-card.is-on::before{background:var(--cu-a);opacity:1;box-shadow:0 0 14px var(--cu-glow)}
+.cu-card:hover{border-color:color-mix(in srgb,var(--cx-a) 40%,var(--cu-line))}
+.cu-card[data-open]{border-color:color-mix(in srgb,var(--cx-a) 55%,var(--cu-line));box-shadow:0 18px 40px -22px rgba(0,0,0,.8),0 0 0 1px color-mix(in srgb,var(--cx-a) 18%,transparent)}
+.cu-card.is-plain::before{background:var(--cx-a2);opacity:.7}
+.cu-card.is-off .cu-ic,.cu-card.is-off .cu-t{opacity:.62}
+.cu-h{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:4px 12px;align-items:center;padding:14px 12px 14px 18px}
+.cu-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--cx-a) 14%,transparent);border:1px solid color-mix(in srgb,var(--cx-a) 28%,transparent);font-size:20px;line-height:1;transition:opacity var(--cu-t),transform .3s var(--cu-spring)}
+.cu-card:hover .cu-ic{transform:rotate(-4deg) scale(1.05)}
+.cu-t{min-width:0;display:grid;gap:2px}
+.cu-t b{font:650 15px/1.25 var(--body,inherit);color:var(--cx-tx);overflow-wrap:anywhere}
+.cu-t small{font:500 12.5px/1.35 var(--body,inherit);color:var(--cx-mu);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cu-x{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--cu-line);border-radius:12px;background:var(--cx-p1);color:var(--cx-tx);cursor:pointer;transition:background var(--cu-t),border-color var(--cu-t),transform .12s}
+.cu-x:hover{background:var(--cx-p2);border-color:var(--cx-a2)}.cu-x:active{transform:scale(.94)}
+.cu-x svg{width:18px;height:18px;transition:transform .28s var(--cu-spring)}
+.cu-card[data-open] .cu-x svg{transform:rotate(180deg)}
+.cu-x:focus-visible,.cu-seg button:focus-visible{outline:2px solid var(--cx-a2);outline-offset:2px}
+.cu-chips{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 0;min-width:0}
+.cu-pill{display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:3px 10px;border-radius:99px;border:1px solid var(--cu-line);background:var(--cx-p1);font:600 11.5px/1.4 var(--body,inherit);color:var(--cx-mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cu-pill.hot{background:var(--cu-on);border-color:color-mix(in srgb,var(--cx-a) 55%,transparent);color:#ffd9b8}
+.cu-pill.ok{border-color:color-mix(in srgb,var(--cx-ok) 45%,transparent);color:var(--cx-ok)}
+.cu-pill.bad{border-color:rgba(255,125,114,.5);color:#ff9a90}
+
+/* the drop-down: height animates from 0fr to 1fr, content fades and slides down (no JS timing) */
+.cu-body{display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .28s var(--cu-ease),visibility 0s linear .28s}
+.cu-body>.cu-in{min-height:0;overflow:hidden;padding:0 18px}
+.cu-card[data-open] .cu-body{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .28s var(--cu-ease),visibility 0s}
+.cu-card[data-open][data-anim] .cu-body{animation:cuOpen .3s var(--cu-ease)}
+.cu-card[data-open][data-anim] .cu-in>*{animation:cuRise .32s var(--cu-ease) both}
+.cu-card[data-open][data-anim] .cu-in>*:nth-child(2){animation-delay:.04s}.cu-card[data-open][data-anim] .cu-in>*:nth-child(3){animation-delay:.08s}.cu-card[data-open][data-anim] .cu-in>*:nth-child(4){animation-delay:.12s}
+.cu-card[data-closing] .cu-body{grid-template-rows:0fr;visibility:hidden}
+.cu-card[data-open] .cu-in{padding-bottom:18px;border-top:1px solid var(--cu-line);padding-top:16px;margin:0}
+@keyframes cuOpen{from{grid-template-rows:0fr;opacity:.2}to{grid-template-rows:1fr;opacity:1}}
+@keyframes cuRise{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes cuIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+.cu-enter .cu-card{animation:cuIn .38s var(--cu-ease) both;animation-delay:calc(min(var(--i,0),14)*32ms)}
+
+/* ---------- the switch (every on/off in the Control Center) ---------- */
+.cc-sw{position:relative;display:inline-block;flex:none;width:54px;height:32px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cc-sw input{position:absolute;inset:-6px;opacity:0;width:calc(100% + 12px);height:calc(100% + 12px);margin:0;cursor:pointer;z-index:1}
+.cc-sw span{position:absolute;inset:0;border-radius:99px;background:color-mix(in srgb,var(--cx-mu) 28%,#000);border:1px solid var(--cu-line);transition:background .26s var(--cu-ease),border-color .26s,box-shadow .26s}
+.cc-sw span:after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,#fff,#e9dfd2);box-shadow:0 2px 6px rgba(0,0,0,.5);transition:transform .32s var(--cu-spring),width .14s}
+.cc-sw:active span:after{width:28px}
+.cc-sw input:checked+span{background:linear-gradient(180deg,var(--cx-a2),var(--cx-a));border-color:transparent;box-shadow:0 0 18px -2px var(--cu-glow)}
+.cc-sw input:checked+span:after{transform:translateX(22px)}
+.cc-sw input:checked:active+span:after{transform:translateX(18px)}
+.cc-sw input:focus-visible+span{outline:2px solid #fff;outline-offset:3px}
+.cc-sw input:disabled+span{opacity:.45}
+.cc-sw.big{transform:none}
+
+/* a three-way (or any) choice that submits with its form: radios dressed as a segmented control */
+.cu-radios label{position:relative;display:inline-grid;place-items:center;min-height:38px;padding:0 14px;border-radius:10px;color:var(--cx-mu);font:600 13px/1 var(--body,inherit);cursor:pointer;transition:background var(--cu-t) var(--cu-ease),color var(--cu-t),transform .12s}
+.cu-radios label input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;min-height:0;cursor:pointer}
+.cu-radios label:has(input:checked){background:linear-gradient(180deg,color-mix(in srgb,var(--cx-a) 45%,transparent),color-mix(in srgb,var(--cx-a) 18%,transparent));color:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--cx-a) 55%,transparent)}
+.cu-radios label:has(input:focus-visible){outline:2px solid var(--cx-a2);outline-offset:2px}.cu-radios label:active{transform:scale(.96)}
+.cu-fx{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:12px 0}
+@media(min-width:760px){.cu-fx{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ---------- fields: every input, select, textarea in the Control Center looks the same ---------- */
+.cu-fields,.cc-cols{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.cu-field,.cc-form label.small,.cu-form label.small{display:grid;gap:6px;align-content:start;font:600 12.5px/1.3 var(--body,inherit);color:var(--cx-mu);min-width:0}
+.cu-field>span,.cu-field>em{font-style:normal}
+.cu-hint{margin:2px 0 0;font:500 12px/1.45 var(--body,inherit);color:var(--cx-mu)}
+.cx :is(input:not([type=checkbox],[type=radio],[type=color],[type=range]),select,textarea){width:100%;min-height:46px;padding:10px 14px;border:1px solid var(--cu-line);border-radius:12px;background:color-mix(in srgb,#000 40%,var(--cx-p1));
+  color:var(--cx-tx);font:500 14.5px/1.3 var(--body,inherit);transition:border-color var(--cu-t) var(--cu-ease),box-shadow var(--cu-t) var(--cu-ease),background var(--cu-t);-webkit-appearance:none;appearance:none}
+.cx textarea{min-height:92px;resize:vertical}
+.cx :is(input,select,textarea):hover{border-color:color-mix(in srgb,var(--cx-a) 40%,var(--cu-line))}
+.cx :is(input,select,textarea):focus{outline:none;border-color:var(--cx-a);box-shadow:0 0 0 3px color-mix(in srgb,var(--cx-a) 28%,transparent)}
+.cx :is(input,select,textarea)::placeholder{color:color-mix(in srgb,var(--cx-mu) 70%,transparent)}
+.cx :is(input,select,textarea):disabled{opacity:.5}
+.cx select{padding-right:40px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9bcae' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;background-size:18px}
+.cx select option{background:#1a120c;color:#f6ecdd}
+.cx input[type=color]{width:64px;height:46px;padding:4px;border:1px solid var(--cu-line);border-radius:12px;background:transparent;cursor:pointer}
+.cx input[type=time]{min-width:118px}
+
+/* option pills: checkboxes that read as selectable chips (levels, methods, days) */
+.cc-chips,.cu-pills{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:2px 0 8px}
+.cc-lv,.cc-win label{position:relative;display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;margin:0;border:1px solid var(--cu-line);border-radius:99px;background:var(--cx-p1);font:600 13px/1 var(--body,inherit);color:var(--cx-mu);cursor:pointer;
+  transition:background var(--cu-t) var(--cu-ease),border-color var(--cu-t),color var(--cu-t),transform .14s var(--cu-spring)}
+.cc-lv input,.cc-win label input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer;min-height:0}
+.cc-lv:hover,.cc-win label:hover{border-color:var(--cx-a2);color:var(--cx-tx)}
+.cc-lv:active,.cc-win label:active{transform:scale(.95)}
+.cc-lv:has(input:checked),.cc-win label:has(input:checked){background:var(--cu-on);border-color:color-mix(in srgb,var(--cx-a) 60%,transparent);color:#fff}
+.cc-lv:has(input:checked)::before,.cc-win label:has(input:checked)::before{content:"✓";font-size:12px;color:var(--cx-a2)}
+.cc-lv:has(input:focus-visible),.cc-win label:has(input:focus-visible){outline:2px solid var(--cx-a2);outline-offset:2px}
+.cc-chip{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 12px;border:1px solid color-mix(in srgb,var(--cx-a) 45%,transparent);border-radius:99px;background:var(--cu-on);color:#fff;font:600 12.5px/1 var(--body,inherit);cursor:pointer;animation:cuPop .26s var(--cu-spring) both;transition:background .15s,transform .12s}
+.cc-chip:hover{background:color-mix(in srgb,var(--cx-a) 38%,transparent)}.cc-chip:active{transform:scale(.94)}
+@keyframes cuPop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+
+/* a picker group (roles, members, channels): label, the chosen chips, and a drop-down list to add more */
+.cc-pick{border:0;padding:0;margin:0 0 16px;min-width:0}
+.cc-pick legend{padding:0;margin:0 0 8px;font:700 11.5px/1.2 var(--body,inherit);letter-spacing:.09em;text-transform:uppercase;color:var(--cx-a2)}
+.cc-pick details{border:1px solid var(--cu-line);border-radius:12px;background:color-mix(in srgb,#000 30%,var(--cx-p1));overflow:hidden}
+.cc-pick summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;list-style:none;cursor:pointer;font:600 13px/1 var(--body,inherit);color:var(--cx-tx)}
+.cc-pick summary::-webkit-details-marker{display:none}
+.cc-pick summary::before{content:"+";display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--cu-on);color:var(--cx-a2);font:700 15px/1 var(--body,inherit);transition:transform .25s var(--cu-spring)}
+.cc-pick details[open] summary::before{transform:rotate(45deg)}
+.cc-pick details[open]>*:not(summary){animation:cuRise .24s var(--cu-ease) both}
+.cc-pick details>input,.cc-pick .cc-q{width:calc(100% - 24px);margin:0 12px 8px}
+.cc-opts{max-height:210px;overflow:auto;display:grid;gap:2px;padding:4px 8px 8px;margin:0}
+.cc-opts label{display:flex;gap:10px;align-items:center;min-height:42px;padding:0 10px;border-radius:9px;font:500 14px/1.2 var(--body,inherit);color:var(--cx-tx);cursor:pointer;transition:background .15s}
+.cc-opts label:hover{background:var(--cx-p2)}.cc-opts label:has(input:checked){background:var(--cu-on)}
+.cc-opts input[type=checkbox],.cu-form input[type=checkbox]{width:20px;height:20px;min-height:0;flex:none;accent-color:var(--cx-a)}
+.cc-add{display:flex;flex-wrap:wrap;gap:8px;margin:8px 12px 12px;align-items:center}.cc-add input{flex:1 1 160px;min-height:42px}
+.cc-win{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0;padding:12px;border:1px solid var(--cu-line);border-radius:12px;background:var(--cx-p1);font:500 13px/1 var(--body,inherit);color:var(--cx-mu)}
+.cc-win>span{display:flex;flex-wrap:wrap;gap:6px}
+
+/* a folded group inside an editor (exceptions, limits): closed unless something is set in it */
+.cu-more{margin:0 0 14px;border:1px dashed var(--cu-line);border-radius:12px}
+.cu-more>summary{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;list-style:none;cursor:pointer;font:600 13px/1 var(--body,inherit);color:var(--cx-mu)}
+.cu-more>summary::-webkit-details-marker{display:none}
+.cu-more>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform var(--cu-t) var(--cu-ease)}
+.cu-more[open]>summary{color:var(--cx-tx)}.cu-more[open]>summary::after{transform:rotate(-135deg)}
+.cu-more>div{padding:4px 14px 2px;animation:cuRise .24s var(--cu-ease) both}
+
+/* the editor body: two columns from 760px, a sticky action bar, and the buttons everywhere */
+.cc-form{display:grid;gap:16px}
+.cc-head,.cu-top{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:0 0 16px;padding:12px 14px;border:1px solid var(--cu-line);border-radius:14px;background:var(--cx-p1)}
+.cc-head>b{font:700 15px/1 var(--body,inherit)}
+.cc-cols h4,.cu-in h4{margin:0 0 10px;font:700 12px/1.2 var(--body,inherit);letter-spacing:.1em;text-transform:uppercase;color:var(--cx-a2)}
+.cc-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0 0;padding-top:14px;border-top:1px solid var(--cu-line)}
+.cx .chip,.cx .cc-actions button,.cx .cu-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 18px;border:1px solid var(--cu-line);border-radius:12px;background:var(--cx-p1);color:var(--cx-tx);font:650 13.5px/1 var(--body,inherit);cursor:pointer;
+  transition:background var(--cu-t) var(--cu-ease),border-color var(--cu-t),transform .14s var(--cu-spring),box-shadow var(--cu-t)}
+.cx .chip:hover,.cx .cu-btn:hover{border-color:var(--cx-a2);background:var(--cx-p2)}
+.cx .chip:active,.cx .cu-btn:active{transform:scale(.96)}
+.cx .chip.on,.cx .cu-btn.pri,.cx .cc-actions .chip.on{background:linear-gradient(180deg,var(--cx-a2),var(--cx-a));border-color:transparent;color:#1a0d04;box-shadow:0 8px 22px -10px var(--cu-glow)}
+.cx .chip.on:hover{filter:brightness(1.08)}
+.cx .chip.danger{border-color:rgba(255,125,114,.45);color:#ff9a90}.cx .chip.danger:hover{background:rgba(255,125,114,.12)}
+.cx .chip:disabled,.cx .cu-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.cx .chip.gold{background:var(--cu-on);border-color:color-mix(in srgb,var(--cx-a) 50%,transparent);color:#ffd9b8;min-height:0;padding:2px 9px;font-size:11px}
+.cx .chip:focus-visible,.cx .cu-btn:focus-visible{outline:2px solid var(--cx-a2);outline-offset:2px}
+
+/* ---------- tables become row cards (settings, routing, prizes, sources, organization) ---------- */
+.cx .cu-rows,.cx .cu-rows tbody,.cx .cu-rows tr,.cx .cu-rows td{display:block}
+.cx .cu-rows thead{display:none}
+.cx .cu-rows{width:100%;border:0}
+.cx .cu-rows tr{position:relative;margin:0 0 10px;padding:14px;border:1px solid var(--cu-line);border-radius:14px;background:linear-gradient(180deg,var(--cx-p2),var(--cx-p1));display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.cx .cu-rows td{padding:0!important;border:0!important;min-width:0}
+.cx .cu-rows td[data-l]::before{content:attr(data-l);display:block;margin:0 0 5px;font:700 11px/1 var(--body,inherit);letter-spacing:.09em;text-transform:uppercase;color:var(--cx-mu)}
+.cx .cu-rows td:last-child{display:flex;flex-wrap:wrap;gap:8px}
+.cx .tablewrap:has(.cu-rows){background:none;border:0;box-shadow:none;overflow:visible}
+
+/* ---------- wider screens: cards in two columns, an open card takes the full row ---------- */
+@media(min-width:760px){
+  .cu-fields,.cc-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cu-field.wide{grid-column:1/-1}
+  .cx .cu-rows tr{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));align-items:end}
+  .cx .cu-rows td:last-child{grid-column:1/-1;justify-content:flex-end}
+}
+@media(min-width:1100px){
+  .cu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cu-card[data-open]{grid-column:1/-1}
+  .cc-cols.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(min-width:1500px){.cu-grid.wide3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:480px){.cu-h{gap:4px 10px;padding:12px 8px 12px 16px}.cu-ic{width:38px;height:38px}.cu-chips{grid-column:1/-1;margin-top:6px}.cu-x{width:40px;height:40px}.cu-t small{-webkit-line-clamp:3}}
+
+/* ---------- motion off: still, instant, and nothing waits on an animation ---------- */
+@media(prefers-reduced-motion:reduce){.cx *,.cx *::before,.cx *::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}
+html[data-motion=off] .cx *,html[data-motion=off] .cx *::before,html[data-motion=off] .cx *::after{animation:none!important;transition:none!important}
+html[data-motion=calm] .cx .cu-card,html[data-motion=calm] .cx .cu-ic{animation:none!important}
+html[data-motion=calm] .cx .cc-sw span:after,html[data-motion=calm] .cx .cu-x svg{transition-timing-function:var(--ease)!important}
+.cu-formcard .cu-in{border-top:0!important}
+.cu-formcard{margin:18px 0}
+/* a segmented control inside a card fills the row and shares the width (no sideways scrolling to find the last option) */
+.cu-in .cu-seg,.cu-field .cu-seg{display:flex;width:100/* a segmented control inside a card fills the row and shares the width (no sideways scrolling to find the last option) */
+.cu-in .cu-seg,.cu-field .cu-seg{display:flex;width:100%;overflow:visible}
+.cu-in .cu-seg button,.cu-in .cu-seg label,.cu-field .cu-seg button,.cu-field .cu-seg label{flex:1 1 0;min-width:0;padding:0 6px}
+.cx .cu-rows td,.cx .cu-rows th{text-align:left!important;white-space:normal}
+.cx .cu-rows td:last-child{justify-content:flex-start}
+/* a chip that is only a tag (a span, not a button) stays small */
+.cx span.chip,.cx .cc-rq-t .chip{min-height:0;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;cursor:default}

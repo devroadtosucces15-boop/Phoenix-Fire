@@ -62,13 +62,13 @@ const files = { cc: read('controlcenter.js'), cs: read('ccsettings.js'), br: rea
 const CHECK = [
   // Boardroom › Switches  ->  Control Center › Site access
   ['Switches: set a level per feature (off, owner, managers, members, public)', 'cc', "'/api/admin/flags', { name: flag, level }"],
-  ['Switches: ask before a change, say who will see it', 'cc', 'will see it from the next page load'],
+  ['Switches: ask before a change, say who will see it', 'cc', 'from the next page load'],
   ['Switches: undo the last change', 'cc', 'data-undo'],
   ['Switches: show a live override and go back to the committed level', 'cc', "'/api/admin/flags/reset'"],
-  ['Switches: count the live overrides', 'cc', 'live override'],
+  ['Switches: count the live overrides', 'cc', 'changed live'],
   ['Switches: find a feature by name', 'cc', 'data-flagq'],
-  ['Switches: grouped, collapsible, with counts', 'cc', 'class="br-grp"'],
-  ['Switches: Go to where the feature lives', 'cc', '↗ Go to'],
+  ['Switches: grouped, collapsible, with counts', 'cc', 'class="cu-group"'],
+  ['Switches: Go to where the feature lives', 'cc', '↗ Open the page'],
   ['Switches: Show me as owner, member or guest (display only)', 'cc', 'data-show='],
   ['Switches: only the owner changes, managers see', 'cc', 'Only the owner changes these'],
   ['Switches: the group list is the same one in the manifest', 'man', '"flagGroups"'],

@@ -62,3 +62,10 @@ The sidebar is gone. `staff-controlcenter.html` is now a row of **decks** (Overv
 - Worker: `/api/controlcenter/requests`, `/media`, `/media/remove` (permission matrix rows in `bot/ccpermissions.js`).
 
 Left for a later session (Inbox): the Builds page still shows a Managers box (feature or unpost another member's build) via `/api/probuilds/feature` and `/unpost`; it needs a `Builds board` tool in the System or Content deck.
+
+## One control look (2026-11-23, second pass)
+
+Every control in the Control Center is drawn by the UI kit (`next/static/ccui.js` + `ccui.css`, tested by `tests/ccui.test.mjs`): a **card** with an icon, the name, what it does, status pills, an animated **switch** (a real checkbox) and a **drop-down arrow**. Opening a card slides its body down (CSS grid rows 0fr to 1fr, ease-out 280 ms, children rise in 40 ms steps); the body holds the variables as fields, segmented choices, option pills and picker lists (a chip per chosen role, member or channel, plus a searchable drop-down to add more). Tables turn into labelled row cards. No sidebar and no drawer from the left anywhere.
+- Panels using it: Site access (card per section, level as a segmented control), Bot commands, Buttons and menus, Automated posts, Scheduled, DMs and notifications (cards grouped by app with a state filter), Bot settings (a card per area; Recruitment has its own header switch; Effects use a Full / Balanced / Off segment), Organization (row cards, segmented tabs). The request and upload tools (`ccrequests.js`, `ccpeople.js`) and the mounted legacy pages inherit the same fields, buttons and pills from `ccui.css` (scoped under `.cx`).
+- Motion follows the site Motion setting: off and reduced-motion are still and instant, calm drops the springs. Reference picks: shadcn Switch/Accordion/Field structure, Uiverse switch feel, Emil Kowalski timing (PLANNING/RESOURCES.md sections 5, 6 and 10).
+- New control = `PFCCUI.card({ id, icon, title, sub, chips, on, sw, body })`; never a new table or a new switch style.
