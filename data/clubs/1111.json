@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-23T18:30:42.748Z",
+ "fetchedAt": "2026-11-23T18:40:42.594Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2056,7 +2056,7 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "149",
+   "gamesPlayed": "150",
    "goals": "83",
    "assists": "63",
    "manOfTheMatch": "24",
@@ -2133,7 +2133,7 @@
   {
    "name": "zZ_zid",
    "proPos": "5",
-   "gamesPlayed": "307",
+   "gamesPlayed": "308",
    "goals": "298",
    "assists": "317",
    "manOfTheMatch": "31",
@@ -2177,7 +2177,7 @@
   {
    "name": "MejMech",
    "proPos": "0",
-   "gamesPlayed": "700",
+   "gamesPlayed": "701",
    "goals": "512",
    "assists": "528",
    "manOfTheMatch": "158",
@@ -2199,7 +2199,7 @@
   {
    "name": "AliasX47",
    "proPos": "14",
-   "gamesPlayed": "401",
+   "gamesPlayed": "402",
    "goals": "480",
    "assists": "269",
    "manOfTheMatch": "47",
@@ -2430,11 +2430,11 @@
   {
    "name": "Morpho Vs All",
    "proPos": "25",
-   "gamesPlayed": "405",
+   "gamesPlayed": "406",
    "goals": "198",
    "assists": "141",
    "manOfTheMatch": "54",
-   "ratingAve": "7.4",
+   "ratingAve": "7.3",
    "prevGoals": "0",
    "favoritePosition": "forward"
   }
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-23T18:30:42.748Z"
+  "fetchedAt": "2026-11-23T18:40:42.594Z"
  }
 }
