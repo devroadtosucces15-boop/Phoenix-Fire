@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-24T01:22:28.342Z",
+ "fetchedAt": "2026-11-24T01:30:41.066Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2056,7 +2056,7 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "150",
+   "gamesPlayed": "151",
    "goals": "83",
    "assists": "63",
    "manOfTheMatch": "24",
@@ -2457,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-24T01:22:28.342Z"
+  "fetchedAt": "2026-11-24T01:30:41.066Z"
  }
 }
