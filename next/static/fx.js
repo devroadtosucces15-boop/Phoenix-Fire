@@ -101,6 +101,35 @@
       cover: ({ L, R, c }) => Promise.all([run(L, [{ transform: 'rotateY(-96deg)' }, { transform: 'none' }], { duration: 380 }), run(R, [{ transform: 'rotateY(96deg)' }, { transform: 'none' }], { duration: 380 }), run(c, [{ opacity: 0, transform: 'rotate(-90deg) scale(.7)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 220, easing: 'cubic-bezier(.34,1.56,.64,1)' })]),
       reveal: ({ stage, L, R, c }) => { stage.style.background = 'transparent'; return Promise.all([run(c, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'rotate(90deg) scale(.8)' }], { duration: 240 }), run(L, [{ transform: 'none', opacity: 1 }, { transform: 'rotateY(-100deg)', opacity: 0 }], { duration: 620, delay: 120, easing: EIO }), run(R, [{ transform: 'none', opacity: 1 }, { transform: 'rotateY(100deg)', opacity: 0 }], { duration: 620, delay: 120, easing: EIO })]); },
     },
+    // Theme Studio upgrades (opt-in: data-st-hubfx / data-st-pagefx = b|c, see upgrades.css). Not used unless the owner picks them.
+    // hub entrance (lab C): steel doors swing shut on hinges, the crest strikes (ring, ember, a tiny shake), the doors swing open and the crest flies to the header.
+    lockerup: {
+      build(full) { const q = H.getAttribute('data-st-hubfx') === 'c', stage = mk({ inset: 0, perspective: '760px', background: full ? '#0b0f16' : 'transparent' });
+        const door = (side) => mk({ top: 0, bottom: 0, [side]: 0, width: '50.5%', transformOrigin: side === 'left' ? '0 50%' : '100% 50%', transform: full ? 'none' : `rotateY(${side === 'left' ? -92 : 92}deg)`, background: 'linear-gradient(90deg,#3b4350,#2a3038 45%,#222830)', boxShadow: 'inset 0 0 24px rgba(0,0,0,.5)', backfaceVisibility: 'hidden' },
+          `<i style="position:absolute;top:44%;${side === 'left' ? 'right' : 'left'}:12px;width:4px;height:50px;border-radius:2px;background:#aab4c2"></i>`, stage);
+        const L = door('left'), R = door('right');
+        const ring = mk({ left: '50%', top: '50%', width: '150px', height: '150px', margin: '-75px', borderRadius: '50%', border: '3px solid var(--gold,#efcf7a)', opacity: 0, boxShadow: '0 0 30px var(--redg,rgba(239,207,122,.6))' }, '', stage);
+        const c = mk({ inset: 0, opacity: full ? 1 : 0 }, crestHTML, stage); return { stage, L, R, ring, c, q }; },
+      cover: ({ L, R, ring, c, q }) => { const ease = 'cubic-bezier(.5,0,.9,.4)';
+        const doors = Promise.all([run(L, [{ transform: 'rotateY(-92deg)' }, { transform: 'rotateY(0deg)' }], { duration: q ? 260 : 210, easing: ease }), run(R, [{ transform: 'rotateY(92deg)' }, { transform: 'rotateY(0deg)' }], { duration: q ? 260 : 210, easing: ease })]);
+        return doors.then(() => { const parts = [run(c, [{ opacity: 0, transform: 'scale(1.35)' }, { opacity: 1, transform: 'none' }], { duration: 170, easing: 'cubic-bezier(.2,.8,.3,1)' })];
+          if (!q) { parts.push(run(ring, [{ transform: 'scale(.5)', opacity: .95 }, { transform: 'scale(1.7)', opacity: 0 }], { duration: 480, easing: 'cubic-bezier(.1,.7,.3,1)' }));
+            for (let i = 0; i < 14; i++) { const a = -Math.PI / 2 + (Math.random() - .5) * 2.6, dist = 60 + Math.random() * 90, p = mk({ left: '50%', top: '50%', width: '5px', height: '5px', borderRadius: '50%', background: 'var(--gold,#efcf7a)', boxShadow: '0 0 6px var(--red,#efcf7a)' }); parts.push(run(p, [{ transform: 'translate3d(0,0,0) scale(1)', opacity: 1 }, { transform: `translate3d(${Math.cos(a) * dist}px,${Math.sin(a) * dist + 30}px,0) scale(.2)`, opacity: 0 }], { duration: 520 + Math.random() * 320, delay: Math.random() * 60, easing: 'cubic-bezier(.1,.6,.4,1)' })); }
+            const m = d.getElementById('main'); if (m) parts.push(run(m, [{ translate: '0 0' }, { translate: '-2px 1px' }, { translate: '2px -1px' }, { translate: '0 0' }], { duration: 140, fill: 'none' })); }
+          return Promise.all(parts); }); },
+      reveal: ({ stage, L, R, c, q }) => { stage.style.background = 'transparent';
+        const slot = d.querySelector('.bar [src*=crest],.hdr [src*=crest],header [src*=crest]'), ci = c.firstElementChild || c, fr = ci.getBoundingClientRect(); let fly;
+        if (slot && !q) { const sr = slot.getBoundingClientRect(); if (sr.width && fr.width) fly = run(c, [{ transform: 'none', opacity: 1 }, { transform: `translate3d(${sr.left + sr.width / 2 - (fr.left + fr.width / 2)}px,${sr.top + sr.height / 2 - (fr.top + fr.height / 2)}px,0) scale(${sr.width / fr.width})`, opacity: 1 }], { duration: 420, easing: 'cubic-bezier(.5,0,.15,1)' }).then(() => run(c, [{ opacity: 1 }, { opacity: 0 }], { duration: 90 })); }
+        return Promise.all([fly || run(c, [{ opacity: 1 }, { opacity: 0, transform: 'scale(.9)' }], { duration: 220 }), run(L, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(-100deg)' }], { duration: q ? 380 : 300, easing: 'cubic-bezier(.2,.7,.2,1)' }), run(R, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(100deg)' }], { duration: q ? 380 : 300, easing: 'cubic-bezier(.2,.7,.2,1)' })]); },
+    },
+    // page transition (lab H): one ember line sweeps under the header in the direction of travel, the old page steps back, the new one slides in (see arrive)
+    ember: {
+      build(full) { const q = H.getAttribute('data-st-pagefx') === 'c', base = mk({ inset: 0, background: '#0b0f16', opacity: full ? 1 : 0 }), dir = pageDir;
+        const line = mk({ left: 0, right: 0, top: 0, height: '3px', background: 'linear-gradient(90deg,var(--red),var(--gold,var(--red)))', transformOrigin: dir > 0 ? '0 50%' : '100% 50%', transform: full ? 'none' : 'scaleX(0)', opacity: .95 }, '', base); return { base, line, q, dir }; },
+      cover: ({ base, line, q, dir }) => { const m = d.getElementById('main');
+        return Promise.all([run(base, [{ opacity: 0 }, { opacity: 1 }], { duration: q ? 130 : 170 }), run(line, [{ transform: 'scaleX(0)' }, { transform: 'none' }], { duration: q ? 200 : 260 }), ...(m && !q ? [run(m, [{ transform: 'none', opacity: 1 }, { transform: `translate3d(${-dir * 6}%,0,0) scale(.96)`, opacity: .5 }], { duration: 220, fill: 'none' })] : [])]); },
+      reveal: ({ base, line, q, dir }) => Promise.all([run(line, [{ transform: 'none', transformOrigin: dir > 0 ? '100% 50%' : '0 50%' }, { transform: 'scaleX(0)', transformOrigin: dir > 0 ? '100% 50%' : '0 50%' }], { duration: q ? 220 : 340 }), run(base, [{ opacity: 1 }, { opacity: 0 }], { duration: q ? 200 : 300, delay: 30 })]),
+    },
     fade: {
       build(full) { const base = mk({ inset: 0, background: '#0b0f16', opacity: full ? 1 : 0 }, crestHTML); return { base }; },
       cover: ({ base }) => run(base, [{ opacity: 0 }, { opacity: 1 }], { duration: 160 }),
@@ -119,13 +148,18 @@
   };
   const KIND = { club: 'cclub', matches: 'cmatches', stats: 'cstats', tactics: 'ctactics', hub: 'locker' };
   const here = () => SECTION(location.pathname.split('/').pop());
-  function pick(a) { if (mmode() !== 'full') return 'fade'; const dest = SECTION((a.getAttribute('href') || '').split('#')[0].split('?')[0]); return KIND[dest] || 'fade'; }
+  const ORDER = ['club', 'matches', 'stats', 'tactics', 'hub']; let pageDir = 1;
+  function pick(a) { if (mmode() !== 'full') return 'fade'; const dest = SECTION((a.getAttribute('href') || '').split('#')[0].split('?')[0]);
+    pageDir = ORDER.indexOf(dest) >= ORDER.indexOf(here()) ? 1 : -1;
+    if (dest === 'hub' && H.getAttribute('data-st-hubfx')) return 'lockerup';
+    if (H.getAttribute('data-st-pagefx')) return 'ember';
+    return KIND[dest] || 'fade'; }
   const cinematic = () => ['full', 'short'].includes(ls.get('phoenix.entrance', 'skip'));
   const internal = (a) => { if (!a || a.target || a.hasAttribute('download') || (a.dataset.hub !== undefined && cinematic())) return false; const h = a.getAttribute('href'); if (!h || h[0] === '#' || /^(mailto:|tel:|javascript:)/.test(h)) return false; try { const u = new URL(a.href, location.href); return u.origin === location.origin && u.pathname !== location.pathname && /\.html$|\/$/.test(u.pathname); } catch { return false; } };
   async function go(a) {
     if (busy) { location.assign(a.href); return; }   // R32: a second tap during a transition goes straight there (fragment kept); the click was already default-prevented
     busy = true; const kind = pick(a), href = a.href;
-    ss.set('phoenix.t', JSON.stringify({ kind, t: Date.now() })); H.classList.add('fx-busy');
+    ss.set('phoenix.t', JSON.stringify({ kind, t: Date.now(), dir: pageDir, q: H.getAttribute('data-st-pagefx') === 'c' || H.getAttribute('data-st-hubfx') === 'c' })); H.classList.add('fx-busy');
     const guard = setTimeout(() => location.assign(href), 1400);
     setTimeout(() => { busy = false; H.classList.remove('fx-busy'); if (tov) tov.innerHTML = ''; }, 4500);   // a navigation that never happens (offline, blocked) must not leave the page dead
     try { const fx = FX[kind], parts = fx.build(false); await frames(2); await fx.cover(parts); } catch {}
@@ -145,11 +179,13 @@
     let t = null; try { t = JSON.parse(ss.get('phoenix.t') || 'null'); } catch {} ss.del('phoenix.t');
     const done = () => { H.removeAttribute('data-tin'); dispatchEvent(new Event('norex:arrived')); };
     if (!t || !FX[t.kind] || mmode() === 'off' || Date.now() - (t.t || 0) > 8000) return done();
-    const fx = FX[t.kind]; let parts; try { parts = fx.build(true); } catch { return done(); }
+    pageDir = t.dir || 1; const fx = FX[t.kind]; let parts; try { parts = fx.build(true); } catch { return done(); }
     await painted(); await frames(2);                       // DOM cover (incl. its crest) is decoded under the CSS cover
     H.removeAttribute('data-tin');
     const main = d.getElementById('main');
-    if (main && mmode() === 'full') run(main, [{ opacity: .4, transform: 'translate3d(0,18px,0) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 620, easing: E, fill: 'none' });
+    if (main && mmode() === 'full') { if (t.kind === 'ember') run(main, [{ opacity: 0, transform: t.q ? 'none' : `translate3d(${pageDir * 60}px,0,0)` }, { opacity: 1, transform: 'none' }], { duration: t.q ? 300 : 420, easing: E, fill: 'none' });
+      else if (t.kind === 'lockerup') run(main, [{ opacity: .4, transform: 'translate3d(0,18px,0) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 400, easing: E, fill: 'none' });
+      else run(main, [{ opacity: .4, transform: 'translate3d(0,18px,0) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 620, easing: E, fill: 'none' }); }
     dispatchEvent(new Event('norex:arrived'));
     try { await Promise.race([fx.reveal(parts), sleep(1300)]); } catch {}
     if (tov) tov.innerHTML = '';

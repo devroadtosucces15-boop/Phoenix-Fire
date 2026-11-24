@@ -95,6 +95,20 @@ t('lab F+I+K: the demo page has a section for each, and the editor names them', 
 t('lab F+I+K: the rig follows the new attributes and honours reduced motion', FIK.every((c) => new RegExp(`data-st-${c}`).test(up)) && FIK.every((c) => new RegExp(`prefers-reduced-motion[^\\n]*data-st-${c}|data-motion=off\\]\\[data-st-${c}`).test(upc)));
 t('lab F+I+K: they use the real site selectors (tabbar, dk-ring, ph-notice, ph-dialog, wave)', /\.tabbar/.test(upc) && /\.dk-ring/.test(upc) && /\.ph-notice/.test(upc) && /\.ph-dialog/.test(upc) && /\.wx \.tbl \.bar/.test(upc) && /\.ph-dialog/.test(up) && /\.wave/.test(up));
 
+// ---- lab families C, D, E, G, H: hub entrance, scrolling, tap reactions, menus, page transitions
+const CH = ['hubfx', 'scrollfx', 'tapfx', 'menufx', 'pagefx'];
+const fxjs = rd('next/static/fx.js');
+t('lab C-H: the five components are in the bot list, the loader and the editor, three looks each', CH.every((c) => B.COMPONENTS.includes(c) && CAT.COMPONENTS.includes(c) && E.COMP[c]?.[1].length === 3));
+t('lab C-H: every upgrade rule hangs on a data-st attribute (nothing applies until picked)', upc.split('\n').filter((l) => /(hubfx|scrollfx|tapfx|menufx|pagefx|up-pg|up-scrim|up-hl|up-roll2|upRise|upDrop)/.test(l) && /\{/.test(l) && !/^\s*(@keyframes|\/\*)/.test(l)).every((l) => /^(html\[data-st-|@media[^{]*\{html(\[data-motion=off\])?\[data-st-)/.test(l) || /^html\[data-motion=off\]\[data-st-/.test(l)));
+t('lab C-H: the demo page has a section for each, and a focus entry', CH.every((c) => new RegExp(`data-demo="${c}"`).test(demoPage) && new RegExp(`${c}: \\['${c}'\\]`).test(demoPage)));
+t('lab C-H: the rig follows the new attributes', CH.every((c) => new RegExp(`data-st-${c}`).test(up) || /fx\.js/.test(up)) && ['scrollfx', 'tapfx', 'menufx'].every((c) => new RegExp(`data-st-${c}`).test(up)));
+t('lab C-H: they hang on the site\'s real selectors (pc-hero, rv-g, chip, fx-orb, fx-isl, .il)', /\.pc-hero/.test(upc) && /\.rv-g>\*/.test(upc) && /\.chip/.test(upc) && /\.fx-orb/.test(upc) && /\.fx-isl/.test(upc) && /\.il /.test(upc));
+t('lab C+H: the entrance and page transition are opt-in scenes in fx.js (lockerup, ember) with the lab\'s timings, chosen only when the attribute is set', /lockerup: \{/.test(fxjs) && /ember: \{/.test(fxjs) && /data-st-hubfx/.test(fxjs) && /data-st-pagefx/.test(fxjs) && /210/.test(fxjs) && /rotateY\(-92deg\)/.test(fxjs) && /if \(dest === 'hub' && H\.getAttribute\('data-st-hubfx'\)\) return 'lockerup'/.test(fxjs) && /if \(H\.getAttribute\('data-st-pagefx'\)\) return 'ember'/.test(fxjs));
+t('lab C+H: safety kept (calm and off fall back to the plain fade, a second tap goes straight there, a stall goes on after 1.4 s)', /if \(mmode\(\) !== 'full'\) return 'fade'/.test(fxjs) && /if \(busy\) \{ location\.assign/.test(fxjs) && /setTimeout\(\(\) => location\.assign\(href\), 1400\)/.test(fxjs));
+t('lab C+H: no NOREX red or club hex is written into the new scenes (colours come from site variables)', !/#c8352c|#e8651a|#080b11/i.test(fxjs.slice(fxjs.indexOf('lockerup: {'), fxjs.indexOf('fade: {'))));
+t('lab D: scrolling keeps everything visible, measures once, runs one frame loop and honours reduced motion', /\.reveal,\.rv-c\)\{opacity:1/.test(upc) && /requestAnimationFrame\(sFrame\)/.test(up) && /sMeasure/.test(up) && /data-motion=off\]\[data-st-scrollfx\]/.test(upc));
+t('lab G: the menu scrim and highlight are added only while menufx is set and removed when it is not', /scrim\.remove\(\)/.test(up) && /if \(!variant\('menufx'\)/.test(up));
+
 // ---- wiring
 t('pages: every page loads the look in <head> before paint and the editor after the owner button', /themestudio\.css/.test(ui) && /themeeditor\.css/.test(ui) && ui.indexOf('themestudio.js') < ui.indexOf('fxconfig.js') && ui.indexOf('themeeditor.js') > ui.indexOf('ownerfab.js'));
 t('control center: the effects card moved into the studio (Control Center no longer draws it)', !/'streams', 'effects', 'points'\]/.test(ccs));

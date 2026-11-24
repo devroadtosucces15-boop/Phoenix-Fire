@@ -1,6 +1,7 @@
 // Upgrade pack behaviour (the animation lab's "Upgrade" side), switched on from the Theme Studio per component:
 //   data-st-playercard = b | c   the player card rig: spring tilt, foil, highlight, glow, shine, drag with spring-back, tap shine, gyroscope
 //   data-st-buttonfx   = b | c   buttons: ripple from the finger and a short phone buzz (b); squeeze and inner light are CSS (upgrades.css)
+//   data-st-scrollfx / tapfx / menufx = b | c   scrolling lean + progress line, tap reactions, menus (hubfx and pagefx live in fx.js: steel doors and the ember page slide)
 // The rig is the lab's: one tilt value feeds every layer, one frame loop runs only while something moves, positions are written as
 // CSS variables (never measured while animating). Stiffness 170 / damping 16 for the lean, 140 / 14 for the drag, press eases at rate 18.
 // Cards stay links: a tap sends one shine and follows the link; a drag moves the card and does not navigate.
@@ -157,13 +158,54 @@
   };
   const waves = () => { if (!variant('vizfx')) return; d.querySelectorAll('.wave').forEach((wv) => { if (wv._upIO) return; wv._upIO = new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); wv._upIO = null; dotFor(wv); } }, { threshold: 0.4 }); wv._upIO.observe(wv); }); };
 
+  // ---------- D. scrolling (scrollfx): rows lean and scale as they pass the middle, the header shrinks, a progress line fills. One frame loop, positions measured once ----------
+  let sItems = [], sPos = [], sRaf = 0, sPg = null, sMax = 1;
+  const sSel = '.rv-g>*,.rcard,.rrow';
+  const sMeasure = () => { if (!variant('scrollfx')) return; sItems = [...d.querySelectorAll(sSel)]; const y = w.scrollY; sPos = sItems.map((el) => { const r = el.getBoundingClientRect(); return [r.top + y, r.height]; }); sMax = Math.max(1, H.scrollHeight - innerHeight); sFrame(); };
+  const sFrame = () => { sRaf = 0; if (!variant('scrollfx') || reduced() || !innerHeight) return;
+    const y = w.scrollY, mid = y + innerHeight / 2, k = variant('scrollfx') === 'c' ? 0.5 : 1;
+    for (let i = 0; i < sItems.length; i++) { const [t, h] = sPos[i], p = (t + h / 2 - mid) / (innerHeight / 2); if (Math.abs(p) > 1.5) continue; const pc = clamp(p, -1, 1), ap = Math.abs(pc), st = sItems[i].style;
+      st.setProperty('--up-dy', (pc * 8 * k).toFixed(1) + 'px'); st.setProperty('--up-s', (1 - ap * 0.06 * k).toFixed(3)); if (k === 1) st.setProperty('--up-o', (1 - ap * 0.4).toFixed(2)); }
+    H.style.setProperty('--up-hk', clamp(y / 120, 0, 1).toFixed(3)); if (sPg) sPg.style.transform = 'scaleX(' + clamp(y / sMax, 0, 1).toFixed(4) + ')'; };
+  const sOnScroll = () => { if (!sRaf) sRaf = requestAnimationFrame(sFrame); };
+  let sOn = false, sTimer = 0;
+  const sLater = () => setTimeout(sMeasure, 60);
+  const sync2 = () => {
+    const on = !!variant('scrollfx');
+    if (on && !sOn) { sOn = true; sPg = d.querySelector('.up-pg') || d.body.appendChild(Object.assign(d.createElement('div'), { className: 'up-pg', ariaHidden: 'true' })); sPg.setAttribute('aria-hidden', 'true'); addEventListener('scroll', sOnScroll, { passive: true }); addEventListener('resize', sMeasure); addEventListener('norex:revealed', sMeasure); addEventListener('phoenix:theme', sLater); sMeasure(); clearTimeout(sTimer); sTimer = setTimeout(sMeasure, 400); }
+    else if (!on && sOn) { sOn = false; removeEventListener('scroll', sOnScroll); removeEventListener('resize', sMeasure); removeEventListener('norex:revealed', sMeasure); removeEventListener('phoenix:theme', sLater); if (sPg) sPg.remove(); sPg = null; H.style.removeProperty('--up-hk'); for (const el of sItems) { el.style.removeProperty('--up-dy'); el.style.removeProperty('--up-s'); el.style.removeProperty('--up-o'); } sItems = []; sPos = []; }
+  };
+
+  // ---------- E. tap reactions (tapfx): the picked chip glides in from the one that was on, numbers roll when they change ----------
+  const chipRect = new WeakMap();
+  const chipsOf = (p) => [...p.children].filter((c) => c.classList.contains('chip'));
+  const remember = (root = d) => root.querySelectorAll && root.querySelectorAll('.chip.on').forEach((c) => c.parentElement && chipRect.set(c.parentElement, c.getBoundingClientRect()));
+  new MutationObserver((ms) => { if (!variant('tapfx')) return;
+    for (const m of ms) {
+      if (m.type === 'attributes') { const c = m.target; if (!c.classList || !c.classList.contains('chip') || !c.classList.contains('on') || (m.oldValue || '').split(' ').includes('on') || !c.parentElement) continue;
+        const was = chipRect.get(c.parentElement), now = c.getBoundingClientRect(); chipRect.set(c.parentElement, now);
+        if (was && !reduced() && Math.abs(was.left - now.left) + Math.abs(was.top - now.top) > 2) c.animate([{ translate: (was.left - now.left) + 'px ' + (was.top - now.top) + 'px', scale: '1.06' }, { translate: '0 0', scale: '1' }], { duration: variant('tapfx') === 'c' ? 260 : 440, easing: variant('tapfx') === 'c' ? OUT : SP }); }
+      else if (m.type === 'characterData') { const el = m.target.parentElement && m.target.parentElement.closest('.ovr,[data-roll]'); if (el && !reduced()) replay(el, 'up-roll2'); }
+    } }).observe(d.documentElement, { attributes: true, attributeFilter: ['class'], attributeOldValue: true, characterData: true, subtree: true });
+  d.addEventListener('pointerdown', () => { if (variant('tapfx')) remember(); }, true);
+
+  // ---------- G. menus (menufx): a scrim dims the page behind an open menu, a highlight follows the pointer down the island list ----------
+  let scrim = null;
+  const menuOpen = () => !!d.querySelector('.fx-orb.open,.fx-isl.open');
+  const scrimSync = () => { if (!variant('menufx')) { if (scrim) { scrim.remove(); scrim = null; } return; } if (!scrim) { scrim = d.createElement('div'); scrim.className = 'up-scrim'; scrim.setAttribute('aria-hidden', 'true'); d.body.appendChild(scrim); } scrim.classList.toggle('on', menuOpen()); };
+  d.addEventListener('pointerover', (e) => { if (!variant('menufx') || reduced()) return; const a = e.target.closest && e.target.closest('.fx-isl .il a'); if (!a) return; const il = a.closest('.il'); let hl = il.querySelector(':scope > .up-hl'); if (!hl) { hl = d.createElement('i'); hl.className = 'up-hl'; hl.setAttribute('aria-hidden', 'true'); il.insertBefore(hl, il.firstChild); }
+    hl.style.width = a.offsetWidth + 'px'; hl.style.height = a.offsetHeight + 'px'; hl.style.transform = 'translate3d(' + a.offsetLeft + 'px,' + a.offsetTop + 'px,0)'; hl.style.opacity = 1; });
+  d.addEventListener('pointerout', (e) => { const il = e.target.closest && e.target.closest('.fx-isl .il'); if (il && !il.contains(e.relatedTarget)) { const hl = il.querySelector(':scope > .up-hl'); if (hl) hl.style.opacity = 0; } });
+  new MutationObserver(() => { if (variant('menufx') || scrim) scrimSync(); }).observe(d.documentElement, { attributes: true, subtree: true, attributeFilter: ['class'] });
+  d.addEventListener('click', (e) => { if (variant('menufx') && e.target.closest && e.target.closest('.fx-orb .ob,.fx-isl .ib') && variant('menufx') === 'b') buzz(6); }, true);
+
   // ---------- follow the Theme Studio ----------
   const sync = () => {
     if (variant('playercard')) { cards().forEach(arm); if (!gyro) { gyro = true; addEventListener('deviceorientation', onGyro); } }
     else { cards().forEach(disarm); if (gyro) { gyro = false; removeEventListener('deviceorientation', onGyro); } }
-    pillSync(); waves(); if (variant('overlayfx')) d.querySelectorAll('.ph-notice').forEach(swipeToast);
+    sync2(); remember(); scrimSync(); pillSync(); waves(); if (variant('overlayfx')) d.querySelectorAll('.ph-notice').forEach(swipeToast);
   };
-  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx', 'data-st-tilefx', 'data-st-statusfx', 'data-st-dockfx', 'data-st-overlayfx', 'data-st-vizfx'] });
+  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx', 'data-st-tilefx', 'data-st-statusfx', 'data-st-dockfx', 'data-st-overlayfx', 'data-st-vizfx', 'data-st-hubfx', 'data-st-scrollfx', 'data-st-tapfx', 'data-st-menufx', 'data-st-pagefx'] });
   new MutationObserver((ms) => { if (!variant('playercard')) return; for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) { if (n.matches && n.matches('.pc-card')) arm(n); n.querySelectorAll && n.querySelectorAll('.pc-card').forEach(arm); } }).observe(d.documentElement, { childList: true, subtree: true });
   // dialogs, toasts and charts appear later: watch for them
   new MutationObserver((ms) => { if (!variant('overlayfx') && !variant('vizfx')) return;
