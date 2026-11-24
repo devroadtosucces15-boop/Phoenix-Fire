@@ -737,16 +737,11 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
       const players = await load(site, 'players', ctx);
       const a = findPlayer(players, opt.player1), b = findPlayer(players, opt.player2);
       if (!a || !b) return notice('Couldn’t find both players', 'Pick both names from the list as you type.');
-      const rows = [['OVR', a.ovr, b.ovr], ['Games', a.s?.gp, b.s?.gp], ['Goals', a.s?.g, b.s?.g], ['Assists', a.s?.a, b.s?.a], ['Rating', a.s?.r, b.s?.r, 1], ['MOTM', a.s?.m, b.s?.m], ['Pass %', a.s?.p, b.s?.p], ['Tackle %', a.s?.t, b.s?.t], ['Win %', a.s?.w, b.s?.w]];
       const cmpCard = cardUrl(deck, 'compare', ...[a.k, b.k].sort());
-      const w = Math.max(10, a.n.length, b.n.length) + 2;
-      const fmt = (v, dec = 0) => (+v || 0).toFixed(dec);
-      const table = ['STAT'.padEnd(10) + a.n.slice(0, w - 2).padStart(w) + b.n.slice(0, w - 2).padStart(w),
-        ...rows.map(([k, x, y, dec]) => `${k.padEnd(10)}${(fmt(x, dec) + (+x > +y ? ' ◀' : '  ')).padStart(w)}${(fmt(y, dec) + (+y > +x ? ' ◀' : '  ')).padStart(w)}`)].join('\n');
       return message({ blocks: [
         header({ eyebrow: brand('Compare'), title: `${a.n} vs ${b.n}`, sub: `${a.pos} vs ${b.pos} · club stats this season` }),
         cmpCard ? cards({ url: cmpCard, alt: `${a.n} and ${b.n} compared stat by stat` }) : cards(cardUrl(deck, 'player', a.k), cardUrl(deck, 'player', b.k)),
-        cmpCard ? null : text(`\`\`\`\n${table}\n\`\`\``),
+        cmpCard ? null : cmpBlocks(a, b),
         footer('◀ marks the better number · the site has the radar chart'),
         buttons([{ label: 'Compare on the site', url: `${site}players.html#compare=${encodeURIComponent(a.k)},${encodeURIComponent(b.k)}` }]),
       ] });
@@ -779,16 +774,49 @@ async function command(data, site, ctx, { matchControls = false, env = {}, origi
 }
 
 // /player and /me share this: header with the club crest, the drawn player card, then career + recent form as text.
+// /compare when the drawn card for this pair is not there yet (the bot cannot draw on the fly). Same design system as the other replies:
+// label headers, short lines that wrap cleanly on a phone, the better number in bold with a ◀, and the event data (per game, from EA's
+// event counters) baked in as its own section. A stat neither player has is left out. The drawn card (scripts/cards.mjs compareCard) holds the same rows.
+function cmpBlocks(a, b) {
+  const num = (v, dec) => (+v || 0).toFixed(dec);
+  const line = ([k, x, y, dec = 0]) => {
+    const xa = +num(x, dec), ya = +num(y, dec); // compare what is shown, so 7.7 vs 7.7 is a tie
+    return `**${k}**  ${xa > ya ? `**${num(xa, dec)}** ◀` : num(xa, dec)}  ·  ${ya > xa ? `**${num(ya, dec)}** ◀` : num(ya, dec)}`;
+  };
+  const keep = (rows) => rows.filter(([, x, y]) => (+x || 0) + (+y || 0) > 0);
+  const season = keep([['OVR', a.ovr, b.ovr], ['Games', a.s?.gp, b.s?.gp], ['Goals', a.s?.g, b.s?.g], ['Assists', a.s?.a, b.s?.a], ['Rating', a.s?.r, b.s?.r, 1], ['MOTM', a.s?.m, b.s?.m], ['Pass %', a.s?.p, b.s?.p], ['Tackle %', a.s?.t, b.s?.t], ['Win %', a.s?.w, b.s?.w]]);
+  const events = keep([['Interceptions / game', a.i?.pg?.int, b.i?.pg?.int, 1], ['Aerials won / game', a.i?.pg?.aer, b.i?.pg?.aer, 1], ['Possession won / game', a.i?.pg?.won, b.i?.pg?.won, 1], ['In position %', a.i?.r?.pos, b.i?.r?.pos]]);
+  return [
+    text(`**${a.n}**  ·  **${b.n}**`),
+    season.length ? [label('Season'), text(season.map(line).join('\n'))] : null,
+    events.length ? [label('From the event data'), text(events.map(line).join('\n'))] : null,
+  ];
+}
+
+// The one line of text under a /player card: an insight (how the form compares with the season), never a copy of the numbers. The event
+// data (interceptions, aerials, possession, forward passes, in position) is drawn into the card itself and is not repeated as text.
+function playerInsight(p) {
+  const tr = (p.tr ?? []).map(Number).filter((x) => x > 0);
+  const avg = p.s?.gp >= 3 && p.s.r ? +p.s.r : null;
+  if (tr.length < 3 || !avg) return null;
+  const last = tr.slice(-3), form = last.reduce((t, x) => t + x, 0) / last.length, d = form - avg;
+  if (d >= 0.4) return `📈 **In form.** The last ${last.length} games average ${r1(form)}, ${r1(d)} above the season (${r1(avg)}).`;
+  if (d <= -0.4) return `📉 **A quieter spell.** The last ${last.length} games average ${r1(form)}, ${r1(-d)} under the season (${r1(avg)}).`;
+  return `➖ **Steady.** The last ${last.length} games average ${r1(form)}, level with the season (${r1(avg)}).`;
+}
+
 async function playerMessage(p, club, site, deck, { eyebrow = 'Player card', env = {}, origin } = {}) {
   const s = p.s, c = p.car;
   const card = cardUrl(deck, 'player', p.k);
   const recent = (p.tr ?? []).slice(-5);
+  const insight = playerInsight(p);
   const dot = (r) => (r >= 8 ? '🟢' : r >= 7 ? '🟡' : r >= 6 ? '🟠' : '🔴');
   return message({ blocks: [
     header({ eyebrow: `${club.name} · ${eyebrow}`, title: `${p.n}${p.ovr ? ` · ${p.ovr} OVR` : ''}`, sub: `${p.pos} · ${p.c.join(', ')}`, thumb: (await playerFaces(env, [p.k], { origin })).get(String(p.k)) || p.crest }),
     cards(card && { url: card, alt: `${p.n}: season stats and match ratings` }),
     !card && s?.gp ? facts([[p.src === 'archive' ? `${p.sc ?? 'Club'} (archived matches)` : `${p.sc ?? 'Club'} this season`, `${s.gp} games · ${s.g} goals · ${s.a} assists · rating ${r1(s.r)} · MOTM ${s.m}`]]) : null,
     facts([['🌍 Career', c?.gp ? `${c.gp} games · ${c.g} goals · ${c.a} assists · rating ${r1(c.r)}` : null], ['📈 Last 5', recent.length ? `${recent.map((r) => `${dot(r)} ${r1(r)}`).join('  ')}  → newest` : null]]),
+    insight ? text(insight) : null,
     footer('Updates every 10 min · career covers every club'),
     buttons([{ label: 'Full profile', url: `${site}players/${encodeURIComponent(p.k)}.html` }]),
   ] });
