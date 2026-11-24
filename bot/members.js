@@ -60,7 +60,7 @@ import { orgConfigRoute, orgClubsPublicRoute, orgRoutePublicRoute, orgName } fro
 import { botCommandsRoute } from './botcommands.js';
 import { controlCenterRoute } from './controlcenter.js';
 import { ccDenied } from './ccpermissions.js';
-import { ccConfigPublicRoute, effectsPublicRoute } from './ccsettings.js';
+import { ccConfigPublicRoute, effectsPublicRoute, themePublicRoute } from './ccsettings.js';
 import { crawlRoute } from './crawl.js';
 import { gifRoute } from './gif.js';
 import { burnersRoute, burnersRelay, burnersAdminRoute } from './burners.js';
@@ -439,6 +439,7 @@ export async function handleMembers(request, env, ctx, loadSite) {
     }
     if (url.pathname === '/api/org/route/public') return cors(env, await orgRoutePublicRoute(request, env)); // result posts ask where a purpose goes for a club
     if (url.pathname === '/api/points/match') return cors(env, await pointsMatchRoute(request, env)); // PF-024 Item 24: match performance rows from the Actions result step (keyed)
+    if (url.pathname === '/api/site/theme' && request.method === 'GET') return cors(env, await themePublicRoute(env)); // the owner's saved look (Theme Studio), read by every visitor's browser
     if (url.pathname === '/api/site/effects' && request.method === 'GET') return cors(env, await effectsPublicRoute(env)); // PF-044: owner-set effects budget and levels, read by every visitor's browser
     if (url.pathname === '/api/org/cc-config') return cors(env, await ccConfigPublicRoute(request, env)); // the site build and result import read recruitment, match alert and stream links
     if (url.pathname === '/api/org/match-alert') return cors(env, await matchAlertRoute(request, env)); // result import asks the Worker to post the match alert

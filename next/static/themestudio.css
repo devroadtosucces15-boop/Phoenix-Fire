@@ -1,0 +1,138 @@
+/* Theme Studio: how the owner's saved look reaches the page. themestudio.js writes --st-* variables and data-st-* attributes on <html>; these
+   rules read them. Nothing here applies until the owner sets something (every rule hangs on an attribute), so with no saved look the site is
+   exactly as it was. Three looks per component: a = the standard one (no rules), b and c below. Colours are never written here: they come from
+   the owner's choice or from the site's own variables. Motion is off for prefers-reduced-motion and for the site Motion setting. */
+
+/* ---------- colours ---------- */
+html[data-st-bg] body{background:var(--st-bg)!important}
+html[data-st-bg] body::before,html[data-st-bg] body::after{display:none!important}
+html[data-st-text] body{color:var(--st-text)}
+html[data-st-text] :is(h1,h2,h3,h4,.sec h2){color:var(--st-text)}
+html[data-st-muted] :is(.muted,.tiny,.sec header p,.lead){color:var(--st-muted)!important}
+html[data-st-surface] :is(.panel,.tile,.sbt){background:var(--st-surface)!important}
+html[data-st-surface2] :is(input,select,textarea,.chip,.rchip,.btn.ghost){background:var(--st-surface2)!important}
+html[data-st-line] :is(.panel,.tile,.sbt,.chip,.rchip,input,select,textarea){border-color:var(--st-line)!important}
+html[data-st-btnfill] .btn:not(.ghost){background:var(--st-btnfill)!important}
+html[data-st-btntext] .btn:not(.ghost){color:var(--st-btntext)!important}
+html[data-st-badgefill] :is(.hdr-n,.ofab-n,.nb){background:var(--st-badgefill)!important}
+html[data-st-badgetext] :is(.hdr-n,.ofab-n,.nb){color:var(--st-badgetext)!important}
+html[data-st-accent] ::selection{background:color-mix(in srgb,var(--st-accent) 35%,transparent)}
+html[data-st-accent] :is(.ribbon .ri,.sec h2 em,.gold-t,.hero h1 em){color:var(--st-accent)!important;-webkit-text-fill-color:var(--st-accent)!important;background:none}
+html[data-st-good] :is(.pip.w,.res-w,.win){color:var(--st-good)}
+html[data-st-bad] :is(.pip.l,.res-l,.loss){color:var(--st-bad)}
+/* ---------- fonts and sizes ---------- */
+html[data-st-fb] body{font-family:var(--st-fb)!important}
+html[data-st-fd] :is(h1,h2,h3,.sec h2,.ribbon,.hero h1,.s-score,.num){font-family:var(--st-fd)!important}
+html[data-st-textscale] body{font-size:calc(16px*var(--st-text-scale))}
+html[data-st-space] .sec{margin-top:calc(56px*var(--st-space))}
+html[data-st-space] .panel{padding:calc(20px*var(--st-space))}
+html[data-st-radius] :is(.panel,.tile,.sbt,input,select,textarea){border-radius:var(--st-radius)!important}
+html[data-st-radius] :is(.btn,.chip,.rchip){border-radius:min(var(--st-radius)*2,999px)!important}
+html[data-st-border] :is(.panel,.tile,.sbt,.chip,.rchip,input,select,textarea){border-width:var(--st-border)!important;border-style:solid}
+html[data-st-blur] :is(.panel,.tile,.sbt,.tabbar,header.hdr){-webkit-backdrop-filter:blur(var(--st-blur));backdrop-filter:blur(var(--st-blur))}
+html[data-st-blur] :is(.panel,.tile,.sbt){background:color-mix(in srgb,var(--st-surface,var(--p1)) 62%,transparent)!important}
+html[data-st-glowsize] :is(.btn:not(.ghost),.rchip.on,.chip.on){box-shadow:0 0 var(--st-glowsize) color-mix(in srgb,var(--st-glow,var(--red)) 70%,transparent)!important}
+html[data-st-shadow] :is(.panel,.tile,.sbt){box-shadow:0 18px 40px rgba(0,0,0,calc(.6*var(--st-shadow)))!important}
+
+/* ---------- aspects switched off (each hangs on data-st-off) ---------- */
+html[data-st-off~=glow]{--redg:transparent}
+html[data-st-off~=glow] :is(.btn,.chip,.rchip,.hdr-n,.ofab-btn,.tabbar .key,.tabbar .hubk,.ribbon,.panel,.scard,[class*=glow],[class*=halo]){filter:none!important;box-shadow:none!important}
+html[data-st-off~=shine] :is(.btn,.panel,.sbt,.tile):after{display:none!important}
+html[data-st-off~=shadows] :is(.panel,.tile,.sbt,.btn,.tabbar,.scard,.hdr-i,.ofab-btn){box-shadow:none!important;filter:none!important}
+html[data-st-off~=gradients] :is(.panel,.tile,.sbt,.ribbon){background-image:none!important}
+html[data-st-off~=gradients] :is(.panel,.tile,.sbt){background-color:var(--st-surface,var(--p1))!important}
+html[data-st-off~=gradients] .btn:not(.ghost){background-image:none!important;background-color:var(--st-btnfill,var(--red))!important}
+html[data-st-off~=blur] *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html[data-st-off~=textglow] *{text-shadow:none!important}
+html[data-st-off~=embers] canvas.pf-embers{display:none!important}
+html[data-st-off~=badgepulse] :is(.hdr-n,.ofab-n,.nb){animation:none!important}
+html[data-st-off~=hoverlift] :is(.panel,.btn,.chip,.rchip,.tile,.sbt):hover{transform:none!important}
+html[data-st-off~=borders] :is(.panel,.tile,.sbt,.chip,.rchip){border-color:transparent!important}
+
+/* ---------- three looks per component (a = standard, no rules) ---------- */
+/* buttons */
+html[data-st-button=b] .btn:not(.ghost){background:transparent!important;background-image:none!important;color:var(--st-accent,var(--red2))!important;box-shadow:inset 0 0 0 1.5px var(--st-accent,var(--red))!important}
+html[data-st-button=c] .btn:not(.ghost){background:color-mix(in srgb,var(--st-accent,var(--red)) 20%,transparent)!important;background-image:none!important;color:var(--st-accent,var(--red2))!important;box-shadow:none!important;border-radius:999px!important}
+/* cards and panels */
+html[data-st-card=b] :is(.panel,.tile,.sbt){background:rgba(255,255,255,.04)!important;background-image:none!important;border:1px solid rgba(255,255,255,.1)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+html[data-st-card=c] :is(.panel,.tile,.sbt){background:transparent!important;background-image:none!important;border:1px solid var(--st-line,rgba(255,255,255,.16))!important;box-shadow:none!important;border-radius:6px!important}
+/* notification badges */
+html[data-st-badge=b] :is(.hdr-n,.ofab-n,.nb){background:transparent!important;color:var(--st-accent,var(--red2))!important;box-shadow:inset 0 0 0 1.5px var(--st-accent,var(--red))}
+html[data-st-badge=c] :is(.hdr-n,.ofab-n,.nb){font-size:0!important;min-width:10px!important;width:10px;height:10px;padding:0!important;border-radius:50%}
+/* chips and filter pills */
+html[data-st-chip=b] :is(.chip,.rchip){background:color-mix(in srgb,var(--st-accent,var(--red)) 14%,transparent)!important;border-color:transparent!important;color:var(--st-text,#fff)}
+html[data-st-chip=c] :is(.chip,.rchip){background:transparent!important;border-radius:6px!important;border:1px solid var(--st-line,rgba(255,255,255,.2))!important}
+/* navigation links */
+html[data-st-nav=b] :is(header a.on,nav a.on){background:transparent!important;box-shadow:inset 0 -2px 0 var(--st-accent,var(--red))!important;border-radius:0!important}
+html[data-st-nav=c] :is(header a.on,nav a.on){background:var(--st-accent,var(--red))!important;color:var(--st-btntext,#fff)!important;border-radius:999px!important}
+/* the dock */
+html[data-st-dock=b] .tabbar{background:rgba(14,15,18,.6)!important;border:1px solid rgba(255,255,255,.12)!important;box-shadow:none!important;-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
+html[data-st-dock=c] .tabbar{background:transparent!important;border:0!important;border-top:1px solid var(--st-line,rgba(255,255,255,.12))!important;border-radius:0!important;box-shadow:none!important;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+/* inputs */
+html[data-st-input=b] :is(input,select,textarea){background:transparent!important;border:0!important;border-bottom:1.5px solid var(--st-line,rgba(255,255,255,.3))!important;border-radius:0!important}
+html[data-st-input=c] :is(input,select,textarea){background:rgba(255,255,255,.06)!important;border-color:transparent!important;border-radius:999px!important;padding-inline:16px}
+/* headings */
+html[data-st-heading=b] :is(h1,h2,h3,.sec h2){font-family:Inter,system-ui,sans-serif!important;text-transform:none!important;letter-spacing:-.02em!important;font-weight:700!important}
+html[data-st-heading=c] :is(h1,h2,h3,.sec h2){font-family:Georgia,"Times New Roman",serif!important;text-transform:none!important;letter-spacing:0!important;font-weight:600!important}
+/* tables */
+html[data-st-table=b] table :is(td,th){border:0!important;border-bottom:1px solid var(--st-line,rgba(255,255,255,.1))!important;background:transparent!important}
+html[data-st-table=c] table tbody tr:nth-child(odd) td{background:rgba(255,255,255,.04)!important}
+/* icons (the emoji and line icons across the site) */
+html[data-st-icon=b] :is(.ri,.k,.ico,.key svg,.hdr-i svg){filter:grayscale(1) contrast(1.1)!important}
+html[data-st-icon=c] :is(.ri,.k,.ico,.key svg,.hdr-i svg){color:var(--st-accent,var(--red2))!important;filter:grayscale(1) brightness(1.4)!important}
+/* section titles */
+html[data-st-divider=b] .ribbon{background:none!important;clip-path:none!important;filter:none!important;padding:0!important;color:var(--st-muted,#9aa1ab)!important;letter-spacing:.14em;display:inline-flex;align-items:center;gap:10px}
+html[data-st-divider=b] .ribbon::after{content:"";width:36px;height:1px;background:currentColor;opacity:.5}
+html[data-st-divider=c] .ribbon{background:none!important;clip-path:none!important;filter:none!important;padding:0 0 6px!important;color:var(--st-text,#fff)!important;border-bottom:2px solid var(--st-accent,var(--red))}
+/* switches */
+html[data-st-toggle=b] .cc-sw span,html[data-st-toggle=b] .cc-sw span:after{border-radius:8px!important}
+html[data-st-toggle=c] .cc-sw{transform:scale(.82);transform-origin:right center}
+
+/* ---------- motions (any number at once) ---------- */
+@keyframes stFade{from{opacity:0}to{opacity:1}}
+@keyframes stSlide{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes stZoom{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+@keyframes stBlur{from{opacity:0;filter:blur(14px)}to{opacity:1;filter:none}}
+@keyframes stWipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes stRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes stScale{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+@keyframes stFlip{from{opacity:0;transform:perspective(700px) rotateX(-14deg)}to{opacity:1;transform:none}}
+@keyframes stFloat{50%{transform:translateY(-6px)}}
+@keyframes stBreathe{50%{transform:scale(1.045)}}
+@keyframes stShimmer{from{background-position:-200% 0}to{background-position:200% 0}}
+@keyframes stPing{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--st-accent,var(--red)) 55%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+@keyframes stSway{50%{transform:rotate(1.6deg)}}
+html[data-st-motion~=page-fade] main#main{animation:stFade .5s both}
+html[data-st-motion~=page-slide] main#main{animation:stSlide .5s cubic-bezier(.2,.9,.2,1) both}
+html[data-st-motion~=page-zoom] main#main{animation:stZoom .5s cubic-bezier(.2,.9,.2,1) both}
+html[data-st-motion~=page-blur] main#main{animation:stBlur .55s both}
+html[data-st-motion~=page-wipe] main#main{animation:stWipe .6s cubic-bezier(.65,0,.35,1) both}
+html[data-st-motion~=enter-rise] :is(.panel,.tile,.sbt,.sec>header){animation:stRise .6s cubic-bezier(.2,.9,.2,1) both}
+html[data-st-motion~=enter-fade] :is(.panel,.tile,.sbt,.sec>header){animation:stFade .6s both}
+html[data-st-motion~=enter-scale] :is(.panel,.tile,.sbt,.sec>header){animation:stScale .55s cubic-bezier(.34,1.56,.64,1) both}
+html[data-st-motion~=enter-blur] :is(.panel,.tile,.sbt,.sec>header){animation:stBlur .6s both}
+html[data-st-motion~=enter-flip] :is(.panel,.tile,.sbt){animation:stFlip .65s cubic-bezier(.2,.9,.2,1) both}
+html[data-st-motion~=enter-stagger] :is(.panel,.tile,.sbt):nth-child(2){animation-delay:.08s}
+html[data-st-motion~=enter-stagger] :is(.panel,.tile,.sbt):nth-child(3){animation-delay:.16s}
+html[data-st-motion~=enter-stagger] :is(.panel,.tile,.sbt):nth-child(4){animation-delay:.24s}
+html[data-st-motion~=enter-stagger] :is(.panel,.tile,.sbt):nth-child(n+5){animation-delay:.32s}
+html[data-st-motion~=hover-lift] :is(.panel,.tile,.sbt,.btn,.chip){transition:transform .25s cubic-bezier(.2,.9,.2,1)}
+html[data-st-motion~=hover-lift] :is(.panel,.tile,.sbt,.btn,.chip):hover{transform:translateY(-4px)}
+html[data-st-motion~=hover-scale] :is(.panel,.tile,.sbt,.btn,.chip){transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+html[data-st-motion~=hover-scale] :is(.panel,.tile,.sbt,.btn,.chip):hover{transform:scale(1.03)}
+html[data-st-motion~=hover-glow] :is(.panel,.tile,.sbt,.btn,.chip){transition:box-shadow .3s}
+html[data-st-motion~=hover-glow] :is(.panel,.tile,.sbt,.btn,.chip):hover{box-shadow:0 0 22px color-mix(in srgb,var(--st-glow,var(--st-accent,var(--red))) 55%,transparent)}
+html[data-st-motion~=hover-underline] main a{background:linear-gradient(currentColor,currentColor) 0 100%/0 1.5px no-repeat;transition:background-size .3s}
+html[data-st-motion~=hover-underline] main a:hover{background-size:100% 1.5px}
+html[data-st-motion~=hover-tilt] :is(.panel,.tile,.sbt){transition:transform .3s}
+html[data-st-motion~=hover-tilt] :is(.panel,.tile,.sbt):hover{transform:perspective(800px) rotateX(2deg) rotateY(-2deg)}
+html[data-st-motion~=press-squish] :is(.btn,.chip,.rchip,.panel):active{transform:scale(.95)!important}
+html[data-st-motion~=press-sink] :is(.btn,.chip,.rchip,.panel):active{transform:translateY(3px)!important}
+html[data-st-motion~=press-ripple] :is(.btn,.chip,.rchip):active{box-shadow:0 0 0 9px color-mix(in srgb,var(--st-accent,var(--red)) 25%,transparent)!important;transition:box-shadow .2s}
+html[data-st-motion~=idle-float] :is(.pc-card,.stage .pc,.hubk){animation:stFloat 5s ease-in-out infinite}
+html[data-st-motion~=idle-breathe] :is(.hdr-n,.tabbar .hubk,.ofab-btn){animation:stBreathe 3.2s ease-in-out infinite}
+html[data-st-motion~=idle-shimmer] .ribbon{background-image:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%)!important;background-size:200% 100%;animation:stShimmer 3.4s linear infinite}
+html[data-st-motion~=idle-ping] :is(.hdr-n,.ofab-n,.nb){animation:stPing 1.8s infinite}
+html[data-st-motion~=idle-sway] :is(.pc-card,.stage .pc){animation:stSway 6s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){html[data-st-motion] *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+html[data-motion=off][data-st-motion] *{animation:none!important;transition:none!important}

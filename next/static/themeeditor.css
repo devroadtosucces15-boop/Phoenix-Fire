@@ -1,0 +1,44 @@
+/* Theme Studio editor: the owner's floating button and its bottom sheet. Fixed neutral dark glass, on purpose: it must stay readable whatever look is being edited. */
+.tse{--t-bg:rgba(16,17,20,.92);--t-line:rgba(255,255,255,.12);--t-tx:#eef0f3;--t-mu:#9aa1ab;--t-fill:rgba(255,255,255,.06);--t-acc:#9db7e8}
+.tse-btn{position:fixed;z-index:9975;left:12px;bottom:calc(92px + env(safe-area-inset-bottom));width:54px;height:54px;border-radius:50%;border:1px solid var(--t-line);background:var(--t-bg);color:var(--t-tx);display:grid;place-items:center;padding:0;cursor:pointer;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .2s}
+.tse-btn svg{width:30px;height:30px}.tse-btn .f{fill:#fff}
+.tse-btn:hover{transform:scale(1.07) rotate(-4deg);border-color:rgba(255,255,255,.3)}.tse-btn:active{transform:scale(.94)}
+.tse-btn:focus-visible{outline:2px solid var(--t-acc);outline-offset:3px}
+.tse.on .tse-btn{border-color:var(--t-acc)}
+@media(min-width:861px){.tse-btn{bottom:16px}}
+.tse-panel{position:fixed;z-index:9977;left:0;right:0;bottom:0;max-height:min(78vh,760px);display:flex;flex-direction:column;background:var(--t-bg);color:var(--t-tx);border:1px solid var(--t-line);border-bottom:0;border-radius:22px 22px 0 0;-webkit-backdrop-filter:blur(24px) saturate(1.1);backdrop-filter:blur(24px) saturate(1.1);font:450 14px/1.4 Inter,system-ui,sans-serif;animation:tseUp .3s cubic-bezier(.2,.9,.2,1)}
+.tse-panel[hidden]{display:none}
+@media(min-width:700px){.tse-panel{left:16px;right:auto;bottom:16px;width:min(560px,calc(100vw - 32px));border-bottom:1px solid var(--t-line);border-radius:22px}}
+@keyframes tseUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.tse-h{display:flex;align-items:center;gap:10px;padding:16px 16px 8px}.tse-t{flex:1;min-width:0}.tse-t b{display:block;font:650 17px/1.2 Inter,system-ui,sans-serif}.tse-t small{color:var(--t-mu);font-size:12px}
+.tse-x{width:40px;height:40px;border-radius:50%;border:1px solid var(--t-line);background:transparent;color:var(--t-tx);font-size:20px;cursor:pointer}
+.tse-seg{display:flex;gap:2px;padding:3px;margin:0 16px 8px;border-radius:14px;background:var(--t-fill)}
+.tse-p .tse-seg,.tse-fxr .tse-seg{margin:0}
+.tse-seg button{flex:1 1 0;min-width:0;min-height:38px;padding:0 8px;border:0;border-radius:11px;background:transparent;color:var(--t-mu);font:600 13px Inter,system-ui,sans-serif;cursor:pointer;transition:background .2s,color .2s}
+.tse-seg button[aria-checked=true]{background:rgba(255,255,255,.13);color:var(--t-tx)}
+.tse-tabs{display:flex;gap:4px;padding:0 16px 8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(--t-line)}.tse-tabs::-webkit-scrollbar{display:none}
+.tse-tabs button{flex:none;min-height:40px;padding:0 14px;border:0;border-radius:99px;background:transparent;color:var(--t-mu);font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
+.tse-tabs button[aria-selected=true]{background:var(--t-fill);color:var(--t-tx);box-shadow:inset 0 -2px 0 var(--t-acc)}
+.tse-body{flex:1;min-height:0;overflow-y:auto;padding:14px 16px;overscroll-behavior:contain}
+.tse-body h4{margin:18px 0 8px;font:650 11.5px Inter,system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:var(--t-mu)}.tse-body h4 small{text-transform:none;letter-spacing:0;font-weight:500;margin-left:6px}
+.tse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.tse-f{display:grid;gap:6px;padding:10px 12px;border:1px solid var(--t-line);border-radius:14px;background:var(--t-fill);color:var(--t-mu);font:600 12.5px Inter,system-ui,sans-serif}.tse-f em{font-style:normal;color:var(--t-tx);font-weight:600;margin-left:6px}
+.tse-c,.tse-n{display:flex;align-items:center;gap:10px}.tse-c code{flex:1;font:500 12.5px ui-monospace,monospace;color:var(--t-tx)}
+.tse input[type=color]{width:44px;height:36px;padding:2px;border:1px solid var(--t-line);border-radius:10px;background:transparent;cursor:pointer}
+.tse input[type=range]{flex:1;min-width:0;accent-color:var(--t-acc)}
+.tse select,.tse input[type=number]{min-height:42px;width:100%;padding:0 12px;border:1px solid var(--t-line);border-radius:12px;background:rgba(0,0,0,.35);color:var(--t-tx);font:500 14px Inter,system-ui,sans-serif}
+.tse-r{width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--t-line);background:transparent;color:var(--t-mu);cursor:pointer}
+.tse-link{border:0;background:none;padding:6px 8px;color:var(--t-acc);font:600 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+.tse-hint{margin:0 0 12px;color:var(--t-mu);font-size:13px}
+.tse-parts{display:grid;gap:12px}.tse-p{display:grid;gap:6px}.tse-p b{font:600 13px Inter,system-ui,sans-serif}
+.tse-chips{display:flex;flex-wrap:wrap;gap:8px}
+.tse-chip{position:relative;display:inline-flex;align-items:center;min-height:40px;padding:0 14px;border:1px solid var(--t-line);border-radius:99px;background:var(--t-fill);color:var(--t-mu);font:600 13px Inter,system-ui,sans-serif;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.tse-chip input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.tse-chip:has(input:checked){background:rgba(157,183,232,.18);border-color:rgba(157,183,232,.45);color:var(--t-tx)}
+.tse-chip:has(input:focus-visible){outline:2px solid var(--t-acc);outline-offset:2px}
+.tse-fx{display:grid;gap:8px;margin-top:10px}.tse-fxr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px;align-items:center;color:var(--t-tx);font-weight:550}
+.tse-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--t-line)}
+.tse-s{flex:1 1 100%;min-width:0;color:var(--t-mu);font-size:12.5px}
+.tse-b{flex:1 1 auto;min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--t-line);background:transparent;color:var(--t-tx);font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
+.tse-b.pri{background:var(--t-tx);color:#101114;border-color:transparent}.tse-b:disabled{opacity:.4;cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){.tse *{animation:none!important;transition:none!important}}
