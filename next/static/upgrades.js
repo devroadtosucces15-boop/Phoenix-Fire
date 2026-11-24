@@ -88,13 +88,90 @@
     for (const m of ms) { const el = m.target.nodeType === 3 ? m.target.parentElement : m.target; const b = el && el.closest && el.closest('.hdr-n,.nb,.ofab-n'); if (b && !b.classList.contains('up-pop')) { replay(b, 'up-pop'); setTimeout(() => b.classList.remove('up-pop'), 500); } }
   }).observe(d.documentElement, { characterData: true, childList: true, subtree: true });
 
+  // ---------- F. dock and tab bar (dockfx): a pill glides between tabs (and across a page load), the icon hops, the ring squeezes and bounces ----------
+  const SP = 'cubic-bezier(.2,1.15,.3,1)', OUT = 'cubic-bezier(.2,.8,.2,1)';
+  const buzz = (n) => { try { if (!w.PhoenixFx || w.PhoenixFx.on('haptics')) navigator.vibrate && navigator.vibrate(n); } catch {} };
+  const store = (v) => { try { if (v === undefined) return sessionStorage.getItem('phoenix.pillx'); sessionStorage.setItem('phoenix.pillx', String(v)); } catch {} return null; };
+  const pillFor = (tb) => { let p = tb.querySelector(':scope > .up-pill'); if (!p) { p = d.createElement('i'); p.className = 'up-pill'; p.setAttribute('aria-hidden', 'true'); tb.insertBefore(p, tb.firstChild); } return p; };
+  const pillTo = (tb, tab, from) => {
+    const p = pillFor(tb), x = tab.offsetLeft;
+    p.style.cssText = 'opacity:1;left:0;top:' + tab.offsetTop + 'px;width:' + tab.offsetWidth + 'px;height:' + tab.offsetHeight + 'px;transform:translate3d(' + x + 'px,0,0)';
+    if (from != null && from !== x && !reduced() && variant('dockfx') !== 'c')
+      p.animate([{ transform: 'translate3d(' + from + 'px,0,0) scaleX(1)' }, { transform: 'translate3d(' + ((from + x) / 2) + 'px,0,0) scaleX(1.35)', offset: 0.5 }, { transform: 'translate3d(' + x + 'px,0,0) scaleX(1)' }], { duration: 380, easing: OUT });
+    store(x);
+  };
+  let pillWas = false;
+  const pillSync = () => {
+    if (!variant('dockfx') && !pillWas) return; pillWas = !!variant('dockfx');
+    const tb = d.querySelector('.tabbar'); if (!tb) return;
+    if (!variant('dockfx')) { tb.querySelectorAll(':scope > .up-pill').forEach((n) => n.remove()); return; }
+    const on = tb.querySelector('a.on:not(.key)'); if (!on) { pillFor(tb).style.opacity = 0; return; }
+    const was = store(); pillTo(tb, on, was == null ? null : +was);
+  };
+  d.addEventListener('click', (e) => {
+    if (!variant('dockfx')) return;
+    const a = e.target.closest && e.target.closest('.tabbar a:not(.key)'); if (!a || reduced()) return;
+    const tb = a.closest('.tabbar'), was = tb.querySelector(':scope > .up-pill'), from = was ? new DOMMatrixReadOnly(getComputedStyle(was).transform).m41 : null;
+    pillTo(tb, a, from);
+    const ic = a.querySelector('.tbi,span'); if (ic && variant('dockfx') === 'b') { ic.animate([{ transform: 'translate3d(0,0,0) scale(1)' }, { transform: 'translate3d(0,-7px,0) scale(1.25)', offset: 0.4 }, { transform: 'translate3d(0,0,0) scale(1)' }], { duration: 420, easing: SP }); buzz(6); }
+  }, true);
+  d.addEventListener('pointerup', (e) => {
+    if (!variant('dockfx') || reduced()) return;
+    const r = e.target.closest && e.target.closest('.dk-ring'); if (r) r.animate([{ scale: 0.9 }, { scale: variant('dockfx') === 'c' ? 1.06 : 1.12, offset: 0.5 }, { scale: 1 }], { duration: 380, easing: SP });
+  }, true);
+
+  // ---------- I. dialogs, sheets and toasts (overlayfx): the dialog grows out of the button that opened it, toasts flick away ----------
+  let opener = null;
+  d.addEventListener('pointerdown', (e) => { opener = (e.target.closest && e.target.closest('button,.btn,a')) || null; }, true);
+  const growDialog = (dlg) => {
+    const panel = dlg.querySelector('.ph-dialog-panel'); if (!panel || !opener || reduced() || !variant('overlayfx')) return;
+    const b = opener.getBoundingClientRect(), r = panel.getBoundingClientRect(); if (!b.width || !r.width) return;
+    const dx = (b.left + b.width / 2) - (r.left + r.width / 2), dy = (b.top + b.height / 2) - (r.top + r.height / 2), q = variant('overlayfx') === 'c';
+    panel.animate([{ opacity: 0, transform: 'translate3d(' + dx + 'px,' + dy + 'px,0) scale(.25)' }, { opacity: 1, transform: 'none' }], { duration: q ? 300 : 420, easing: SP });
+    if (!q) { [].slice.call(panel.children).forEach((k, i) => k.animate([{ opacity: 0, transform: 'translate3d(0,8px,0)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 160 + i * 50, easing: OUT, fill: 'backwards' })); buzz(8); }
+  };
+  const swipeToast = (el) => {
+    if (el._upSwipe) return; el._upSwipe = 1; let x0 = 0, dr = false, moved = 0;
+    el.addEventListener('pointerdown', (e) => { if (!variant('overlayfx') || e.target.closest('button')) return; dr = true; moved = 0; x0 = e.clientX; el.classList.add('up-drag'); try { el.setPointerCapture(e.pointerId); } catch {} });
+    el.addEventListener('pointermove', (e) => { if (!dr) return; const dx = e.clientX - x0; moved = Math.max(moved, Math.abs(dx)); el.style.transform = 'translate3d(' + dx + 'px,0,0)'; el.style.opacity = String(1 - Math.min(1, Math.abs(dx) / 200)); });
+    const end = (e) => { if (!dr) return; dr = false; el.classList.remove('up-drag'); const dx = e.clientX - x0;
+      if (Math.abs(dx) > 70) { const x = el.querySelector('.ph-n-x'); el.style.transition = 'transform .24s,opacity .24s'; el.style.transform = 'translate3d(' + (dx > 0 ? 220 : -220) + 'px,0,0)'; el.style.opacity = '0'; setTimeout(() => x && x.click(), 200); }
+      else { el.style.transform = ''; el.style.opacity = ''; } };
+    el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+    el.addEventListener('click', (e) => { if (moved > 6) { e.stopPropagation(); e.preventDefault(); moved = 0; } }, true);
+  };
+
+  // ---------- K. charts and numbers (vizfx): a glowing dot draws the line chart as it appears ----------
+  const dotFor = (wave) => {
+    if (wave._upDot || !variant('vizfx') || variant('vizfx') === 'c' || reduced()) return;
+    const path = wave.querySelector('path.l'); if (!path || !path.getTotalLength) return; wave._upDot = 1;
+    const host = wave.parentElement; if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    const dot = d.createElement('i'); dot.className = 'up-dot'; dot.setAttribute('aria-hidden', 'true'); host.appendChild(dot);
+    const L = path.getTotalLength(), t0 = performance.now() + 200, vb = (wave.viewBox && wave.viewBox.baseVal) || { width: 300, height: 56 };
+    const ease = (k) => (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2);
+    (function s(t) {
+      const k = Math.min(1, Math.max(0, (t - t0) / 2000)), pt = path.getPointAtLength(L * ease(k)), sr = host.getBoundingClientRect(), pr = wave.getBoundingClientRect();
+      dot.style.opacity = k > 0 && k < 1 ? 1 : 0; dot.style.transform = 'translate3d(' + (pr.left - sr.left + pt.x * pr.width / vb.width - 5) + 'px,' + (pr.top - sr.top + pt.y * pr.height / vb.height - 5) + 'px,0)';
+      if (k < 1) requestAnimationFrame(s); else setTimeout(() => { dot.remove(); wave._upDot = 0; }, 400);
+    })(performance.now());
+  };
+  const waves = () => { if (!variant('vizfx')) return; d.querySelectorAll('.wave').forEach((wv) => { if (wv._upIO) return; wv._upIO = new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); wv._upIO = null; dotFor(wv); } }, { threshold: 0.4 }); wv._upIO.observe(wv); }); };
+
   // ---------- follow the Theme Studio ----------
   const sync = () => {
     if (variant('playercard')) { cards().forEach(arm); if (!gyro) { gyro = true; addEventListener('deviceorientation', onGyro); } }
     else { cards().forEach(disarm); if (gyro) { gyro = false; removeEventListener('deviceorientation', onGyro); } }
+    pillSync(); waves(); if (variant('overlayfx')) d.querySelectorAll('.ph-notice').forEach(swipeToast);
   };
-  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx', 'data-st-tilefx', 'data-st-statusfx'] });
+  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx', 'data-st-tilefx', 'data-st-statusfx', 'data-st-dockfx', 'data-st-overlayfx', 'data-st-vizfx'] });
   new MutationObserver((ms) => { if (!variant('playercard')) return; for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) { if (n.matches && n.matches('.pc-card')) arm(n); n.querySelectorAll && n.querySelectorAll('.pc-card').forEach(arm); } }).observe(d.documentElement, { childList: true, subtree: true });
+  // dialogs, toasts and charts appear later: watch for them
+  new MutationObserver((ms) => { if (!variant('overlayfx') && !variant('vizfx')) return;
+    for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) {
+      if (n.matches('.ph-notice')) swipeToast(n);
+      if (n.matches('.ph-dialog')) growDialog(n);
+      if (variant('vizfx') && (n.matches('.wave') || n.querySelector('.wave'))) waves();
+    } }).observe(d.body || H, { childList: true, subtree: true });
   w.PFUpgrades = { arm, disarm, step, mk, clamp, K };
   sync();
 })();
