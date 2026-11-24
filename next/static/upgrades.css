@@ -125,3 +125,63 @@ html[data-st-vizfx=c] .wx .fo{animation-name:upOrbQ}
 @media(prefers-reduced-motion:reduce){html[data-st-vizfx] :is(.wx .tbl .bar i,.wx .fo,.wx .tile.ring .v){animation-duration:.01s;animation-delay:0s!important}html[data-st-vizfx] .up-dot{display:none}}
 html[data-motion=off][data-st-vizfx] :is(.wx .tbl .bar i,.wx .fo,.wx .tile.ring .v){animation-duration:.01s;animation-delay:0s!important}
 html[data-motion=off][data-st-vizfx] .up-dot{display:none}
+
+/* ---------- hub entrance (lab family C): the doors and the crest are in fx.js (kind "lockerup"); here the cover colour and the card that rises ---------- */
+html[data-st-hubfx][data-tin=lockerup]:before{background:linear-gradient(90deg,#3b4350,#2a3038 45%,#222830 49.6%,#0b0f16 49.6% 50.4%,#222830 50.4%,#2a3038 55%,#3b4350)}
+html[data-st-hubfx=b] .pc-hero{animation:upRise .48s cubic-bezier(.2,1.15,.3,1) .06s both}
+html[data-st-hubfx=c] .pc-hero{animation:upRise .4s cubic-bezier(.2,.8,.2,1) .1s both}
+@keyframes upRise{from{opacity:0;transform:translate3d(0,46px,0) scale(.9)}}
+@media(prefers-reduced-motion:reduce){html[data-st-hubfx] .pc-hero{animation:none}}
+html[data-motion=off][data-st-hubfx] .pc-hero{animation:none}
+
+/* ---------- scrolling (lab family D): everything visible at rest, rows lean and scale near the middle, the header shrinks, a progress line fills ---------- */
+html[data-st-scrollfx].mx :is(.rv-g>*,.reveal,.rv-c){opacity:1;transform:none;clip-path:none}
+html[data-st-scrollfx] :is(.rv-g>*,.rcard,.rrow){translate:0 var(--up-dy,0px);scale:var(--up-s,1);will-change:translate,scale}
+html[data-st-scrollfx] .bar .lg{transform-origin:0 50%;scale:calc(1 - var(--up-hk,0)*.2)}
+html[data-st-scrollfx] .bar{background-color:rgba(10,7,5,calc(.82 + var(--up-hk,0)*.14))}
+html[data-st-scrollfx] .up-pg{position:fixed;left:0;right:0;top:0;height:3px;z-index:60;background:linear-gradient(90deg,var(--red),var(--gold,var(--red)));transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
+html[data-st-scrollfx] .sm-bar{display:none}
+html[data-st-scrollfx=b] :is(.rcard,.rrow){opacity:var(--up-o,1)}
+html[data-st-scrollfx=c] .up-pg{height:2px;opacity:.8}
+@media(prefers-reduced-motion:reduce){html[data-st-scrollfx] :is(.rv-g>*,.rcard,.rrow){translate:none;scale:none}html[data-st-scrollfx] .bar .lg{scale:none}}
+html[data-motion=off][data-st-scrollfx] :is(.rv-g>*,.rcard,.rrow){translate:none;scale:none}
+html[data-motion=off][data-st-scrollfx] .bar .lg{scale:none}
+
+/* ---------- tap reactions (lab family E): the picked chip glides in, the rest soften, bars slide, the dot springs, numbers roll ---------- */
+html[data-st-tapfx] .chip{transition:background-color .4s,color .3s,opacity .3s,scale .3s}
+html[data-st-tapfx=b] :has(>.chip.on)>.chip:not(.on){opacity:.6;scale:.97}
+html[data-st-tapfx=b] :has(>.chip.on)>.chip:not(.on):hover{opacity:1}
+html[data-st-tapfx] :is(.wx .tbl .bar i,.st i){transition:width .6s cubic-bezier(.2,.9,.2,1)}
+html[data-st-tapfx=b] :is(.pitch b,.pitch .dot){transition:left .52s cubic-bezier(.3,1.3,.5,1),top .52s cubic-bezier(.3,1.3,.5,1)}
+html[data-st-tapfx=c] :is(.pitch b,.pitch .dot){transition:left .3s cubic-bezier(.2,.8,.2,1),top .3s cubic-bezier(.2,.8,.2,1)}
+html[data-st-tapfx] .up-roll2{animation:upRoll .32s cubic-bezier(.34,1.56,.64,1)}
+html[data-st-tapfx=c] .up-roll2{animation-name:upRollQ}
+@keyframes upRollQ{from{transform:translate3d(0,6px,0);opacity:0}}
+@media(prefers-reduced-motion:reduce){html[data-st-tapfx] :is(.chip,.wx .tbl .bar i,.st i,.pitch b,.up-roll2){transition:none;animation:none}}
+html[data-motion=off][data-st-tapfx] :is(.chip,.wx .tbl .bar i,.st i,.pitch b,.up-roll2){transition:none;animation:none}
+
+/* ---------- menus (lab family G): the panel grows from its button, items drop in one by one, the page dims, a highlight follows the pointer ---------- */
+html[data-st-menufx] .up-scrim{position:fixed;inset:0;z-index:69;background:rgba(10,7,5,.5);opacity:0;pointer-events:none;transition:opacity .22s}
+html[data-st-menufx] .up-scrim.on{opacity:1;pointer-events:auto}
+html[data-st-menufx=c] .up-scrim{background:rgba(10,7,5,.3)}
+html[data-st-menufx=b] .fx-orb .ob{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+html[data-st-menufx=b] .fx-orb.open .ob{transform:rotate(90deg)}
+html[data-st-menufx] .fx-orb.open .fan a{transition-delay:calc(var(--k)*38ms + 90ms)}
+html[data-st-menufx=c] .fx-orb.open .fan a{transition-delay:calc(var(--k)*20ms)}
+html[data-st-menufx=b] .fx-isl .il{transition:opacity .22s,transform .38s cubic-bezier(.2,1.15,.3,1)}
+html[data-st-menufx=c] .fx-isl .il{transition:opacity .2s,transform .26s cubic-bezier(.2,.8,.2,1)}
+html[data-st-menufx=b] .fx-isl.open .il a{animation:upDrop .26s cubic-bezier(.2,.8,.2,1) both}
+html[data-st-menufx=b] .fx-isl.open .il a:nth-child(2){animation-delay:.13s}
+html[data-st-menufx=b] .fx-isl.open .il a:nth-child(3){animation-delay:.17s}
+html[data-st-menufx=b] .fx-isl.open .il a:nth-child(4){animation-delay:.21s}
+html[data-st-menufx=b] .fx-isl.open .il a:nth-child(n+5){animation-delay:.25s}
+html[data-st-menufx] .il .up-hl{position:absolute;left:0;top:0;border-radius:14px;background:rgba(255,255,255,.1);pointer-events:none;opacity:0;transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .15s,width .22s,height .22s}
+@keyframes upDrop{from{opacity:0;transform:translate3d(0,-8px,0)}}
+@media(prefers-reduced-motion:reduce){html[data-st-menufx] :is(.fx-orb .ob,.fx-isl .il,.fx-isl .il a,.up-scrim,.il .up-hl){transition:none;animation:none}}
+html[data-motion=off][data-st-menufx] :is(.fx-orb .ob,.fx-isl .il,.fx-isl .il a,.up-scrim,.il .up-hl){transition:none;animation:none}
+
+/* ---------- page transitions (lab family H): the cover colour while the next page loads (the sweep and slide are in fx.js, kind "ember") ---------- */
+html[data-st-pagefx][data-tin=ember]:before{background:#0b0f16}
+html[data-st-pagefx=b][data-tin=ember]:after,html[data-st-pagefx=c][data-tin=ember]:after{opacity:0}
+html[data-st-pagefx=b][data-tin=ember]{--up-line:1}
+html[data-st-pagefx=c][data-tin=ember]{--up-line:.7}

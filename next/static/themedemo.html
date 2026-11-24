@@ -43,6 +43,19 @@ body::before,body::after{display:none}
 .dm .icons{display:flex;gap:14px;font-size:24px}
 .dm .icons .ri{display:inline-grid;place-items:center;width:34px;height:34px}
 .dm .ribbon{display:inline-block}
+.dm .dmstage{position:relative;width:var(--w);height:var(--h);border-radius:12px;overflow:hidden;background:#0e0905;border:1px solid var(--cu-line);perspective:700px}
+.dm .dmpage,.dm .dmpg{position:absolute;inset:0;padding:12px;display:grid;gap:8px;align-content:start}.dm .dmpg{inset:34px 0 0 0}
+.dm .dmpage i,.dm .dmpg i{display:block;height:20px;border-radius:8px;background:rgba(255,255,255,.08)}
+.dm .dmd{position:absolute;top:0;bottom:0;width:50.5%;background:linear-gradient(90deg,#3b4350,#2a3038 45%,#222830);backface-visibility:hidden;transform:rotateY(-92deg)}
+.dm .dmd.l{left:0;transform-origin:0 50%}.dm .dmd.r{right:0;transform-origin:100% 50%;transform:rotateY(92deg)}
+.dm .dmct{position:absolute;left:50%;top:50%;width:46px;margin:-30px 0 0 -23px;opacity:0}
+.dm .dmring{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px;border-radius:50%;border:3px solid var(--gold,#efcf7a);opacity:0}
+.dm .dmtap{display:grid;gap:8px;width:240px}.dm .dmtap .st{height:8px;border-radius:4px;background:#1d150e}.dm .dmtap .st i{display:block;height:100%;border-radius:4px;background:var(--red)}
+.dm .dmpitch{position:relative;height:70px;border-radius:8px;background:#0f3a24}.dm .dmpitch b{position:absolute;width:12px;height:12px;margin:-6px;border-radius:50%;background:#fff}
+.dm .dmmenu{position:relative;width:260px;height:230px}.dm .up-wrap{position:relative;height:100%}
+.dm .dmtabs{display:flex;gap:6px;padding:8px}.dm .dmtabs button{padding:6px 12px;border-radius:999px;border:0;background:transparent;color:var(--soft,#9aa1ab);font:600 12px Inter,sans-serif;cursor:pointer}.dm .dmtabs button.on{background:var(--p2,#1b1f27);color:#fff}
+.dm .dmline{position:absolute;left:0;right:0;top:0;height:3px;background:var(--red);transform:scaleX(0);transform-origin:0 50%}
+
 </style>
 </head>
 <body>
@@ -65,6 +78,11 @@ body::before,body::after{display:none}
   <section data-demo="dockfx" class="wide"><nav class="tabbar" aria-label="Sample dock"><a class="on" href="#" onclick="return false"><span class="tbi">🛡️</span>Club</a><a href="#" onclick="return false"><span class="tbi">⚽</span>Matches</a><a href="#" onclick="return false"><span class="tbi">📊</span>Stats</a><a href="#" onclick="return false"><span class="tbi">🧠</span>Tactics</a></nav><p class="muted" style="text-align:center;margin-top:8px">Tap a tab.</p></section>
   <section data-demo="overlayfx"><div class="row"><button class="btn gold" type="button" data-pop="toast">Show a toast</button><button class="btn ghost" type="button" data-pop="dialog">Open a dialog</button></div></section>
   <section data-demo="vizfx"><div class="wx"><div class="tbl" style="width:260px"><div class="bar"><i style="--w:86%"></i></div><div class="bar" style="margin-top:8px"><i style="--w:64%"></i></div><div class="bar" style="margin-top:8px"><i style="--w:72%"></i></div></div><div class="formrow" style="margin-top:12px"><span class="fo W">W</span><span class="fo W">W</span><span class="fo D">D</span><span class="fo W">W</span><span class="fo L">L</span></div><div class="tile ring" style="--p:.72;margin-top:6px"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="32"/><circle class="v" cx="42" cy="42" r="32"/></svg><b>72%</b></div><button class="chip" type="button" data-replay>Replay</button></div></section>
+  <section data-demo="hubfx"><div class="dmstage" id="dmDoors" style="--w:280px;--h:150px"><div class="dmpage"><b>Locker</b><i></i></div><div class="dmd l"></div><div class="dmd r"></div><img class="dmct" src="crest-sm.png" alt=""><div class="dmring"></div></div><div class="row" style="margin-top:8px"><button class="btn ghost" type="button" data-pop="doors">Enter the locker</button></div></section>
+  <section data-demo="scrollfx" class="wide"><div class="rv-g" style="display:grid;gap:12px;width:280px;margin:0 auto;padding:10px 0"><div class="rcard panel">Match 01 · W 4–2</div><div class="rcard panel">Match 02 · W 3–1</div><div class="rcard panel">Match 03 · D 2–2</div><div class="rcard panel">Match 04 · W 5–3</div><div class="rcard panel">Match 05 · L 1–2</div><div class="rcard panel">Match 06 · W 6–1</div></div></section>
+  <section data-demo="tapfx"><div class="dmtap"><div class="row" id="dmChips"><button class="chip on" type="button">NOVA</button><button class="chip" type="button">KAI</button><button class="chip" type="button">RIO</button></div><div class="st"><i style="width:80%"></i></div><div class="st"><i style="width:60%"></i></div><div class="pitch dmpitch"><b style="left:50%;top:50%"></b></div></div></section>
+  <section data-demo="menufx"><div class="dmmenu"><div class="up-wrap"><div class="fx-isl" style="position:absolute;left:50%;top:0;opacity:1;pointer-events:auto;transform:translateX(-50%)"><button class="ib" type="button"><span class="cur">Club · Home</span></button><div class="il"><div class="r1"><a class="on" href="#" onclick="return false">Club</a><a href="#" onclick="return false">Matches</a><a href="#" onclick="return false">Stats</a><a href="#" onclick="return false">Tactics</a></div></div></div></div></div></section>
+  <section data-demo="pagefx"><div class="dmstage" id="dmPages" style="--w:280px;--h:130px"><div class="dmtabs"><button type="button" class="on" data-i="0">Club</button><button type="button" data-i="1">Matches</button><button type="button" data-i="2">Stats</button></div><div class="dmpgs"><div class="dmpg"><b>Club</b><i></i><i></i></div></div><div class="dmline"></div></div></section>
   <section data-demo="playercard"><div class="pc pc-card t-gold tilt" style="--s:0.62" data-k="demo" data-pos="MID" role="img" aria-label="Sample player card"><span class="shell"></span><div class="art"><svg class="fb" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice"><path class="sil" d="M50 14c-9 0-16 8-16 18 0 8 4 14 9 17-14 3-27 12-30 27v8h74v-8c-3-15-16-24-30-27 5-3 9-9 9-17 0-10-7-18-16-18z"/><text class="num" x="50" y="97" text-anchor="middle">PY</text></svg></div><span class="ovr">85</span><span class="pos">MID</span><span class="crestm"><img src="crest.png" alt=""></span><span class="name">PYRAMIND</span><span class="arch">Maestro</span><span class="stats"><div><b class="num">10</b><span>GLS</span></div><div><b class="num">11</b><span>AST</span></div><div><b class="num">7.1</b><span>RAT</span></div><div><b class="num">83%</b><span>PAS</span></div><div><b class="num">57%</b><span>TKL</span></div><div><b class="num">55</b><span>GP</span></div></span><span class="glare"></span><span class="gloss"><i></i></span></div></section>
 </main>
 <script src="themestudio.js"></script>
@@ -74,7 +92,7 @@ body::before,body::after{display:none}
 (() => {
   const main = document.getElementById('main'), q = new URLSearchParams(location.search);
   const ALL = ['divider', 'heading', 'button', 'chip', 'badge', 'input', 'nav', 'card', 'stats'];
-  const MORE = { button: ['button'], buttonfx: ['button'], tilefx: ['tilefx'], statusfx: ['statusfx'], dockfx: ['dockfx'], overlayfx: ['overlayfx'], vizfx: ['vizfx'], playercard: ['playercard'], dock: ['dock'], table: ['table'], toggle: ['toggle'], icon: ['icon'], nav: ['nav'], badge: ['badge'], chip: ['chip'], input: ['input'], card: ['card', 'stats'], heading: ['heading'], divider: ['divider'] };
+  const MORE = { button: ['button'], buttonfx: ['button'], tilefx: ['tilefx'], statusfx: ['statusfx'], dockfx: ['dockfx'], overlayfx: ['overlayfx'], vizfx: ['vizfx'], playercard: ['playercard'], hubfx: ['hubfx'], scrollfx: ['scrollfx'], tapfx: ['tapfx'], menufx: ['menufx'], pagefx: ['pagefx'], dock: ['dock'], table: ['table'], toggle: ['toggle'], icon: ['icon'], nav: ['nav'], badge: ['badge'], chip: ['chip'], input: ['input'], card: ['card', 'stats'], heading: ['heading'], divider: ['divider'] };
   const show = (focus) => {
     const list = focus === 'all' || !focus ? null : (MORE[focus] || [focus]);
     main.classList.toggle('all', !list); main.classList.toggle('solo', !!list && q.has('solo'));
@@ -101,6 +119,25 @@ body::before,body::after{display:none}
       const dlg = document.createElement('div'); dlg.className = 'ph-dialog'; dlg.innerHTML = '<div class="ph-dialog-panel"><h3 class="ph-dialog-h">Remove player?</h3><p class="ph-dialog-msg">They stay in the club, only this lineup changes.</p><div class="row"><button class="btn gold" type="button">Remove</button><button class="btn ghost" type="button">Cancel</button></div></div>';
       dlg.addEventListener('click', (ev) => { if (ev.target === dlg || ev.target.closest('.btn')) dlg.remove(); }); document.body.appendChild(dlg);
     }
+  });
+
+  // sample entrance, chips, menu and page change (the real ones are in fx.js, the Hub and the pages; these use the same look attributes)
+  const lookOf = (c) => document.documentElement.getAttribute('data-st-' + c) || '';
+  const OUT = 'cubic-bezier(.2,.8,.2,1)', SPR = 'cubic-bezier(.2,1.15,.3,1)';
+  main.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-pop="doors"]'); if (b) { const st = main.querySelector('#dmDoors'), q = lookOf('hubfx') === 'c', L = st.querySelector('.l'), R = st.querySelector('.r'), ct = st.querySelector('.dmct'), ring = st.querySelector('.dmring'), A = (el, kf, o) => el.animate(kf, { fill: 'both', ...o });
+      A(L, [{ transform: 'rotateY(-92deg)' }, { transform: 'rotateY(0deg)' }], { duration: q ? 260 : 210, easing: 'cubic-bezier(.5,0,.9,.4)' }); A(R, [{ transform: 'rotateY(92deg)' }, { transform: 'rotateY(0deg)' }], { duration: q ? 260 : 210, easing: 'cubic-bezier(.5,0,.9,.4)' });
+      setTimeout(() => { A(ct, [{ opacity: 0, transform: 'scale(1.35)' }, { opacity: 1, transform: 'none' }], { duration: 170 }); if (!q) A(ring, [{ transform: 'scale(.5)', opacity: .95 }, { transform: 'scale(1.7)', opacity: 0 }], { duration: 480 }); }, q ? 260 : 210);
+      setTimeout(() => { A(L, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(-100deg)' }], { duration: q ? 380 : 300, easing: OUT }); A(R, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(100deg)' }], { duration: q ? 380 : 300, easing: OUT }); A(ct, [{ opacity: 1 }, { opacity: 0 }], { duration: 220 }); }, 620); return; }
+    const c = e.target.closest('#dmChips .chip'); if (c) { c.parentElement.querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === c)); const i = [...c.parentElement.children].indexOf(c), w = [[80, 60], [50, 90], [70, 40]][i];
+      main.querySelectorAll('.dmtap .st i').forEach((el, k) => (el.style.width = w[k] + '%')); const dot = main.querySelector('.dmpitch b'); dot.style.left = [50, 78, 25][i] + '%'; dot.style.top = [50, 30, 65][i] + '%'; return; }
+    const ib = e.target.closest('.dmmenu .ib'); if (ib) { ib.closest('.fx-isl').classList.add('open'); const sc = document.querySelector('.up-scrim'); return; }
+    if (!e.target.closest('.dmmenu .il')) main.querySelectorAll('.dmmenu .fx-isl').forEach((x) => x.classList.remove('open'));
+    const tb = e.target.closest('#dmPages .dmtabs button'); if (tb) { const st = main.querySelector('#dmPages'), host = st.querySelector('.dmpgs'), old = host.firstElementChild, i = +tb.dataset.i, from = +st.dataset.cur || 0; if (i === from) return; st.dataset.cur = i; const dir = i > from ? 1 : -1, q = lookOf('pagefx') === 'c';
+      st.querySelectorAll('.dmtabs button').forEach((x) => x.classList.toggle('on', x === tb)); const nw = document.createElement('div'); nw.className = 'dmpg'; nw.innerHTML = '<b>' + tb.textContent + '</b><i></i><i></i>'; host.appendChild(nw);
+      old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate3d(' + (-dir * 18) + '%,0,0) scale(.94)', opacity: 0 }], { duration: q ? 220 : 380, easing: OUT }).onfinish = () => old.remove();
+      nw.animate(q ? [{ opacity: 0 }, { opacity: 1 }] : [{ transform: 'translate3d(' + dir * 60 + 'px,0,0)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: q ? 300 : 420, easing: OUT });
+      const ln = st.querySelector('.dmline'); ln.style.transformOrigin = dir > 0 ? '0 50%' : '100% 50%'; ln.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)', offset: .6 }, { transform: 'scaleX(0)', transformOrigin: dir > 0 ? '100% 50%' : '0 50%' }], { duration: q ? 380 : 520, easing: OUT }); }
   });
   show(q.get('focus') || 'all');
 })();
