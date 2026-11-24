@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-24T20:30:45.189Z",
+ "fetchedAt": "2026-11-24T20:40:47.484Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2052,11 +2052,11 @@
   {
    "name": "MS-05-05",
    "proPos": "25",
-   "gamesPlayed": "61",
+   "gamesPlayed": "62",
    "goals": "39",
    "assists": "15",
    "manOfTheMatch": "11",
-   "ratingAve": "7.7",
+   "ratingAve": "7.6",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2222,6 +2222,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-24T20:30:45.189Z"
+  "fetchedAt": "2026-11-24T20:40:47.484Z"
  }
 }
