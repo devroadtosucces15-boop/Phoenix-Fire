@@ -7,10 +7,10 @@ export const KINDS = {
   league: ['League', null], playoffs: ['Playoffs', null], friendly: ['Friendly', 'Friendly'], tournament: ['Tournament', 'Tournament'], vpg: ['VPG match', 'VPG match'],
   session: ['Session', null],
 };
-export const POSITIONS = ['GK', 'RB', 'CB', 'LB', 'CDM', 'CM', 'CAM', 'RM', 'LM', 'RW', 'LW', 'ST'];
+export const POSITIONS = ['GK', 'RB', 'RWB', 'CB', 'LB', 'LWB', 'CDM', 'CM', 'CAM', 'RM', 'LM', 'RW', 'LW', 'ST', 'CF'];
 // which line each position belongs to (the lineup picture groups by line), and left→right order inside a line
-const LINE = { GK: 'goalkeeper', RB: 'defender', CB: 'defender', LB: 'defender', CDM: 'midfielder', CM: 'midfielder', CAM: 'midfielder', RM: 'midfielder', LM: 'midfielder', RW: 'forward', LW: 'forward', ST: 'forward' };
-const SIDE = { LB: 0, LM: 0, LW: 0, CB: 1, CDM: 1, CM: 1, CAM: 1, ST: 1, GK: 1, RB: 2, RM: 2, RW: 2 };
+import { LINE } from './formations.js';
+const SIDE = { LB: 0, LWB: 0, LM: 0, LW: 0, CB: 1, CDM: 1, CM: 1, CAM: 1, ST: 1, CF: 1, GK: 1, RB: 2, RWB: 2, RM: 2, RW: 2 };
 const WHO = { yes: '✅', maybe: '❔', no: '❌' };
 
 // What the title of a new match day reads: "League vs Rivals FC" / "Friendly" / "League night".
@@ -87,7 +87,7 @@ export function lineupPanel(e, rs, url, club = null) {
     cards(url && { url, alt: 'The lineup on the pitch' }),
     !url || L.unplaced.length ? text([...(!url ? lines : []), L.unplaced.length ? `**No position picked** ${L.unplaced.join(', ')}` : null].filter(Boolean).join('\n') || '_nobody has signed up yet_') : null,
     L.maybe.length ? text(`**❔ Maybe** ${L.maybe.join(', ')}`) : null,
-    footer('Built from the sign-ups: players pick their position on the match day post'),
+    footer('No lineup is set yet – this is the sign-up list · /suggestlineup shows a suggestion, /setlineup sets it'),
   ] });
 }
 

@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 import { BOARD_LIST } from './boards.js';
 
 const lookup = (o) => o.setName('club').setDescription('Club name or EA club ID').setRequired(true);
@@ -33,7 +33,6 @@ export const commands = [
 ];
 
 // ---- match days (managers schedule, everyone signs up) ----
-const MANAGE = PermissionFlagsBits.ManageGuild;
 const zone = (o) => o.setName('timezone').setDescription('Your time zone, e.g. America/New_York (remembered after the first time)').setAutocomplete(true);
 const when = (o) => o.setName('when').setDescription('tonight 9pm · tomorrow 20:30 · fri 8:30pm · oct 14 9pm · in 2h').setRequired(true).setMaxLength(40);
 const schedule = (b) => b.addStringOption(when).addStringOption(zone)
@@ -47,17 +46,21 @@ const schedule = (b) => b.addStringOption(when).addStringOption(zone)
   .addBooleanOption((o) => o.setName('silent').setDescription('Post without pinging anyone'));
 const KIND_CHOICES = [{ name: 'League', value: 'league' }, { name: 'Playoffs', value: 'playoffs' }, { name: 'Friendly', value: 'friendly' }, { name: 'Tournament', value: 'tournament' }, { name: 'VPG', value: 'vpg' }];
 commands.push(
-  schedule(new SlashCommandBuilder().setName('host').setDescription('Managers: schedule a session or friendly, posted with sign-up buttons').setDefaultMemberPermissions(MANAGE).setDMPermission(false)
+  schedule(new SlashCommandBuilder().setName('host').setDescription('Schedule a session or friendly, posted with sign-up buttons (who can: /setup)').setDMPermission(false)
     .addStringOption((o) => o.setName('kind').setDescription('A session for us, or a friendly').setRequired(true).addChoices({ name: 'Session', value: 'session' }, { name: 'Friendly', value: 'friendly' }))),
-  new SlashCommandBuilder().setName('lineup').setDescription('The lineup for the next match day, built from the sign-ups').setDMPermission(false),
+  new SlashCommandBuilder().setName('lineup').setDescription('The lineup for the next match day').setDMPermission(false),
+  new SlashCommandBuilder().setName('setlineup').setDescription('Set the lineup for the next match day: pick a formation, then a player for each position').setDMPermission(false),
+  new SlashCommandBuilder().setName('suggestlineup').setDescription('A suggested lineup from the sign-ups: their positions first, then match stats').setDMPermission(false),
+  new SlashCommandBuilder().setName('link').setDescription('Link your gamertag so the lineup suggester can use your stats').setDMPermission(false).addStringOption(stat('gamertag', 'Start typing your gamertag')),
+  new SlashCommandBuilder().setName('setup').setDescription('Roles & permissions: choose which role can run which commands').setDMPermission(false),
   new SlashCommandBuilder().setName('matchday').setDescription('Match days: create one, check in, see the schedule or who is in').setDMPermission(false)
-    .addSubcommand((s) => schedule(s.setName('create').setDescription('Managers: schedule a league night, playoffs, friendly, tournament or VPG match')
+    .addSubcommand((s) => schedule(s.setName('create').setDescription('Schedule a league night, playoffs, friendly, tournament or VPG match')
       .addStringOption((o) => o.setName('kind').setDescription('What kind of match day').setRequired(true).addChoices(...KIND_CHOICES))))
     .addSubcommand((s) => s.setName('checkin').setDescription('Say you are on for the next match day (opens an hour before the start)'))
     .addSubcommand((s) => s.setName('next').setDescription('The next match day – answer ✅ ❔ ❌ right here'))
     .addSubcommand((s) => s.setName('schedule').setDescription('Upcoming match days – answer ✅ ❔ ❌ right here'))
     .addSubcommand((s) => s.setName('who').setDescription('Who is in for the next match day and what is still missing'))
-    .addSubcommand((s) => s.setName('cancel').setDescription('Managers: cancel the next match day')),
+    .addSubcommand((s) => s.setName('cancel').setDescription('Cancel the next match day')),
 );
 
 export const commandJson = () => commands.map((c) => c.toJSON());

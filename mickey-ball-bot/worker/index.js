@@ -8,7 +8,9 @@ import { buildJobs, clubView, streaks, hash } from '../core/data.js';
 import { findSessions, isDue, buildRecap } from '../core/recap.js';
 import { notice, IS_V2, EPHEMERAL } from '../core/ui.js';
 import * as P from '../core/panels.js';
-import { MATCHDAY_COMMANDS, matchdayCommand, eventComponent, lineupJob, lineupDone, zoneAutocomplete, reminders } from './matchday.js';
+import { MATCHDAY_COMMANDS, matchdayCommand, eventComponent, zoneAutocomplete, reminders } from './matchday.js';
+import { lineupComponent, lineupJob, lineupPostDone, setupComponent, suggestUse } from './lineup.js';
+import { gate } from './access.js';
 
 const API = 'https://discord.com/api/v10';
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json' } });
@@ -121,6 +123,7 @@ async function onCommand(env, ctx, st, i) {
   }
 
   const sub = i.data.options?.[0]?.name;
+  if (['track', 'untrack', 'main'].includes(sub)) { const bad = await gate(st, i, 'tracking'); if (bad) return reply(bad); }
   if (sub === 'list') return reply(P.trackedList(env, await st.trackedFor(i.guild_id)));
   if (sub === 'untrack') {
     const q = String(opt(i, 'club') ?? '').toLowerCase();
@@ -142,7 +145,11 @@ async function onCommand(env, ctx, st, i) {
 async function onComponent(env, ctx, st, i) {
   const [, a, clubId, matchId] = i.data.custom_id.split(':');
   if (a === 'ev' || a === 'evp') return eventComponent(env, ctx, st, i, H, a, clubId, matchId);
+  if (a === 'sl') return lineupComponent(env, ctx, st, i, H, clubId, matchId);
+  if (a === 'sg') return suggestUse(st, i, H, clubId);
+  if (a === 'cfg') return setupComponent(st, i, H, clubId);
   if (a === 'pick') { // club picker: ml:pick:<kind>:<game>, value = club id
+    if (clubId === 'track') { const bad = await gate(st, i, 'tracking'); if (bad) return reply(bad); }
     await askEA(env, ctx, st, i, { kind: clubId === 'search' ? 'stats' : clubId, q: i.data.values[0], game: Number(matchId) || 1 });
     return reply(notice('Fetching that club from EA…', 'This takes up to a minute.'), 7);
   }
@@ -185,7 +192,7 @@ async function onAutocomplete(st, i) {
 const crestOf = (c) => crestUrl(c?.crest ?? c?.crestId);
 async function finish(env, st, p) { // the pictures are uploaded: build the final reply
   const reply2 = (d) => editOriginal(env, p.token, d);
-  if (p.kind === 'lineup') return lineupDone(env, st, p, H);
+  if (p.kind === 'lineuppost') return lineupPostDone(env, st, p);
   const club = (await st.trackedFor(p.guild_id)).find((t) => t.club_id === p.club_id);
   const m = await st.storedMatch(p.club_id, p.match_id);
   if (p.kind === 'track') { const c = clubView(club ?? { club_id: p.club_id, name: 'Club' }); return reply2(P.trackedPanel(env, c, p.game, p.channel_id)); }

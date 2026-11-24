@@ -13,6 +13,13 @@ export const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS events (id TEXT PRIMARY KEY, guild_id TEXT NOT NULL, channel_id TEXT, message_id TEXT, club_id TEXT, kind TEXT NOT NULL, title TEXT, opponent TEXT, start INTEGER NOT NULL, duration INTEGER NOT NULL DEFAULT 120, tz TEXT, players INTEGER NOT NULL DEFAULT 11, notes TEXT, ping_role TEXT, created_by TEXT, created_at INTEGER NOT NULL, reminded INTEGER NOT NULL DEFAULT 0)`,
   `CREATE TABLE IF NOT EXISTS rsvps (event_id TEXT NOT NULL, user_id TEXT NOT NULL, name TEXT, status TEXT NOT NULL, pos TEXT, checked_in INTEGER NOT NULL DEFAULT 0, at INTEGER NOT NULL, PRIMARY KEY (event_id, user_id))`,
   `CREATE TABLE IF NOT EXISTS user_tz (user_id TEXT PRIMARY KEY, tz TEXT NOT NULL)`,
+  // who may run what: the server's setup owner and one Discord role per permission key
+  `CREATE TABLE IF NOT EXISTS guild_cfg (guild_id TEXT PRIMARY KEY, owner_id TEXT NOT NULL, at INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS perms (guild_id TEXT NOT NULL, key TEXT NOT NULL, role_id TEXT NOT NULL, PRIMARY KEY (guild_id, key))`,
+  // lineups: kind 'work' = the one being edited/posted for a match day, 'fav' = a saved favourite; slots = JSON [{u, n}] ×11 in formation order
+  `CREATE TABLE IF NOT EXISTS lineups (id TEXT PRIMARY KEY, guild_id TEXT NOT NULL, event_id TEXT, kind TEXT NOT NULL DEFAULT 'work', name TEXT, formation TEXT, slots TEXT NOT NULL, posted INTEGER NOT NULL DEFAULT 0, channel_id TEXT, message_id TEXT, by_user TEXT, at INTEGER NOT NULL)`,
+  // a member's gamertag, so stats can follow them into the lineup suggester
+  `CREATE TABLE IF NOT EXISTS links (guild_id TEXT NOT NULL, user_id TEXT NOT NULL, gamertag TEXT NOT NULL, PRIMARY KEY (guild_id, user_id))`,
 ];
 
 const like = (q) => `%${String(q).replace(/[%_]/g, '')}%`;
@@ -133,6 +140,24 @@ export function makeStore(x) {
       ON CONFLICT (event_id, user_id) DO UPDATE SET pos=excluded.pos, name=excluded.name`, idv, id(user), name, pos, Date.now()),
     checkIn: (idv, user, name) => x.run(`INSERT INTO rsvps (event_id, user_id, name, status, checked_in, at) VALUES (?,?,?,'yes',1,?)
       ON CONFLICT (event_id, user_id) DO UPDATE SET status='yes', checked_in=1, name=excluded.name`, idv, id(user), name, Date.now()),
+    // roles & permissions
+    getCfg: (g) => x.first('SELECT * FROM guild_cfg WHERE guild_id=?', id(g)),
+    claimSetup: (g, user) => x.run('INSERT OR IGNORE INTO guild_cfg (guild_id, owner_id, at) VALUES (?,?,?)', id(g), id(user), Date.now()),
+    async perms(g) { return new Map((await x.all('SELECT key, role_id FROM perms WHERE guild_id=?', id(g))).map((r) => [r.key, r.role_id])); },
+    setPerm: (g, key, role) => (role ? x.run('INSERT INTO perms (guild_id, key, role_id) VALUES (?,?,?) ON CONFLICT (guild_id, key) DO UPDATE SET role_id=excluded.role_id', id(g), key, id(role)) : x.run('DELETE FROM perms WHERE guild_id=? AND key=?', id(g), key)),
+    clearPerms: (g) => x.run('DELETE FROM perms WHERE guild_id=?', id(g)),
+    // lineups
+    workLineup: (eventId) => x.first("SELECT * FROM lineups WHERE event_id=? AND kind='work'", id(eventId)),
+    getLineup: (lid) => x.first('SELECT * FROM lineups WHERE id=?', id(lid)),
+    saveLineup: (l) => x.run(`INSERT INTO lineups (id, guild_id, event_id, kind, name, formation, slots, posted, channel_id, message_id, by_user, at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+      ON CONFLICT (id) DO UPDATE SET formation=excluded.formation, slots=excluded.slots, posted=excluded.posted, channel_id=excluded.channel_id, message_id=excluded.message_id, name=excluded.name, by_user=excluded.by_user, at=excluded.at`,
+      id(l.id), id(l.guild_id), l.event_id ?? null, l.kind ?? 'work', l.name ?? null, l.formation ?? null, typeof l.slots === 'string' ? l.slots : JSON.stringify(l.slots), l.posted ? 1 : 0, l.channel_id ?? null, l.message_id ?? null, l.by_user ?? null, Date.now()),
+    delLineup: (lid) => x.run('DELETE FROM lineups WHERE id=?', id(lid)),
+    favorites: (g) => x.all("SELECT * FROM lineups WHERE guild_id=? AND kind='fav' ORDER BY at DESC LIMIT 25", id(g)),
+    async pruneFavorites(g) { return x.run("DELETE FROM lineups WHERE kind='fav' AND guild_id=? AND id NOT IN (SELECT id FROM lineups WHERE kind='fav' AND guild_id=? ORDER BY at DESC LIMIT 25)", id(g), id(g)); },
+    // gamertag links
+    setLink: (g, user, tag) => x.run('INSERT INTO links (guild_id, user_id, gamertag) VALUES (?,?,?) ON CONFLICT (guild_id, user_id) DO UPDATE SET gamertag=excluded.gamertag', id(g), id(user), tag),
+    links: (g) => x.all('SELECT user_id, gamertag FROM links WHERE guild_id=?', id(g)),
     getTz: async (user) => (await x.first('SELECT tz FROM user_tz WHERE user_id=?', id(user)))?.tz ?? null,
     setTz: (user, tz) => x.run('INSERT INTO user_tz (user_id, tz) VALUES (?,?) ON CONFLICT (user_id) DO UPDATE SET tz=excluded.tz', id(user), tz),
     // pending relay requests (a Discord reply waiting on a GitHub Actions job)

@@ -113,25 +113,24 @@ export function fieldCard(m, club) {
 ${markers}</svg>`);
 }
 
-// ---------- lineup (the pitch for /lineup): players placed by the position they picked ----------
+// ---------- lineup (the pitch for /lineup): the saved formation, each slot at its own spot ----------
 export function lineupCard(L, club) {
   const stripes = Array.from({ length: 7 }, (_, k) => `<rect x="${7.5 + 15 * k}" width="7.5" height="68" fill="#17603a"/>`).join('');
-  const markers = fieldSlots(L.placed).map(({ p, x, y }) => {
-    const name = String(p.n).length > 15 ? `${String(p.n).slice(0, 14)}…` : p.n;
-    return `<g><circle cx="${x}" cy="${y}" r="3.7" fill="#0b130f" stroke="#efcf7a" stroke-width=".55"/>
-<text x="${x}" y="${y + 1.05}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="2.7" fill="#efcf7a">${esc(p.role)}</text>
-<text x="${x}" y="${y + 6.5}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="2.15" fill="#fff" stroke="#0b130f" stroke-width=".55" paint-order="stroke">${esc(name)}</text></g>`;
+  const markers = (L.slots ?? []).map((s) => {
+    const name = !s.n ? '' : String(s.n).length > 15 ? `${String(s.n).slice(0, 14)}…` : s.n;
+    return `<g><circle cx="${s.x}" cy="${s.y}" r="3.7" fill="#0b130f" fill-opacity="${s.n ? 1 : 0.45}" stroke="#efcf7a" stroke-opacity="${s.n ? 1 : 0.5}" stroke-width=".55"/>
+<text x="${s.x}" y="${s.y + 1.05}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="2.7" fill="#efcf7a" fill-opacity="${s.n ? 1 : 0.6}">${esc(s.role)}</text>
+${name ? `<text x="${s.x}" y="${s.y + 6.5}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="2.15" fill="#fff" stroke="#0b130f" stroke-width=".55" paint-order="stroke">${esc(name)}</text>` : ''}</g>`;
   }).join('');
-  const bench = L.unplaced.length ? `<text x="3" y="66" font-family="Inter" font-weight="700" font-size="1.7" fill="#ffffffb0">NO POSITION YET: ${esc(L.unplaced.join(', ').toUpperCase().slice(0, 120))}</text>` : '';
   return page('body{height:777px}svg{display:block}', `<svg viewBox="0 0 105 68" width="${W}" height="777">
 <defs><radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></radialGradient></defs>
 <rect width="105" height="68" fill="#14502e"/>${stripes}
 <g fill="none" stroke="#ffffffb0" stroke-width=".3"><rect x="1" y="1" width="103" height="66"/><line x1="52.5" y1="1" x2="52.5" y2="67"/><circle cx="52.5" cy="34" r="9.15"/>
 <rect x="1" y="13.84" width="16.5" height="40.32"/><rect x="1" y="24.84" width="5.5" height="18.32"/><rect x="87.5" y="13.84" width="16.5" height="40.32"/><rect x="98.5" y="24.84" width="5.5" height="18.32"/></g>
 <rect width="105" height="68" fill="url(#vig)"/>
-<text x="3" y="4.4" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">${esc(club.name).toUpperCase()} LINEUP · ${esc(L.title).toUpperCase()}</text>
-<text x="102" y="4.4" text-anchor="end" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">${L.placed.length + L.unplaced.length} IN  ·  ATTACKING →</text>
-${markers}${bench}</svg>`);
+<text x="3" y="4.4" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">${esc(`${club.name} · ${L.title}`.toUpperCase().slice(0, 30))}</text>
+<text x="102" y="4.4" text-anchor="end" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">${esc(String(L.formation).toUpperCase())}  ·  ATTACKING →</text>
+${markers}</svg>`);
 }
 
 // ---------- rating graph + player card ----------

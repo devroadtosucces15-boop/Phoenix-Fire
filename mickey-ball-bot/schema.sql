@@ -9,3 +9,7 @@ CREATE TABLE IF NOT EXISTS recaps (key TEXT NOT NULL, guild_id TEXT NOT NULL, cl
 CREATE TABLE IF NOT EXISTS events (id TEXT PRIMARY KEY, guild_id TEXT NOT NULL, channel_id TEXT, message_id TEXT, club_id TEXT, kind TEXT NOT NULL, title TEXT, opponent TEXT, start INTEGER NOT NULL, duration INTEGER NOT NULL DEFAULT 120, tz TEXT, players INTEGER NOT NULL DEFAULT 11, notes TEXT, ping_role TEXT, created_by TEXT, created_at INTEGER NOT NULL, reminded INTEGER NOT NULL DEFAULT 0);
 CREATE TABLE IF NOT EXISTS rsvps (event_id TEXT NOT NULL, user_id TEXT NOT NULL, name TEXT, status TEXT NOT NULL, pos TEXT, checked_in INTEGER NOT NULL DEFAULT 0, at INTEGER NOT NULL, PRIMARY KEY (event_id, user_id));
 CREATE TABLE IF NOT EXISTS user_tz (user_id TEXT PRIMARY KEY, tz TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS guild_cfg (guild_id TEXT PRIMARY KEY, owner_id TEXT NOT NULL, at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS perms (guild_id TEXT NOT NULL, key TEXT NOT NULL, role_id TEXT NOT NULL, PRIMARY KEY (guild_id, key));
+CREATE TABLE IF NOT EXISTS lineups (id TEXT PRIMARY KEY, guild_id TEXT NOT NULL, event_id TEXT, kind TEXT NOT NULL DEFAULT 'work', name TEXT, formation TEXT, slots TEXT NOT NULL, posted INTEGER NOT NULL DEFAULT 0, channel_id TEXT, message_id TEXT, by_user TEXT, at INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS links (guild_id TEXT NOT NULL, user_id TEXT NOT NULL, gamertag TEXT NOT NULL, PRIMARY KEY (guild_id, user_id));

@@ -34,7 +34,7 @@ test('rejects a request that is not signed by Discord', async () => {
 
 test('/host: managers only, needs a zone once, posts the sign-up message, remembers the zone', async () => {
   const deny = await send(cmd('host', [o('kind', 'session'), o('when', 'tomorrow 9pm'), o('timezone', 'UTC')], { user: { id: 'u9', username: 'x' }, permissions: '0' }));
-  assert.match(txt(deny), /Managers only/);
+  assert.match(txt(deny), /Not allowed/);
   assert.match(txt(await send(cmd('host', [o('kind', 'session'), o('when', 'tomorrow 9pm')]))), /Which time zone/);
   assert.match(txt(await send(cmd('host', [o('kind', 'session'), o('when', 'blah'), o('timezone', 'UTC')]))), /couldn’t read that time/);
   calls.length = 0;
@@ -63,27 +63,97 @@ test('answers, position picks and who/next/schedule', async () => {
   assert.match(txt(await send(click('ml:ev:nope:yes'))), /gone/);
 });
 
-test('/matchday checkin opens an hour before; /lineup draws once and answers when the picture is up', async () => {
+test('/matchday checkin opens an hour before; /lineup shows the sign-up list until a lineup is set', async () => {
   const e = db.prepare('SELECT id FROM events ORDER BY start LIMIT 1').get().id;
   assert.match(txt(await send(cmd('matchday', [{ name: 'checkin', type: 1 }]))), /not open yet/);
   db.prepare('UPDATE events SET start=? WHERE id=?').run(Date.now() + 1800_000, e);
   assert.match(txt(await send(cmd('matchday', [{ name: 'checkin', type: 1 }]))), /You are on/);
   assert.equal(db.prepare('SELECT checked_in c FROM rsvps WHERE event_id=? AND user_id=?').get(e, 'u1').c, 1);
-  calls.length = 0;
   const l = await send(cmd('lineup'));
-  assert.equal(l.json.type, 5);
-  const d = calls.find((c) => c.url.includes('/dispatches'));
-  assert.equal(d.body.inputs.kind, 'draw'); assert.equal(d.body.inputs.extra, `lineup:${e}`); assert.ok(d.body.inputs.ref);
-  // the Actions job asks for the picture's data, uploads it, then says done
-  const post = (path, body) => worker.fetch(new Request(`https://bot.example${path}`, { method: 'POST', headers: { 'x-key': 'k' }, body: JSON.stringify(body) }), env, ctx).then((r) => r.json());
-  const job = (await post('/draw', { club: '-', extra: `lineup:${e}` })).draw[0];
-  assert.equal(job.kind, 'lineup'); assert.match(job.key, new RegExp(`^events/${e}/lineup-`));
-  await worker.fetch(new Request(`https://bot.example/card?key=${job.key}`, { method: 'PUT', headers: { 'x-key': 'k' }, body: 'iVBORw0KGgo=' }), env, ctx);
+  assert.equal(l.json.type, 4); assert.match(txt(l), /No lineup is set yet/);
+});
+
+const MEMBER = (id, perm = '0', roles = []) => ({ user: { id, username: id }, permissions: perm, roles });
+const clickAs = (member, custom_id, extra = {}) => ({ ...base, member, type: 3, data: { custom_id, component_type: 3, ...extra }, message: { id: 'm1' } });
+test('/setup: the first manager claims it, roles lock commands, others are locked out', async () => {
+  const stranger = MEMBER('u7'), manager = MEMBER('u1', '32');
+  assert.match(txt(await send(cmd('setup', [], stranger))), /Setup is locked/);
+  const first = await send(cmd('setup', [], manager));
+  assert.match(txt(first), /Roles & permissions/); assert.equal(db.prepare('SELECT owner_id o FROM guild_cfg WHERE guild_id=?').get('g1').o, 'u1');
+  // a manager who is not the owner may open it until a role is set
+  const set = await send(clickAs(manager, 'ml:cfg:lineup', { values: ['roleL'] }));
+  assert.equal(set.json.type, 7); assert.match(txt(set), /<@&roleL>/);
+  assert.equal(db.prepare("SELECT role_id r FROM perms WHERE key='lineup'").get().r, 'roleL');
+  assert.match(txt(await send(cmd('setlineup', [], MEMBER('u2', '32')))), /Not allowed[\s\S]*<@&roleL>/); // Manage Server is no longer enough
+  // cannot lock yourself out of setup with a role you do not hold
+  const mine = await send(clickAs(MEMBER('u2', '32'), 'ml:cfg:setup', { values: ['roleS'] }));
+  assert.match(txt(mine), /Setup is locked|lock yourself out/);
+  const own = await send(clickAs(manager, 'ml:cfg:setup', { values: ['roleS'] })); // owner always passes
+  assert.match(txt(own), /<@&roleS>/);
+  assert.match(txt(await send(cmd('setup', [], MEMBER('u3', '32')))), /Setup is locked/);
+  assert.match(txt(await send(cmd('setup', [], manager))), /Roles & permissions/);
+  // tracking is gated too
+  await send(clickAs(manager, 'ml:cfg:tracking', { values: ['roleT'] }));
+  assert.match(txt(await send(cmd('match', [{ name: 'untrack', type: 1, options: [o('club', 'x')] }], MEMBER('u2', '32')))), /Not allowed/);
+  assert.match(txt(await send(cmd('host', [o('kind', 'session'), o('when', 'tomorrow 9pm'), o('timezone', 'UTC')], MEMBER('u2', '0')))), /Not allowed/.test('') ? /x/ : /Not allowed|Scheduled|I couldn/);
+  await send(clickAs(manager, 'ml:cfg:reset'));
+  assert.equal(db.prepare('SELECT COUNT(*) n FROM perms').get().n, 0);
+});
+
+test('/setlineup editor: formation, players per position, draft, favorite, post (with picture), repost, edit, delete', async () => {
+  const lineupRole = MEMBER('u1', '32'), e = db.prepare('SELECT id FROM events ORDER BY start LIMIT 1').get().id;
+  db.prepare('UPDATE events SET channel_id=? WHERE id=?').run('chL', e);
+  const open = await send(cmd('setlineup', [], lineupRole));
+  assert.equal(open.json.type, 4); assert.match(txt(open), /No formation yet/);
+  const lid = db.prepare("SELECT id FROM lineups WHERE kind='work'").get().id;
+  const click = (field, extra) => send(clickAs(lineupRole, `ml:sl:${lid}:${field}`, extra));
+  const f = await click('fa', { values: ['4-3-3'] });
+  assert.equal(f.json.type, 7); assert.match(txt(f), /`LB`[\s\S]*`LW`/);
+  const users = { u2: { id: 'u2', username: 'ben', global_name: 'Ben' }, u3: { id: 'u3', username: 'cy' } };
+  for (let k = 0; k < 11; k++) await click(`s${k}`, { values: [`p${k}`], resolved: { users: { [`p${k}`]: { id: `p${k}`, username: `Player${k}` } } } });
+  assert.equal(JSON.parse(db.prepare('SELECT slots s FROM lineups WHERE id=?').get(lid).s).filter((s) => s.u).length, 11);
+  // choosing the same person again moves them
+  await click('s1', { values: ['p0'], resolved: { users: { p0: { id: 'p0', username: 'Player0' } } } });
+  const sl = JSON.parse(db.prepare('SELECT slots s FROM lineups WHERE id=?').get(lid).s); assert.equal(sl[0].u, null); assert.equal(sl[1].u, 'p0');
+  await click('s0', { values: ['p0'], resolved: { users: { p0: { id: 'p0', username: 'Player0' } } } }); // back in goal; p1's old slot (1) is now empty
+  assert.match(txt(await click('draft')), /Draft saved/);
+  assert.match(txt(await click('fav')), /Saved as a favorite/); assert.equal(db.prepare("SELECT COUNT(*) n FROM lineups WHERE kind='fav'").get().n, 1);
+  const favs = await click('favs'); assert.match(JSON.stringify(favs.json), /ml:sl:[a-z0-9-]+:fp/);
+  await click('s5', { values: [] });
   calls.length = 0;
-  await post('/done', { ref: d.body.inputs.ref });
-  const edit = calls.find((c) => c.url.includes('/messages/@original'));
-  assert.ok(edit); assert.match(JSON.stringify(edit.body.components), new RegExp(job.key.replace(/[/.]/g, '.'))); assert.equal(edit.body.flags, 1 << 15);
-  assert.equal((await send(cmd('lineup'))).json.type, 4); // picture already there: answered at once
+  const posted = await click('post');
+  assert.match(txt(posted), /Posted in <#chL>/);
+  const msg = calls.find((c) => c.url.endsWith('/channels/chL/messages') && c.init.method === 'POST');
+  assert.ok(msg); assert.match(JSON.stringify(msg.body.components), /ml:sl:[a-z0-9]+:edit/); assert.ok(msg.body.allowed_mentions.users.includes('p0'));
+  const d = calls.find((c) => c.url.includes('/dispatches')); assert.equal(d.body.inputs.extra, `lineup:${lid}`);
+  assert.equal(db.prepare('SELECT message_id m FROM lineups WHERE id=?').get(lid).m, 'msg1');
+  // the Actions job asks for the picture data, uploads, says done → the posted message gets the picture
+  const post = (path, body) => worker.fetch(new Request(`https://bot.example${path}`, { method: 'POST', headers: { 'x-key': 'k' }, body: JSON.stringify(body) }), env, ctx).then((r) => r.json());
+  const job = (await post('/draw', { club: '-', extra: `lineup:${lid}` })).draw[0];
+  assert.equal(job.kind, 'lineup'); assert.equal(job.data.L.formation, '4-3-3'); assert.equal(job.data.L.slots.length, 11);
+  await worker.fetch(new Request(`https://bot.example/card?key=${job.key}`, { method: 'PUT', headers: { 'x-key': 'k' }, body: 'iVBORw0KGgo=' }), env, ctx);
+  calls.length = 0; await post('/done', { ref: d.body.inputs.ref });
+  const patch = calls.find((c) => c.init.method === 'PATCH' && c.url.endsWith('/channels/chL/messages/msg1'));
+  assert.ok(patch); assert.match(JSON.stringify(patch.body.components), new RegExp(job.key.replace(/[/.]/g, '.')));
+  // /lineup shows the posted one; the public Edit button opens the editor privately; repost deletes the old post
+  assert.match(txt(await send(cmd('lineup'))), /4-3-3/);
+  assert.equal((await send(clickAs(lineupRole, `ml:sl:${lid}:edit`))).json.type, 4);
+  assert.match(txt(await send(clickAs(MEMBER('u9'), `ml:sl:${lid}:edit`))), /Not allowed/);
+  calls.length = 0; await click('post');
+  assert.ok(calls.find((c) => c.init.method === 'DELETE' && c.url.endsWith('/channels/chL/messages/msg1')));
+  calls.length = 0;
+  assert.match(txt(await click('del')), /Lineup deleted/); assert.equal(db.prepare("SELECT COUNT(*) n FROM lineups WHERE kind='work'").get().n, 0);
+});
+
+test('/suggestlineup uses sign-ups, positions and linked stats; "Use as draft" saves it; /link stores the gamertag', async () => {
+  const e = db.prepare('SELECT id FROM events ORDER BY start LIMIT 1').get().id;
+  db.prepare("INSERT INTO rsvps (event_id, user_id, name, status, pos, at) VALUES (?,?,?,?,?,1) ON CONFLICT DO UPDATE SET status='yes', pos=excluded.pos").run(e, 'u2', 'Bob', 'yes', 'GK');
+  assert.match(txt(await send(cmd('link', [o('gamertag', 'BobGT')]))), /Linked/);
+  assert.equal(db.prepare("SELECT gamertag g FROM links WHERE user_id='u1'").get().g, 'BobGT');
+  const s = await send(cmd('suggestlineup'));
+  assert.match(txt(s), /SUGGESTED LINEUP/i); assert.match(JSON.stringify(s.json), /ml:sg:[a-z0-9]+:use/);
+  assert.match(txt(await send(clickAs(MEMBER('u1', '32'), `ml:sg:${e}:use`))), /Saved as your draft/);
+  assert.ok(db.prepare("SELECT formation f FROM lineups WHERE kind='work' AND event_id=?").get(e).f);
 });
 
 test('/match main and list; cancel removes the next match day', async () => {

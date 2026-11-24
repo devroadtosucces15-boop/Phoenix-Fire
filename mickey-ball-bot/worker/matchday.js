@@ -1,18 +1,15 @@
 // Match-day commands for the Worker: /host, /matchday (create · checkin · next · schedule · who · cancel), /lineup, the ✅ ❔ ❌ buttons,
 // the position picker and the one-hour reminder. Storage and wording live in core/store.js and core/matchday.js.
 import { notice, IS_V2, EPHEMERAL } from '../core/ui.js';
-import { clubView } from '../core/data.js';
 import { parseWhen, validZone, zonedToUtc, zoneChoices } from '../core/when.js';
-import { eventPanel, schedulePanel, createdPanel, lineupPanel, lineupOf, lineupKey, eventTitle, KINDS, POSITIONS } from '../core/matchday.js';
+import { eventPanel, schedulePanel, createdPanel, eventTitle, KINDS, POSITIONS } from '../core/matchday.js';
+import { who, mainClub, nextOne, gate } from './access.js';
+import { setupCommand, setLineup, lineupView, suggestCommand, linkCommand } from './lineup.js';
 
 const API = 'https://discord.com/api/v10';
-const MANAGE_OR_ADMIN = 0x28n; // Manage Server or Administrator
-export const MATCHDAY_COMMANDS = new Set(['host', 'matchday', 'lineup']);
+export const MATCHDAY_COMMANDS = new Set(['host', 'matchday', 'lineup', 'setup', 'setlineup', 'suggestlineup', 'link']);
 const ephemeral = (d) => ({ ...d, flags: (d.flags & IS_V2) | EPHEMERAL });
 const say = (h, title, body, o = {}) => h.reply(notice(title, body, { ephemeral: true, ...o }));
-const isManager = (i) => (BigInt(i.member?.permissions ?? 0) & MANAGE_OR_ADMIN) !== 0n;
-const who = (i) => { const u = i.member?.user ?? i.user ?? {}; return { id: u.id, name: i.member?.nick ?? u.global_name ?? u.username ?? 'Player' }; };
-const mainClub = async (st, g) => { const r = (await st.trackedFor(g))[0]; return r ? clubView(r) : null; };
 
 // ---- Discord posts that carry mentions (the rest of the bot never pings) ----
 const bot = (env) => ({ 'Content-Type': 'application/json', Authorization: `Bot ${env.DISCORD_TOKEN}` });
@@ -26,7 +23,8 @@ async function refreshPost(env, st, e) { return editPost(env, e, eventPanel(e, a
 // ---- create ----
 const addDays = (date, n) => new Date(Date.parse(`${date}T12:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
 async function create(env, ctx, st, i, h, kind) {
-  if (!isManager(i)) return say(h, 'Managers only', 'You need the Manage Server permission to schedule a match day.');
+  const bad = await gate(st, i, 'matchday');
+  if (bad) return h.reply(bad);
   const me = who(i);
   const tz = String(h.opt(i, 'timezone') || (await st.getTz(me.id)) || '').trim();
   if (!tz) return say(h, 'Which time zone are you in?', 'Add `timezone:` (start typing your city). I remember it, so you only need it once.');
@@ -55,12 +53,14 @@ async function create(env, ctx, st, i, h, kind) {
   return h.reply(createdPanel(made[0], `Posted in <#${channel}> with sign-up buttons.`, [made.length > 1 ? `Repeats weekly: ${made.length} dates.` : null, `Time zone saved: ${tz.replace(/_/g, ' ')}.`]));
 }
 
-async function nextOne(st, i) { return (await st.upcoming(i.guild_id, 1))[0] ?? null; }
-
 export async function matchdayCommand(env, ctx, st, i, h) {
   const name = i.data.name, sub = i.data.options?.[0]?.name;
   if (name === 'host') return create(env, ctx, st, i, h, h.opt(i, 'kind') === 'friendly' ? 'friendly' : 'session');
-  if (name === 'lineup') return lineup(env, ctx, st, i, h);
+  if (name === 'lineup') return lineupView(env, ctx, st, i, h);
+  if (name === 'setup') return setupCommand(st, i, h);
+  if (name === 'setlineup') return setLineup(env, ctx, st, i, h);
+  if (name === 'suggestlineup') return suggestCommand(st, i, h);
+  if (name === 'link') return linkCommand(st, i, h);
   if (sub === 'create') return create(env, ctx, st, i, h, h.opt(i, 'kind') in KINDS ? h.opt(i, 'kind') : 'league');
   const club = await mainClub(st, i.guild_id);
   if (sub === 'schedule') {
@@ -72,7 +72,8 @@ export async function matchdayCommand(env, ctx, st, i, h) {
   if (sub === 'next') return h.reply(eventPanel(e, await st.rsvps(e.id), { club, ephemeral: true }));
   if (sub === 'who') return h.reply(eventPanel(e, await st.rsvps(e.id), { club, who: true, answers: false, ephemeral: true }));
   if (sub === 'cancel') {
-    if (!isManager(i)) return say(h, 'Managers only', 'You need the Manage Server permission to cancel a match day.');
+    const bad = await gate(st, i, 'matchday');
+    if (bad) return h.reply(bad);
     await st.cancelEvent(e.id);
     if (e.channel_id && e.message_id) ctx.waitUntil(fetch(`${API}/channels/${e.channel_id}/messages/${e.message_id}`, { method: 'DELETE', headers: bot(env) }).catch(() => null));
     return say(h, `Cancelled ${e.title}`, `It was <t:${Math.floor(e.start / 1000)}:F>. Its post is removed.`, { accent: 'loss' });
@@ -98,37 +99,6 @@ export async function eventComponent(env, ctx, st, i, h, kind, eventId, value) {
   const club = await mainClub(st, e.guild_id), panel = eventPanel(e, await st.rsvps(e.id), { club, ping: null });
   if (i.message?.id !== e.message_id) ctx.waitUntil(refreshPost(env, st, e)); // answered from /matchday next or schedule: keep the channel post current too
   return h.reply({ ...panel, flags: panel.flags & IS_V2 }, 7);
-}
-
-// ---- /lineup ----
-async function lineup(env, ctx, st, i, h) {
-  const e = await nextOne(st, i);
-  if (!e) return say(h, 'Nothing scheduled yet', 'Managers add a match day with `/matchday create`.');
-  const rs = await st.rsvps(e.id), L = lineupOf(rs), club = await mainClub(st, i.guild_id);
-  if (!L.placed.length) return h.reply(lineupPanel(e, rs, null, club));
-  const key = lineupKey(e, L), url = `${String(env.PUBLIC_URL).replace(/\/$/, '')}/c/${key}`;
-  if (await st.hasBlob(key)) return h.reply(lineupPanel(e, rs, url, club));
-  const ref = crypto.randomUUID().slice(0, 12);
-  await st.prunePending();
-  await st.addPending({ ref, token: i.token, guild: i.guild_id, channel: i.channel_id, user: who(i).id, kind: 'lineup', game: 1 });
-  await st.setPendingMatch(ref, '0', e.id, 0);
-  ctx.waitUntil((async () => {
-    if (!(await h.dispatch(env, { ref, kind: 'draw', q: '-', game: '1', extra: `lineup:${e.id}` }))) { await st.delPending(ref); await h.edit(env, i.token, lineupPanel(e, rs, null, club)); }
-  })());
-  return h.json({ type: 5 });
-}
-// The job asks for the picture's data; /done then builds the final reply.
-export async function lineupJob(st, eventId) {
-  const e = await st.getEvent(eventId);
-  if (!e) return null;
-  const L = lineupOf(await st.rsvps(e.id)), club = await mainClub(st, e.guild_id);
-  return { kind: 'lineup', ref: '', key: lineupKey(e, L), data: { L: { ...L, title: e.title }, club: { name: club?.name ?? 'Match day' } } };
-}
-export async function lineupDone(env, st, p, h) {
-  const e = await st.getEvent(p.match_id);
-  if (!e) return h.edit(env, p.token, notice('That match day is gone'));
-  const rs = await st.rsvps(e.id), L = lineupOf(rs), club = await mainClub(st, e.guild_id);
-  return h.edit(env, p.token, lineupPanel(e, rs, `${String(env.PUBLIC_URL).replace(/\/$/, '')}/c/${lineupKey(e, L)}`, club));
 }
 
 // ---- autocomplete for timezone ----

@@ -185,7 +185,9 @@ export function helpPanel(env) {
     sep(),
     text('**Stats from tracked matches**\n`/club` record, form, streak · `/results` recent scores · `/last` latest match\n`/player` player card · `/compare` two players · `/leaderboard` top players (incl. interceptions, possession won, aerials)\n`/history` record vs an opponent · `/insight` form, last 5, streaks'),
     sep(),
-    text('**Match days**\n`/host` or `/matchday create` managers schedule a session, league night, friendly… with ✅ ❔ ❌ sign-ups\n`/matchday next` · `schedule` · `who` · `checkin` · `cancel`\n`/lineup` the lineup from the sign-ups, on a pitch'),
+    text('**Match days**\n`/host` or `/matchday create` managers schedule a session, league night, friendly… with ✅ ❔ ❌ sign-ups\n`/matchday next` · `schedule` · `who` · `checkin` · `cancel`\n`/lineup` the posted lineup · `/suggestlineup` best lineup from the sign-ups and stats · `/setlineup` pick a formation and a player for each position, then post, save a draft or favorite · `/link` link your gamertag'),
+    sep(),
+    text('**Settings**\n`/setup` choose which Discord role can track clubs, schedule match days, set lineups and change these settings (the first server manager to open it owns it)'),
     footer('Leave `club` empty to use the main club · match cards include EA’s decoded event stats'),
   ] });
 }

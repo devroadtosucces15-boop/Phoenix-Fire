@@ -16,7 +16,11 @@ import { findSessions, isDue, buildRecap } from '../core/recap.js';
 import { commands } from '../core/commands.js';
 import { decodeEvents, boxEv, eventRows, eventSide } from '../core/events.js';
 import { parseWhen, zonedToUtc, validZone } from '../core/when.js';
-import { eventPanel, schedulePanel, lineupPanel, lineupOf, lineupKey, eventTitle, missing } from '../core/matchday.js';
+import { eventPanel, schedulePanel, lineupPanel, lineupOf, eventTitle, missing } from '../core/matchday.js';
+import { FORMATIONS, slotsOf, LINE } from '../core/formations.js';
+import { editorPanel, lineupPostPanel, lineupKey, carry, place, blank, rowsText, lineupData, suggestionPanel } from '../core/lineup.js';
+import { suggest } from '../core/suggest.js';
+import { allowed, setupPanel } from '../core/perms.js';
 
 const db = new DatabaseSync(':memory:'); SCHEMA.forEach((s) => db.exec(s));
 const st = makeStore(sqliteExecutor(db));
@@ -108,7 +112,7 @@ test('no club-specific branding anywhere in the shipped sources', () => {
   for (const f of ['core/panels.js', 'core/ui.js', 'core/theme.js', 'cards/templates.mjs', 'cards/match.mjs', 'core/picture.js', 'core/review.js', 'worker/index.js', 'worker/matchday.js', 'relay/relay.mjs']) assert.doesNotMatch(fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), /phoenix|norex|#e8651a|0xe8651a/i, f);
 });
 
-test('13 generic commands: stats plus match day', () => assert.deepEqual(commands.map((c) => c.name).sort(), ['club', 'compare', 'help', 'history', 'host', 'insight', 'last', 'leaderboard', 'lineup', 'matchday', 'match', 'player', 'results'].sort()));
+test('17 generic commands: stats, match day, lineup and setup', () => assert.deepEqual(commands.map((c) => c.name).sort(), ['club', 'compare', 'help', 'history', 'host', 'insight', 'last', 'leaderboard', 'lineup', 'link', 'matchday', 'match', 'player', 'results', 'setlineup', 'setup', 'suggestlineup'].sort()));
 
 
 // ---------- decoded event stats ----------
@@ -194,17 +198,65 @@ test('match day post: time, counts, names, gaps, three answer buttons and a posi
   assert.deepEqual(missing({ players: 3 }, [{ status: 'yes', pos: 'GK' }]), ['2 more players']);
 });
 
-test('schedule lists events with their own buttons; lineup places players by line and keys change with sign-ups', () => {
+test('schedule lists events with their own buttons; the sign-up list groups by line', () => {
   const s = schedulePanel([EV], () => ({ yes: 2, maybe: 1, no: 1 }), club);
   assert.match(plainText(s), /✅ 2\/11/); assert.ok(plainText(schedulePanel([], () => ({}))).includes('Nothing scheduled'));
   const L = lineupOf(RS);
   assert.deepEqual(L.placed.map((p) => [p.n, p.pos]), [['Ana', 'forward'], ['Ben', 'defender']]); assert.deepEqual(L.maybe, ['Cy']);
-  const k1 = lineupKey(EV, L), k2 = lineupKey(EV, lineupOf([...RS, { user_id: '5', name: 'Ed', status: 'yes', pos: 'GK' }]));
-  assert.notEqual(k1, k2); assert.match(k1, /^events\/ab12cd34\/lineup-[a-z0-9]+\.png$/);
-  const pic = T.lineupCard({ ...L, title: EV.title }, { name: 'Alpha FC' });
-  assert.match(pic, /ST/); assert.match(pic, /Ana/);
   assert.match(plainText(lineupPanel(EV, RS, null, club)), /Defence[\s\S]*CB.* Ben/);
-  assert.ok(images(lineupPanel(EV, RS, 'https://x/y.png', club)).includes('https://x/y.png'));
+});
+
+const count = (c) => (Array.isArray(c) ? c.reduce((a, x) => a + count(x), 0) : c && typeof c === 'object' ? 1 + count(c.components) + count(c.accessory) + count(c.items) : 0);
+test('29 formations, each 11 slots on the pitch with a keeper; the picture places every slot', () => {
+  assert.equal(FORMATIONS.length, 29);
+  for (const f of FORMATIONS) { const sl = slotsOf(f.name); assert.equal(sl.length, 11, f.name); assert.equal(sl[0].role, 'GK'); assert.ok(sl.every((x) => LINE[x.role] && x.x > 0 && x.x < 105 && x.y > 0 && x.y < 68), f.name); }
+  const slots = slotsOf('4-3-3').map((s, k) => ({ ...s, n: k < 3 ? `P${k}` : null }));
+  const pic = T.lineupCard({ title: 'League night', formation: '4-3-3', slots }, { name: 'Alpha FC' });
+  assert.match(pic, /4-3-3/); assert.match(pic, /P2/); assert.equal((pic.match(/<circle cx=/g) ?? []).length >= 11, true);
+});
+test('lineup editor: formation menus, one user menu per position, within the 40-component limit; formation change keeps matching roles', () => {
+  const lu = { id: 'L1', formation: null, posted: 0, slots: JSON.stringify(blank()) };
+  const empty = editorPanel(lu, EV, { club });
+  assert.match(plainText(empty), /No formation yet/);
+  const sel = (p) => JSON.stringify(p).match(/"type":5/g)?.length ?? 0;
+  assert.equal(sel(empty), 0);
+  const slots = blank(); slots[0] = { u: 'u1', n: 'Ana' }; slots[9] = { u: 'u2', n: 'Ben' };
+  const full = editorPanel({ ...lu, formation: '4-3-3', slots: JSON.stringify(slots) }, EV, { club });
+  assert.equal(sel(full), 11); assert.ok(count(full.components) <= 40, `components ${count(full.components)}`);
+  assert.match(JSON.stringify(full), /"default_values":\[\{"id":"u1","type":"user"\}\]/); assert.match(plainText(full), /`GK` <@u1>/);
+  const ids = JSON.stringify(full).match(/ml:sl:L1:[a-z0-9]+/g);
+  for (const f of ['fa', 'fb', 'post', 'draft', 'fav', 'favs', 'del']) assert.ok(ids.includes(`ml:sl:L1:${f}`), f);
+  const postBtn = full.components[0].components.flatMap((c) => c.components ?? []).find((c) => c.custom_id === 'ml:sl:L1:post');
+  assert.equal(postBtn.disabled, true); // not all placed yet
+  const to = carry('4-3-3', slots, '4-4-2');
+  assert.equal(to[0].u, 'u1'); assert.equal(to.filter((s) => s.u).length >= 1, true);
+  const moved = place(slots, 1, { u: 'u1', n: 'Ana' }); assert.equal(moved[0].u, null); assert.equal(moved[1].u, 'u1');
+  const posted = lineupPostPanel({ id: 'L1', formation: '4-3-3', slots: JSON.stringify(slots), by_user: 'u1' }, EV, null, club, ['u1']);
+  assert.match(plainText(posted), /<@u1>/); assert.match(JSON.stringify(posted), /ml:sl:L1:edit/);
+  assert.notEqual(lineupKey(EV, { formation: '4-3-3', slots: JSON.stringify(slots) }), lineupKey(EV, { formation: '4-4-2', slots: JSON.stringify(slots) }));
+  assert.equal(lineupData({ formation: '4-3-3', slots: JSON.stringify(slots) }, EV, club).L.slots.length, 11);
+});
+test('suggested lineup: respects chosen positions, uses ratings, never uses one player twice', () => {
+  const P = (id, pos, rating) => ({ id, name: id, pos, rating });
+  const squad = [P('gk', 'GK', 6), P('a', 'CB', 7), P('b', 'CB', 7.5), P('c', 'LB', 6.5), P('d', 'RB', 6), P('e', 'CM', 7), P('f', 'CM', 8), P('g', 'CM', 6), P('h', 'ST', 8), P('i', 'ST', 7), P('j', 'ST', 4), P('k', 'CAM', 7)];
+  const best = suggest(squad);
+  assert.equal(best.exact, 11); assert.equal(best.slots[0].c.id, 'gk');
+  assert.equal(new Set(best.slots.map((s) => s.c?.id)).size, 11);
+  assert.ok(!best.slots.some((s) => s.c?.id === 'j'), 'the weakest striker is left out');
+  const few = suggest([P('only', 'ST', 7)]);
+  assert.equal(few.slots.filter((s) => s.c).length, 1); assert.equal(few.slots[0].c, null); // an unsuitable player is not forced into goal
+  assert.match(plainText(suggestionPanel(EV, best, { club, signed: 12 })), new RegExp(best.formation.replace(/[()]/g, '.')));
+});
+test('permissions: Administrator always, role when set, Manage Server by default, setup claimed by its owner', () => {
+  const I = (perm, roles = [], uid = 'u1') => ({ member: { user: { id: uid }, permissions: String(perm), roles } });
+  assert.equal(allowed(I(8), 'lineup', null, new Map([['lineup', 'r1']])), true);
+  assert.equal(allowed(I(32), 'lineup', null, new Map()), true); assert.equal(allowed(I(0), 'lineup', null, new Map()), false);
+  assert.equal(allowed(I(32), 'lineup', null, new Map([['lineup', 'r1']])), false); // a role is set: Manage Server is no longer enough
+  assert.equal(allowed(I(0, ['r1']), 'lineup', null, new Map([['lineup', 'r1']])), true);
+  assert.equal(allowed(I(0, [], 'owner'), 'setup', { owner_id: 'owner' }, new Map([['setup', 'r9']])), true);
+  assert.equal(allowed(I(0), 'setup', { owner_id: 'owner' }, new Map([['setup', 'r9']])), false);
+  assert.match(plainText(setupPanel({ owner_id: 'owner' }, new Map([['lineup', 'r1']]))), /<@&r1>/);
+  assert.ok(count(setupPanel(null, new Map()).components) <= 40);
 });
 
 test('match days are stored per server and answers replace each other', async () => {
