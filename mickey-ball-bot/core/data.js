@@ -37,7 +37,7 @@ export async function buildJobs(st, club, matches = [], { clubWide = true } = {}
   const cd = { name: club.name, crest: club.crest };
   const past = matches.length ? await st.recentMatches(club.id, 30) : [];
   for (const m of matches) {
-    add('board', m.id, { club: cd, mp: buildPicture(m) });
+    add('board', m.id, { club: cd, mp: buildPicture(m), v: 2 }); // v2: drawn 2400 px wide, the width of the pitch and review pictures side by side
     add('pitch', m.id, { club: cd, mp: buildPicture(m) });
     const rv = buildReview(m, { history: past.filter((h) => h.ts < m.ts) });
     if (rv) add('review', m.id, { club: cd, model: rv, mp: null });

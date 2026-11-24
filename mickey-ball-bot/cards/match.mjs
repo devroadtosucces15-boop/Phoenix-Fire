@@ -79,7 +79,7 @@ export function boardCard(mp, club) {
     const lab = (v) => (v == null ? '–' : r.kind === 'pct' ? `${v}%` : r.kind === 'rate' ? (+v).toFixed(1) : `${v}`);
     const sign = d > 0 ? '+' : d < 0 ? '−' : '';
     const delta = r.kind === 'pct' ? `${sign}${Math.abs(d)} pts` : r.kind === 'rate' ? `${d >= 0 ? '+' : '−'}${Math.abs(d).toFixed(1)}` : `${sign}${Math.abs(d)}`;
-    return `<div class="sr"><div class="dc">${donut(frac(r.a), TONE[tone], lab(r.a))}</div><div class="sm"><span>${esc(r.k)}</span>${none ? '' : `<b class="chipd ${tone}">${tone === 'even' ? 'Level' : delta}</b>`}</div><div class="dc">${none ? donut(0, SLATE, '–') : donut(frac(r.b), SLATE, lab(r.b))}</div></div>`;
+    return `<div class="sr"><div class="dc">${donut(frac(r.a), TONE[tone], lab(r.a), 92)}</div><div class="sm"><span>${esc(r.k)}</span>${none ? '' : `<b class="chipd ${tone}">${tone === 'even' ? 'Level' : delta}</b>`}</div><div class="dc">${none ? donut(0, SLATE, '–', 92) : donut(frac(r.b), SLATE, lab(r.b), 92)}</div></div>`;
   };
   const crow = (p) => `<div class="cr"><b class="osw">${esc(String(p.n).length > 14 ? `${String(p.n).slice(0, 13)}…` : p.n)}</b><span class="ic">${icon('goal', '#4ee0ad', 32).repeat(p.g)}${icon('assist', '#efcf7a', 32).repeat(p.a)}</span></div>`;
   const motm = mp.motm, name = String(club?.name ?? ''), opp = String(mp.opp), shortName = name.replace(/\s+FC$/i, '');
@@ -87,23 +87,24 @@ export function boardCard(mp, club) {
   const d = mp.deeper;
   const deeperHtml = d ? `<div class="dh"><span class="lab" style="font-size:26px;color:#e1e8f5;letter-spacing:.3em">Deeper stats</span><span class="cov">EA event counters · ${d.cover.us} of ${d.cover.of} of ours${d.cover.them ? `, ${d.cover.them} of ${d.cover.ofThem} of theirs` : ''}</span></div>${d.rows.map(rowOf).join('')}` : '';
   return postPage(`
-.sb{text-align:center}.srow{display:grid;grid-template-columns:1fr 420px 1fr;align-items:center;margin-top:14px}
+body{width:2400px}.ph{padding:26px 80px 0}
+.sb{text-align:center}.srow{display:grid;grid-template-columns:1fr 640px 1fr;align-items:center;margin-top:14px}
 .team{display:grid;justify-items:center;gap:6px}.team b{font:600 40px/1.1 Oswald;letter-spacing:.06em;text-transform:uppercase;max-width:330px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mid b{display:block;font:700 176px/1 Oswald;text-shadow:0 10px 50px rgba(25,201,140,.5)}.mid .pill{margin-top:-6px}
-.gm{display:grid;grid-template-columns:1fr 400px;margin:20px 40px 0;border-top:2px solid rgba(255,255,255,.1);padding-top:20px;min-height:214px;align-items:stretch}
+.gm{display:grid;grid-template-columns:1fr 760px;margin:20px 80px 0;border-top:2px solid rgba(255,255,255,.1);padding-top:20px;min-height:214px;align-items:stretch}
 .gl{padding-right:30px;display:grid;align-content:center}.legend{display:flex;gap:24px;font:600 22px Inter;color:#b9cfc4;margin-bottom:6px}.legend span{display:inline-flex;align-items:center;gap:8px}
-.cr{display:flex;justify-content:space-between;align-items:center;height:52px;border-bottom:1px solid rgba(255,255,255,.07)}.cr b{font:600 28px/1 Oswald;letter-spacing:.04em}.ic{display:inline-flex;gap:8px}
+.cr{display:flex;justify-content:space-between;align-items:center;height:60px;border-bottom:1px solid rgba(255,255,255,.07)}.cr b{font:600 34px/1 Oswald;letter-spacing:.04em}.ic{display:inline-flex;gap:8px}
 .mo{position:relative;contain:size;border-left:2px solid rgba(239,207,122,.4);padding-left:32px;display:grid;align-items:center}
 .ml{display:grid;gap:14px;max-width:196px;z-index:2}.ml .lab{display:flex;align-items:center;gap:10px;font-size:19px;line-height:1.25;letter-spacing:.13em;white-space:nowrap}.ml .lab svg{flex:none}
 .mt{display:grid;text-align:left}.mt b{font:600 34px/1.05 Oswald;letter-spacing:.04em;white-space:nowrap}.mt em{font:700 60px/1.05 Oswald;font-style:normal}
 .bw{position:absolute;right:30px;top:50%;height:70%;max-height:168px;aspect-ratio:200/232;line-height:0;z-index:1;transform:translateY(-50%)}.bw svg{width:100%;height:100%}
 .mb{position:absolute;left:-14px;bottom:6px;line-height:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.55))}
 .glow{position:absolute;right:-30px;top:-10px;bottom:-30px;aspect-ratio:1;background:radial-gradient(closest-side,rgba(239,207,122,.13),rgba(239,207,122,.05) 55%,rgba(239,207,122,0));z-index:0}
-.st{margin:18px 40px 0;border-top:2px solid rgba(255,255,255,.1)}
-.sr,.sh{display:grid;grid-template-columns:340px 1fr 340px;align-items:center}.sr{height:132px;border-bottom:1px solid rgba(255,255,255,.07)}
+.st{margin:18px 80px 0;border-top:2px solid rgba(255,255,255,.1)}
+.sr,.sh{display:grid;grid-template-columns:1fr 700px 1fr;align-items:center}.sr{height:150px;border-bottom:1px solid rgba(255,255,255,.07)}
 .dc{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:14px}.sh{height:84px}.sh .lab{font-size:26px;color:#e1e8f5}
-.sm{text-align:center;display:grid;justify-items:center;gap:10px}.sm span{font:700 25px Inter;letter-spacing:.14em;text-transform:uppercase;color:#e1e8f5}
-.chipd{font:700 26px/1 Oswald;letter-spacing:.06em;padding:6px 16px 4px;border-radius:999px;border:2px solid}
+.sm{text-align:center;display:grid;justify-items:center;gap:10px}.sm span{font:700 32px Inter;letter-spacing:.14em;text-transform:uppercase;color:#e1e8f5}
+.chipd{font:700 32px/1 Oswald;letter-spacing:.06em;padding:6px 16px 4px;border-radius:999px;border:2px solid}
 .chipd.good{color:#4be08a;background:rgba(75,224,138,.12);border-color:rgba(75,224,138,.45)}.chipd.even{color:#efcf7a;background:rgba(239,207,122,.12);border-color:rgba(239,207,122,.45)}.chipd.bad{color:#ff7d72;background:rgba(255,125,114,.12);border-color:rgba(255,125,114,.45)}
 .dh{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid rgba(255,255,255,.1);margin-top:6px;padding:20px 0 4px}.cov{font:500 21px Inter;color:var(--mute)}
 .key{display:flex;gap:30px;justify-content:center;padding:14px 0 28px;font:600 22px Inter;color:#b9cfc4}.key i{display:inline-block;width:14px;height:14px;border-radius:50%;margin-right:9px}`,
