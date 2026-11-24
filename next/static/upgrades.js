@@ -1,6 +1,7 @@
 // Upgrade pack behaviour (the animation lab's "Upgrade" side), switched on from the Theme Studio per component:
 //   data-st-playercard = b | c   the player card rig: spring tilt, foil, highlight, glow, shine, drag with spring-back, tap shine, gyroscope
 //   data-st-buttonfx   = b | c   buttons: ripple from the finger and a short phone buzz (b); squeeze and inner light are CSS (upgrades.css)
+//   data-st-loadfx / celebfx / glowfx / islandfx / railfx / headerfx / widgetfx = b | c   loading + feedback, celebrations, glow pauses and magnet, island clip, owner panel + rail glide, logo intro + rolling badge, widgets
 //   data-st-scrollfx / tapfx / menufx = b | c   scrolling lean + progress line, tap reactions, menus (hubfx and pagefx live in fx.js: steel doors and the ember page slide)
 // The rig is the lab's: one tilt value feeds every layer, one frame loop runs only while something moves, positions are written as
 // CSS variables (never measured while animating). Stiffness 170 / damping 16 for the lean, 140 / 14 for the drag, press eases at rate 18.
@@ -199,21 +200,90 @@
   new MutationObserver(() => { if (variant('menufx') || scrim) scrimSync(); }).observe(d.documentElement, { attributes: true, subtree: true, attributeFilter: ['class'] });
   d.addEventListener('click', (e) => { if (variant('menufx') && e.target.closest && e.target.closest('.fx-orb .ob,.fx-isl .ib') && variant('menufx') === 'b') buzz(6); }, true);
 
+  // ---------- J. loading and feedback (loadfx): rows crossfade in when a skeleton is replaced, a failed button flashes and buzzes ----------
+  new MutationObserver((ms) => { if (!variant('loadfx') || reduced()) return;
+    for (const m of ms) {
+      if (m.type === 'childList') { if (![...m.removedNodes].some((n) => n.nodeType === 1 && (n.matches('.sk-wrap') || n.querySelector('.sk')))) continue;
+        [...m.addedNodes].filter((n) => n.nodeType === 1 && !n.matches('.sk-wrap,.sk')).forEach((n, i) => n.animate([{ opacity: 0, transform: 'translate3d(0,12px,0)' }, { opacity: 1, transform: 'none' }], { duration: 380, delay: i * 50, easing: OUT, fill: 'backwards' })); }
+      else if (m.type === 'attributes' && m.target.classList && m.target.classList.contains('mx-err') && !(m.oldValue || '').includes('mx-err') && variant('loadfx') === 'b') {
+        m.target.animate([{ boxShadow: '0 0 0 0 rgba(229,83,75,.7)' }, { boxShadow: '0 0 0 16px rgba(229,83,75,0)' }], { duration: 520 }); buzz([30, 40, 30]); }
+    } }).observe(d.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+
+  // ---------- L. celebrations (celebfx): the award moment gets a flash, two shockwaves, a springy icon and confetti that bursts out and falls with gravity ----------
+  const celebrate = (o) => {
+    const v = variant('celebfx'); if (!v || reduced() || o._up) return; o._up = 1; const card = o.querySelector('.afx-card'); if (!card) return;
+    const mk2 = (cls) => { const e = d.createElement('i'); e.className = cls; e.setAttribute('aria-hidden', 'true'); card.insertBefore(e, card.firstChild); return e; };
+    const fl = mk2('up-flash'); fl.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 420, easing: 'ease-out' }).onfinish = () => fl.remove();
+    if (v === 'b') { for (const dl of [0, 140]) { const sk = mk2('up-shock'); sk.animate([{ transform: 'scale(.3)', opacity: .9 }, { transform: 'scale(4.2)', opacity: 0 }], { duration: 760, delay: dl, easing: 'cubic-bezier(.1,.7,.3,1)', fill: 'backwards' }).onfinish = () => sk.remove(); } }
+    const ic = card.querySelector('.afx-ic'); if (ic) ic.animate([{ opacity: 0, transform: 'scale(.2) rotate(-40deg)' }, { opacity: 1, transform: 'scale(1.3) rotate(8deg)', offset: .55 }, { opacity: 1, transform: 'scale(1) rotate(0)' }], { duration: 640, easing: SP });
+    const h = card.querySelector('h2'); if (h && v === 'b') h.animate([{ opacity: 0, transform: 'translate3d(0,22px,0) scale(.6)' }, { opacity: 1, transform: 'none' }], { duration: 380, delay: 300, easing: SP, fill: 'backwards' });
+    if (v === 'b') o.querySelectorAll('.afx-bits i').forEach((b) => { const ang = -Math.PI * (0.05 + Math.random() * 0.9), sp = 110 + Math.random() * 120, vx = Math.cos(ang) * sp, vy = Math.sin(ang) * sp, g = 420, T = 1.5 + Math.random() * 0.9, kf = [];
+      for (let k = 0; k <= 8; k++) { const t = T * k / 8; kf.push({ transform: 'translate3d(' + (vx * t) + 'px,' + (vy * t + 0.5 * g * t * t) + 'px,0) rotate(' + (k * (60 + Math.random() * 60)) + 'deg) rotateX(' + (k * 140) + 'deg)', opacity: k > 6 ? 1 - (k - 6) / 2 : 1 }); }
+      b.animate(kf, { duration: T * 1000, easing: 'linear', fill: 'forwards' }); });
+    buzz([20, 30, 40]);
+  };
+
+  // ---------- M. glow and pointer (glowfx): loops pause off-screen and in a hidden tab, primary buttons lean toward a near pointer ----------
+  let loopIO = null;
+  const loops = () => { if (!variant('glowfx') || !('IntersectionObserver' in w)) return; loopIO = loopIO || new IntersectionObserver((es) => es.forEach((e) => e.target.classList.toggle('up-off', !e.isIntersecting)), { rootMargin: '80px' }); d.querySelectorAll('main .sec,main .panel,main .hero,.pc-hero').forEach((el) => loopIO.observe(el)); };
+  d.addEventListener('visibilitychange', () => H.classList.toggle('up-hidden', d.hidden));
+  let magEl = null;
+  d.addEventListener('pointermove', (e) => { if (variant('glowfx') !== 'b' || reduced() || e.pointerType !== 'mouse') return;
+    const b = [...d.querySelectorAll('.keybtn,.btn.gold')].find((x) => { const r = x.getBoundingClientRect(); return r.width && Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) < 110; });
+    if (magEl && magEl !== b) { magEl.classList.remove('up-mag'); magEl.style.removeProperty('--up-mx'); magEl.style.removeProperty('--up-my'); magEl = null; }
+    if (b) { const r = b.getBoundingClientRect(); b.classList.add('up-mag'); b.style.setProperty('--up-mx', ((e.clientX - r.left - r.width / 2) * 0.22).toFixed(1) + 'px'); b.style.setProperty('--up-my', ((e.clientY - r.top - r.height / 2) * 0.3).toFixed(1) + 'px'); magEl = b; } });
+
+  // ---------- P. side rail and owner button (railfx): the gold button wobbles as its panel grows, the active rail entry glides in from where it was ----------
+  d.addEventListener('click', (e) => { if (!variant('railfx') || reduced()) return; const b = e.target.closest && e.target.closest('.ofab-btn'); if (b && variant('railfx') === 'b') { b.animate([{ transform: 'scale(1)' }, { transform: 'scale(.9) rotate(-20deg)', offset: .3 }, { transform: 'scale(1.08) rotate(0)', offset: .7 }, { transform: 'scale(1)' }], { duration: 480, easing: OUT }); buzz(8); } }, true);
+  const railGlide = () => { if (!variant('railfx') || reduced()) return; const on = d.querySelector('.cx-nav[aria-current=page],.cx-deck[aria-current=page]'); if (!on) return; let was = null; try { was = sessionStorage.getItem('phoenix.raily'); sessionStorage.setItem('phoenix.raily', String(on.offsetTop)); } catch {}
+    if (was != null && +was !== on.offsetTop) on.animate([{ translate: '0 ' + (+was - on.offsetTop) + 'px' }, { translate: '0 0' }], { duration: variant('railfx') === 'c' ? 260 : 380, easing: variant('railfx') === 'c' ? OUT : SP }); };
+
+  // ---------- Q. header, logo and notices (headerfx): rings, sparks and a settle around the crest; the badge number rolls like an odometer ----------
+  const logoIntro = (lg, force) => {
+    const v = variant('headerfx'); const img = lg && lg.querySelector('img'); if (!v || !img || reduced()) return;
+    try { if (!force && sessionStorage.getItem('phoenix.logointro')) return; sessionStorage.setItem('phoenix.logointro', '1'); } catch {}
+    const cx = img.offsetLeft + img.offsetWidth / 2, cy = img.offsetTop + img.offsetHeight / 2, put = (cls) => { const e = d.createElement('i'); e.className = cls; e.setAttribute('aria-hidden', 'true'); e.style.left = cx + 'px'; e.style.top = cy + 'px'; lg.appendChild(e); return e; };
+    img.animate(v === 'b' ? [{ opacity: 0, transform: 'translate3d(0,-14px,0) scale(.3) rotate(-25deg)' }, { opacity: 1, transform: 'translate3d(0,2px,0) scale(1.2) rotate(6deg)', offset: .6 }, { opacity: 1, transform: 'none' }] : [{ opacity: 0, transform: 'translate3d(0,-8px,0)' }, { opacity: 1, transform: 'none' }], { duration: v === 'b' ? 640 : 400, easing: SP });
+    for (let i = 0; i < (v === 'b' ? 2 : 1); i++) { const r = put('up-lring'); r.animate([{ opacity: .95, transform: 'scale(.7)' }, { opacity: 0, transform: 'scale(2.6)' }], { duration: 800, delay: i * 120, easing: 'cubic-bezier(.1,.7,.3,1)', fill: 'backwards' }).onfinish = () => r.remove(); }
+    if (v === 'b') { for (let i = 0; i < 6; i++) { const sp = put('up-spark'), a = i / 6 * Math.PI * 2, dd = 26 + Math.random() * 14; sp.animate([{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: 'translate3d(' + Math.cos(a) * dd + 'px,' + Math.sin(a) * dd + 'px,0) scale(.2)' }], { duration: 620, delay: 240, easing: 'cubic-bezier(.1,.6,.4,1)', fill: 'backwards' }).onfinish = () => sp.remove(); } if (force) buzz(10); }
+  };
+  new MutationObserver((ms) => { if (!variant('headerfx') || reduced()) return;
+    for (const m of ms) {
+      let el = null, was = null;
+      if (m.type === 'characterData') { el = m.target.parentElement && m.target.parentElement.closest('.hdr-n,.nb,.ofab-n'); was = m.oldValue; }
+      else if (m.type === 'childList' && m.target.matches && m.target.matches('.hdr-n,.nb,.ofab-n')) { const t = [...m.removedNodes].find((n) => n.nodeType === 3); if (t) { el = m.target; was = t.data; } }
+      if (!el || was == null || el.querySelector('.up-odo') || was === el.textContent) continue;
+      const o = d.createElement('span'); o.className = 'up-odo'; o.setAttribute('aria-hidden', 'true'); o.textContent = was; if (getComputedStyle(el).position === 'static') el.style.position = 'relative'; el.appendChild(o);
+      o.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate3d(0,-18px,0)', opacity: 0 }], { duration: 260, easing: OUT }).onfinish = () => o.remove();
+      el.animate([{ transform: 'translate3d(0,18px,0)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 300, easing: SP }); buzz(6); } }).observe(d.documentElement, { characterData: true, characterDataOldValue: true, childList: true, subtree: true });
+
+  // ---------- R. showcase widgets (widgetfx): drag the towers to turn them, they keep turning with momentum ----------
+  const spinArm = (tw) => {
+    if (tw._upSpin) return; tw._upSpin = 1; let ry = -24, vy = 0, lx = 0, dr = false, raf = 0; const ap = () => tw.style.setProperty('--up-ry', ry.toFixed(1) + 'deg');
+    tw.addEventListener('pointerdown', (e) => { if (!variant('widgetfx') || reduced()) return; dr = true; lx = e.clientX; vy = 0; cancelAnimationFrame(raf); tw.classList.add('up-drag'); try { tw.setPointerCapture(e.pointerId); } catch {} });
+    tw.addEventListener('pointermove', (e) => { if (!dr) return; const dx = e.clientX - lx; lx = e.clientX; ry += dx * 0.6; vy = dx * 0.6; ap(); });
+    const rel = () => { if (!dr) return; dr = false; tw.classList.remove('up-drag'); (function s() { vy *= 0.95; ry += vy; ap(); if (Math.abs(vy) > 0.05) raf = requestAnimationFrame(s); })(); };
+    tw.addEventListener('pointerup', rel); tw.addEventListener('pointercancel', rel);
+  };
+
   // ---------- follow the Theme Studio ----------
   const sync = () => {
     if (variant('playercard')) { cards().forEach(arm); if (!gyro) { gyro = true; addEventListener('deviceorientation', onGyro); } }
     else { cards().forEach(disarm); if (gyro) { gyro = false; removeEventListener('deviceorientation', onGyro); } }
-    sync2(); remember(); scrimSync(); pillSync(); waves(); if (variant('overlayfx')) d.querySelectorAll('.ph-notice').forEach(swipeToast);
+    loops(); railGlide(); d.querySelectorAll('.towers').forEach((t) => variant('widgetfx') && spinArm(t)); sync2(); remember(); scrimSync(); pillSync(); waves(); if (variant('overlayfx')) d.querySelectorAll('.ph-notice').forEach(swipeToast);
   };
-  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx', 'data-st-tilefx', 'data-st-statusfx', 'data-st-dockfx', 'data-st-overlayfx', 'data-st-vizfx', 'data-st-hubfx', 'data-st-scrollfx', 'data-st-tapfx', 'data-st-menufx', 'data-st-pagefx'] });
+  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx', 'data-st-tilefx', 'data-st-statusfx', 'data-st-dockfx', 'data-st-overlayfx', 'data-st-vizfx', 'data-st-hubfx', 'data-st-scrollfx', 'data-st-tapfx', 'data-st-menufx', 'data-st-pagefx', 'data-st-loadfx', 'data-st-celebfx', 'data-st-glowfx', 'data-st-islandfx', 'data-st-railfx', 'data-st-headerfx', 'data-st-widgetfx'] });
   new MutationObserver((ms) => { if (!variant('playercard')) return; for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) { if (n.matches && n.matches('.pc-card')) arm(n); n.querySelectorAll && n.querySelectorAll('.pc-card').forEach(arm); } }).observe(d.documentElement, { childList: true, subtree: true });
   // dialogs, toasts and charts appear later: watch for them
-  new MutationObserver((ms) => { if (!variant('overlayfx') && !variant('vizfx')) return;
+  new MutationObserver((ms) => { if (!variant('overlayfx') && !variant('vizfx') && !variant('celebfx')) return;
     for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) {
       if (n.matches('.ph-notice')) swipeToast(n);
       if (n.matches('.ph-dialog')) growDialog(n);
+      if (n.id === 'awardfx') celebrate(n);
       if (variant('vizfx') && (n.matches('.wave') || n.querySelector('.wave'))) waves();
     } }).observe(d.body || H, { childList: true, subtree: true });
-  w.PFUpgrades = { arm, disarm, step, mk, clamp, K };
+  w.PFUpgrades = { arm, disarm, step, mk, clamp, K, logoIntro, celebrate };
+  const intro = () => { try { logoIntro(d.querySelector('.bar .lg')); } catch {} };
+  if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', intro); else if (typeof setTimeout === 'function') setTimeout(intro, 0);
   sync();
 })();
