@@ -81,7 +81,14 @@ t('demo: edits go to the demo first; the page behind changes only when "Also on 
 t('demo: every component shows its three looks as pictures (live demo tiles), tapping a picture picks it', /class="tse-tile/.test(editor) && /data-look=/.test(editor) && /tse-pick/.test(editor) && /\.tse-tile iframe/.test(ecss));
 t('demo: closing the editor puts the page back to the saved look', /S\.onpage\) T\.preview\(T\.config\)/.test(editor));
 
+// ---- lab families N and S: tiles/switches/chips and bell/counters/taps
+t('lab N+S: tilefx and statusfx are components in the bot list and the loader', ["bot/themestudio.js", "next/static/themestudio.js"].every((f) => /'tilefx', 'statusfx'/.test(rd(f))));
+t('lab N+S: every upgrade rule for them hangs on a data-st attribute (nothing applies until picked)', upc.split('\n').filter((l) => /(tilefx|statusfx)/.test(l) && /\{/.test(l) && !/^\s*\/\*/.test(l)).every((l) => /^html\[data-st-(tilefx|statusfx)|^@keyframes|^@media|^\s*html\[data-motion=off\]\[data-st-/.test(l)));
+t('lab N+S: the demo page has a section for each, and the editor names them', /data-demo="tilefx"/.test(rd('next/static/themedemo.html')) && /data-demo="statusfx"/.test(rd('next/static/themedemo.html')) && /tilefx:/.test(editor) && /statusfx:/.test(editor));
+t('lab N+S: the rig follows the new attributes', /data-st-tilefx/.test(up) && /data-st-statusfx/.test(up));
+
 // ---- wiring
 t('pages: every page loads the look in <head> before paint and the editor after the owner button', /themestudio\.css/.test(ui) && /themeeditor\.css/.test(ui) && ui.indexOf('themestudio.js') < ui.indexOf('fxconfig.js') && ui.indexOf('themeeditor.js') > ui.indexOf('ownerfab.js'));
 t('control center: the effects card moved into the studio (Control Center no longer draws it)', !/'streams', 'effects', 'points'\]/.test(ccs));
 done();
+

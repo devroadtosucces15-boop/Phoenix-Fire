@@ -71,12 +71,29 @@
   };
   d.addEventListener('pointerdown', onDown, true);
 
+
+  // ---------- S. status accents: bell rings when tapped, count badge pops and rolls when its number changes, ripple on chips and tiles ----------
+  const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+  d.addEventListener('click', (e) => {
+    if (!variant('statusfx') || reduced()) return;
+    const bell = e.target.closest && e.target.closest('.hdr-bellp,.hdr-bell,.bell'); if (bell) { replay(bell, 'up-ring'); setTimeout(() => bell.classList.remove('up-ring'), 900); try { if (variant('statusfx') === 'b' && (!w.PhoenixFx || w.PhoenixFx.on('haptics'))) navigator.vibrate && navigator.vibrate([12, 40, 12]); } catch {} }
+  }, true);
+  d.addEventListener('pointerdown', (e) => {
+    if (variant('statusfx') !== 'b' || reduced()) return;
+    const t = e.target.closest && e.target.closest('.chip,.tile'); if (!t) return;
+    const r = t.getBoundingClientRect(), n = d.createElement('span'); n.className = 'up-rip'; n.style.left = (e.clientX - r.left) + 'px'; n.style.top = (e.clientY - r.top) + 'px'; t.appendChild(n);
+    const sc = Math.max(r.width, r.height) / 10 * 2.4; n.animate([{ transform: 'scale(0)', opacity: 0.5 }, { transform: 'scale(' + sc + ')', opacity: 0 }], { duration: 600, easing: 'cubic-bezier(.2,.7,.2,1)' }).onfinish = () => n.remove();
+  }, true);
+  new MutationObserver((ms) => { if (!variant('statusfx') || reduced()) return;
+    for (const m of ms) { const el = m.target.nodeType === 3 ? m.target.parentElement : m.target; const b = el && el.closest && el.closest('.hdr-n,.nb,.ofab-n'); if (b && !b.classList.contains('up-pop')) { replay(b, 'up-pop'); setTimeout(() => b.classList.remove('up-pop'), 500); } }
+  }).observe(d.documentElement, { characterData: true, childList: true, subtree: true });
+
   // ---------- follow the Theme Studio ----------
   const sync = () => {
     if (variant('playercard')) { cards().forEach(arm); if (!gyro) { gyro = true; addEventListener('deviceorientation', onGyro); } }
     else { cards().forEach(disarm); if (gyro) { gyro = false; removeEventListener('deviceorientation', onGyro); } }
   };
-  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx'] });
+  new MutationObserver(sync).observe(H, { attributes: true, attributeFilter: ['data-st-playercard', 'data-st-buttonfx', 'data-st-tilefx', 'data-st-statusfx'] });
   new MutationObserver((ms) => { if (!variant('playercard')) return; for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1) { if (n.matches && n.matches('.pc-card')) arm(n); n.querySelectorAll && n.querySelectorAll('.pc-card').forEach(arm); } }).observe(d.documentElement, { childList: true, subtree: true });
   w.PFUpgrades = { arm, disarm, step, mk, clamp, K };
   sync();
