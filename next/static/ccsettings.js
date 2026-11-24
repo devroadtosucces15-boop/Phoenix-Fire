@@ -79,7 +79,7 @@ ${rows ? `<div class="tablewrap"><table class="tbl cc-tbl cu-rows"><caption clas
     function html() {
       if (S.err) return empty('⚠️', 'Could not load the bot settings', S.err);
       if (!S.data) return skel;
-      const A = S.data.areas, order = ['bot', 'routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams', 'effects', 'points'];
+      const A = S.data.areas, order = ['bot', 'routes', 'rush', 'tools', 'profanity', 'stream_sources', 'recruitment', 'matchAlert', 'streams', 'points'];
       const fold = S.fold ? `<pre class="muted small cs-fold">${esc(JSON.stringify(S.fold, null, 1))}</pre>` : '';
       return `<p class="muted small">Every bot setting in one place. Open a card to change it.  The owner keeps the bot’s look and the Organization; managers run the rest. Every save is recorded in the Audit log. Command rules are in <b>Bot commands</b>.</p>
 <div class="cu-grid">${order.filter((k) => A[k]).map((k) => (k === 'routes' ? routing(A[k]) : card(k, A[k], FORMS[k](A[k]), k === 'recruitment' ? UI.sw('name="open" form="cs-recruitment" data-cs-auto' + (A[k].canWrite ? '' : ' disabled'), !!(A[k].value || {}).open, 'Trials are open') : ''))).join('')}</div>
