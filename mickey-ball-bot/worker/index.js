@@ -113,7 +113,7 @@ async function onCommand(env, ctx, st, i) {
       case 'last': {
         const m = (await st.recentMatches(club.id, 1))[0];
         if (!m) { await askEA(env, ctx, st, i, { kind: 'stats', q: club.id, game: 1 }); return json({ type: 5 }); }
-        if (!u('score', m.id)) queueDraw(env, ctx, club);
+        if (!u('board', m.id)) queueDraw(env, ctx, club);
         return reply(P.matchPanel(club, m, u));
       }
     }
@@ -149,6 +149,12 @@ async function onComponent(env, ctx, st, i) {
   const club = row ? clubView(row) : { id: clubId, name: 'Club', crest: null };
   const map = await st.cardMap(clubId), u = urlOf(env, map);
   if (a === 'cs') { const t = await st.clubTotals(clubId), rows = await st.allResults(clubId); return reply(P.clubPanel(club, t, rows.slice(0, 10).map((r) => r.res).reverse(), streaks(rows), u, { ephemeral: true })); }
+  if (a === 'lbs') { // stat picker under a leaderboard: update that message in place
+    const stat = i.data.values?.[0] ?? 'rating', b = await st.leaderboard(clubId, stat);
+    if (b.rows.length && !u('top', stat)) queueDraw(env, ctx, club);
+    const panel = P.leaderboardPanel(club, stat, b.rows, u);
+    return reply({ ...panel, flags: panel.flags & IS_V2 }, 7);
+  }
   if (a === 'lb') return reply(P.leaderboardPanel(club, 'rating', (await st.leaderboard(clubId, 'rating')).rows, u, { ephemeral: true }));
   const m = await st.storedMatch(clubId, matchId);
   if (!m) return reply({ ...notice('That match is no longer stored'), flags: IS_V2 | EPHEMERAL });

@@ -18,6 +18,7 @@ const like = (q) => `%${String(q).replace(/[%_]/g, '')}%`;
 const BOARDS = {
   rating: ['AVG(rating)', 'Avg rating', (v) => (+v).toFixed(2), 3], goals: ['SUM(goals)', 'Goals', (v) => v, 1], assists: ['SUM(assists)', 'Assists', (v) => v, 1],
   ga: ['SUM(goals)+SUM(assists)', 'Goals + assists', (v) => v, 1], motm: ['SUM(mom)', 'Man of the match', (v) => v, 1], games: ['COUNT(*)', 'Games', (v) => v, 1],
+  shots: ['SUM(shots)', 'Shots', (v) => v, 1], saves: ['SUM(saves)', 'Saves', (v) => v, 1], tackles: ['SUM(tackle_made)', 'Tackles won', (v) => v, 1], passes: ['SUM(pass_made)', 'Passes completed', (v) => v, 1],
 };
 
 export function makeStore(x) {
@@ -95,7 +96,7 @@ export function makeStore(x) {
     delOutbox: (rowId) => x.run('DELETE FROM outbox WHERE id=?', rowId),
     // everything the cards need about a club's tracked history
     async rosterData(clubId) {
-      const agg = await x.all(`SELECT player n, COUNT(*) gp, SUM(goals) g, SUM(assists) a, AVG(rating) r, SUM(mom) m, SUM(pass_made) pm, SUM(pass_att) pa, SUM(tackle_made) tm, SUM(tackle_att) ta FROM player_lines WHERE club_id=? GROUP BY player ORDER BY gp DESC LIMIT 40`, id(clubId));
+      const agg = await x.all(`SELECT player n, COUNT(*) gp, SUM(goals) g, SUM(assists) a, AVG(rating) r, SUM(mom) m, SUM(pass_made) pm, SUM(pass_att) pa, SUM(tackle_made) tm, SUM(tackle_att) ta, SUM(shots) sh, SUM(saves) sv FROM player_lines WHERE club_id=? GROUP BY player ORDER BY gp DESC LIMIT 40`, id(clubId));
       const pos = new Map();
       for (const r of await x.all('SELECT player, pos, COUNT(*) c FROM player_lines WHERE club_id=? GROUP BY player, pos ORDER BY c', id(clubId))) pos.set(r.player, r.pos);
       const trend = new Map();
@@ -104,8 +105,8 @@ export function makeStore(x) {
       }
       const evs = new Map();
       for (const r of await x.all(`SELECT player, ev FROM player_lines WHERE club_id=? AND ev IS NOT NULL AND ev<>'' ORDER BY match_id DESC LIMIT 1500`, id(clubId))) { const a = evs.get(r.player) ?? []; a.push({ ev: r.ev }); evs.set(r.player, a); }
-      const evOf = (n) => { const e = evs.has(n) ? eventSide(evs.get(n)) : null; return e && { apps: e.apps, ints: e.ints, won: e.won, lost: e.lost, aer: e.aerial, fwd: e.forward, pos: e.positioning, pass: e.passAcc }; };
-      return agg.map((p) => ({ n: p.n, ev: evOf(p.n), pos: pos.get(p.n) ?? '', s: { gp: p.gp, g: p.g, a: p.a, r: +p.r || 0, m: p.m, p: p.pa ? Math.round((p.pm / p.pa) * 100) : 0, t: p.ta ? Math.round((p.tm / p.ta) * 100) : 0 }, tr: trend.get(p.n) ?? [] }));
+      const evOf = (n) => { const e = evs.has(n) ? eventSide(evs.get(n)) : null; return e && { apps: e.apps, ints: e.ints, won: e.won, lost: e.lost, aer: e.aerial, fwd: e.forward, pos: e.positioning, pass: e.passAcc, thru: e.t.throughPasses || 0, drib: e.t.dribblesCompleted || 0, sot: e.t.shotsOnTarget || 0 }; };
+      return agg.map((p) => ({ n: p.n, ev: evOf(p.n), x: { sh: p.sh, sv: p.sv, tm: p.tm, pm: p.pm }, pos: pos.get(p.n) ?? '', s: { gp: p.gp, g: p.g, a: p.a, r: +p.r || 0, m: p.m, p: p.pa ? Math.round((p.pm / p.pa) * 100) : 0, t: p.ta ? Math.round((p.tm / p.ta) * 100) : 0 }, tr: trend.get(p.n) ?? [] }));
     },
     async recentMatches(clubId, n = 8) { return (await x.all('SELECT data FROM matches WHERE club_id=? ORDER BY ts DESC LIMIT ?', id(clubId), n)).map((r) => JSON.parse(r.data)); },
     // match days

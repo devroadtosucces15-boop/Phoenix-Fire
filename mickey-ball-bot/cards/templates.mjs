@@ -41,20 +41,20 @@ export const page = (css, body) => `<!doctype html><html><head><meta charset="ut
 
 const SHIELD = (fill, stroke, letter) => `<svg viewBox="0 0 40 46" width="100%" height="100%"><path d="M20 1 38 7v15c0 11-8 19-18 23C10 41 2 33 2 22V7z" fill="${fill}" stroke="${stroke}" stroke-width="2"/><text x="20" y="29" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="16" fill="#fff">${esc(letter)}</text></svg>`;
 // a crest <img> that falls back to a drawn shield if the picture can't load
-const crest = (src, name, size, home) => {
+export const crest = (src, name, size, home) => {
   const fb = SHIELD(home ? '#0f7a57' : '#2a3a33', home ? '#efcf7a' : '#9bb0a5', String(name || '?').trim()[0]?.toUpperCase() ?? '?').replace(/"/g, "'");
   return src
     ? `<span style="display:inline-block;width:${size}px;height:${size}px"><img src="${esc(src)}" width="${size}" height="${size}" style="object-fit:contain;filter:drop-shadow(0 14px 24px rgba(0,0,0,.6))" onerror="this.outerHTML=&quot;${fb.replace(/&/g, '&amp;')}&quot;"></span>`
     : `<span style="display:inline-block;width:${size}px;height:${size}px">${fb}</span>`;
 };
 export const r1 = (v) => (+v || 0).toFixed(1);
-const band = (r, motm) => (motm ? 'gold' : r >= 7 ? 'win' : r >= 6 ? 'draw' : 'loss');
-const BAND = { gold: '#efcf7a', win: '#3ddc84', draw: '#ff9f43', loss: '#ff5a52' }; // 6–6.9 is orange, so it never reads as MOTM gold
-const RESULT = { W: 'Win', D: 'Draw', L: 'Loss' };
-const when = (ts) => new Date(ts * 1000).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+export const band = (r, motm) => (motm ? 'gold' : r >= 7 ? 'win' : r >= 6 ? 'draw' : 'loss');
+export const BAND = { gold: '#efcf7a', win: '#3ddc84', draw: '#ff9f43', loss: '#ff5a52' }; // 6–6.9 is orange, so it never reads as MOTM gold
+export const RESULT = { W: 'Win', D: 'Draw', L: 'Loss' };
+export const when = (ts) => new Date(ts * 1000).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
 const short = (n) => String(n ?? '').replace(/\s+FC$/i, '');
 const KIND = { friendly: 'Friendly', playoff: 'Playoff' };
-const POSLABEL = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
+export const POSLABEL = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
 const pos3 = (p) => POSLABEL[p] ?? String(p ?? '').slice(0, 3).toUpperCase();
 
 // ---------- score card (top of every match message) ----------
@@ -244,7 +244,8 @@ ${rows || '<div class="row"><span style="grid-column:1/-1">No stats to compare y
 export const TOP_STATS = {
   goals: ['Top scorers', (p) => p.s.g], assists: ['Most assists', (p) => p.s.a], ga: ['Goals + assists', (p) => p.s.g + p.s.a],
   rating: ['Best average rating', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], ints: ['Interceptions', (p) => p.ev?.ints ?? 0], won: ['Possession won', (p) => p.ev?.won ?? 0],
-  aer: ['Aerial duels won', (p) => p.ev?.aer ?? 0], fwd: ['Forward passes', (p) => p.ev?.fwd ?? 0], motm: ['Most man of the match', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp],
+  aer: ['Aerial duels won', (p) => p.ev?.aer ?? 0], fwd: ['Forward passes', (p) => p.ev?.fwd ?? 0], thru: ['Through passes', (p) => p.ev?.thru ?? 0], drib: ['Dribbles completed', (p) => p.ev?.drib ?? 0],
+  sot: ['Shots on target', (p) => p.ev?.sot ?? 0], shots: ['Most shots', (p) => p.x?.sh ?? 0], saves: ['Most saves', (p) => p.x?.sv ?? 0], tackles: ['Tackles won', (p) => p.x?.tm ?? 0], passes: ['Passes completed', (p) => p.x?.pm ?? 0], motm: ['Most man of the match', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp],
 };
 export function topRows(players, stat) {
   const [, f] = TOP_STATS[stat] ?? TOP_STATS.goals;

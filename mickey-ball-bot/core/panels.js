@@ -4,6 +4,7 @@
 import { message, notice, header, text, sep, footer, label, facts, cards, buttons, menu, tagBlock, side, thumb, resultAccent, RESULT_ICON, RESULT_WORD, ICON } from './ui.js';
 import { ratingDot } from './theme.js';
 import { decodeEvents, eventRows, boxEv } from './events.js';
+import { BOARD_LIST, BOARD_TITLE } from './boards.js';
 
 const r1 = (v) => (+v || 0).toFixed(1);
 const pct = (a, b) => (b ? Math.round((a / b) * 100) : null);
@@ -20,23 +21,25 @@ const evLines = (m) => {
 export const banner = (env, name) => `${String(env.PUBLIC_URL).replace(/\/$/, '')}/c/banners/${name}-v1.png`;
 
 // ---------- match centre (the post under /last, /match stats and every auto-post) ----------
+// Three pictures: the big board (score, goals and assists, man of the match, the stats), then the pitch and the match review side by side
+// below a faint divider. Without pictures the same facts come as text.
 export function matchPanel(club, m, u, { ephemeral = false } = {}) {
   const ps = m.home.players, kind = KIND[m.type] ?? 'League';
   const avg = ps.length ? ps.reduce((t, p) => t + p.rating, 0) / ps.length : null;
   const motm = ps.find((p) => p.mom);
-  const score = u('score', m.id), field = u('field', m.id);
+  const board = u('board', m.id), pitch = u('pitch', m.id), review = u('review', m.id);
   const best = [...ps].sort((a, b) => b.rating - a.rating);
+  const alt = `${club.name} ${m.home.goals}–${m.away.goals} ${m.away.name}`;
   return message({ accent: resultAccent(m.res), ephemeral, blocks: [
     tagBlock(club.name, kind),
-    header({ eyebrow: `${club.name} · Match centre · ${kind}`, title: `${club.name} ${m.home.goals}–${m.away.goals} ${m.away.name}`, sub: `<t:${m.ts}:f> · ${RESULT_WORD[m.res]}`, thumb: club.crest }),
-    cards(score && { url: score, alt: `${club.name} ${m.home.goals}–${m.away.goals} ${m.away.name}` }),
-    facts([[`${ICON.goal} Goals`, list(ps, 'goals') || 'none'], [`${ICON.assist} Assists`, list(ps, 'assists')], ['📊 Team rating', avg != null ? r1(avg) : null]]),
-    motm ? facts([[`${ICON.motm} Man of the match`, `${motm.name} · ${r1(motm.rating)}`]]) : null,
-    evLines(m) ? text(evLines(m)) : null,
-    sep(),
-    field ? [label('Field view · ratings'), cards({ url: field, alt: 'Our players on the pitch with their match ratings' })]
-      : ps.length ? text(best.map((p) => `\`${r1(p.rating)}\` ${p.name}`).join('\n')) : null,
-    footer(`Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match`),
+    header({ eyebrow: `${club.name} · Match centre · ${kind}`, title: `${club.name} ${board ? 'vs' : `${m.home.goals}–${m.away.goals}`} ${m.away.name}`, sub: `<t:${m.ts}:f> · ${RESULT_WORD[m.res]}`, thumb: club.crest }),
+    cards(board && { url: board, alt: `${alt}: scoreboard, goals and assists, man of the match and the team stats` }),
+    board && (pitch || review) ? sep({ big: false }) : null,
+    cards(pitch && { url: pitch, alt: 'Rating by line, our players on the pitch with their ratings, and every rating' }, review && { url: review, alt: 'Match review: what went well, what to work on and the event data' }),
+    !board ? [facts([[`${ICON.goal} Goals`, list(ps, 'goals') || 'none'], [`${ICON.assist} Assists`, list(ps, 'assists')], ['📊 Team rating', avg != null ? r1(avg) : null]]),
+      motm ? facts([[`${ICON.motm} Man of the match`, `${motm.name} · ${r1(motm.rating)}`]]) : null, evLines(m) ? text(evLines(m)) : null, sep(),
+      !pitch && ps.length ? text(best.map((p) => `\`${r1(p.rating)}\` ${p.name}`).join('\n')) : null] : null,
+    footer(pitch ? 'Gold = man of the match · green 7+ · orange 6–6.9 · red under 6 · pick your name below to see your own match' : 'Pick your name below to see your own match'),
     ps.length ? menu({ id: `ml:pm:${club.id}:${m.id}`.slice(0, 100), placeholder: '📊 Show my match – pick your player',
       options: best.slice(0, 25).map((p) => ({ label: p.name.slice(0, 100), value: p.name.slice(0, 100), emoji: { name: ratingDot(p.rating) }, description: `Rating ${r1(p.rating)}${p.goals ? ` · ⚽ ${p.goals}` : ''}${p.assists ? ` · 🎯 ${p.assists}` : ''}`.slice(0, 100) })) }) : null,
     buttons([{ label: 'Box score', id: `ml:box:${club.id}:${m.id}`, emoji: '📊' }, { label: 'Club stats', id: `ml:cs:${club.id}:${m.id}`, emoji: '🏟️' }, { label: 'Leaderboard', id: `ml:lb:${club.id}:${m.id}`, emoji: '🏆' }]),
@@ -131,16 +134,16 @@ export function comparePanel(club, a, b, cardUrl) {
   ] });
 }
 
-const BOARD_TITLE = { rating: 'Best average rating (3+ games)', goals: 'Top scorers', assists: 'Most assists', ga: 'Goals + assists', motm: 'Most man of the match', games: 'Most appearances', ints: 'Most interceptions', won: 'Most possession won', aer: 'Most aerial duels won', fwd: 'Most forward passes' };
 export function leaderboardPanel(club, stat, rows, u, { ephemeral = false } = {}) {
   const card = u('top', stat);
-  if (!rows.length) return notice('No games logged yet', 'Track a club with /match track and the boards fill in as matches are played.', { ephemeral });
+  if (!rows.length) return message({ ephemeral, accent: 'info', blocks: [text(`**No ${(BOARD_TITLE[stat] ?? 'leaderboard').toLowerCase()} data yet**\n${BOARD_LIST.find((b) => b.key === stat)?.label.includes('event data') ? 'EA only sends event counters for recent matches, so this fills in as new matches are tracked.' : 'Track a club with /match track and the boards fill in as matches are played.'}`), menu({ id: `ml:lbs:${club.id}`, placeholder: '🏆 Switch stat', options: BOARD_LIST.map((b) => ({ label: b.label, value: b.key, default: b.key === stat })) })] });
   const medal = ['🥇', '🥈', '🥉'];
   return message({ ephemeral, accent: 'info', blocks: [
     header({ eyebrow: `${club.name} · Leaderboard`, title: BOARD_TITLE[stat] ?? 'Leaders', sub: `Top ${Math.min(10, rows.length)} · tracked matches`, thumb: card ? null : club.crest }),
     cards(card && { url: card, alt: BOARD_TITLE[stat] }),
     !card && text(rows.map((r, i) => `${medal[i] ?? `\`${i + 1}.\``} **${r.player}** · ${r.shown} _(${r.gp} g)_`).join('\n')),
-    footer(UPDATED),
+    footer(`${UPDATED} · pick another stat below`),
+    menu({ id: `ml:lbs:${club.id}`, placeholder: '🏆 Switch stat', options: BOARD_LIST.map((b) => ({ label: b.label, value: b.key, default: b.key === stat })) }),
   ] });
 }
 

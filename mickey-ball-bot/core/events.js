@@ -141,4 +141,5 @@ export function eventRows(us, them) {
 export const EVENT_BOARDS = {
   ints: ['Interceptions', (e) => e.interceptions || 0, 1], won: ['Possession won', (e) => sumKeys(e, WON), 1],
   aer: ['Aerial duels won', (e) => (e.aerialDuelsWonAttacking || 0) + (e.aerialDuelsWonDefending || 0), 1], fwd: ['Forward passes', (e) => e.passesCompletedForward || 0, 1],
+  thru: ['Through passes', (e) => e.throughPasses || 0, 1], drib: ['Dribbles completed', (e) => e.dribblesCompleted || 0, 1], sot: ['Shots on target', (e) => e.shotsOnTarget || 0, 1],
 };

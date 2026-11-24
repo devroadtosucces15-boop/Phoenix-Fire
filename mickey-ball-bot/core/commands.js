@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import { BOARD_LIST } from './boards.js';
 
 const lookup = (o) => o.setName('club').setDescription('Club name or EA club ID').setRequired(true);
 const tracked = (o) => o.setName('club').setDescription('Tracked club (default: this server\'s club)').setAutocomplete(true);
@@ -22,11 +23,8 @@ export const commands = [
   new SlashCommandBuilder().setName('player').setDescription('A player\'s stats card').addStringOption(stat('gamertag', 'Start typing a gamertag')).addStringOption(tracked),
   new SlashCommandBuilder().setName('compare').setDescription('Compare two players')
     .addStringOption(stat('player1', 'First player')).addStringOption(stat('player2', 'Second player')).addStringOption(tracked),
-  new SlashCommandBuilder().setName('leaderboard').setDescription('Player leaderboards').addStringOption(tracked)
-    .addStringOption((o) => o.setName('stat').setDescription('Which leaderboard').addChoices(
-      { name: 'Rating', value: 'rating' }, { name: 'Goals', value: 'goals' }, { name: 'Assists', value: 'assists' },
-      { name: 'Goals + assists', value: 'ga' }, { name: 'Man of the match', value: 'motm' }, { name: 'Games', value: 'games' },
-      { name: 'Interceptions (event data)', value: 'ints' }, { name: 'Possession won (event data)', value: 'won' }, { name: 'Aerial duels won (event data)', value: 'aer' }, { name: 'Forward passes (event data)', value: 'fwd' })),
+  new SlashCommandBuilder().setName('leaderboard').setDescription('Player leaderboards – any stat, including EA event counters').addStringOption(tracked)
+    .addStringOption((o) => o.setName('stat').setDescription('Which leaderboard (you can switch under the board too)').addChoices(...BOARD_LIST.map((b) => ({ name: b.label, value: b.key })))),
   new SlashCommandBuilder().setName('history').setDescription('Record against an opponent').addStringOption(stat('opponent', 'Opponent club name (or part of it)')).addStringOption(tracked),
   new SlashCommandBuilder().setName('insight').setDescription('Form, last 5 or streaks').addStringOption(tracked)
     .addStringOption((o) => o.setName('type').setDescription('Which insight').addChoices(

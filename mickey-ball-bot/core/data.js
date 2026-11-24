@@ -1,7 +1,10 @@
 // Turns stored matches into the shapes the cards draw, and decides which pictures a club needs.
 import { crestUrl } from './ea.js';
 import { boxEv, eventRows } from './events.js';
-const TOP_KEYS = ['goals', 'assists', 'ga', 'rating', 'motm', 'games', 'ints', 'won', 'aer', 'fwd']; // the leaderboards that get a drawn table (same keys as TOP_STATS in the card templates)
+import { buildPicture } from './picture.js';
+import { buildReview } from './review.js';
+import { BOARD_KEYS } from './boards.js';
+const TOP_KEYS = BOARD_KEYS; // the leaderboards that get a drawn table (same keys as TOP_STATS in the card templates)
 
 // FNV-1a: the same data always gets the same key, so a changed number gets a new picture and Discord never shows a stale one.
 export function hash(o) { let h = 2166136261; const s = JSON.stringify(o); for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
@@ -32,7 +35,14 @@ export async function buildJobs(st, club, matches = [], { clubWide = true } = {}
   const have = await st.cardMap(club.id), jobs = [];
   const add = (kind, ref, data) => { const k = key(club, kind, ref, data); if (have.get(`${kind}|${ref ?? ''}`) !== k) jobs.push({ kind, ref: ref ?? '', key: k, club: { id: club.id }, data }); };
   const cd = { name: club.name, crest: club.crest };
-  for (const m of matches) { const dm = drawMatch(m); for (const kind of ['score', 'field', 'box']) add(kind, m.id, { club: cd, m: dm }); }
+  const past = matches.length ? await st.recentMatches(club.id, 30) : [];
+  for (const m of matches) {
+    add('board', m.id, { club: cd, mp: buildPicture(m) });
+    add('pitch', m.id, { club: cd, mp: buildPicture(m) });
+    const rv = buildReview(m, { history: past.filter((h) => h.ts < m.ts) });
+    if (rv) add('review', m.id, { club: cd, model: rv, mp: null });
+    add('box', m.id, { club: cd, m: drawMatch(m) });
+  }
   if (clubWide) {
     const c = await clubData(st, club), players = await st.rosterData(club.id);
     add('club', '', { club: c });

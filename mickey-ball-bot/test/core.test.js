@@ -8,6 +8,10 @@ import { buildJobs, clubView, streaks } from '../core/data.js';
 import { ACCENT, plainText, images, IS_V2 } from '../core/ui.js';
 import * as P from '../core/panels.js';
 import * as T from '../cards/templates.mjs';
+import * as M from '../cards/match.mjs';
+import { buildPicture } from '../core/picture.js';
+import { buildReview } from '../core/review.js';
+import { BOARD_LIST } from '../core/boards.js';
 import { commands } from '../core/commands.js';
 import { decodeEvents, boxEv, eventRows, eventSide } from '../core/events.js';
 import { parseWhen, zonedToUtc, validZone } from '../core/when.js';
@@ -50,16 +54,21 @@ test('stripe colours: win green, draw yellow, loss red, everything else blue', (
   assert.equal(P.clubPanel(club, { gp: 4, w: 2, d: 1, l: 1, gf: 9, ga: 5 }, ['W'], { n: 1, res: 'W' }, none).components[0].accent_color, ACCENT.info);
 });
 
-test('match message: crest header, score card, field view, select, three buttons; falls back to text without pictures', () => {
-  const full = P.matchPanel(club, latest, withCards(['score', 'field']));
+test('match message: big board, divider, then pitch and review in two columns; select, three buttons; falls back to text without pictures', () => {
+  const full = P.matchPanel(club, latest, withCards(['board', 'pitch', 'review']));
   assert.ok(full.flags & IS_V2);
   const t = plainText(full), imgs = images(full);
-  assert.match(t, /Alpha FC 4–0 Beta/); assert.match(t, /MATCH CENTRE · LEAGUE/); assert.match(t, /FIELD VIEW/);
-  assert.ok(imgs.some((u) => u.includes('l1.png'))); assert.ok(imgs.some((u) => u.includes('score-4'))); assert.ok(imgs.some((u) => u.includes('field-4')));
-  const rows = full.components[0].components.filter((c) => c.type === 1);
+  assert.match(t, /Alpha FC vs Beta/); assert.match(t, /MATCH CENTRE · LEAGUE/);
+  assert.ok(imgs.some((u) => u.includes('l1.png')));
+  const kids = full.components[0].components;
+  const gal = kids.map((c, i) => [c.type, c.items?.map((x) => x.media.url.match(/c\/(\w+)-/)?.[1]), i]).filter(([ty]) => ty === 12 || ty === 14);
+  assert.deepEqual(gal.map(([ty, it]) => [ty, it]), [[12, ['board']], [14, undefined], [12, ['pitch', 'review']]]); // big picture, faint divider, two columns
+  assert.equal(kids.find((c) => c.type === 14 && kids.indexOf(c) === gal[1][2]).divider, true);
+  const rows = kids.filter((c) => c.type === 1);
   assert.equal(rows[0].components[0].type, 3); assert.deepEqual(rows[1].components.map((b) => b.label), ['Box score', 'Club stats', 'Leaderboard']);
   const bare = P.matchPanel(club, latest, none);
-  assert.match(plainText(bare), /`8\.4` Ana/); assert.ok(!images(bare).some((u) => u.includes('score')));
+  assert.match(plainText(bare), /Alpha FC 4–0 Beta/); assert.match(plainText(bare), /`8\.4` Ana/); assert.ok(!images(bare).some((u) => u.includes('/c/')));
+  assert.deepEqual(images(P.matchPanel(club, latest, withCards(['board']))).filter((u) => u.includes('/c/')).length, 1); // no divider or empty row when the others are missing
 });
 
 test('every other message builds and stays on the shared layout', async () => {
@@ -76,25 +85,26 @@ test('every other message builds and stays on the shared layout', async () => {
   assert.match(plainText(msgs[4]), /Ana/);
 });
 
-test('jobs: all three match cards plus club-wide cards, then nothing once drawn', async () => {
+test('jobs: all the match pictures plus club-wide cards, then nothing once drawn', async () => {
   const jobs = await buildJobs(st, club, [latest]);
   const kinds = jobs.map((j) => j.kind);
-  for (const k of ['score', 'field', 'box', 'club', 'results', 'top', 'player']) assert.ok(kinds.includes(k), k);
-  assert.equal(jobs.filter((j) => j.kind === 'top').length, 10);
+  for (const k of ['board', 'pitch', 'review', 'box', 'club', 'results', 'top', 'player']) assert.ok(kinds.includes(k), k);
+  assert.equal(jobs.filter((j) => j.kind === 'top').length, 17);
   for (const j of jobs) await st.putCard('100', j.kind, j.ref, j.key);
   assert.equal((await buildJobs(st, club, [latest])).length, 0);
 });
 
 test('every card draws as HTML with the club and the neutral palette, nothing club-branded', async () => {
-  const jobs = await buildJobs(makeStore(sqliteExecutor((() => { const d = new DatabaseSync(':memory:'); SCHEMA.forEach((s) => d.exec(s)); return d; })())), club, [latest]);
-  const players = await st.rosterData('100'), c = { name: 'Alpha FC', crest: club.crest };
-  const html = [T.scoreCard(jobs[0].data.m, c), T.fieldCard(jobs[0].data.m, c), T.boxScoreCard(jobs[0].data.m, c), T.clubCard({ ...c, form: ['W'] }), T.resultsCard({ ...c, matches: [jobs[0].data.m] }), T.tableCard(players, 'goals', c), T.playerCard(players[0], c), T.compareCard(players[0], players[1], c), T.bannerCard({ title: 'x' })];
+  const fresh = makeStore(sqliteExecutor((() => { const d = new DatabaseSync(':memory:'); SCHEMA.forEach((x) => d.exec(x)); return d; })()));
+  const jobs = await buildJobs(fresh, club, [latest]);
+  const players = await st.rosterData('100'), c = { name: 'Alpha FC', crest: club.crest }, by = (k) => jobs.find((j) => j.kind === k);
+  const html = [M.boardCard(by('board').data.mp, c), M.pitchCard(by('pitch').data.mp, c), M.reviewCard(by('review').data.model, c), T.boxScoreCard(by('box').data.m, c), T.clubCard({ ...c, form: ['W'] }), T.resultsCard({ ...c, matches: [by('box').data.m] }), T.tableCard(players, 'goals', c), T.playerCard(players[0], c), T.compareCard(players[0], players[1], c), T.bannerCard({ title: 'x' })];
   for (const h of html) { assert.match(h, /^<!doctype html>/); assert.doesNotMatch(h, /e8651a|c8352c|phoenix|norex/i); }
-  assert.match(html[0], /l1\.png/); assert.match(html[0], /l2\.png/); // both crests on the score card
+  assert.match(html[0], /l1\.png/); assert.match(html[0], /l2\.png/); // both crests on the board
 });
 
 test('no club-specific branding anywhere in the shipped sources', () => {
-  for (const f of ['core/panels.js', 'core/ui.js', 'core/theme.js', 'cards/templates.mjs', 'worker/index.js', 'relay/relay.mjs']) assert.doesNotMatch(fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), /phoenix|norex|#e8651a|0xe8651a/i, f);
+  for (const f of ['core/panels.js', 'core/ui.js', 'core/theme.js', 'cards/templates.mjs', 'cards/match.mjs', 'core/picture.js', 'core/review.js', 'worker/index.js', 'worker/matchday.js', 'relay/relay.mjs']) assert.doesNotMatch(fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), /phoenix|norex|#e8651a|0xe8651a/i, f);
 });
 
 test('13 generic commands: stats plus match day', () => assert.deepEqual(commands.map((c) => c.name).sort(), ['club', 'compare', 'help', 'history', 'host', 'insight', 'last', 'leaderboard', 'lineup', 'matchday', 'match', 'player', 'results'].sort()));
@@ -214,4 +224,46 @@ test('the first tracked club is the main one, and /match main moves it', async (
   assert.deepEqual((await st.trackedFor('gm')).map((r) => [r.club_id, r.main]), [['100', 1], ['200', 0]]);
   await st.setMain('gm', '200'); assert.equal((await st.trackedFor('gm'))[0].club_id, '200');
   await st.untrack('gm', '200'); assert.equal((await st.trackedFor('gm'))[0].main, 1); // removing the main club promotes the next
+});
+
+// ---------- the big board, review and leaderboards ----------
+test('board numbers: paired rows with deltas, deeper event stats only where counters exist', async () => {
+  const mp = buildPicture(evMatch);
+  assert.deepEqual(mp.rows.map((r) => r.k), ['Shots', 'Passes completed', 'Pass accuracy', 'Tackles won', 'Tackle success', 'Average rating']);
+  assert.deepEqual(mp.deeper.rows.map((r) => r.k), ['Shots on target', 'Forward passes', 'Aerial duels won', 'Possession won', 'Fouls conceded', 'In position']);
+  assert.equal(mp.deeper.cover.us, 2); assert.equal(mp.deeper.cover.of, 3); assert.equal(mp.deeper.cover.them, 1);
+  assert.equal(buildPicture(latest).deeper, null);
+  const html = M.boardCard(mp, { name: 'Alpha FC', crest: null });
+  assert.match(html, /Deeper stats/); assert.match(html, /EA event counters · 2 of 3 of ours, 1 of 1 of theirs/); assert.match(html, /Ahead/);
+  assert.doesNotMatch(M.boardCard(buildPicture(latest), { name: 'Alpha FC' }), /Deeper stats/);
+  assert.equal(mp.motm.n, 'Ana'); assert.deepEqual(mp.contrib.map((c) => c.n), ['Ana', 'Ben']);
+});
+
+test('review: honest wording, no names in problems, event data section, skipped for unfinished games', () => {
+  const m = normalizeMatch({ ...EVM, matchId: 'r1', timestamp: 1 }, '100');
+  const rv = buildReview(m);
+  assert.ok(rv.title); assert.ok(rv.good.length >= 1); assert.equal(rv.opp, 'Delta'); assert.equal(rv.shape.humans, 3);
+  assert.ok(rv.ev.rows.some((r) => r.k === 'Interceptions'));
+  const html = M.reviewCard(rv, { name: 'Alpha FC' });
+  assert.match(html, /How we lined up/); assert.match(html, /What went well/); assert.match(html, /What to work on/); assert.match(html, /From the event data/);
+  const unfinished = { ...m, dnf: true }; assert.equal(buildReview(unfinished), null);
+  assert.equal(buildReview({ ...m, home: { ...m.home, players: m.home.players.map((p) => ({ ...p, secs: 300 })) } }), null);
+  assert.ok(buildReview(latest)); // older stored matches carry no minutes and count as full
+  assert.match(M.reviewCard(buildReview(latest), { name: 'Alpha FC' }), /No event counters/);
+});
+
+test('leaderboards: any stat, picker under the board, a card for each', async () => {
+  assert.ok(BOARD_LIST.length >= 15 && BOARD_LIST.length <= 25); // a slash command takes at most 25 choices
+  assert.equal(commands.find((c) => c.name === 'leaderboard').toJSON().options.find((o) => o.name === 'stat').choices.length, BOARD_LIST.length);
+  const roster = await st.rosterData('100');
+  for (const b of BOARD_LIST) {
+    const board = await st.leaderboard('100', b.key);
+    const msg = P.leaderboardPanel(club, b.key, board.rows, none);
+    if (board.rows.length) assert.ok(plainText(msg).includes(b.title), b.key); else assert.match(plainText(msg), /data yet/i);
+    const sel = msg.components[0].components.find((c) => c.type === 1 && c.components[0].type === 3).components[0];
+    assert.equal(sel.custom_id, 'ml:lbs:100'); assert.equal(sel.options.find((o) => o.default).value, b.key); assert.equal(sel.options.length, BOARD_LIST.length);
+    assert.match(T.tableCard(roster, b.key, { name: 'Alpha FC' }), /<!doctype html>/);
+  }
+  assert.ok((await st.leaderboard('100', 'shots')).rows[0].v > 0); assert.ok((await st.leaderboard('100', 'thru')).rows.length >= 0);
+  assert.match(plainText(P.leaderboardPanel(club, 'ints', [], none)), /event counters/);
 });

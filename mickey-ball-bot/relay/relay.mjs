@@ -44,11 +44,12 @@ async function resolve(query) {
 }
 
 // ---- pictures -----------------------------------------------------------------------------------
-async function htmlFor(T, j) {
+async function htmlFor(T, M, j) {
   const d = j.data;
   switch (j.kind) {
-    case 'score': return T.scoreCard(d.m, d.club);
-    case 'field': return T.fieldCard(d.m, d.club);
+    case 'board': return M.boardCard(d.mp, d.club);
+    case 'pitch': return M.pitchCard(d.mp, d.club);
+    case 'review': return M.reviewCard(d.model, d.club);
     case 'box': return T.boxScoreCard(d.m, d.club);
     case 'club': return T.clubCard(d.club);
     case 'results': return T.resultsCard(d.club);
@@ -62,13 +63,13 @@ async function htmlFor(T, j) {
 }
 async function drawAll(jobs) {
   if (!jobs?.length) return;
-  const T = await import('../cards/templates.mjs'), { openRenderer } = await import('../cards/render.mjs');
+  const T = await import('../cards/templates.mjs'), M = await import('../cards/match.mjs'), { openRenderer } = await import('../cards/render.mjs');
   const r = await openRenderer();
   let ok = 0;
   try {
     for (const j of jobs) {
       try {
-        const png = await r.png(await htmlFor(T, j));
+        const png = await r.png(await htmlFor(T, M, j));
         const qs = new URLSearchParams({ key: j.key, ...(j.club?.id ? { club: j.club.id, kind: j.kind, ref: j.ref ?? '' } : {}) });
         const res = await fetch(`${worker}/card?${qs}`, { method: 'PUT', headers: { 'X-Key': RELAY_KEY, 'Content-Type': 'text/plain' }, body: png.toString('base64') });
         if (!res.ok) throw new Error(`upload ${res.status}`);

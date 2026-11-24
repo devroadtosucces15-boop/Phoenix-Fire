@@ -7,7 +7,7 @@ const n = (v) => Number(v) || 0;
 export function normalizePlayer(p) {
   return { name: p.playername ?? p.name ?? 'Unknown', pos: p.pos ?? '', rating: n(p.rating), goals: n(p.goals), assists: n(p.assists),
     shots: n(p.shots), passesMade: n(p.passesmade), passAtt: n(p.passattempts), tacklesMade: n(p.tacklesmade), tackleAtt: n(p.tackleattempts),
-    saves: n(p.saves), ev: rawEvents(p), mom: p.mom === '1' || p.mom === 1 || p.mom === true, red: n(p.redcards) };
+    saves: n(p.saves), conceded: n(p.goalsconceded), secs: p.secondsPlayed == null ? null : n(p.secondsPlayed), ev: rawEvents(p), mom: p.mom === '1' || p.mom === 1 || p.mom === true, red: n(p.redcards) };
 }
 
 function side(raw, id, players) {
@@ -26,7 +26,7 @@ export function normalizeMatch(raw, focusId) {
   const focus = ids.includes(String(focusId)) ? String(focusId) : ids[0];
   const other = ids.find((i) => i !== focus);
   const home = side(raw, focus, raw.players?.[focus]), away = side(raw, other, raw.players?.[other]);
-  return { id: String(raw.matchId), ts: n(raw.timestamp), type: { playoffMatch: 'playoff', gameType5: 'friendly', friendlyMatch: 'friendly' }[raw._type] ?? 'league', home, away, res: home.goals > away.goals ? 'W' : home.goals < away.goals ? 'L' : 'D' };
+  return { id: String(raw.matchId), ts: n(raw.timestamp), type: { playoffMatch: 'playoff', gameType5: 'friendly', friendlyMatch: 'friendly' }[raw._type] ?? 'league', home, away, dnf: Object.values(raw.clubs ?? {}).some((c) => c.winnerByDnf === '1'), res: home.goals > away.goals ? 'W' : home.goals < away.goals ? 'L' : 'D' };
 }
 
 export const searchHits = (hits) => (Array.isArray(hits) ? hits : [])
