@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-24T22:50:44.520Z",
+ "fetchedAt": "2026-11-24T23:00:42.847Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2000,7 +2000,7 @@
   {
    "name": "iTry_Clutxh",
    "proPos": "25",
-   "gamesPlayed": "49",
+   "gamesPlayed": "50",
    "goals": "16",
    "assists": "13",
    "manOfTheMatch": "4",
@@ -2269,6 +2269,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-24T22:50:44.520Z"
+  "fetchedAt": "2026-11-24T23:00:42.847Z"
  }
 }
