@@ -353,3 +353,22 @@ test('recap message: banner, header, record facts, matches picture, sections, fo
   assert.equal(P.recapPanel(env, club, lost, none).components[0].accent_color, ACCENT.loss); assert.equal(P.recapPanel(env, club, level, none).components[0].accent_color, ACCENT.draw);
   assert.match(M.recapCard(r, { name: 'Alpha FC', crest: club.crest }), /2 WON, 0 DRAWN, 0 LOST/);
 });
+
+test('player match: model carries every event counter, insights are specific, the panel shows the picture then insights', async () => {
+  const { personalModel, playerInsights } = await import('../core/personal.js');
+  const { personalCard } = await import('../cards/personal.mjs');
+  const P = await import('../core/panels.js');
+  const ev = '215:14,216:3,30:4,34:8,152:8,217:3,218:2,13:3,174:17,6:3,0:2,1:3,110:5,111:30,219:1';
+  const m = { id: 'm1', res: 'W', ts: 1795500000, home: { goals: 6, name: 'Alpha FC' }, away: { goals: 1, name: 'Rivals FC' } };
+  const p = { name: 'Kyle', pos: 'forward', rating: 10, goals: 3, assists: 1, shots: 5, passesMade: 14, passAtt: 17, tacklesMade: 2, tackleAtt: 11, mom: 1, ev };
+  const d = personalModel({}, m, p, { gp: 6, avg: 8.1, g: 7, a: 4, pm: 70, pa: 84, tm: 5, ta: 31 });
+  assert.equal(d.ev.pass.fwd, 4); assert.equal(d.ev.def.ints, 3); assert.equal(d.ev.poss.wonA, 5); assert.equal(d.ev.pos.pct, 97); assert.equal(d.avg.gp, 6);
+  const ins = playerInsights(d).join('\n');
+  assert.match(ins, /above their \*\*8\.1\*\*/); assert.match(ins, /3 interceptions/); assert.match(ins, /17 dribbles/);
+  const html = personalCard(d, { name: 'Alpha FC' });
+  for (const w of ['Passing', 'Shooting', 'Defending', 'Possession', 'Interceptions', 'Through balls', 'in position', 'Kyle']) assert.match(html, new RegExp(w, 'i'), w);
+  assert.match(personalCard(personalModel({}, m, { ...p, ev: '' }, null), { name: 'Alpha FC' }), /No event data/);
+  const withPic = plainText(P.personalPanel({ name: 'Alpha FC' }, { ...m, home: { ...m.home, players: [p] } }, p, null, 'https://x/pm.png'));
+  assert.match(withPic, /Insights/); assert.doesNotMatch(withPic, /From the event data/); // the numbers live in the picture
+  assert.match(plainText(P.personalPanel({ name: 'Alpha FC' }, m, p, null, null)), /From the event data/); // no picture yet: text fallback
+});

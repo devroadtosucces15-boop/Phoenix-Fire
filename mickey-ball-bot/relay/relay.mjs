@@ -59,6 +59,7 @@ async function htmlFor(T, M, j) {
     case 'compare': return T.compareCard(d.a, d.b, d.club);
     case 'lineup': return T.lineupCard(d.L, d.club);
     case 'banner': return T.bannerCard(d);
+    case 'pmatch': return (await import('../cards/personal.mjs')).personalCard(d.d, d.club);
     case 'avatar': return `<!doctype html><html><body style="margin:0;background:transparent"><img src="${d.url}" width="128" height="128" style="display:block;border-radius:50%"></body></html>`;
     default: throw new Error(`unknown card ${j.kind}`);
   }

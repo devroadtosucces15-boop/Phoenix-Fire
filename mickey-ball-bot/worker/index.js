@@ -4,13 +4,14 @@
 // reply that was waiting. Stats commands read D1 and the pictures already drawn (kept in D1 as base64).
 import { makeStore, d1Executor } from '../core/store.js';
 import { normalizeMatch, searchHits, crestUrl } from '../core/ea.js';
-import { buildJobs, clubView, streaks, hash } from '../core/data.js';
+import { buildJobs, clubView, streaks, hash, key as cardKey } from '../core/data.js';
 import { findSessions, isDue, buildRecap } from '../core/recap.js';
 import { notice, IS_V2, EPHEMERAL } from '../core/ui.js';
 import * as P from '../core/panels.js';
 import { MATCHDAY_COMMANDS, matchdayCommand, eventComponent, zoneAutocomplete, reminders, avatarJob, onAvatar } from './matchday.js';
 import { lineupComponent, lineupJob, lineupPostDone, setupComponent, suggestUse } from './lineup.js';
 import { gate } from './access.js';
+import { personalModel } from '../core/personal.js';
 
 const API = 'https://discord.com/api/v10';
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json' } });
@@ -169,7 +170,16 @@ async function onComponent(env, ctx, st, i) {
   if (a === 'box') return reply(P.boxPanel(club, m, u));
   if (a === 'pm') {
     const name = i.data.values?.[0], p = m.home.players.find((x) => x.name === name);
-    return p ? reply(P.personalPanel(club, m, p, await st.playerCard(clubId, name))) : reply({ ...notice('Player not found'), flags: IS_V2 | EPHEMERAL });
+    if (!p) return reply({ ...notice('Player not found'), flags: IS_V2 | EPHEMERAL });
+    const season = await st.playerCard(clubId, name), card = map.get(`pmatch|${matchId}|${name}`);
+    if (card) return reply(P.personalPanel(club, m, p, season, `${String(env.PUBLIC_URL).replace(/\/$/, '')}/c/${card}`));
+    // not drawn yet: answer privately once the picture is up (about a minute), and keep it for next time
+    const ref = crypto.randomUUID().slice(0, 12);
+    await st.prunePending();
+    await st.addPending({ ref, token: i.token, guild: i.guild_id, channel: i.channel_id, user: (i.member?.user ?? i.user)?.id, kind: 'pmatch', game: 1 });
+    await st.setPendingMatch(ref, clubId, `${matchId}|${name}`, 0);
+    ctx.waitUntil((async () => { if (!(await dispatch(env, { ref, kind: 'draw', q: String(clubId), game: '1', extra: `pm:${matchId}|${name}` }))) { await st.delPending(ref); await editOriginal(env, i.token, P.personalPanel(club, m, p, season, null)); } })());
+    return reply({ flags: EPHEMERAL }, 5);
   }
   return json({ error: 'unsupported' }, 400);
 }
@@ -193,6 +203,13 @@ const crestOf = (c) => crestUrl(c?.crest ?? c?.crestId);
 async function finish(env, st, p) { // the pictures are uploaded: build the final reply
   const reply2 = (d) => editOriginal(env, p.token, d);
   if (p.kind === 'lineuppost') return lineupPostDone(env, st, p);
+  if (p.kind === 'pmatch') {
+    const cut = p.match_id.indexOf('|'), mid = p.match_id.slice(0, cut), name = p.match_id.slice(cut + 1);
+    const row = (await st.trackedFor(p.guild_id)).find((t) => t.club_id === p.club_id), m = await st.storedMatch(p.club_id, mid), pl = m?.home.players.find((x) => x.name === name);
+    if (!m || !pl) return reply2(notice('That match is no longer stored'));
+    const card = (await st.cardMap(p.club_id)).get(`pmatch|${p.match_id}`);
+    return reply2(P.personalPanel(clubView(row ?? { club_id: p.club_id, name: m.home.name, crest: m.home.crest }), m, pl, await st.playerCard(p.club_id, name), card ? `${String(env.PUBLIC_URL).replace(/\/$/, '')}/c/${card}` : null));
+  }
   const club = (await st.trackedFor(p.guild_id)).find((t) => t.club_id === p.club_id);
   const m = await st.storedMatch(p.club_id, p.match_id);
   if (p.kind === 'track') { const c = clubView(club ?? { club_id: p.club_id, name: 'Club' }); return reply2(P.trackedPanel(env, c, p.game, p.channel_id)); }
@@ -307,6 +324,13 @@ async function onFlush(env, st) {
 
 // Pictures a club is missing (club-wide cards, or one compare card).
 async function onDraw(env, st, body) {
+  if (String(body.extra ?? '').startsWith('pm:')) {
+    const x = String(body.extra).slice(3), cut = x.indexOf('|'), mid = x.slice(0, cut), name = x.slice(cut + 1);
+    const row = (await st.allTracked()).find((t) => t.club_id === String(body.club)), m = row && await st.storedMatch(row.club_id, mid), pl = m?.home.players.find((q) => q.name === name);
+    if (!pl) return json({ ok: true, draw: [] });
+    const club = clubView(row), data = { club: { name: club.name, crest: club.crest }, d: personalModel(club, m, pl, await st.playerCard(club.id, name)) };
+    return json({ ok: true, draw: [{ kind: 'pmatch', ref: `${mid}|${name}`, key: cardKey(club, 'pmatch', `${mid}-${name}`, data), club: { id: club.id }, data }] });
+  }
   if (String(body.extra ?? '').startsWith('avatar:')) { const [, uid, hash] = String(body.extra).split(':'); const j = avatarJob(uid, hash); return json({ ok: true, draw: j ? [j] : [] }); }
   if (String(body.extra ?? '').startsWith('lineup:')) { const j = await lineupJob(st, String(body.extra).slice(7)); return json({ ok: true, draw: j ? [j] : [] }); }
   const row = (await st.allTracked()).find((t) => t.club_id === String(body.club));

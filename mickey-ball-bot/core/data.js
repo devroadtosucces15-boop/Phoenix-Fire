@@ -27,7 +27,7 @@ export async function clubData(st, club) {
 }
 
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'x';
-const key = (club, kind, ref, data) => `${club.id}/${kind}${ref ? `-${slug(ref)}` : ''}-${hash(data)}.png`;
+export const key = (club, kind, ref, data) => `${club.id}/${kind}${ref ? `-${slug(ref)}` : ''}-${hash(data)}.png`;
 
 // The pictures to (re)draw. `matches` = normalized matches whose cards are needed now; the club-wide cards are refreshed when their data changed.
 // Jobs whose key is already in the manifest are skipped, so nothing is drawn twice.

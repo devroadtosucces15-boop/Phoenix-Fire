@@ -104,7 +104,7 @@ export function makeStore(x) {
     // picture bytes, kept as base64 text (no decoding on upload); old unreferenced pictures are dropped
     putBlob: (key, b64) => x.run('INSERT OR REPLACE INTO blobs (key, b64, ts) VALUES (?,?,?)', key, b64, Date.now()),
     async getBlob(key) { return (await x.first('SELECT b64 FROM blobs WHERE key=?', key))?.b64 ?? null; },
-    pruneBlobs: () => x.run('DELETE FROM blobs WHERE ts < ? AND key NOT IN (SELECT key FROM cards)', Date.now() - 2 * 86400_000),
+    pruneBlobs: async () => { await x.run("DELETE FROM cards WHERE kind='pmatch' AND ts < ?", Date.now() - 14 * 86400_000); return x.run('DELETE FROM blobs WHERE ts < ? AND key NOT IN (SELECT key FROM cards)', Date.now() - 2 * 86400_000); },
     // posts waiting for their pictures (scheduled polls)
     addOutbox: (o) => x.run('INSERT INTO outbox (guild_id, channel_id, club_id, match_id, created_at) VALUES (?,?,?,?,?)', o.guild, o.channel, id(o.club), id(o.match), Date.now()),
     takeOutbox: () => x.all('SELECT * FROM outbox ORDER BY id LIMIT 20'),

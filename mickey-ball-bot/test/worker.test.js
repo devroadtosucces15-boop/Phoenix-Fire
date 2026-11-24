@@ -219,3 +219,25 @@ test('sign-ups get a round profile picture emoji: asked once, uploaded as an app
   assert.equal(db.prepare("SELECT emoji_id e FROM avatars WHERE user_id='123456789012345'").get().e, 'msg1'); // the stub answers id "msg1"
   assert.match(txt(await send(clickAs(who, `ml:ev:${e}:yes`))), new RegExp(`<:${mk.body.name}:msg1> zed`));
 });
+
+test('picking a player under a match: drawn once (privately, about a minute), then answered at once from the stored picture', async () => {
+  db.prepare("INSERT INTO tracked (guild_id, club_id, name, crest, channel_id, added_at, main) VALUES ('gP','55','Pee FC',NULL,'c',1,1)").run();
+  const pl = { name: 'Kyle', pos: 'forward', rating: 9, goals: 2, assists: 1, shots: 4, passesMade: 9, passAtt: 10, tacklesMade: 1, tackleAtt: 2, mom: 1, ev: '215:9,216:1,6:3,111:20' };
+  db.prepare("INSERT INTO matches (club_id, match_id, ts, res, gf, ga, opp_id, opp_name, data) VALUES ('55','mm1',?,'W',3,1,'9','Opp FC',?)").run(Math.floor(Date.now() / 1000), JSON.stringify({ id: 'mm1', ts: Math.floor(Date.now() / 1000), res: 'W', type: 'league', home: { name: 'Pee FC', goals: 3, players: [pl] }, away: { name: 'Opp FC', goals: 1, players: [] } }));
+  db.prepare("INSERT INTO player_lines (club_id, match_id, player, pos, rating, goals, assists) VALUES ('55','mm1','Kyle','forward',9,2,1)").run();
+  const member = { user: { id: 'u5', username: 'kyle' }, permissions: '0', roles: [] };
+  const click = () => ({ ...base, guild_id: 'gP', member, type: 3, data: { custom_id: 'ml:pm:55:mm1', component_type: 3, values: ['Kyle'] }, message: { id: 'mx' } });
+  calls.length = 0;
+  const first = await send(click());
+  assert.equal(first.json.type, 5); assert.equal(first.json.data.flags, 64);
+  const d = calls.find((c) => c.url.includes('/dispatches')); assert.equal(d.body.inputs.extra, 'pm:mm1|Kyle'); assert.equal(d.body.inputs.kind, 'draw');
+  const post = (path, body) => worker.fetch(new Request(`https://bot.example${path}`, { method: 'POST', headers: { 'x-key': 'k' }, body: JSON.stringify(body) }), env, ctx).then((r) => r.json());
+  const job = (await post('/draw', { club: '55', extra: 'pm:mm1|Kyle' })).draw[0];
+  assert.equal(job.kind, 'pmatch'); assert.equal(job.ref, 'mm1|Kyle'); assert.equal(job.data.d.ev.def.ints, 3); assert.equal(job.data.d.name, 'Kyle');
+  await worker.fetch(new Request(`https://bot.example/card?key=${job.key}&club=55&kind=pmatch&ref=${encodeURIComponent(job.ref)}`, { method: 'PUT', headers: { 'x-key': 'k' }, body: 'iVBORw0KGgo=' }), env, ctx);
+  calls.length = 0; await post('/done', { ref: d.body.inputs.ref });
+  const edit = calls.find((c) => c.url.includes('/messages/@original'));
+  assert.ok(edit); assert.match(JSON.stringify(edit.body.components), new RegExp(job.key.replace(/[/.]/g, '.'))); assert.match(JSON.stringify(edit.body.components), /Insights/);
+  calls.length = 0; const again = await send(click());
+  assert.equal(again.json.type, 4); assert.ok(!calls.find((c) => c.url.includes('/dispatches'))); assert.match(JSON.stringify(again.json.data.components), new RegExp(job.key.replace(/[/.]/g, '.')));
+});

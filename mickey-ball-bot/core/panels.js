@@ -5,6 +5,7 @@ import { message, notice, header, text, sep, footer, label, facts, cards, button
 import { ratingDot } from './theme.js';
 import { decodeEvents, eventRows, boxEv } from './events.js';
 import { BOARD_LIST, BOARD_TITLE } from './boards.js';
+import { personalModel, playerInsights } from './personal.js';
 
 const r1 = (v) => (+v || 0).toFixed(1);
 const pct = (a, b) => (b ? Math.round((a / b) * 100) : null);
@@ -12,7 +13,7 @@ const KIND = { friendly: 'Friendly', playoff: 'Playoff' };
 const POS = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
 const list = (ps, f) => ps.filter((p) => p[f] > 0).map((p) => `${p.name}${p[f] > 1 ? ` ×${p[f]}` : ''}`).join(', ');
 const UPDATED = 'Updates every 15 min';
-// "From the event data": decoded EA counters, us first then them. Text, so it works with or without the pictures.
+// "From the event data": decoded EA counters, us first then them. Text fallback for the match post when its pictures are missing.
 const evLines = (m) => {
   const x = eventRows(m.home.players, m.away.players);
   if (!x) return null;
@@ -53,7 +54,6 @@ export function boxPanel(club, m, u) {
     header({ eyebrow: `${club.name} · Box score`, title: `${club.name} ${m.home.goals}–${m.away.goals} ${m.away.name}`, sub: `<t:${m.ts}:f>` }),
     box ? cards({ url: box, alt: 'Every player: rating, goals, assists, passes, tackles and shots' })
       : text(ps.map((p) => { const b = boxEv(p.ev); return `\`${r1(p.rating)}\` **${p.name}** · ${p.goals}G ${p.assists}A · pass ${pct(p.passesMade, p.passAtt) ?? '–'}% · tackles ${p.tacklesMade}/${p.tackleAtt} · shots ${p.shots}${b ? ` · int ${b.int} · won ${b.won} · lost ${b.lost} · aer ${b.aer}` : ''}`; }).join('\n')),
-    evLines(m) ? text(evLines(m)) : null,
   ] });
 }
 
@@ -63,7 +63,7 @@ const vs = (val, avg, dec = 1, unit = '') => {
   const d = +val - +avg;
   return ` · avg ${(+avg).toFixed(dec)}${unit} ${Math.abs(d) < (dec ? 0.05 : 0.5) ? '＝' : d > 0 ? '▲' : '▼'}`;
 };
-export function personalPanel(club, m, p, season) {
+export function personalPanel(club, m, p, season, url = null) {
   const s = season?.gp ? season : null, g = (v) => (s ? (+v || 0) / s.gp : null);
   const passPct = pct(p.passesMade, p.passAtt), tacklePct = pct(p.tacklesMade, p.tackleAtt);
   const rows = [
@@ -80,7 +80,9 @@ export function personalPanel(club, m, p, season) {
   ].filter(Boolean);
   return message({ ephemeral: true, accent: resultAccent(m.res), blocks: [
     header({ eyebrow: `${club.name} · Player match`, title: `${p.name} · ${m.home.goals}–${m.away.goals} ${m.away.name}`.slice(0, 250), sub: `${RESULT_WORD[m.res]}${p.pos ? ` · ${POS[p.pos] ?? p.pos}` : ''} · <t:${m.ts}:R>`, thumb: club.crest }),
-    text(rows.join('\n\n')),
+    url ? cards({ url, alt: `${p.name}: every stat from this match` }) : text(rows.join('\n\n')),
+    url ? sep() : null,
+    url ? text(`**💡 Insights**\n${(playerInsights(personalModel(club, m, p, season)).join('\n') || '_Nothing stands out: a steady game._')}`) : null,
     sep(),
     footer('🟢 8+  🟡 7+  🟠 6+  🔴 under 6 · only you can see this'),
   ] });
