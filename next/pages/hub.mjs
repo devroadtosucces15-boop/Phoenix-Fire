@@ -3,7 +3,7 @@ import * as W from '../lib/widgets.mjs';
 import { shell, esc, sample, sbt, chip, liveStrip } from '../lib/ui.mjs';
 import { formations } from './stats.mjs';
 import { playstyleBlock } from './tactics.mjs';
-import { hubGroups, SECTIONS, TOOLS, LEGACY_PAGES, LEGACY_HASH, legacyTarget, redirectHead } from '../lib/staffmanifest.mjs';
+import { SECTIONS, TOOLS, LEGACY_PAGES, LEGACY_HASH, legacyTarget, redirectHead } from '../lib/staffmanifest.mjs';
 import { sprite, icon } from '../lib/ccsprite.mjs';
 
 const ROOMS = [['hub.html', '🎽', 'My Locker', 'Your card, artwork, stats, trophies and alerts'], ['hub-matchnight.html', '🗓️', 'Match Night', 'RSVP, availability, MOTM votes, ratings, Rush log'], ['hub-squad.html', '🤝', 'Squad Room', 'Team up, awards, predictions, Rush squads and scouting'], ['hub-clubhouse.html', '💬', 'Clubhouse', 'Club feed, ideas board, chat room and who is on Discord'], ['hub-handbook.html', '📜', 'Handbook', 'Club rules, docs and how the site works']];
@@ -146,71 +146,46 @@ export function handbook() {
   return hubShell('hub-handbook.html', 'Handbook', body, { extraHead: '<script src="docs-md.js" defer></script><script src="clipboard.js" defer></script><script src="handbook.js" defer></script>' });
 }
 
-// ---------- STAFF ----------
-const staffGate = `<div data-for="guest member" class="panel" style="text-align:center;padding:40px"><h3>Staff only</h3><p class="muted">${process.env.NEXT_PREVIEW ? 'Managers and the owner see the staff tools here after signing in.' : 'Switch “Preview as” to Owner to see the staff tools.'}</p></div>`;
-// ---------- STAFF HUB: one page for managers and the owner. Managers see the groups they work in; the owner sees the same groups plus the
-// owner-only controls (staffhub.js adds html.is-owner from the session). Every tile opens its own page, nothing scrolls within this one. ----------
-const stTile = ([h, e, t, d]) => `<a class="panel room adm-tile" href="${h}"><div class="adm-e" aria-hidden="true">${e}</div><h3>${t}</h3><p class="muted small">${d}</p></a>`;
-const stGroup = (e, t, sub, tiles, cls = '') => `<section class="adm-g adm-n${tiles.length}${cls ? ' ' + cls : ''}"><header class="adm-gh"><span aria-hidden="true">${e}</span><div><h2>${t}</h2><p class="muted small">${sub}</p></div></header><div class="adm-grid">${tiles.map(stTile).join('')}</div></section>`;
-// the groups come from the one staff manifest (next/lib/staffmanifest.mjs); the dock lists and the Control Center sidebar read the same file
-export const STAFF_GROUPS = hubGroups(false);
-const OWNER_GROUPS = hubGroups(true);
-export function staff() {
-  const body = `<div class="wrap adm-wrap"><div class="adm-plate"><i aria-hidden="true">🧢</i><b role="heading" aria-level="1">Staff hub</b><small data-staff-role>managers and the owner · every tool, grouped, one tap each</small></div>${staffGate}
-  <div data-for="owner" hidden><div class="adm-groups">${STAFF_GROUPS.map((g) => stGroup(...g)).join('')}${OWNER_GROUPS.map((g) => stGroup(...g, 'adm-owner')).join('')}</div></div></div>`;
-  return hubShell('staff.html', 'Staff hub', body, { extraHead: '<link rel="stylesheet" href="staffhub.css"><script src="staffhub.js" defer></script>' });
-}
-export function dugout() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · match night</div><h2>Dugout</h2></div><div class="chips"><select id="dgF" aria-label="Formation" style="background:var(--p3);color:#fff;border:1px solid var(--line2);border-radius:999px;padding:8px 14px;font:600 13px Inter"></select><button class="chip" id="dgFill">Fill with usual XI</button><button class="chip" id="dgClear">Clear</button></div></header>${staffGate}
-  <div data-for="owner" hidden><div id="dgLive" hidden></div><div id="dgLocal"><div class="split"><div><div id="dgPitch"></div></div><aside class="panel detail"><h3>Squad</h3><p class="muted small">Tap a marker on the pitch, then a player here to put them in that slot. Each player can hold one slot.</p><div id="dgList" style="display:grid;gap:6px;max-height:520px;overflow:auto"></div><p class="muted small" id="dgMsg" style="margin-top:8px"></p></aside></div></div></div></section></div>`;
-  return hubShell('staff-dugout.html', 'Dugout', body, { extraHead: '<script src="pitch.js" defer></script><link rel="stylesheet" href="tactics.css"><script src="dugout.js" defer></script>', data: { formations: formations.formations, xi: Object.fromEntries(Object.entries(usualXI()).map(([s, p]) => [s, p?.k])) } });
-}
-export function schedule() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · match nights</div><h2>Schedule</h2></div></header>${staffGate}
-  <div data-for="owner" hidden><div id="scLive" hidden></div><div id="scLocal" class="panel sq-empty"><span>🗓️</span><div><b>Sign in to the live Hub</b><p class="muted small">Creating match nights, cancelling, check-in and session reports work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
-  return hubShell('staff-schedule.html', 'Schedule', body, { extraHead: '<script src="schedule.js" defer></script>' });
-}
-export function desk() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · work queues</div><h2>Desk</h2></div></header>${staffGate}
-  <div data-for="owner" hidden><div id="dkLive" hidden></div><div id="dkLocal" class="panel sq-empty"><span>🗂️</span><div><b>Sign in to the live Hub</b><p class="muted small">Claims, Rush confirmations, trials and private notes work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
-  return hubShell('staff-desk.html', 'Desk', body, { extraHead: '<script src="desk.js" defer></script>' });
-}
-export function content() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · club docs and community</div><h2>Content</h2></div></header>${staffGate}
-  <div data-for="owner" hidden><div id="ctLive" hidden></div><div id="ctLocal" class="panel sq-empty"><span>📄</span><div><b>Sign in to the live Hub</b><p class="muted small">Club docs and rules, the ideas board, the squad week and media storage work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
-  return hubShell('staff-content.html', 'Content', body, { extraHead: '<link rel="stylesheet" href="content.css"><script src="content.js" defer></script>' });
-}
-export function insights() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · club health</div><h2>Insights</h2></div></header>${staffGate}
-  <div data-for="owner" hidden><div id="ixLive" hidden></div><div id="ixLocal" class="panel sq-empty"><span>🧭</span><div><b>Sign in to the live Hub</b><p class="muted small">Club Intelligence, the written club notes and the burner tracker work on the live club data, so they open when you are signed in as a manager or the owner.</p></div></div></div></section></div>`;
-  return hubShell('staff-insights.html', 'Insights', body, { extraHead: '<script src="intel.js" defer></script>' });
-}
-// managers and the owner: the Control Center (next/static/controlcenter.js) switches, aims and restricts every output; its Site access and Organization panels are the Boardroom's Switches and Organization
+const CC_HREF = 'staff-controlcenter.html';
+// ---------- STAFF: ONE PAGE, the Control Center ----------
+// Every manager and owner control lives in staff-controlcenter.html and only there (2026-11-23). There is no staff hub, no sidebar and no second page for a tool: the old staff-*.html
+// addresses are redirect stubs (movedPage below, from the `legacy` lists of the staff manifest, next/lib/staffmanifest.mjs). The page is a top bar, a row of DECKS, the open deck's
+// tools and the tool itself, mounted in place by static/ccshell.js:
+//   cc  #ccLive   controlcenter.js (commands, buttons, posts, jobs, DMs, Site access, Bot settings, Audit)  and orgpanel.js (Organization)
+//   br  #brLive   boardroom.js (owner tools)                        tl  #tlLive  tools.js (Submissions, Reports, Game data, Awards)
+//   pg  #pgLive   the six moved pages, each with its own script that ccshell.js loads the first time the tool opens:
+//                 Schedule (schedule.js), Dugout (pitch.js + dugout.js), Desk (desk.js), Content (content.js), Insights (intel.js), Card artwork (cardstudio.js)
+//   rq  #rqLive   ccrequests.js: Emoji and stickers, GIFs and highlights, Rush leaderboard photos, Season stat cards
+//   pp  #ppLive   ccpeople.js: Absences, Counselor, Music and DJ
 // PhoenixDeeplink lands #<tool id> (and the old Boardroom and Tools anchors) on the view: every id the shell understands is an alias of the main column
-const DL_TOKENS = [...new Set([...TOOLS.map((t) => t.id), ...Object.values(LEGACY_HASH).flatMap((m) => Object.keys(m).filter(Boolean))])].join(' ');
+const DL_TOKENS = [...new Set([...SECTIONS.map(([id]) => "deck-" + id), ...TOOLS.map((t) => t.id), ...Object.values(LEGACY_HASH).flatMap((m) => Object.keys(m).filter(Boolean))])].join(' ');
+// the moved pages' mounts: [tool id, mount id]. The script of each fills its own mount; the "needs the live site" note shows when there is no live API (design builds).
+const PG_MOUNTS = [['schedule', 'scLive'], ['dugout', 'dgLive'], ['desk', 'dkLive'], ['content', 'ctLive'], ['insights', 'ixLive'], ['artwork', 'csstaff']];
 export function controlCenter() {
-  // the shell (PF-022 step 7): a left sidebar built from the staff manifest, the dashboard home (ccshell.js) and the existing tools mounted as modules (#ccLive: controlcenter.js, orgpanel.js)
-  const side = SECTIONS.map(([sid, sname]) => { const tools = TOOLS.filter((t) => t.section === sid); return tools.length ? `<section class="cx-sec"><h3>${esc(sname)}</h3><ul>${tools.map((t) => `<li${t.owner ? ' data-owner hidden' : ''}><a class="cx-nav" href="${esc(t.href)}" data-tool="${esc(t.id)}"${t.module ? ` data-module="${esc(t.module)}"` : ''}>${icon(t.icon)}<span>${esc(t.label)}</span>${t.module ? '' : `<em class="cx-ext" role="img" aria-label="opens its own page">${icon('i-ext')}</em>`}<b class="cx-n" data-n="${esc(t.id)}" hidden></b></a></li>`).join('')}</ul></section>` : ''; }).join('');
+  // the decks (SECTIONS) and, for each, the links of its tools: the shell shows the open deck's row and hides the others, so every tool is also a plain link without scripts
+  const decks = SECTIONS.map(([id, title, emoji]) => `<a class="cx-deck" href="${CC_HREF}#deck-${esc(id)}" data-deck="${esc(id)}"><i aria-hidden="true">${emoji}</i><span>${esc(title)}</span><b class="cx-n" data-dn="${esc(id)}" hidden></b></a>`).join('');
+  const toolRows = SECTIONS.filter(([id]) => id !== 'overview').map(([id, title]) => `<nav class="cx-tools" data-deck="${esc(id)}" aria-label="${esc(title)} tools" hidden>${TOOLS.filter((t) => t.section === id).map((t) => `<a class="cx-nav" href="${esc(t.href)}" data-tool="${esc(t.id)}" data-module="${esc(t.module)}"${t.owner ? ' data-owner' : ''}>${icon(t.icon)}<span>${esc(t.label)}</span><b class="cx-n" data-n="${esc(t.id)}" hidden></b></a>`).join('')}</nav>`).join('');
   // PF-022 step 9: the signed-out and wrong-role states are one gate (ccshell.js picks the words); it reads right without scripts (signed out), the owner's View as strip sits above it
   const gate = `<section class="cx-gate" id="cxGate" data-state="out" aria-live="polite"><img class="cx-gate-crest" src="crest-sm.png" alt="" width="56" height="56"><div class="cx-gate-t"><small>${esc(cfg.siteTitle || 'Club')} staff</small><h2 id="cxGateT">Staff sign-in</h2><p id="cxGateP">The Control Center is for managers and the owner. Sign in with Discord to continue; you land back here, on the same tool.</p></div><div class="cx-gate-a"><a class="cx-gate-go" data-login href="#" id="cxGateGo">Sign in with Discord</a><a class="cx-gate-b" href="index.html">Back to the site</a></div></section>`;
   const viewAs = `<div class="cx-view" id="cxView" hidden><span id="cxViewL">View as</span><div role="group" aria-labelledby="cxViewL">${[['owner', 'Owner'], ['manager', 'Manager'], ['member', 'Member']].map(([v, n]) => `<button type="button" data-view="${v}" aria-pressed="${v === 'owner'}">${n}</button>`).join('')}</div><small id="cxViewN">Display and requests only: your real permissions do not change.</small></div>`;
+  const pg = PG_MOUNTS.map(([tid, mount]) => `<div class="cx-pg" data-pg="${tid}" hidden><div class="cx-pgload" data-pgload><div class="cx-skel" aria-label="Loading"></div></div><div id="${mount}"${tid === 'artwork' ? '' : ' hidden'}></div></div>`).join(''); // the scripts unhide their mount when they are ready; cardstudio.js paints into its mount without unhiding
   const body = `${sprite()}<div class="wrap cx-wrap">${viewAs}${gate}<div data-for="owner" hidden><div class="cx" id="cx" data-cx>
-  <div class="cx-bar"><a class="cx-back" href="staff.html">${icon('i-back')}<span>Staff hub</span></a><button type="button" class="cx-menu" id="cxMenu" aria-expanded="false" aria-controls="cxSide">${icon('i-menu')}<span id="cxCur">Dashboard</span></button><button type="button" class="cx-find" id="cxFind" aria-label="Search every tool (Ctrl+K)">${icon('i-search')}<span>Search</span><kbd>Ctrl K</kbd></button></div>
-  <aside class="cx-side" id="cxSide" aria-label="Control Center tools"><div class="cx-brand"><img src="crest-sm.png" alt="" width="34" height="34"><div><b>Control Center</b><small>${esc(cfg.siteTitle || 'Club')} staff</small></div></div><nav>${side}</nav></aside>
-  <main class="cx-main" id="cxMain" data-dl="${esc(DL_TOKENS)}"><h2 class="cx-h" id="cxTitle">Dashboard</h2><p class="cx-sub muted small" id="cxSubtitle">${esc(TOOLS[0].desc)}. Changes made in a tool apply at once: no deploy, no code change.</p>
+  <div class="cx-top"><div class="cx-brand"><img src="crest-sm.png" alt="" width="34" height="34"><div><b>Control Center</b><small>${esc(cfg.siteTitle || 'Club')} staff · every manager control, one place</small></div></div><button type="button" class="cx-find" id="cxFind" aria-label="Search every tool (Ctrl+K)">${icon('i-search')}<span>Search</span><kbd>Ctrl K</kbd></button></div>
+  <nav class="cx-decks" id="cxDecks" aria-label="Control Center decks">${decks}</nav>
+  ${toolRows}
+  <main class="cx-main" id="cxMain" data-dl="${esc(DL_TOKENS)}"><p class="cx-crumb" id="cxCrumb"></p><h2 class="cx-h" id="cxTitle">Dashboard</h2><p class="cx-sub muted small" id="cxSubtitle">${esc(TOOLS[0].desc)}. Changes made in a tool apply at once: no deploy, no code change.</p>
   <section id="cxHome" data-module="home" aria-label="Dashboard"></section>
+  <section id="cxDeck" hidden aria-label="Tools in this deck"></section>
   <section id="ccLive" hidden></section>
   <section id="brLive" hidden aria-label="Owner tools"></section>
   <section id="tlLive" hidden aria-label="Moderation tools"></section>
-  </main><div class="cx-scrim" id="cxScrim" hidden></div></div></div></div>`;
-  return hubShell('staff-controlcenter.html', 'Control Center', body, { bodyExtra: 'cx-page', extraHead: '<link rel="stylesheet" href="controlcenter.css"><link rel="stylesheet" href="ccshell.css"><script src="staffmanifest.js" defer></script><script src="orgpanel.js" defer></script><script src="trophy.js" defer></script><script src="ccsettings.js" defer></script><script src="controlcenter.js" defer></script><script src="boardroom.js" defer></script><script src="tools.js" defer></script><script src="ccshell.js" defer></script>' });
-}
-export function artwork() {
-  const body = `<div class="wrap"><section class="sec" style="margin-top:30px"><header><div><div class="eyebrow">Staff · owner</div><h2>Artwork studio</h2></div></header>${staffGate}<div data-for="owner" hidden>
-  <div id="csstaff" class="sq-mount"></div><div id="artlocal">
-  <div class="panel" style="margin-bottom:18px"><h3>Submit artwork for any player</h3><div class="chips"><select id="aP" aria-label="Player" style="background:var(--p3);color:#fff;border:1px solid var(--line2);border-radius:10px;padding:10px">${players.map((p) => `<option value="${esc(p.k)}">${esc(p.n)}</option>`).join('')}</select><input id="aK" maxlength="2" placeholder="Kit #" aria-label="Kit number" style="width:80px;padding:10px;border-radius:10px;background:var(--p3);border:1px solid var(--line2);color:#fff"><input id="aF" type="file" accept="image/png" aria-label="PNG file" style="color:var(--soft)"><label class="chip"><input id="aOK" type="checkbox" style="margin-right:6px"> approve right away</label><button class="btn" id="aGo">Upload PNG</button></div><p class="muted small" id="aM" style="margin-top:8px">Transparent PNG, at least 400 px. Non-PNG files and files without transparency are refused.</p></div>
-  <div id="aList" class="grid g3"></div></div></div></section></div>`;
-  return hubShell('staff-artwork.html', 'Artwork studio', body, { extraHead: '<script src="cardstudio.js" defer></script>', data: { full: players } });
+  <section id="rqLive" hidden aria-label="Requests and uploads"></section>
+  <section id="ppLive" hidden aria-label="People and music"></section>
+  <section id="pgLive" hidden aria-label="Match nights, people, content and artwork">${pg}</section>
+  </main></div></div></div>`;
+  const heads = '<link rel="stylesheet" href="controlcenter.css"><link rel="stylesheet" href="rushboard.css"><link rel="stylesheet" href="ccshell.css"><link rel="stylesheet" href="ccui.css"><script src="ccui.js" defer></script><script src="staffmanifest.js" defer></script><script src="orgpanel.js" defer></script><script src="trophy.js" defer></script><script src="ccsettings.js" defer></script><script src="controlcenter.js" defer></script><script src="boardroom.js" defer></script><script src="tools.js" defer></script><script src="ccrequests.js" defer></script><script src="ccpeople.js" defer></script><script src="ccshell.js" defer></script>';
+  // players and formations for the Dugout and Card artwork scripts (their own window.NOREX fields, as their pages had)
+  return hubShell('staff-controlcenter.html', 'Control Center', body, { bodyExtra: 'cx-page', extraHead: heads, data: { full: players, formations: formations.formations, xi: Object.fromEntries(Object.entries(usualXI()).map(([s, p]) => [s, p?.k])) } });
 }
 
 // a retired staff page (PF-022 step 8): an ordinary page that forwards to the Control Center view for the old address and anchor, and says so if scripts are off
@@ -223,5 +198,6 @@ function movedPage(file) {
 
 export default function (P) {
   P('hub.html', locker()); P('hub-profile.html', locker('me')); P('hub-stats.html', locker('stats')); P('hub-medals.html', locker('medals')); P('hub-cardstudio.html', locker('cards')); P('hub-alerts.html', locker('alerts')); P('hub-matchnight.html', matchNight()); P('hub-squad.html', squadRoom()); P('hub-clubhouse.html', clubhouse()); P('hub-handbook.html', handbook()); P('hub-watchlist.html', watchlist()); P('hub-music.html', music()); P('hub-discoveries.html', discoveries());
-  P('staff.html', staff()); P('staff-dugout.html', dugout()); P('staff-schedule.html', schedule()); P('staff-desk.html', desk()); P('staff-content.html', content()); P('staff-controlcenter.html', controlCenter()); for (const f of Object.keys(LEGACY_PAGES)) P(f, movedPage(f)); /* retired staff pages (PF-022 step 8): redirect pages, anchors kept */ P('staff-insights.html', insights()); P('staff-artwork.html', artwork());
+  P('staff-controlcenter.html', controlCenter());
+  for (const f of Object.keys(LEGACY_PAGES)) P(f, movedPage(f)); // every retired staff page (staff.html, staff-desk.html, staff-boardroom.html ...): a redirect page, anchors kept
 }

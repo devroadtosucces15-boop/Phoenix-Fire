@@ -49,3 +49,23 @@ Tests scan bot/, web/, next/, scripts/ for Discord IDs and `#channel` names: non
 - **Config-only items in D1** (`cc_config`, migration `0065_cc_config.sql`, not applied by code): recruitment, matchAlert, streams. Code defaults equal `config.json`; keyed `GET /api/org/cc-config` gives the site build and result import the saved values. The result import reads the saved match alert margin first.
 - **One audit read:** merges `config_audit`, `activity` and `role_history`, newest first, filter by source or text, page back with `before`.
 Owner steps: apply migration 0065; run `fold-legacy` once; re-register the Discord commands (`/setup role group` gained the four ping groups).
+
+## Deck layout (2026-11-23, owner request)
+
+The sidebar is gone. `staff-controlcenter.html` is now a row of **decks** (Overview, Match nights, People, Requests and uploads, Content, Bot, Site, Organization, System) with the open deck's tools as chips under it, a breadcrumb, and the tool mounted in place. The dock stays the only side navigation. Source of truth for decks, tools, dock lists, Ctrl+K, link resolver, permission matrix and legacy redirects: `next/lib/staffmanifest.mjs` (SECTIONS, TOOLS, LEGACY_PAGES, LEGACY_HASH).
+
+**One rule: a manager control lives in the Control Center and nowhere else.**
+- Module kinds mounted by `ccshell.js`: `home`, `org`, `controlcenter:<panel>`, `br:<tab>` (boardroom.js), `tl:<tab>` (tools.js), `pg:<name>` (the six moved staff pages, lazy-loaded: schedule, dugout, desk, content, insights, artwork), `rq:<tab>` (`ccrequests.js`), `pp:<tab>` (`ccpeople.js`).
+- Requests members send through the bot: Emoji and stickers (`rq:emojis`), GIF maker and highlight uploads (`rq:media`, Worker `bot/ccrequests.js`, removal audited), Rush leaderboard photos (`rq:board`), season stat cards (`rq:season`), absence notices (`pp:absences`), Counselor (`pp:counselor`), DJ status (`pp:dj`).
+- Removed from public pages: the Rush photo upload, season clock form and photo Remove (rushboard), the manager dashboard and card Remove (seasoncards), and the page gear's in-place editors (`gear.js` now only links to Control Center tools). Those pages show managers one "Manage this in the Control Center" link.
+- Old staff pages (`staff*.html`) are redirect stubs (meta refresh + `location.replace`, `#hash` and `?tool=` aware) built from `LEGACY_PAGES`; `tests/cc-deck.test.mjs` crawls every internal link and every stub.
+- Worker: `/api/controlcenter/requests`, `/media`, `/media/remove` (permission matrix rows in `bot/ccpermissions.js`).
+
+Left for a later session (Inbox): the Builds page still shows a Managers box (feature or unpost another member's build) via `/api/probuilds/feature` and `/unpost`; it needs a `Builds board` tool in the System or Content deck.
+
+## One control look (2026-11-23, second pass)
+
+Every control in the Control Center is drawn by the UI kit (`next/static/ccui.js` + `ccui.css`, tested by `tests/ccui.test.mjs`): a **card** with an icon, the name, what it does, status pills, an animated **switch** (a real checkbox) and a **drop-down arrow**. Opening a card slides its body down (CSS grid rows 0fr to 1fr, ease-out 280 ms, children rise in 40 ms steps); the body holds the variables as fields, segmented choices, option pills and picker lists (a chip per chosen role, member or channel, plus a searchable drop-down to add more). Tables turn into labelled row cards. No sidebar and no drawer from the left anywhere.
+- Panels using it: Site access (card per section, level as a segmented control), Bot commands, Buttons and menus, Automated posts, Scheduled, DMs and notifications (cards grouped by app with a state filter), Bot settings (a card per area; Recruitment has its own header switch; Effects use a Full / Balanced / Off segment), Organization (row cards, segmented tabs). The request and upload tools (`ccrequests.js`, `ccpeople.js`) and the mounted legacy pages inherit the same fields, buttons and pills from `ccui.css` (scoped under `.cx`).
+- Motion follows the site Motion setting: off and reduced-motion are still and instant, calm drops the springs. Reference picks: shadcn Switch/Accordion/Field structure, Uiverse switch feel, Emil Kowalski timing (PLANNING/RESOURCES.md sections 5, 6 and 10).
+- New control = `PFCCUI.card({ id, icon, title, sub, chips, on, sw, body })`; never a new table or a new switch style.

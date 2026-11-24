@@ -10,7 +10,7 @@ const page = (p) => { try { return fs.readFileSync(path.join(out, p), 'utf8'); }
 const lands = (target) => { // target = 'page.html#id' → the page is built and the id is on it (a bare '#' or none needs only the page)
   const [p, frag] = target.split('#'); const h = page(p); if (h == null) return false;
   if (!frag || frag === 'bell') return true; // #bell opens the header notifications dropdown (header.js)
-  return h.includes(`id="${frag}"`) || h.includes(`id='${frag}'`) || /^(p|c|play)\d+$/.test(frag) || /^compare=/.test(frag); // runtime-made ids: feed post, chat, play, compare deep link
+  return [...h.matchAll(/data-dl="([^"]*)"/g)].some((m) => m[1].split(' ').includes(frag)) || h.includes(`id="${frag}"`) || h.includes(`id='${frag}'`) || /^(p|c|play)\d+$/.test(frag) || /^compare=/.test(frag); // runtime-made ids: feed post, chat, play, compare deep link
 };
 
 // 1. every map target exists
@@ -42,7 +42,7 @@ for (const [lit, file] of seen) {
 }
 const cs = fs.readFileSync(path.join(root, 'bot/cardstudio.js'), 'utf8');
 t('Card Studio never links to members.html#cards', !/members\.html#cards/.test(cs));
-t('managers get the approval queue, members the Card Studio', /notifyManagers\([^\n]*link: 'staff-artwork\.html'/.test(cs) && /notify\(env, \[[^\n]*link: 'hub-cardstudio\.html#lk-cards'/.test(cs));
+t('managers get the approval queue, members the Card Studio', /notifyManagers\([^\n]*link: 'staff-controlcenter\.html#artwork'/.test(cs) && /notify\(env, \[[^\n]*link: 'hub-cardstudio\.html#lk-cards'/.test(cs));
 
 // 4. the site's script gives the same answers as the shared resolver
 const ctx = { window: { NOREX_LINKS: { map: HASH_TABLE, pages: PAGE_MAP, keep: [...KEEP_ID] } } };

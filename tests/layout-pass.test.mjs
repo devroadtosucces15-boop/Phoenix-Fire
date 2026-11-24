@@ -35,9 +35,9 @@ const lk = read('locker.css');
 t('locker.css: no card size override sits outside a media query, so the phone keeps its size', !/--s:[\d.]+!important/.test(lk.split('@media')[0]));
 
 // ---------- the staff hub ----------
-const st = read('staff.html');
-t('staff hub: shared groups for managers, owner-only groups behind .adm-owner', st.includes('Match night') && st.includes('class="adm-g adm-n1 adm-owner"') && st.includes('Owner controls') && st.includes('src="staffhub.js"'));
-t('staff hub: every tile opens a page of its own', (st.match(/class="panel room adm-tile" href="([^"#]+)"/g) ?? []).length >= 9 && !/class="panel room adm-tile" href="#/.test(st));
+const st = read('staff-controlcenter.html');
+t('Control Center: decks for managers, owner-only tools flagged data-owner', st.includes('data-deck="match"') && st.includes('data-deck="org"') && /data-tool="boardroom"[^>]*data-owner/.test(st) && st.includes('src="ccshell.js"'));
+t('Control Center: every tool row opens a view of its own', (st.match(/class="cx-nav" href="([^"#]+\?tool=[a-z]+)"/g) ?? []).length >= 30 && !/class="cx-nav" href="#/.test(st));
 const BR = ['switches', 'health', 'announce', 'audit', 'halloffame', 'medals', 'backup', 'organization']; // the old one-tab Boardroom pages
 t('staff hub: each old Boardroom control page redirects into its Control Center view (PF-022 step 8: no solo tab pages any more)', BR.every((k) => { const f = `staff-${k}.html`, id = MAN.LEGACY_PAGES[f]; return id && read(f).includes(`staff-controlcenter.html#${id}`) && !read(f).includes('pf-br-tab') && !read(f).includes('br-solo'); }));
 t('staff hub: the Boardroom page itself redirects to the Control Center Boardroom view', read('staff-boardroom.html').includes('staff-controlcenter.html#boardroom'));
@@ -49,12 +49,12 @@ t('no NOREX name in the new pages and stylesheets', NEW.every((f) => { const s =
 
 // PF-009 R24 (owner approved 2026-11-16): staff home groups sit in a 4-column grid from 1100, 2 from 821, one on phones; the owner group spans the row
 const shc = read('staffhub.css');
-t('R24: staff home groups are a dense grid (4 columns from 1100, 2 from 821), double groups span 2, owner group spans the row', st.includes('<div class="adm-groups">') && /adm-n2/.test(st) && /@media\(min-width:1100px\)\{\.adm-groups\{grid-template-columns:repeat\(4,/.test(shc) && /@media\(min-width:821px\)\{\.adm-groups\{grid-template-columns:repeat\(2,/.test(shc) && shc.includes('grid-auto-flow:dense') && /\.adm-groups \.adm-owner\{grid-column:1\/-1\}/.test(shc));
+t('R24 (deck layout): the deck cards and KPI tiles flow in a three-column grid from the stylesheet, no fixed sidebar column', /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/.test(read('ccshell.css')) && !/cx-side/.test(read('ccshell.css')));
 t('R24: the staff home stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(st.replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(shc));
 // PF-009 R25 (owner approved 2026-11-16): Boardroom link tiles are an equal auto-fill grid; the Switches accordion sits in 2 columns from 1100 with the counts beside the title
 const brj = read('controlcenter.js'); // the grouped switches now live in the Control Center's Site access panel
 t('R25: Boardroom link tiles use an equal auto-fill grid (no auto-fit stretch)', /\.br-tools\{grid-template-columns:repeat\(auto-fill,minmax\(min\(100%,190px\),1fr\)\)\}/.test(lay) && !/\.br-tools\{grid-template-columns:repeat\(auto-fit/.test(lay));
-t('R25: Switches accordion groups sit in a .br-grps 2-column grid from 1100, counts next to the title', brj.includes('class="br-grps"') && /@media\(min-width:1100px\)\{\.br-grps\{display:grid;grid-template-columns:repeat\(2,/.test(lay) && /\.br-grp>summary\{justify-content:flex-start\}/.test(lay) && /\.br-grp>summary:after\{margin-left:auto\}/.test(lay));
+t('R25 (control cards): site access groups are collapsible, counts next to the title, and the cards sit in a 2-column grid from 1100', read('controlcenter.js').includes('class="cu-group"') && /@media\(min-width:1100px\)\{[^@]*\.cu-grid\{grid-template-columns:repeat\(2,/.test(read('ccui.css')) && /\.cu-group>summary small\{margin-left:auto/.test(read('ccui.css')));
 t('R25: the Boardroom output stays Phoenix (no NOREX name, no NOREX red)', !/norex/i.test(read('staff-boardroom.html').replace(/<script[\s\S]*?<\/script>/g, '')) && !/c8352c/i.test(lay));
 // PF-009 R26 (owner approved 2026-11-16): Dugout is three equal-height columns from 1100 (roster / pitch / ready-check); phone stays one column
 const dgj = read('dugout.js');

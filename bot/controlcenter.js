@@ -19,7 +19,8 @@ import { CHANNEL_PURPOSE_INFO, loadOrgConfig } from './orgconfig.js';
 import { COMMANDS } from './commanddefs.js';
 import { discordTargets } from './docs.js';
 import { discord } from './servertools.js';
-import { settingsOverview, saveArea, auditFeed } from './ccsettings.js';
+import { settingsOverview, saveArea, auditFeed, auditSetting } from './ccsettings.js';
+import { ccRequestsRoute } from './ccrequests.js';
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
@@ -88,6 +89,8 @@ export async function controlCenterRoute(p, method, body, me, env, url = null) {
   if (denied) return fail(denied.error, denied.status);
   if (!can(me, 'controlcenter.manage')) return fail('Managers and the owner only.', 403);
   if (!env.DB) return fail('The member database is not connected.', 503);
+  const rq = await ccRequestsRoute(p, method, body, me, env, (e, m, type, detail) => auditSetting(e, m, 'media', null, { detail }, type)); // requests and uploads: counts, GIFs and clips (bot/ccrequests.js)
+  if (rq) return rq;
   if (p === '/api/controlcenter' && method === 'GET') {
     const [controls, purposeRows, auditRows, members] = await Promise.all([loadControls(env, { fresh: true }), all(env, 'SELECT purpose, channel_id FROM discord_channels WHERE active = 1').catch(() => []), all(env, "SELECT id, at, user_id, name, action, before, after FROM config_audit WHERE entity = 'output_controls' ORDER BY id DESC LIMIT 80").catch(() => []), all(env, 'SELECT id, name FROM users ORDER BY name LIMIT 800').catch(() => [])]);
     const byPurpose = {};

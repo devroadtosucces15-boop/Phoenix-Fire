@@ -1,5 +1,5 @@
 // Rush leaderboard page. Reads GET /api/lb (latest ladder, movement, insights, chart series, history) and draws it.
-// Managers also get: photo upload (camera or gallery) → POST /api/lb/scan → a review table they can correct → POST /api/lb/save (stores, works out the
+// Photographing the leaderboard, checking what the bot read, the season clock and removing a photo are managed in Staff › Control Center › Rush leaderboard; this page only reads.
 // insights and posts the leaderboard in Discord), removing a bad photo (POST /api/lb/remove) and the season clock (POST /api/lb/season).
 (() => {
   const d = document, API = window.NOREX_API, A = window.NorexAuth, $ = (s, r = d) => r.querySelector(s);
@@ -48,9 +48,8 @@
   function draw() {
     const k = $('#lb-kpi'), I = V.insights;
     msg(V.latest ? `Photo taken ${when(V.latest.taken_at)}${V.latest.by ? ' by ' + V.latest.by : ''} · ${V.season?.name || ''}` : 'No leaderboard photo yet for this season.');
-    $('#lb-msg').classList.toggle('muted', true);
+    $('#lb-msg').classList.toggle('muted', true); $('#lb-mgr').hidden = !V.canScan;
     const c = V.clock; $('#lb-clock').innerHTML = c ? `<b>Day ${c.day}/${c.total}</b><span class="lb-bar"><i style="width:${c.pct}%"></i></span><small>${c.over ? 'Season over' : c.daysLeft + ' days left'}</small>` : '';
-    $('#lb-up-sec').hidden = !V.canScan; $('#lb-set-sec').hidden = !V.canScan;
     if (!V.latest) { k.innerHTML = ''; ['adv', 'ch', 'tb', 'hist'].forEach((x) => ($(`#lb-${x}-sec`).hidden = true)); return; }
     const dl = I.delta;
     k.innerHTML = kpi('#' + I.rank, 'Our rank', dl ? (dl.rank ? (dl.rank > 0 ? '▲ ' : '▼ ') + Math.abs(dl.rank) + ' since last photo' : 'unchanged') : '', dl ? cls(dl.rank) : '')
@@ -70,62 +69,10 @@
       return `<tr class="${r.us ? 'us' : ''}"><td class="num">${r.rank}${r.dRank ? ` <small class="${cls(r.dRank)}">${r.dRank > 0 ? '▲' : '▼'}${Math.abs(r.dRank)}</small>` : ''}</td><td><b>${esc(r.club)}</b></td><td class="num">${n0(r.vp)}</td><td class="num ${cls(r.dVp)}">${r.dVp == null ? '—' : sg(r.dVp)}</td><td class="num ${r.us ? '' : cls(-(r.vp - me.vp))}">${gap}</td><td class="num">${n0(r.gp)}</td><td class="num">${n0(r.m)}</td><td class="num">${n0(r.bfg)}</td><td class="num">${r.avg == null ? '—' : r.avg.toFixed(1)}</td></tr>`;
     }).join('')}</tbody></table>`;
     $('#lb-hist-sec').hidden = false;
-    $('#lb-hist').innerHTML = V.history.map((h) => `<div class="lb-h"><span>${esc(when(h.taken_at))}</span><span>${esc(h.by || '')}</span><b>#${h.rank ?? '—'}</b><span class="num">${n0(h.vp)} VP</span>${V.canScan ? `<button type="button" class="btn ghost sm" data-rm="${h.id}">Remove</button>` : ''}</div>`).join('');
+    $('#lb-hist').innerHTML = V.history.map((h) => `<div class="lb-h"><span>${esc(when(h.taken_at))}</span><span>${esc(h.by || '')}</span><b>#${h.rank ?? '—'}</b><span class="num">${n0(h.vp)} VP</span></div>`).join('');
   }
 
-  // ---------- manager tools ----------
-  let draft = null;
-  function review(res) {
-    draft = { rows: res.rows.map((r) => ({ ...r })), us: res.us, qc: res.qc };
-    const errs = (res.qc?.errors || []).map((e) => `<li class="bad">${esc(e)}</li>`).join(''), warns = (res.qc?.warnings || []).map((e) => `<li>${esc(e)}</li>`).join('');
-    const fixed = (res.qc?.fixed || []).length ? `<p class="muted small">Tidied automatically: ${esc(res.qc.fixed.join(' · '))}</p>` : '';
-    $('#lb-review').innerHTML = `<h3 class="lb-h3">Check what was read</h3>${errs || warns ? `<ul class="lb-qc">${errs}${warns}</ul>` : '<p class="lb-ok">✔ All the numbers add up.</p>'}${fixed}
-      <p class="muted small">Fix anything that looks wrong, and tap the circle on our row.</p>
-      <div class="tbx"><table class="tb lb-edit"><caption class="sr">Edit leaderboard rows</caption><thead><tr><th scope="col">Us</th><th scope="col">#</th><th scope="col">Club</th><th scope="col">VP</th><th scope="col">GP</th><th scope="col">M</th><th scope="col">BFG</th><th scope="col">AVG</th></tr></thead><tbody>${draft.rows.map((r, i) => `<tr data-i="${i}"><td><input type="radio" name="us" ${i === draft.us ? 'checked' : ''} aria-label="This is us"></td><td class="num">${r.rank}</td><td><input data-f="club" value="${esc(r.club)}" aria-label="Club"></td>${['vp', 'gp', 'm', 'bfg'].map((f) => `<td><input data-f="${f}" inputmode="numeric" value="${r[f] ?? ''}" aria-label="${f}"></td>`).join('')}<td class="num">${r.avg ?? '—'}</td></tr>`).join('')}</tbody></table></div>
-      <div class="lb-act"><button type="button" class="btn" id="lb-save">Save and post to Discord</button><button type="button" class="btn ghost" id="lb-save-q">Save without posting</button><button type="button" class="btn ghost" id="lb-cancel">Start over</button><span class="muted small" id="lb-sv" role="status"></span></div>`;
-    $('#lb-review').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-  async function save(post) {
-    const rows = [...$('#lb-review').querySelectorAll('tbody tr')].map((tr, i) => {
-      const o = { ...draft.rows[i] }; tr.querySelectorAll('input[data-f]').forEach((el) => { o[el.dataset.f] = el.dataset.f === 'club' ? el.value.trim() : (el.value.trim() === '' ? null : Number(el.value.replace(/[, ]/g, ''))); });
-      if (o.vp != null && o.m) o.avg = Math.round((o.vp / o.m) * 100) / 100; return o;
-    });
-    const us = Math.max(0, [...$('#lb-review').querySelectorAll('input[name=us]')].findIndex((x) => x.checked));
-    const edited = JSON.stringify(rows.map((r) => [r.club, r.vp, r.gp, r.m, r.bfg])) !== JSON.stringify(draft.rows.map((r) => [r.club, r.vp, r.gp, r.m, r.bfg]));
-    const st = $('#lb-sv'); st.textContent = 'Saving…'; $('#lb-review').querySelectorAll('button').forEach((b) => (b.disabled = true));
-    try {
-      const r = await call('/api/lb/save', { rows, us, post, edited });
-      st.textContent = r.posted?.ok ? 'Saved and posted ✔' : r.posted?.skipped ? 'Saved ✔' : 'Saved ✔ (nothing posted: ' + (r.posted?.error || 'no channel set') + ')';
-      $('#lb-review').innerHTML = `<p class="lb-ok">${esc(st.textContent)}</p>`; up.reset(); draft = null; await load();
-    } catch (e) {
-      st.textContent = e.message; $('#lb-review').querySelectorAll('button').forEach((b) => (b.disabled = false));
-      if (e.data?.qc) { const ul = $('#lb-review .lb-qc') || $('#lb-review .lb-ok'); if (ul) ul.outerHTML = `<ul class="lb-qc">${(e.data.qc.errors || []).map((x) => `<li class="bad">${esc(x)}</li>`).join('')}</ul>`; }
-    }
-  }
-  let up = { reset() {} };
-  function tools() {
-    if (!V.canScan || tools.done) return; tools.done = true;
-    up = window.PFScan.mount($('#lb-up'), async (url, say) => {
-      const r = await call('/api/lb/scan', { image: url }); say(r.rows?.length ? `Read ${r.rows.length} clubs ✔` : 'Nothing readable.'); review(r);
-    }, { label: 'the Rush leaderboard screen' });
-    $('#lb-review').addEventListener('click', (e) => { const id = e.target.id; if (id === 'lb-save') save(true); else if (id === 'lb-save-q') save(false); else if (id === 'lb-cancel') { $('#lb-review').innerHTML = ''; up.reset(); } });
-    $('#lb-hist').addEventListener('click', async (e) => {
-      const b = e.target.closest('[data-rm]'); if (!b) return;
-      if (b.dataset.sure !== '1') { b.dataset.sure = '1'; b.textContent = 'Tap again to remove'; setTimeout(() => { b.dataset.sure = ''; b.textContent = 'Remove'; }, 3500); return; }
-      try { await call('/api/lb/remove', { id: Number(b.dataset.rm) }); await load(); } catch (er) { b.textContent = er.message; }
-    });
-  }
-  function seasonForm() {
-    if (!V.canScan) return;
-    const s = V.season || {};
-    $('#lb-set').innerHTML = `<form class="lb-form"><label>Season<input name="name" value="${esc(s.name || '')}" required></label><label>Starts<input type="date" name="start" value="${esc(s.start || '')}" required></label><label>Rolls over on<input type="date" name="end" value="${esc(s.end || '')}" required></label><label>Season cards are for<input name="cardsFor" value="${esc(s.cardsFor || s.name || '')}"></label><button class="btn" type="submit">Save season</button><span class="muted small" id="lb-ss" role="status"></span></form><p class="muted small">The end date is the day the season rolls over (it is not counted): 22 Oct to 3 Dec is 42 days. Starting a new season starts a fresh history.</p>`;
-    $('#lb-set form').onsubmit = async (ev) => {
-      ev.preventDefault(); const f = Object.fromEntries(new FormData(ev.target)); const st = $('#lb-ss'); st.textContent = 'Saving…';
-      try { V = await call('/api/lb/season', f); st.textContent = 'Saved ✔'; draw(); seasonForm(); } catch (e) { st.textContent = e.message; }
-    };
-  }
-
-  async function load() { V = await call('/api/lb'); draw(); tools(); seasonForm(); }
+  async function load() { V = await call('/api/lb'); draw(); }
   $('#lb-tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-c]'); if (!b) return; tab = b.dataset.c; $('#lb-tabs').querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === b)); if (V?.latest) $('#lb-chart').innerHTML = chart(); });
   let lastW = innerWidth; addEventListener('resize', () => { if (innerWidth === lastW) return; lastW = innerWidth; if (V?.latest) $('#lb-chart').innerHTML = chart(); });
   if (!API) msg('The leaderboard needs the live site.');
