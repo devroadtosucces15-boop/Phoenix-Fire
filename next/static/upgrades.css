@@ -185,3 +185,86 @@ html[data-st-pagefx][data-tin=ember]:before{background:#0b0f16}
 html[data-st-pagefx=b][data-tin=ember]:after,html[data-st-pagefx=c][data-tin=ember]:after{opacity:0}
 html[data-st-pagefx=b][data-tin=ember]{--up-line:1}
 html[data-st-pagefx=c][data-tin=ember]{--up-line:.7}
+
+/* ---------- loading and feedback (lab family J): the shimmer moves a layer (no repaint), rows crossfade in, an error flashes ---------- */
+html[data-st-loadfx] .sk{position:relative;overflow:hidden;background-image:none;background-color:rgba(255,255,255,.05);animation:none}
+html[data-st-loadfx] .sk:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,color-mix(in srgb,var(--red) 24%,transparent) 50%,transparent 80%);transform:translate3d(-100%,0,0);animation:upShim 1.4s linear infinite}
+html[data-st-loadfx=b] .sk:after{animation-duration:1.4s}
+html[data-st-loadfx=c] .sk:after{animation-duration:2.2s}
+@keyframes upShim{to{transform:translate3d(100%,0,0)}}
+@media(prefers-reduced-motion:reduce){html[data-st-loadfx] .sk:after{animation:none}}
+html[data-motion=off][data-st-loadfx] .sk:after{animation:none}
+
+/* ---------- celebrations (lab family L): flash, finite rays, shockwaves and a springy icon; confetti bursts out and falls (the bits are driven in upgrades.js) ---------- */
+html[data-st-celebfx] #awardfx .afx-rays{animation:upRays 4.2s linear both}
+html[data-st-celebfx=b] #awardfx .afx-bits i{animation:none;left:50%;top:50%}
+html[data-st-celebfx] #awardfx .up-flash{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,236,170,.9),rgba(255,200,90,0) 65%);pointer-events:none;opacity:0}
+html[data-st-celebfx] #awardfx .up-shock{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px;border-radius:50%;border:3px solid var(--gold,#efcf7a);pointer-events:none;opacity:0}
+html[data-st-celebfx=c] #awardfx .up-shock{display:none}
+@keyframes upRays{0%{opacity:0;transform:rotate(0)}12%{opacity:1}80%{opacity:1}100%{opacity:0;transform:rotate(200deg)}}
+@media(prefers-reduced-motion:reduce){html[data-st-celebfx] #awardfx .afx-rays{animation:none}html[data-st-celebfx] #awardfx :is(.up-flash,.up-shock){display:none}}
+html[data-motion=off][data-st-celebfx] #awardfx .afx-rays{animation:none}
+html[data-motion=off][data-st-celebfx] #awardfx :is(.up-flash,.up-shock){display:none}
+
+/* ---------- glow and pointer (lab family M): endless loops pause off-screen and in a hidden tab, buttons lean toward a near pointer ---------- */
+html[data-st-glowfx] .up-off,html[data-st-glowfx] .up-off *,html[data-st-glowfx].up-hidden *{animation-play-state:paused}
+html[data-st-glowfx=b] :is(.keybtn,.btn.gold){translate:var(--up-mx,0px) var(--up-my,0px);transition:translate .45s cubic-bezier(.2,1.15,.3,1)}
+html[data-st-glowfx=b] :is(.keybtn,.btn.gold).up-mag{transition:translate .1s linear}
+html[data-st-glowfx=c] :is(.keybtn,.btn.gold){translate:none}
+@media(prefers-reduced-motion:reduce){html[data-st-glowfx] :is(.keybtn,.btn.gold){translate:none}}
+html[data-motion=off][data-st-glowfx] :is(.keybtn,.btn.gold){translate:none}
+
+/* ---------- island and rail menus (lab family O): the island reveals with a clip (text never stretches), items arrive one by one, the dot rail springs in ---------- */
+html[data-st-islandfx] .fx-isl .il{transform:translateX(-50%);clip-path:inset(0 25% 70% 25% round 20px);transition:opacity .2s,clip-path .26s cubic-bezier(.5,0,.8,.4)}
+html[data-st-islandfx] .fx-isl.open .il{clip-path:inset(0 0 0 0 round 22px);transition:opacity .2s,clip-path .46s cubic-bezier(.2,1.15,.3,1)}
+html[data-st-islandfx=c] .fx-isl.open .il{transition:opacity .2s,clip-path .3s cubic-bezier(.2,.8,.2,1)}
+html[data-st-islandfx=b] .fx-isl.open .il a{animation:upDrop .28s cubic-bezier(.2,.8,.2,1) both}
+html[data-st-islandfx=b] .fx-isl.open .il a:nth-child(2){animation-delay:.18s}
+html[data-st-islandfx=b] .fx-isl.open .il a:nth-child(3){animation-delay:.23s}
+html[data-st-islandfx=b] .fx-isl.open .il a:nth-child(4){animation-delay:.28s}
+html[data-st-islandfx=b] .fx-isl.open .il a:nth-child(n+5){animation-delay:.33s}
+html[data-st-islandfx=b] .fx-rail{transition:opacity .4s,transform .55s cubic-bezier(.2,1.15,.3,1)}
+@media(prefers-reduced-motion:reduce){html[data-st-islandfx] .fx-isl .il,html[data-st-islandfx] .fx-isl .il a{transition:none;animation:none}}
+html[data-motion=off][data-st-islandfx] :is(.fx-isl .il,.fx-isl .il a){transition:none;animation:none}
+
+/* ---------- side rail and owner button (lab family P): the owner panel grows out of the gold button, the active rail entry glides, the drawer springs in ---------- */
+html[data-st-railfx] .ofab-panel{transform-origin:100% 100%}
+html[data-st-railfx=b] .ofab-panel:not([hidden]){animation:upGrow .42s cubic-bezier(.2,1.15,.3,1) both}
+html[data-st-railfx=c] .ofab-panel:not([hidden]){animation:upGrow .28s cubic-bezier(.2,.8,.2,1) both}
+html[data-st-railfx=b] .cx-drawer{animation:upSlideIn .44s cubic-bezier(.2,1.15,.3,1) both}
+html[data-st-railfx=c] .cx-drawer{animation:upSlideIn .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes upGrow{from{opacity:0;scale:.3}}
+@keyframes upSlideIn{from{translate:0 100%}}
+@media(min-width:900px){html[data-st-railfx] .cx-drawer{animation-name:upSlideInX}}
+@keyframes upSlideInX{from{translate:100% 0}}
+@media(prefers-reduced-motion:reduce){html[data-st-railfx] :is(.ofab-panel,.cx-drawer){animation:none}}
+html[data-motion=off][data-st-railfx] :is(.ofab-panel,.cx-drawer){animation:none}
+
+/* ---------- header, logo and notices (lab family Q): rings, sparks and a sweep around the crest, a rolling badge number, an icon that pops in the notice ---------- */
+html[data-st-headerfx] .lg{position:relative}
+html[data-st-headerfx] .lg .up-lring{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid var(--gold,#efcf7a);pointer-events:none;opacity:0}
+html[data-st-headerfx] .lg .up-spark{position:absolute;width:5px;height:5px;margin:-2px;border-radius:50%;background:var(--gold,#efcf7a);box-shadow:0 0 6px var(--red);pointer-events:none;opacity:0}
+html[data-st-headerfx] .up-odo{position:absolute;left:0;right:0;top:0;text-align:center;pointer-events:none}
+html[data-st-headerfx=b] .ph-notice .ph-n-ic{animation:upIcon .48s cubic-bezier(.2,.8,.2,1) .15s both}
+@keyframes upIcon{0%{scale:0}60%{scale:1.4}100%{scale:1}}
+html[data-st-headerfx=c] .lg .up-spark{display:none}
+@media(prefers-reduced-motion:reduce){html[data-st-headerfx] :is(.lg .up-lring,.lg .up-spark,.ph-notice .ph-n-ic){display:none;animation:none}}
+html[data-motion=off][data-st-headerfx] :is(.lg .up-lring,.lg .up-spark,.ph-notice .ph-n-ic){display:none;animation:none}
+
+/* ---------- showcase widgets (lab family R): towers and podium grow with overshoot, medals pop with a shine, the towers turn when dragged ---------- */
+html[data-st-widgetfx=b] .tw{animation:upTw .8s calc(var(--i,0)*.09s) cubic-bezier(.2,.8,.2,1) both}
+html[data-st-widgetfx=c] .tw{animation:upTwQ .6s calc(var(--i,0)*.06s) cubic-bezier(.2,.8,.2,1) both}
+html[data-st-widgetfx=b] .pd .blk{transform-origin:50% 100%;animation:upPod .7s cubic-bezier(.2,.8,.2,1) .2s backwards}
+html[data-st-widgetfx=b] .pd.p1 .blk{animation-delay:.31s}
+html[data-st-widgetfx=b] .pd.p3 .blk{animation-delay:.42s}
+html[data-st-widgetfx=b] .md{position:relative;overflow:hidden;animation:upMed .62s calc(var(--i,0)*.11s + .1s) cubic-bezier(.2,.8,.2,1) both}
+html[data-st-widgetfx=b] .md:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.35) 50%,transparent 65%);transform:translate3d(-120%,0,0);animation:upShineOnce .6s calc(var(--i,0)*.11s + .7s) both;pointer-events:none}
+html[data-st-widgetfx] .towers{animation:none;transform:rotateX(-14deg) rotateY(var(--up-ry,-24deg));touch-action:pan-y;cursor:grab}
+html[data-st-widgetfx] .towers.up-drag{cursor:grabbing}
+@keyframes upTw{0%{scale:1 0}70%{scale:1 1.08}100%{scale:1 1}}
+@keyframes upTwQ{from{scale:1 .02}}
+@keyframes upPod{0%{scale:1 0}70%{scale:1 1.1}100%{scale:1 1}}
+@keyframes upMed{0%{opacity:0;scale:0}60%{opacity:1;scale:1.25}100%{opacity:1;scale:1}}
+@keyframes upShineOnce{from{transform:translate3d(-120%,0,0)}to{transform:translate3d(120%,0,0)}}
+@media(prefers-reduced-motion:reduce){html[data-st-widgetfx] :is(.tw,.pd .blk,.md,.md:after){animation:none}}
+html[data-motion=off][data-st-widgetfx] :is(.tw,.pd .blk,.md,.md:after){animation:none}

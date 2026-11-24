@@ -109,6 +109,17 @@ t('lab C+H: no NOREX red or club hex is written into the new scenes (colours com
 t('lab D: scrolling keeps everything visible, measures once, runs one frame loop and honours reduced motion', /\.reveal,\.rv-c\)\{opacity:1/.test(upc) && /requestAnimationFrame\(sFrame\)/.test(up) && /sMeasure/.test(up) && /data-motion=off\]\[data-st-scrollfx\]/.test(upc));
 t('lab G: the menu scrim and highlight are added only while menufx is set and removed when it is not', /scrim\.remove\(\)/.test(up) && /if \(!variant\('menufx'\)/.test(up));
 
+// ---- lab families J, L, M, O, P, Q, R: loading, celebrations, glow, island, rail and owner button, header, widgets
+const JR = ['loadfx', 'celebfx', 'glowfx', 'islandfx', 'railfx', 'headerfx', 'widgetfx'];
+t('lab J-R: the seven components are in the bot list, the loader and the editor, three looks each', JR.every((c) => B.COMPONENTS.includes(c) && CAT.COMPONENTS.includes(c) && E.COMP[c]?.[1].length === 3));
+t('lab J-R: every upgrade rule hangs on a data-st attribute (nothing applies until picked)', upc.split('\n').filter((l) => /(loadfx|celebfx|glowfx|islandfx|railfx|headerfx|widgetfx|up-shim|upShim|upGrow|upTw|upPod|upMed)/.test(l) && /\{/.test(l) && !/^\s*(@keyframes|\/\*)/.test(l)).every((l) => /^(html\[data-st-|html\[data-motion=off\]\[data-st-|@media[^{]*\{html\[data-st-)/.test(l)));
+t('lab J-R: the demo page has a section and a focus entry for each', JR.every((c) => new RegExp(`data-demo="${c}"`).test(demoPage) && new RegExp(`${c}: \\['${c}'\\]`).test(demoPage)));
+t('lab J-R: reduced motion and the site Motion setting turn each one back to plain', JR.every((c) => new RegExp(`prefers-reduced-motion[^\\n]*data-st-${c}|data-motion=off\\]\\[data-st-${c}`).test(upc)) && JR.every((c) => new RegExp(`data-st-${c}`).test(upc)));
+t('lab J-R: they hang on the site\'s real selectors (sk, awardfx, afx-bits, keybtn, fx-isl, ofab-panel, cx-drawer, lg, hdr-n, towers, pd, md)', ['\\.sk', '#awardfx', '\\.afx-bits', '\\.keybtn', '\\.fx-isl', '\\.ofab-panel', '\\.cx-drawer', '\\.lg', '\\.towers', '\\.pd \\.blk', '\\.md'].every((x) => new RegExp(x).test(upc)) && /\.hdr-n/.test(up) && /\.cx-nav/.test(up));
+t('lab J-R: the rig reads each new attribute', JR.every((c) => new RegExp(`data-st-${c}`).test(up)) && /celebrate\(n\)/.test(up) && /logoIntro/.test(up) && /spinArm/.test(up));
+t('lab L: the award moment keeps its close button and is never blocked (the flash and shockwaves ignore the pointer)', /pointer-events:none/.test(upc.slice(upc.indexOf('up-flash'))) && /\.up-shock\{[^}]*pointer-events:none/.test(upc));
+t('lab J-R: no NOREX name or club hex in the new rules', !/norex|#c8352c|#080b11/i.test(upc));
+
 // ---- wiring
 t('pages: every page loads the look in <head> before paint and the editor after the owner button', /themestudio\.css/.test(ui) && /themeeditor\.css/.test(ui) && ui.indexOf('themestudio.js') < ui.indexOf('fxconfig.js') && ui.indexOf('themeeditor.js') > ui.indexOf('ownerfab.js'));
 t('control center: the effects card moved into the studio (Control Center no longer draws it)', !/'streams', 'effects', 'points'\]/.test(ccs));

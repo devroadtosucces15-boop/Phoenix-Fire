@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="widgets.css"><link rel="stylesheet" href="fx.css"><link rel="stylesheet" href="motion.css"><link rel="stylesheet" href="themes.css">
 <link rel="stylesheet" href="header.css"><link rel="stylesheet" href="dock.css"><link rel="stylesheet" href="fxmotion.css"><link rel="stylesheet" href="forms.css"><link rel="stylesheet" href="tables.css"><link rel="stylesheet" href="chips.css">
-<link rel="stylesheet" href="ccui.css"><link rel="stylesheet" href="notices.css"><link rel="stylesheet" href="dialogs.css"><link rel="stylesheet" href="themestudio.css"><link rel="stylesheet" href="upgrades.css">
+<link rel="stylesheet" href="ccui.css"><link rel="stylesheet" href="notices.css"><link rel="stylesheet" href="dialogs.css"><link rel="stylesheet" href="hubx.css"><link rel="stylesheet" href="lookbook.css"><link rel="stylesheet" href="ownerfab.css"><link rel="stylesheet" href="states.css"><link rel="stylesheet" href="themestudio.css"><link rel="stylesheet" href="upgrades.css">
 <style>
 /* The Theme Studio's live demo: the same classes the real pages use, so the real stylesheets draw it. Only layout lives here. */
 html,body{min-height:0;height:auto}
@@ -54,6 +54,9 @@ body::before,body::after{display:none}
 .dm .dmpitch{position:relative;height:70px;border-radius:8px;background:#0f3a24}.dm .dmpitch b{position:absolute;width:12px;height:12px;margin:-6px;border-radius:50%;background:#fff}
 .dm .dmmenu{position:relative;width:260px;height:230px}.dm .up-wrap{position:relative;height:100%}
 .dm .dmtabs{display:flex;gap:6px;padding:8px}.dm .dmtabs button{padding:6px 12px;border-radius:999px;border:0;background:transparent;color:var(--soft,#9aa1ab);font:600 12px Inter,sans-serif;cursor:pointer}.dm .dmtabs button.on{background:var(--p2,#1b1f27);color:#fff}
+.dm .dmhdr{display:grid;justify-items:center}.dm .dmofab{width:240px;height:190px;display:grid;justify-items:end;align-items:end}
+.dm .ofab-row{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06)}
+.dm #dmSk{display:grid;gap:8px;width:240px}.dm #dmSk .row4{padding:12px;border-radius:12px;background:var(--p2,#1b1f27)}
 .dm .dmline{position:absolute;left:0;right:0;top:0;height:3px;background:var(--red);transform:scaleX(0);transform-origin:0 50%}
 
 </style>
@@ -83,16 +86,24 @@ body::before,body::after{display:none}
   <section data-demo="tapfx"><div class="dmtap"><div class="row" id="dmChips"><button class="chip on" type="button">NOVA</button><button class="chip" type="button">KAI</button><button class="chip" type="button">RIO</button></div><div class="st"><i style="width:80%"></i></div><div class="st"><i style="width:60%"></i></div><div class="pitch dmpitch"><b style="left:50%;top:50%"></b></div></div></section>
   <section data-demo="menufx"><div class="dmmenu"><div class="up-wrap"><div class="fx-isl" style="position:absolute;left:50%;top:0;opacity:1;pointer-events:auto;transform:translateX(-50%)"><button class="ib" type="button"><span class="cur">Club · Home</span></button><div class="il"><div class="r1"><a class="on" href="#" onclick="return false">Club</a><a href="#" onclick="return false">Matches</a><a href="#" onclick="return false">Stats</a><a href="#" onclick="return false">Tactics</a></div></div></div></div></div></section>
   <section data-demo="pagefx"><div class="dmstage" id="dmPages" style="--w:280px;--h:130px"><div class="dmtabs"><button type="button" class="on" data-i="0">Club</button><button type="button" data-i="1">Matches</button><button type="button" data-i="2">Stats</button></div><div class="dmpgs"><div class="dmpg"><b>Club</b><i></i><i></i></div></div><div class="dmline"></div></div></section>
+  <section data-demo="loadfx"><div class="dmtap" id="dmLoad"><div class="sk-wrap row" id="dmSk"><div class="sk"></div><div class="sk"></div><div class="sk"></div></div><div class="row"><button class="btn ghost" type="button" data-pop="load">Load rows</button><button class="btn ghost" type="button" data-pop="fail">Fail</button></div></div></section>
+  <section data-demo="celebfx"><div class="row"><button class="btn gold" type="button" data-pop="award">Show an achievement</button></div></section>
+  <section data-demo="glowfx"><div class="row"><a class="btn gold keybtn" href="#" onclick="return false">Join the squad</a><span class="flame" style="font-size:26px">🔥</span></div></section>
+  <section data-demo="islandfx"><div class="dmmenu"><div class="up-wrap"><div class="fx-isl" style="position:absolute;left:50%;top:0;opacity:1;pointer-events:auto;transform:translateX(-50%)"><button class="ib" type="button"><span class="cur">Club · Home</span></button><div class="il"><div class="r1"><a class="on" href="#" onclick="return false">Club</a><a href="#" onclick="return false">Matches</a><a href="#" onclick="return false">Stats</a><a href="#" onclick="return false">Tactics</a></div></div></div></div></div></section>
+  <section data-demo="railfx"><div class="dmofab"><div class="ofab" style="position:relative;right:auto;bottom:auto"><div class="ofab-panel" id="dmPanel" hidden><div class="ofab-h"><span class="eyebrow">👑 Owner tools</span></div><div class="ofab-row">✅ Approvals</div><div class="ofab-row">🛠️ Settings</div></div><button type="button" class="ofab-btn" id="dmFab" aria-label="Owner tools">👑</button></div></div></section>
+  <section data-demo="headerfx"><div class="dmhdr"><div class="lg" id="dmLg"><img src="crest-sm.png" alt="" style="width:36px"><span class="lg1">PHOENIX</span></div><div class="row" style="margin-top:12px"><span class="bell" style="position:relative">🔔<i class="nb hdr-n" id="dmN">3</i></span><button class="btn ghost" type="button" data-pop="logo">Play intro</button><button class="btn ghost" type="button" data-pop="plus">+1</button></div></div></section>
+  <section data-demo="widgetfx" class="wide"><div class="stage3" style="width:280px;margin:0 auto"><div class="towers"><div class="tw" style="--h:60px;--i:0"><i class="f1"></i><i class="f2"></i></div><div class="tw" style="--h:84px;--i:1"><i class="f1"></i><i class="f2"></i></div><div class="tw" style="--h:48px;--i:2"><i class="f1"></i><i class="f2"></i></div></div></div><div class="podium" style="width:280px;margin:0 auto"><div class="pd p2"><div class="who"><b>KAI</b></div><div class="blk">2</div></div><div class="pd p1"><div class="who"><b>NOVA</b></div><div class="blk">1</div></div><div class="pd p3"><div class="who"><b>RIO</b></div><div class="blk">3</div></div></div><div class="medals" style="width:280px;margin:0 auto"><div class="md" style="--i:0">🥇</div><div class="md" style="--i:1">🥈</div><div class="md" style="--i:2">🥉</div></div></section>
   <section data-demo="playercard"><div class="pc pc-card t-gold tilt" style="--s:0.62" data-k="demo" data-pos="MID" role="img" aria-label="Sample player card"><span class="shell"></span><div class="art"><svg class="fb" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice"><path class="sil" d="M50 14c-9 0-16 8-16 18 0 8 4 14 9 17-14 3-27 12-30 27v8h74v-8c-3-15-16-24-30-27 5-3 9-9 9-17 0-10-7-18-16-18z"/><text class="num" x="50" y="97" text-anchor="middle">PY</text></svg></div><span class="ovr">85</span><span class="pos">MID</span><span class="crestm"><img src="crest.png" alt=""></span><span class="name">PYRAMIND</span><span class="arch">Maestro</span><span class="stats"><div><b class="num">10</b><span>GLS</span></div><div><b class="num">11</b><span>AST</span></div><div><b class="num">7.1</b><span>RAT</span></div><div><b class="num">83%</b><span>PAS</span></div><div><b class="num">57%</b><span>TKL</span></div><div><b class="num">55</b><span>GP</span></div></span><span class="glare"></span><span class="gloss"><i></i></span></div></section>
 </main>
 <script src="themestudio.js"></script>
+<script src="hubx.js" defer></script>
 <script src="upgrades.js" defer></script>
 <script>
 // The editor drives this page: PFDemo.set(look, focus) applies a merged look (as the "*" scope) and shows only the parts to look at.
 (() => {
   const main = document.getElementById('main'), q = new URLSearchParams(location.search);
   const ALL = ['divider', 'heading', 'button', 'chip', 'badge', 'input', 'nav', 'card', 'stats'];
-  const MORE = { button: ['button'], buttonfx: ['button'], tilefx: ['tilefx'], statusfx: ['statusfx'], dockfx: ['dockfx'], overlayfx: ['overlayfx'], vizfx: ['vizfx'], playercard: ['playercard'], hubfx: ['hubfx'], scrollfx: ['scrollfx'], tapfx: ['tapfx'], menufx: ['menufx'], pagefx: ['pagefx'], dock: ['dock'], table: ['table'], toggle: ['toggle'], icon: ['icon'], nav: ['nav'], badge: ['badge'], chip: ['chip'], input: ['input'], card: ['card', 'stats'], heading: ['heading'], divider: ['divider'] };
+  const MORE = { button: ['button'], buttonfx: ['button'], tilefx: ['tilefx'], statusfx: ['statusfx'], dockfx: ['dockfx'], overlayfx: ['overlayfx'], vizfx: ['vizfx'], playercard: ['playercard'], hubfx: ['hubfx'], loadfx: ['loadfx'], celebfx: ['celebfx'], glowfx: ['glowfx'], islandfx: ['islandfx'], railfx: ['railfx'], headerfx: ['headerfx'], widgetfx: ['widgetfx'], scrollfx: ['scrollfx'], tapfx: ['tapfx'], menufx: ['menufx'], pagefx: ['pagefx'], dock: ['dock'], table: ['table'], toggle: ['toggle'], icon: ['icon'], nav: ['nav'], badge: ['badge'], chip: ['chip'], input: ['input'], card: ['card', 'stats'], heading: ['heading'], divider: ['divider'] };
   const show = (focus) => {
     const list = focus === 'all' || !focus ? null : (MORE[focus] || [focus]);
     main.classList.toggle('all', !list); main.classList.toggle('solo', !!list && q.has('solo'));
@@ -138,6 +149,17 @@ body::before,body::after{display:none}
       old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate3d(' + (-dir * 18) + '%,0,0) scale(.94)', opacity: 0 }], { duration: q ? 220 : 380, easing: OUT }).onfinish = () => old.remove();
       nw.animate(q ? [{ opacity: 0 }, { opacity: 1 }] : [{ transform: 'translate3d(' + dir * 60 + 'px,0,0)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: q ? 300 : 420, easing: OUT });
       const ln = st.querySelector('.dmline'); ln.style.transformOrigin = dir > 0 ? '0 50%' : '100% 50%'; ln.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)', offset: .6 }, { transform: 'scaleX(0)', transformOrigin: dir > 0 ? '100% 50%' : '0 50%' }], { duration: q ? 380 : 520, easing: OUT }); }
+  });
+
+  main.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-pop]'); if (b) { const k = b.dataset.pop;
+      if (k === 'load') { const host = main.querySelector('#dmLoad'), old = host.querySelector('#dmSk, .dmrows'); const rows = document.createElement('div'); rows.className = 'dmrows'; rows.id = 'dmSk'; rows.innerHTML = ['NOVA · ST · 86', 'KAI · LW · 81', 'RIO · CM · 79'].map((t) => '<div class="row4">' + t + '</div>').join('');
+        const sk = document.createElement('div'); sk.className = 'sk-wrap row'; sk.id = 'dmSk'; sk.innerHTML = '<div class="sk"></div><div class="sk"></div><div class="sk"></div>'; old.replaceWith(sk); setTimeout(() => sk.replaceWith(rows), 900); }
+      if (k === 'fail') { b.classList.add('mx-err'); setTimeout(() => b.classList.remove('mx-err'), 600); }
+      if (k === 'award' && window.NorexHubX) window.NorexHubX.celebrate([{ name: 'Demo ' + Date.now(), icon: '🏆', desc: 'A sample achievement', pts: 50 }]);
+      if (k === 'logo' && window.PFUpgrades) window.PFUpgrades.logoIntro(main.querySelector('#dmLg'), true);
+      if (k === 'plus') { const n = main.querySelector('#dmN'); n.textContent = (+n.textContent || 0) + 1; } return; }
+    if (e.target.closest('#dmFab')) { const p = main.querySelector('#dmPanel'); p.hidden = !p.hidden; if (!p.hidden) p.classList.add('fresh'); }
   });
   show(q.get('focus') || 'all');
 })();
