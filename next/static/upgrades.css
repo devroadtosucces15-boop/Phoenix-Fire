@@ -50,3 +50,31 @@ html[data-st-buttonfx] .btn .up-rip{position:absolute;border-radius:50%;backgrou
 html[data-st-buttonfx] .btn.up-buzz{animation:upBuzz .28s linear}
 @keyframes upBuzz{0%,100%{transform:translate3d(0,0,0)}15%{transform:translate3d(-4px,0,0)}35%{transform:translate3d(4px,0,0)}55%{transform:translate3d(-3px,0,0)}75%{transform:translate3d(2px,0,0)}}
 @media(prefers-reduced-motion:reduce){html[data-st-buttonfx] .btn{transition:none}}
+
+/* ---------- tiles, switches, chips (lab family N): lift on hover, squeeze on press, a knob that stretches ---------- */
+html[data-st-tilefx] :is(.tile,.panel.tilt-ok,.chip,.rchip){transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s;-webkit-tap-highlight-color:transparent}
+html[data-st-tilefx=b] .tile:hover{transform:translate3d(0,-3px,0)}
+html[data-st-tilefx] :is(.tile,.chip,.rchip):active{transform:scale(.96)!important}
+html[data-st-tilefx=c] .tile:hover{transform:translate3d(0,-1.5px,0)}
+html[data-st-tilefx] .cc-sw:active span:after{width:34px}
+html[data-st-tilefx=b] .cc-sw span:after{transition:transform .42s cubic-bezier(.34,1.56,.64,1),width .14s}
+html[data-st-tilefx=c] .cc-sw:active span:after{width:28px}
+@media(prefers-reduced-motion:reduce){html[data-st-tilefx] :is(.tile,.chip,.rchip){transition:none}}
+html[data-motion=off][data-st-tilefx] :is(.tile,.chip,.rchip){transition:none}
+
+/* ---------- status accents (lab family S): bell ring, number roll, flame swell, tap ripple ---------- */
+html[data-st-statusfx] .up-ring{animation:upRing .8s ease-out}
+html[data-st-statusfx] .up-pop{animation:upPop .36s cubic-bezier(.34,1.56,.64,1)}
+html[data-st-statusfx] .up-roll{animation:upRoll .32s cubic-bezier(.34,1.56,.64,1)}
+html[data-st-statusfx=b] :is(.flame,.flm,.hot):hover{animation:upSwell .42s cubic-bezier(.34,1.56,.64,1)}
+html[data-st-statusfx] :is(.chip,.tile) .up-rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.4);pointer-events:none;width:20px;height:20px;margin:-10px 0 0 -10px}
+html[data-st-statusfx] :is(.chip,.tile){position:relative;overflow:hidden}
+@keyframes upRing{0%,100%{transform:rotate(0)}15%{transform:rotate(22deg)}30%{transform:rotate(-18deg)}50%{transform:rotate(12deg)}70%{transform:rotate(-6deg)}}
+@keyframes upPop{50%{transform:scale(1.35)}}
+@keyframes upRoll{0%{transform:translate3d(0,14px,0);opacity:0}100%{transform:none;opacity:1}}
+@keyframes upSwell{50%{transform:scale(1.35) rotate(-6deg)}}
+@media(prefers-reduced-motion:reduce){html[data-st-statusfx] :is(.up-ring,.up-pop,.up-roll){animation:none}}
+html[data-motion=off][data-st-statusfx] :is(.up-ring,.up-pop,.up-roll){animation:none}
+html[data-st-statusfx=c] .up-ring{animation-duration:.5s}
+html[data-st-statusfx=c] .up-pop{animation-name:upPopQ}
+@keyframes upPopQ{50%{transform:scale(1.15)}}
