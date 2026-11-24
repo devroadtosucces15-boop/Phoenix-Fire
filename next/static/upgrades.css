@@ -1,0 +1,52 @@
+/* Upgrade pack: the "Upgrade" versions from the animation lab (the Phoenix Motion and Hub Plan artifact), offered in the Theme Studio as look b
+   (Upgrade) and look c (Upgrade, quiet) of a component. Nothing applies until the owner picks one: every rule hangs on a data-st attribute.
+   The behaviour (the spring rig, the ripple) is next/static/upgrades.js. Timings, curves and layers are the lab's, unchanged.
+   Player card (A): tilt, foil, soft highlight, breathing glow, sweeping shine, drag with spring-back, shadow that moves away from the light.
+   Buttons (B): squeeze on press, inner light, a ripple from the finger. Quiet = the same, softer: less tilt, no foil colours, no ripple. */
+html[data-st-playercard=b]{--upk:1}
+html[data-st-playercard=c]{--upk:.5}
+/* the card body: one transform from the rig (drag + lean + press) in place of the site's own tilt */
+html[data-st-playercard] .pc-card[data-up]{--rx:0deg;--ry:0deg;--tx:0px;--ty:0px;--sx:0;--sy:0;--ang:0deg;--mag:0;--press:0;--upg:243,201,92;
+  filter:none!important;transform:translate3d(var(--tx),var(--ty),0) perspective(700px) rotateX(var(--rx)) rotateY(var(--ry)) scale(calc(1 - var(--press)*.025))!important;
+  touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;will-change:transform}
+html[data-st-playercard] .pc-card[data-up].drag{cursor:grabbing}
+html[data-st-playercard] .pc-card[data-up].t-silver{--upg:205,214,228}
+html[data-st-playercard] .pc-card[data-up].t-bronze{--upg:226,160,112}
+html[data-st-playercard] .pc-card[data-up].t-icon{--upg:130,222,255}
+html[data-st-playercard] .pc-card[data-up].dark{--upg:150,170,205}
+html[data-st-playercard] .pc-card[data-up] :is(.glare,.gloss){display:none!important}
+/* layers: each owns one effect and reads the one tilt value */
+html[data-st-playercard] .pc-card[data-up] .up-shadow{position:absolute;left:6%;right:6%;bottom:-7%;height:12%;background:radial-gradient(ellipse at center,rgba(0,0,0,.7),transparent 70%);transform:translate3d(calc(var(--sx)*-30px),calc(var(--sy)*-12px),0) scale(calc(1 + var(--mag)*.14));opacity:calc(.9 - var(--mag)*.2);pointer-events:none;z-index:-2;will-change:transform}
+html[data-st-playercard] .pc-card[data-up] .up-glow{position:absolute;inset:-12%;border-radius:40%;background:radial-gradient(closest-side,rgba(var(--upg),.9),rgba(var(--upg),.35) 55%,rgba(var(--upg),0) 78%);animation:upGlow 3.2s ease-in-out infinite;opacity:calc((.55 + var(--mag)*.4)*var(--upk,1));transform:translate3d(calc(var(--sx)*-10px),calc(var(--sy)*-10px),0);pointer-events:none;z-index:-1}
+html[data-st-playercard] .pc-card[data-up] .up-lay{position:absolute;inset:0;clip-path:polygon(8.7% 2%,91.3% 2%,97.3% 6.2%,97.3% 86.2%,50% 98.6%,2.7% 86.2%,2.7% 6.2%);overflow:hidden;pointer-events:none;z-index:2}
+html[data-st-playercard] .pc-card[data-up] .up-foil{position:absolute;inset:-50%;background:linear-gradient(110deg,transparent 30%,rgba(255,120,200,.55) 38%,rgba(255,230,120,.8) 46%,rgba(120,255,220,.55) 54%,rgba(120,160,255,.5) 60%,transparent 70%);mix-blend-mode:color-dodge;transform:translate3d(calc(var(--sx)*18%),calc(var(--sy)*18%),0) rotate(var(--ang));opacity:calc((.1 + var(--mag)*.55)*var(--upk,1));will-change:transform,opacity}
+html[data-st-playercard] .pc-card[data-up] .up-spec{position:absolute;inset:-30%;background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.85),rgba(255,255,255,0) 34%);mix-blend-mode:soft-light;transform:translate3d(calc(var(--sx)*-36%),calc(var(--sy)*-36%),0);opacity:calc((.3 + var(--mag)*.6)*var(--upk,1));will-change:transform,opacity}
+html[data-st-playercard] .pc-card[data-up] .up-shine{position:absolute;inset:-40%;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.55) 50%,transparent 58%);animation:upShine 4.2s ease-in-out infinite;opacity:var(--upk,1)}
+html[data-st-playercard] .pc-card[data-up] .up-sweep{position:absolute;inset:-40%;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.85) 50%,transparent 58%);transform:translate3d(-120%,0,0);opacity:0}
+@keyframes upGlow{50%{scale:1.07}}
+@keyframes upShine{0%,45%{transform:translate3d(-120%,0,0)}100%{transform:translate3d(120%,0,0)}}
+/* crest, number and name float above the face, so there is depth */
+html[data-st-playercard] .pc-card[data-up] :is(.ovr,.pos,.crestm,.name,.arch,.stats){z-index:3}
+html[data-st-playercard] .pc-card[data-up] .crestm{transform:translate3d(calc(var(--sx)*-9px),calc(var(--sy)*-9px),0);filter:drop-shadow(0 4px 6px rgba(60,30,0,.35))}
+html[data-st-playercard] .pc-card[data-up] .ovr{transform:translate3d(calc(var(--sx)*-4px),calc(var(--sy)*-4px),0)}
+html[data-st-playercard] .pc-card[data-up] .name{transform:translate3d(calc(var(--sx)*-5px),calc(var(--sy)*-5px),0)}
+/* the stats: smaller, dimmer, with room between them, so the face stays calm */
+html[data-st-playercard] .pc-card[data-up] .stats{opacity:.66;gap:calc(var(--s)*7px) 0;transition:opacity .25s}
+html[data-st-playercard] .pc-card[data-up]:hover .stats,html[data-st-playercard] .pc-card[data-up].drag .stats{opacity:.9}
+html[data-st-playercard] .pc-card[data-up] .stats b{font-size:calc(var(--s)*14.5px);font-weight:600}
+html[data-st-playercard] .pc-card[data-up] .stats span{font-size:calc(var(--s)*7.5px);letter-spacing:.12em;opacity:.8}
+/* motion off or reduced: the card sits still, the glow and shine stop */
+@media(prefers-reduced-motion:reduce){html[data-st-playercard] .pc-card[data-up] :is(.up-glow,.up-shine){animation:none}}
+html[data-motion=off][data-st-playercard] .pc-card[data-up] :is(.up-glow,.up-shine){animation:none}
+
+/* ---------- buttons: squeeze, inner light, ripple ---------- */
+html[data-st-buttonfx] .btn{overflow:hidden;transition:transform .16s cubic-bezier(.2,.8,.2,1);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+html[data-st-buttonfx] .btn:active,html[data-st-buttonfx] .btn.dn{transform:scale(.95)!important}
+html[data-st-buttonfx] .btn:after{content:"";position:absolute;inset:0;width:auto;left:0;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 60%);opacity:0;transition:opacity .15s;transform:none;animation:none}
+html[data-st-buttonfx=b] .btn:hover:after{opacity:.6}
+html[data-st-buttonfx] .btn:active:after,html[data-st-buttonfx] .btn.dn:after{opacity:1}
+html[data-st-buttonfx=c] .btn:after{opacity:0!important}
+html[data-st-buttonfx] .btn .up-rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);pointer-events:none;width:20px;height:20px;margin:-10px 0 0 -10px}
+html[data-st-buttonfx] .btn.up-buzz{animation:upBuzz .28s linear}
+@keyframes upBuzz{0%,100%{transform:translate3d(0,0,0)}15%{transform:translate3d(-4px,0,0)}35%{transform:translate3d(4px,0,0)}55%{transform:translate3d(-3px,0,0)}75%{transform:translate3d(2px,0,0)}}
+@media(prefers-reduced-motion:reduce){html[data-st-buttonfx] .btn{transition:none}}

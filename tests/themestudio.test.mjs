@@ -6,7 +6,7 @@ import { t, done } from './lib.mjs';
 import * as B from '../bot/themestudio.js';
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const rd = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
-const loader = rd('next/static/themestudio.js'), editor = rd('next/static/themeeditor.js'), css = rd('next/static/themestudio.css'), ecss = rd('next/static/themeeditor.css');
+const loader = rd('next/static/themestudio.js'), editor = rd('next/static/themeeditor.js'), css = rd('next/static/themestudio.css') + '\n' + rd('next/static/upgrades.css'), ecss = rd('next/static/themeeditor.css');
 const ui = rd('next/lib/ui.mjs'), cs = rd('bot/ccsettings.js'), mem = rd('bot/members.js'), ccs = rd('next/static/ccsettings.js');
 
 // ---- the Worker cleaner
@@ -60,6 +60,26 @@ t('editor: owner only (not for managers, members, guests or the owner previewing
 t('editor: saves through the settings area and refreshes the cache; the core effects save through their own area', /settings\/theme/.test(editor) && /settings\/effects/.test(editor) && /T\.set\(S\.draft, \{ save: true \}\)/.test(editor));
 t('editor: a bottom sheet from a floating button with its own logo, never a left panel; every control is 40px or more', /\.tse-panel\{[^}]*bottom:0/.test(ecss) && !/translateX\(-/.test(ecss) && /<svg viewBox="0 0 48 48"/.test(editor) && /min-height:38px|min-height:40px|min-height:42px|min-height:44px/.test(ecss));
 t('editor: scope choice (everywhere, this page, this sub-menu) and a reset for each', /This page/.test(editor) && /This sub-menu/.test(editor) && /data-resetscope/.test(editor));
+
+// ---- the upgrade pack (animation lab upgrades offered as look b and c)
+const up = rd('next/static/upgrades.js'), upc = rd('next/static/upgrades.css');
+const uw = {}; const mkEl = () => ({ style: { setProperty() {}, removeProperty() {} }, dataset: {}, classList: { add() {}, remove() {} }, addEventListener() {}, insertAdjacentHTML() {}, querySelectorAll: () => [] });
+vm.runInNewContext(up, { window: uw, document: { documentElement: { getAttribute: () => '', dataset: {} }, addEventListener() {}, querySelectorAll: () => [] }, matchMedia: () => ({ matches: false }), MutationObserver: class { observe() {} }, requestAnimationFrame: () => 0, performance: { now: () => 0 }, addEventListener() {}, removeEventListener() {}, innerHeight: 800, navigator: {} });
+const U = uw.PFUpgrades;
+t('upgrades: the card rig is the lab\'s spring (stiffness 170 / damping 16 lean, 140 / 14 drag) and settles on its target', /170/.test(up) && /\* 140 - /.test(up) && (() => { const s = U.mk(); s.tx = 0.8; s.ty = -0.4; for (let i = 0; i < 240; i++) U.step(s, 1 / 60); return Math.abs(s.x - 0.8) < 0.01 && Math.abs(s.y + 0.4) < 0.01 && Math.abs(s.vx) < 0.01; })());
+t('upgrades: the card keeps its crest top-right, its avatar (or silhouette), the tier colours and gets small dim stats with room between them', /\.crestm/.test(upc) && /\.stats\{opacity:\.66/.test(upc) && /gap:calc\(var\(--s\)\*7px\) 0/.test(upc) && /t-silver\{--upg/.test(upc) && /dark\{--upg/.test(upc));
+t('upgrades: the layers are the lab\'s (foil, soft highlight, breathing glow, sweeping shine, moving shadow) each reading the one tilt value', ['up-foil', 'up-spec', 'up-glow', 'up-shine', 'up-shadow', 'up-sweep'].every((c) => upc.includes(c)) && /--sx/.test(upc) && /--mag/.test(upc) && /3\.2s/.test(upc) && /4\.2s/.test(upc));
+t('upgrades: a card is still a link (a tap follows it, a drag of 6px or more does not) and vertical scrolling still works', /s\.moved >= 6/.test(up) && /touch-action:pan-y/.test(upc) && /preventDefault/.test(up));
+t('upgrades: quiet (c) leans less and drops the foil colours; the buttons ripple only in b', /--upk:\.5/.test(upc) && /0\.55 : 1/.test(up) && /=== 'b'/.test(up) && /data-st-buttonfx=c\] \.btn:after/.test(upc));
+t('upgrades: loaded after the studio on every page', ui.indexOf('upgrades.css') > ui.indexOf('themestudio.css') && /upgrades\.js/.test(ui));
+
+// ---- the live demo (the editor shows changes on a demo first, with pictures for every look)
+const demoPage = rd('next/static/themedemo.html');
+t('demo: a demo page drawn by the real stylesheets holds every component the studio edits, and the card rig', B.COMPONENTS.every((c) => c === 'buttonfx' || new RegExp('data-demo="' + c + '"').test(demoPage)) && /href="style\.css"/.test(demoPage) && /themestudio\.css/.test(demoPage) && /upgrades\.js/.test(demoPage) && /PFDemo/.test(demoPage));
+t('demo: it never loads the editor or the saved look, so it cannot change the site or open another editor', !/themeeditor/.test(demoPage) && /nostudio/.test(editor));
+t('demo: edits go to the demo first; the page behind changes only when "Also on the page" is on, or on Save', /const site = \(\) => \{ if \(S\.onpage\)/.test(editor) && /const live = \(\) => \{ clean\(\); site\(\); demo\(\)/.test(editor) && /data-onpage/.test(editor));
+t('demo: every component shows its three looks as pictures (live demo tiles), tapping a picture picks it', /class="tse-tile/.test(editor) && /data-look=/.test(editor) && /tse-pick/.test(editor) && /\.tse-tile iframe/.test(ecss));
+t('demo: closing the editor puts the page back to the saved look', /S\.onpage\) T\.preview\(T\.config\)/.test(editor));
 
 // ---- wiring
 t('pages: every page loads the look in <head> before paint and the editor after the owner button', /themestudio\.css/.test(ui) && /themeeditor\.css/.test(ui) && ui.indexOf('themestudio.js') < ui.indexOf('fxconfig.js') && ui.indexOf('themeeditor.js') > ui.indexOf('ownerfab.js'));

@@ -12,7 +12,7 @@ export const FONTS = ['inherit', 'Inter', 'Oswald', 'Poppins', 'Montserrat', 'Sp
 export const FONT_TOKENS = ['fontDisplay', 'fontBody'];
 // number tokens: [min, max]
 export const NUM_TOKENS = { radius: [0, 40], blur: [0, 40], border: [0, 4], glowSize: [0, 60], shadow: [0, 100], space: [80, 130], text: [85, 125] };
-export const COMPONENTS = ['button', 'card', 'badge', 'chip', 'nav', 'dock', 'input', 'heading', 'table', 'icon', 'divider', 'toggle'];
+export const COMPONENTS = ['button', 'card', 'badge', 'chip', 'nav', 'dock', 'input', 'heading', 'table', 'icon', 'divider', 'toggle', 'playercard', 'buttonfx'];
 export const VARIANTS = ['a', 'b', 'c'];
 export const OFF = ['glow', 'shine', 'shadows', 'gradients', 'blur', 'textglow', 'embers', 'badgepulse', 'hoverlift', 'borders'];
 export const MOTION = [

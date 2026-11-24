@@ -6,7 +6,7 @@
 .tse-btn:focus-visible{outline:2px solid var(--t-acc);outline-offset:3px}
 .tse.on .tse-btn{border-color:var(--t-acc)}
 @media(min-width:861px){.tse-btn{bottom:16px}}
-.tse-panel{position:fixed;z-index:9977;left:0;right:0;bottom:0;max-height:min(78vh,760px);display:flex;flex-direction:column;background:var(--t-bg);color:var(--t-tx);border:1px solid var(--t-line);border-bottom:0;border-radius:22px 22px 0 0;-webkit-backdrop-filter:blur(24px) saturate(1.1);backdrop-filter:blur(24px) saturate(1.1);font:450 14px/1.4 Inter,system-ui,sans-serif;animation:tseUp .3s cubic-bezier(.2,.9,.2,1)}
+.tse-panel{position:fixed;z-index:9977;left:0;right:0;bottom:0;max-height:min(92vh,860px);display:flex;flex-direction:column;background:var(--t-bg);color:var(--t-tx);border:1px solid var(--t-line);border-bottom:0;border-radius:22px 22px 0 0;-webkit-backdrop-filter:blur(24px) saturate(1.1);backdrop-filter:blur(24px) saturate(1.1);font:450 14px/1.4 Inter,system-ui,sans-serif;animation:tseUp .3s cubic-bezier(.2,.9,.2,1)}
 .tse-panel[hidden]{display:none}
 @media(min-width:700px){.tse-panel{left:16px;right:auto;bottom:16px;width:min(560px,calc(100vw - 32px));border-bottom:1px solid var(--t-line);border-radius:22px}}
 @keyframes tseUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
@@ -41,4 +41,27 @@
 .tse-s{flex:1 1 100%;min-width:0;color:var(--t-mu);font-size:12.5px}
 .tse-b{flex:1 1 auto;min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--t-line);background:transparent;color:var(--t-tx);font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
 .tse-b.pri{background:var(--t-tx);color:#101114;border-color:transparent}.tse-b:disabled{opacity:.4;cursor:not-allowed}
+/* the live demo (stage) and the picture tiles */
+.tse-hd{flex:none}.tse-ft{flex:none}
+.tse-stage{flex:none;position:relative;margin:0 12px 6px;border:1px solid var(--t-line);border-radius:16px;overflow:hidden;background:#0b0c0f}
+.tse-stage iframe{display:block;width:100%;height:130px;transition:height .2s;border:0;background:#0b0c0f}
+.tse-stage[data-off] iframe{height:0;min-height:0}
+.tse-sb{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;padding:4px 10px;border-top:1px solid var(--t-line);background:rgba(255,255,255,.04);font-size:12px;color:var(--t-mu)}
+.tse-stage[data-off] .tse-sb{border-top:0}
+.tse-sb>span{flex:1 1 140px;min-width:0}
+.tse-chip.sm{min-height:34px;padding:0 10px;font-size:12px}
+.tse-pc{border:1px solid var(--t-line);border-radius:14px;background:var(--t-fill);overflow:hidden}
+.tse-pc.open{border-color:rgba(157,183,232,.45)}
+.tse-ph{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;padding:0 14px;border:0;background:transparent;color:var(--t-tx);font:600 14px Inter,system-ui,sans-serif;cursor:pointer;text-align:left}
+.tse-ph em{font-style:normal;font-weight:500;font-size:12px;color:var(--t-mu)}
+.tse-tiles{display:grid;gap:8px;padding:0 10px 10px}
+.tse-tile{position:relative;border:2px solid var(--t-line);border-radius:14px;overflow:hidden;background:#0b0c0f}
+.tse-tile.sel{border-color:var(--t-acc)}
+.tse-tile iframe{display:block;width:100%;height:104px;border:0;pointer-events:none}
+.tse-tiles[data-k=playercard] iframe{height:250px}.tse-tiles[data-k=dock] iframe,.tse-tiles[data-k=table] iframe{height:132px}.tse-tiles[data-k=card] iframe{height:150px}
+.tse-pick{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-start;padding:0;border:0;background:transparent;cursor:pointer}
+.tse-pick span{margin:8px;padding:5px 11px;border-radius:99px;background:rgba(10,10,12,.82);color:var(--t-tx);font:600 12px Inter,system-ui,sans-serif}
+.tse-tile.sel .tse-pick span{background:var(--t-acc);color:#101114}
+.tse-pick:focus-visible{outline:2px solid var(--t-acc);outline-offset:-4px}
+@media(min-width:700px){.tse-tiles{grid-template-columns:repeat(3,1fr)}.tse-tile iframe{height:132px}.tse-tiles[data-k=playercard] iframe{height:250px}}
 @media(prefers-reduced-motion:reduce){.tse *{animation:none!important;transition:none!important}}
