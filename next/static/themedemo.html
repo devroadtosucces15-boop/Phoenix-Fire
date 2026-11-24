@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="widgets.css"><link rel="stylesheet" href="fx.css"><link rel="stylesheet" href="motion.css"><link rel="stylesheet" href="themes.css">
 <link rel="stylesheet" href="header.css"><link rel="stylesheet" href="dock.css"><link rel="stylesheet" href="fxmotion.css"><link rel="stylesheet" href="forms.css"><link rel="stylesheet" href="tables.css"><link rel="stylesheet" href="chips.css">
-<link rel="stylesheet" href="ccui.css"><link rel="stylesheet" href="themestudio.css"><link rel="stylesheet" href="upgrades.css">
+<link rel="stylesheet" href="ccui.css"><link rel="stylesheet" href="notices.css"><link rel="stylesheet" href="dialogs.css"><link rel="stylesheet" href="themestudio.css"><link rel="stylesheet" href="upgrades.css">
 <style>
 /* The Theme Studio's live demo: the same classes the real pages use, so the real stylesheets draw it. Only layout lives here. */
 html,body{min-height:0;height:auto}
@@ -36,7 +36,7 @@ body::before,body::after{display:none}
 .dm table{border-collapse:collapse;min-width:240px}
 .dm td,.dm th{padding:7px 12px;font-size:13px;text-align:left}
 .dm input{width:200px;max-width:100%}
-.dm .tabbar{display:flex;position:static;width:300px;max-width:100%;margin:0;transform:none;justify-content:space-around;padding:8px 6px}
+.dm .tabbar{display:flex;position:relative;width:300px;max-width:100%;margin:0;transform:none;justify-content:space-around;padding:8px 6px}
 .dm .tabbar a{display:grid;place-items:center;gap:2px;padding:6px 10px;font:600 11px Inter,sans-serif;color:var(--soft,#9aa1ab);text-decoration:none}
 .dm .tabbar a.on{color:#fff}
 .dm .pc-card{margin:0 auto}
@@ -62,6 +62,9 @@ body::before,body::after{display:none}
   <section data-demo="dock" class="wide"><nav class="tabbar" aria-label="Sample dock"><a class="on" href="#" onclick="return false"><span>🛡️</span>Club</a><a href="#" onclick="return false"><span>⚽</span>Matches</a><a href="#" onclick="return false"><span>📊</span>Stats</a><a href="#" onclick="return false"><span>🧠</span>Tactics</a></nav></section>
   <section data-demo="tilefx"><div class="row"><div class="tile" style="padding:14px;min-width:96px"><b>Squad</b><p class="muted">24 players</p></div><div class="tile" style="padding:14px;min-width:96px"><b>Rush</b><p class="muted">3 queued</p></div><label class="cc-sw"><input type="checkbox" checked aria-label="Sample switch"><span></span></label><button class="chip on" type="button">Goals</button><button class="chip" type="button">Assists</button></div></section>
   <section data-demo="statusfx"><div class="row"><button class="bell hdr-bellp" type="button" aria-label="Bell" style="border:0;color:inherit;cursor:pointer">🔔<i class="nb hdr-n">3</i></button><span class="flame" style="font-size:26px">🔥</span><button class="chip" type="button" data-plus>+1 count</button></div></section>
+  <section data-demo="dockfx" class="wide"><nav class="tabbar" aria-label="Sample dock"><a class="on" href="#" onclick="return false"><span class="tbi">🛡️</span>Club</a><a href="#" onclick="return false"><span class="tbi">⚽</span>Matches</a><a href="#" onclick="return false"><span class="tbi">📊</span>Stats</a><a href="#" onclick="return false"><span class="tbi">🧠</span>Tactics</a></nav><p class="muted" style="text-align:center;margin-top:8px">Tap a tab.</p></section>
+  <section data-demo="overlayfx"><div class="row"><button class="btn gold" type="button" data-pop="toast">Show a toast</button><button class="btn ghost" type="button" data-pop="dialog">Open a dialog</button></div></section>
+  <section data-demo="vizfx"><div class="wx"><div class="tbl" style="width:260px"><div class="bar"><i style="--w:86%"></i></div><div class="bar" style="margin-top:8px"><i style="--w:64%"></i></div><div class="bar" style="margin-top:8px"><i style="--w:72%"></i></div></div><div class="formrow" style="margin-top:12px"><span class="fo W">W</span><span class="fo W">W</span><span class="fo D">D</span><span class="fo W">W</span><span class="fo L">L</span></div><div class="tile ring" style="--p:.72;margin-top:6px"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="32"/><circle class="v" cx="42" cy="42" r="32"/></svg><b>72%</b></div><button class="chip" type="button" data-replay>Replay</button></div></section>
   <section data-demo="playercard"><div class="pc pc-card t-gold tilt" style="--s:0.62" data-k="demo" data-pos="MID" role="img" aria-label="Sample player card"><span class="shell"></span><div class="art"><svg class="fb" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice"><path class="sil" d="M50 14c-9 0-16 8-16 18 0 8 4 14 9 17-14 3-27 12-30 27v8h74v-8c-3-15-16-24-30-27 5-3 9-9 9-17 0-10-7-18-16-18z"/><text class="num" x="50" y="97" text-anchor="middle">PY</text></svg></div><span class="ovr">85</span><span class="pos">MID</span><span class="crestm"><img src="crest.png" alt=""></span><span class="name">PYRAMIND</span><span class="arch">Maestro</span><span class="stats"><div><b class="num">10</b><span>GLS</span></div><div><b class="num">11</b><span>AST</span></div><div><b class="num">7.1</b><span>RAT</span></div><div><b class="num">83%</b><span>PAS</span></div><div><b class="num">57%</b><span>TKL</span></div><div><b class="num">55</b><span>GP</span></div></span><span class="glare"></span><span class="gloss"><i></i></span></div></section>
 </main>
 <script src="themestudio.js"></script>
@@ -71,7 +74,7 @@ body::before,body::after{display:none}
 (() => {
   const main = document.getElementById('main'), q = new URLSearchParams(location.search);
   const ALL = ['divider', 'heading', 'button', 'chip', 'badge', 'input', 'nav', 'card', 'stats'];
-  const MORE = { button: ['button'], buttonfx: ['button'], tilefx: ['tilefx'], statusfx: ['statusfx'], playercard: ['playercard'], dock: ['dock'], table: ['table'], toggle: ['toggle'], icon: ['icon'], nav: ['nav'], badge: ['badge'], chip: ['chip'], input: ['input'], card: ['card', 'stats'], heading: ['heading'], divider: ['divider'] };
+  const MORE = { button: ['button'], buttonfx: ['button'], tilefx: ['tilefx'], statusfx: ['statusfx'], dockfx: ['dockfx'], overlayfx: ['overlayfx'], vizfx: ['vizfx'], playercard: ['playercard'], dock: ['dock'], table: ['table'], toggle: ['toggle'], icon: ['icon'], nav: ['nav'], badge: ['badge'], chip: ['chip'], input: ['input'], card: ['card', 'stats'], heading: ['heading'], divider: ['divider'] };
   const show = (focus) => {
     const list = focus === 'all' || !focus ? null : (MORE[focus] || [focus]);
     main.classList.toggle('all', !list); main.classList.toggle('solo', !!list && q.has('solo'));
@@ -87,6 +90,18 @@ body::before,body::after{display:none}
     replay() { const n = main.cloneNode(true); main.replaceWith(n); setTimeout(rearm, 0); },
   };
   main.addEventListener('click', (e) => { if (e.target.closest('[data-plus]')) { const n = main.querySelector('.nb'); if (n) n.textContent = (+n.textContent || 0) + 1; } });
+  // sample toast and dialog (the real ones come from notices.js and dialogs.js; these use the same classes so the real stylesheets draw them)
+  main.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-pop]'), rp = e.target.closest('[data-replay]'); if (rp) { window.PFDemo.replay(); return; } if (!b) return;
+    if (b.dataset.pop === 'toast') {
+      let box = document.getElementById('ph-notices'); if (!box) { box = document.createElement('div'); box.id = 'ph-notices'; document.body.appendChild(box); }
+      const el = document.createElement('div'); el.className = 'ph-notice ok'; el.innerHTML = '<span class="ph-n-ic">✅</span><span class="ph-n-tx">Lineup saved</span><button type="button" class="ph-n-x" aria-label="Dismiss notice">×</button><i class="ph-n-bar" style="animation:phNoticeBar 2.8s linear forwards"></i>';
+      const kill = () => { el.classList.add('ph-out'); setTimeout(() => el.remove(), 240); }; el.querySelector('.ph-n-x').onclick = (ev) => { ev.stopPropagation(); kill(); }; el.onclick = kill; setTimeout(kill, 2900); box.appendChild(el);
+    } else {
+      const dlg = document.createElement('div'); dlg.className = 'ph-dialog'; dlg.innerHTML = '<div class="ph-dialog-panel"><h3 class="ph-dialog-h">Remove player?</h3><p class="ph-dialog-msg">They stay in the club, only this lineup changes.</p><div class="row"><button class="btn gold" type="button">Remove</button><button class="btn ghost" type="button">Cancel</button></div></div>';
+      dlg.addEventListener('click', (ev) => { if (ev.target === dlg || ev.target.closest('.btn')) dlg.remove(); }); document.body.appendChild(dlg);
+    }
+  });
   show(q.get('focus') || 'all');
 })();
 </script>

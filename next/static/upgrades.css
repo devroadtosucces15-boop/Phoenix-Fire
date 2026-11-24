@@ -78,3 +78,50 @@ html[data-motion=off][data-st-statusfx] :is(.up-ring,.up-pop,.up-roll){animation
 html[data-st-statusfx=c] .up-ring{animation-duration:.5s}
 html[data-st-statusfx=c] .up-pop{animation-name:upPopQ}
 @keyframes upPopQ{50%{transform:scale(1.15)}}
+
+/* ---------- dock and tab bar (lab family F): a gliding pill, a hopping icon, a springy ring, a swelling dial item ---------- */
+html[data-st-dockfx] .tabbar .up-pill{position:absolute;pointer-events:none;z-index:0;border-radius:16px;background:linear-gradient(180deg,rgba(239,207,122,.3),rgba(239,207,122,.08));box-shadow:0 0 14px rgba(232,101,26,.28);will-change:transform}
+html[data-st-dockfx] .tabbar a:not(.key){z-index:1}
+html[data-st-dockfx] .tabbar a:not(.key).on{background:none;box-shadow:none;border-color:transparent}
+html[data-st-dockfx=b] .dk-di{transition:scale .22s cubic-bezier(.2,1.15,.3,1)}
+html[data-st-dockfx=b] .dk-di.on{scale:1.18}
+html[data-st-dockfx=c] .dk-di.on{scale:1.08}
+html[data-st-dockfx] .dk-ring.pressed{scale:.9}
+html[data-st-dockfx] .dk-ring .dk-bar{transition:stroke-dashoffset .6s cubic-bezier(.2,.8,.2,1)}
+@media(prefers-reduced-motion:reduce){html[data-st-dockfx] :is(.dk-di,.dk-ring .dk-bar){transition:none}html[data-st-dockfx] .tabbar .up-pill{display:none}html[data-st-dockfx] .tabbar a:not(.key).on{background:linear-gradient(180deg,rgba(239,207,122,.42),rgba(239,207,122,.12) 62%,rgba(0,0,0,.14))}}
+html[data-motion=off][data-st-dockfx] :is(.dk-di,.dk-ring .dk-bar){transition:none}
+html[data-motion=off][data-st-dockfx] .tabbar .up-pill{display:none}
+html[data-motion=off][data-st-dockfx] .tabbar a:not(.key).on{background:linear-gradient(180deg,rgba(239,207,122,.42),rgba(239,207,122,.12) 62%,rgba(0,0,0,.14))}
+
+/* ---------- dialogs, sheets, toasts (lab family I): no blur behind a dialog, springy toasts and sheets, flick to dismiss ---------- */
+html[data-st-overlayfx] .ph-dialog{backdrop-filter:none;background:rgba(10,7,5,.78)}
+html[data-st-overlayfx=b] .ph-notice{animation:upToastIn .42s cubic-bezier(.2,1.15,.3,1) both;touch-action:pan-y}
+html[data-st-overlayfx=c] .ph-notice{animation:upToastIn .3s cubic-bezier(.2,.8,.2,1) both;touch-action:pan-y}
+html[data-st-overlayfx] .ph-notice.up-drag{animation-play-state:paused;transition:none}
+html[data-st-overlayfx] .ph-notice.up-drag .ph-n-bar{animation-play-state:paused}
+html[data-st-overlayfx=b] .ph-notice:not(:last-child){scale:.96}
+@media(max-width:820px){html[data-st-overlayfx=b] .br-modal>.br-sheet{animation:upSheetIn .48s cubic-bezier(.2,1.15,.3,1) both}html[data-st-overlayfx=c] .br-modal>.br-sheet{animation:upSheetIn .3s cubic-bezier(.2,.8,.2,1) both}}
+@keyframes upToastIn{from{opacity:0;transform:translate3d(0,24px,0) scale(.9)}}
+@keyframes upSheetIn{from{transform:translate3d(0,100%,0)}}
+@media(prefers-reduced-motion:reduce){html[data-st-overlayfx] :is(.ph-notice,.br-modal>.br-sheet){animation-duration:.01s}}
+html[data-motion=off][data-st-overlayfx] :is(.ph-notice,.br-modal>.br-sheet){animation-duration:.01s}
+
+/* ---------- charts and numbers (lab family K): bars reveal without re-laying out, the ring eases out, orbs pop in a cascade, a dot draws the line ---------- */
+html[data-st-vizfx=b] .wx .tbl .bar i{animation:upBar .9s cubic-bezier(.2,.8,.2,1) both}
+html[data-st-vizfx=c] .wx .tbl .bar i{animation:upBar .5s cubic-bezier(.2,.8,.2,1) both}
+html[data-st-vizfx] .wx .tile.ring .v{animation-duration:1.2s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+html[data-st-vizfx] .wx .fo{animation:upOrb .42s cubic-bezier(.2,.8,.2,1) both}
+html[data-st-vizfx] .wx .fo:nth-child(1){animation-delay:.3s!important}
+html[data-st-vizfx] .wx .fo:nth-child(2){animation-delay:.36s!important}
+html[data-st-vizfx] .wx .fo:nth-child(3){animation-delay:.42s!important}
+html[data-st-vizfx] .wx .fo:nth-child(4){animation-delay:.48s!important}
+html[data-st-vizfx] .wx .fo:nth-child(5){animation-delay:.54s!important}
+html[data-st-vizfx] .wx .fo:nth-child(n+6){animation-delay:.6s!important}
+html[data-st-vizfx] .up-dot{position:absolute;left:0;top:0;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 10px #efcf7a;pointer-events:none;opacity:0}
+html[data-st-vizfx=c] .wx .fo{animation-name:upOrbQ}
+@keyframes upBar{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes upOrb{0%{opacity:0;transform:scale(0)}60%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:scale(1)}}
+@keyframes upOrbQ{from{opacity:0;transform:scale(.6)}}
+@media(prefers-reduced-motion:reduce){html[data-st-vizfx] :is(.wx .tbl .bar i,.wx .fo,.wx .tile.ring .v){animation-duration:.01s;animation-delay:0s!important}html[data-st-vizfx] .up-dot{display:none}}
+html[data-motion=off][data-st-vizfx] :is(.wx .tbl .bar i,.wx .fo,.wx .tile.ring .v){animation-duration:.01s;animation-delay:0s!important}
+html[data-motion=off][data-st-vizfx] .up-dot{display:none}

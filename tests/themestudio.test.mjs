@@ -87,6 +87,14 @@ t('lab N+S: every upgrade rule for them hangs on a data-st attribute (nothing ap
 t('lab N+S: the demo page has a section for each, and the editor names them', /data-demo="tilefx"/.test(rd('next/static/themedemo.html')) && /data-demo="statusfx"/.test(rd('next/static/themedemo.html')) && /tilefx:/.test(editor) && /statusfx:/.test(editor));
 t('lab N+S: the rig follows the new attributes', /data-st-tilefx/.test(up) && /data-st-statusfx/.test(up));
 
+// ---- lab families F, I and K: dock, dialogs/toasts, charts
+const FIK = ['dockfx', 'overlayfx', 'vizfx'];
+t('lab F+I+K: dockfx, overlayfx and vizfx are components in the bot list and the loader', ["bot/themestudio.js", "next/static/themestudio.js"].every((f) => /'dockfx', 'overlayfx', 'vizfx'/.test(rd(f))));
+t('lab F+I+K: every upgrade rule for them hangs on a data-st attribute (nothing applies until picked)', upc.split('\n').filter((l) => /(dockfx|overlayfx|vizfx|up-pill|up-dot)/.test(l) && /\{/.test(l) && !/^\s*\/\*/.test(l)).every((l) => /^html\[data-st-(dockfx|overlayfx|vizfx)|^@keyframes|^@media|^\s*html\[data-motion=off\]\[data-st-/.test(l)));
+t('lab F+I+K: the demo page has a section for each, and the editor names them', FIK.every((c) => new RegExp(`data-demo="${c}"`).test(rd('next/static/themedemo.html')) && new RegExp(`${c}:`).test(editor)));
+t('lab F+I+K: the rig follows the new attributes and honours reduced motion', FIK.every((c) => new RegExp(`data-st-${c}`).test(up)) && FIK.every((c) => new RegExp(`prefers-reduced-motion[^\\n]*data-st-${c}|data-motion=off\\]\\[data-st-${c}`).test(upc)));
+t('lab F+I+K: they use the real site selectors (tabbar, dk-ring, ph-notice, ph-dialog, wave)', /\.tabbar/.test(upc) && /\.dk-ring/.test(upc) && /\.ph-notice/.test(upc) && /\.ph-dialog/.test(upc) && /\.wx \.tbl \.bar/.test(upc) && /\.ph-dialog/.test(up) && /\.wave/.test(up));
+
 // ---- wiring
 t('pages: every page loads the look in <head> before paint and the editor after the owner button', /themestudio\.css/.test(ui) && /themeeditor\.css/.test(ui) && ui.indexOf('themestudio.js') < ui.indexOf('fxconfig.js') && ui.indexOf('themeeditor.js') > ui.indexOf('ownerfab.js'));
 t('control center: the effects card moved into the studio (Control Center no longer draws it)', !/'streams', 'effects', 'points'\]/.test(ccs));
