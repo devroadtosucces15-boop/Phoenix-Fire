@@ -79,4 +79,16 @@ await tt('autocomplete returns choices', async () => { const r = await send({ ty
 await tt('insight opponent autocomplete lists h2h clubs by id', async () => { const h = JSON.parse(fs.readFileSync(ROOT + 'site/api/h2h.json', 'utf8')); const r = await send({ type: 4, data: { name: 'insight', options: [{ name: 'opponent', value: h[0].n.slice(0, 3).toLowerCase(), focused: true }] } }); const c = r.d.data.choices; return r.d.type === 8 && c.length > 0 && c.length <= 25 && c.some((x) => x.value === String(h[0].o)); });
 t('register.mjs gives /insight an autocomplete opponent option', /name: 'opponent', description: 'Head to head[^\n]*autocomplete: true/.test(fs.readFileSync(ROOT + 'bot/commanddefs.js', 'utf8')));
 t('unknown interaction type → 400', (await send({ type: 99 })).s === 400);
+// /compare text fallback fits a phone, and /player never repeats the event data as text (it is drawn into the card)
+await tt('/compare fallback is a design-system panel (no code block) with the event data baked in', async () => {
+  const d = await cmd('compare', [{ name: 'player1', value: players[0].n }, { name: 'player2', value: players[1].n }]);
+  const raw = JSON.stringify(d), txt = plainText(d);
+  if (/cmp-.*\.png/.test(raw)) return true; // the drawn card is shipped for this pair
+  const withEv = players[0].i && players[1].i;
+  return !raw.includes('```') && /Season/i.test(txt) && (!withEv || /From the event data/i.test(txt));
+});
+await tt('/player has no event data as text, only the card and an insight', async () => {
+  const txt = plainText(await cmd('player', [{ name: 'gamertag', value: players[0].n }]));
+  return !/From the event data|Interceptions \d|Forward passes \d|possession won \d|aerials \d|in position \d/i.test(txt);
+});
 done();
