@@ -21,7 +21,7 @@ import { eventJobs, checkinBanner } from './cards-events.mjs'; // match-night pi
 import { playerBreakdown, trend } from './lib/playerinsight.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-export const TEMPLATE_VERSION = 20; // bump to redraw every card after a template change
+export const TEMPLATE_VERSION = 21; // bump to redraw every card after a template change
 // ONE format for every picture in a match post sequence (the match board, the field view, the review): same width, same height, same margins, same
 // header. Discord scales a tall picture down to fit, so pictures of different heights come out at different widths and look misaligned; a fixed canvas
 // keeps them identical in the post. Bump TEMPLATE_VERSION (and BANNER_V in bot/ui.js) with any change here.
@@ -512,7 +512,7 @@ const GENERIC_BUST = (h = 200) => `<svg viewBox="0 0 200 232" width="${Math.roun
 export function matchPicture(mp, club, faces = new Map(), part = 'board') {
   const TONE = { good: '#4be08a', even: '#efcf7a', bad: '#ff7d72' };
   // Stat meter: an inline donut with the number in the middle, one per team, no card behind it.
-  const donut = (frac, color, label) => ring(frac, color, label, 70, String(label).includes('%') ? 19 : 23);
+  const donut = (frac, color, label) => ring(frac, color, label, 92, String(label).includes('%') ? 25 : 30);
   const row = (r) => {
     const d = r.a - r.b, tol = r.tol ?? 0, tone = Math.abs(d) <= tol ? 'even' : (r.lower ? d < 0 : d > 0) ? 'good' : 'bad';
     const frac = (v) => (r.kind === 'pct' ? v / 100 : r.kind === 'rate' ? v / 10 : v / ((r.a + r.b) || 1));
@@ -612,10 +612,16 @@ body:before{background:radial-gradient(900px 420px at 82% -10%,rgba(232,101,26,.
   if (part === 'fieldparts') return { css, fv: fvHtml.slice(0, fvHtml.indexOf('<div class="fkey">')) + '</div>' }; // the field view alone, for the match review
   // The board is landscape (2 × POST.W): header and score across the top. Below, goals and assists + the man of the match on the left, and ONE stats
   // column on the right: two teams only (ours | theirs), the main stats and then the deeper stats stacked under them, so no stat ever moves to a third or fourth column.
-  const wide = `body{width:${POST.BOARD_W}px}.bd{display:grid;grid-template-columns:900px 1fr;gap:0 70px;flex:1 1 auto;padding:10px 40px 0}.bd .lcol{display:flex;flex-direction:column;justify-content:flex-start;gap:30px}.bd .lcol .gm{margin:0!important;display:flex;flex-direction:column;gap:26px;min-height:0!important;border-top:2px solid rgba(255,255,255,.1)}.bd .lcol .gl{padding-right:0}.bd .lcol .mo{border-left:0;border-top:2px solid rgba(239,207,122,.4);padding:26px 0 0;min-height:230px}.bd .lcol .bw{right:20px}.bd .rcol{display:flex;flex-direction:column}.bd .st{margin:0!important;display:flex;flex-direction:column;flex:1 1 auto}.bd .st .sr{height:112px!important;flex:none!important;max-height:none!important}.bd .sh{height:84px}.bd .st .key{margin-top:auto}.mid b{font-size:230px!important}.srow{grid-template-columns:1fr 560px 1fr!important}`;
+  // The board is landscape (2 × POST.W) and flows top to bottom at full width: header and score, then goals and assists beside the man of the match,
+  // then ONE stats table (ours | stat | theirs) with the main stats and the deeper stats stacked under it. Larger rings and text so it reads on a phone.
+  const wide = `body{width:${POST.BOARD_W}px}.ph{padding:26px 80px 0}.srow{grid-template-columns:1fr 640px 1fr!important}.mid b{font-size:200px!important}
+.gm{margin:20px 80px 0!important;grid-template-columns:1fr 760px!important}.cr{height:60px}.cr b{font-size:34px}.gl .legend{font-size:26px}
+.st{margin:18px 80px 0!important}.st .sr,.sh{grid-template-columns:1fr 700px 1fr!important}.st .sr{height:150px!important}.sh{height:84px}
+.dc{flex-direction:row!important}.sm span{font-size:32px!important}.chipd{font-size:32px!important;padding:6px 16px 4px!important}.sm{gap:10px!important}
+.dsub{padding:20px 0 4px}.dsub b{font-size:26px}.dnote{font-size:24px}.key{font-size:26px}`;
   const iG = boardHtml.indexOf('<div class="gm">'), iS = boardHtml.indexOf('<div class="st">');
   const sbHtml = boardHtml.slice(0, iG), gmHtml = boardHtml.slice(iG, iS), stHtml = boardHtml.slice(iS);
-  return postPage(part === 'pitch' ? css : css + wide, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${sbHtml}<div class="bd"><div class="lcol">${gmHtml}</div><div class="rcol">${stHtml}</div></div>`);
+  return postPage(part === 'pitch' ? css : css + wide, part === 'pitch' ? `${pitchHead}${linesHtml}${fvHtml}${ratings}<div class="fill"></div>` : `${sbHtml}${gmHtml}${stHtml}<div class="fill"></div>`);
 }
 
 // ---------- what gets drawn, and the manifest the bot reads ----------

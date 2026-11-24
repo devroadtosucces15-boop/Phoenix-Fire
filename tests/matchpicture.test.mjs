@@ -89,4 +89,9 @@ globalThis.fetch = realFetch;
 
 // Phoenix branding rule: no NOREX name, colour or crest in what this draws; the accent is Phoenix orange.
 t('drawn output has no NOREX name or colour', !/norex|#c8352c|#080b11|#e0493f|200,\s*53,\s*44/i.test(html) && /232,101,26|#e8651a|#ff8a3d/i.test(html));
+// A friendly is a friendly on the board, and a 1–0 in a friendly (EA sends no wins/losses flags) is a win, never "League" or "Draw".
+const fr = { ...match(), matchType: 'friendlyMatch', clubs: { 100: { goals: '1', goalsAgainst: '0', name: 'PHOENIX FIRE' }, 200: { goals: '0', goalsAgainst: '1', name: 'Rivals' } } };
+t('a friendly board says Friendly and a 1–0 is a Win', buildMatchPicture(fr, '100').mode === 'Friendly' && buildMatchPicture(fr, '100').res === 'W' && /FRIENDLY|Friendly/.test(matchPicture(buildMatchPicture(fr, '100'), { name: 'PHOENIX FIRE' }, new Map(), 'board')));
+t('the result post takes the result from the score when EA sends no win/loss flag', /num\(us\.goals\) > num\(opp\.goals\) \? 'W'/.test(fs.readFileSync(new URL('../scripts/lib/resultpost.mjs', import.meta.url), 'utf8')));
+t('the board is one full-width flow: no side column, bigger rings', (() => { const h = matchPicture(buildMatchPicture(match(), '100'), { name: 'PHOENIX FIRE' }, new Map(), 'board'); return !h.includes('class="bd"') && h.includes('.st .sr{height:150px!important}'); })());
 done();

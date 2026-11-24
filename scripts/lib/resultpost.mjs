@@ -62,7 +62,8 @@ export async function postResults(matches, { config, homeId, orgIds = [homeId], 
       const oppId = Object.keys(m.clubs).find((k) => k !== src);
       const opp = m.clubs[oppId];
       const oppName = opp.details?.name ?? opp.name ?? oppId; // EA sometimes omits details – never show the bare club ID if a name exists
-      const res = us.wins === '1' ? 'W' : us.losses === '1' ? 'L' : 'D';
+      // EA sends no wins/losses flags for friendlies, so a missing flag must not turn a 1–0 into a draw: fall back to the score.
+      const res = us.wins === '1' ? 'W' : us.losses === '1' ? 'L' : num(us.goals) > num(opp.goals) ? 'W' : num(us.goals) < num(opp.goals) ? 'L' : 'D';
       const ourIds = Object.entries(m.players?.[src] || {}).filter(([pid, p]) => !hide.has(pid.toLowerCase()) && !hide.has(String(p.playername).toLowerCase()));
       const ours = ourIds.map(([, p]) => p);
       const list = (f) => ours.filter((p) => num(p[f]) > 0).map((p) => `${p.playername}${num(p[f]) > 1 ? ` ×${p[f]}` : ''}`).join('\n');
