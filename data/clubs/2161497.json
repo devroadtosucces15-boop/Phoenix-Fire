@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-24T23:20:41.398Z",
+ "fetchedAt": "2026-11-24T23:30:40.069Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -769,12 +769,12 @@
   {
    "name": "Der_Synnlos",
    "proPos": "25",
-   "gamesPlayed": "150",
+   "gamesPlayed": "151",
    "goals": "11",
    "assists": "11",
    "manOfTheMatch": "6",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "forward"
   },
   {
@@ -906,6 +906,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-24T23:20:41.398Z"
+  "fetchedAt": "2026-11-24T23:30:40.069Z"
  }
 }
