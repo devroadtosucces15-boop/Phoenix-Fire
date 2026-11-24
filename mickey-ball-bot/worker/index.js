@@ -5,6 +5,7 @@
 import { makeStore, d1Executor } from '../core/store.js';
 import { normalizeMatch, searchHits, crestUrl } from '../core/ea.js';
 import { buildJobs, clubView, streaks, hash } from '../core/data.js';
+import { findSessions, isDue, buildRecap } from '../core/recap.js';
 import { notice, IS_V2, EPHEMERAL } from '../core/ui.js';
 import * as P from '../core/panels.js';
 import { MATCHDAY_COMMANDS, matchdayCommand, eventComponent, lineupJob, lineupDone, zoneAutocomplete, reminders } from './matchday.js';
@@ -252,13 +253,38 @@ async function onIngest(env, st, body) {
     for (const m of matches) await st.saveMatch(c.id, m);
     for (const t of rows) for (const m of fresh.filter((x) => x.ts > t.last_match_ts)) { await st.addOutbox({ guild: t.guild_id, channel: t.channel_id, club: t.club_id, match: m.id }); await st.setLastTs(t.guild_id, t.club_id, m.ts); }
     if (fresh.length) jobs.push(...await buildJobs(st, clubView(rows[0]), fresh));
+    jobs.push(...await recapJobs(st, c.id, rows));
   }
   return json({ ok: true, draw: jobs });
+}
+
+// Ended playing sessions: one recap per (session, server), claimed first so it is never posted twice; its matches picture is drawn, then /flush posts it.
+async function recapJobs(st, clubId, rows) {
+  const now = Math.floor(Date.now() / 1000), jobs = [];
+  const sessions = findSessions(clubId, await st.matchesSince(clubId, now - 24 * 3600)).filter((s) => isDue(s, now));
+  for (const s of sessions) {
+    const r = buildRecap(s);
+    for (const t of rows) if (await st.claimRecap(r.key, t.guild_id, clubId, t.channel_id, r)) {
+      const club = clubView(t), key = `${club.id}/recap-${hash(r)}.png`;
+      jobs.push({ kind: 'recap', ref: r.key, key, club: { id: club.id }, data: { club: { name: club.name, crest: club.crest }, r } });
+    }
+  }
+  return jobs;
+}
+async function postRecaps(env, st) {
+  for (const o of await st.openRecaps()) {
+    const t = (await st.trackedFor(o.guild_id)).find((x) => x.club_id === o.club_id), r = JSON.parse(o.model);
+    if (!t || !o.channel_id) { await st.markRecap(o.key, o.guild_id); continue; }
+    const club = clubView(t), u = urlOf(env, await st.cardMap(club.id));
+    if (!u('recap', r.key) && Date.now() - o.created_at < 2 * 3600_000) continue; // wait for the picture (text fallback after 2 hours)
+    if ((await postChannel(env, o.channel_id, P.recapPanel(env, club, r, u))).ok) await st.markRecap(o.key, o.guild_id);
+  }
 }
 
 // Pictures are in: post what is waiting (a few per call, D1 caps queries per request).
 async function onFlush(env, st) {
   let posted = 0;
+  await postRecaps(env, st).catch((e) => console.error('recaps', e));
   await reminders(env, st).catch((e) => console.error('reminders', e)); // match-day reminders ride the 15-minute poll (the account has no spare cron triggers)
   const rows = (await st.takeOutbox()).slice(0, 6), tracked = await st.allTracked();
   for (const o of rows) {

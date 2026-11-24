@@ -8,6 +8,7 @@ export const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS cards (club_id TEXT NOT NULL, kind TEXT NOT NULL, ref TEXT NOT NULL, key TEXT NOT NULL, ts INTEGER NOT NULL, PRIMARY KEY (club_id, kind, ref))`,
   `CREATE TABLE IF NOT EXISTS blobs (key TEXT PRIMARY KEY, b64 TEXT NOT NULL, ts INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS outbox (id INTEGER PRIMARY KEY AUTOINCREMENT, guild_id TEXT, channel_id TEXT, club_id TEXT NOT NULL, match_id TEXT NOT NULL, created_at INTEGER NOT NULL)`,
+  `CREATE TABLE IF NOT EXISTS recaps (key TEXT NOT NULL, guild_id TEXT NOT NULL, club_id TEXT NOT NULL, channel_id TEXT, model TEXT NOT NULL, posted INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, PRIMARY KEY (key, guild_id))`,
   // match days: scheduled events, who answered, and each person's saved time zone
   `CREATE TABLE IF NOT EXISTS events (id TEXT PRIMARY KEY, guild_id TEXT NOT NULL, channel_id TEXT, message_id TEXT, club_id TEXT, kind TEXT NOT NULL, title TEXT, opponent TEXT, start INTEGER NOT NULL, duration INTEGER NOT NULL DEFAULT 120, tz TEXT, players INTEGER NOT NULL DEFAULT 11, notes TEXT, ping_role TEXT, created_by TEXT, created_at INTEGER NOT NULL, reminded INTEGER NOT NULL DEFAULT 0)`,
   `CREATE TABLE IF NOT EXISTS rsvps (event_id TEXT NOT NULL, user_id TEXT NOT NULL, name TEXT, status TEXT NOT NULL, pos TEXT, checked_in INTEGER NOT NULL DEFAULT 0, at INTEGER NOT NULL, PRIMARY KEY (event_id, user_id))`,
@@ -50,6 +51,11 @@ export function makeStore(x) {
       await x.run(`INSERT OR REPLACE INTO player_lines SELECT ?, ?, json_extract(value,'$.n'), json_extract(value,'$.pos'), json_extract(value,'$.r'), json_extract(value,'$.g'), json_extract(value,'$.a'), json_extract(value,'$.sh'), json_extract(value,'$.pm'), json_extract(value,'$.pa'), json_extract(value,'$.tm'), json_extract(value,'$.ta'), json_extract(value,'$.sv'), json_extract(value,'$.mom'), json_extract(value,'$.ev') FROM json_each(?)`, id(clubId), m.id, lines);
       return ch > 0;
     },
+    matchesSince: async (c, ts) => (await x.all('SELECT data FROM matches WHERE club_id=? AND ts>=? ORDER BY ts', id(c), ts)).map((r) => JSON.parse(r.data)),
+    // session recaps: claimed once per (session, server), posted when their picture is ready
+    claimRecap: (key, g, c, channel, model) => x.run('INSERT OR IGNORE INTO recaps (key, guild_id, club_id, channel_id, model, created_at) VALUES (?,?,?,?,?,?)', key, g, id(c), channel, JSON.stringify(model), Date.now()),
+    openRecaps: () => x.all('SELECT * FROM recaps WHERE posted=0 ORDER BY created_at LIMIT 10'),
+    markRecap: (key, g) => x.run('UPDATE recaps SET posted=1 WHERE key=? AND guild_id=?', key, g),
     async storedMatch(clubId, matchId) { const r = await x.first('SELECT data FROM matches WHERE club_id=? AND match_id=?', id(clubId), id(matchId)); return r ? JSON.parse(r.data) : null; },
     clubTotals: (c) => x.first(`SELECT COUNT(*) gp, SUM(res='W') w, SUM(res='D') d, SUM(res='L') l, SUM(gf) gf, SUM(ga) ga FROM matches WHERE club_id=?`, id(c)),
     recentResults: (c, n = 5) => x.all('SELECT match_id, ts, res, gf, ga, opp_name FROM matches WHERE club_id=? ORDER BY ts DESC LIMIT ?', id(c), n),

@@ -12,6 +12,7 @@ import * as M from '../cards/match.mjs';
 import { buildPicture } from '../core/picture.js';
 import { buildReview } from '../core/review.js';
 import { BOARD_LIST } from '../core/boards.js';
+import { findSessions, isDue, buildRecap } from '../core/recap.js';
 import { commands } from '../core/commands.js';
 import { decodeEvents, boxEv, eventRows, eventSide } from '../core/events.js';
 import { parseWhen, zonedToUtc, validZone } from '../core/when.js';
@@ -266,4 +267,37 @@ test('leaderboards: any stat, picker under the board, a card for each', async ()
   }
   assert.ok((await st.leaderboard('100', 'shots')).rows[0].v > 0); assert.ok((await st.leaderboard('100', 'thru')).rows.length >= 0);
   assert.match(plainText(P.leaderboardPanel(club, 'ints', [], none)), /event counters/);
+});
+
+// ---------- session recap ----------
+const mkAt = (id, minsAgo, gf, ga, opp, evAgg) => normalizeMatch({ ...mk(id, Math.floor(Date.now() / 1000) - minsAgo * 60, gf, ga, opp), players: { 100: { a: withEv(pl('Ana', 'forward', 8 + gf / 10, gf, 0), evAgg), b: withEv(pl('Ben', 'midfielder', 7, 0, gf), evAgg) }, 200: { c: pl('Zed', 'goalkeeper', 6, ga, 0) } } }, '100');
+
+test('sessions: runs of matches with no long gap; due only when over, fresh and long enough', () => {
+  const now = Math.floor(Date.now() / 1000);
+  const ms = [mkAt('s1', 400, 2, 0, 'A'), mkAt('s2', 380, 1, 1, 'B'), mkAt('s3', 200, 3, 1, 'C'), mkAt('s4', 170, 0, 2, 'D'), mkAt('s5', 100, 1, 0, 'E'), mkAt('s6', 80, 2, 0, 'F')];
+  const ss = findSessions('100', ms);
+  assert.deepEqual(ss.map((s) => s.matches.length), [2, 2, 2]); assert.equal(ss[0].key, 'recap:100:s1');
+  assert.deepEqual(ss.map((s) => isDue(s, now)), [false, true, true]); // the oldest is past the 6 h freshness window
+  const live = findSessions('100', [mkAt('l1', 50, 1, 0, 'A'), mkAt('l2', 20, 1, 0, 'B')]); assert.equal(isDue(live[0], now), false); // still going: the last match was 20 min ago
+  assert.equal(isDue(findSessions('100', [mkAt('o1', 100, 1, 0, 'A')])[0], now), false); // one match is not a session
+});
+
+test('recap numbers: record, scorers, best average, man of the match, standout stats, work-ons', () => {
+  const r = buildRecap(findSessions('100', [mkAt('a1', 200, 3, 1, 'Cee', '6:4,110:6,111:12,219:2'), mkAt('a2', 170, 0, 2, 'Dee', '6:5,110:6,111:12,219:2')])[0]);
+  assert.deepEqual([r.w, r.d, r.l, r.gf, r.ga, r.cs, r.count], [1, 0, 1, 3, 3, 0, 2]);
+  assert.equal(r.scorers[0].n, 'Ana'); assert.equal(r.best[0].apps, 2); assert.equal(r.matches[0].oppCrest.includes('l2.png'), true);
+  assert.equal(r.standout.matches, 2); assert.ok(r.standout.lines.some((x) => x.k === 'Interceptions' && x.v >= 8));
+  assert.ok(r.work.length >= 1 && r.work.length <= 3);
+  assert.equal(buildRecap(findSessions('100', [mkAt('b1', 200, 2, 0, 'A'), mkAt('b2', 170, 1, 0, 'B')])[0]).standout, null); // no counters: the stats section says so
+});
+
+test('recap message: banner, header, record facts, matches picture, sections, footer; colour by the night', () => {
+  const r = buildRecap(findSessions('100', [mkAt('c1', 200, 3, 1, 'Cee', '6:4,110:6,111:12,219:2'), mkAt('c2', 170, 2, 0, 'Dee')])[0]);
+  const withCard = P.recapPanel(env, club, r, (k) => (k === 'recap' ? 'https://bot.example/c/recap.png' : null)), t = plainText(withCard);
+  assert.equal(withCard.components[0].accent_color, ACCENT.win); assert.match(t, /2 from 2/); assert.match(t, /SESSION RECAP/); assert.match(t, /Record\*\* 2W 0D 0L/); assert.match(t, /STANDOUT STATS/); assert.match(t, /WHAT TO WORK ON/);
+  assert.ok(images(withCard).some((u) => u.includes('banners/recap'))); assert.ok(images(withCard).includes('https://bot.example/c/recap.png'));
+  assert.match(plainText(P.recapPanel(env, club, r, none)), /✅ \*\*3–1\*\* Cee/); // no picture: the matches as text
+  const lost = { ...r, w: 0, l: 2 }, level = { ...r, w: 1, l: 1 };
+  assert.equal(P.recapPanel(env, club, lost, none).components[0].accent_color, ACCENT.loss); assert.equal(P.recapPanel(env, club, level, none).components[0].accent_color, ACCENT.draw);
+  assert.match(M.recapCard(r, { name: 'Alpha FC', crest: club.crest }), /2 WON, 0 DRAWN, 0 LOST/);
 });

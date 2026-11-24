@@ -180,3 +180,16 @@ ${evHtml}
 ${model.recs.length ? `<div class="sec last">${head('swap', 'Recommendations for the squad')}<div class="rg">${model.recs.map((r) => row(r, 'Try')).join('')}</div></div>` : '<div style="height:34px"></div>'}
 <div class="fill"></div><div class="brand">${esc(name)}</div>`);
 }
+
+// ======================================== 4. the session recap's matches card ========================================
+export function recapCard(r, club) {
+  const name = String(club?.name ?? ''), cnt = r.count;
+  const title = r.w === cnt ? `${cnt} WON, 0 DRAWN, 0 LOST` : `${r.w} WON, ${r.d} DRAWN, ${r.l} LOST`;
+  const row = (m) => `<div class="mr"><span class="pill ${m.res}">${RESULT[m.res].toUpperCase()}</span>${crest(club?.crest, name, 58, true)}<b class="sc osw">${m.gf}–${m.ga}</b>${crest(m.oppCrest, m.opp, 58, false)}
+<span class="op"><b>${esc(m.opp)}</b><small>${m.scorers.length ? m.scorers.map((s) => `${esc(s.n)}${s.g > 1 ? ` ×${s.g}` : ''}`).join(', ') : 'no scorers'}</small></span><span class="rt2"><small>${esc(m.mode.toUpperCase())}</small>${m.motm ? `<em>★ ${esc(m.motm)}</em>` : ''}</span></div>`;
+  return page(`.wrap{padding:36px 44px 64px}.eb2{font:800 20px Inter;letter-spacing:.3em;text-transform:uppercase;color:#7be3bd}h1{font:700 60px/1.05 Oswald;text-transform:uppercase;margin:8px 0 22px}
+.mr{display:grid;grid-template-columns:96px 58px 118px 58px minmax(0,1fr) 250px;align-items:center;column-gap:16px;height:104px;border-top:1px solid rgba(255,255,255,.08)}
+.sc{font-size:54px;text-align:center}.op b{display:block;font:700 34px Inter;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.op small{display:block;font:500 22px Inter;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.rt2{text-align:right}.rt2 small{display:block;font:700 18px Inter;letter-spacing:.2em;color:var(--soft)}.rt2 em{display:block;font:600 24px Inter;font-style:normal;color:var(--g2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pill{font-size:21px;padding:5px 0;text-align:center}`,
+  `<div class="wrap"><div class="eb2">${esc(name)} · Session recap</div><h1>${title}</h1>${r.matches.map(row).join('')}</div><div class="brand">${esc(name)}</div>`);
+}

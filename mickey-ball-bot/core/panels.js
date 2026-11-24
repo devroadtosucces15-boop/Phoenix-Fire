@@ -230,3 +230,30 @@ export function trackedList(env, rows) {
     text(rows.length ? rows.map((r) => `• **${r.name}** \`${r.club_id}\` → <#${r.channel_id}>${r.main ? ' · ⭐ main' : ''}`).join('\n') + '\n\n⭐ main = the club the stat commands use when `club` is empty (`/match main` changes it).' : 'No clubs tracked yet. Use `/match track`.'),
   ] });
 }
+
+// ---------- session recap: one post per playing session, after it ends ----------
+export function recapPanel(env, club, r, u) {
+  const diff = r.gf - r.ga, card = u('recap', r.key);
+  const title = r.w === r.count ? `${r.count} from ${r.count}` : r.l === r.count ? `${r.count} defeats` : `${r.w} won, ${r.d} drawn, ${r.l} lost`;
+  const lines = r.matches.map((m) => `${RESULT_ICON[m.res]} **${m.gf}–${m.ga}** ${m.opp} · ${m.mode}`).join('\n');
+  const perf = r.scorers.map((p) => `${ICON.goal} **${p.n}** ${[p.g && `${p.g} goal${p.g > 1 ? 's' : ''}`, p.a && `${p.a} assist${p.a > 1 ? 's' : ''}`].filter(Boolean).join(', ')}`).join('\n');
+  const best = r.best.map((p) => `**${p.n}** ${p.avg.toFixed(1)} average over ${p.apps}`).join(' · ');
+  const motm = r.motms.map((p) => `${ICON.motm} **${p.n}**${p.c > 1 ? ` ×${p.c}` : ''}`).join(' · ');
+  const stand = r.standout
+    ? [r.standout.lines.map((x) => `**${x.k}** ${x.n} (${x.v}${x.u})`).join('\n'), r.standout.positioning != null ? `Team in position ${r.standout.positioning}% of the time.` : null, `-# From EA's event counters, ${r.standout.matches} of ${r.standout.of} matches.`].filter(Boolean).join('\n')
+    : 'No event counters in this session. EA keeps them only for recent matches, so earlier games cannot be filled in.';
+  return message({ accent: r.w > r.l ? 'win' : r.w === r.l ? 'draw' : 'loss', blocks: [
+    tagBlock(club.name, r.modes.join(' + ')),
+    cards({ url: banner(env, 'recap'), alt: 'Session recap' }),
+    header({ eyebrow: `${club.name} · Session recap`, title, sub: `<t:${r.start}:f> to <t:${r.end}:t> · ${r.count} match${r.count === 1 ? '' : 'es'}` }),
+    facts([['Record', `${r.w}W ${r.d}D ${r.l}L`], ['Goals', `${r.gf}–${r.ga} (${diff >= 0 ? '+' : '−'}${Math.abs(diff)})`], ['Clean sheets', String(r.cs)]]),
+    sep(), label('Matches'), card ? cards({ url: card, alt: 'Every match of the session: result, score, scorers and man of the match' }) : text(lines),
+    r.scorers.length || r.best.length || r.motms.length ? sep() : null,
+    r.scorers.length ? [label('Goals and assists'), text(perf)] : null,
+    r.best.length ? [label('Best average rating'), text(best)] : null,
+    r.motms.length ? [label('Man of the match'), text(motm)] : null,
+    sep(), label('Standout stats'), text(stand),
+    sep(), label('What to work on'), text(r.work.map((x) => `• ${x}`).join('\n')),
+    footer('One recap per session · written from the match numbers'),
+  ] });
+}

@@ -106,3 +106,25 @@ test('reminder: one hour ahead, mentions only people who did not say no, sent on
   assert.ok(m); assert.match(JSON.stringify(m.body.components), /<@a>/); assert.doesNotMatch(JSON.stringify(m.body.components), /<@b>/); assert.deepEqual(m.body.allowed_mentions.users, ['a', 'c']);
   calls.length = 0; await flush(); assert.ok(!calls.find((c) => c.url.endsWith('/channels/chR/messages')));
 });
+
+test('session recap: claimed once when the session ends, drawn, posted once with its picture', async () => {
+  const now = Math.floor(Date.now() / 1000);
+  const raw = (id, minsAgo, gf, ga) => ({ matchId: id, timestamp: now - minsAgo * 60, clubs: { 77: { goals: String(gf), details: { name: 'Zeta FC', customKit: { crestAssetId: '1' } } }, 88: { goals: String(ga), details: { name: `Opp${id}` } } },
+    players: { 77: { a: { playername: 'Ana', pos: 'forward', rating: '8.1', goals: String(gf), assists: '0', shots: '3', passesmade: '10', passattempts: '12', tacklesmade: '1', tackleattempts: '2', mom: '1' } }, 88: { z: { playername: 'Zed', pos: 'goalkeeper', rating: '6.0', goals: String(ga) } } } });
+  db.prepare("INSERT INTO tracked (guild_id, club_id, name, crest, channel_id, added_at, last_match_ts, main) VALUES ('g9','77','Zeta FC','1','chZ',1,0,1)").run();
+  const post = (path, body) => worker.fetch(new Request(`https://bot.example${path}`, { method: 'POST', headers: { 'x-key': 'k' }, body: JSON.stringify(body) }), env, ctx).then((r) => r.json());
+  const running = await post('/ingest', { clubs: [{ id: '77', matches: [raw('x1', 60, 2, 0), raw('x2', 20, 1, 0)] }] });
+  assert.ok(!running.draw.some((j) => j.kind === 'recap')); // the last match was 20 minutes ago: the session is still going
+  const over = await post('/ingest', { clubs: [{ id: '77', matches: [raw('y1', 200, 2, 0), raw('y2', 170, 3, 1)] }] });
+  const job = over.draw.find((j) => j.kind === 'recap');
+  assert.ok(job); assert.equal(job.ref, 'recap:77:y1'); assert.match(job.key, /^77\/recap-/);
+  assert.equal(db.prepare('SELECT COUNT(*) n FROM recaps').get().n, 1);
+  assert.ok(!(await post('/ingest', { clubs: [{ id: '77', matches: [raw('y1', 200, 2, 0), raw('y2', 170, 3, 1)] }] })).draw.some((j) => j.kind === 'recap')); // claimed: never twice
+  calls.length = 0; await post('/flush', {});
+  assert.ok(!calls.find((c) => c.url.endsWith('/channels/chZ/messages') && /Session recap/i.test(JSON.stringify(c.body)))); // picture not up yet: waits
+  await worker.fetch(new Request(`https://bot.example/card?key=${job.key}&club=77&kind=recap&ref=${encodeURIComponent(job.ref)}`, { method: 'PUT', headers: { 'x-key': 'k' }, body: 'iVBORw0KGgo=' }), env, ctx);
+  calls.length = 0; await post('/flush', {});
+  const m = calls.find((c) => c.url.endsWith('/channels/chZ/messages') && /Session recap/i.test(JSON.stringify(c.body)));
+  assert.ok(m); assert.match(JSON.stringify(m.body.components), new RegExp(job.key.replace(/[/.]/g, '.'))); assert.equal(m.body.flags, 1 << 15);
+  calls.length = 0; await post('/flush', {}); assert.ok(!calls.find((c) => /Session recap/i.test(JSON.stringify(c.body)))); // posted once
+});

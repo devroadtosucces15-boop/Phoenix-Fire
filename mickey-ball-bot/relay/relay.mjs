@@ -50,6 +50,7 @@ async function htmlFor(T, M, j) {
     case 'board': return M.boardCard(d.mp, d.club);
     case 'pitch': return M.pitchCard(d.mp, d.club);
     case 'review': return M.reviewCard(d.model, d.club);
+    case 'recap': return M.recapCard(d.r, d.club);
     case 'box': return T.boxScoreCard(d.m, d.club);
     case 'club': return T.clubCard(d.club);
     case 'results': return T.resultsCard(d.club);
@@ -81,7 +82,7 @@ async function drawAll(jobs) {
 }
 
 const BANNERS = [['help', 'Commands', 'Everything the bot can do', '📖'], ['history', 'Head to head', 'Record against one club', '⚔️'], ['insight', 'Form guide', 'Form, last 5 and streaks', '📈'],
-  ['search', 'Club search', 'Find any Pro Clubs club', '🔎'], ['track', 'Tracking', 'New matches post by themselves', '📡']];
+  ['search', 'Club search', 'Find any Pro Clubs club', '🔎'], ['track', 'Tracking', 'New matches post by themselves', '📡'], ['recap', 'Session recap', 'The night, in one post', '📝']];
 
 try {
   if (kind === 'banners') {
