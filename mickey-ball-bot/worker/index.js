@@ -271,7 +271,7 @@ async function onDraw(env, st, body) {
   if (String(body.extra ?? '').startsWith('lineup:')) { const j = await lineupJob(st, String(body.extra).slice(7)); return json({ ok: true, draw: j ? [j] : [] }); }
   const row = (await st.allTracked()).find((t) => t.club_id === String(body.club));
   if (!row) return json({ ok: true, draw: [] });
-  const club = clubView(row), jobs = await buildJobs(st, club, []);
+  const club = clubView(row), jobs = await buildJobs(st, club, body.extra ? [] : await st.recentMatches(club.id, 3)); // a refresh redraws the latest matches too, so older cards pick up new data
   if (body.extra) {
     const [x, y] = String(body.extra).split('|'), players = await st.rosterData(club.id);
     const a = players.find((p) => p.n.toLowerCase() === x), b = players.find((p) => p.n.toLowerCase() === y);
