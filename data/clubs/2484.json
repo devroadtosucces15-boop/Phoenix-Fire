@@ -1,11 +1,11 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-24T19:20:43.391Z",
+ "fetchedAt": "2026-11-24T19:30:44.345Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
-  "regionId": 1112101682,
+  "regionId": 5719381,
   "teamId": 245,
   "customKit": {
    "stadName": "The Firepit",
@@ -1269,6 +1269,42 @@
    "favoritePosition": "defender"
   },
   {
+   "name": "Hitchzyy",
+   "gamesPlayed": "57",
+   "winRate": "89",
+   "goals": "13",
+   "assists": "37",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "46",
+   "passesMade": "983",
+   "passSuccessRate": "76",
+   "ratingAve": "8.0",
+   "tacklesMade": "127",
+   "tackleSuccessRate": "44",
+   "proName": "Azizz",
+   "proPos": "14",
+   "proStyle": "0",
+   "proHeight": "166",
+   "proNationality": "46",
+   "proOverall": "87",
+   "proOverallStr": "87",
+   "manOfTheMatch": "8",
+   "redCards": "1",
+   "prevGoals": "1",
+   "prevGoals1": "1",
+   "prevGoals2": "0",
+   "prevGoals3": "1",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "1",
+   "favoritePosition": "midfielder"
+  },
+  {
    "name": "lll_Jay_lll",
    "gamesPlayed": "0",
    "favoritePosition": "",
@@ -1378,7 +1414,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 5,
+  "midfielder": 6,
   "goalkeeper": 4,
   "forward": 12,
   "defender": 11
@@ -1779,6 +1815,17 @@
    "ratingAve": "6.9",
    "prevGoals": "0",
    "favoritePosition": "defender"
+  },
+  {
+   "name": "Hitchzyy",
+   "proPos": "14",
+   "gamesPlayed": "149",
+   "goals": "73",
+   "assists": "136",
+   "manOfTheMatch": "41",
+   "ratingAve": "8.3",
+   "prevGoals": "0",
+   "favoritePosition": "midfielder"
   }
  ],
  "leaderboard": {
@@ -1799,6 +1846,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-24T19:20:43.391Z"
+  "fetchedAt": "2026-11-24T19:30:44.345Z"
  }
 }
