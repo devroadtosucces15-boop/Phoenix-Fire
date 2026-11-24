@@ -202,10 +202,58 @@ html[data-motion=calm] .cx .cc-sw span:after,html[data-motion=calm] .cx .cu-x sv
 .cu-formcard .cu-in{border-top:0!important}
 .cu-formcard{margin:18px 0}
 /* a segmented control inside a card fills the row and shares the width (no sideways scrolling to find the last option) */
-.cu-in .cu-seg,.cu-field .cu-seg{display:flex;width:100/* a segmented control inside a card fills the row and shares the width (no sideways scrolling to find the last option) */
 .cu-in .cu-seg,.cu-field .cu-seg{display:flex;width:100%;overflow:visible}
 .cu-in .cu-seg button,.cu-in .cu-seg label,.cu-field .cu-seg button,.cu-field .cu-seg label{flex:1 1 0;min-width:0;padding:0 6px}
 .cx .cu-rows td,.cx .cu-rows th{text-align:left!important;white-space:normal}
 .cx .cu-rows td:last-child{justify-content:flex-start}
 /* a chip that is only a tag (a span, not a button) stays small */
 .cx span.chip,.cx .cc-rq-t .chip{min-height:0;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600;cursor:default}
+
+/* ================= Reference restyle (2026-11-24) =================
+   Layout and style taken from the shadcn/ui "frosted paper" system (main), with the flat dark surfaces of Factory, Better Stack and LaunchDarkly:
+   solid tonal surfaces, 1px hairlines instead of glows, big card radius, pill controls, gray-fill inputs with a thin focus ring, capsule badges,
+   tight type with small uppercase captions, one accent used only for state. Colours stay theme tokens (--cx-*); nothing here names a club colour. */
+.cx{--cu-r:22px;--cu-cr:14px;--cu-line:color-mix(in srgb,var(--cx-tx) 11%,transparent);--cu-fill:color-mix(in srgb,var(--cx-tx) 5%,var(--cx-p1));--cu-on:color-mix(in srgb,var(--cx-a) 16%,transparent)}
+.cu-card{background:var(--cx-p1);box-shadow:0 1px 0 color-mix(in srgb,var(--cx-tx) 5%,transparent) inset,0 1px 2px rgba(0,0,0,.35)}
+.cu-card.is-on{background:color-mix(in srgb,var(--cx-a) 5%,var(--cx-p1))}
+.cu-card:hover{border-color:color-mix(in srgb,var(--cx-tx) 22%,transparent)}
+.cu-card[data-open]{border-color:color-mix(in srgb,var(--cx-tx) 26%,transparent);box-shadow:0 1px 2px rgba(0,0,0,.4),0 12px 28px -18px rgba(0,0,0,.7)}
+.cu-h{padding:16px 14px 16px 20px}
+.cu-ic{width:40px;height:40px;border-radius:12px;background:var(--cu-fill);border:1px solid var(--cu-line);font-size:19px}
+.cu-card:hover .cu-ic{transform:none}
+.cu-t b{font:600 15px/1.25 var(--body,inherit);letter-spacing:-.01em}
+.cu-t small{font-weight:450}
+.cu-x{border-radius:var(--cu-cr);background:transparent;border-color:var(--cu-line)}
+.cu-x:hover{background:var(--cu-fill);border-color:color-mix(in srgb,var(--cx-tx) 24%,transparent)}
+.cu-pill{padding:2px 9px;background:var(--cu-fill);border-color:transparent;font:550 11.5px/1.5 var(--body,inherit)}
+.cu-pill.hot{background:var(--cu-on);border-color:transparent;color:var(--cx-a2)}
+.cu-pill.ok{background:color-mix(in srgb,var(--cx-ok) 14%,transparent);border-color:transparent}
+.cu-pill.bad{background:rgba(255,125,114,.12);border-color:transparent}
+.cu-seg{background:var(--cu-fill);border-color:transparent;border-radius:var(--cu-cr)}
+.cu-seg button,.cu-radios label{border-radius:10px}
+.cu-seg button[aria-pressed=true],.cu-seg button[aria-checked=true],.cu-radios label:has(input:checked){background:var(--cx-p2);color:var(--cx-tx);box-shadow:0 0 0 1px var(--cu-line),0 1px 2px rgba(0,0,0,.4)}
+.cu-seg button[aria-pressed=true]::after,.cu-seg button[aria-checked=true]::after{content:"";position:absolute;left:50%;bottom:4px;width:14px;height:2px;margin-left:-7px;border-radius:2px;background:var(--cx-a)}
+.cu-group>summary,.cu-gh,.cc-pick legend,.cc-cols h4,.cu-in h4{color:var(--cx-mu);font-weight:650;letter-spacing:.08em}
+.cc-sw span{background:color-mix(in srgb,var(--cx-tx) 16%,var(--cx-p1));border-color:transparent}
+.cc-sw input:checked+span{background:var(--cx-a);box-shadow:none}
+.cc-sw span:after{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.45)}
+.cu-ic::after{border-color:var(--cx-p1)}
+.cu-card.is-on .cu-ic::after{box-shadow:none}
+.cx :is(input:not([type=checkbox],[type=radio],[type=color],[type=range]),select,textarea){background:var(--cu-fill);border-color:transparent;border-radius:var(--cu-cr)}
+.cx :is(input,select,textarea):hover{border-color:var(--cu-line)}
+.cx :is(input,select,textarea):focus{border-color:color-mix(in srgb,var(--cx-tx) 55%,transparent);box-shadow:0 0 0 3px color-mix(in srgb,var(--cx-tx) 12%,transparent)}
+.cc-lv,.cc-win label{background:var(--cu-fill);border-color:transparent}
+.cc-lv:hover,.cc-win label:hover{border-color:var(--cu-line);color:var(--cx-tx)}
+.cc-lv:has(input:checked),.cc-win label:has(input:checked){background:var(--cx-tx);color:var(--cx-bg,#0a0705);border-color:transparent}
+.cc-lv:has(input:checked)::before,.cc-win label:has(input:checked)::before{color:var(--cx-a)}
+.cc-chip{background:var(--cu-fill);border-color:var(--cu-line);color:var(--cx-tx)}
+.cc-chip:hover{background:var(--cx-p2)}
+.cc-pick details,.cc-win,.cu-top,.cc-head{background:var(--cu-fill);border-color:transparent;border-radius:var(--cu-cr)}
+.cu-more{border-style:solid;border-color:var(--cu-line)}
+.cx .chip,.cx .cc-actions button,.cx .cu-btn{background:transparent;border-color:var(--cu-line);border-radius:99px;font-weight:600}
+.cx .chip:hover,.cx .cu-btn:hover{background:var(--cu-fill);border-color:color-mix(in srgb,var(--cx-tx) 24%,transparent)}
+.cx .chip.on,.cx .cu-btn.pri,.cx .cc-actions .chip.on{background:var(--cx-tx);color:var(--cx-bg,#0a0705);border-color:transparent;box-shadow:none}
+.cx .chip.on:hover{filter:none;opacity:.88}
+.cx .chip.danger{background:transparent}
+.cx .cu-rows tr{background:var(--cx-p1);border-radius:var(--cu-cr)}
+@media(min-width:1280px){.cu-panel,.cc-panel{max-width:1280px}}
