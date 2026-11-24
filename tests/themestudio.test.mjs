@@ -73,6 +73,14 @@ t('upgrades: a card is still a link (a tap follows it, a drag of 6px or more doe
 t('upgrades: quiet (c) leans less and drops the foil colours; the buttons ripple only in b', /--upk:\.5/.test(upc) && /0\.55 : 1/.test(up) && /=== 'b'/.test(up) && /data-st-buttonfx=c\] \.btn:after/.test(upc));
 t('upgrades: loaded after the studio on every page', ui.indexOf('upgrades.css') > ui.indexOf('themestudio.css') && /upgrades\.js/.test(ui));
 
+// ---- the live demo (the editor shows changes on a demo first, with pictures for every look)
+const demoPage = rd('next/static/themedemo.html');
+t('demo: a demo page drawn by the real stylesheets holds every component the studio edits, and the card rig', B.COMPONENTS.every((c) => c === 'buttonfx' || new RegExp('data-demo="' + c + '"').test(demoPage)) && /href="style\.css"/.test(demoPage) && /themestudio\.css/.test(demoPage) && /upgrades\.js/.test(demoPage) && /PFDemo/.test(demoPage));
+t('demo: it never loads the editor or the saved look, so it cannot change the site or open another editor', !/themeeditor/.test(demoPage) && /nostudio/.test(editor));
+t('demo: edits go to the demo first; the page behind changes only when "Also on the page" is on, or on Save', /const site = \(\) => \{ if \(S\.onpage\)/.test(editor) && /const live = \(\) => \{ clean\(\); site\(\); demo\(\)/.test(editor) && /data-onpage/.test(editor));
+t('demo: every component shows its three looks as pictures (live demo tiles), tapping a picture picks it', /class="tse-tile/.test(editor) && /data-look=/.test(editor) && /tse-pick/.test(editor) && /\.tse-tile iframe/.test(ecss));
+t('demo: closing the editor puts the page back to the saved look', /S\.onpage\) T\.preview\(T\.config\)/.test(editor));
+
 // ---- wiring
 t('pages: every page loads the look in <head> before paint and the editor after the owner button', /themestudio\.css/.test(ui) && /themeeditor\.css/.test(ui) && ui.indexOf('themestudio.js') < ui.indexOf('fxconfig.js') && ui.indexOf('themeeditor.js') > ui.indexOf('ownerfab.js'));
 t('control center: the effects card moved into the studio (Control Center no longer draws it)', !/'streams', 'effects', 'points'\]/.test(ccs));

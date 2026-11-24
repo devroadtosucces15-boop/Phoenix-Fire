@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Theme Studio demo</title>
+<link rel="icon" href="crest.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="widgets.css"><link rel="stylesheet" href="fx.css"><link rel="stylesheet" href="motion.css"><link rel="stylesheet" href="themes.css">
+<link rel="stylesheet" href="header.css"><link rel="stylesheet" href="dock.css"><link rel="stylesheet" href="fxmotion.css"><link rel="stylesheet" href="forms.css"><link rel="stylesheet" href="tables.css"><link rel="stylesheet" href="chips.css">
+<link rel="stylesheet" href="ccui.css"><link rel="stylesheet" href="themestudio.css"><link rel="stylesheet" href="upgrades.css">
+<style>
+/* The Theme Studio's live demo: the same classes the real pages use, so the real stylesheets draw it. Only layout lives here. */
+html,body{min-height:0;height:auto}
+body{margin:0;padding:0;overflow-x:hidden}
+body::before,body::after{display:none}
+.dm{--cx-mu:#9aa1ab;--cu-line:rgba(255,255,255,.14);--cu-ease:cubic-bezier(.2,.8,.2,1);display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center;padding:14px;margin:0;max-width:none}
+.dm>[data-demo]{display:none;flex:0 1 auto;max-width:100%}
+.dm.all>[data-demo].in-all,.dm>[data-demo].on{display:block}
+.dm>[data-demo].wide{flex-basis:100%}
+.dm.solo{min-height:100vh;align-content:center}
+.dm .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+.dm h2{margin:0 0 4px;font-size:26px;line-height:1.1}
+.dm p{margin:0;font-size:13px}
+.dm .panel{padding:14px 16px;max-width:260px}
+.dm .sbts{display:flex;gap:10px}
+.dm .sbt{min-width:78px;padding:10px 12px;text-align:center}
+.dm .sbt b{display:block;font-size:22px}
+.dm .sbt span{font-size:11px}
+.dm .bell{position:relative;display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;background:var(--p2,#1b1f27);font-size:19px}
+.dm .bell .nb{position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--gold,#efcf7a);color:#1a1405;font:800 11px/19px Inter,sans-serif;text-align:center;animation:none}
+.dm nav.dmnav{display:flex;gap:4px;padding:4px;background:var(--p1,#12161d);border-radius:999px}
+.dm nav.dmnav a{padding:8px 14px;border-radius:999px;color:var(--soft,#9aa1ab);font:600 13px Inter,sans-serif;text-decoration:none}
+.dm nav.dmnav a.on{background:var(--p2,#1b1f27);color:#fff}
+.dm table{border-collapse:collapse;min-width:240px}
+.dm td,.dm th{padding:7px 12px;font-size:13px;text-align:left}
+.dm input{width:200px;max-width:100%}
+.dm .tabbar{display:flex;position:static;width:300px;max-width:100%;margin:0;transform:none;justify-content:space-around;padding:8px 6px}
+.dm .tabbar a{display:grid;place-items:center;gap:2px;padding:6px 10px;font:600 11px Inter,sans-serif;color:var(--soft,#9aa1ab);text-decoration:none}
+.dm .tabbar a.on{color:#fff}
+.dm .pc-card{margin:0 auto}
+.dm .icons{display:flex;gap:14px;font-size:24px}
+.dm .icons .ri{display:inline-grid;place-items:center;width:34px;height:34px}
+.dm .ribbon{display:inline-block}
+</style>
+</head>
+<body>
+<main id="main" class="dm all">
+  <section data-demo="divider" class="in-all"><span class="ribbon"><span class="ri">⭐</span>Section title</span></section>
+  <section data-demo="heading" class="in-all"><h2>Headline sample</h2><p class="muted">Body text sits under it, like this.</p></section>
+  <section data-demo="button" class="in-all"><div class="row"><a class="btn" href="#" onclick="return false">Primary</a><a class="btn ghost" href="#" onclick="return false">Ghost</a></div></section>
+  <section data-demo="chip" class="in-all"><div class="row"><button class="chip on" type="button">Goals</button><button class="chip" type="button">Assists</button><button class="chip" type="button">Rating</button></div></section>
+  <section data-demo="badge" class="in-all"><span class="bell" aria-hidden="true">🔔<i class="nb">3</i></span></section>
+  <section data-demo="input" class="in-all"><input type="text" placeholder="Search players" aria-label="Sample field"></section>
+  <section data-demo="nav" class="in-all"><nav class="dmnav" aria-label="Sample"><a href="#" onclick="return false">Club</a><a class="on" href="#" onclick="return false">Matches</a><a href="#" onclick="return false">Stats</a></nav></section>
+  <section data-demo="card" class="in-all"><div class="panel"><b>A panel</b><p class="muted">Cards and panels hold content like this.</p></div></section>
+  <section data-demo="stats" class="in-all"><div class="sbts"><div class="sbt"><b>24</b><span>Games</span></div><div class="sbt"><b>71%</b><span>Wins</span></div></div></section>
+  <section data-demo="table"><table><thead><tr><th>Player</th><th>Gls</th><th>Rat</th></tr></thead><tbody><tr><td>Pyramind</td><td>10</td><td>7.1</td></tr><tr><td>Helios_10</td><td>8</td><td>7.0</td></tr><tr><td>Vesper_X</td><td>8</td><td>6.9</td></tr></tbody></table></section>
+  <section data-demo="toggle"><div class="row"><label class="cc-sw"><input type="checkbox" checked aria-label="Sample switch"><span></span></label><label class="cc-sw"><input type="checkbox" aria-label="Sample switch two"><span></span></label></div></section>
+  <section data-demo="icon"><div class="icons"><span class="ri">⭐</span><span class="ri">🏆</span><span class="ri">⚽</span><span class="ri">🔥</span></div></section>
+  <section data-demo="dock" class="wide"><nav class="tabbar" aria-label="Sample dock"><a class="on" href="#" onclick="return false"><span>🛡️</span>Club</a><a href="#" onclick="return false"><span>⚽</span>Matches</a><a href="#" onclick="return false"><span>📊</span>Stats</a><a href="#" onclick="return false"><span>🧠</span>Tactics</a></nav></section>
+  <section data-demo="playercard"><div class="pc pc-card t-gold tilt" style="--s:0.62" data-k="demo" data-pos="MID" role="img" aria-label="Sample player card"><span class="shell"></span><div class="art"><svg class="fb" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax slice"><path class="sil" d="M50 14c-9 0-16 8-16 18 0 8 4 14 9 17-14 3-27 12-30 27v8h74v-8c-3-15-16-24-30-27 5-3 9-9 9-17 0-10-7-18-16-18z"/><text class="num" x="50" y="97" text-anchor="middle">PY</text></svg></div><span class="ovr">85</span><span class="pos">MID</span><span class="crestm"><img src="crest.png" alt=""></span><span class="name">PYRAMIND</span><span class="arch">Maestro</span><span class="stats"><div><b class="num">10</b><span>GLS</span></div><div><b class="num">11</b><span>AST</span></div><div><b class="num">7.1</b><span>RAT</span></div><div><b class="num">83%</b><span>PAS</span></div><div><b class="num">57%</b><span>TKL</span></div><div><b class="num">55</b><span>GP</span></div></span><span class="glare"></span><span class="gloss"><i></i></span></div></section>
+</main>
+<script src="themestudio.js"></script>
+<script src="upgrades.js" defer></script>
+<script>
+// The editor drives this page: PFDemo.set(look, focus) applies a merged look (as the "*" scope) and shows only the parts to look at.
+(() => {
+  const main = document.getElementById('main'), q = new URLSearchParams(location.search);
+  const ALL = ['divider', 'heading', 'button', 'chip', 'badge', 'input', 'nav', 'card', 'stats'];
+  const MORE = { button: ['button'], buttonfx: ['button'], playercard: ['playercard'], dock: ['dock'], table: ['table'], toggle: ['toggle'], icon: ['icon'], nav: ['nav'], badge: ['badge'], chip: ['chip'], input: ['input'], card: ['card', 'stats'], heading: ['heading'], divider: ['divider'] };
+  const show = (focus) => {
+    const list = focus === 'all' || !focus ? null : (MORE[focus] || [focus]);
+    main.classList.toggle('all', !list); main.classList.toggle('solo', !!list && q.has('solo'));
+    main.querySelectorAll('[data-demo]').forEach((s) => s.classList.toggle('on', !!list && list.includes(s.dataset.demo)));
+  };
+  const rearm = () => { const T = window.PFTheme; if (!T) return; const v = T.look && T.look.variants && T.look.variants.playercard; if (window.PFUpgrades) main.querySelectorAll('.pc-card').forEach((c) => (v ? window.PFUpgrades.arm(c) : window.PFUpgrades.disarm(c))); };
+  window.PFDemo = {
+    set(look, focus) {
+      window.PFTheme.preview({ v: 1, scopes: { '*': look || { tokens: {}, variants: {}, off: [], motion: [] } } });
+      show(focus); setTimeout(rearm, 0);
+    },
+    // run the entrance and page motions again: a fresh copy of the content restarts every animation
+    replay() { const n = main.cloneNode(true); main.replaceWith(n); setTimeout(rearm, 0); },
+  };
+  show(q.get('focus') || 'all');
+})();
+</script>
+</body>
+</html>

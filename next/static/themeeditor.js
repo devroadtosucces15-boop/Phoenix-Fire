@@ -2,6 +2,8 @@
 // site's look live and saves it for everyone. Colours, fonts and sizes, three looks per component, aspects to switch off, any number of
 // motions, and the core effects (moved here from the Control Center). Every page and every sub-menu can have its own look: pick the
 // scope at the top (Everywhere, This page, This sub-menu), change things, press Save. Visitors get it on their next load.
+// A live demo sits at the top of the sheet: a small copy of the site's own parts (themedemo.html, drawn by the real stylesheets) that shows every
+// change first, on its own, before anything touches the page behind. Each component shows its three looks as pictures to tap, not words.
 // The saved look is one document: POST /api/controlcenter/settings/theme { scopes }, read back from GET /api/site/theme (themestudio.js).
 (() => {
   const d = document, w = window;
@@ -35,11 +37,22 @@
     d.body.appendChild(root);
     const btn = root.querySelector('.tse-btn'), panel = root.querySelector('.tse-panel');
     const clone = (o) => JSON.parse(JSON.stringify(o));
-    const S = { open: false, tab: 'colors', draft: clone(T.config), scope: '*', dirty: false, busy: false, msg: '', fx: null, fxDraft: null, fxDirty: false };
+    const S = { open: false, tab: 'colors', draft: clone(T.config), scope: '*', dirty: false, busy: false, msg: '', fx: null, fxDraft: null, fxDirty: false, comp: 'button', onpage: false, stageOn: true };
     const pageKey = () => 'page:' + T.slug(), subKey = () => (T.sub() ? pageKey() + '#' + T.sub() : '');
     const cur = () => (S.draft.scopes[S.scope] ||= { tokens: {}, variants: {}, off: [], motion: [] });
     const clean = () => { for (const [k, s] of Object.entries(S.draft.scopes)) if (!Object.keys(s.tokens || {}).length && !Object.keys(s.variants || {}).length && !(s.off || []).length && !(s.motion || []).length) delete S.draft.scopes[k]; };
-    const live = () => { clean(); T.preview(S.draft); S.dirty = true; foot(); };
+    const live = () => { clean(); site(); demo(); S.dirty = true; foot(); };
+    // ---- the live demo: the merged look for the scope being edited, shown in the stage and, per look, in the picture tiles ----
+    const keysFor = () => { const k = ['*']; if (S.scope !== '*') { k.push(S.scope.split('#')[0]); if (S.scope.includes('#')) k.push(S.scope); } return k; };
+    const lookFor = (over) => { const m = T.merge(S.draft, keysFor()); if (over) m.variants = { ...m.variants, ...over }; return m; };
+    const focusFor = () => (S.tab === 'parts' ? S.comp : 'all');
+    const send = (fr, look, focus) => { try { fr.contentWindow.PFDemo.set(look, focus); } catch {} };
+    const stage = () => panel.querySelector('.tse-stage iframe');
+    const fit = (fr) => setTimeout(() => { try { const h = fr.contentDocument.documentElement.scrollHeight; fr.style.height = Math.min(Math.max(h, 96), Math.round(innerHeight * 0.3)) + 'px'; } catch {} }, 140);
+    const demo = () => { const fr = stage(); if (fr) { send(fr, lookFor(), focusFor()); fit(fr); } tiles(); };
+    const tiles = () => panel.querySelectorAll('.tse-tile iframe').forEach((fr) => { const [k, x] = fr.dataset.look.split(':'); send(fr, lookFor({ [k]: x }), k); });
+    const site = () => { if (S.onpage) T.preview(S.draft); };   // the page behind changes only when asked (or on Save)
+    const replay = () => { try { stage().contentWindow.PFDemo.replay(); } catch {} };
     const siteColor = (k) => { const v = SITEVAR[k]; if (!v) return ''; const c = getComputedStyle(d.documentElement).getPropertyValue(v).trim(); return toHex(c) || (/^#[0-9a-f]{6}$/i.test(c) ? c : ''); };
 
     const tabs = [['colors', 'Colours'], ['type', 'Type and size'], ['parts', 'Components'], ['effects', 'Effects'], ['motion', 'Motion']];
@@ -51,16 +64,19 @@
 <button type="button" class="tse-link" data-pair>Pick button text colour for me</button>`;
     const type = () => `<div class="tse-grid">${T.CAT.FONT_TOKENS.map((k) => `<label class="tse-f"><span>${k === 'fontDisplay' ? 'Headline font' : 'Body font'}</span><select data-font="${k}">${T.CAT.FONTS.map((f) => `<option value="${esc(f)}"${(cur().tokens[k] || 'inherit') === f ? ' selected' : ''}>${f === 'inherit' ? 'Standard' : esc(f)}</option>`).join('')}</select></label>`).join('')}
 ${Object.entries(NUM).map(([k, [l, u, st]]) => { const [lo, hi] = T.CAT.NUM_TOKENS[k], v = cur().tokens[k]; return `<label class="tse-f"><span>${l} <em>${v == null ? 'standard' : v + u}</em></span><span class="tse-n"><input type="range" min="${lo}" max="${hi}" step="${st}" value="${v ?? (k === 'space' || k === 'text' ? 100 : Math.round((lo + hi) / 4))}" data-num="${k}">${v == null ? '' : `<button type="button" class="tse-r" data-unset="${k}" aria-label="Back to standard: ${l}">↺</button>`}</span></label>`; }).join('')}</div>`;
-    const parts = () => `<div class="tse-parts">${Object.entries(COMP).map(([k, [l, names]]) => { const v = cur().variants[k] || 'a'; return `<div class="tse-p"><b>${l}</b><div class="tse-seg" role="radiogroup" aria-label="${l}">${['a', 'b', 'c'].map((x, i) => `<button type="button" role="radio" aria-checked="${v === x}" data-var="${k}:${x}">${names[i]}</button>`).join('')}</div></div>`; }).join('')}</div>`;
+    const ix = (v) => ['a', 'b', 'c'].indexOf(v);
+    const parts = () => `<p class="tse-hint">Tap a part, then tap the picture of the look you want. The demo above shows the one selected.</p><div class="tse-parts">${Object.entries(COMP).map(([k, [l, names]]) => { const v = cur().variants[k] || 'a', open = S.comp === k; return `<div class="tse-pc${open ? ' open' : ''}"><button type="button" class="tse-ph" data-comp="${k}" aria-expanded="${open}"><span>${l}</span><em>${names[ix(v)]}</em></button>${open ? `<div class="tse-tiles" data-k="${k}" role="radiogroup" aria-label="${l}">${['a', 'b', 'c'].map((x, i) => `<div class="tse-tile${v === x ? ' sel' : ''}"><iframe src="themedemo.html?nostudio&solo&focus=${k}" data-look="${k}:${x}" tabindex="-1" aria-hidden="true" title="" loading="lazy"></iframe><button type="button" class="tse-pick" role="radio" aria-checked="${v === x}" data-var="${k}:${x}"><span>${names[i]}</span></button></div>`).join('')}</div>` : ''}</div>`; }).join('')}</div>`;
     const effects = () => `<p class="tse-hint">Switch off any part of the look, here or on this page only. Switched off here means off wherever this look applies.</p><div class="tse-chips">${Object.entries(OFF).map(([k, l]) => `<label class="tse-chip"><input type="checkbox" data-off="${k}"${cur().off.includes(k) ? ' checked' : ''}><span>No ${l.toLowerCase()}</span></label>`).join('')}</div>${fxBlock()}`;
     const fxBlock = () => { const f = S.fxDraft; if (!f) return `<p class="tse-hint">${S.fxFail ? 'The core effects could not be loaded. Close and open the Studio to try again.' : 'Loading the core effects…'}</p>`; return `<h4>Core effects <small>everyone sees the same</small></h4><label class="tse-f"><span>How many may run at once <em>${f.budget}</em></span><input type="number" min="5" step="1" value="${f.budget}" data-fxbudget></label><div class="tse-fx">${FX.map(([k, l]) => `<div class="tse-fxr"><span>${l}</span><div class="tse-seg" role="radiogroup" aria-label="${l}">${['full', 'balanced', 'off'].map((v) => `<button type="button" role="radio" aria-checked="${(f.levels[k] || 'full') === v}" data-fx="${k}:${v}">${v[0].toUpperCase() + v.slice(1)}</button>`).join('')}</div></div>`).join('')}</div>`; };
     const motion = () => `<p class="tse-hint">Choose as many as you like. They stack. Pick none to keep the site's own motion.</p>${Object.entries(MOT).map(([g, ids]) => `<h4>${g} <button type="button" class="tse-link" data-all="${g}">all</button> <button type="button" class="tse-link" data-none="${g}">none</button></h4><div class="tse-chips">${ids.map((id) => `<label class="tse-chip"><input type="checkbox" data-mot="${id}"${cur().motion.includes(id) ? ' checked' : ''}><span>${nice(id)}</span></label>`).join('')}</div>`).join('')}`;
     const body = () => ({ colors, type, parts, effects, motion })[S.tab]();
-    const foot = () => { const f = panel.querySelector('.tse-foot'); if (f) f.outerHTML = footHtml(); };
+    const foot = () => { const f = panel.querySelector('.tse-ft'); if (f) f.innerHTML = footHtml(); };
     const footHtml = () => `<div class="tse-foot"><span class="tse-s" role="status">${esc(S.msg) || (S.dirty || S.fxDirty ? 'Unsaved changes' : 'Saved')}</span><button type="button" class="tse-b" data-resetscope>Reset ${esc(scopeName(S.scope))}</button><button type="button" class="tse-b pri" data-save${S.busy ? ' disabled' : ''}${S.dirty || S.fxDirty ? '' : ' disabled'}>${S.busy ? 'Saving…' : 'Save for everyone'}</button></div>`;
-    const paint = () => { const y = panel.querySelector('.tse-body')?.scrollTop || 0; panel.innerHTML = head() + `<div class="tse-body">${body()}</div>` + footHtml(); const b = panel.querySelector('.tse-body'); if (b) b.scrollTop = y; };
+    const stageHtml = () => `<div class="tse-stage"${S.stageOn ? '' : ' data-off'}><iframe src="themedemo.html?nostudio" title="Live demo of the parts you are editing" loading="eager"></iframe><div class="tse-sb"><span>Live demo: touch it, it reacts</span><button type="button" class="tse-link" data-replay>Replay</button><label class="tse-chip sm"><input type="checkbox" data-onpage${S.onpage ? ' checked' : ''}><span>Also on the page</span></label><button type="button" class="tse-link" data-stage>${S.stageOn ? 'Hide' : 'Show demo'}</button></div></div>`;
+    const build = () => { panel.innerHTML = '<div class="tse-hd"></div>' + stageHtml() + '<div class="tse-body"></div><div class="tse-ft"></div>'; stage().addEventListener('load', demo); };
+    const paint = () => { if (!panel.querySelector('.tse-stage')) build(); const bd = panel.querySelector('.tse-body'), y = bd.scrollTop; panel.querySelector('.tse-hd').innerHTML = head(); bd.innerHTML = body(); panel.querySelector('.tse-ft').innerHTML = footHtml(); bd.scrollTop = y; if (S.pin) { S.pin = false; const o = bd.querySelector('.tse-pc.open'); if (o) bd.scrollTop += o.getBoundingClientRect().top - bd.getBoundingClientRect().top - 6; } panel.querySelector('.tse-stage').toggleAttribute('data-off', !S.stageOn); panel.querySelectorAll('.tse-tile iframe').forEach((fr) => fr.addEventListener('load', () => { const [k, x] = fr.dataset.look.split(':'); send(fr, lookFor({ [k]: x }), k); })); demo(); };
     const loadFx = () => { if (S.fx) return; A.call('/api/controlcenter/settings').then((r) => { const v = r?.areas?.effects?.value; if (v) { S.fx = clone(v); S.fxDraft = clone(v); if (S.open && S.tab === 'effects') paint(); } }).catch(() => { S.fxFail = true; if (S.open && S.tab === 'effects') paint(); }); };
-    const setOpen = (on) => { S.open = on; panel.hidden = !on; btn.setAttribute('aria-expanded', String(on)); root.classList.toggle('on', on); if (on) { S.draft = clone(T.config); S.dirty = false; S.msg = ''; paint(); loadFx(); } };
+    const setOpen = (on) => { if (!on && S.open && S.onpage) T.preview(T.config); S.open = on; panel.hidden = !on; btn.setAttribute('aria-expanded', String(on)); root.classList.toggle('on', on); if (on) { S.draft = clone(T.config); S.dirty = false; S.msg = ''; paint(); loadFx(); } };
     btn.addEventListener('click', () => setOpen(!S.open));
     d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && S.open) { setOpen(false); btn.focus(); } });
     addEventListener('hashchange', () => { if (S.open && S.scope !== '*' && !scopes().some(([k]) => k === S.scope)) S.scope = '*'; if (S.open) paint(); });
@@ -71,7 +87,10 @@ ${Object.entries(NUM).map(([k, [l, u, st]]) => { const [lo, hi] = T.CAT.NUM_TOKE
       if (ds.scope) { S.scope = ds.scope; return paint(); }
       if (ds.tab) { S.tab = ds.tab; if (ds.tab === 'effects') loadFx(); return paint(); }
       if (ds.unset) { const k = ds.unset; delete cur().tokens[k]; live(); return paint(); }
-      if (ds.var) { const [k, v] = ds.var.split(':'); if (v === 'a') delete cur().variants[k]; else cur().variants[k] = v; live(); return paint(); }
+      if (ds.comp) { S.comp = ds.comp; S.pin = true; return paint(); }
+      if ('replay' in ds) return replay();
+      if ('stage' in ds) { S.stageOn = !S.stageOn; return paint(); }
+      if (ds.var) { const [k, v] = ds.var.split(':'); S.comp = k; if (v === 'a') delete cur().variants[k]; else cur().variants[k] = v; live(); return paint(); }
       if (ds.fx) { const [k, v] = ds.fx.split(':'); S.fxDraft.levels[k] = v; S.fxDirty = true; return paint(); }
       if (ds.all || ds.none) { const g = ds.all || ds.none, m = cur(); for (const id of MOT[g]) { m.motion = m.motion.filter((x) => x !== id); if (ds.all) m.motion.push(id); } live(); return paint(); }
       if ('pair' in ds) { const b = cur().tokens.btnfill || siteColor('accent'); if (b) { cur().tokens.btntext = readable(b); live(); paint(); } return; }
@@ -80,15 +99,16 @@ ${Object.entries(NUM).map(([k, [l, u, st]]) => { const [lo, hi] = T.CAT.NUM_TOKE
     });
     panel.addEventListener('input', (e) => {
       const t = e.target, ds = t.dataset;
-      if (ds.color) { cur().tokens[ds.color] = t.value.toLowerCase(); const c = t.closest('.tse-c')?.querySelector('code'); if (c) c.textContent = t.value.toLowerCase(); T.preview(S.draft); S.dirty = true; foot(); }
-      else if (ds.num) { cur().tokens[ds.num] = +t.value; const em = t.closest('.tse-f')?.querySelector('em'); if (em) em.textContent = t.value + NUM[ds.num][1]; T.preview(S.draft); S.dirty = true; foot(); }
+      if (ds.color) { cur().tokens[ds.color] = t.value.toLowerCase(); const c = t.closest('.tse-c')?.querySelector('code'); if (c) c.textContent = t.value.toLowerCase(); site(); demo(); S.dirty = true; foot(); }
+      else if (ds.num) { cur().tokens[ds.num] = +t.value; const em = t.closest('.tse-f')?.querySelector('em'); if (em) em.textContent = t.value + NUM[ds.num][1]; site(); demo(); S.dirty = true; foot(); }
     });
     panel.addEventListener('change', (e) => {
       const t = e.target, ds = t.dataset;
       if (ds.color || ds.num) return paint();
+      if ('onpage' in ds) { S.onpage = t.checked; T.preview(S.onpage ? S.draft : T.config); return; }
       if (ds.font) { if (t.value === 'inherit') delete cur().tokens[ds.font]; else cur().tokens[ds.font] = t.value; live(); }
       else if (ds.off) { const m = cur(); m.off = m.off.filter((x) => x !== ds.off); if (t.checked) m.off.push(ds.off); live(); }
-      else if (ds.mot) { const m = cur(); m.motion = m.motion.filter((x) => x !== ds.mot); if (t.checked) m.motion.push(ds.mot); live(); }
+      else if (ds.mot) { const m = cur(); m.motion = m.motion.filter((x) => x !== ds.mot); if (t.checked) m.motion.push(ds.mot); live(); setTimeout(replay, 60); }
       else if ('fxbudget' in ds) { S.fxDraft.budget = Math.max(5, Math.floor(+t.value) || 5); S.fxDirty = true; paint(); }
     });
     const save = async () => {
