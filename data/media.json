@@ -3,6 +3,13 @@
  "twitch": [
   {
    "kind": "video",
+   "id": "2939622118",
+   "title": "Phoenix Fire - Test",
+   "secs": 3018,
+   "thumb": "https://vod-secure.twitch.tv/_404/404_processing_480x272.png"
+  },
+  {
+   "kind": "video",
    "id": "2938665013",
    "title": "Phoenix Fire - Test",
    "secs": 5627,
@@ -35,13 +42,6 @@
    "title": "Phoenix Fire | EA FC Pro Clubs | Rise. Burn. Repeat.",
    "secs": 9125,
    "thumb": "https://static-cdn.jtvnw.net/cf_vods/d3fi1amfgojobc/aaa7f3870a18390a73c9_phoenixfirefc_319264753255_1795032848//thumb/thumb0-480x272.jpg"
-  },
-  {
-   "kind": "video",
-   "id": "2931683689",
-   "title": "Phoenix Fire | EA FC Pro Clubs | Rise. Burn. Repeat.",
-   "secs": 6145,
-   "thumb": "https://static-cdn.jtvnw.net/cf_vods/d3fi1amfgojobc/86b6c6efc75938111606_phoenixfirefc_319252045415_1794947173//thumb/thumb0-480x272.jpg"
   }
  ]
 }
