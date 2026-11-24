@@ -50,15 +50,19 @@ console.log('D1 ready:', db.uuid);
 // R2 bucket for feed photos/clips (P6.1b): create it once, keep a 365-day lifecycle rule as the storage guard's
 // backstop, bind it as MEDIA. Never fails the deploy – without the binding the site just hides the upload button.
 const BUCKET = 'phoenix-media';
+// The committed wrangler.toml already carries the MEDIA binding; if R2 is not usable on the account, drop it so the deploy still goes out.
+const dropMedia = () => { const t = fs.readFileSync(file, 'utf8'); const n = t.replace(/\n?\[\[r2_buckets\]\]\nbinding = "MEDIA"\nbucket_name = "[^"]*"\n/, '\n'); if (n !== t) { fs.writeFileSync(file, n); console.log('R2 unavailable: MEDIA binding removed for this deploy'); } };
 const r2 = await cf('/r2/buckets?per_page=1000');
 if (!r2.success) {
   console.log(`::warning title=R2 not ready::❌ ${why(r2)} – feed uploads stay off (the API token needs "Workers R2 Storage: Edit")`);
+  dropMedia();
 } else {
   let ok = (r2.result?.buckets ?? []).some((b) => b.name === BUCKET);
   if (!ok) {
     const made = await cf('/r2/buckets', { method: 'POST', body: JSON.stringify({ name: BUCKET }) });
     ok = made.success;
     console.log(ok ? `Created R2 bucket ${BUCKET}` : `::warning title=R2 bucket::❌ could not create ${BUCKET} – ${why(made)}`);
+    if (!ok) dropMedia();
   }
   if (ok) {
     const rule = await cf(`/r2/buckets/${BUCKET}/lifecycle`, { method: 'PUT', body: JSON.stringify({ rules: [{
