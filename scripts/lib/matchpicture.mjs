@@ -53,7 +53,7 @@ export function buildMatchPicture(m, homeId, { hide = new Set() } = {}) {
   const contrib = ours.filter((p) => p.g || p.a).sort((a, b) => (b.g + b.a) - (a.g + a.a) || String(a.n).localeCompare(String(b.n)));
   const motm = ours.find((p) => p.mom) ?? null;
   return {
-    id: String(m.matchId), ts: n(m.timestamp), mode: m.matchType === 'playoffMatch' ? 'Playoff' : 'League', res, gf, ga,
+    id: String(m.matchId), ts: n(m.timestamp), mode: m.matchType === 'playoffMatch' ? 'Playoff' : m.matchType === 'friendlyMatch' ? 'Friendly' : 'League', res, gf, ga,
     opp: them.name ?? them.details?.name ?? 'Opponent',
     rows, deeper, lines, avg: mean(ours.map((p) => p.r)),
     contrib: contrib.map(({ k, n: name, g, a }) => ({ k, n: name, g, a })),
