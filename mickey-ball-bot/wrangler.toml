@@ -7,6 +7,7 @@ workers_dev = true
 DISCORD_APP_ID = "1574674400056188958"
 DISCORD_PUBLIC_KEY = "6d189704c60e4f72bd39991a6358af78bbcbaab1bc47817018f1909be4712a56"
 GITHUB_REPO = "devroadtosucces15-boop/Phoenix-Fire"
+PUBLIC_URL = "https://mickey-ball-bot.norexunited.workers.dev"
 
 [[d1_databases]]
 binding = "DB"

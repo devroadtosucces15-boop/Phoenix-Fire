@@ -9,5 +9,5 @@
     "deploy": "wrangler deploy",
     "schema": "node -e \"import('./core/store.js').then(m=>console.log(m.SCHEMA.join(';\\n')+';'))\" > schema.sql"
   },
-  "devDependencies": { "discord.js": "^14.16.3", "wrangler": "^4" }
+  "devDependencies": { "discord.js": "^14.16.3", "playwright-core": "^1.48.0", "wrangler": "^4" }
 }

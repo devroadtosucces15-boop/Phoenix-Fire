@@ -25,7 +25,7 @@ export function normalizeMatch(raw, focusId) {
   const focus = ids.includes(String(focusId)) ? String(focusId) : ids[0];
   const other = ids.find((i) => i !== focus);
   const home = side(raw, focus, raw.players?.[focus]), away = side(raw, other, raw.players?.[other]);
-  return { id: String(raw.matchId), ts: n(raw.timestamp), home, away, res: home.goals > away.goals ? 'W' : home.goals < away.goals ? 'L' : 'D' };
+  return { id: String(raw.matchId), ts: n(raw.timestamp), type: { playoffMatch: 'playoff', gameType5: 'friendly', friendlyMatch: 'friendly' }[raw._type] ?? 'league', home, away, res: home.goals > away.goals ? 'W' : home.goals < away.goals ? 'L' : 'D' };
 }
 
 export const searchHits = (hits) => (Array.isArray(hits) ? hits : [])
