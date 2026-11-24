@@ -7,6 +7,7 @@ import { normalizeMatch, searchHits, crestUrl } from '../core/ea.js';
 import { buildJobs, clubView, streaks, hash } from '../core/data.js';
 import { notice, IS_V2, EPHEMERAL } from '../core/ui.js';
 import * as P from '../core/panels.js';
+import { MATCHDAY_COMMANDS, matchdayCommand, eventComponent, lineupJob, lineupDone, zoneAutocomplete, reminders } from './matchday.js';
 
 const API = 'https://discord.com/api/v10';
 const json = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'Content-Type': 'application/json' } });
@@ -40,10 +41,10 @@ async function dispatch(env, inputs) {
 }
 
 // Defers the Discord reply, parks it in D1, and asks Actions. The interaction token never leaves D1.
-async function askEA(env, ctx, st, i, { kind, q, game = 1, opponents = false }) {
+async function askEA(env, ctx, st, i, { kind, q, game = 1, opponents = false, channel = null }) {
   const ref = crypto.randomUUID().slice(0, 12);
   await st.prunePending();
-  await st.addPending({ ref, token: i.token, guild: i.guild_id, channel: i.channel_id, user: (i.member?.user ?? i.user)?.id, kind, game, opponents });
+  await st.addPending({ ref, token: i.token, guild: i.guild_id, channel: channel ?? i.channel_id, user: (i.member?.user ?? i.user)?.id, kind, game, opponents });
   ctx.waitUntil((async () => {
     const ok = await dispatch(env, { ref, kind, q: String(q).slice(0, 60), game: String(game) });
     if (!ok) { await st.delPending(ref); await editOriginal(env, i.token, notice('Could not reach the data relay', 'Try again in a minute.')); }
@@ -57,6 +58,7 @@ const opt = (i, name) => {
   const walk = (os) => (os ?? []).flatMap((o) => (o.options ? walk(o.options) : [o]));
   return walk(i.data.options).find((o) => o.name === name)?.value;
 };
+const H = { reply, json, opt, dispatch, edit: editOriginal };
 async function statsClub(st, i) {
   const rows = await st.trackedFor(i.guild_id);
   const v = opt(i, 'club');
@@ -69,6 +71,7 @@ const pairRef = (a, b) => [a, b].map((s) => String(s).toLowerCase()).sort().join
 async function onCommand(env, ctx, st, i) {
   const name = i.data.name;
   if (name === 'help') return reply(P.helpPanel(env));
+  if (MATCHDAY_COMMANDS.has(name)) return matchdayCommand(env, ctx, st, i, H);
 
   if (STAT_COMMANDS.has(name)) {
     const club = await statsClub(st, i);
@@ -88,7 +91,7 @@ async function onCommand(env, ctx, st, i) {
       case 'player': {
         const p = await st.playerCard(club.id, opt(i, 'gamertag'));
         if (p && !u('player', p.player)) queueDraw(env, ctx, club);
-        return reply(P.playerPanel(club, opt(i, 'gamertag'), p, u));
+        return reply(P.playerPanel(club, opt(i, 'gamertag'), p, u, p ? await st.playerEvents(club.id, p.player) : null));
       }
       case 'compare': {
         const [a, b] = await Promise.all([st.playerCard(club.id, opt(i, 'player1')), st.playerCard(club.id, opt(i, 'player2'))]);
@@ -124,12 +127,20 @@ async function onCommand(env, ctx, st, i) {
     const done = r && (await st.untrack(i.guild_id, r.club_id));
     return reply({ ...notice(done ? `Stopped tracking ${r.name}` : 'That club is not tracked here', done ? 'Stored history is kept.' : 'Use /match list to see tracked clubs.'), flags: IS_V2 | EPHEMERAL });
   }
-  await askEA(env, ctx, st, i, { kind: sub, q: opt(i, 'club'), game: opt(i, 'game') ?? 1, opponents: !!opt(i, 'opponents') });
+  if (sub === 'main') {
+    const q = String(opt(i, 'club') ?? '').toLowerCase(), rows = await st.trackedFor(i.guild_id);
+    const r = q ? rows.find((x) => x.club_id === q || x.name.toLowerCase() === q) : null;
+    if (!r) return reply({ ...notice('Pick one of the tracked clubs', 'Start typing in `club:` and choose from the list. `/match list` shows them.'), flags: IS_V2 | EPHEMERAL });
+    await st.setMain(i.guild_id, r.club_id);
+    return reply({ ...notice(`${r.name} is now the main club`, 'Stat commands use it whenever you leave `club` empty.', { accent: 'win' }), flags: IS_V2 | EPHEMERAL });
+  }
+  await askEA(env, ctx, st, i, { kind: sub, q: opt(i, 'club'), game: opt(i, 'game') ?? 1, opponents: !!opt(i, 'opponents'), channel: sub === 'track' ? opt(i, 'channel') : null });
   return json({ type: 5 });
 }
 
 async function onComponent(env, ctx, st, i) {
   const [, a, clubId, matchId] = i.data.custom_id.split(':');
+  if (a === 'ev' || a === 'evp') return eventComponent(env, ctx, st, i, H, a, clubId, matchId);
   if (a === 'pick') { // club picker: ml:pick:<kind>:<game>, value = club id
     await askEA(env, ctx, st, i, { kind: clubId === 'search' ? 'stats' : clubId, q: i.data.values[0], game: Number(matchId) || 1 });
     return reply(notice('Fetching that club from EA…', 'This takes up to a minute.'), 7);
@@ -153,7 +164,8 @@ async function onAutocomplete(st, i) {
   const f = (function walk(os) { for (const o of os ?? []) { if (o.focused) return o; const r = walk(o.options); if (r) return r; } })(i.data.options);
   const q = String(f?.value ?? '');
   let out = [];
-  if (f?.name === 'club') out = (await st.trackedFor(i.guild_id)).filter((r) => r.name.toLowerCase().includes(q.toLowerCase())).map((r) => ({ name: r.name, value: r.club_id }));
+  if (f?.name === 'timezone') out = zoneAutocomplete(q);
+  else if (f?.name === 'club') out = (await st.trackedFor(i.guild_id)).filter((r) => r.name.toLowerCase().includes(q.toLowerCase())).map((r) => ({ name: r.name, value: r.club_id }));
   else {
     const club = await statsClub(st, i);
     if (club && ['gamertag', 'player1', 'player2'].includes(f?.name)) out = (await st.playerNames(club.id, q)).map((r) => ({ name: `${r.player} (${r.gp} g)`, value: r.player }));
@@ -166,6 +178,7 @@ async function onAutocomplete(st, i) {
 const crestOf = (c) => crestUrl(c?.crest ?? c?.crestId);
 async function finish(env, st, p) { // the pictures are uploaded: build the final reply
   const reply2 = (d) => editOriginal(env, p.token, d);
+  if (p.kind === 'lineup') return lineupDone(env, st, p, H);
   const club = (await st.trackedFor(p.guild_id)).find((t) => t.club_id === p.club_id);
   const m = await st.storedMatch(p.club_id, p.match_id);
   if (p.kind === 'track') { const c = clubView(club ?? { club_id: p.club_id, name: 'Club' }); return reply2(P.trackedPanel(env, c, p.game, p.channel_id)); }
@@ -240,6 +253,7 @@ async function onIngest(env, st, body) {
 // Pictures are in: post what is waiting (a few per call, D1 caps queries per request).
 async function onFlush(env, st) {
   let posted = 0;
+  await reminders(env, st).catch((e) => console.error('reminders', e)); // match-day reminders ride the 15-minute poll (the account has no spare cron triggers)
   const rows = (await st.takeOutbox()).slice(0, 6), tracked = await st.allTracked();
   for (const o of rows) {
     const t = tracked.find((x) => x.club_id === o.club_id && x.guild_id === o.guild_id), m = await st.storedMatch(o.club_id, o.match_id);
@@ -254,6 +268,7 @@ async function onFlush(env, st) {
 
 // Pictures a club is missing (club-wide cards, or one compare card).
 async function onDraw(env, st, body) {
+  if (String(body.extra ?? '').startsWith('lineup:')) { const j = await lineupJob(st, String(body.extra).slice(7)); return json({ ok: true, draw: j ? [j] : [] }); }
   const row = (await st.allTracked()).find((t) => t.club_id === String(body.club));
   if (!row) return json({ ok: true, draw: [] });
   const club = clubView(row), jobs = await buildJobs(st, club, []);

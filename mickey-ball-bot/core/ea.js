@@ -1,12 +1,13 @@
 // EA data shaping only (no network): turns EA's raw match JSON into the shape the views use.
 const CREST = 'https://eafc24.content.easports.com/fifa/fltOnlineAssets/24B23FDE-7835-41C2-87A2-F453DFDB2E82/2024/fcweb/crests/256x256/l';
 export const crestUrl = (id) => (id != null && id !== '' ? `${CREST}${id}.png` : null);
+import { rawEvents } from './events.js';
 const n = (v) => Number(v) || 0;
 
 export function normalizePlayer(p) {
   return { name: p.playername ?? p.name ?? 'Unknown', pos: p.pos ?? '', rating: n(p.rating), goals: n(p.goals), assists: n(p.assists),
     shots: n(p.shots), passesMade: n(p.passesmade), passAtt: n(p.passattempts), tacklesMade: n(p.tacklesmade), tackleAtt: n(p.tackleattempts),
-    saves: n(p.saves), mom: p.mom === '1' || p.mom === 1 || p.mom === true, red: n(p.redcards) };
+    saves: n(p.saves), ev: rawEvents(p), mom: p.mom === '1' || p.mom === 1 || p.mom === true, red: n(p.redcards) };
 }
 
 function side(raw, id, players) {

@@ -55,6 +55,7 @@ async function htmlFor(T, j) {
     case 'top': return T.tableCard(d.players, d.stat, d.club);
     case 'player': return T.playerCard(d.p, d.club);
     case 'compare': return T.compareCard(d.a, d.b, d.club);
+    case 'lineup': return T.lineupCard(d.L, d.club);
     case 'banner': return T.bannerCard(d);
     default: throw new Error(`unknown card ${j.kind}`);
   }
@@ -94,6 +95,7 @@ try {
   } else if (kind === 'draw') {
     const r = await post('/draw', { club: q, extra });
     await drawAll(r?.draw);
+    if (ref) await post('/done', { ref }, { fatal: false }); // a waiting reply (e.g. /lineup) finishes once its picture is up
   } else {
     if (!ref || !q) throw new Error('missing ref or q');
     try {

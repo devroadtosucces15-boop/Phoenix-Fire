@@ -9,6 +9,9 @@ import { ACCENT, plainText, images, IS_V2 } from '../core/ui.js';
 import * as P from '../core/panels.js';
 import * as T from '../cards/templates.mjs';
 import { commands } from '../core/commands.js';
+import { decodeEvents, boxEv, eventRows, eventSide } from '../core/events.js';
+import { parseWhen, zonedToUtc, validZone } from '../core/when.js';
+import { eventPanel, schedulePanel, lineupPanel, lineupOf, lineupKey, eventTitle, missing } from '../core/matchday.js';
 
 const db = new DatabaseSync(':memory:'); SCHEMA.forEach((s) => db.exec(s));
 const st = makeStore(sqliteExecutor(db));
@@ -77,7 +80,7 @@ test('jobs: all three match cards plus club-wide cards, then nothing once drawn'
   const jobs = await buildJobs(st, club, [latest]);
   const kinds = jobs.map((j) => j.kind);
   for (const k of ['score', 'field', 'box', 'club', 'results', 'top', 'player']) assert.ok(kinds.includes(k), k);
-  assert.equal(jobs.filter((j) => j.kind === 'top').length, 6);
+  assert.equal(jobs.filter((j) => j.kind === 'top').length, 10);
   for (const j of jobs) await st.putCard('100', j.kind, j.ref, j.key);
   assert.equal((await buildJobs(st, club, [latest])).length, 0);
 });
@@ -94,4 +97,121 @@ test('no club-specific branding anywhere in the shipped sources', () => {
   for (const f of ['core/panels.js', 'core/ui.js', 'core/theme.js', 'cards/templates.mjs', 'worker/index.js', 'relay/relay.mjs']) assert.doesNotMatch(fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8'), /phoenix|norex|#e8651a|0xe8651a/i, f);
 });
 
-test('10 generic commands', () => assert.equal(commands.length, 10));
+test('13 generic commands: stats plus match day', () => assert.deepEqual(commands.map((c) => c.name).sort(), ['club', 'compare', 'help', 'history', 'host', 'insight', 'last', 'leaderboard', 'lineup', 'matchday', 'match', 'player', 'results'].sort()));
+
+
+// ---------- decoded event stats ----------
+const withEv = (p, agg) => ({ ...p, match_event_aggregate_0: agg });
+const EVM = { ...mk('9', 9000, 2, 1, 'Delta'), players: { 100: { a: withEv(pl('Ana', 'forward', 8.2, 2, 0), '6:3,30:5,108:2,109:4,110:6,105:1,106:2,107:0,265:2,266:1,111:8,219:2'), b: withEv(pl('Ben', 'midfielder', 7, 0, 2), '6:1,30:2,215:20,216:5'), c: pl('Cy', 'defender', 6.5, 0, 0) },
+  200: { z: withEv(pl('Zed', 'goalkeeper', 6, 1, 0), '6:2,110:3,111:1,219:1') } } };
+const evMatch = normalizeMatch(EVM, '100');
+
+test('event counters decode into named stats and box columns', () => {
+  const e = decodeEvents('6:3,30:5,215:20,216:5');
+  assert.equal(e.interceptions, 3); assert.equal(e.passesCompletedForward, 5); assert.equal(e.passesCompleted, 20);
+  const b = boxEv('6:3,30:5,108:2,109:4,110:6,105:1,106:2,265:2,266:1,111:8,219:2');
+  assert.deepEqual(b, { fwd: 5, int: 3, won: 12, lost: 3, aer: 3, pos: 80 });
+  assert.equal(boxEv(''), null); assert.equal(eventSide([{ ev: '' }]), null);
+});
+
+test('events travel with the match: both sides, summed, us first then them', () => {
+  assert.ok(evMatch.home.players.find((p) => p.name === 'Ana').ev.includes('6:3'));
+  assert.ok(evMatch.away.players[0].ev);
+  const x = eventRows(evMatch.home.players, evMatch.away.players);
+  assert.equal(x.apps, 2); assert.equal(x.of, 3);
+  const ints = x.rows.find((r) => r.k === 'Interceptions'); assert.equal(ints.a, 4); assert.equal(ints.b, 2);
+  assert.equal(x.rows.find((r) => r.k === 'Players in position').u, '%');
+  assert.equal(eventRows(latest.home.players, latest.away.players), null); // a match with no counters says nothing rather than zeros
+});
+
+test('stored per player, summed over history, and back-filled onto an older copy', async () => {
+  await st.saveMatch('100', normalizeMatch({ ...EVM, matchId: '8', timestamp: 8000 }, '100'));
+  const old = normalizeMatch({ ...EVM, matchId: '7', timestamp: 7000 }, '100'); old.home.players.forEach((p) => { p.ev = ''; });
+  await st.saveMatch('100', old);
+  assert.equal((await st.storedMatch('100', '7')).home.players[0].ev, '');
+  assert.equal(await st.saveMatch('100', normalizeMatch({ ...EVM, matchId: '7', timestamp: 7000 }, '100')), false); // not new, but the counters are added
+  assert.ok((await st.storedMatch('100', '7')).home.players.some((p) => p.ev));
+  const e = await st.playerEvents('100', 'Ana');
+  assert.equal(e.apps, 2); assert.equal(e.ints, 6); assert.equal(await st.playerEvents('100', 'Nobody'), null);
+  const board = await st.leaderboard('100', 'ints');
+  assert.equal(board.rows[0].player, 'Ana'); assert.equal(board.rows[0].shown, 6);
+  const roster = await st.rosterData('100');
+  assert.equal(roster.find((p) => p.n === 'Ana').ev.ints, 6);
+});
+
+test('messages and cards show the event data', async () => {
+  const m = await st.storedMatch('100', '8'), c = { name: 'Alpha FC', crest: club.crest };
+  assert.match(plainText(P.matchPanel(club, m, none)), /From the event data[\s\S]*Interceptions: \*\*4\*\* vs 2/);
+  assert.match(plainText(P.boxPanel(club, m, none)), /int 3 · won 12/);
+  assert.match(plainText(P.personalPanel(club, m, m.home.players[0], null)), /Interceptions \*\*3\*\*/);
+  assert.match(plainText(P.playerPanel(club, 'Ana', await st.playerCard('100', 'Ana'), none, await st.playerEvents('100', 'Ana'))), /From the event data/);
+  assert.match(plainText(P.leaderboardPanel(club, 'ints', (await st.leaderboard('100', 'ints')).rows, none)), /Most interceptions/);
+  const draw = (await buildJobs(st, club, [m], { clubWide: false })).find((j) => j.kind === 'box').data.m;
+  const box = T.boxScoreCard(draw, c);
+  assert.match(box, />Int</); assert.match(box, /From the event data/); assert.match(box, /vs Delta|Us first, then Delta/);
+  assert.doesNotMatch(T.boxScoreCard({ ...draw, ps: draw.ps.map((p) => ({ ...p, ev: null })), evx: null }, c), />Int</); // no counters: no empty columns
+  const roster = await st.rosterData('100');
+  assert.match(T.playerCard(roster.find((p) => p.n === 'Ana'), c), /From the event data/);
+  assert.match(T.tableCard(roster, 'ints', c), /Interceptions/);
+});
+
+// ---------- match days ----------
+test('time words are read in the host zone', () => {
+  const now = Date.parse('2026-11-24T12:00:00Z');
+  const w = parseWhen('fri 8:30pm', 'America/New_York', now);
+  assert.deepEqual(w, { date: '2026-11-27', time: '20:30' });
+  assert.equal(new Date(zonedToUtc(w.date, w.time, 'America/New_York')).toISOString(), '2026-11-28T01:30:00.000Z');
+  assert.ok(parseWhen('nonsense', 'UTC', now).error); assert.ok(parseWhen('yesterday 9pm', 'UTC', now).error);
+  assert.ok(validZone('Europe/London')); assert.ok(!validZone('Mars/Base'));
+});
+
+const EV = { id: 'ab12cd34', guild_id: 'g', channel_id: 'c', message_id: 'm', kind: 'league', title: eventTitle('league', 'Rivals FC'), opponent: 'Rivals FC', start: Date.now() + 864e5, duration: 120, players: 11, notes: 'Lobby: abc' };
+const RS = [{ user_id: '1', name: 'Ana', status: 'yes', pos: 'ST', checked_in: 1 }, { user_id: '2', name: 'Ben', status: 'yes', pos: 'CB' }, { user_id: '3', name: 'Cy', status: 'maybe' }, { user_id: '4', name: 'Di', status: 'no' }];
+
+test('match day post: time, counts, names, gaps, three answer buttons and a position picker; blue', () => {
+  const p = eventPanel(EV, RS, { club });
+  assert.equal(p.components[0].accent_color, ACCENT.info);
+  const t = plainText(p);
+  assert.match(t, /League vs Rivals FC/); assert.match(t, /2\/11/); assert.match(t, /🟢Ana `ST`/); assert.match(t, /Maybe \(1\)/); assert.match(t, /goalkeeper/); assert.match(t, /Lobby: abc/);
+  assert.ok(images(p).some((u) => u.includes('l1.png')));
+  const rows = p.components[0].components.filter((c) => c.type === 1);
+  assert.deepEqual(rows[0].components.map((b) => b.label), ['In', 'Maybe', 'Out']);
+  assert.deepEqual(rows[0].components.map((b) => b.custom_id), ['ml:ev:ab12cd34:yes', 'ml:ev:ab12cd34:maybe', 'ml:ev:ab12cd34:no']);
+  assert.equal(rows[1].components[0].type, 3); assert.equal(rows[1].components[0].custom_id, 'ml:evp:ab12cd34');
+  assert.ok(!plainText(eventPanel(EV, RS, { answers: false })).includes('undefined'));
+  assert.equal(eventPanel(EV, RS, { answers: false, who: true }).components[0].components.filter((c) => c.type === 1).length, 0);
+  assert.deepEqual(missing({ players: 3 }, [{ status: 'yes', pos: 'GK' }]), ['2 more players']);
+});
+
+test('schedule lists events with their own buttons; lineup places players by line and keys change with sign-ups', () => {
+  const s = schedulePanel([EV], () => ({ yes: 2, maybe: 1, no: 1 }), club);
+  assert.match(plainText(s), /✅ 2\/11/); assert.ok(plainText(schedulePanel([], () => ({}))).includes('Nothing scheduled'));
+  const L = lineupOf(RS);
+  assert.deepEqual(L.placed.map((p) => [p.n, p.pos]), [['Ana', 'forward'], ['Ben', 'defender']]); assert.deepEqual(L.maybe, ['Cy']);
+  const k1 = lineupKey(EV, L), k2 = lineupKey(EV, lineupOf([...RS, { user_id: '5', name: 'Ed', status: 'yes', pos: 'GK' }]));
+  assert.notEqual(k1, k2); assert.match(k1, /^events\/ab12cd34\/lineup-[a-z0-9]+\.png$/);
+  const pic = T.lineupCard({ ...L, title: EV.title }, { name: 'Alpha FC' });
+  assert.match(pic, /ST/); assert.match(pic, /Ana/);
+  assert.match(plainText(lineupPanel(EV, RS, null, club)), /Defence[\s\S]*CB.* Ben/);
+  assert.ok(images(lineupPanel(EV, RS, 'https://x/y.png', club)).includes('https://x/y.png'));
+});
+
+test('match days are stored per server and answers replace each other', async () => {
+  await st.addEvent({ id: 'e1', guild: 'g1', channel: 'c', club: '100', kind: 'league', title: 'League night', start: Date.now() + 3600_000 * 5, duration: 120, tz: 'UTC', players: 11, by: 'u' });
+  await st.addEvent({ id: 'e2', guild: 'g1', channel: 'c', kind: 'friendly', title: 'Friendly', start: Date.now() + 3600_000 * 30, duration: 90, tz: 'UTC', players: 5, by: 'u' });
+  assert.deepEqual((await st.upcoming('g1', 5)).map((e) => e.id), ['e1', 'e2']); assert.equal((await st.upcoming('g2', 5)).length, 0);
+  await st.answer('e1', 'u1', 'Ana', 'maybe'); await st.answer('e1', 'u1', 'Ana', 'yes'); await st.setPos('e1', 'u1', 'Ana', 'ST'); await st.checkIn('e1', 'u2', 'Ben');
+  const rs = await st.rsvps('e1');
+  assert.equal(rs.length, 2); assert.equal(rs.find((r) => r.user_id === 'u1').pos, 'ST'); assert.equal(rs.find((r) => r.user_id === 'u2').checked_in, 1);
+  assert.equal((await st.countsFor('g1')).get('e1|yes'), 2);
+  assert.equal((await st.dueReminders()).length, 0); // 5 h away: not yet
+  await st.setTz('u1', 'Europe/London'); assert.equal(await st.getTz('u1'), 'Europe/London');
+  await st.cancelEvent('e2'); assert.equal((await st.upcoming('g1', 5)).length, 1);
+});
+
+test('the first tracked club is the main one, and /match main moves it', async () => {
+  await st.track('gm', { id: '100', name: 'Alpha FC', crest: '1' }, 'c1', 'u'); await st.track('gm', { id: '200', name: 'Beta', crest: '2' }, 'c2', 'u');
+  assert.deepEqual((await st.trackedFor('gm')).map((r) => [r.club_id, r.main]), [['100', 1], ['200', 0]]);
+  await st.setMain('gm', '200'); assert.equal((await st.trackedFor('gm'))[0].club_id, '200');
+  await st.untrack('gm', '200'); assert.equal((await st.trackedFor('gm'))[0].main, 1); // removing the main club promotes the next
+});

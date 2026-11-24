@@ -13,3 +13,4 @@ PUBLIC_URL = "https://mickey-ball-bot.norexunited.workers.dev"
 binding = "DB"
 database_name = "mickey-ball-bot"
 database_id = "39f194ba-d3a9-4171-ac29-55c60e77ba47"
+

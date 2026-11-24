@@ -113,6 +113,27 @@ export function fieldCard(m, club) {
 ${markers}</svg>`);
 }
 
+// ---------- lineup (the pitch for /lineup): players placed by the position they picked ----------
+export function lineupCard(L, club) {
+  const stripes = Array.from({ length: 7 }, (_, k) => `<rect x="${7.5 + 15 * k}" width="7.5" height="68" fill="#17603a"/>`).join('');
+  const markers = fieldSlots(L.placed).map(({ p, x, y }) => {
+    const name = String(p.n).length > 15 ? `${String(p.n).slice(0, 14)}…` : p.n;
+    return `<g><circle cx="${x}" cy="${y}" r="3.7" fill="#0b130f" stroke="#efcf7a" stroke-width=".55"/>
+<text x="${x}" y="${y + 1.05}" text-anchor="middle" font-family="Oswald" font-weight="700" font-size="2.7" fill="#efcf7a">${esc(p.role)}</text>
+<text x="${x}" y="${y + 6.5}" text-anchor="middle" font-family="Inter" font-weight="700" font-size="2.15" fill="#fff" stroke="#0b130f" stroke-width=".55" paint-order="stroke">${esc(name)}</text></g>`;
+  }).join('');
+  const bench = L.unplaced.length ? `<text x="3" y="66" font-family="Inter" font-weight="700" font-size="1.7" fill="#ffffffb0">NO POSITION YET: ${esc(L.unplaced.join(', ').toUpperCase().slice(0, 120))}</text>` : '';
+  return page('body{height:777px}svg{display:block}', `<svg viewBox="0 0 105 68" width="${W}" height="777">
+<defs><radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></radialGradient></defs>
+<rect width="105" height="68" fill="#14502e"/>${stripes}
+<g fill="none" stroke="#ffffffb0" stroke-width=".3"><rect x="1" y="1" width="103" height="66"/><line x1="52.5" y1="1" x2="52.5" y2="67"/><circle cx="52.5" cy="34" r="9.15"/>
+<rect x="1" y="13.84" width="16.5" height="40.32"/><rect x="1" y="24.84" width="5.5" height="18.32"/><rect x="87.5" y="13.84" width="16.5" height="40.32"/><rect x="98.5" y="24.84" width="5.5" height="18.32"/></g>
+<rect width="105" height="68" fill="url(#vig)"/>
+<text x="3" y="4.4" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">${esc(club.name).toUpperCase()} LINEUP · ${esc(L.title).toUpperCase()}</text>
+<text x="102" y="4.4" text-anchor="end" font-family="Inter" font-weight="800" font-size="1.75" letter-spacing=".45" fill="#ffffffb0">${L.placed.length + L.unplaced.length} IN  ·  ATTACKING →</text>
+${markers}${bench}</svg>`);
+}
+
 // ---------- rating graph + player card ----------
 export function ratingGraph(tr, { w = 1080, h = 270 } = {}) {
   const pts = (tr ?? []).slice(-10).map(Number).filter((r) => r > 0);
@@ -132,6 +153,7 @@ ${best !== last ? `<text x="${X(last)}" y="${Y(pts[last]) - 18}" text-anchor="mi
 export function playerCard(p, club) {
   const s = p.s ?? {}, graph = ratingGraph(p.tr);
   const tiles = [['Games', s.gp ?? 0], ['Goals', s.g ?? 0], ['Assists', s.a ?? 0], ['Rating', r1(s.r), 'g'], ['MOTM', s.m ?? 0]];
+  const e = p.ev, evTiles = e ? [['Ints', e.ints], ['Won', e.won], ['Lost', e.lost], ['Aerials', e.aer], ['Position', e.pos == null ? '–' : `${e.pos}%`]] : null;
   return page(`
 .wrap{padding:44px 60px 64px}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
@@ -143,22 +165,34 @@ export function playerCard(p, club) {
 <div class="eyebrow">${esc(club.name)} · Player card</div>
 <div class="head"><h1>${esc(p.n)} <span class="chip">${esc(pos3(p.pos))}</span></h1><div class="ovr"><b class="gold">${r1(s.r)}</b><span>AVG RATING</span></div></div>
 <div class="tiles">${tiles.map(([k, v, c]) => `<div class="tile ${c ?? ''}"><b>${esc(v)}</b><span>${k}</span></div>`).join('')}</div>
+${evTiles ? `<div class="g-h">From the event data · ${e.apps} game${e.apps === 1 ? '' : 's'}</div><div class="tiles" style="margin-top:12px">${evTiles.map(([k, v]) => `<div class="tile"><b style="font-size:58px">${esc(v)}</b><span>${k}</span></div>`).join('')}</div>` : ''}
 ${graph ? `<div class="g-h">Match rating · last ${Math.min(10, (p.tr ?? []).length)}</div>${graph}` : ''}
 </div><div class="brand">${esc(club.name)}</div>`);
 }
 
 // ---------- box score ----------
 const pc = (a, b) => (b ? `${Math.round((a / b) * 100)}%` : '–');
+const EV_CARD_COLS = [['int', 'Int'], ['won', 'Won'], ['lost', 'Lost'], ['aer', 'Aer']]; // the four decoded columns that fit the 1200 px card
 export function boxScoreCard(m, club) {
   const ps = [...(m.ps ?? [])].sort((a, b) => (+b.r || 0) - (+a.r || 0)).slice(0, 11);
   const sum = (f) => (m.ps ?? []).reduce((t, p) => t + (+p[f] || 0), 0);
-  const cols = 'minmax(0,1fr) 110px 70px 70px 120px 160px 120px';
+  const evc = (m.ps ?? []).some((p) => p.ev) ? EV_CARD_COLS : [];
+  const cols = `minmax(0,1fr) ${evc.length ? '80px 46px 46px 90px 112px 84px' : '110px 70px 70px 120px 160px 120px'}${evc.map(() => ' 76px').join('')}`;
+  const evCell = (p, k) => `<span class="v ev">${p.ev?.[k] ?? '–'}</span>`;
+  const evTot = (k) => { const have = (m.ps ?? []).filter((p) => p.ev); return `<span>${have.length ? have.reduce((t, p) => t + (p.ev[k] || 0), 0) : '–'}</span>`; };
   const rows = ps.map((p) => {
     const b = band(+p.r, p.mom);
     return `<div class="r${p.mom ? ' top' : ''}"><span class="n">${esc(p.n)}${p.pos ? ` <i>${esc(pos3(p.pos))}</i>` : ''}</span>
-<span class="v big" style="color:${BAND[b]}">${r1(p.r)}</span><span class="v">${p.g ?? 0}</span><span class="v">${p.a ?? 0}</span><span class="v">${pc(p.pm, p.pa)}</span><span class="v">${p.tm ?? 0}/${p.ta ?? 0}</span><span class="v">${p.sh ?? 0}</span></div>`;
+<span class="v big" style="color:${BAND[b]}">${r1(p.r)}</span><span class="v">${p.g ?? 0}</span><span class="v">${p.a ?? 0}</span><span class="v">${pc(p.pm, p.pa)}</span><span class="v">${p.tm ?? 0}/${p.ta ?? 0}</span><span class="v">${p.sh ?? 0}</span>${evc.map(([k]) => evCell(p, k)).join('')}</div>`;
   }).join('');
+  const x = m.evx;
+  const evv = (v, u) => (v == null ? '–' : `${v}${u ?? ''}`);
+  const evSection = x ? `<div class="evh">From the event data</div><div class="evg">${x.rows.map((r) => `<div class="evt"><span>${esc(r.k)}</span><b>${evv(r.a, r.u)}<em>${r.b == null ? '' : ` vs ${evv(r.b, r.u)}`}</em></b></div>`).join('')}</div><p class="evn">EA's event counters for ${x.apps} of ${x.of} players. Us first, then ${esc(m.opp)}.</p>`
+    : (m.ps ?? []).length ? '<p class="evn">No event counters for this match. EA keeps them only for recent matches, so earlier games cannot be filled in.</p>' : '';
   return page(`
+.evh{margin:26px 0 8px;font:700 19px Inter;letter-spacing:.26em;text-transform:uppercase;color:var(--soft)}
+.evg{display:grid;grid-template-columns:1fr 1fr;gap:8px 34px}.evt{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding:6px 0;font:600 25px Inter;color:#cfe0d6}
+.evt b{font:700 30px Oswald;color:var(--g2)}.evt em{font:600 24px Oswald;font-style:normal;color:var(--soft)}.evn{margin-top:14px;font:500 21px Inter;color:var(--mute)}
 .wrap{padding:44px 60px 70px}
 .head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px}
 .head h1{font:700 64px/1 Oswald;text-transform:uppercase;letter-spacing:.02em}
@@ -167,16 +201,17 @@ export function boxScoreCard(m, club) {
 .r{display:grid;grid-template-columns:${cols};align-items:center;column-gap:10px;padding:13px 14px;margin-top:8px;border-radius:12px;background:linear-gradient(90deg,rgba(255,255,255,.04),transparent)}
 .r.top{background:linear-gradient(90deg,rgba(239,207,122,.14),transparent 75%)}
 .n{font:600 30px Inter;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.n i{font:600 19px Oswald;font-style:normal;letter-spacing:.08em;color:var(--g2);background:var(--p3);border-radius:6px;padding:1px 8px;margin-left:8px;vertical-align:3px}
-.v{text-align:right;font:600 30px Oswald;font-variant-numeric:tabular-nums;color:#cfe0d6}.v.big{font-size:38px}
+.v{text-align:right;font:600 30px Oswald;font-variant-numeric:tabular-nums;color:#cfe0d6}.v.ev{color:var(--g2);font-size:26px}${evc.length ? '.n{font-size:26px}.h{font-size:17px;letter-spacing:.12em}' : ''}.v.big{font-size:38px}
 .h span:nth-child(n+2){text-align:right}
 .tot{margin-top:18px;padding:16px 14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:${cols};column-gap:10px;font:700 24px Oswald;color:var(--soft);text-transform:uppercase;letter-spacing:.06em}
 .tot span:nth-child(n+2){text-align:right;color:var(--text)}`,
   `<div class="wrap">
 <div class="eyebrow">${esc(club.name)} · Box score</div>
 <div class="head"><h1>${esc(short(club.name))} ${m.gf}–${m.ga} ${esc(m.opp)}</h1><div class="res"><span class="pill ${m.res}">${RESULT[m.res] ?? ''}</span></div></div>
-<div class="h"><span>Player</span><span>RTG</span><span>G</span><span>A</span><span>Pass</span><span>Tackles</span><span>Shots</span></div>
+<div class="h"><span>Player</span><span>RTG</span><span>G</span><span>A</span><span>Pass</span><span>Tackles</span><span>Shots</span>${evc.map(([, h]) => `<span>${h}</span>`).join('')}</div>
 ${rows}
-<div class="tot"><span>Team</span><span>${r1((m.ps ?? []).length ? sum('r') / m.ps.length : 0)}</span><span>${sum('g')}</span><span>${sum('a')}</span><span>${pc(sum('pm'), sum('pa'))}</span><span>${sum('tm')}/${sum('ta')}</span><span>${sum('sh')}</span></div>
+<div class="tot"><span>Team</span><span>${r1((m.ps ?? []).length ? sum('r') / m.ps.length : 0)}</span><span>${sum('g')}</span><span>${sum('a')}</span><span>${pc(sum('pm'), sum('pa'))}</span><span>${sum('tm')}/${sum('ta')}</span><span>${sum('sh')}</span>${evc.map(([k]) => evTot(k)).join('')}</div>
+${evSection}
 </div><div class="brand">${esc(club.name)}</div>`);
 }
 
@@ -208,7 +243,8 @@ ${rows || '<div class="row"><span style="grid-column:1/-1">No stats to compare y
 // ---------- leaderboard table ----------
 export const TOP_STATS = {
   goals: ['Top scorers', (p) => p.s.g], assists: ['Most assists', (p) => p.s.a], ga: ['Goals + assists', (p) => p.s.g + p.s.a],
-  rating: ['Best average rating', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], motm: ['Most man of the match', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp],
+  rating: ['Best average rating', (p) => (p.s.gp >= 3 ? p.s.r : 0), 1], ints: ['Interceptions', (p) => p.ev?.ints ?? 0], won: ['Possession won', (p) => p.ev?.won ?? 0],
+  aer: ['Aerial duels won', (p) => p.ev?.aer ?? 0], fwd: ['Forward passes', (p) => p.ev?.fwd ?? 0], motm: ['Most man of the match', (p) => p.s.m], games: ['Most appearances', (p) => p.s.gp],
 };
 export function topRows(players, stat) {
   const [, f] = TOP_STATS[stat] ?? TOP_STATS.goals;

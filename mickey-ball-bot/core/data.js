@@ -1,6 +1,7 @@
 // Turns stored matches into the shapes the cards draw, and decides which pictures a club needs.
 import { crestUrl } from './ea.js';
-const TOP_KEYS = ['goals', 'assists', 'ga', 'rating', 'motm', 'games']; // the leaderboards that get a drawn table (same keys as TOP_STATS in the card templates)
+import { boxEv, eventRows } from './events.js';
+const TOP_KEYS = ['goals', 'assists', 'ga', 'rating', 'motm', 'games', 'ints', 'won', 'aer', 'fwd']; // the leaderboards that get a drawn table (same keys as TOP_STATS in the card templates)
 
 // FNV-1a: the same data always gets the same key, so a changed number gets a new picture and Discord never shows a stale one.
 export function hash(o) { let h = 2166136261; const s = JSON.stringify(o); for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36); }
@@ -12,7 +13,7 @@ export function drawMatch(m) {
   const mine = m.home.players;
   return { id: m.id, ts: m.ts, res: m.res, gf: m.home.goals, ga: m.away.goals, opp: m.away.name, oppCrest: crestUrl(m.away.crestId), type: m.type ?? 'league',
     scorers: mine.filter((p) => p.goals > 0).map((p) => ({ n: p.name, g: p.goals })), motm: mine.find((p) => p.mom)?.name ?? null,
-    ps: mine.map((p) => ({ n: p.name, pos: p.pos, r: p.rating, g: p.goals, a: p.assists, sh: p.shots, pa: p.passAtt, pm: p.passesMade, ta: p.tackleAtt, tm: p.tacklesMade, mom: p.mom })) };
+    ps: mine.map((p) => ({ n: p.name, pos: p.pos, r: p.rating, g: p.goals, a: p.assists, sh: p.shots, pa: p.passAtt, pm: p.passesMade, ta: p.tackleAtt, tm: p.tacklesMade, mom: p.mom, ev: boxEv(p.ev) })), evx: eventRows(mine, m.away.players) };
 }
 
 export async function clubData(st, club) {

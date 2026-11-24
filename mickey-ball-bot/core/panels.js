@@ -3,6 +3,7 @@
 // when a picture is missing the message falls back to plain text, so a post never breaks.
 import { message, notice, header, text, sep, footer, label, facts, cards, buttons, menu, tagBlock, side, thumb, resultAccent, RESULT_ICON, RESULT_WORD, ICON } from './ui.js';
 import { ratingDot } from './theme.js';
+import { decodeEvents, eventRows, boxEv } from './events.js';
 
 const r1 = (v) => (+v || 0).toFixed(1);
 const pct = (a, b) => (b ? Math.round((a / b) * 100) : null);
@@ -10,6 +11,12 @@ const KIND = { friendly: 'Friendly', playoff: 'Playoff' };
 const POS = { goalkeeper: 'GK', defender: 'DEF', midfielder: 'MID', forward: 'FWD' };
 const list = (ps, f) => ps.filter((p) => p[f] > 0).map((p) => `${p.name}${p[f] > 1 ? ` ×${p[f]}` : ''}`).join(', ');
 const UPDATED = 'Updates every 15 min';
+// "From the event data": decoded EA counters, us first then them. Text, so it works with or without the pictures.
+const evLines = (m) => {
+  const x = eventRows(m.home.players, m.away.players);
+  if (!x) return null;
+  return [`**📡 From the event data** · ${x.apps} of ${x.of} players`, ...x.rows.map((r) => `${r.k}: **${r.a ?? '–'}${r.a != null ? r.u ?? '' : ''}**${r.b != null ? ` vs ${r.b}${r.u ?? ''}` : ''}`)].join('\n');
+};
 export const banner = (env, name) => `${String(env.PUBLIC_URL).replace(/\/$/, '')}/c/banners/${name}-v1.png`;
 
 // ---------- match centre (the post under /last, /match stats and every auto-post) ----------
@@ -25,6 +32,7 @@ export function matchPanel(club, m, u, { ephemeral = false } = {}) {
     cards(score && { url: score, alt: `${club.name} ${m.home.goals}–${m.away.goals} ${m.away.name}` }),
     facts([[`${ICON.goal} Goals`, list(ps, 'goals') || 'none'], [`${ICON.assist} Assists`, list(ps, 'assists')], ['📊 Team rating', avg != null ? r1(avg) : null]]),
     motm ? facts([[`${ICON.motm} Man of the match`, `${motm.name} · ${r1(motm.rating)}`]]) : null,
+    evLines(m) ? text(evLines(m)) : null,
     sep(),
     field ? [label('Field view · ratings'), cards({ url: field, alt: 'Our players on the pitch with their match ratings' })]
       : ps.length ? text(best.map((p) => `\`${r1(p.rating)}\` ${p.name}`).join('\n')) : null,
@@ -41,7 +49,8 @@ export function boxPanel(club, m, u) {
   return message({ ephemeral: true, accent: resultAccent(m.res), blocks: [
     header({ eyebrow: `${club.name} · Box score`, title: `${club.name} ${m.home.goals}–${m.away.goals} ${m.away.name}`, sub: `<t:${m.ts}:f>` }),
     box ? cards({ url: box, alt: 'Every player: rating, goals, assists, passes, tackles and shots' })
-      : text(ps.map((p) => `\`${r1(p.rating)}\` **${p.name}** · ${p.goals}G ${p.assists}A · pass ${pct(p.passesMade, p.passAtt) ?? '–'}% · tackles ${p.tacklesMade}/${p.tackleAtt} · shots ${p.shots}`).join('\n')),
+      : text(ps.map((p) => { const b = boxEv(p.ev); return `\`${r1(p.rating)}\` **${p.name}** · ${p.goals}G ${p.assists}A · pass ${pct(p.passesMade, p.passAtt) ?? '–'}% · tackles ${p.tacklesMade}/${p.tackleAtt} · shots ${p.shots}${b ? ` · int ${b.int} · won ${b.won} · lost ${b.lost} · aer ${b.aer}` : ''}`; }).join('\n')),
+    evLines(m) ? text(evLines(m)) : null,
   ] });
 }
 
@@ -61,6 +70,10 @@ export function personalPanel(club, m, p, season) {
     p.tackleAtt ? `**🛡️ Tackles**\n**${p.tacklesMade}/${p.tackleAtt}**${tacklePct != null ? ` (${tacklePct}%)` : ''}${tacklePct != null && s?.ta ? vs(tacklePct, pct(s.tm, s.ta), 0, '%') : ''}` : null,
     p.shots ? `**🥅 Shots**\n**${p.shots}**${p.goals ? ` · ${pct(p.goals, p.shots)}% scored` : ''}` : null,
     p.saves ? `**🧤 Saves**\n**${p.saves}**` : null,
+    ...(p.ev ? (() => { const e = decodeEvents(p.ev), b = boxEv(p.ev); return [`**📡 From the event data**\nInterceptions **${b.int}** · won **${b.won}** · lost **${b.lost}** · aerials **${b.aer}**`,
+      `**➡️ Passing**\nForward **${e.passesCompletedForward}** · through **${e.throughPasses}** · long **${e.passesCompletedLong}**${e.passesCompleted + e.passesFailed ? ` · ${pct(e.passesCompleted, e.passesCompleted + e.passesFailed)}% completed` : ''}`,
+      e.dribblesCompleted || e.shotsOnTarget ? `**🏃 Attack**\nDribbles **${e.dribblesCompleted}** · shots on target **${e.shotsOnTarget}** · inside the box **${e.shotsOnTargetInsideBox + e.shotsOffTargetInsideBox}**` : null,
+      b.pos != null ? `**📍 Positioning**\nIn position **${b.pos}%**` : null]; })() : []),
   ].filter(Boolean);
   return message({ ephemeral: true, accent: resultAccent(m.res), blocks: [
     header({ eyebrow: `${club.name} · Player match`, title: `${p.name} · ${m.home.goals}–${m.away.goals} ${m.away.name}`.slice(0, 250), sub: `${RESULT_WORD[m.res]}${p.pos ? ` · ${POS[p.pos] ?? p.pos}` : ''} · <t:${m.ts}:R>`, thumb: club.crest }),
@@ -93,13 +106,14 @@ export function resultsPanel(club, rows, u) {
   ] });
 }
 
-export function playerPanel(club, name, p, u) {
+export function playerPanel(club, name, p, u, ev = null) {
   if (!p) return notice(`No player called ${name}`, 'Start typing and pick a name from the list.');
   const card = u('player', p.player);
   return message({ accent: 'info', blocks: [
     header({ eyebrow: `${club.name} · Player`, title: p.player, sub: `${POS[p.pos] ?? p.pos ?? ''} · ${p.gp} game${p.gp === 1 ? '' : 's'}`.replace(/^ · /, ''), thumb: card ? null : club.crest }),
     cards(card && { url: card, alt: `${p.player}: rating, goals, assists and recent form` }),
     !card && facts([['Rating', `${(+p.avg).toFixed(2)} avg · best ${r1(p.best)}`], ['Goals · Assists', `${p.g} · ${p.a}`], ['Passes', `${pct(p.pm, p.pa) ?? '–'}%`], ['Tackles', `${pct(p.tm, p.ta) ?? '–'}%`], ['Man of the match', p.mom || '0'], ['Form', p.form?.length ? p.form.map(ratingDot).join('') : '']]),
+    ev ? text(`**📡 From the event data** · ${ev.apps} game${ev.apps === 1 ? '' : 's'}\nInterceptions **${ev.ints}** · possession won **${ev.won}** · lost **${ev.lost}** · aerials **${ev.aerial}**\nForward passes **${ev.forward}** · pass accuracy **${ev.passAcc ?? '–'}%**${ev.positioning != null ? ` · in position **${ev.positioning}%**` : ''}`) : null,
     footer(`${UPDATED} · only tracked matches count`),
   ] });
 }
@@ -117,7 +131,7 @@ export function comparePanel(club, a, b, cardUrl) {
   ] });
 }
 
-const BOARD_TITLE = { rating: 'Best average rating (3+ games)', goals: 'Top scorers', assists: 'Most assists', ga: 'Goals + assists', motm: 'Most man of the match', games: 'Most appearances' };
+const BOARD_TITLE = { rating: 'Best average rating (3+ games)', goals: 'Top scorers', assists: 'Most assists', ga: 'Goals + assists', motm: 'Most man of the match', games: 'Most appearances', ints: 'Most interceptions', won: 'Most possession won', aer: 'Most aerial duels won', fwd: 'Most forward passes' };
 export function leaderboardPanel(club, stat, rows, u, { ephemeral = false } = {}) {
   const card = u('top', stat);
   if (!rows.length) return notice('No games logged yet', 'Track a club with /match track and the boards fill in as matches are played.', { ephemeral });
@@ -164,10 +178,12 @@ export function helpPanel(env) {
   return message({ accent: 'info', ephemeral: true, blocks: [
     header({ eyebrow: 'Mickey Ball Bot', title: 'What I can do', sub: 'Pro Clubs match stats for any club' }),
     cards({ url: banner(env, 'help'), alt: 'Mickey Ball Bot commands' }),
-    text('**Find & post**\n`/match search` find a club or its opponents\n`/match stats` post a match (Box score · Club stats · Leaderboard)\n`/match track` start tracking, new matches post by themselves\n`/match untrack` · `/match list`'),
+    text('**Find & post**\n`/match search` find a club or its opponents\n`/match stats` post a match (Box score · Club stats · Leaderboard)\n`/match track` track a club: its new matches post by themselves (track as many as you like)\n`/match main` pick the default club · `/match untrack` · `/match list`'),
     sep(),
-    text('**Stats from tracked matches**\n`/club` record, form, streak · `/results` recent scores · `/last` latest match\n`/player` player card · `/compare` two players · `/leaderboard` top players\n`/history` record vs an opponent · `/insight` form, last 5, streaks'),
-    footer('Leave `club` empty to use this server’s tracked club'),
+    text('**Stats from tracked matches**\n`/club` record, form, streak · `/results` recent scores · `/last` latest match\n`/player` player card · `/compare` two players · `/leaderboard` top players (incl. interceptions, possession won, aerials)\n`/history` record vs an opponent · `/insight` form, last 5, streaks'),
+    sep(),
+    text('**Match days**\n`/host` or `/matchday create` managers schedule a session, league night, friendly… with ✅ ❔ ❌ sign-ups\n`/matchday next` · `schedule` · `who` · `checkin` · `cancel`\n`/lineup` the lineup from the sign-ups, on a pitch'),
+    footer('Leave `club` empty to use the main club · match cards include EA’s decoded event stats'),
   ] });
 }
 
@@ -200,7 +216,7 @@ export function trackedPanel(env, club, added, channelId) {
   return message({ accent: 'info', blocks: [
     header({ eyebrow: 'Tracking', title: `Now tracking ${club.name}`, sub: `Imported ${added} recent match${added === 1 ? '' : 'es'}`, thumb: club.crest }),
     cards({ url: banner(env, 'track'), alt: 'Club tracking' }),
-    text(`New matches post in <#${channelId}> by themselves. Try \`/club\`, \`/leaderboard\` and \`/player\`.`),
+    text(`New matches post in <#${channelId}> by themselves. Try \`/club\`, \`/leaderboard\` and \`/player\`. Track more clubs any time: each keeps its own history.`),
     footer(`Checked every 15 min · club ${club.id}`),
   ] });
 }
@@ -208,6 +224,6 @@ export function trackedPanel(env, club, added, channelId) {
 export function trackedList(env, rows) {
   return message({ accent: 'info', ephemeral: true, blocks: [
     header({ eyebrow: 'Tracking', title: 'Tracked clubs', sub: `${rows.length} in this server` }),
-    text(rows.length ? rows.map((r) => `• **${r.name}** \`${r.club_id}\` → <#${r.channel_id}>`).join('\n') : 'No clubs tracked yet. Use `/match track`.'),
+    text(rows.length ? rows.map((r) => `• **${r.name}** \`${r.club_id}\` → <#${r.channel_id}>${r.main ? ' · ⭐ main' : ''}`).join('\n') + '\n\n⭐ main = the club the stat commands use when `club` is empty (`/match main` changes it).' : 'No clubs tracked yet. Use `/match track`.'),
   ] });
 }
