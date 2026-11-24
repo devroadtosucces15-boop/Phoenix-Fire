@@ -15,6 +15,7 @@
     chip: ['Chips and filters', ['Standard', 'Tinted', 'Square outline']], nav: ['Navigation tabs', ['Standard', 'Underline', 'Filled pill']], dock: ['The dock', ['Standard', 'Glass', 'Minimal bar']],
     input: ['Fields', ['Standard', 'Underline', 'Soft pill']], heading: ['Headings', ['Condensed caps', 'Clean sans', 'Serif']], table: ['Tables', ['Standard', 'Lined', 'Striped']],
     icon: ['Icons', ['Colour', 'Mono', 'Accent tint']], divider: ['Section titles', ['Ribbon', 'Label and rule', 'Underline']], toggle: ['Switches', ['Round', 'Square', 'Small']],
+    playercard: ['Player cards (lab upgrade)', ['Standard', 'Upgrade: foil, glow, drag', 'Upgrade, quiet']], buttonfx: ['Button feel (lab upgrade)', ['Standard', 'Upgrade: squeeze, light, ripple', 'Upgrade, quiet']],
   };
   const OFF = { glow: 'Glow and halos', shine: 'Shine sweeps', shadows: 'Shadows', gradients: 'Gradients', blur: 'Glass blur', textglow: 'Text glow', embers: 'Floating embers', badgepulse: 'Badge pulse', hoverlift: 'Hover lift', borders: 'Borders' };
   const MOT = { Page: ['page-fade', 'page-slide', 'page-zoom', 'page-blur', 'page-wipe'], Entrance: ['enter-rise', 'enter-fade', 'enter-scale', 'enter-blur', 'enter-stagger', 'enter-flip'], Hover: ['hover-lift', 'hover-scale', 'hover-glow', 'hover-underline', 'hover-tilt'], Press: ['press-squish', 'press-sink', 'press-ripple'], Idle: ['idle-float', 'idle-breathe', 'idle-shimmer', 'idle-ping', 'idle-sway'] };

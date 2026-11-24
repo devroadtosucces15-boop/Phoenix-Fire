@@ -9,7 +9,7 @@
   const FONTS = ['inherit', 'Inter', 'Oswald', 'Poppins', 'Montserrat', 'Space Grotesk', 'DM Sans', 'Sora', 'Rajdhani', 'Bebas Neue', 'Barlow Condensed', 'Playfair Display', 'JetBrains Mono', 'system-ui'];
   const FONT_TOKENS = ['fontDisplay', 'fontBody'];
   const NUM_TOKENS = { radius: [0, 40], blur: [0, 40], border: [0, 4], glowSize: [0, 60], shadow: [0, 100], space: [80, 130], text: [85, 125] };
-  const COMPONENTS = ['button', 'card', 'badge', 'chip', 'nav', 'dock', 'input', 'heading', 'table', 'icon', 'divider', 'toggle'];
+  const COMPONENTS = ['button', 'card', 'badge', 'chip', 'nav', 'dock', 'input', 'heading', 'table', 'icon', 'divider', 'toggle', 'playercard', 'buttonfx'];
   const OFF = ['glow', 'shine', 'shadows', 'gradients', 'blur', 'textglow', 'embers', 'badgepulse', 'hoverlift', 'borders'];
   const MOTION = ['page-fade', 'page-slide', 'page-zoom', 'page-blur', 'page-wipe', 'enter-rise', 'enter-fade', 'enter-scale', 'enter-blur', 'enter-stagger', 'enter-flip',
     'hover-lift', 'hover-scale', 'hover-glow', 'hover-underline', 'hover-tilt', 'press-squish', 'press-sink', 'press-ripple', 'idle-float', 'idle-breathe', 'idle-shimmer', 'idle-ping', 'idle-sway'];
