@@ -19,6 +19,8 @@ export const SCHEMA = [
   // lineups: kind 'work' = the one being edited/posted for a match day, 'fav' = a saved favourite; slots = JSON [{u, n}] ×11 in formation order
   `CREATE TABLE IF NOT EXISTS lineups (id TEXT PRIMARY KEY, guild_id TEXT NOT NULL, event_id TEXT, kind TEXT NOT NULL DEFAULT 'work', name TEXT, formation TEXT, slots TEXT NOT NULL, posted INTEGER NOT NULL DEFAULT 0, channel_id TEXT, message_id TEXT, by_user TEXT, at INTEGER NOT NULL)`,
   // a member's gamertag, so stats can follow them into the lineup suggester
+  // a member's round profile picture, uploaded as an application emoji so it can sit before their name
+  `CREATE TABLE IF NOT EXISTS avatars (user_id TEXT PRIMARY KEY, hash TEXT NOT NULL, emoji_id TEXT, name TEXT, at INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS links (guild_id TEXT NOT NULL, user_id TEXT NOT NULL, gamertag TEXT NOT NULL, PRIMARY KEY (guild_id, user_id))`,
 ];
 
@@ -133,7 +135,10 @@ export function makeStore(x) {
     cancelEvent: async (idv) => { await x.run('DELETE FROM rsvps WHERE event_id=?', idv); return x.run('DELETE FROM events WHERE id=?', idv); },
     async countsFor(g) { const m = new Map(); for (const r of await x.all('SELECT event_id, status, COUNT(*) n FROM rsvps WHERE event_id IN (SELECT id FROM events WHERE guild_id=?) GROUP BY event_id, status', g)) m.set(`${r.event_id}|${r.status}`, r.n); return m; },
     async hasBlob(key) { return !!(await x.first('SELECT 1 a FROM blobs WHERE key=?', key)); },
-    rsvps: (idv) => x.all('SELECT * FROM rsvps WHERE event_id=? ORDER BY at', idv),
+    rsvps: (idv) => x.all('SELECT r.*, a.emoji_id, a.name AS emoji_name FROM rsvps r LEFT JOIN avatars a ON a.user_id=r.user_id AND a.emoji_id IS NOT NULL WHERE r.event_id=? ORDER BY r.at', idv),
+    avatarOf: (user) => x.first('SELECT * FROM avatars WHERE user_id=?', id(user)),
+    setAvatar: (user, hash, emojiId, name) => x.run('INSERT INTO avatars (user_id, hash, emoji_id, name, at) VALUES (?,?,?,?,?) ON CONFLICT (user_id) DO UPDATE SET hash=excluded.hash, emoji_id=excluded.emoji_id, name=excluded.name, at=excluded.at', id(user), hash, emojiId ?? null, name ?? null, Date.now()),
+    eventsOfUser: (user) => x.all('SELECT e.* FROM events e JOIN rsvps r ON r.event_id=e.id WHERE r.user_id=? AND e.start + e.duration * 60000 > ?', id(user), Date.now()),
     answer: (idv, user, name, status) => x.run(`INSERT INTO rsvps (event_id, user_id, name, status, at) VALUES (?,?,?,?,?)
       ON CONFLICT (event_id, user_id) DO UPDATE SET status=excluded.status, name=excluded.name, at=excluded.at`, idv, id(user), name, status, Date.now()),
     setPos: (idv, user, name, pos) => x.run(`INSERT INTO rsvps (event_id, user_id, name, status, pos, at) VALUES (?,?,?,'yes',?,?)

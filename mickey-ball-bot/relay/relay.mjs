@@ -59,6 +59,7 @@ async function htmlFor(T, M, j) {
     case 'compare': return T.compareCard(d.a, d.b, d.club);
     case 'lineup': return T.lineupCard(d.L, d.club);
     case 'banner': return T.bannerCard(d);
+    case 'avatar': return `<!doctype html><html><body style="margin:0;background:transparent"><img src="${d.url}" width="128" height="128" style="display:block;border-radius:50%"></body></html>`;
     default: throw new Error(`unknown card ${j.kind}`);
   }
 }
@@ -70,7 +71,7 @@ async function drawAll(jobs) {
   try {
     for (const j of jobs) {
       try {
-        const png = await r.png(await htmlFor(T, M, j));
+        const png = await r.png(await htmlFor(T, M, j), j.kind === 'avatar' ? { transparent: true, clip: { x: 0, y: 0, width: 128, height: 128 } } : undefined);
         const qs = new URLSearchParams({ key: j.key, ...(j.club?.id ? { club: j.club.id, kind: j.kind, ref: j.ref ?? '' } : {}) });
         const res = await fetch(`${worker}/card?${qs}`, { method: 'PUT', headers: { 'X-Key': RELAY_KEY, 'Content-Type': 'text/plain' }, body: png.toString('base64') });
         if (!res.ok) throw new Error(`upload ${res.status}`);

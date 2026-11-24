@@ -10,7 +10,7 @@ export const ACCENT = {
   win: 0x3ddc84,   // a win
   draw: 0xf5c842,  // a draw
   loss: 0xff5a52,  // a defeat
-  info: 0x4aa8ff, // everything that is not a match result: stats, search, help, notices
+  info: 0xb54cff, // everything that is not a match result: stats, search, help, notices
 };
 export const resultAccent = (res) => ({ W: 'win', D: 'draw', L: 'loss' }[res] ?? 'info');
 export const ICON = { goal: '⚽', assist: '🎯', motm: '⭐', win: '✅', draw: '➖', loss: '❌' };

@@ -50,7 +50,7 @@ test('store keeps one copy and totals', async () => {
 });
 
 test('stripe colours: win green, draw yellow, loss red, everything else blue', () => {
-  assert.equal(ACCENT.win, 0x3ddc84); assert.equal(ACCENT.draw, 0xf5c842); assert.equal(ACCENT.loss, 0xff5a52); assert.equal(ACCENT.info, 0x4aa8ff);
+  assert.equal(ACCENT.win, 0x3ddc84); assert.equal(ACCENT.draw, 0xf5c842); assert.equal(ACCENT.loss, 0xff5a52); assert.equal(ACCENT.info, 0xb54cff);
   const accent = (m) => P.matchPanel(club, m, none).components[0].accent_color;
   assert.equal(accent(latest), ACCENT.win);
   assert.equal(accent({ ...latest, res: 'D' }), ACCENT.draw);

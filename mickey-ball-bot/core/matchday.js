@@ -20,7 +20,8 @@ export function eventTitle(kind, opponent) {
 }
 
 const by = (rs, st) => rs.filter((r) => r.status === st);
-const nm = (r) => `${r.checked_in ? '🟢' : ''}${r.name}${r.pos ? ` \`${r.pos}\`` : ''}`;
+const face = (r) => (r.emoji_id && r.emoji_name ? `<:${r.emoji_name}:${r.emoji_id}> ` : '');
+const nm = (r) => `${r.checked_in ? '🟢' : ''}${face(r)}${r.name}${r.pos ? ` \`${r.pos}\`` : ''}`;
 const clip = (a, n = 1500) => { const s = a.join(', '); return s.length > n ? `${s.slice(0, n - 1)}…` : s; };
 const at = (e) => Math.floor(e.start / 1000);
 
@@ -44,7 +45,7 @@ export function eventPanel(e, rs, { club = null, who = false, ephemeral = false,
     sep(),
     text(`**✅ In (${yes.length})**\n${yes.length ? clip(yes.map(nm)) : '_nobody yet_'}`),
     maybe.length ? text(`**❔ Maybe (${maybe.length})**\n${clip(maybe.map(nm))}`) : null,
-    who || no.length ? text(`**❌ Out (${no.length})**\n${no.length ? clip(no.map((r) => r.name)) : '_nobody_'}`) : null,
+    who || no.length ? text(`**❌ Out (${no.length})**\n${no.length ? clip(no.map((r) => `${face(r)}${r.name}`)) : '_nobody_'}`) : null,
     need.length ? text(`⚠️ **Still needed:** ${need.join(' · ')}`) : yes.length ? text('✅ **Full squad.**') : null,
     footer(`Times show in your own time zone · 🟢 = checked in · pick your position below`),
   ];

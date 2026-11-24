@@ -18,7 +18,7 @@ async function postEvent(env, channel, data, mentions) {
 }
 const editPost = (env, e, data) => (e.channel_id && e.message_id
   ? fetch(`${API}/channels/${e.channel_id}/messages/${e.message_id}`, { method: 'PATCH', headers: bot(env), body: JSON.stringify({ flags: data.flags & IS_V2, components: data.components, allowed_mentions: { parse: [] } }) }).catch(() => null) : null);
-async function refreshPost(env, st, e) { return editPost(env, e, eventPanel(e, await st.rsvps(e.id), { club: await mainClub(st, e.guild_id) })); }
+export async function refreshPost(env, st, e) { return editPost(env, e, eventPanel(e, await st.rsvps(e.id), { club: await mainClub(st, e.guild_id) })); }
 
 // ---- create ----
 const addDays = (date, n) => new Date(Date.parse(`${date}T12:00:00Z`) + n * 864e5).toISOString().slice(0, 10);
@@ -83,6 +83,7 @@ export async function matchdayCommand(env, ctx, st, i, h) {
     if (Date.now() < opens) return say(h, 'Check-in is not open yet', `It opens <t:${Math.floor(opens / 1000)}:R>, an hour before kick-off.`);
     const me = who(i);
     await st.checkIn(e.id, me.id, me.name);
+    ctx.waitUntil(ensureAvatar(env, st, i, h));
     ctx.waitUntil(refreshPost(env, st, e));
     return say(h, '✅ You are on', `Checked in for **${e.title}**. Good luck.`, { accent: 'win' });
   }
@@ -94,6 +95,7 @@ export async function eventComponent(env, ctx, st, i, h, kind, eventId, value) {
   const e = await st.getEvent(eventId);
   if (!e) return h.reply({ ...notice('This match day is gone', 'It was cancelled or already played.'), flags: IS_V2 }, 7);
   const me = who(i);
+  ctx.waitUntil(ensureAvatar(env, st, i, h));
   if (kind === 'ev' && ['yes', 'maybe', 'no'].includes(value)) await st.answer(e.id, me.id, me.name, value);
   else if (kind === 'evp' && POSITIONS.includes(i.data.values?.[0])) await st.setPos(e.id, me.id, me.name, i.data.values[0]);
   const club = await mainClub(st, e.guild_id), panel = eventPanel(e, await st.rsvps(e.id), { club, ping: null });
@@ -111,6 +113,34 @@ export async function reminders(env, st) {
     if (!e.channel_id) continue;
     const ids = (await st.rsvps(e.id)).filter((r) => r.status !== 'no').map((r) => r.user_id).slice(0, 40);
     const mention = ids.map((u) => `<@${u}>`).join(' ');
-    await postEvent(env, e.channel_id, { flags: IS_V2, components: [{ type: 17, accent_color: 0x4aa8ff, components: [{ type: 10, content: `⏰ **${e.title}** starts <t:${Math.floor(e.start / 1000)}:R>\n${mention || '_nobody has signed up yet_'}\nCheck in with \`/matchday checkin\`, see the lineup with \`/lineup\`.` }] }] }, { users: ids });
+    await postEvent(env, e.channel_id, { flags: IS_V2, components: [{ type: 17, accent_color: 0xb54cff, components: [{ type: 10, content: `⏰ **${e.title}** starts <t:${Math.floor(e.start / 1000)}:R>\n${mention || '_nobody has signed up yet_'}\nCheck in with \`/matchday checkin\`, see the lineup with \`/lineup\`.` }] }] }, { users: ids });
   }
+}
+
+// ---- round profile pictures: the picture is cut into a circle by the Actions job, uploaded here and kept as an application emoji ----
+const avatarUrl = (uid, hash) => (/^d\d$/.test(hash) ? `https://cdn.discordapp.com/embed/avatars/${hash.slice(1)}.png` : `https://cdn.discordapp.com/avatars/${uid}/${hash}.png?size=128`);
+export const avatarJob = (uid, hash) => (/^\d{5,25}$/.test(uid) && /^(a_)?[a-f0-9]{8,40}$|^d[0-5]$/.test(hash) ? { kind: 'avatar', ref: uid, key: `avatars/${uid}-${hash}.png`, data: { url: avatarUrl(uid, hash) } } : null);
+// First time we see someone (or their picture changed): ask for a round version once.
+export async function ensureAvatar(env, st, i, h) {
+  const u = i.member?.user ?? i.user;
+  if (!/^\d{5,25}$/.test(u?.id ?? '')) return;
+  const hash = u.avatar ?? `d${Number((BigInt(u.id) >> 22n) % 6n)}`, row = await st.avatarOf(u.id);
+  if (row && row.hash === hash && (row.emoji_id || Date.now() - row.at < 30 * 60_000)) return;
+  await st.setAvatar(u.id, hash, row?.hash === hash ? row.emoji_id : row?.emoji_id ?? null, row?.name ?? null);
+  await h.dispatch(env, { ref: '', kind: 'draw', q: '-', game: '1', extra: `avatar:${u.id}:${hash}` });
+}
+// The circle arrived: make it an emoji (replacing the old one), then refresh the sign-up posts that show this person.
+export async function onAvatar(env, st, key, b64) {
+  const m = key.match(/^avatars\/(\d+)-([a-z0-9_]+)\.png$/);
+  if (!m) return false;
+  const [, uid, hash] = m, row = await st.avatarOf(uid);
+  if (!row || row.hash !== hash) return true; // an older picture: ignore
+  const name = `av${uid.slice(-10)}${hash.replace(/[^a-z0-9]/g, '').slice(0, 8)}`;
+  const res = await fetch(`${API}/applications/${env.DISCORD_APP_ID}/emojis`, { method: 'POST', headers: bot(env), body: JSON.stringify({ name, image: `data:image/png;base64,${b64}` }) }).catch(() => null);
+  if (!res?.ok) { console.error(`avatar emoji ${res?.status}`); return false; }
+  const emoji = await res.json().catch(() => ({}));
+  await st.setAvatar(uid, hash, emoji.id, name);
+  if (row.emoji_id && row.emoji_id !== emoji.id) await fetch(`${API}/applications/${env.DISCORD_APP_ID}/emojis/${row.emoji_id}`, { method: 'DELETE', headers: bot(env) }).catch(() => null);
+  for (const e of await st.eventsOfUser(uid)) await refreshPost(env, st, e);
+  return true;
 }

@@ -198,3 +198,24 @@ test('session recap: claimed once when the session ends, drawn, posted once with
   assert.ok(m); assert.match(JSON.stringify(m.body.components), new RegExp(job.key.replace(/[/.]/g, '.'))); assert.equal(m.body.flags, 1 << 15);
   calls.length = 0; await post('/flush', {}); assert.ok(!calls.find((c) => /Session recap/i.test(JSON.stringify(c.body)))); // posted once
 });
+
+test('sign-ups get a round profile picture emoji: asked once, uploaded as an app emoji, shown before the name', async () => {
+  const e = db.prepare('SELECT id FROM events ORDER BY start LIMIT 1').get().id;
+  const who = { user: { id: '123456789012345', username: 'zed', avatar: 'abcdef0123456789' }, permissions: '0', roles: [] };
+  calls.length = 0;
+  await send(clickAs(who, `ml:ev:${e}:yes`));
+  const d = calls.filter((c) => c.url.includes('/dispatches') && /avatar:/.test(c.body.inputs.extra));
+  assert.equal(d.length, 1); assert.equal(d[0].body.inputs.extra, 'avatar:123456789012345:abcdef0123456789');
+  calls.length = 0; await send(clickAs(who, `ml:ev:${e}:maybe`)); // already asked: not again
+  assert.ok(!calls.find((c) => c.url.includes('/dispatches') && /avatar:/.test(c.body.inputs.extra)));
+  const post = (path, body) => worker.fetch(new Request(`https://bot.example${path}`, { method: 'POST', headers: { 'x-key': 'k' }, body: JSON.stringify(body) }), env, ctx).then((r) => r.json());
+  const job = (await post('/draw', { club: '-', extra: 'avatar:123456789012345:abcdef0123456789' })).draw[0];
+  assert.equal(job.kind, 'avatar'); assert.match(job.data.url, /cdn\.discordapp\.com\/avatars\/123456789012345\/abcdef0123456789\.png/);
+  assert.deepEqual((await post('/draw', { club: '-', extra: 'avatar:1:../../x' })).draw, []); // nothing unsafe is drawn
+  calls.length = 0;
+  const up = await worker.fetch(new Request(`https://bot.example/card?key=${job.key}`, { method: 'PUT', headers: { 'x-key': 'k' }, body: 'iVBORw0KGgo=' }), env, ctx);
+  assert.equal((await up.json()).ok, true);
+  const mk = calls.find((c) => c.url.endsWith('/applications/app/emojis')); assert.ok(mk); assert.match(mk.body.image, /^data:image\/png;base64,/); assert.match(mk.body.name, /^av[a-z0-9]+$/);
+  assert.equal(db.prepare("SELECT emoji_id e FROM avatars WHERE user_id='123456789012345'").get().e, 'msg1'); // the stub answers id "msg1"
+  assert.match(txt(await send(clickAs(who, `ml:ev:${e}:yes`))), new RegExp(`<:${mk.body.name}:msg1> zed`));
+});

@@ -8,7 +8,7 @@ import { buildJobs, clubView, streaks, hash } from '../core/data.js';
 import { findSessions, isDue, buildRecap } from '../core/recap.js';
 import { notice, IS_V2, EPHEMERAL } from '../core/ui.js';
 import * as P from '../core/panels.js';
-import { MATCHDAY_COMMANDS, matchdayCommand, eventComponent, zoneAutocomplete, reminders } from './matchday.js';
+import { MATCHDAY_COMMANDS, matchdayCommand, eventComponent, zoneAutocomplete, reminders, avatarJob, onAvatar } from './matchday.js';
 import { lineupComponent, lineupJob, lineupPostDone, setupComponent, suggestUse } from './lineup.js';
 import { gate } from './access.js';
 
@@ -307,6 +307,7 @@ async function onFlush(env, st) {
 
 // Pictures a club is missing (club-wide cards, or one compare card).
 async function onDraw(env, st, body) {
+  if (String(body.extra ?? '').startsWith('avatar:')) { const [, uid, hash] = String(body.extra).split(':'); const j = avatarJob(uid, hash); return json({ ok: true, draw: j ? [j] : [] }); }
   if (String(body.extra ?? '').startsWith('lineup:')) { const j = await lineupJob(st, String(body.extra).slice(7)); return json({ ok: true, draw: j ? [j] : [] }); }
   const row = (await st.allTracked()).find((t) => t.club_id === String(body.club));
   if (!row) return json({ ok: true, draw: [] });
@@ -324,6 +325,7 @@ async function onUpload(env, st, url, req) {
   if (!/^[a-z0-9][a-z0-9/_.-]{3,150}\.png$/.test(key)) return json({ error: 'bad key' }, 400);
   const b64 = await req.text(); // the picture as base64 text: stored as is, nothing to decode here
   if (!/^[A-Za-z0-9+/=]+$/.test(b64.slice(0, 200)) || b64.length > 1_800_000) return json({ error: 'bad picture' }, 400);
+  if (key.startsWith('avatars/')) return json({ ok: await onAvatar(env, st, key, b64) });
   await st.putBlob(key, b64);
   const club = url.searchParams.get('club');
   if (club) await st.putCard(club, url.searchParams.get('kind') ?? '', url.searchParams.get('ref') ?? '', key);

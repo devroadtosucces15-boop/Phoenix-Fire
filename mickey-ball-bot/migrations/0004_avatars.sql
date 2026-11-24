@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS avatars (user_id TEXT PRIMARY KEY, hash TEXT NOT NULL, emoji_id TEXT, name TEXT, at INTEGER NOT NULL);
