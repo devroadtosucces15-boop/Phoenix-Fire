@@ -12,6 +12,7 @@
 // account) – check that a real dropped clip transcribes correctly before relying on this; see P11.13 in
 // PLANNING/ROADMAP.md. The model id/input shape follows Cloudflare's documented Workers AI Whisper contract
 // (`{ audio: number[] }` → `{ text }`), same as every other `@cf/...` call in this codebase.
+import { runText } from './aitext.js';
 import { kvOf } from './kv.js';
 import { safely } from './notify.js';
 import { orgName, channelFor } from './orgconfig.js';
@@ -19,7 +20,6 @@ import { message, header, text, cards, picture } from './ui.js';
 
 const API = 'https://discord.com/api/v10';
 const WHISPER_MODEL = '@cf/openai/whisper';
-const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 const IMAGE_MODEL = '@cf/black-forest-labs/flux-1-schnell';
 const MAX_BYTES = 8e6; // 8 MB – generous for a short voice clip, keeps a huge file from stalling the cron
 const RED = 0xe8651a;
@@ -48,7 +48,7 @@ async function transcribe(env, url) {
 // The one line worth sharing – falls back to the transcript's first sentence if the text model can't pick one.
 export async function bestLine(env, transcript) {
   try {
-    const out = await env.AI.run(TEXT_MODEL, {
+    const out = await runText(env, {
       messages: [
         { role: 'system', content: 'Pick the single most quotable, exciting sentence from this football (soccer) voice clip transcript. Reply with ONLY that sentence, verbatim, no quote marks, no extra text.' },
         { role: 'user', content: transcript.slice(0, 2000) },

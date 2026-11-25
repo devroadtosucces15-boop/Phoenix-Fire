@@ -7,9 +7,9 @@ import { orgName } from './orgconfig.js';
 import { kvOf } from './kv.js';
 import { LANGUAGES, LANG_NAME, DEFAULT_LANG, TONES } from './translatelangs.js';
 export { LANGUAGES, LANG_NAME, DEFAULT_LANG, TONES };
+import { runText } from './aitext.js';
 import { spendAi, aiRefusal, refundAi, AI_COST } from './aibudget.js';
 
-const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 export const MAX_CHARS = 1500; // input cap: keeps one call cheap and the answer inside Discord's limit
 
 const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
@@ -49,27 +49,9 @@ export function parseTranslation(out) {
 }
 
 // ---------- the AI call ----------
-// A call that hangs would outlive the Worker's background time, the reply would never be edited in and Discord would show "couldn't load any
-// response". So every call has a time limit, and a second model is tried when the first one fails or is slow.
-const FALLBACK_MODEL = '@cf/meta/llama-3.1-8b-instruct';
-export const AI_TIMEOUT_MS = 12000;
+// The AI call itself lives in bot/aitext.js (current models, a time limit per call, a second model when the first fails).
 async function runModel(env, system, input, maxTokens) {
-  let last;
-  for (const model of [TEXT_MODEL, FALLBACK_MODEL]) {
-    let timer;
-    try {
-      const call = env.AI.run(model, { messages: [{ role: 'system', content: system }, { role: 'user', content: input }], max_tokens: maxTokens });
-      const out = await Promise.race([call, new Promise((_, no) => { timer = setTimeout(() => no(new Error('The AI took too long to answer.')), AI_TIMEOUT_MS); })]);
-      const answer = typeof out?.response === 'string' ? out.response.trim() : '';
-      if (answer) return answer;
-      last = new Error('The AI sent back nothing.');
-    } catch (e) {
-      last = e;
-      if (/\b4006\b|daily free allocation|neurons/i.test(String(e?.message))) throw e; // out of budget: a second model will not help
-      console.log('translator model failed', model, String(e?.message).slice(0, 160));
-    } finally { clearTimeout(timer); }
-  }
-  throw last;
+  return (await runText(env, { messages: [{ role: 'system', content: system }, { role: 'user', content: input }], max_tokens: maxTokens })).response;
 }
 
 // Returns { ok: true, ... } or { ok: false, error } – never throws.

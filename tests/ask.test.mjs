@@ -27,7 +27,7 @@ await tt('askAnswer sends the question + context to the text model and trims the
   let seen;
   const fakeEnv = { AI: { run: async (model, input) => { seen = { model, input }; return { response: '  Alice leads with 12 goals.  ' }; } } };
   const out = await askAnswer(fakeEnv, 'who is top scorer?', 'Top scorers: Alice (12).');
-  return out === 'Alice leads with 12 goals.' && seen.model.includes('llama') && seen.input.messages[1].content === 'who is top scorer?' && seen.input.messages[0].content.includes('Top scorers: Alice (12).');
+  return out === 'Alice leads with 12 goals.' && /^@cf\//.test(seen.model) && seen.input.messages[1].content === 'who is top scorer?' && seen.input.messages[0].content.includes('Top scorers: Alice (12).');
 });
 await tt('askAnswer returns null on an empty model reply, not an empty string', async () => {
   const fakeEnv = { AI: { run: async () => ({ response: '   ' }) } };

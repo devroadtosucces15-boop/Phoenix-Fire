@@ -10,6 +10,7 @@
 // answer, a bad answer is replaced by a built-in roast); never names the club inside a roast; no pings; per-person cooldown, at most 3 roasts a day per
 // target, bots and the mascot itself are not targets; managers can mute; AI use is capped at 20% of the daily pool (bot/aibudget.js, feature `mascot`);
 // flag `mascot` ships off (kill switch). No member opt-out (owner declined).
+import { runText } from './aitext.js';
 import { can, flagOn } from './roles.js';
 import { message, notice, reply, header, text, sep, footer, buttons, cards, bannerUrl } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
@@ -20,7 +21,6 @@ import { loadProfile } from './serverintel.js';
 export const MASCOT_COMMANDS = new Set(['mascot']);
 export const MASCOT_FLAG = 'mascot';
 export const ROAST_PER_TARGET_DAILY = 3;
-const MODEL = '@cf/meta/llama-3.1-8b-instruct';
 const clean = (s, n = 200) => String(s ?? '').replace(/<[@#&!]+\d+>/g, '').replace(/\s+/g, ' ').trim().slice(0, n);
 
 // ---------- the guardrail filter ----------
@@ -81,7 +81,7 @@ async function ai(env, system, input, maxTokens, spend) {
   const s = await spendAi(env, { cost: AI_COST.text, feature: 'mascot', ...spend });
   if (!s.ok) return { ok: false, error: aiRefusal(s), budget: true };
   try {
-    const out = await env.AI.run(MODEL, { messages: [{ role: 'system', content: system }, { role: 'user', content: input }], max_tokens: maxTokens });
+    const out = await runText(env, { messages: [{ role: 'system', content: system }, { role: 'user', content: input }], max_tokens: maxTokens });
     const body = typeof out?.response === 'string' ? out.response.trim() : '';
     return body ? { ok: true, body } : { ok: false, error: 'No answer came back.' };
   } catch { return { ok: false, error: 'The mascot could not answer right now.' }; }

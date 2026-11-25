@@ -15,6 +15,7 @@
 //   5. AI budget: at most 20% of the daily Workers AI pool (bot/aibudget.js, feature `intel`). Over budget the run is skipped and says so.
 // Needs (owner step): the Message Content intent in the Discord Developer Portal. Without it Discord returns empty text and the run reports "no content".
 // D1 meta: `sv_intel` (the latest profile), `sv_intel_job` (a run in progress: queue + running totals), `sv_intel_status` (why the last run did not finish).
+import { runText } from './aitext.js';
 import { can, flagOn, loadFlagOverrides, withFlagOverrides } from './roles.js';
 import { disabledOutputs } from './controls.js';
 import { message, notice, reply, header, text, sep, footer, buttons, cards, bannerUrl } from './ui.js';
@@ -191,7 +192,7 @@ export async function narrate(env, profile, now = Date.now()) {
   if (!spent.ok) return null;
   try {
     const facts = `Topics: ${profile.topics.slice(0, 4).map((t) => `${TOPIC_NAME[t.k]} ${t.n}`).join(', ')}. Mood: ${profile.tone.warm} warm, ${profile.tone.heated} heated, ${profile.tone.neutral} neutral of ${profile.n}. Busiest: ${profile.voice.busiest}. Flags: ${profile.flags.length}.`;
-    const out = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', { messages: [{ role: 'system', content: 'You advise the managers of a football gaming club. In two short sentences say how the team feels and how to approach it. Use only the numbers given. No names.' }, { role: 'user', content: facts }], max_tokens: 120 });
+    const out = await runText(env, { messages: [{ role: 'system', content: 'You advise the managers of a football gaming club. In two short sentences say how the team feels and how to approach it. Use only the numbers given. No names.' }, { role: 'user', content: facts }], max_tokens: 120 });
     return typeof out?.response === 'string' ? out.response.trim().slice(0, 400) : null;
   } catch { return null; }
 }

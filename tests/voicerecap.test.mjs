@@ -31,7 +31,7 @@ let whisperFail = false, textFail = false, imgFail = false;
 env.AI = {
   run: async (model) => {
     if (model.includes('whisper')) { if (whisperFail) throw new Error('whisper down'); return { text: 'What a strike! That is an absolute screamer from thirty yards.' }; }
-    if (model.includes('llama')) { if (textFail) throw new Error('text model down'); return { response: '"That is an absolute screamer from thirty yards."' }; }
+    if (/gemma|qwen/.test(model)) { if (textFail) throw new Error('text model down'); return { response: '"That is an absolute screamer from thirty yards."' }; }
     if (imgFail) throw new Error('image model down');
     return { image: Buffer.from('x'.repeat(600)).toString('base64') };
   },

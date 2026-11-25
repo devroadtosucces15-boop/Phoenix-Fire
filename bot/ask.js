@@ -1,10 +1,10 @@
 // P11.11 – `/ask` club chatbot: answers natural-language questions about the club using the site's own JSON
 // stats as context for the Workers AI text model confirmed working in P11.1 – no new data pipeline, a
 // free-form version of /top and /compare.
-const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 
 // A compact, factual brief the model is told to answer only from – keeps it grounded in real numbers instead
 // of guessing, and small enough to stay well inside the model's context window.
+import { runText } from './aitext.js';
 export function buildAskContext(club, players) {
   const squad = (players ?? []).filter((p) => p.home && p.s && p.src === 'club');
   const top = (label, f, dec = 0) => {
@@ -35,10 +35,10 @@ export async function askAnswer(env, question, context) {
     '',
     context,
   ].join('\n');
-  const out = await env.AI.run(TEXT_MODEL, {
+  const out = await runText(env, {
     messages: [{ role: 'system', content: prompt }, { role: 'user', content: String(question).slice(0, 300) }],
     max_tokens: 220,
-  });
+  }).catch((e) => { if (/sent back nothing/.test(e.message)) return null; throw e; }); // an empty answer is "no answer", not a crash
   const text = typeof out?.response === 'string' ? out.response.trim() : '';
   return text ? text.slice(0, 1800) : null; // Discord message content cap is 2000
 }

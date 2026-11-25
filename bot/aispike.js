@@ -9,9 +9,11 @@
 // it, and it's no longer in Cloudflare's model catalog (only `stable-diffusion-v1-5-inpainting`, a masked
 // editor, remains under "image-to-image"). P11.5's avatar card pivots to: AI text-to-image background/frame
 // art + the member's real uploaded photo composited on top in SVG – not an AI restyle of the photo itself.
+import { TEXT_MODELS, answerOf } from './aitext.js';
 import { can } from './roles.js';
 
-export const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
+export const TEXT_MODEL = TEXT_MODELS[0]; // the list lives in bot/aitext.js
+
 export const IMAGE_MODEL = '@cf/black-forest-labs/flux-1-schnell'; // text-to-image only – no img2img available
 
 // Workers AI image models hand back a ReadableStream/ArrayBuffer/Uint8Array of raw bytes, or (Flux) a JSON
@@ -28,7 +30,7 @@ async function testText(env) {
   const start = Date.now();
   try {
     const r = await env.AI.run(TEXT_MODEL, { messages: [{ role: 'user', content: 'Reply with the single word: pong' }], max_tokens: 10 });
-    return { ok: true, ms: Date.now() - start, sample: String(r?.response ?? JSON.stringify(r)).slice(0, 120) };
+    return { ok: true, ms: Date.now() - start, sample: String(answerOf(r) || JSON.stringify(r)).slice(0, 120) };
   } catch (e) {
     return { ok: false, ms: Date.now() - start, error: e.message };
   }

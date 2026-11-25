@@ -21,8 +21,10 @@
 // fingerprint goes to the JOBS queue (BE0) when it's bound, else writes inline – same graceful
 // degrade as the rest of BE0's platform pieces. Uses the Workers AI binding (`AI`, bot/wrangler.toml);
 // without it the writer just logs and skips, so the feature never fails the cron or a request.
+import { runText } from './aitext.js';
 import { atLeast, can } from './roles.js';
 import { TEXT_MODEL } from './aispike.js';
+import { TEXT_MODELS } from './aitext.js';
 import { BANNER_SPEC } from './banners.js';
 import { message, header, text, sep, facts, footer, buttons, cards, bannerUrl } from './ui.js';
 import { orgName, channelFor } from './orgconfig.js';
@@ -236,13 +238,13 @@ async function callModel(env, { system, prompt, facts, parse, label }) {
   for (let attempt = 0; attempt < 2; attempt++) {
     let text;
     try {
-      const r = await env.AI.run(WRITER_MODEL(env), {
+      const r = await runText(env, {
         messages: [
           { role: 'system', content: attempt ? `${system} Your last reply used a number that was not in the given facts – this time use ONLY the exact figures given, or none at all.` : system },
           { role: 'user', content: prompt },
         ],
         max_tokens: 500,
-      });
+      }, env.STAT_INSIGHTS_MODEL ? { models: [env.STAT_INSIGHTS_MODEL, ...TEXT_MODELS] } : undefined);
       text = r?.response;
     } catch (e) { console.log(`statInsights: ${label} call failed`, e.message); return null; }
     const parsed = parse(text);

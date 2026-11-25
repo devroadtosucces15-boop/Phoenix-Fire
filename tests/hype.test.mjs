@@ -16,7 +16,7 @@ const posts = [];
 let imgFail = false, textFail = false;
 env.AI = {
   run: async (model, input) => {
-    if (model.includes('llama')) { if (textFail) throw new Error('text model down'); return { response: 'NOREX ran riot in a dominant win.' }; }
+    if (/gemma|qwen/.test(model)) { if (textFail) throw new Error('text model down'); return { response: 'NOREX ran riot in a dominant win.' }; }
     if (imgFail) throw new Error('image model down');
     return { image: Buffer.from('x'.repeat(600)).toString('base64') };
   },

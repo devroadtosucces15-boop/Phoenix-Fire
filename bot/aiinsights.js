@@ -8,6 +8,7 @@
 // (mock server has no AI binding), or replies with junk, this falls back to NXScout's own narrative/suggestion
 // text – the feature never renders empty. Cached in KV keyed by game count, so a page view never triggers a
 // fresh AI call – only the next data refresh (more games logged) regenerates it.
+import { runText } from './aitext.js';
 import { kvOf } from './kv.js';
 import { TEXT_MODEL } from './aispike.js';
 import '../web/scout.js';
@@ -80,7 +81,7 @@ async function generate(env, R) {
   const fb = fallback(R, style, best);
   if (!env.AI) return fb;
   try {
-    const r = await env.AI.run(TEXT_MODEL, { messages: [{ role: 'user', content: prompt(R, style, best) }], max_tokens: 300 });
+    const r = await runText(env, { messages: [{ role: 'user', content: prompt(R, style, best) }], max_tokens: 300 });
     const ai = parseAI(r?.response);
     if (!ai) return fb;
     return { style: ai.style ?? style, summary: ai.summary, bestPosition: ai.bestPosition ?? fb.bestPosition, pattern: ai.pattern ?? fb.pattern, recommendation: ai.recommendation ?? fb.recommendation };

@@ -11,6 +11,7 @@
 // this never duplicates the existing GitHub Actions result webhook (scripts/fetch.mjs → postToDiscord()).
 // P11.10 site-side placement is a follow-up (see P11.3's note on the same fetch.mjs↔D1 gap) – the recap only
 // posts to Discord for now, same scope cut as match-performance points.
+import { runText } from './aitext.js';
 import { kvOf } from './kv.js';
 import { channelFor } from './orgconfig.js';
 import { safely } from './notify.js';
@@ -19,7 +20,6 @@ import { it } from './icons.js';
 
 const RED = 0xe8651a, GREEN = 0x22c55e, GREY = 0x6b7280;
 const IMAGE_MODEL = '@cf/black-forest-labs/flux-1-schnell';
-const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 
 function artPrompt(res) {
   if (res === 'W') return 'triumphant football stadium at night, fireworks, crowd celebrating, dramatic lighting, bold graphic sports poster style, ink black and crimson red';
@@ -47,7 +47,7 @@ async function generateRecap(env, club, m) {
     `Scorers: ${(m.scorers ?? []).map((s) => `${s.n}${s.g > 1 ? ` (${s.g})` : ''}`).join(', ') || 'none'}`,
     `Man of the match: ${m.motm || 'not recorded'}`,
   ].join('\n');
-  const out = await env.AI.run(TEXT_MODEL, { messages: [{ role: 'user', content: prompt }], max_tokens: 120 });
+  const out = await runText(env, { messages: [{ role: 'user', content: prompt }], max_tokens: 120 });
   const text = typeof out?.response === 'string' ? out.response.trim() : '';
   return text ? text.slice(0, 600) : null;
 }
