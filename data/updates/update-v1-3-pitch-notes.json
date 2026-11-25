@@ -1,0 +1,190 @@
+{
+ "slug": "update-v1-3-pitch-notes",
+ "title": "EA SPORTS FC™ 27 | Title Update v1.3.0 Pitch Notes",
+ "url": "https://www.ea.com/games/ea-sports-fc/fc-27/news/update-v1-3-pitch-notes",
+ "published": "2026-11-25T16:00:00.000Z",
+ "summary": "Title Update v1.3.0 brings another round of gameplay tuning, updates to The Grounds matchmaking & Amps, & changes to Career Mode.",
+ "clubs": true,
+ "sections": [
+  {
+   "id": "s0",
+   "title": "Overview",
+   "cat": "general",
+   "subs": [],
+   "summary": "Welcome to our latest Pitch Notes for Title Update v1.3.0, releasing 26 November for PlayStation, Xbox, PC, and Nintendo Switch. Following our initial set of gameplay adjustments in Title Update v1.2.0, this update brings the next round of gameplay tuning,…",
+   "keys": []
+  },
+  {
+   "id": "s1",
+   "title": "Dribbling Balance Adjustments",
+   "cat": "gameplay",
+   "subs": [],
+   "summary": "To enable more squad diversity in team building, tuning adjustments have been made to left-stick dribbling responsiveness, first-touch trapping, and skill move agility for taller players on PlayStation 5, Xbox Series X|S, Nintendo Switch 2, and PC. With…",
+   "keys": []
+  },
+  {
+   "id": "s2",
+   "title": "Near-Post Finishing Adjustments",
+   "cat": "general",
+   "subs": [],
+   "summary": "Following your feedback from our recent Developer Notes, we saw a lot of discussion about near-post shots being too effective in FC 27. To address this, we’ll be making a couple of changes in Title Update v1.3.0.",
+   "keys": []
+  },
+  {
+   "id": "s3",
+   "title": "Player Physicality Interaction Improvements",
+   "cat": "gameplay",
+   "subs": [],
+   "summary": "Following extensive feedback and discussion in our recent Q&As and Developer Notes, physical strength interactions between taller and shorter players have been adjusted to more closely reflect real-world football. Shorter players will be less able to easily…",
+   "keys": []
+  },
+  {
+   "id": "s4",
+   "title": "Shoulder Challenge Refinements",
+   "cat": "gameplay",
+   "subs": [],
+   "summary": "Stumble physics has been refined to ensure that shoulder challenges initiated directly behind a dribbler will less likely force an unnatural stumble and turnover. This change aligns these physical interactions with their intended design, keeping shoulder…",
+   "keys": []
+  },
+  {
+   "id": "s5",
+   "title": "Flick Dribbling Adjustments",
+   "cat": "gameplay",
+   "subs": [],
+   "summary": "We have reduced the effectiveness of right stick flicks, especially when chaining them together, and reduced a player’s speed immediately after performing a flick-up. Previously, players could perform flicks to get through defenders without being punished.",
+   "keys": []
+  },
+  {
+   "id": "s6",
+   "title": "Foul Call Improvements",
+   "cat": "general",
+   "subs": [],
+   "summary": "Referee logic inside the penalty area has been improved so that light side-barges and minor stumbling after a fair challenge are less likely to be penalised with a penalty kick, leading to more consistent calls across all matches. Additionally, we’ve…",
+   "keys": []
+  },
+  {
+   "id": "s7",
+   "title": "Auto-Tackle Fixes",
+   "cat": "general",
+   "subs": [],
+   "summary": "A bug has been resolved where an attacking player shielding a stationary or slow-moving ball in certain areas of pitch would cause auto-tackles to be unintentionally disabled for a defending player. This targeted adjustment is strictly limited to this…",
+   "keys": []
+  },
+  {
+   "id": "s8",
+   "title": "Loose Ball Trapping Adjustments",
+   "cat": "general",
+   "subs": [],
+   "summary": "We have updated how players react when attempting to trap a ball but fail to make contact in certain situations. Instead of getting locked in a chasing animation, the player will now release their focus on the ball, allowing a better positioned teammate to…",
+   "keys": []
+  },
+  {
+   "id": "s9",
+   "title": "Low Attribute Interception Range Decrease",
+   "cat": "general",
+   "subs": [],
+   "summary": "We’ve made a minor adjustment to decrease interception reach & range for players with lower defensive Attributes. This is a small tuning change aimed at keeping interception ability more tied to players who have the appropriate Attributes.",
+   "keys": []
+  },
+  {
+   "id": "s10",
+   "title": "Interception Ball Recovery",
+   "cat": "general",
+   "subs": [],
+   "summary": "When a defender successfully intercepts a pass, pressing opponents could sometimes immediately win the ball back before the defender had a chance to fully control it. We’ve made a slight adjustment to the ball-recovery distance in these specific moments to…",
+   "keys": []
+  },
+  {
+   "id": "s11",
+   "title": "Central Defensive Midfielder Positioning Fix",
+   "cat": "general",
+   "subs": [],
+   "summary": "Fixed an issue where Central Defensive Midfielders (CDMs) were sometimes too slow to move up with the rest of the team.",
+   "keys": []
+  },
+  {
+   "id": "s12",
+   "title": "Foot Clipping Fixes",
+   "cat": "general",
+   "subs": [],
+   "summary": "We have addressed a rare issue where a ball could occasionally clip through a defender’s foot during an attempted tackle or interception.",
+   "keys": []
+  },
+  {
+   "id": "s13",
+   "title": "Upcoming Fullback Positioning Adjustments",
+   "cat": "general",
+   "subs": [],
+   "summary": "In Title Update v1.2.0, we made some initial adjustments to help Fullbacks better maintain the defensive line. Since then, we’ve seen your feedback that there is still room for improvement, and we have further changes planned for an upcoming Title Update.",
+   "keys": []
+  },
+  {
+   "id": "s14",
+   "title": "World Matchmaking Improvements",
+   "cat": "general",
+   "subs": [],
+   "summary": "Matchmaking in The Grounds now directly factors in your Archetype Level alongside connection quality when finding an active session. When queuing up, matchmaking will now search for teammates and opponents at comparable stages of Archetype growth and…",
+   "keys": []
+  },
+  {
+   "id": "s15",
+   "title": "Amps Functionality in Small-Sided Football",
+   "cat": "clubs",
+   "subs": [],
+   "summary": "Amps functionality has now been expanded into 1v1, 2v2, and 3v3 small-sided Football matches. This means that when you equip an Amp, your player will now receive all associated Attribute and PlayStyle boosts across all small-sided formats just like they do…",
+   "keys": [
+    "playstyle",
+    "amps"
+   ]
+  },
+  {
+   "id": "s16",
+   "title": "Clubs AI Facilities Changes",
+   "cat": "clubs",
+   "subs": [],
+   "summary": "We have refined how Clubs AI Facilities apply their bonuses to maintain fair competitive play. AI Facility gameplay and Attribute boosts will now apply strictly to your AI clubmates.",
+   "keys": []
+  },
+  {
+   "id": "s17",
+   "title": "General Updates",
+   "cat": "general",
+   "subs": [],
+   "summary": "The simulation calendar will now remember your target date if a simulation is interrupted by an incoming transfer offer or player injury, meaning you will not have to navigate back and re-select your target date. Additionally, unnecessary confirmation…",
+   "keys": []
+  },
+  {
+   "id": "s18",
+   "title": "Transfers, Loans, and Contracts",
+   "cat": "general",
+   "subs": [],
+   "summary": "While addressing unintended Player transfer requests in Manager Career has been a primary focus for our recent updates, the issue continues to persist in select cases. To prevent this from disrupting active saves, player-initiated transfer requests have been…",
+   "keys": []
+  },
+  {
+   "id": "s19",
+   "title": "Team Management Bug Fix",
+   "cat": "general",
+   "subs": [],
+   "summary": "We have fixed an issue where the order of the players in the Team Management screen would not save properly after making changes. In Title Update v1.3.0, we’re honoured to bring back the voice of legendary English commentator John Motson, voice of a decade…",
+   "keys": []
+  }
+ ],
+ "hits": [
+  {
+   "id": "update-v1-3-pitch-notes#15-playstyle",
+   "kind": "playstyle",
+   "label": "PlayStyles",
+   "section": "Amps Functionality in Small-Sided Football",
+   "quote": "This means that when you equip an Amp, your player will now receive all associated Attribute and PlayStyle boosts across all small-sided formats just like they do in standard matches."
+  },
+  {
+   "id": "update-v1-3-pitch-notes#15-amps",
+   "kind": "amps",
+   "label": "Amps",
+   "section": "Amps Functionality in Small-Sided Football",
+   "quote": "Amps functionality has now been expanded into 1v1, 2v2, and 3v3 small-sided Football matches."
+  }
+ ],
+ "fetched": "2026-11-25T21:01:52.762Z"
+}
