@@ -378,7 +378,7 @@ export const COMMANDS = [
       // CR-08: one command for the whole match night. `status`, `next` and `availability` still work as aliases (bot/matchday.js MATCHDAY_ALIASES) so old buttons, docs and habits keep working; they are no longer listed.
       { type: SUB, name: 'schedule', description: 'Upcoming match days – the next one first, answer ✅ ❔ ❌ right here' },
       { type: SUB, name: 'who', description: "Who's in for the next match day and which positions are missing" },
-      { type: SUB, name: 'checkin', description: 'Confirm you are playing (lineup players only: opens when the lineup is posted, closes 30 minutes before the start)' },
+      { type: SUB, name: 'checkin', description: 'Confirm you are playing (lineup players; closes 30 minutes before the start)' },
       { type: SUB, name: 'lineup', description: 'The lineup for the next match day, and who has confirmed' },
     ],
   },

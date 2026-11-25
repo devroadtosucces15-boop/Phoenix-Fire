@@ -76,4 +76,8 @@ t('/matchdayhelp teaches the timed flow, the new subcommands and where the moved
 // ---------- /host confirms the plan ----------
 t('/host tells the manager when the lineup window opens and check-in closes', /Lineup window opens/.test(hostSrc) && /closes \$\{flow/.test(hostSrc));
 
+// Discord rejects a whole app's registration when any description is over 100 characters
+const longest = (list) => list.flatMap((c) => [c, ...(c.options ?? []).flatMap((o) => [o, ...(o.options ?? [])])]).filter((x) => (x.description ?? '').length > 100).map((x) => x.name);
+t('every command, subcommand and option description fits Discord\'s 100 characters', longest(COMMANDS).length === 0);
+
 done();
