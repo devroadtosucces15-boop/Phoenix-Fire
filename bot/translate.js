@@ -100,7 +100,7 @@ export async function enhanceText(env, { input, level, tone, to, who }) {
     return body ? { ok: true, body: body.slice(0, 1800), level: Math.min(10, Math.max(1, Math.round(Number(level) || 5))), tone } : { ok: false, error: 'No answer came back – try again.' };
   } catch (e) {
     if (!/\b4006\b|daily free allocation|neurons/i.test(String(e?.message))) await refundAi(env, { cost: AI_COST.enhance, who, feature: 'enhance' });
-    return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'The translator could not answer right now – try again in a minute.' };
+    return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'Enhance could not get an answer right now – try again in a minute.' };
   }
 }
 
@@ -130,7 +130,7 @@ export const translationMessage = (env, r, { original = null, byLine = null } = 
 export const enhanceMessage = (env, r, { byLine = null } = {}) => message({
   accent: 'red',
   blocks: [
-    header({ eyebrow: 'Translator', title: 'Polished text', sub: `Level ${r.level} of 10 · ${r.tone}`, size: 3 }),
+    header({ eyebrow: 'Enhance', title: 'Polished text', sub: `Level ${r.level} of 10 · ${r.tone}`, size: 3 }),
     text(r.body),
     footer(`${orgName(env)} · AI wording, read it before you post${byLine ? ` · ${byLine}` : ''}`),
   ],

@@ -99,5 +99,10 @@ try {
   const empty = { ...baseEnv, AI: { run: async () => ({ response: '' }) } };
   t('an empty answer is an error the member can read', !(await enhanceText(empty, { input: 'x y', who: 'empty-user' })).ok);
 }
+{
+  const dead = { ...baseEnv, AI: { run: async () => { throw new Error('model gone'); } } };
+  const r = await enhanceText(dead, { input: 'x y z', who: 'name-user' });
+  t('/enhance never calls itself the translator, in its error or on its post', !/translator/i.test(r.error) && /Enhance/.test(r.error) && !/translator/i.test(plainText(enhanceMessage(baseEnv, { body: 'ok', level: 5, tone: 'professional' }))));
+}
 t('the feature flag ships owner-only in config', config.features.translate === 'owner');
 done();

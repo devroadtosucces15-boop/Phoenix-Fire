@@ -224,7 +224,7 @@ const BY_EYEBROW = [
   [/live|stream|on air|twitch|youtube/i, 'live'], [/uptime|health|status/i, 'health'], [/birthday/i, 'birthday'], [/welcome|joined|left/i, 'welcome'],
   [/voice|recap/i, 'voice'], [/patch|update notes/i, 'patch'], [/burner/i, 'burner'], [/hype|countdown/i, 'hype'], [/trial/i, 'trial'], [/announce/i, 'announce'],
   [/reminder/i, 'remind'], [/media|clip|photo/i, 'media'], [/profanity|moderation|automod/i, 'moderation'], [/music|dj|now playing/i, 'music'],
-  [/navigator/i, 'navigator'], [/wiki/i, 'wiki'], [/pinned/i, 'pin'], [/quote/i, 'quote'], [/translat/i, 'translate'], [/feedback/i, 'feedback'], [/idea|suggest/i, 'idea'], [/card/i, 'card'], [/play/i, 'play'], [/help/i, 'help'], [/stat|leaderboard|compare/i, 'stats'], [/club/i, 'club'],
+  [/navigator/i, 'navigator'], [/wiki/i, 'wiki'], [/pinned/i, 'pin'], [/quote/i, 'quote'], [/translat|enhance|polish/i, 'translate'], [/feedback/i, 'feedback'], [/idea|suggest/i, 'idea'], [/card/i, 'card'], [/play/i, 'play'], [/help/i, 'help'], [/stat|leaderboard|compare/i, 'stats'], [/club/i, 'club'],
 ];
 export const bannerFromEyebrow = (s) => BY_EYEBROW.find(([re]) => re.test(String(s ?? '')))?.[1] ?? 'general';
 export const bannerForCommand = (name) => BANNER_BY_COMMAND[name] ?? 'general';
