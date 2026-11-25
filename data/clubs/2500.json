@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-25T13:50:43.573Z",
+ "fetchedAt": "2026-11-25T14:00:50.882Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2014,7 +2014,7 @@
   {
    "name": "YAMI-_-77",
    "proPos": "14",
-   "gamesPlayed": "287",
+   "gamesPlayed": "288",
    "goals": "127",
    "assists": "89",
    "manOfTheMatch": "37",
@@ -2316,6 +2316,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-25T13:50:43.573Z"
+  "fetchedAt": "2026-11-25T14:00:50.882Z"
  }
 }
