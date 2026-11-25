@@ -20,7 +20,7 @@ t('help commands are registered and open to everyone', Object.keys(HELP_COMMANDS
 // ---------- every page fits Discord and navigates ----------
 for (const k of KEYS) {
   const pages = pagesFor(k);
-  t(`${k}: a contents page, then guides, then every command`, pages[0].kind === 'contents' && pages.some((p) => p.kind === 'flows') && APP_COMMANDS[k].filter((n) => !(n in HELP_COMMANDS)).every((n) => pages.some((p) => p.name === n)));
+  t(`${k}: a contents page, then guides, then every command`, pages[0].kind === 'contents' && pages.some((p) => p.kind === 'flows') && APP_COMMANDS[k].filter((n) => !(n in HELP_COMMANDS) && COMMANDS.find((c) => c.name === n)?.type !== 3).every((n) => pages.some((p) => p.name === n)));
   const bad = [];
   pages.forEach((_, n) => {
     const m = helpMessage(k, n);

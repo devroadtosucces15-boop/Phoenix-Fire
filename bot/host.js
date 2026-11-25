@@ -7,6 +7,7 @@ import { validZone, zonedToUtc, eventsRoute } from './events.js';
 import { parseDuration } from './servertools.js';
 import { pingRoleFor } from './orgconfig.js';
 import { reply, pictureNote } from './ui.js';
+import { lineupOpensAt, checkinClosesAt } from './matchflow.js';
 
 // Time-zone suggestions for the autocomplete (any valid IANA zone is accepted when typed in full).
 export const ZONES = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Phoenix', 'America/Los_Angeles', 'America/Anchorage', 'Pacific/Honolulu',
@@ -119,6 +120,8 @@ export async function hostCommand(i, env, me, o, { log, loadSite }, build = host
   if (!res.ok) return say('Couldn’t schedule that', d.error ?? 'Something went wrong – try again or use the Squad Hub.', null, 'cmd-problem');
   const at = Math.floor(zonedToUtc(when.date, when.time, tz) / 1000);
   const where = d.discord?.ok ? `Posted in <#${body.discord.channel}> with sign-up buttons.` : `⚠️ Not posted: ${d.discord?.error ?? 'you can post it from the Squad Hub.'}`;
-  return say(`✅ Scheduled for <t:${at}:F>`, [`<t:${at}:R> · everyone sees it in their own time zone (you set it in ${tz.replace(/_/g, ' ')}).`, where,
+  const flow = (ms) => `<t:${Math.floor(ms / 1000)}:t>`, startMs = at * 1000;
+  const plan = `🧩 Lineup window opens ${flow(lineupOpensAt({ start: startMs }))} · check-in for the lineup follows its post and closes ${flow(checkinClosesAt({ start: startMs }))}. The same event shows in /lineup and on the site.`;
+  return say(`✅ Scheduled for <t:${at}:F>`, [`<t:${at}:R> · everyone sees it in their own time zone (you set it in ${tz.replace(/_/g, ' ')}).`, where, plan,
     d.created > 1 ? `Repeats weekly: ${d.created} dates.` : null, d.notified ? `${d.notified} members told in the Squad Hub.` : null].filter(Boolean).join('\n'), 'win', doneKey);
 }

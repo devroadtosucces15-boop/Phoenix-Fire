@@ -5,7 +5,7 @@ import { t, done } from './lib.mjs';
 
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const readme = read('bot/README.md'), reg = read('bot/SECRETS-REGISTRY.md'), toml = read('bot/wrangler.toml'), road = read('PLANNING/PHOENIX-ROADMAP.md');
-t('the README says the fun app maps 0 commands, as the code does', APP_COMMANDS.fun.length === 0 && /maps \*\*0 commands\*\*/.test(readme));
+t('the README says how many commands the fun app maps, as the code does', new RegExp(`maps \\*\\*${APP_COMMANDS.fun.length} commands\\*\\*`).test(readme));
 t('the README lists the real Matchday and Rush commands', APP_COMMANDS.matchday.every((c) => readme.includes(`/${c}`)) && APP_COMMANDS.rush.every((c) => readme.includes(`/${c}`)) && !/\*Planned\.\*/.test(readme));
 for (const app of Object.keys(APP_COMMANDS)) {
   const id = toml.match(new RegExp(app === 'core' ? 'DISCORD_APP_ID = "(\\d+)"' : `DISCORD_APP_ID_${app.toUpperCase()} = "(\\d+)"`))?.[1]; // core is the unsuffixed pair

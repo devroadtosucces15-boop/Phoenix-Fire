@@ -18,7 +18,7 @@ t('matchday owns the match-day commands, rush owns /rush, /lfg and /queue', MOVE
 t('moved commands are off their old apps in the map', !APP_COMMANDS.tools.some((n) => MOVED.includes(n)) && !APP_COMMANDS.stats.includes('rush'));
 t('every moved command remembers where it came from', MOVED.every((n) => MOVED_FROM[n] === 'tools') && MOVED_FROM.rush === 'stats');
 t('new commands are held until their app exists', HELD.has('lfg') && HELD.has('queue') && HELD.has('rushladder') && !MOVED_FROM.lfg && !MOVED_FROM.queue);
-t('/matchday has create, checkin and status; /lfg has now, cancel, setup, captain and list', COMMANDS.find((c) => c.name === 'matchday').options.map((o) => o.name).join() === 'create,checkin,status,schedule,next,who' && COMMANDS.find((c) => c.name === 'lfg').options.map((o) => o.name).join() === 'now,cancel,setup,captain,list');
+t('/matchday has create, checkin and status; /lfg has now, cancel, setup, captain and list', COMMANDS.find((c) => c.name === 'matchday').options.map((o) => o.name).join() === 'create,schedule,who,checkin,lineup' && COMMANDS.find((c) => c.name === 'lfg').options.map((o) => o.name).join() === 'now,cancel,setup,captain,list');
 
 // ---------- nothing changes for members until the apps exist ----------
 const base = { DISCORD_APP_ID: '1', DISCORD_PUBLIC_KEY: 'aa', DISCORD_BOT_TOKEN: 't' };
@@ -89,11 +89,13 @@ t('no NOREX name or colour in the new replies', !/norex|c8352c/i.test(JSON.strin
 // ---------- /matchday status and checkin ----------
 const near = sqlite.prepare("INSERT INTO events (type, title, start, duration, tz, needs, status, by_id, at) VALUES ('league', 'Tonight', ?, 120, 'UTC', '{\"players\":11}', 'scheduled', '900', ?)").run(Date.now() + 20 * 60e3, now);
 await answerEvents(env, member, [Number(near.lastInsertRowid)], 'yes');
-const st = await md('status', {}, member);
+const st = await md('who', {}, member);
 t('status: shows the next match day with who is in', /Tonight/.test(plainText(st.data)) && /Carded/.test(plainText(st.data)));
+// CR-07: check-in follows the posted lineup (the event starts in 20 minutes here, so the window has closed; move it to 45 minutes out first)
+sqlite.prepare('UPDATE events SET start = ?, lineup = ?, lineup_at = ? WHERE id = ?').run(Date.now() + 45 * 60e3, '{"801":"ST"}', Date.now(), Number(near.lastInsertRowid));
 const ci = await md('checkin', {}, member);
 t('checkin: members check in inside the window', /You are on/.test(plainText(ci.data)) && !!sqlite.prepare('SELECT 1 FROM event_checkins WHERE event_id = ? AND user_id = ?').get(Number(near.lastInsertRowid), '801'));
-t('unknown subcommand is explained', /create, checkin or status/.test(plainText((await md('nope', {}, member)).data)));
+t('unknown subcommand is explained', /create, schedule, who, lineup or checkin/.test(plainText((await md('nope', {}, member)).data)));
 
 // ---------- MB2: preferred position ----------
 t('positions: the eight groups', PREF_POSITIONS.join() === 'GK,CB,LB/RB,CDM,CM,CAM,LW/RW,ST');
@@ -127,3 +129,4 @@ const sel2 = await send({ type: 3, data: { custom_id: `pf:pos:${evId}`, componen
 t('Discord: the select reaches its handler through the Worker', /Noted: CDM \/ CM/.test(plainText(sel2.data)) && /Answer first|Noted/.test(plainText(sel.data)));
 globalThis.fetch = realFetch;
 done();
+

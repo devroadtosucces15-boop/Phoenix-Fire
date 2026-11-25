@@ -104,9 +104,13 @@ t('no answers on a cancelled event', (await call(member2, '/api/events/rsvp', { 
 
 // ----- P3.7 match night -----
 t('check-in closed before the night', (await call(member, '/api/events/checkin', { id: e1, on: true })).s === 409);
-const now = new Date(Date.now() - 20 * 60e3);
+const now = new Date(Date.now() + 50 * 60e3); // CR-07: inside the lineup window (an hour before the start), before check-in closes (30 minutes before)
 const live = await call(mgr, '/api/events', { type: 'rush', date: now.toISOString().slice(0, 10), time: now.toISOString().slice(11, 16), tz: 'UTC', duration: 120 });
 const liveId = live.d.id;
+t('check-in is closed until the lineup is posted', (await call(member, '/api/events/checkin', { id: liveId, on: true })).s === 409);
+t('a lineup cannot be posted before the window; it saves as a draft', (await call(mgr, '/api/events/lineup', { id: e1, lineup: { 500: 'CB' }, publish: true })).s === 409);
+t('the lineup is posted inside the window', (await call(mgr, '/api/events/lineup', { id: liveId, lineup: { 500: 'CB', 501: 'ST' }, publish: true })).s === 200);
+t('check-in is for the players in the lineup', (await call(await login('509', [], 'Outsider'), '/api/events/checkin', { id: liveId, on: true })).s === 403);
 const ci = await call(member, '/api/events/checkin', { id: liveId, on: true, trial: 'CB' });
 t('check-in during the night, with a position trial', ci.s === 200 && ci.d.events.find((e) => e.id === liveId).checkins.some((c) => c.id === '500' && c.trial === 'CB'));
 t('unknown trial position refused', (await call(member2, '/api/events/checkin', { id: liveId, on: true, trial: 'QB' })).s === 400);

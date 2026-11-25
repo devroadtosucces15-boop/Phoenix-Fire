@@ -99,7 +99,7 @@ t('nothing logged the reason', !logs.some((l) => l.includes(SECRET)));
 
 // ---------- wiring ----------
 const src = fs.readFileSync(new URL('../bot/absence.js', import.meta.url), 'utf8');
-t('absence_notices is a channel purpose with a description; /absence is a matchday-app command; the flag ships owner-only', CHANNEL_PURPOSES.includes('absence_notices') && !!CHANNEL_PURPOSE_INFO.absence_notices && COMMANDS.some((c) => c.name === 'absence') && APP_COMMANDS.matchday.includes('absence') && JSON.parse(fs.readFileSync(new URL('../config.json', import.meta.url), 'utf8')).features.absence === 'owner');
+t('absence_notices is a channel purpose with a description; /absence is a tools-app command; the flag ships owner-only', CHANNEL_PURPOSES.includes('absence_notices') && !!CHANNEL_PURPOSE_INFO.absence_notices && COMMANDS.some((c) => c.name === 'absence') && APP_COMMANDS.tools.includes('absence') && JSON.parse(fs.readFileSync(new URL('../config.json', import.meta.url), 'utf8')).features.absence === 'owner');
 t('the module reads its channel from config and names no channel, id or NOREX; a banner key exists', /channelFor\(env, 'absence_notices'\)/.test(src) && !/\b\d{17,20}\b/.test(src) && !/norex(?!:abs)/i.test(src.replace(/norex:abs/g, '')) && !/c8352c|080b11/i.test(src) && fs.existsSync(new URL('../tools/bot-audit/out/cards/banner-absence.png', import.meta.url)));
 const mig = fs.readFileSync(new URL('../bot/migrations/0073_absences.sql', import.meta.url), 'utf8');
 t('migration 0073 creates the absences table', /CREATE TABLE IF NOT EXISTS absences/.test(mig) && /reason/.test(mig));

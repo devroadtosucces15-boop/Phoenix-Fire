@@ -117,6 +117,9 @@ const BOTS = {
       feedback: 'The teammate never sees who sent it.',
       suggest: 'Tick `anon` to hide your name from the board.',
       avatarcard: 'Opens your private Card Studio panel: photo, look, kit and number, then it goes to a manager.',
+      absence: 'Tell the managers you are away or playing less. The reason stays with managers.',
+      highlight: 'Store a short clip for the club to keep. Managers review what is shown.',
+      birthday: 'Save your birthday and choose whether the club sees it. It is private by default.',
       jail: 'Just for fun. Nothing happens in the real server.',
       trivia: '`play` for a question, `board` for the scores.',
       wheel: 'Put the options in one line, separated by commas.',
@@ -127,23 +130,23 @@ const BOTS = {
     blurb: 'Running a match night: schedule, sign-ups, check-in and the lineup.',
     flows: [
       { title: 'Run a match night (managers)', steps: [
-        ['/matchday create', 'Pick the kind (league, playoffs, friendly, tournament, VPG) and when. It posts with sign-up buttons. For a League or Rush session with a mode, use /host.'],
-        ['Players answer', 'Everyone presses ✅ ❔ ❌ on the post, and can add a preferred position.'],
-        ['/matchday who', 'See who is in, maybe or out, and which positions are missing.'],
-        ['/lineup', 'The lineup for the next event, with a suggested read.'],
-        ['/matchday checkin', 'On the night players check in. Managers see who showed.'],
+        ['/host', 'Schedule a League or Rush session or friendly. It posts with sign-up buttons and shows on the site.'],
+        ['/matchday create', 'The same for league, playoffs, friendly, tournament or VPG.'],
+        ['An hour before', 'The lineup window opens. Post the latest lineup on the site or with the lineup tools; players in it are told.'],
+        ['Check-in', 'Starts when the lineup is posted. Players in the lineup confirm; it closes 30 minutes before the start.'],
+        ['/lineup', 'See the lineup and who has not confirmed. Those players are reminded before check-in closes.'],
       ] },
       { title: 'As a player', steps: [
-        ['/matchday next', 'The next match night, with your answer buttons right there.'],
-        ['/matchday schedule', 'The ones after that.'],
-        ['/matchday checkin', 'Check in when the window opens.'],
-        ['/lineup', 'See where you are playing.'],
+        ['/matchday schedule', 'The next match days, with your ✅ ❔ ❌ buttons right there.'],
+        ['/matchday who', 'Who is in, maybe or out, and which positions are missing.'],
+        ['/lineup', 'See where you are playing and who has confirmed.'],
+        ['/matchday checkin', 'Confirm you are playing, once you are in the posted lineup (or press Check in on the post).'],
       ] },
     ],
     tips: {
-      host: 'Managers only. Times show in everyone’s own time zone. Choose League or Rush as the mode.',
-      lineup: 'Shows the lineup for the next event.',
-      matchday: 'Six parts: `create` and `checkin` run the night, `status` is the quick view, `schedule`, `next` and `who` answer the “when” and “who” questions.',
+      host: 'Managers only. Times show in everyone’s own time zone. Choose League or Rush as the mode. The lineup window opens an hour before the start.',
+      lineup: 'The same event as the /host post: time, mode, roster. Managers also see who has not confirmed.',
+      matchday: 'One command for the night: `create`, `schedule`, `who`, `lineup`, `checkin`. The old `next` and `status` still work.',
     },
   },
   rush: {
@@ -200,7 +203,8 @@ export function pagesFor(key) {
   const own = APP_COMMANDS[key].filter((n) => !(n in HELP_COMMANDS));
   const pages = [{ id: 'contents', title: 'Contents', kind: 'contents' }];
   if (bot.flows.length) pages.push({ id: 'flows', title: 'Step by step', kind: 'flows' });
-  for (const n of own) if (defOf(n)) pages.push({ id: n, title: `/${n}`, kind: 'command', name: n });
+  // Right-click (message) commands have no slash form to explain; they are listed on the Contents page instead, which keeps the Jump list under Discord's 25.
+  for (const n of own) if (defOf(n) && defOf(n).type !== 3) pages.push({ id: n, title: `/${n}`, kind: 'command', name: n });
   return pages;
 }
 
@@ -233,12 +237,14 @@ function flowBlocks(key) {
 function contentsBlocks(key, pages) {
   const bot = BOTS[key];
   const cmds = pages.filter((p) => p.kind === 'command');
+  const menu = APP_COMMANDS[key].filter((n) => defOf(n)?.type === 3);
   const lines = cmds.map((p) => { const c = defOf(p.name); return `\`/${p.name}\` – ${clip(plain(c.description), 70)}${who(c) === 'Everyone' ? '' : ` *(${who(c).toLowerCase()})*`}`; });
   return [
     header({ eyebrow: `${bot.label} · help`, title: `${bot.icon} How ${bot.label} works`, sub: bot.blurb }),
     text('**Getting around**\n◀ ▶ turn the pages in order · 🪜 shows which command comes first · “Jump to…” goes straight to a command · 🤖 switches to another bot’s help. Only you can see this menu.'),
     sep(),
     text(`**Commands**\n${lines.join('\n')}`),
+    ...(menu.length ? [text(`**Right-click a message**\n${menu.map((n) => `Apps → **${n}**`).join(' · ')}`)] : []),
   ];
 }
 

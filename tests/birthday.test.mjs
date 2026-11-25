@@ -27,7 +27,7 @@ const brand = (s) => !/norex/i.test(s) && !/c8352c/i.test(s) && !/080b11/i.test(
 sqlite.prepare("INSERT OR IGNORE INTO users (id, name, first_at, last_at, points) VALUES ('500', 'Ash', ?, ?, 0), ('501', 'Bo', ?, ?, 0), ('502', 'Cy', ?, ?, 0)").run(Date.UTC(2025, 2, 1), T, Date.UTC(2026, 0, 5), T, T, T);
 
 // ---------- wiring ----------
-t('command: /birthday is in the matchday app with set, visible, show, clear', APP_COMMANDS.matchday.includes('birthday') && COMMANDS.find((c) => c.name === 'birthday')?.options.map((x) => x.name).join() === 'set,visible,show,clear');
+t('command: /birthday is in the tools app with set, visible, show, clear', APP_COMMANDS.tools.includes('birthday') && COMMANDS.find((c) => c.name === 'birthday')?.options.map((x) => x.name).join() === 'set,visible,show,clear');
 t('permission, purpose, ping group and flag exist', PERMS['birthday.set'] === 'member' && CHANNEL_PURPOSES.includes('birthdays') && !!CHANNEL_PURPOSE_INFO.birthdays && PING_GROUPS.includes('ping_birthdays') && JSON.parse(fs.readFileSync(new URL('../config.json', import.meta.url))).features.birthday === 'owner');
 t('date helpers: 07-14 → 14 July; no year anywhere', prettyDay('07-14') === '14 July' && prettyDay('') === '' && parseBirthday('7/14') === '07-14');
 

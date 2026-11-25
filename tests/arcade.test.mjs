@@ -128,7 +128,7 @@ t('top and me are private and show the record', (top.data.flags & 64) && /Ash/.t
 // flag, permission, registration
 t('the arcade is off for a member until the owner opens it', (() => { const save = env.FEATURES; env.FEATURES = JSON.stringify({ ...JSON.parse(save), arcade: 'owner' }); return arcadeCommand({ member: { user: { id: '1' } }, data: { name: 'arcade', options: [{ name: 'top' }] } }, env, A).then((x) => { env.FEATURES = save; return /Not switched on/.test(plainText(x.data)); }); })());
 t('the arcade is switched on for members in config.json (opened to all members 2026-11-20)', JSON.parse(fs.readFileSync('config.json', 'utf8')).features.arcade === 'members');
-t('/arcade is defined (play, top, me), lives in the matchday app and needs the member permission', (() => { const c = COMMANDS.find((x) => x.name === 'arcade'); return c && c.options.map((o) => o.name).join() === 'play,top,me' && APP_COMMANDS.matchday.includes('arcade') && PERMS['arcade.play'] === 'member'; })());
+t('/arcade is defined (play, top, me), lives in the fun app and needs the member permission', (() => { const c = COMMANDS.find((x) => x.name === 'arcade'); return c && c.options.map((o) => o.name).join() === 'play,top,me' && APP_COMMANDS.fun.includes('arcade') && PERMS['arcade.play'] === 'member'; })());
 
 // Worker round trip
 const kp = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, ['sign', 'verify']);

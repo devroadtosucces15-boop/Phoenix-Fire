@@ -22,7 +22,7 @@
 // stay live (refreshEventPost after every answer), and eventReminders() – run by the 10-minute cron – posts T-24h / T-2h
 // reminders and nudges members who haven't answered (event.remind: dm = bell + DM · mention = @ in the channel · off).
 import { can, flagOn, flags } from './roles.js';
-import { notify, notifyMembers, safely } from './notify.js';
+import { notify, notifyMembers, notifyManagers, safely } from './notify.js';
 import { broadcastRoom } from './clubroom.js';
 import { POSITIONS } from './profiles.js';
 import { discordTargets, postEmbed } from './docs.js';
@@ -35,6 +35,7 @@ import { routeNotification } from './routing.js';
 import { recommendRoute } from './lineuprec.js';
 import { hex } from './media.js';
 import { once } from './once.js';
+import { phaseOf, checkinOpen, inLineup, canPostLineup, hasLineupPosted, lineupOf, unconfirmed, nudgeDue, timelineLine, whyNotOpen, checkinClosesAt, CHECKIN_CLOSE_MIN, CHECKIN_NUDGE_MIN } from './matchflow.js';
 
 import { cleanPref, parsePref, savePref } from './prefpos.js';
 import { rosterBlock, rosterOn, rosterModel, drawRoster } from './rosterpic.js';
@@ -228,17 +229,21 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const still = [short && `${short} more player${short > 1 ? 's' : ''}`, ...missing.map(([k, left]) => `${left} ${k}`)].filter(Boolean).join(' · ');
   return message({ ping, mentions, accent: cancelled ? 'steel' : 'red', blocks: [
     cards(bannerUrl(env, cancelled ? 'eventcancelled' : 'matchnight')),
-    header({ eyebrow: `${orgName(env).toUpperCase()} · ${EVENT_TYPES[e.type][1] ?? 'Match night'}`, title: `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : ''}${heading}${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R> · ${length}` }),
+    // CR-07: the match-day layout of the owner's other bot – eyebrow, title, time, a facts row, then In / Maybe / Out and what is still needed.
+    header({ eyebrow: `${orgName(env).toUpperCase()} · Match day · ${EVENT_TYPES[e.type][1] ?? EVENT_TYPES[e.type][0]}`, title: `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : ''}${heading}${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R>` }),
     cancelled && (e.cancelReason ?? e.cancel_reason) ? text(`**Why** ${String(e.cancelReason ?? e.cancel_reason).slice(0, 300)}`) : null,
-    e.notes ? text(`📝 ${String(e.notes).slice(0, 1500)}`) : null,
+    facts([['👥 Players', `${yes.length}${needs.players ? `/${needs.players}` : ''}`], ['⏱️ Length', length], ['📝 Notes', e.notes ? String(e.notes).slice(0, 300) : null]]),
     sep(),
-    facts([['Answers', `✅ ${yes.length} · ❔ ${names('maybe').length} · ❌ ${names('no').length}`]]),
+    text(`**✅ In (${yes.length})**`),
     // who's in: one row each with their face on the right (card if shipped, else Discord picture – bot/faces.js)
     roster,   // the drawn roster (bot/rosterpic.js) stands in for the face rows and the name list
     !roster && faces ? yes.slice(0, FACE_ROWS).map((r) => side(`\`${String(rsvps.indexOf(r) + 1).padStart(2)}\` ✅ **${r.name}**${posOf(r) ? ` · ${posOf(r)}` : ''}`, thumb(faces.get(String(r.user_id))))) : null,
-    roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(names('yes').slice(FACE_ROWS))}`) : !faces && yes.length ? facts([['In', list(names('yes'))]]) : null,
-    who && !roster ? facts([[`❔ Maybe (${names('maybe').length})`, list(names('maybe'))], [`❌ Out (${names('no').length})`, list(names('no'))]]) : null,
-    still ? facts([['🧩 Still needed', still]]) : null,
+    roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(names('yes').slice(FACE_ROWS))}`) : !faces && yes.length ? text(list(names('yes'))) : null,
+    !roster && !yes.length ? text('_nobody yet_') : null,
+    who || names('maybe').length ? text(`**❔ Maybe (${names('maybe').length})**\n${list(names('maybe'))}`) : null,
+    who || names('no').length ? text(`**❌ Out (${names('no').length})**\n${list(names('no'))}`) : null,
+    still ? text(`⚠️ **Still needed:** ${still}`) : needs.players && yes.length >= needs.players && !cancelled ? text('✅ **Full squad.**') : null,
+    !cancelled && !done && timelineLine(e) ? text(timelineLine(e)) : null,
     footer(done ? 'This event is closed' : 'Tap a button to answer · only you see the confirmation'),
     buttons([
       ...(done || !rsvpButtons(env) ? [] : [['yes', '✅', 'I’m in', 'ok'], ['maybe', '❔', 'Maybe', 'grey'], ['no', '❌', 'Can’t make it', 'no']].map(([st, emoji, lbl, style]) => ({ label: lbl, emoji, style, id: `norex:ev:${e.id}:${st}` }))),
@@ -520,7 +525,11 @@ async function nightRoute(p, method, body, me, env, log, loadSite, url) {
   if (!row || row.status !== 'scheduled') return fail('That event is not on.', 404);
   if (p === '/api/events/checkin') {
     if (!can(me, 'events.checkin')) return fail('Members only.', 403);
-    if (!liveWindow(row)) return fail('Check-in opens an hour before the start and closes two hours after the end.', 409);
+    // CR-07: check-in opens when the lineup is posted (never earlier than an hour before the start) and closes 30 minutes before it. Leaving is always allowed.
+    if (body.on !== false) {
+      if (!checkinOpen(row)) return fail(whyNotOpen(row), 409);
+      if (!inLineup(row, me.u) && !can(me, 'events.manage')) return fail('Check-in is for the players in the posted lineup. Ask a manager if you should be added.', 403);
+    }
     const trial = body.trial ? String(body.trial) : null;
     if (trial && !POSITIONS.includes(trial)) return fail('Pick a real position to try.');
     await setCheckin(env, me, row, body.on !== false, trial);
@@ -648,7 +657,8 @@ export const CHECKIN_RE = /^(?:phoenix|norex):ci:\d+$/;
 export function checkinMessage(env, e, rsvps = [], checkins = [], { ping = null, mentions, roster = null, soon = false } = {}) {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/'), unix = Math.floor(e.start / 1000);
   const on = new Set(checkins.map((c) => c.user_id)), done = e.status === 'cancelled' || e.start + e.duration * MIN < Date.now();
-  const keen = rsvps.filter((r) => r.status !== 'no');
+  const L = lineupOf(e), posted = hasLineupPosted(e), open = checkinOpen(e);
+  const keen = rsvps.filter((r) => r.status !== 'no' && (!posted || Object.hasOwn(L, r.user_id))); // CR-07: once a lineup is posted, check-in is for the players in it
   const here = [...keen.filter((r) => on.has(r.user_id)), ...checkins.filter((c) => !keen.some((r) => r.user_id === c.user_id)).map((c) => ({ user_id: c.user_id, name: c.name, status: 'walk-in' }))];
   const wait = keen.filter((r) => !on.has(r.user_id));
   const rank = new Map(rsvps.map((r, i) => [r.user_id, i + 1]));
@@ -656,16 +666,17 @@ export function checkinMessage(env, e, rsvps = [], checkins = [], { ping = null,
   const list = (arr) => (arr.length ? `${arr.slice(0, 25).map(row).join('\n')}${arr.length > 25 ? `\n+ ${arr.length - 25} more` : ''}` : '–');
   return message({ ping, mentions, accent: 'red', blocks: [
     cards(soon ? bannerUrl(env, 'eventsoon') : roster ? null : bannerUrl(env, 'checkin')),
-    header({ eyebrow: `${orgName(env).toUpperCase()} · CHECK-IN`, title: `⏰ Check in now · ${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R>` }),
+    header({ eyebrow: `${orgName(env).toUpperCase()} · CHECK-IN`, title: `${open ? '⏰ Check in now' : '⏰ Starting soon'} · ${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R>` }),
     sep(),
     facts([['Checked in', `✅ ${here.length}`], ['Not yet', `${wait.length}`]]),
     roster,   // the drawn roster replaces the two name lists
     !roster ? text(`-# **CHECKED IN**\n${list(here)}`) : null,
-    !roster && wait.length ? text(`-# **NOT CHECKED IN – NOT CONSIDERED UNTIL THEY DO**\n${list(wait)}`) : null,
+    !roster && wait.length ? text(`-# **NOT CONFIRMED YET – CHECK-IN CLOSES ${CHECKIN_CLOSE_MIN} MINUTES BEFORE THE START**\n${list(wait)}`) : null,
     sep(),
+    timelineLine(e) ? text(timelineLine(e)) : null,
     text(kickoffNotes(e)),
-    footer(done ? 'This event is closed' : 'Only players who check in are considered for the lineup'),
-    buttons([...(done ? [] : [{ label: 'Check in', emoji: '✅', style: 'ok', id: CHECKIN_ID(e.id) }]), { label: 'Squad Hub', url: `${site}members.html#schedule-${e.id}` }]),
+    footer(done ? 'This event is closed' : 'Only players in the lineup who check in play'),
+    buttons([...(done || !open ? [] : [{ label: 'Check in', emoji: '✅', style: 'ok', id: CHECKIN_ID(e.id) }]), { label: 'Squad Hub', url: `${site}members.html#schedule-${e.id}` }]),
   ] });
 }
 // checkinMessage with the drawn roster (when the flag is on and the draw works).
@@ -709,6 +720,7 @@ export function lineupEmbed(env, e, lineup, names, { ping, mentions, suggested =
   const byLine = LINES.map(([name, pos]) => [name, rows.filter(([, slot]) => pos.includes(POS_OF(slot)))]);
   const rest = rows.filter(([, slot]) => !LINES.some(([, pos]) => pos.includes(POS_OF(slot))));
   const unix = Math.floor(e.start / 1000);
+  const ev = { ...e, lineup: JSON.stringify(lineup), lineup_at: e.lineup_at ?? Date.now() }, line = timelineLine(ev), open = checkinOpen(ev); // CR-07: the same timeline /host and /lineup show
   return message({ ping, mentions, accent: 'red', blocks: [
     cards(lineupUrl(env, e.formation) ?? bannerUrl(env, 'matchnight')),   // field view: the shape's pitch (names below)
     header({ eyebrow: `${orgName(env).toUpperCase()} · Match night`, title: `🧩 ${suggested ? 'Suggested lineup' : 'Lineup'}${e.formation ? ` · ${e.formation}` : ''}`, sub: `${label(e)} · <t:${unix}:F> · <t:${unix}:R>` }),
@@ -716,10 +728,11 @@ export function lineupEmbed(env, e, lineup, names, { ping, mentions, suggested =
     ...[...byLine, ['Others', rest]].filter(([, r]) => r.length).map(([name, r]) => text(`-# **${name.toUpperCase()}**\n${r.map(([uid, slot]) => `\`${POS_OF(slot).padEnd(3)}\` **${names.get(uid) ?? 'Member'}**`).join('\n')}`)),
     bench.length ? text(`-# **BENCH · IN THE ORDER THEY ANSWERED**\n${bench.slice(0, 15).map((b) => `\`${String(b.rank).padStart(2)}\` **${b.name}** · ${b.status === 'maybe' ? '❔ maybe' : '✅ in'}`).join('\n')}`) : null,
     sep(),
-    suggested ? text(`📝 **This is a suggested lineup.** It was picked from the answers so far.\n⏰ **Check in ${mins} minutes before kick-off.** Anyone who has not checked in will not be considered.`) : null,
+    suggested ? text(`📝 **This is a suggested lineup.** It was picked from the answers so far.`) : null,
+    line ? text(`${line}\n-# Check-in is for the players in this lineup and closes ${mins} minutes before kick-off.`) : null,
     text(kickoffNotes(e)),
     footer(`${rows.length} starting${bench.length ? ` · ${bench.length} on the bench` : ''} · Play Style per position in the Handbook`),
-    buttons([{ label: 'Squad Hub', url: `${site}members.html#schedule-${e.id}` }]),
+    buttons([...(open ? [{ label: 'Check in', emoji: '✅', style: 'ok', id: CHECKIN_ID(e.id) }] : []), { label: 'Squad Hub', url: `${site}members.html#schedule-${e.id}` }]),
   ] });
 }
 async function lineupRoute(p, method, body, me, env, log) {
@@ -748,6 +761,8 @@ async function lineupRoute(p, method, body, me, env, log) {
   const { lineup, formation, error } = readLineup(body);
   if (error) return fail(error);
   const publish = !!body.publish && Object.keys(lineup).length > 0;
+  const gate = publish ? canPostLineup(row) : { ok: true };
+  if (!gate.ok) return fail(gate.error, 409); // CR-07: the lineup can be posted from an hour before the start; before that it saves as a draft
   await run(env, `UPDATE events SET lineup = ?, formation = ?${publish ? ', lineup_at = ?' : ''} WHERE id = ?`, JSON.stringify(lineup), formation, ...(publish ? [Date.now()] : []), row.id);
   await log(env, me, publish ? 'event-lineup-publish' : 'event-lineup', `${label(row)}${formation ? ` · ${formation}` : ''} · ${Object.keys(lineup).length} players`);
   await pushLineup(env, row.id, publish ? 'publish' : 'draft'); // BE3: other managers with the builder open refresh
@@ -758,21 +773,21 @@ async function lineupRoute(p, method, body, me, env, log) {
     for (const r of await all(env, 'SELECT user_id, name FROM event_rsvps WHERE event_id = ?', row.id)) if (!names.has(r.user_id)) names.set(r.user_id, r.name);
     // Everyone told their own position (one notification each – the text differs).
     let told = 0;
-    for (const uid of ids) told += (await safely(notify(env, [uid], { type: 'event', icon: '🧩', title: `You’re starting at ${POS_OF(lineup[uid])} – ${label(row)} · ${when(row)}`, body: formation ? `Formation ${formation}. Check the Play Style for your position.` : null, link: `members.html#schedule-${row.id}` }))) ?? 0;
+    for (const uid of ids) told += (await safely(notify(env, [uid], { type: 'event', icon: '🧩', title: `You’re starting at ${POS_OF(lineup[uid])} – ${label(row)} · ${when(row)}`, body: `${formation ? `Formation ${formation}. ` : ''}${gate.lateForCheckin ? 'Check-in is already closed for this one.' : `Check in before ${new Date(checkinClosesAt(row)).toISOString().slice(11, 16)} UTC (${CHECKIN_CLOSE_MIN} minutes before the start) – open the Squad Hub or press Check in on the post.`}`, link: `members.html#schedule-${row.id}` }))) ?? 0;
     out.notified = told;
-    const channel = body.channel || (body.discord !== false ? row.discord_channel : null);
+    const channel = body.channel || (body.discord !== false ? (await channelFor(env, 'lineup_posts').catch(() => null)) || row.discord_channel : null);
     // Published before check-in opens = a suggestion until people check in; the bench is everyone who said yes or maybe and isn't starting.
     const mins = 30, answers = await rsvpRows(env, row.id);
     const bench = answers.map((r, i) => ({ rank: i + 1, name: r.name, status: r.status, id: r.user_id })).filter((b) => b.status !== 'no' && !lineup[b.id]).sort((a, b) => (a.status === 'yes' ? 0 : 1) - (b.status === 'yes' ? 0 : 1) || a.rank - b.rank);
-    const suggested = body.final === true ? false : body.suggested === true || row.start - Date.now() > mins * MIN;
+    const suggested = body.final === true ? false : body.suggested === true; // CR-07: a lineup posted inside the window is the latest lineup, not a suggestion
     const extra = { suggested, bench, mins };
     const routed = body.channel ? null : await safely(routeNotification(env, 'event.lineup', {
       notify: { type: 'event', icon: '🧩', title: `Lineup is out – ${label(row)} · ${when(row)}`, body: formation ? `Formation ${formation}.` : null, link: `members.html#schedule-${row.id}` },
       channel: row.discord_channel || undefined, groups: eventGroups(env, { ...row, lineup: JSON.stringify(lineup) }),
-      build: (o) => lineupEmbed(env, { ...row, formation }, lineup, names, { ...o, ...extra }),
+      build: (o) => lineupEmbed(env, { ...row, formation, lineup_at: Date.now() }, lineup, names, { ...o, ...extra }),
     }));
     if (routed) out.discord = routed.posts[0];
-    else if (channel && can(me, 'announce.discord')) out.discord = await postEmbed(env, channel, body.role, lineupEmbed(env, { ...row, formation }, lineup, names, extra));
+    else if (channel && can(me, 'announce.discord')) out.discord = await postEmbed(env, channel, body.role, lineupEmbed(env, { ...row, formation, lineup_at: Date.now() }, lineup, names, extra));
   }
   return json({ ...out, ...(await listFor(env, me)) });
 }
@@ -836,12 +851,44 @@ export async function thirtyMinutes(env, now, everyone) {
     const ids = yes.map((x) => x.user_id);
     await safely(notify(env, ids, { type: 'event', icon: '⏰', title: `Starting in 30 minutes · ${label(e)}`, body: 'You said you are in – get ready.', link: `members.html#schedule-${e.id}`, ref: `event30:${e.id}` }));
     if (everyone && e.discord_channel && env.DISCORD_BOT_TOKEN) {
-      const tags = answers.filter((x) => x.status !== 'no').map((x) => x.user_id).slice(0, 50); // everyone who said yes or maybe needs to check in
-      const msg = await checkinPost(env, e, answers, await checkinsOf(env, e.id), { soon: true, ping: `**⏰ Starting in 30 minutes · ${label(e)} – check in now**\n${tags.map((id) => `<@${id}>`).join(' ')}`, mentions: { users: tags } });
+      // CR-07: check-in has just closed. With a lineup posted, tag the players in it; otherwise everyone who said yes or maybe.
+      const lineupUp = hasLineupPosted(e), inL = lineupOf(e);
+      const tags = answers.filter((x) => x.status !== 'no' && (!lineupUp || Object.hasOwn(inL, x.user_id))).map((x) => x.user_id).slice(0, 50);
+      const msg = await checkinPost(env, e, answers, await checkinsOf(env, e.id), { soon: true, ping: `**⏰ Starting in 30 minutes · ${label(e)} – ${lineupUp ? 'check-in is closed' : 'get ready'}**\n${tags.map((id) => `<@${id}>`).join(' ')}`, mentions: { users: tags } });
       const res = await safely(fetch(`https://discord.com/api/v10/channels/${e.discord_channel}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg, 'event')) }));
       const posted = res?.ok ? await res.json().catch(() => null) : null;
       if (posted?.id) await run(env, 'UPDATE events SET checkin_msg = ? WHERE id = ?', posted.id, e.id);
     }
+    sent++;
+  }
+  return sent;
+}
+
+// ---------- CR-07: reminder to the lineup players who have not confirmed ----------
+// From 10 minutes before check-in closes (start − 40 min) until it does (start − 30 min), once per event: every player in the posted lineup with no
+// check-in gets a bell + DM, the check-in reminders channel (Organization config purpose `checkin_reminders`) gets the list with tags, and managers
+// are told who has not confirmed (their own channel, `manager_alerts`, plus the bell). No channel set = the private reminders still go out.
+export async function checkinNudges(env, now = Date.now()) {
+  const rows = await all(env, "SELECT * FROM events WHERE status = 'scheduled' AND lineup_at IS NOT NULL AND start > ? AND start <= ? ORDER BY start LIMIT 5", now + CHECKIN_CLOSE_MIN * MIN, now + (CHECKIN_CLOSE_MIN + CHECKIN_NUDGE_MIN) * MIN);
+  let sent = 0;
+  for (const e of rows) {
+    if (!nudgeDue(e, now) || !(await once(env, `cinudge:${e.id}`))) continue;
+    const checkins = await checkinsOf(env, e.id), late = unconfirmed(e, checkins);
+    if (!late.length) continue; // everyone has confirmed
+    const names = new Map((await all(env, `SELECT id, name FROM users WHERE id IN (${marks(late.length)})`, ...late)).map((u) => [u.id, u.name]));
+    const until = `<t:${Math.floor(checkinClosesAt(e) / 1000)}:t>`;
+    await safely(notify(env, late, { type: 'event', icon: '⏰', title: `Confirm you are playing – ${label(e)}`, body: `You are in the lineup. Check-in closes at ${new Date(checkinClosesAt(e)).toISOString().slice(11, 16)} UTC (${CHECKIN_CLOSE_MIN} minutes before the start).`, link: `members.html#schedule-${e.id}`, ref: `cinudge:${e.id}` }));
+    const channel = await channelFor(env, 'checkin_reminders').catch(() => null);
+    if (channel && env.DISCORD_BOT_TOKEN) {
+      const msg = message({ ping: late.map((id) => `<@${id}>`).join(' '), mentions: { users: late.slice(0, 50) }, accent: 'red', blocks: [
+        header({ eyebrow: `${orgName(env).toUpperCase()} · CHECK-IN`, title: `⏰ Confirm now · ${label(e)}`.slice(0, 200), sub: `Check-in closes ${until} (<t:${Math.floor(checkinClosesAt(e) / 1000)}:R>)` }),
+        text(`-# **IN THE LINEUP, NOT CONFIRMED**\n${late.slice(0, 25).map((id) => `**${names.get(id) ?? 'Member'}** · \`${POS_OF(lineupOf(e)[id])}\``).join('\n')}`),
+        footer('Press Check in on the lineup post, or in the Squad Hub'),
+        buttons([{ label: 'Check in', emoji: '✅', style: 'ok', id: CHECKIN_ID(e.id) }, { label: 'Squad Hub', url: `${String(env.SITE_URL || '').replace(/\/?$/, '/')}members.html#schedule-${e.id}` }]),
+      ] });
+      await safely(fetch(`https://discord.com/api/v10/channels/${channel}/messages`, { method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg, 'event')) }));
+    }
+    await safely(notifyManagers(env, { icon: '📋', title: `${late.length} not confirmed – ${label(e)}`, body: `${late.slice(0, 12).map((id) => names.get(id) ?? 'Member').join(', ')}${late.length > 12 ? ' …' : ''}. Check-in closes in ${CHECKIN_NUDGE_MIN} minutes.`, link: `members.html#schedule-${e.id}`, ref: `cinudge-mgr:${e.id}` }));
     sent++;
   }
   return sent;
@@ -852,6 +899,7 @@ export async function eventReminders(env) {
   const settings = await getBotSettings(env); // P7.5 – "which auto-posts are on"
   const everyone = flagOn(env, { role: 'member' }, 'discordRsvp') && settings.autoPosts.reminders; // owner/managers-only while testing: no channel post
   const now = Date.now();
+  await checkinNudges(env, now).catch((err) => console.log('check-in nudge failed', err.message));
   await thirtyMinutes(env, now, everyone); // default for everyone who said yes: site + DM + a tag in the event's channel
   const due = await all(env, `SELECT * FROM events WHERE status = 'scheduled' AND start > ? AND (
     (remind24_at IS NULL AND start <= ? AND start > ?) OR (remind2_at IS NULL AND start <= ?)) ORDER BY start LIMIT 10`, now, now + 24 * HOUR, now + 2 * HOUR, now + 2 * HOUR);

@@ -360,7 +360,7 @@ export const COMMANDS = [
   },
   // /matchday – the Phoenix Matchday app (bot/matchday.js). Dark until that app is configured (HELD below).
   {
-    name: 'matchday', description: 'Match days: create one, check in, and see the schedule or who is in', contexts: [0],
+    name: 'matchday', description: 'Match days: create one, see the schedule, who is in, the lineup, and check in', contexts: [0],
     options: [
       { type: SUB, name: 'create', description: 'Managers: schedule a league night, playoffs, friendly, tournament or VPG match', options: [
         { type: STRING, name: 'kind', description: 'What kind of match day', required: true, choices: [{ value: 'league', name: '🏆 League' }, { value: 'playoffs', name: '🥇 Playoffs' }, { value: 'friendly', name: '🤝 Friendly' }, { value: 'tournament', name: '🏟️ Tournament' }, { value: 'vpg', name: '🎮 VPG' }] },
@@ -375,11 +375,11 @@ export const COMMANDS = [
         { type: ROLE, name: 'ping', description: 'Role to ping (default: the Match night ping role)' },
         { type: BOOLEAN, name: 'silent', description: 'Post without pinging anyone' },
       ] },
-      { type: SUB, name: 'checkin', description: 'Say you are on for tonight (opens an hour before the start)' },
-      { type: SUB, name: 'status', description: 'Who is in for the next match day and which positions are missing' },
-      { type: SUB, name: 'schedule', description: 'Upcoming match nights – answer ✅ ❔ ❌ right here' },
-      { type: SUB, name: 'next', description: 'The single next match night – answer ✅ ❔ ❌ right here' },
-      { type: SUB, name: 'who', description: "Who's in for the next event and which positions are missing" },
+      // CR-08: one command for the whole match night. `status`, `next` and `availability` still work as aliases (bot/matchday.js MATCHDAY_ALIASES) so old buttons, docs and habits keep working; they are no longer listed.
+      { type: SUB, name: 'schedule', description: 'Upcoming match days – the next one first, answer ✅ ❔ ❌ right here' },
+      { type: SUB, name: 'who', description: "Who's in for the next match day and which positions are missing" },
+      { type: SUB, name: 'checkin', description: 'Confirm you are playing (lineup players only: opens when the lineup is posted, closes 30 minutes before the start)' },
+      { type: SUB, name: 'lineup', description: 'The lineup for the next match day, and who has confirmed' },
     ],
   },
   // /lfg – the Phoenix Rush app (bot/lfg.js). Dark until that app is configured (HELD below).
@@ -449,19 +449,20 @@ export const COMMANDS = [
 // lends its commands to core, so a command can sit in its target app before that app exists.
 export const APP_COMMANDS = {
   // The five bots (PLANNING/BOT-SPLIT.md): Core = server, site and manager controls · Tools = helpers for members and managers ·
-  // Stats = anything that reads numbers · Matchday = running a match night · Rush = 5v5. `fun` is only the old Fun app, kept empty
-  // for the transition window (its commands moved to Tools / Stats; MOVED_FROM points people there).
+  // Stats = anything that reads numbers · Matchday = running a match night · Rush = 5v5. `fun` now holds /emoji, /gif and /arcade (CR-01);
+  // its older commands moved to Tools / Stats and MOVED_FROM points people there.
   core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'watchlive', 'exportcontent', 'profanitysetup', 'mascot', 'testview', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
-  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'toolshelp'],
-  fun: [],
-  matchday: ['host', 'lineup', 'matchday', 'absence', 'highlight', 'emoji', 'gif', 'birthday', 'arcade', 'matchdayhelp'],
+  tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'absence', 'highlight', 'birthday', 'toolshelp'],
+  fun: ['emoji', 'gif', 'arcade'],
+  matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };
 // Where a moved command lives until its new app is configured, and for the transition window after (a one-line pointer).
 export const MOVED_FROM = {
   host: 'tools', lineup: 'tools', remind: 'tools', rush: 'stats', matchday: 'tools',
   panel: 'tools', announce: 'tools', trial: 'tools', setup: 'tools', purge: 'tools', exportcontent: 'tools', profanitysetup: 'tools',
+  absence: 'matchday', highlight: 'matchday', birthday: 'matchday', emoji: 'matchday', gif: 'matchday', arcade: 'matchday',
   site: 'core', awards: 'fun', points: 'fun', jail: 'fun', wheel: 'fun', trivia: 'fun', share: 'fun', discoveries: 'fun', watch: 'fun', avatarcard: 'fun',
 };
 // New commands that exist only once their app is configured (never lent to core).

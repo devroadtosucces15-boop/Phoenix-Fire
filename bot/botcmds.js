@@ -12,7 +12,7 @@
 //   /awards        this week's ballot + last week's winners                                            (flag `awards`)
 // Replies that are about "me" are ephemeral (flags 64) – only the person who asked sees them.
 import { can, flagOn } from './roles.js';
-import { orgName } from './orgconfig.js';
+import { orgName, channelFor } from './orgconfig.js';
 import { answerEvents, EVENT_TYPES, eventPost, rsvpRows, setCheckin } from './events.js';
 import { currentRole, log, submitRush, voteView, votesByMatch } from './members.js';
 import { state as awardsState } from './awards.js';
@@ -26,7 +26,8 @@ import { message, panel, reply, notice, header, text, sep, facts, side, thumb, l
 import { it } from './icons.js';
 import { faceOf, playerFaces } from './faces.js';
 import { hostCommand } from './host.js';
-import { matchdayCommand } from './matchday.js';
+import { matchdayCommand, MATCHDAY_ALIASES } from './matchday.js';
+import { phaseOf, hasLineupPosted, lineupOf, unconfirmed, timelineLine, checkinOpen, whyNotOpen } from './matchflow.js';
 import { prefSelect, parsePref } from './prefpos.js';
 
 // P11.16: quick one-line wrappers around features that already exist – reuse the same route
@@ -94,8 +95,10 @@ export async function checkinButton(i, env, who) {
   if (!can(who, 'events.checkin')) return say(`🔒 Members of the ${orgName(env)} server only.`);
   const e = await one(env, "SELECT * FROM events WHERE id = ? AND status = 'scheduled'", Number(i.data.custom_id.split(':')[2]));
   if (!e) return say('⌛ This event is over or was cancelled.');
-  if (!(Date.now() > e.start - 3600e3 && Date.now() < e.start + e.duration * 60e3 + 7200e3)) return say('⌛ Check-in opens an hour before the start and closes two hours after the end.');
+  // CR-07: check-in opens when the lineup is posted (from an hour before the start), closes 30 minutes before it, and is for the players in the lineup.
+  if (!checkinOpen(e)) return say(`⌛ ${whyNotOpen(e)}`);
   const me = await memberOf(i, who, env);
+  if (!Object.hasOwn(lineupOf(e), me.u) && !can(who, 'events.manage')) return say('🔒 Check-in is for the players in the posted lineup. Ask a manager if you should be added.');
   await setCheckin(env, me, e, true, null);
   await env.DB.prepare('INSERT INTO activity (at, user_id, name, avatar, type, detail) VALUES (?, ?, ?, ?, ?, ?)').bind(Date.now(), me.u, me.n, me.a, 'event-checkin', `on · ${label(e)} · Discord`).run();
   return checkinDone(e);
@@ -127,6 +130,9 @@ export async function memberCommand(i, env, who, site, h) {
 
   if (name === 'matchday') {
     const sub = i.data.options?.[0];
+    // CR-08: the schedule and lineup views are the same ones /schedule and /lineup show, so they live in one place.
+    const subName = MATCHDAY_ALIASES[sub?.name] ?? sub?.name;
+    if (subName === 'schedule' || subName === 'lineup') return memberCommand({ ...i, data: { ...i.data, name: subName, options: [] } }, env, who, site, h);
     return matchdayCommand(i, env, me, who, sub?.name, Object.fromEntries((sub?.options ?? []).map((o) => [o.name, o.value])), { log, loadSite: h.load });
   }
   if (name === 'host') {
@@ -145,24 +151,13 @@ export async function memberCommand(i, env, who, site, h) {
     return reply(first);
   }
   if (name === 'availability' || name === 'lineup') {
-    // /lineup: the next event with a published lineup (falls back to the very next event to say "not yet").
+    // /lineup (CR-07): the SAME event /host posted – next scheduled one – with its time, mode, roster and the timeline (lineup window, check-in).
+    // the next event with a posted lineup (its check-in is what people are asking about), else simply the next event
     const e = (name === 'lineup' ? await one(env, "SELECT * FROM events WHERE status = 'scheduled' AND lineup_at IS NOT NULL AND start + duration * 60000 > ? ORDER BY start LIMIT 1", Date.now()) : null) ?? (await nextEvents(env, 1))[0];
-    if (!e) return name === 'lineup' ? sayPic(env, 'cmd-lineup-none', '🗓️ Nothing scheduled yet.', { flags: 0 }) : say('🗓️ Nothing scheduled yet.', { flags: 0 });
-    const rsvps = await rsvpsOf(env, e.id);
+    if (!e) return name === 'lineup' ? sayPic(env, 'cmd-lineup-none', '🗓️ Nothing scheduled yet. Managers add one with /host.', { flags: 0 }) : say('🗓️ Nothing scheduled yet.', { flags: 0 });
+    const rsvps = await rsvpRows(env, e.id);
     if (name === 'availability') return reply(await eventPost(env, e, rsvps, '', { who: true }));
-    const lineup = parse(e.lineup, {});
-    const ids = Object.keys(lineup);
-    if (!ids.length || !e.lineup_at) return sayPic(env, 'cmd-lineup-none', `🧩 No lineup published yet for **${label(e)}** (${ts(e.start, 'R')}).`, { flags: 0 });
-    const names = new Map([...rsvps.map((r) => [r.user_id, r.name]), ...(await all(env, `SELECT id, name FROM users WHERE id IN (${ids.map(() => '?').join(',')})`, ...ids)).map((u) => [u.id, u.name])]);
-    const rows = ids.map((id) => [lineup[id], names.get(id) ?? 'Member']).sort((a, b) => SLOT_ORDER(a[0]) - SLOT_ORDER(b[0]));
-    const pitch = lineupUrl(env, e.formation); // the shape's drawn pitch (scripts/cards-events.mjs), else the Line-up picture
-    return reply(message({ blocks: [
-      pitch ? cards({ url: pitch, alt: `${e.formation} formation` }) : picture(env, 'cmd-lineup'),
-      header({ eyebrow: brand('Lineup', env), title: `🧩 ${label(e)} · ${e.formation ?? 'Lineup'}`, sub: `${ts(e.start)} · ${ts(e.start, 'R')}` }),
-      text(`\`\`\`\n${rows.map(([pos, n]) => `${String(pos).padEnd(5)}${n}`).join('\n')}\n\`\`\``),
-      footer(`${rows.length} players · positions in formation order`),
-      buttons([{ label: 'Open in the Squad Hub', url: `${site}members.html#schedule-${e.id}` }]),
-    ] }));
+    return reply(await lineupView(env, e, rsvps, can(who, 'events.manage'), site));
   }
   if (name === 'rush') {
     if (!flagOn(env, who, 'rushLog')) return say('🔒 Rush logging is not switched on for you yet.');
@@ -336,3 +331,33 @@ export async function memberCommand(i, env, who, site, h) {
 const ORDER = ['GK', 'LWB', 'LB', 'CB', 'LCB', 'RCB', 'RB', 'RWB', 'CDM', 'LDM', 'RDM', 'LM', 'CM', 'LCM', 'RCM', 'RM', 'CAM', 'LAM', 'RAM', 'LW', 'RW', 'CF', 'ST', 'LS', 'RS'];
 const SLOT_ORDER = (slot) => { const i = ORDER.indexOf(String(slot).replace(/\d+$/, '')); return i < 0 ? 99 : i; };
 function flatOptions(opts = []) { return opts.flatMap((o) => (o.options ? flatOptions(o.options) : [o])); }
+
+// ---------- /lineup and /matchday lineup (CR-07) ----------
+// One view of the event /host posted. Before the lineup: the event, who is in and when the window opens. After: the lineup with each player's check-in
+// state. Managers also see who has not confirmed (and are told when no reminder channel is set).
+async function lineupView(env, e, rsvps, manager, site) {
+  const yes = rsvps.filter((r) => r.status === 'yes'), needs = parse(e.needs, {}), unix = Math.floor(e.start / 1000);
+  const checkins = await all(env, 'SELECT user_id, name FROM event_checkins WHERE event_id = ? ORDER BY at', e.id);
+  const line = timelineLine(e), mode = e.type === 'rush' ? '⚡ Rush' : '🏆 League';
+  const head = header({ eyebrow: brand('Lineup', env), title: `🧩 ${label(e)}${e.formation ? ` · ${e.formation}` : ''}`, sub: `${ts(e.start)} · ${ts(e.start, 'R')} · ${mode}` });
+  const open = [{ label: 'Open in the Squad Hub', url: `${site}members.html#schedule-${e.id}` }];
+  if (!hasLineupPosted(e)) {
+    return message({ blocks: [picture(env, 'cmd-lineup-none'), head, text(`🧩 No lineup published yet for **${label(e)}** (${ts(e.start, 'R')}).`), facts([['👥 In', `${yes.length}${needs.players ? `/${needs.players}` : ''}`], ['Mode', mode]]),
+      text(line ?? '🧩 No lineup yet.'), yes.length ? text(`**✅ In** ${yes.slice(0, 25).map((r) => r.name).join(', ')}`) : null,
+      footer('The same event as the /host post · the lineup can be posted from an hour before the start'), buttons(open)] });
+  }
+  const lineup = lineupOf(e), ids = Object.keys(lineup);
+  const names = new Map([...rsvps.map((r) => [r.user_id, r.name]), ...(await all(env, `SELECT id, name FROM users WHERE id IN (${ids.map(() => '?').join(',')})`, ...ids)).map((u) => [u.id, u.name])]);
+  const on = new Set(checkins.map((c) => String(c.user_id)));
+  const rows = ids.map((id) => [lineup[id], names.get(id) ?? 'Member', on.has(id)]).sort((a, b) => SLOT_ORDER(a[0]) - SLOT_ORDER(b[0]));
+  const pitch = lineupUrl(env, e.formation);
+  const late = unconfirmed(e, checkins);
+  return message({ blocks: [
+    pitch ? cards({ url: pitch, alt: `${e.formation} formation` }) : picture(env, 'cmd-lineup'), head,
+    text(`\`\`\`\n${rows.map(([pos, n, ok]) => `${String(pos).padEnd(5)}${n}${ok ? ' ✔' : ''}`).join('\n')}\n\`\`\``),
+    line ? text(line) : null,
+    manager && late.length ? text(`**⏳ Not confirmed (${late.length}):** ${late.slice(0, 20).map((id) => names.get(id) ?? 'Member').join(', ')}${(await channelFor(env, 'checkin_reminders').catch(() => null)) ? '' : '\n-# No check-in reminders channel is set – only private reminders go out. Set `checkin_reminders` in /setup channel or the Organization page.'}`) : null,
+    footer(`${on.size ? `${rows.filter((r) => r[2]).length}/${rows.length} confirmed · ` : ''}positions in formation order · ✔ = checked in`),
+    buttons([...(checkinOpen(e) ? [{ label: 'Check in', emoji: '✅', style: 'ok', id: `phoenix:ci:${e.id}` }] : []), ...open]),
+  ] });
+}
