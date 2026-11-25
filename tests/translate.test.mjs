@@ -86,5 +86,18 @@ try {
     return /into Italian/.test(sys);
   });
 } finally { globalThis.fetch = real; }
+// ---------- a hung or failing model still ends in a reply (never "couldn't load any response") ----------
+{
+  const who = 'hang-user', calls = [];
+  const hung = { ...baseEnv, AI: { run: (model) => { calls.push(model); return calls.length === 1 ? new Promise(() => {}) : Promise.resolve({ response: 'Polished.' }); } } };
+  const t0 = Date.now();
+  const r = await enhanceText(hung, { input: 'hello wrld', level: 5, tone: 'professional', who });
+  t('a model that hangs is cut off and the second model answers', r.ok && r.body === 'Polished.' && calls.length === 2 && calls[0] !== calls[1] && Date.now() - t0 < 20000);
+  const dead = { ...baseEnv, AI: { run: async () => { throw new Error('model gone'); } } };
+  const r2 = await translateText(dead, { input: 'hola', to: 'en', who: 'dead-user' });
+  t('both models failing gives a plain error, not a crash', !r2.ok && /could not answer/.test(r2.error));
+  const empty = { ...baseEnv, AI: { run: async () => ({ response: '' }) } };
+  t('an empty answer is an error the member can read', !(await enhanceText(empty, { input: 'x y', who: 'empty-user' })).ok);
+}
 t('the feature flag ships owner-only in config', config.features.translate === 'owner');
 done();

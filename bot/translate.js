@@ -49,10 +49,29 @@ export function parseTranslation(out) {
 }
 
 // ---------- the AI call ----------
+// A call that hangs would outlive the Worker's background time, the reply would never be edited in and Discord would show "couldn't load any
+// response". So every call has a time limit, and a second model is tried when the first one fails or is slow.
+const FALLBACK_MODEL = '@cf/meta/llama-3.1-8b-instruct';
+export const AI_TIMEOUT_MS = 12000;
 async function runModel(env, system, input, maxTokens) {
-  const out = await env.AI.run(TEXT_MODEL, { messages: [{ role: 'system', content: system }, { role: 'user', content: input }], max_tokens: maxTokens });
-  return typeof out?.response === 'string' ? out.response.trim() : '';
+  let last;
+  for (const model of [TEXT_MODEL, FALLBACK_MODEL]) {
+    let timer;
+    try {
+      const call = env.AI.run(model, { messages: [{ role: 'system', content: system }, { role: 'user', content: input }], max_tokens: maxTokens });
+      const out = await Promise.race([call, new Promise((_, no) => { timer = setTimeout(() => no(new Error('The AI took too long to answer.')), AI_TIMEOUT_MS); })]);
+      const answer = typeof out?.response === 'string' ? out.response.trim() : '';
+      if (answer) return answer;
+      last = new Error('The AI sent back nothing.');
+    } catch (e) {
+      last = e;
+      if (/\b4006\b|daily free allocation|neurons/i.test(String(e?.message))) throw e; // out of budget: a second model will not help
+      console.log('translator model failed', model, String(e?.message).slice(0, 160));
+    } finally { clearTimeout(timer); }
+  }
+  throw last;
 }
+
 // Returns { ok: true, ... } or { ok: false, error } – never throws.
 export async function translateText(env, { input, to, tone, who, feature = 'translate' }) {
   const src = clean(input);
@@ -65,7 +84,7 @@ export async function translateText(env, { input, to, tone, who, feature = 'tran
     const { from, body } = parseTranslation(await runModel(env, translatePrompt({ to, tone }), src, 700));
     return body ? { ok: true, from, body: body.slice(0, 1800), to, tone } : { ok: false, error: 'No translation came back – try again.' };
   } catch (e) {
-    return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'The translator could not answer right now.' };
+    return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'The translator could not answer right now – try again in a minute.' };
   }
 }
 export async function enhanceText(env, { input, level, tone, to, who }) {
@@ -79,7 +98,7 @@ export async function enhanceText(env, { input, level, tone, to, who }) {
     const body = (await runModel(env, enhancePrompt({ level, tone, to }), src, 900)).replace(/^["“]|["”]$/g, '');
     return body ? { ok: true, body: body.slice(0, 1800), level: Math.min(10, Math.max(1, Math.round(Number(level) || 5))), tone } : { ok: false, error: 'No answer came back – try again.' };
   } catch (e) {
-    return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'The translator could not answer right now.' };
+    return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'The translator could not answer right now – try again in a minute.' };
   }
 }
 
