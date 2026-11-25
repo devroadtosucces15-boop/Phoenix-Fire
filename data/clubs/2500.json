@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-25T17:30:49.028Z",
+ "fetchedAt": "2026-11-25T17:40:40.115Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2013,14 +2013,14 @@
   },
   {
    "name": "YAMI-_-77",
-   "proPos": "14",
-   "gamesPlayed": "290",
-   "goals": "127",
-   "assists": "90",
-   "manOfTheMatch": "37",
+   "proPos": "25",
+   "gamesPlayed": "291",
+   "goals": "128",
+   "assists": "92",
+   "manOfTheMatch": "38",
    "ratingAve": "7.7",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "prevGoals": "1",
+   "favoritePosition": "forward"
   },
   {
    "name": "CanerAKC",
@@ -2316,6 +2316,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-25T17:30:49.028Z"
+  "fetchedAt": "2026-11-25T17:40:40.115Z"
  }
 }
