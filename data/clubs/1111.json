@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-25T16:10:55.354Z",
+ "fetchedAt": "2026-11-25T16:30:41.767Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1017,6 +1017,42 @@
    "favoritePosition": "goalkeeper"
   },
   {
+   "name": "ShIzZq-",
+   "gamesPlayed": "1",
+   "winRate": "0",
+   "goals": "2",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "33",
+   "passesMade": "25",
+   "passSuccessRate": "86",
+   "ratingAve": "8.5",
+   "tacklesMade": "0",
+   "tackleSuccessRate": "0",
+   "proName": "Zayd",
+   "proPos": "25",
+   "proStyle": "0",
+   "proHeight": "162",
+   "proNationality": "183",
+   "proOverall": "81",
+   "proOverallStr": "81",
+   "manOfTheMatch": "0",
+   "redCards": "0",
+   "prevGoals": "2",
+   "prevGoals1": "2",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "forward"
+  },
+  {
    "name": "Jaliens45",
    "gamesPlayed": "10",
    "winRate": "90",
@@ -1848,7 +1884,7 @@
  "positionCount": {
   "midfielder": 7,
   "goalkeeper": 3,
-  "forward": 14,
+  "forward": 15,
   "defender": 7
  },
  "career": [
@@ -2304,6 +2340,17 @@
    "favoritePosition": "goalkeeper"
   },
   {
+   "name": "ShIzZq-",
+   "proPos": "25",
+   "gamesPlayed": "44",
+   "goals": "40",
+   "assists": "18",
+   "manOfTheMatch": "7",
+   "ratingAve": "7.5",
+   "prevGoals": "1",
+   "favoritePosition": "forward"
+  },
+  {
    "name": "Jaliens45",
    "proPos": "14",
    "gamesPlayed": "86",
@@ -2410,6 +2457,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-25T16:10:55.354Z"
+  "fetchedAt": "2026-11-25T16:30:41.767Z"
  }
 }
