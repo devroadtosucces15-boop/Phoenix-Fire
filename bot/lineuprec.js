@@ -9,7 +9,7 @@
 import { can, flagOn } from './roles.js';
 import { FORMATIONS, POS_OF } from './events.js';
 import { insightsFor } from './aiinsights.js';
-import { parsePref, expandPref } from './prefpos.js';
+import { parsePref, expandPref, PREF_MAX } from './prefpos.js';
 import '../web/scout.js';
 
 const { report, fromSquad } = globalThis.NXScout;
@@ -65,7 +65,8 @@ export function rankCompare(a, b) {
 // → { lineup: { id: slot }, why: { id: 'asked' | { pick: 1|2 } } } – `why` marks who got what they asked for.
 export function layeredFill(slots, candidates) {
   const lineup = {}, got = {}, used = new Set(), filled = new Set();
-  for (let pick = 0; pick < 2; pick++) {
+  const picks = Math.max(2, ...candidates.map((c) => c.prefs?.length ?? 0));
+  for (let pick = 0; pick < picks; pick++) {
     for (const { slot, pos } of slots) {
       if (filled.has(slot)) continue;
       const askers = candidates.filter((c) => !used.has(c.id) && c.prefs?.[pick] && [].concat(c.prefs[pick]).some((a) => slotFits(pos, a))).sort(rankCompare);
@@ -78,7 +79,7 @@ export function layeredFill(slots, candidates) {
 }
 
 // A member's asks as individual positions, best first (expandPref flattens "LB/RB" into LB, RB; keep one entry per pick).
-const expandAsks = (groups) => groups.slice(0, 2).map((g) => expandPref([g]));
+const expandAsks = (groups) => groups.slice(0, PREF_MAX).map((g) => expandPref([g]));
 // Commitment: of the last COMMIT_WINDOW events a member said yes to, how many did they check in at? { said, came, rate } per
 // user; members with no history are left out (no data → neutral, never penalised). The event being planned is excluded.
 export const COMMIT_WINDOW = 8;
@@ -126,7 +127,7 @@ export async function recommendRoute(p, method, body, me, env, log, loadSite) {
     const base = c?.rating != null
       ? `Rated ${c.rating.toFixed(1)} avg over ${c.games} game${c.games === 1 ? '' : 's'} as ${c.grp}${c.style ? ` · ${c.style}` : ''}`
       : `Placed by usual position${c?.style ? ` · ${c.style}` : ''} – not enough games logged yet for a stats-based read`;
-    const ask = asked[uid] ? `Asked for ${POS_OF(slot)} (${asked[uid] === 1 ? '1st' : '2nd'} pick) · ` : '';
+    const ask = asked[uid] ? `Asked for ${POS_OF(slot)} (${['1st', '2nd', '3rd'][asked[uid] - 1] ?? `${asked[uid]}th`} pick) · ` : '';
     const turn = c?.turnups ? ` · turned up ${c.turnups.came}/${c.turnups.said}` : '';
     return [uid, `${ask}${base}${turn}`];
   }));

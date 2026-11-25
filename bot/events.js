@@ -37,7 +37,7 @@ import { hex } from './media.js';
 import { once } from './once.js';
 import { phaseOf, checkinOpen, inLineup, canPostLineup, hasLineupPosted, lineupOf, unconfirmed, nudgeDue, timelineLine, whyNotOpen, checkinClosesAt, CHECKIN_CLOSE_MIN, CHECKIN_NUDGE_MIN } from './matchflow.js';
 
-import { cleanPref, parsePref, savePref } from './prefpos.js';
+import { cleanPref, parsePref, savePref, prefTags } from './prefpos.js';
 import { rosterBlock, rosterOn, rosterModel, drawRoster } from './rosterpic.js';
 const REMIND = ['dm', 'mention', 'off'];
 
@@ -225,6 +225,9 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const short = needs.players && yes.length < needs.players ? needs.players - yes.length : 0;
   const cancelled = e.status === 'cancelled', done = cancelled || e.start + e.duration * MIN < Date.now();
   const length = e.duration >= 60 ? `${Math.floor(e.duration / 60)} h${e.duration % 60 ? ` ${e.duration % 60} min` : ''}` : `${e.duration} min`;
+  // CR: what the player asked to play (small `ST` `CAM` boxes right after the name); with no ask, the usual position from the profile
+  const tagsOf = (r) => prefTags(parsePref(r.pref_pos)) || (posOf(r) ? `\`${posOf(r)}\`` : '');
+  const label2 = (r) => `${r.name}${tagsOf(r) ? ` ${tagsOf(r)}` : ''}`;
   const list = (arr) => (arr.length ? `${arr.slice(0, 25).join(', ')}${arr.length > 25 ? ' …' : ''}` : '–');
   const still = [short && `${short} more player${short > 1 ? 's' : ''}`, ...missing.map(([k, left]) => `${left} ${k}`)].filter(Boolean).join(' · ');
   return message({ ping, mentions, accent: cancelled ? 'steel' : 'red', blocks: [
@@ -237,10 +240,10 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
     text(`**✅ In (${yes.length})**`),
     // who's in: one row each with their face on the right (card if shipped, else Discord picture – bot/faces.js)
     roster,   // the drawn roster (bot/rosterpic.js) stands in for the face rows and the name list
-    !roster && faces ? yes.slice(0, FACE_ROWS).map((r) => side(`\`${String(rsvps.indexOf(r) + 1).padStart(2)}\` ✅ **${r.name}**${posOf(r) ? ` · ${posOf(r)}` : ''}`, thumb(faces.get(String(r.user_id))))) : null,
-    roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(names('yes').slice(FACE_ROWS))}`) : !faces && yes.length ? text(list(names('yes'))) : null,
+    !roster && faces ? yes.slice(0, FACE_ROWS).map((r) => side(`\`${String(rsvps.indexOf(r) + 1).padStart(2)}\` ✅ **${r.name}**${tagsOf(r) ? `\n${tagsOf(r)}` : ''}`, thumb(faces.get(String(r.user_id))))) : null,
+    roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(yes.slice(FACE_ROWS).map(label2))}`) : !faces && yes.length ? text(list(rsvps.filter((r) => r.status === 'yes').map(label2))) : null,
     !roster && !yes.length ? text('_nobody yet_') : null,
-    who || names('maybe').length ? text(`**❔ Maybe (${names('maybe').length})**\n${list(names('maybe'))}`) : null,
+    who || names('maybe').length ? text(`**❔ Maybe (${names('maybe').length})**\n${list(rsvps.filter((r) => r.status === 'maybe').map(label2))}`) : null,
     who || names('no').length ? text(`**❌ Out (${names('no').length})**\n${list(names('no'))}`) : null,
     still ? text(`⚠️ **Still needed:** ${still}`) : needs.players && yes.length >= needs.players && !cancelled ? text('✅ **Full squad.**') : null,
     !cancelled && !done && timelineLine(e) ? text(timelineLine(e)) : null,
@@ -262,7 +265,7 @@ export async function eventPost(env, e, rsvps = [], heading = '', opts = {}) {
 }
 const checkinsOf = (env, id) => all(env, 'SELECT * FROM event_checkins WHERE event_id = ? ORDER BY at', id);
 // Everyone's answer, in the order they FIRST answered (r.at moves on every change, r.first_at does not).
-export const rsvpRows = (env, id) => all(env, 'SELECT r.status, r.name, r.user_id, r.first_at, r.at, p.positions, p.rush_positions FROM event_rsvps r LEFT JOIN profiles p ON p.user_id = r.user_id WHERE r.event_id = ? ORDER BY COALESCE(r.first_at, r.at), r.user_id', id);
+export const rsvpRows = (env, id) => all(env, 'SELECT r.status, r.name, r.user_id, r.first_at, r.at, r.pref_pos, p.positions, p.rush_positions FROM event_rsvps r LEFT JOIN profiles p ON p.user_id = r.user_id WHERE r.event_id = ? ORDER BY COALESCE(r.first_at, r.at), r.user_id', id);
 // Keeps the Discord post's counts in step with the site. Never throws.
 export async function refreshEventPost(env, id) {
   try {
@@ -894,11 +897,22 @@ export async function checkinNudges(env, now = Date.now()) {
   return sent;
 }
 
+// The sign-up posts changed layout (positions as tags beside the name). Every live post is edited in place once, so nobody has to re-post
+// an event people already answered. Bump PANEL_LAYOUT when a layout change should reach the existing posts again.
+const PANEL_LAYOUT = 'v3';
+export async function refreshLivePosts(env, now = Date.now()) {
+  const rows = await all(env, "SELECT id FROM events WHERE status = 'scheduled' AND discord_msg IS NOT NULL AND start + duration * 60000 > ? ORDER BY start LIMIT 10", now);
+  let n = 0;
+  for (const r of rows) if (await once(env, `panel-${PANEL_LAYOUT}:${r.id}`)) { await refreshEventPost(env, r.id); n++; }
+  return n;
+}
+
 export async function eventReminders(env) {
   if (!env.DB || !rsvpButtons(env)) return { sent: 0 };
   const settings = await getBotSettings(env); // P7.5 – "which auto-posts are on"
   const everyone = flagOn(env, { role: 'member' }, 'discordRsvp') && settings.autoPosts.reminders; // owner/managers-only while testing: no channel post
   const now = Date.now();
+  await refreshLivePosts(env, now).catch((err) => console.log('live post refresh failed', err.message));
   await checkinNudges(env, now).catch((err) => console.log('check-in nudge failed', err.message));
   await thirtyMinutes(env, now, everyone); // default for everyone who said yes: site + DM + a tag in the event's channel
   const due = await all(env, `SELECT * FROM events WHERE status = 'scheduled' AND start > ? AND (

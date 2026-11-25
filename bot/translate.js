@@ -7,7 +7,7 @@ import { orgName } from './orgconfig.js';
 import { kvOf } from './kv.js';
 import { LANGUAGES, LANG_NAME, DEFAULT_LANG, TONES } from './translatelangs.js';
 export { LANGUAGES, LANG_NAME, DEFAULT_LANG, TONES };
-import { spendAi, aiRefusal, AI_COST } from './aibudget.js';
+import { spendAi, aiRefusal, refundAi, AI_COST } from './aibudget.js';
 
 const TEXT_MODEL = '@cf/meta/llama-3.1-8b-instruct-fp8';
 export const MAX_CHARS = 1500; // input cap: keeps one call cheap and the answer inside Discord's limit
@@ -84,6 +84,7 @@ export async function translateText(env, { input, to, tone, who, feature = 'tran
     const { from, body } = parseTranslation(await runModel(env, translatePrompt({ to, tone }), src, 700));
     return body ? { ok: true, from, body: body.slice(0, 1800), to, tone } : { ok: false, error: 'No translation came back – try again.' };
   } catch (e) {
+    if (!/\b4006\b|daily free allocation|neurons/i.test(String(e?.message))) await refundAi(env, { cost: AI_COST.text, who, feature }); // nothing was produced: no charge, no wait
     return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'The translator could not answer right now – try again in a minute.' };
   }
 }
@@ -98,6 +99,7 @@ export async function enhanceText(env, { input, level, tone, to, who }) {
     const body = (await runModel(env, enhancePrompt({ level, tone, to }), src, 900)).replace(/^["“]|["”]$/g, '');
     return body ? { ok: true, body: body.slice(0, 1800), level: Math.min(10, Math.max(1, Math.round(Number(level) || 5))), tone } : { ok: false, error: 'No answer came back – try again.' };
   } catch (e) {
+    if (!/\b4006\b|daily free allocation|neurons/i.test(String(e?.message))) await refundAi(env, { cost: AI_COST.enhance, who, feature: 'enhance' });
     return { ok: false, error: /\b4006\b|daily free allocation|neurons/i.test(String(e?.message)) ? aiRefusal({ reason: 'budget' }) : 'The translator could not answer right now – try again in a minute.' };
   }
 }

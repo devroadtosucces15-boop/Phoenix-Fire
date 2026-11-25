@@ -11,6 +11,8 @@ import { CHANNEL_PURPOSE_INFO } from '../bot/orgconfig.js';
 import { MATCHDAY_ALIASES } from '../bot/matchday.js';
 import { eventMessage, lineupEmbed, checkinMessage } from '../bot/events.js';
 import { plainText } from '../bot/ui.js';
+import { prefTags, expandPref, PREF_POSITIONS } from '../bot/prefpos.js';
+import { spendAi, refundAi, aiUsed, AI_COST } from '../bot/aibudget.js';
 
 const read = (f) => fs.readFileSync(new URL(`../${f}`, import.meta.url), 'utf8');
 const START = Date.parse('2026-12-01T20:00:00Z');
@@ -76,6 +78,18 @@ t('/matchdayhelp teaches the timed flow, the new subcommands and where the moved
 
 // ---------- /host confirms the plan ----------
 t('/host tells the manager when the lineup window opens and check-in closes', /Lineup window opens/.test(hostSrc) && /closes \$\{flow/.test(hostSrc));
+
+// ---------- positions as small tags after the name ----------
+const tagged = [{ status: 'yes', name: 'Striker Sam', user_id: '1', pref_pos: '["ST","CAM","RW"]' }, { status: 'maybe', name: 'Mid Max', user_id: '2', pref_pos: '["LCM","CDM"]' }, { status: 'yes', name: 'No Pick', user_id: '3', pref_pos: null }];
+const tpost = plainText(eventMessage(env, ev({ lineup: null, needs: '{"players":11}' }), tagged, '', { who: true }));
+t('each player\'s picked positions show as small tags straight after the name, best first', /Striker Sam `ST` `CAM` `RW`/.test(tpost) && /Mid Max `LCM` `CDM`/.test(tpost) && /No Pick(?! `)/.test(tpost));
+t('prefTags gives code-span boxes and nothing for no pick', prefTags(['ST', 'CAM']) === '`ST` `CAM`' && prefTags([]) === '' && prefTags(null) === '');
+t('LFB, RFB, LCM and RCM map to the lineup slots the recommender knows', expandPref(['LFB', 'RFB', 'LCM', 'RCM', 'LM', 'RM']).join() === 'LB,RB,CM,CM,LM,RM' && ['LM', 'RM', 'LCM', 'RCM', 'LFB', 'RFB', 'CDM', 'CB', 'GK'].every((p) => PREF_POSITIONS.includes(p)));
+const evSrc = read('bot/events.js');
+t('live posts are edited in place once (claimed per event), from the 10-minute cron', /refreshLivePosts/.test(evSrc) && /once\(env, `panel-\$\{PANEL_LAYOUT\}:\$\{r\.id\}`\)/.test(evSrc) && /await refreshLivePosts\(env, now\)/.test(evSrc));
+const sp = await spendAi(env, { cost: AI_COST.enhance, who: 'ref-user', feature: 'enhance' }), before = await aiUsed(env);
+await refundAi(env, { cost: AI_COST.enhance, who: 'ref-user', feature: 'enhance' });
+t('a failed AI call is refunded: allowance back and no wait', sp.ok && (await aiUsed(env)) === before - AI_COST.enhance && (await spendAi(env, { cost: AI_COST.enhance, who: 'ref-user', feature: 'enhance' })).ok);
 
 // Discord rejects a whole app's registration when any description is over 100 characters
 const longest = (list) => list.flatMap((c) => [c, ...(c.options ?? []).flatMap((o) => [o, ...(o.options ?? [])])]).filter((x) => (x.description ?? '').length > 100).map((x) => x.name);

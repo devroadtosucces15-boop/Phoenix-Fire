@@ -98,12 +98,12 @@ t('checkin: members check in inside the window', /You are on/.test(plainText(ci.
 t('unknown subcommand is explained', /create, schedule, who, lineup or checkin/.test(plainText((await md('nope', {}, member)).data)));
 
 // ---------- MB2: preferred position ----------
-t('positions: the eight groups', PREF_POSITIONS.join() === 'GK,CB,LB/RB,CDM,CM,CAM,LW/RW,ST');
-t('cleanPref: valid groups only, unique, at most two, order kept', cleanPref(['st', 'ST', 'CAM', 'GK']).join() === 'ST,CAM' && cleanPref(['XX', 7]).length === 0 && cleanPref('ST').length === 0 && cleanPref(null).length === 0);
+t('positions: ST CAM LW RW LM RM CM LCM RCM CDM CB LB RB LFB RFB GK', PREF_POSITIONS.join() === 'ST,CAM,LW,RW,LM,RM,CM,LCM,RCM,CDM,CB,LB,RB,LFB,RFB,GK');
+t('cleanPref: valid positions only, unique, several kept in order, old groups still read', cleanPref(['st', 'ST', 'CAM', 'GK']).join() === 'ST,CAM,GK' && cleanPref(['LB/RB', 'LW/RW']).join() === 'LB,RB,LW,RW' && cleanPref(PREF_POSITIONS).length === 6 && cleanPref(['XX', 7]).length === 0 && cleanPref('ST').length === 0 && cleanPref(null).length === 0);
 t('expandPref: wide groups become both sides for the recommender', expandPref(['LB/RB', 'ST']).join() === 'LB,RB,ST' && expandPref(['LW/RW']).join() === 'LW,RW');
 t('parsePref: bad stored JSON is no preference', parsePref('not json').length === 0 && parsePref(null).length === 0 && parsePref('["CM"]').join() === 'CM');
 const menu = prefSelect(5, ['CM']);
-t('select: optional, up to two, current choice ticked, Discord custom id', menu.components[0].min_values === 0 && menu.components[0].max_values === 2 && menu.components[0].custom_id === 'pf:pos:5' && menu.components[0].options.length === 8 && menu.components[0].options.find((o) => o.value === 'CM').default && !menu.components[0].options.find((o) => o.value === 'ST').default);
+t('select: optional, several can be picked, current choice ticked, Discord custom id', menu.components[0].min_values === 0 && menu.components[0].max_values === 6 && menu.components[0].custom_id === 'pf:pos:5' && menu.components[0].options.length === 16 && menu.components[0].options.find((o) => o.value === 'CM').default && !menu.components[0].options.find((o) => o.value === 'ST').default);
 const evId = Number(near.lastInsertRowid);
 t('save: a yes keeps its preference, JSON in order', await savePref(env, evId, '801', ['ST', 'CAM']) && sqlite.prepare('SELECT pref_pos FROM event_rsvps WHERE event_id = ? AND user_id = ?').get(evId, '801').pref_pos === '["ST","CAM"]');
 t('save: nobody who has not answered can set one', (await savePref(env, evId, '802', ['ST'])) === false);
@@ -126,7 +126,7 @@ t('Discord: tapping can’t make it asks nothing', !JSON.stringify(noBtn).includ
 const sel = await send({ type: 3, data: { custom_id: `pf:pos:${evId}`, component_type: 3, values: ['CDM', 'CM'] }, ...as('801') });
 await send({ type: 3, data: { custom_id: `norex:ev:${evId}:yes` }, ...as('801') });
 const sel2 = await send({ type: 3, data: { custom_id: `pf:pos:${evId}`, component_type: 3, values: ['CDM', 'CM'] }, ...as('801') });
-t('Discord: the select reaches its handler through the Worker', /Noted: CDM \/ CM/.test(plainText(sel2.data)) && /Answer first|Noted/.test(plainText(sel.data)));
+t('Discord: the select reaches its handler through the Worker', /Noted: CDM · CM/.test(plainText(sel2.data)) && /Answer first|Noted/.test(plainText(sel.data)));
 globalThis.fetch = realFetch;
 done();
 

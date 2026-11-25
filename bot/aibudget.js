@@ -43,6 +43,17 @@ export async function spendAi(env, { cost = AI_COST.text, who = null, feature = 
   return { ok: true, used: used + cost, cap };
 }
 
+// Gives a spend back when the AI call itself failed (nothing was produced), so a failure costs the person neither the allowance nor the wait.
+export async function refundAi(env, { cost = AI_COST.text, who = null, feature = 'ai', now = Date.now() } = {}) {
+  const kv = kvOf(env);
+  if (!kv) return;
+  try {
+    const key = `aibudget:${day(now)}`, used = Number(await kv.get(key)) || 0;
+    await kv.put(key, String(Math.max(0, used - cost)), { expirationTtl: 2 * 86400 });
+    if (who) await kv.delete(`aicool:${feature}:${who}`);
+  } catch { /* a failed refund only means the person waits the normal 20 seconds */ }
+}
+
 // What a person sees when the counter says no.
 export const aiRefusal = (r) => (r.reason === 'cooldown'
   ? `Easy – wait ${r.wait} seconds between uses.`

@@ -3,24 +3,31 @@
 // array, best first. It is a preference, never a promise. The lineup recommender reads it through expandPref().
 import { reply, notice } from './ui.js';
 
-export const PREF_POSITIONS = ['GK', 'CB', 'LB/RB', 'CDM', 'CM', 'CAM', 'LW/RW', 'ST'];
-export const PREF_MAX = 2;
-// Individual positions behind each group, for the recommender (profiles use LB, RB, LW, RW …).
-export const PREF_EXPAND = { 'LB/RB': ['LB', 'RB'], 'LW/RW': ['LW', 'RW'] };
+// The positions a player can ask for, in the order the dropdown shows them (front to back). Several can be chosen: they are shown as small tags
+// after the name on the sign-up post, best first, so whoever builds the lineup can see who can play where.
+export const PREF_POSITIONS = ['ST', 'CAM', 'LW', 'RW', 'LM', 'RM', 'CM', 'LCM', 'RCM', 'CDM', 'CB', 'LB', 'RB', 'LFB', 'RFB', 'GK'];
+export const PREF_MAX = 6;
+// Older answers were saved as the eight groups below; they are still read (and mapped to the new names) so nobody loses what they picked.
+const LEGACY = { 'LB/RB': ['LB', 'RB'], 'LW/RW': ['LW', 'RW'] };
+// Individual lineup positions behind each choice, for the recommender (profiles and formation slots use LB, RB, CM …).
+export const PREF_EXPAND = { LFB: ['LB'], RFB: ['RB'], LCM: ['CM'], RCM: ['CM'] };
 
-// Anything → a clean list (valid groups only, unique, order kept, at most two). null input = no preference given.
+// Anything → a clean list (valid positions only, unique, order kept, at most PREF_MAX). null input = no preference given.
 export function cleanPref(list) {
   if (!Array.isArray(list)) return [];
-  return [...new Set(list.map((x) => String(x).toUpperCase().trim()).filter((x) => PREF_POSITIONS.includes(x)))].slice(0, PREF_MAX);
+  const out = list.map((x) => String(x).toUpperCase().trim()).flatMap((x) => LEGACY[x] ?? [x]).filter((x) => PREF_POSITIONS.includes(x));
+  return [...new Set(out)].slice(0, PREF_MAX);
 }
 export const expandPref = (list) => cleanPref(list).flatMap((g) => PREF_EXPAND[g] ?? [g]);
 export const parsePref = (s) => { try { return cleanPref(JSON.parse(s)); } catch { return []; } };
+// The small boxes on the post: `ST` `CAM` `RW` (a code span each), left-aligned right after the name. '' when nothing was picked.
+export const prefTags = (list) => cleanPref(list).map((p) => `\`${p}\``).join(' ');
 
 export const PREF_ID = /^pf:pos:\d+$/;
 // The ephemeral select shown after "I'm in" / "Maybe". min_values 0: choosing nothing is fine.
 export function prefSelect(eventId, current = []) {
   return { type: 1, components: [{
-    type: 3, custom_id: `pf:pos:${Number(eventId)}`, placeholder: 'Which position do you want tonight? (optional, up to 2)', min_values: 0, max_values: PREF_MAX,
+    type: 3, custom_id: `pf:pos:${Number(eventId)}`, placeholder: `Which positions can you play tonight? (pick any, up to ${PREF_MAX})`, min_values: 0, max_values: PREF_MAX,
     options: PREF_POSITIONS.map((p) => ({ label: p, value: p, default: cleanPref(current).includes(p) })),
   }] };
 }
@@ -39,5 +46,6 @@ export async function prefPosSelect(i, env, me) {
   const chosen = cleanPref(i.data?.values ?? []);
   const ok = await savePref(env, id, me.u, chosen);
   if (!ok) return reply(notice('Answer first', 'Tap “I’m in” or “Maybe” on the post, then pick your position.'));
-  return reply(notice(chosen.length ? `✅ Noted: ${chosen.join(' / ')}` : 'No position preference', 'A preference only – managers pick the lineup and can see it. Change it any time.', { accent: 'win' }));
+  try { (await import('./events.js')).refreshEventPost(env, id); } catch { /* the post catches up on the next answer */ } // the tags show on the post at once
+  return reply(notice(chosen.length ? `✅ Noted: ${chosen.join(' · ')}` : 'No position preference', 'It shows next to your name on the post so whoever builds the lineup can see where you can play. Change it any time.', { accent: 'win' }));
 }
