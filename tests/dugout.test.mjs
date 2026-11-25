@@ -14,7 +14,7 @@ const member = await login('500', [], 'Player One');
 const member2 = await login('501', [], 'Player Two');
 
 // A match that kicked off 10 minutes ago (inside the check-in window) and one tomorrow with no line-up.
-const liveMs = Math.floor((Date.now() - 10 * 60e3) / 60e3) * 60e3;
+const liveMs = Math.floor((Date.now() + 45 * 60e3) / 60e3) * 60e3;
 const liveDate = new Date(liveMs).toISOString();
 const tomorrow = new Date(Date.now() + 86400e3).toISOString().slice(0, 10);
 const base = { type: 'league', tz: 'UTC', duration: 120, needs: { players: 5 }, notes: 'Lobby', public: true };

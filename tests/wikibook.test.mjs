@@ -29,7 +29,7 @@ for (const k of ['hub', ...BOT_KEYS]) {
   }
 }
 t('every page: private, v2, under 40 components, under 4000 characters, unique ids that the router accepts', bad.length === 0 || (console.log(bad), false));
-t('the book has a page for every command of every bot (nothing drifts from the live definitions)', BOT_KEYS.every((k) => APP_COMMANDS[k].filter((n) => !(n in HELP_COMMANDS) && COMMANDS.some((c) => c.name === n)).every((n) => pagesFor(k).some((p) => p.name === n))));
+t('the book has a page for every command of every bot (nothing drifts from the live definitions)', BOT_KEYS.every((k) => APP_COMMANDS[k].filter((n) => !(n in HELP_COMMANDS) && COMMANDS.some((c) => c.name === n && c.type !== 3)).every((n) => pagesFor(k).some((p) => p.name === n))));
 
 // ---------- the spread: a left page and a right page ----------
 const cmdPage = pagesFor('rush').findIndex((p) => p.name === 'queue'), spread = txt(bookMessage(env, 'rush', cmdPage, { entries }));

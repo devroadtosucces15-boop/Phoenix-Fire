@@ -50,14 +50,14 @@ const made = await call(mgr, '/api/events', { type: 'league', date: day(3), time
 const evId = made.d.id, post = posts.at(-1);
 const btns = btnsOf(post);
 t('P3.3 event post carries ✅ ❔ ❌ buttons + a Squad Hub link', btns.filter((b) => b.custom_id).map((b) => b.custom_id).join() === `norex:ev:${evId}:yes,norex:ev:${evId}:maybe,norex:ev:${evId}:no` && btns.some((b) => b.style === 5));
-t('P3.3 post shows answers + what is still needed', isV2(post) && /\*\*Answers\*\*/.test(txt(post)) && /Still needed\*\* 6 more players · 1 GK/.test(txt(post)));
+t('P3.3 post shows answers + what is still needed', isV2(post) && /In \(\d+\)/.test(txt(post)) && /Still needed:\*\* 6 more players · 1 GK/.test(txt(post)));
 t('reminder setting stored', made.d.events.find((e) => e.id === evId).remind === 'mention');
 const clicked = await button(`norex:ev:${evId}:yes`, '502');
 t('P3.3 button answers privately (ephemeral) with the event', clicked.type === 4 && (clicked.data.flags & 64) === 64 && /You’re in/.test(txt(clicked.data)));
 t('P3.3 the answer lands in the same table as the Hub (Discord nickname)', sqlite.prepare('SELECT status, name FROM event_rsvps WHERE event_id = ? AND user_id = ?').get(evId, '502')?.name === 'Nick 502');
-t('P3.3 the Discord post is refreshed with the new counts', edits.some((x) => x.msg === 'm1' && /✅ 1/.test(txt(x))));
+t('P3.3 the Discord post is refreshed with the new counts', edits.some((x) => x.msg === 'm1' && /In \(1\)/.test(txt(x))));
 await call(member, '/api/events/rsvp', { ids: [evId], status: 'maybe' });
-t('P3.3 a Hub answer refreshes the Discord post too', /❔ 1/.test(txt(edits.at(-1))));
+t('P3.3 a Hub answer refreshes the Discord post too', /Maybe \(1\)/.test(txt(edits.at(-1))));
 t('P3.3 unknown answer refused', /Unknown answer/.test(txt((await button(`norex:ev:${evId}:perhaps`)).data)));
 t('P3.3 closed event → friendly message', /over or was cancelled/.test(txt((await button('norex:ev:999999:yes')).data)));
 setFlags({ events: 'owner' });
@@ -114,6 +114,7 @@ t('P3.4 members cannot build lineups', (await call(member, '/api/events/lineup',
 const draft = await call(mgr, '/api/events/lineup', { id: evId, formation: '4-3-3', lineup: { 500: 'LCM', 501: 'GK' } });
 t('P3.4 save a draft (not published, nobody told)', draft.s === 200 && draft.d.events.find((e) => e.id === evId).formation === '4-3-3' && !draft.d.events.find((e) => e.id === evId).lineupAt && !draft.d.notified);
 t('P3.4 /lineup says not published yet', /No lineup published/.test(txt((await slash('lineup')).data)));
+sqlite.prepare('UPDATE events SET start = ? WHERE id = ?').run(Date.now() + 50 * 60e3, evId); // CR-07: a lineup is posted from an hour before the start
 const pub = await call(mgr, '/api/events/lineup', { id: evId, formation: '4-3-3', lineup: { 500: 'LCM', 501: 'GK' }, publish: true });
 t('P3.4 publish → each starter told their position', pub.d.notified === 2 && (await call(member, '/api/notify')).d.items.some((n) => /You’re starting at CM/.test(n.title)));
 t('P3.4 publish → lineup posted in the event’s Discord channel', /[Ll]ineup/.test(plainText(posts.at(-1))) && /`CM ` \*\*Player One\*\*/.test(plainText(posts.at(-1))) && posts.at(-1).channel === '70001');
@@ -131,7 +132,7 @@ const sched = await slash('matchday', [{ type: 1, name: 'schedule', options: [] 
 t('P7.4 /schedule: next event with answer buttons + the ones after', sched.type === 4 && isV2(sched.data) && btnsOf(sched.data).some((b) => /^norex:ev:\d+:yes$/.test(b.custom_id ?? '')));
 const av = await slash('matchday', [{ type: 1, name: 'who', options: [] }]);
 const faceRows = JSON.stringify(av.data).match(/"type":9/g)?.length ?? 0;
-t('P7.4 /availability: who’s in as rows with faces, then maybe / out lists', /❔ Maybe \(/.test(txt(av.data)) && /❌ Out \(/.test(txt(av.data)) && (faceRows > 0 || !/✅ [1-9]/.test(txt(av.data))));
+t('P7.4 /availability: who’s in as rows with faces, then maybe / out lists', /❔ Maybe \(/.test(txt(av.data)) && /❌ Out \(/.test(txt(av.data)) && (faceRows > 0 || !/In \([1-9]/.test(txt(av.data))));
 t('P7.4 /rush log needs a verified player', /Claim your player/.test(txt((await slash('rush', [{ type: 1, name: 'log', options: [{ name: 'opponent', value: 'Rush FC' }, { name: 'for', value: 3 }, { name: 'against', value: 1 }] }])).data)));
 const pk = siteJson('players').find((p) => p.home);
 sqlite.prepare("INSERT OR REPLACE INTO claims (user_id, player, player_name, status, at, name) VALUES ('500', ?, ?, 'approved', ?, 'Player One')").run(pk.k, pk.n, Date.now());

@@ -9,7 +9,7 @@ The map lives in `bot/commanddefs.js` (`APP_COMMANDS`); routing helpers are in `
 | `core`  | Member login (OAuth), role sync, result + notification posts, AutoMod, every cron/background post | `<PUBLIC_URL>/interactions/core` (or the old `<PUBLIC_URL>/`) |
 | `stats` | Club and player records | `<PUBLIC_URL>/interactions/stats` |
 | `tools` | Member and manager helpers (feedback, suggest, share, discoveries, tags, remind, site, avatar card, jail, wheel, trivia) | `<PUBLIC_URL>/interactions/tools` |
-| `fun`   | The old Fun app. It maps **0 commands** now (`APP_COMMANDS.fun` is empty); its commands moved to Tools and Stats and `MOVED_FROM` points people there during the transition. Kept so old messages and buttons still answer | `<PUBLIC_URL>/interactions/fun` |
+| `fun`   | The Fun app. It maps **3 commands** now (`/emoji`, `/gif`, `/arcade`, moved from Matchday in CR-01); its older commands moved to Tools and Stats and `MOVED_FROM` points people there during the transition | `<PUBLIC_URL>/interactions/fun` |
 | `matchday` | Live. Setting up and running one 11v11 match day: `/host`, `/lineup`, `/matchday`, `/absence` (away or playing-less notices to the managers), `/arcade` (two-player button games: noughts and crosses, connect four, rock paper scissors, penalty shootout; own score plus shared points), `/gif` (video to GIF through a GitHub Actions job), `/highlight` (store a highlight clip privately), `/emoji` (suggest an emoji or sticker; managers review), `/birthday` (save, show or hide your birthday), `/matchdayhelp` (see `PLANNING/BOT-SPLIT.md`) | `<PUBLIC_URL>/interactions/matchday` |
 | `rush` | Live. 5v5 Rush: `/rush`, `/lfg`, `/queue`, `/rushhelp` (member-logged games, LFG, the queue board) | `<PUBLIC_URL>/interactions/rush` |
 

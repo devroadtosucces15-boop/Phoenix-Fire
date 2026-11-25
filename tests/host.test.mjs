@@ -93,7 +93,7 @@ const btn = (id, who) => send({ type: 3, data: { custom_id: `norex:ev:${ev.id}:y
 await btn(ev.id, '801'); await btn(ev.id, '803');
 await new Promise((res) => setTimeout(res, 50));
 const live = edits.filter((e) => e.msg === sqlite.prepare('SELECT discord_msg FROM events WHERE id = ?').get(ev.id).discord_msg).at(-1);
-t('the live post shows who’s in, each with their face (card first)', !!live && images(live).includes('https://bot.example/media/cards/new.png') && images(live).includes('https://bot.example/media/cards/forthree.png') && /✅ 2/.test(plainText(live)));
+t('the live post shows who’s in, each with their face (card first)', !!live && images(live).includes('https://bot.example/media/cards/new.png') && images(live).includes('https://bot.example/media/cards/forthree.png') && /In \(2\)/.test(plainText(live)));
 await tt('timezone autocomplete is answered', async () => (await send({ type: 4, data: { name: 'host', options: [{ name: 'timezone', value: 'london', focused: true }] }, ...as('900', ['mgr']) })).data.choices[0].value === 'Europe/London');
 
 globalThis.fetch = realFetch;

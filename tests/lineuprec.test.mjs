@@ -35,7 +35,7 @@ t('picking a different valid formation is honoured', (await call(mgr, '/api/even
 t('bogus event id refused', (await call(mgr, '/api/events/recommend', { id: 999999 })).s === 404);
 
 // Publishing what came back reuses the existing P3.4 lineup route unchanged.
-const pub = await call(mgr, '/api/events/lineup', { id: evId, formation: r.d.formation, lineup: r.d.lineup, publish: true });
+const pub = await call(mgr, '/api/events/lineup', { id: evId, formation: r.d.formation, lineup: r.d.lineup }); // a draft: posting waits for the window an hour before the start (CR-07)
 t('the suggested lineup is a valid draft for the real /api/events/lineup route', pub.s === 200 && pub.d.events.find((e) => e.id === evId).formation === r.d.formation);
 
 done();

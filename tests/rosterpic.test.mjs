@@ -57,21 +57,21 @@ t('draw: a failing renderer returns an error and never throws', !bad.url && /boo
 imagesFail = false;
 
 // ----- the posts -----
-const e = { id: 7, type: 'league', start: Date.now() + 36e5, duration: 120, status: 'scheduled', formation: null, notes: '' };
+const e = { id: 7, type: 'league', start: Date.now() + 36e5, duration: 120, status: 'scheduled', formation: null, notes: '', lineup: '{"1":"CM","2":"CB","3":"ST"}', lineup_at: Date.now() - 6e4 }; // lineup posted: check-in is open (CR-07)
 const media = (msg) => JSON.stringify(msg).includes('/media/r/7-');
 setFlag('off');
 t('flag off: the post is exactly as before (face rows, no picture)', rosterOn(env) === false && !media(await eventPost(env, e, rs)) && /Slug17/.test(plainText(await eventPost(env, e, rs))));
 setFlag('owner');
 const withPic = await eventPost(env, e, rs);
-t('flag on: the post carries the picture and drops the name rows', rosterOn(env) && media(withPic) && !/Slug17/.test(plainText(withPic)) && /Answers/.test(plainText(withPic)));
+t('flag on: the post carries the picture and drops the name rows', rosterOn(env) && media(withPic) && !/Slug17/.test(plainText(withPic)) && /In \(/.test(plainText(withPic)));
 t('… the picture has a text description for screen readers', /In: 1 Slug17/.test(JSON.stringify(withPic)));
 const ck = await checkinPost(env, e, rs, [{ user_id: '1', name: 'Slug17-_-' }]);
-t('check-in post: picture instead of the two lists, buttons and kick-off notes stay', media(ck) && !/NOT CHECKED IN/.test(plainText(ck)) && /Be lined up 10 minutes/.test(plainText(ck)) && JSON.stringify(ck).includes('phoenix:ci:7'));
+t('check-in post: picture instead of the two lists, buttons and kick-off notes stay', media(ck) && !/NOT CONFIRMED/.test(plainText(ck)) && /Be lined up 10 minutes/.test(plainText(ck)) && JSON.stringify(ck).includes('phoenix:ci:7'));
 imagesFail = true;
 const fb = await eventPost(env, e, rs);
 t('draw fails: the post falls back to the text rows, nothing breaks', !media(fb) && /Slug17/.test(plainText(fb)));
 const fb2 = await checkinPost(env, e, rs, []);
-t('… and so does the check-in post', /NOT CHECKED IN/.test(plainText(fb2)));
+t('… and so does the check-in post', /NOT CONFIRMED/.test(plainText(fb2)));
 imagesFail = false;
 t('no answers yet: no picture', (await rosterBlock(env, 7, [], [])) === null);
 t('the plain builders still work without the picture', !!eventMessage(env, e, rs) && !!checkinMessage(env, e, rs, []));
