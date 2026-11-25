@@ -6,7 +6,7 @@ import { t, done } from './lib.mjs';
 import { phaseOf, checkinOpen, canPostLineup, nudgeDue, unconfirmed, inLineup, lineupOpensAt, checkinClosesAt, timelineLine, whyNotOpen, LINEUP_OPEN_MIN, CHECKIN_CLOSE_MIN, MIN } from '../bot/matchflow.js';
 import { COMMANDS, APP_COMMANDS, MOVED_FROM } from '../bot/commanddefs.js';
 import { appOf, homeOf } from '../bot/apps.js';
-import { CHANNEL_PURPOSES } from '../bot/orgconsts.js';
+import { CHANNEL_PURPOSES, purposeChoices } from '../bot/orgconsts.js';
 import { CHANNEL_PURPOSE_INFO } from '../bot/orgconfig.js';
 import { MATCHDAY_ALIASES } from '../bot/matchday.js';
 import { eventMessage, lineupEmbed, checkinMessage } from '../bot/events.js';
@@ -53,6 +53,7 @@ t('Fun credentials are only named, never written: the secrets registry lists the
 
 // ---------- channels come from the Organization config ----------
 t('lineup posts and check-in reminders are channel purposes with a description (site and /setup channel both read this list)', CHANNEL_PURPOSES.includes('lineup_posts') && CHANNEL_PURPOSES.includes('checkin_reminders') && /lineup/i.test(CHANNEL_PURPOSE_INFO.lineup_posts) && /confirm/i.test(CHANNEL_PURPOSE_INFO.checkin_reminders));
+t('both purposes show in the first 25 choices of /setup channel with no typing, and typing finds them', ['lineup_posts', 'checkin_reminders'].every((p) => purposeChoices('').some((c) => c.value === p)) && purposeChoices('check in')[0]?.value === 'checkin_reminders' && purposeChoices('lineup').some((c) => c.value === 'lineup_posts'));
 const events = read('bot/events.js');
 t('events.js reads both channels from config and names no channel id', /channelFor\(env, 'lineup_posts'\)/.test(events) && /channelFor\(env, 'checkin_reminders'\)/.test(events) && !/\b\d{17,20}\b/.test(events));
 t('a feature with no reminder channel says so to managers', /No check-in reminders channel is set/.test(read('bot/botcmds.js')));
