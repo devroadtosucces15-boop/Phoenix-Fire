@@ -3,7 +3,9 @@
 //            URL into R2 (binding MEDIA, key emoji/…) and writes a library row (user, name, kind, status `pending`, size, format). The reply is a private receipt. ONE review card (name,
 //            kind, size, who) goes to the managers' channel (Organization config purpose `emoji_review`) with Approve and Reject buttons; none set = no card (managers use the Control Center).
 //   mine     the member's own suggestions with their status.   delete  the member withdraws a pending one (managers: any).   review  managers: what is waiting.
-// NOTHING is imported into the Discord server and NOTHING is shown publicly: the approved rows are kept for the importer, which is a separate later feature.
+//   copy     the same queue, from ANY server: right-click a message → Apps → Request emoji, or /emoji copy (the app is user-installable). Only people in our server.
+//   stats    managers: slots, request counts, most and least used (bot/emojiimport.js).
+// Approving an EMOJI imports it into our server (bot/emojiimport.js); if Discord refuses or no slot is free it stays waiting with the reason. Stickers are only kept (not imported yet).
 // Limits (Discord, checked against the API docs): custom emoji 256 KiB, JPEG, PNG or GIF (animated only as GIF); sticker 512 KiB, PNG, APNG or GIF (no JPEG, no Lottie, no WebP, no SVG).
 // config.json `emojiSuggest` (Worker var EMOJI_SUGGEST) can only tighten the size and pixel limits, never go above Discord's. Uploads are untrusted: the image is parsed from its own bytes,
 // never trusted from its name or declared type, and the review page shows it only after a manager asks. Nothing about the image is logged.
@@ -13,8 +15,11 @@ import { orgName, channelFor } from './orgconfig.js';
 import { discord } from './servertools.js';
 import { appConfigured, appEnv } from './apps.js';
 import { usedBytes, mb, hex, REFUSE_AT } from './media.js';
+import { parseEmojis, emojiImage, addToServer, slots, funEnv, statsPanel, statsData } from './emojiimport.js';
+import { notifyManagers, safely } from './notify.js';
 
-export const EMOJI_COMMANDS = new Set(['emoji']);
+export const EMOJI_COMMANDS = new Set(['emoji', 'Request emoji']);
+const MAX_COPY = 5;
 export const EMOJI_ID = /^norex:emo:/;
 export const EMOJI_FLAG = 'emoji';
 export const KIB = 1024;
@@ -96,7 +101,7 @@ export function inspect(b) {
   return null;
 }
 /** the whole check: kind rules, size, format, pixels. → { ok: info } or { why } (a sentence for the member) */
-export function validate(env, kind, bytes) {
+export function validate(env, kind, bytes, { copy = false } = {}) { // copy: it is already a Discord emoji, so only format and weight are checked
   const k = KINDS[kind], lim = limits(env, kind);
   if (!k) return { why: 'Pick emoji or sticker.' };
   if (!bytes.length) return { why: 'That file is empty.' };
@@ -106,6 +111,7 @@ export function validate(env, kind, bytes) {
   if (!k.mimes.includes(info.mime)) return { why: kind === 'sticker' ? 'Stickers must be PNG, APNG or GIF.' : 'Emoji must be PNG, JPEG or GIF.' };
   if (info.animated && !k.animated.includes(info.mime)) return { why: 'An animated emoji must be a GIF.' };
   const { width: w, height: h } = info;
+  if (copy) return { ok: info };
   if (!w || !h || Math.min(w, h) < lim.minSide) return { why: `The image is too small: at least ${lim.minSide} x ${lim.minSide} pixels.` };
   if (Math.max(w, h) > lim.maxSide) return { why: `The image is too big: at most ${lim.maxSide} x ${lim.maxSide} pixels.` };
   if (Math.max(w, h) / Math.min(w, h) > lim.maxRatio) return { why: `Make it square (yours is ${w} x ${h}).` };
@@ -138,7 +144,7 @@ export function reviewMessage(env, row, preview = null) {
       preview ? cards(preview) : null,
       text(rows.map(([a, v]) => `**${a}**\n${v}`).join('\n\n')), sep(),
       live ? buttons([{ label: 'Approve', id: `norex:emo:ok:${row.id}`, style: 'ok', emoji: '✅' }, { label: 'Reject', id: `norex:emo:no:${row.id}`, style: 'bad', emoji: '❌' }]) : null,
-      footer(`${orgName(env)} · approved images are kept for the server importer; nothing is added to the server yet`)].filter(Boolean),
+      footer(`${orgName(env)} · ${row.kind === 'sticker' ? 'approved stickers are kept; they are not added to the server yet' : 'approving an emoji adds it to the server'}`)].filter(Boolean),
   });
 }
 async function postCard(env, row, preview) {
@@ -157,7 +163,7 @@ async function refreshCard(env, row) {
 }
 
 /** downloads the attachment, checks it, then reserves the row (pending cap and duplicate name inside the INSERT) and stores the file. → a message (receipt or notice) */
-export async function storeSuggestion(env, i, att, o, now = Date.now()) {
+export async function storeSuggestion(env, i, att, o, now = Date.now(), { sourceId = null } = {}) {
   const uid = userOf(i);
   if (!uid) return notice('I could not tell who you are');
   if (!env.MEDIA) return notice('Image storage is not switched on yet', 'A manager has to connect the media storage first.');
@@ -179,14 +185,14 @@ export async function storeSuggestion(env, i, att, o, now = Date.now()) {
     if (len > lim.maxBytes) return notice('That image is too big', validate(env, kind, { length: len }).why);
     bytes = new Uint8Array(await res.arrayBuffer());
   } catch { return notice('The upload did not finish', 'Try again in a minute.'); }
-  const v = validate(env, kind, bytes);
+  const v = validate(env, kind, bytes, { copy: !!sourceId });
   if (!v.ok) return notice('That image cannot be used', v.why);
   const info = v.ok, key = `emoji/${hex(16)}.${EXT[info.mime]}`;
   // the pending cap and the duplicate name sit inside the INSERT so parallel submissions cannot slip past them
-  const ins = await env.DB.prepare(`INSERT INTO emoji_suggestions (user_id, user_name, name, kind, key, mime, width, height, animated, size, status, created_at) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?
+  const ins = await env.DB.prepare(`INSERT INTO emoji_suggestions (user_id, user_name, name, kind, key, mime, width, height, animated, size, status, created_at, source_id) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?
     WHERE (SELECT COUNT(*) FROM emoji_suggestions WHERE user_id = ? AND status = 'pending') < ?
     AND NOT EXISTS (SELECT 1 FROM emoji_suggestions WHERE kind = ? AND lower(name) = lower(?) AND status IN ('pending', 'approved'))`)
-    .bind(uid, clean(byOf(i), 40), name, kind, key, info.mime, info.width, info.height, info.animated ? 1 : 0, bytes.length, now, uid, lim.maxPending, kind, name).run();
+    .bind(uid, clean(byOf(i), 40), name, kind, key, info.mime, info.width, info.height, info.animated ? 1 : 0, bytes.length, now, sourceId, uid, lim.maxPending, kind, name).run();
   if (!ins.meta?.changes) {
     const taken = await env.DB.prepare("SELECT 1 AS x FROM emoji_suggestions WHERE kind = ? AND lower(name) = lower(?) AND status IN ('pending', 'approved')").bind(kind, name).first();
     return taken ? notice('That name is taken', `A ${kind} called :${name}: is already waiting or approved. Pick another name.`) : notice('Too many are waiting', `You can have ${lim.maxPending} suggestions waiting for review. Wait for an answer or /emoji delete one.`);
@@ -210,8 +216,62 @@ export async function decide(env, id, action, byId, byName, now = Date.now()) {
   const r = await env.DB.prepare("UPDATE emoji_suggestions SET status = ?, reviewed_by = ?, reviewed_name = ?, reviewed_at = ? WHERE id = ? AND status = 'pending'").bind(status, byId, clean(byName, 40), now, id).run();
   if (!r.meta?.changes) return null;
   const row = await env.DB.prepare('SELECT * FROM emoji_suggestions WHERE id = ?').bind(id).first();
+  if (status === 'approved' && row.kind === 'emoji') { // the row is claimed first, so two presses can never upload twice
+    const added = await addToServer(env, row).catch(() => ({ ok: false, error: 'Discord did not answer. Try again.' }));
+    if (!added.ok) {
+      await env.DB.prepare("UPDATE emoji_suggestions SET status = 'pending', reviewed_by = NULL, reviewed_name = NULL, reviewed_at = NULL WHERE id = ?").bind(id).run();
+      return { ...row, status: 'pending', importError: added.error };
+    }
+    await env.DB.prepare('UPDATE emoji_suggestions SET emoji_id = ? WHERE id = ?').bind(added.emoji.id, id).run();
+    row.emoji_id = added.emoji.id;
+  }
   await refreshCard(env, row);
   return row;
+}
+
+// ---------- copy from another server ----------
+// Requests may come from any server, but only from someone who is in ours.
+async function isMember(env, i) {
+  const e = funEnv(env);
+  if (!e.DISCORD_GUILD_ID) return false;
+  if (String(i.guild_id ?? '') === String(e.DISCORD_GUILD_ID)) return true;
+  const r = await fetch(`https://discord.com/api/v10/guilds/${e.DISCORD_GUILD_ID}/members/${userOf(i)}`, { headers: { Authorization: `Bot ${e.DISCORD_BOT_TOKEN}` } }).catch(() => null);
+  return !!r?.ok;
+}
+/** the custom emojis in a pasted string or in the right-clicked message, each sent through the same checks and queue as an upload. → a message */
+export async function copyRequest(env, i, now = Date.now()) {
+  const menu = i.data?.type === 3;
+  const o = Object.fromEntries((i.data?.options?.[0]?.options ?? []).map((x) => [x.name, x.value]));
+  const found = parseEmojis(menu ? i.data.resolved?.messages?.[i.data.target_id]?.content : o.emoji);
+  if (!found.length) return notice('No custom emojis found', menu ? 'That message has no custom server emojis in its text. Unicode emojis (😀) have no image to copy.' : 'Paste a custom emoji. Unicode emojis (😀) have no image to copy.');
+  if (!(await isMember(env, i))) return notice('Phoenix members only', 'Join the Phoenix server first, then you can request emojis from anywhere.');
+  const s = await slots(funEnv(env)).catch(() => ({ ok: false }));
+  const have = new Set(s.ok ? s.emojis.map((e) => e.id) : []);
+  const sent = [], skipped = [];
+  let last = null;
+  for (const e of found.slice(0, MAX_COPY)) {
+    const dup = await env.DB.prepare("SELECT status FROM emoji_suggestions WHERE (source_id = ? OR emoji_id = ?) AND status IN ('pending', 'approved') LIMIT 1").bind(e.id, e.id).first();
+    if (dup || have.has(e.id)) { skipped.push(`:${e.name}: ${dup?.status === 'pending' ? 'is already waiting' : 'is already ours'}`); continue; }
+    const name = (found.length === 1 && o.name) || (cleanName(e.name) ? e.name : `${e.name}_emoji`);
+    last = await storeSuggestion(env, i, { url: emojiImage(e.id, e.animated), size: 0 }, { type: 'emoji', name }, now, { sourceId: e.id });
+    const row = await env.DB.prepare("SELECT name FROM emoji_suggestions WHERE source_id = ? AND status = 'pending'").bind(e.id).first();
+    if (row) sent.push(row.name); else skipped.push(`:${e.name}: was not sent`);
+  }
+  if (found.length > MAX_COPY) skipped.push(`only the first ${MAX_COPY} are read`);
+  if (sent.length) await safely(notifyManagers(env, { icon: '😀', title: `Emoji waiting for review: ${sent.map((n) => `:${n}:`).join(' ')}`, body: 'Approve or reject on the review card or in the Control Center.', link: 'members.html#manager' }, userOf(i)));
+  if (found.length === 1 && last) return last; // the usual receipt, or the exact reason it was refused
+  return notice(sent.length ? 'Sent to the managers' : 'Nothing new to send', [sent.length ? sent.map((n) => `:${n}:`).join(' ') : '', ...skipped].filter(Boolean).join('\n'));
+}
+// Work that can outlast Discord's 3 seconds: answer "thinking" privately, then fill the reply in.
+async function deferred(env, i, ctx, make) {
+  const work = (async () => {
+    const m = await make().catch(() => notice('The upload did not finish', 'Try again in a minute.'));
+    await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ flags: m.flags, components: m.components, allowed_mentions: m.allowed_mentions ?? { parse: [] } }),
+    }).catch(() => null);
+  })();
+  if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
+  return { type: 5, data: { flags: (1 << 15) | 64 } };
 }
 
 async function mine(env, uid) {
@@ -237,14 +297,12 @@ export async function emojiCommand(i, env, who, ctx, now = Date.now()) {
   const sub = i.data?.options?.[0], o = Object.fromEntries((sub?.options ?? []).map((x) => [x.name, x.value]));
   if (sub?.name === 'suggest') {
     const att = i.data?.resolved?.attachments?.[o.image];
-    const work = (async () => {
-      const m = await storeSuggestion(env, i, att, o, now).catch(() => notice('The upload did not finish', 'Try again in a minute.'));
-      await fetch(`https://discord.com/api/v10/webhooks/${env.DISCORD_APP_ID}/${i.token}/messages/@original`, {
-        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ flags: m.flags, components: m.components, allowed_mentions: m.allowed_mentions ?? { parse: [] } }),
-      }).catch(() => null);
-    })();
-    if (ctx?.waitUntil) ctx.waitUntil(work); else await work;
-    return { type: 5, data: { flags: (1 << 15) | 64 } };
+    return deferred(env, i, ctx, () => storeSuggestion(env, i, att, o, now));
+  }
+  if (i.data?.type === 3 || sub?.name === 'copy') return deferred(env, i, ctx, () => copyRequest(env, i, now));
+  if (sub?.name === 'stats') {
+    if (!can(who, 'emoji.review')) return note('Managers only');
+    return reply(await statsPanel(env, now));
   }
   if (sub?.name === 'mine') return mine(env, userOf(i));
   if (sub?.name === 'delete') return remove(env, i, who, Number(o.number) || 0, now);
@@ -253,7 +311,7 @@ export async function emojiCommand(i, env, who, ctx, now = Date.now()) {
     const rows = (await env.DB.prepare("SELECT * FROM emoji_suggestions WHERE status = 'pending' ORDER BY id LIMIT 25").all()).results ?? [];
     return reply(message({ accent: 'red', ephemeral: true, mentions: { parse: [] }, blocks: [header({ eyebrow: `${orgName(env)} · Emoji and stickers`, title: 'Waiting for review', size: 3 }), text(rows.length ? rows.map((r) => `${line(r)} · <@${r.user_id}>`).join('\n') : 'Nothing is waiting.'), footer('Approve or reject on the cards in the review channel, or in the Control Center.')] }));
   }
-  return note('Pick suggest, mine, delete or review');
+  return note('Pick suggest, copy, mine, delete, review or stats');
 }
 
 /** the Approve and Reject buttons on the review card (managers only) */
@@ -263,6 +321,7 @@ export async function emojiButton(i, env, who, now = Date.now()) {
   const row = env.DB ? await env.DB.prepare('SELECT * FROM emoji_suggestions WHERE id = ?').bind(id).first() : null;
   if (!row) return note('That suggestion is gone');
   const cur = row.status === 'pending' ? (await decide(env, id, verb === 'ok' ? 'approve' : 'reject', userOf(i), byOf(i), now)) ?? await env.DB.prepare('SELECT * FROM emoji_suggestions WHERE id = ?').bind(id).first() : row;
+  if (cur.importError) return note('Not added yet', cur.importError); // the card stays as it is, with its buttons
   const m = reviewMessage(env, cur);
   return { type: 7, data: { flags: m.flags, components: m.components, allowed_mentions: m.allowed_mentions } };
 }
@@ -277,6 +336,7 @@ export async function emojiRoute(p, method, body, me, env, url, now = Date.now()
   if (!flagOn(env, me, EMOJI_FLAG)) return json({ error: 'Not available yet.' }, 404);
   if (!can(me, 'emoji.review')) return json({ error: 'Managers only.' }, 403);
   if (!env.DB) return json({ error: 'The member database is not connected.' }, 503);
+  if (p === '/api/emoji/review/stats' && method === 'GET') return json(await statsData(env, now));
   if (p === '/api/emoji/review' && method === 'GET') {
     const wait = (await env.DB.prepare("SELECT * FROM emoji_suggestions WHERE status = 'pending' ORDER BY id LIMIT 100").all()).results ?? [];
     const done = (await env.DB.prepare("SELECT * FROM emoji_suggestions WHERE status IN ('approved', 'rejected') ORDER BY id DESC LIMIT 50").all()).results ?? [];
@@ -292,6 +352,7 @@ export async function emojiRoute(p, method, body, me, env, url, now = Date.now()
   }
   if (p === '/api/emoji/review/decide' && method === 'POST') {
     const id = Number(body?.id) || 0, row = await decide(env, id, String(body?.action), me.u ?? me.id ?? '', me.name ?? me.username ?? 'Manager', now);
+    if (row?.importError) return json({ error: row.importError }, 409);
     return row ? json({ item: pub(row) }) : json({ error: 'That suggestion is not waiting any more.' }, 409);
   }
   return json({ error: 'Not found' }, 404);

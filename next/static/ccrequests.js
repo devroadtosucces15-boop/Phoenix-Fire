@@ -1,5 +1,5 @@
 // Staff › Control Center › Requests and uploads (deck layout 2026-11-23): everything members send the bot or the site that a manager looks at, one tool each (PFCCRequests.open(tab)).
-//   emojis  Emoji and stickers   GET /api/emoji/review, GET /api/emoji/review/file?id=, POST /api/emoji/review/decide {id, action: approve|reject}
+//   emojis  Emoji and stickers   GET /api/emoji/review/stats (slots, counts, usage), GET /api/emoji/review, GET /api/emoji/review/file?id=, POST /api/emoji/review/decide {id, action: approve|reject}
 //   media   GIFs and highlights  GET /api/controlcenter/media, POST /api/controlcenter/media/remove {kind: gif|highlight, id}; files open from GET /media/<key>
 //   board   Rush leaderboard     GET /api/lb, POST /api/lb/scan|save|remove|season  (the photo upload, check, post and season clock that used to sit on rushboard.html)
 //   season  Season stat cards    GET /api/seasoncard, POST /api/seasoncard/remove    (the manager dashboard that used to sit on seasoncards.html; members still send their own card there)
@@ -29,14 +29,22 @@
   const failed = (k, what) => (S.err[k] ? empty(S.err[k] === 'off' ? '🔌' : '⚠️', S.err[k] === 'off' ? `${what} is not switched on yet` : `Could not load ${what}`, S.err[k] === 'off' ? 'The owner turns it on under Site access; until then members cannot use it, so there is nothing to review.' : S.err[k]) : null);
 
   // ---------- emoji and stickers ----------
-  async function loadEmojis() { S.emojis = null; paint(); try { S.emojis = await call('/api/emoji/review'); S.err.emojis = ''; } catch (e) { S.err.emojis = e.status === 404 ? 'off' : e.message; } paint(); }
+  async function loadEmojis() { S.emojis = null; paint(); try { const [list, stats] = await Promise.all([call('/api/emoji/review'), call('/api/emoji/review/stats').catch(() => null)]); S.emojis = { ...list, stats }; S.err.emojis = ''; } catch (e) { S.err.emojis = e.status === 404 ? 'off' : e.message; } paint(); }
   const emojiCard = (x) => `<div class="panel cc-rq" data-id="${x.id}"><div class="cc-rq-i" data-pic="${x.id}" aria-label="Image of ${esc(x.name)}"><button type="button" class="chip" data-look="${x.id}">👁️ Look</button></div>
 <div class="cc-rq-b"><b>:${esc(x.name)}:</b> <span class="chip">${x.kind === 'sticker' ? 'Sticker' : 'Emoji'}</span>${x.animated ? ' <span class="chip">Animated</span>' : ''}<p class="muted small">${esc(x.user || 'A member')} · ${x.width}×${x.height} · ${n0(x.size / 1024)} KB · ${ago(x.createdAt)}</p></div>
 <div class="cc-rq-a"><button type="button" class="btn" data-decide="approve" data-id="${x.id}">Approve</button><button type="button" class="btn ghost" data-decide="reject" data-id="${x.id}">Reject</button></div></div>`;
+  function emojiStatsHtml(t) {
+    if (!t) return '';
+    const c = t.counts || {}, v = t.server;
+    const rows = (list) => list.map((x) => `<tr><td><img src="${esc(x.url)}" alt="" width="24" height="24" loading="lazy"> <b>:${esc(x.name)}:</b></td><td class="num">${n0(x.uses)}</td><td class="num">${n0(x.reactions)}</td><td class="num">${n0(x.ageDays)} d</td></tr>`).join('');
+    const table = (title, list) => `<h3 class="cc-h3">${title}</h3>${list.length ? `<div class="tablewrap"><table class="tbl cc-tbl"><caption class="sr">${title}</caption><thead><tr><th scope="col">Emoji</th><th scope="col">In text</th><th scope="col">Reactions</th><th scope="col">Age</th></tr></thead><tbody>${rows(list)}</tbody></table></div>` : '<p class="muted small">Nothing to show yet.</p>'}`;
+    return `<p><span class="chip gold">${n0(c.pending || 0)} waiting</span> <span class="chip">${n0(c.approved || 0)} approved</span> <span class="chip">${n0(c.rejected || 0)} rejected</span>${v ? ` <span class="chip">Static ${v.used.static}/${v.limit}</span> <span class="chip">Animated ${v.used.animated}/${v.limit}</span>` : ''}</p>`
+      + (!v ? '<p class="muted small">Slot and usage numbers could not be read from Discord right now.</p>' : !v.trackingSince ? '<p class="muted small">Usage is not being counted yet.</p>' : `${table(`Least used, last ${v.days} days`, v.least)}${table('Most used', v.top)}<p class="muted small">Counted since ${new Date(v.trackingSince).toLocaleDateString()}: text uses and reactions seen by the bot. Need space? Delete the least used in Discord: Server Settings, Emoji.</p>`);
+  }
   function emojisHtml() {
     const E = S.emojis; if (S.err.emojis) return failed('emojis', 'Emoji and stickers'); if (!E) return skel;
     const wait = E.items.filter((x) => x.status === 'pending'), done = E.items.filter((x) => x.status !== 'pending');
-    return `<p class="muted small">Look at each image before you decide. An approved emoji or sticker is kept for the server importer; a rejected one is dropped. Limits: emoji ${n0(E.limits?.emojiKb)} KB, sticker ${n0(E.limits?.stickerKb)} KB.</p>
+    return `${emojiStatsHtml(E.stats)}<p class="muted small">Look at each image before you decide. Approving an emoji adds it to the Discord server; an approved sticker is only kept; a rejected one is dropped. Limits: emoji ${n0(E.limits?.emojiKb)} KB, sticker ${n0(E.limits?.stickerKb)} KB.</p>
 <h3 class="cc-h3">Waiting <span class="chip gold">${wait.length}</span></h3>${wait.length ? `<div class="cc-rq-g">${wait.map(emojiCard).join('')}</div>` : empty('✅', 'Nothing waiting', 'New suggestions from /emoji show up here and on the Overview.')}
 <h3 class="cc-h3">Decided</h3>${done.length ? `<div class="tablewrap"><table class="tbl cc-tbl"><caption class="sr">Decided emoji and sticker suggestions</caption><thead><tr><th scope="col">Name</th><th scope="col">From</th><th scope="col">Decision</th><th scope="col">By</th><th scope="col"></th></tr></thead><tbody>${done.map((x) => `<tr><td><b>:${esc(x.name)}:</b> <span class="muted small">${x.kind === 'sticker' ? 'sticker' : 'emoji'}</span></td><td>${esc(x.user)}</td><td>${x.status === 'approved' ? '✅ Approved' : '⛔ Rejected'}</td><td>${esc(x.reviewedBy || '')} <span class="muted small">${x.reviewedAt ? ago(x.reviewedAt) : ''}</span></td><td class="r"><button type="button" class="chip" data-look="${x.id}">Look</button></td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Nothing decided yet.</p>'}`;
   }
