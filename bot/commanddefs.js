@@ -50,19 +50,17 @@ export const COMMANDS = [
     { type: STRING, name: 'variant', description: 'Which sample (win or loss, empty or full)', autocomplete: true },
     { type: STRING, name: 'as', description: 'See it as another role (default: you)', choices: ['guest', 'member', 'claimed', 'manager', 'owner'].map((v) => ({ name: v, value: v })) }] },
   // PF-024 Item 22 – the emoji and sticker suggester (bot/emoji.js): members suggest, managers review; an approved emoji is added to the server. Limits live in config.json `emojiSuggest`.
-  // User-installable (integration_types 0 + 1, contexts everywhere): members copy emojis from ANY server through Apps → Request emoji or /emoji copy.
+  // User-installable (integration_types 0 + 1, contexts everywhere): members copy emojis from ANY server through Apps → Request emoji or /emoji suggest emoji:.
   { name: 'Request emoji', type: 3, contexts: [0, 1, 2], integration_types: [0, 1] },
   { name: 'emoji', description: 'Suggest or copy an emoji for the server (managers review it)', contexts: [0, 1, 2], integration_types: [0, 1], options: [
-    { type: SUB, name: 'suggest', description: 'Send an image to the managers', options: [
-      { type: ATTACHMENT, name: 'image', description: 'PNG, JPEG or GIF (emoji up to 256 KB, sticker up to 512 KB)', required: true },
-      { type: STRING, name: 'type', description: 'Emoji or sticker', required: true, choices: [{ value: 'emoji', name: 'emoji' }, { value: 'sticker', name: 'sticker' }] },
-      { type: STRING, name: 'name', description: 'A short name: letters, digits, underscores (like phoenix_flame)', required: true, max_length: 40 }] },
+    { type: SUB, name: 'suggest', description: 'Send an emoji (from the picker) or a file to the managers', options: [
+      { type: STRING, name: 'emoji', description: 'Pick from the emoji button, or paste (this or an image)', max_length: 400 },
+      { type: ATTACHMENT, name: 'file', description: 'Or upload a file: PNG, JPEG or GIF (emoji up to 256 KB, sticker up to 512 KB)' },
+      { type: STRING, name: 'name', description: 'A name like phoenix_flame (default: its own name or the file name)', max_length: 40 },
+      { type: STRING, name: 'type', description: 'For uploads: emoji (default) or sticker', choices: [{ value: 'emoji', name: 'emoji' }, { value: 'sticker', name: 'sticker' }] }] },
     { type: SUB, name: 'mine', description: 'Your suggestions and their status' },
     { type: SUB, name: 'delete', description: 'Withdraw a suggestion that is still waiting (managers can remove any)', options: [{ type: INTEGER, name: 'number', description: 'The number from /emoji mine', min_value: 1 }] },
     { type: SUB, name: 'review', description: 'Managers: what is waiting for review' },
-    { type: SUB, name: 'copy', description: 'Request an emoji you like from another server', options: [
-      { type: STRING, name: 'emoji', description: 'Paste one or more custom emojis', required: true, max_length: 400 },
-      { type: STRING, name: 'name', description: 'Rename it (only when you send a single emoji)', max_length: 40 }] },
     { type: SUB, name: 'stats', description: 'Managers: free slots, request counts and which emojis are used (or not)' }] },
   // PF-024 Item 18 – the highlight clip upload (bot/highlight.js): stores a clip privately, nothing is posted or shared. Limits live in config.json `highlight`.
   { name: 'highlight', description: 'Upload a highlight clip for the club to keep (stored privately)', contexts: [0], options: [

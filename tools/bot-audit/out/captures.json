@@ -737,7 +737,7 @@
        },
        {
         "type": 10,
-        "content": "> Hard fixtures build soft touches."
+        "content": "> Form is temporary, class is a choice."
        },
        {
         "type": 14,
@@ -1614,7 +1614,7 @@
        },
        {
         "type": 10,
-        "content": "**Pick suggest, copy, mine, delete, review or stats**"
+        "content": "**Pick suggest, mine, delete, review or stats**"
        }
       ]
      }
@@ -1629,76 +1629,82 @@
  {
   "kind": "slash",
   "command": "emoji",
-  "trigger": "/emoji suggest image=sample type=emoji name=Sample",
+  "trigger": "/emoji suggest type=emoji",
   "app": "fun",
   "status": 200,
   "response": {
-   "type": 5,
+   "type": 4,
    "data": {
-    "flags": 32832
-   }
-  },
-  "calls": [
-   {
-    "method": "PATCH",
-    "url": "/webhooks/4/tokx1wk8lc6gvc/messages/@original",
-    "body": {
-     "flags": 32832,
-     "components": [
-      {
-       "type": 17,
-       "accent_color": 7108752,
-       "components": [
-        {
-         "type": 10,
-         "content": "**I need an image**\nAttach a PNG, JPEG or GIF to the command."
-        }
-       ]
-      }
-     ],
-     "allowed_mentions": {
-      "parse": []
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=21"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Add an emoji or a file**\nFill in `emoji` using the emoji button, or attach an image in `file`."
+       }
+      ]
      }
+    ],
+    "allowed_mentions": {
+     "parse": []
     }
    }
-  ]
+  },
+  "calls": []
  },
  {
   "kind": "slash",
   "command": "emoji",
-  "trigger": "/emoji suggest image=sample type=sticker name=Sample",
+  "trigger": "/emoji suggest type=sticker",
   "app": "fun",
   "status": 200,
   "response": {
-   "type": 5,
+   "type": 4,
    "data": {
-    "flags": 32832
-   }
-  },
-  "calls": [
-   {
-    "method": "PATCH",
-    "url": "/webhooks/4/tokue9dd0u5eve/messages/@original",
-    "body": {
-     "flags": 32832,
-     "components": [
-      {
-       "type": 17,
-       "accent_color": 7108752,
-       "components": [
-        {
-         "type": 10,
-         "content": "**I need an image**\nAttach a PNG, JPEG or GIF to the command."
-        }
-       ]
-      }
-     ],
-     "allowed_mentions": {
-      "parse": []
+    "flags": 32832,
+    "components": [
+     {
+      "type": 17,
+      "accent_color": 7108752,
+      "components": [
+       {
+        "type": 12,
+        "items": [
+         {
+          "media": {
+           "url": "http://localhost:4321/cards/banner-notice-info.png?v=21"
+          },
+          "description": "Good to know"
+         }
+        ]
+       },
+       {
+        "type": 10,
+        "content": "**Add an emoji or a file**\nFill in `emoji` using the emoji button, or attach an image in `file`."
+       }
+      ]
      }
+    ],
+    "allowed_mentions": {
+     "parse": []
     }
    }
-  ]
+  },
+  "calls": []
  },
  {
   "kind": "slash",
@@ -1831,43 +1837,6 @@
  {
   "kind": "slash",
   "command": "emoji",
-  "trigger": "/emoji copy emoji=sample",
-  "app": "fun",
-  "status": 200,
-  "response": {
-   "type": 5,
-   "data": {
-    "flags": 32832
-   }
-  },
-  "calls": [
-   {
-    "method": "PATCH",
-    "url": "/webhooks/4/tokp0benat70i/messages/@original",
-    "body": {
-     "flags": 32832,
-     "components": [
-      {
-       "type": 17,
-       "accent_color": 7108752,
-       "components": [
-        {
-         "type": 10,
-         "content": "**No custom emojis found**\nPaste a custom emoji. Unicode emojis (😀) have no image to copy."
-        }
-       ]
-      }
-     ],
-     "allowed_mentions": {
-      "parse": []
-     }
-    }
-   }
-  ]
- },
- {
-  "kind": "slash",
-  "command": "emoji",
   "trigger": "/emoji stats ",
   "app": "fun",
   "status": 200,
@@ -1937,7 +1906,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokal1ljdvxf5r/messages/@original",
+    "url": "/webhooks/3/tok1wz6d4ee0q/messages/@original",
     "body": {
      "flags": 32832,
      "components": [
@@ -2102,7 +2071,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/4/tokjfe1eg6va/messages/@original",
+    "url": "/webhooks/4/tokuar9xlhl1kj/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12744,7 +12713,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokiiebgc4uld/messages/@original",
+    "url": "/webhooks/3/tok9v8g5gelsi6/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12789,7 +12758,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokcljtjv294l/messages/@original",
+    "url": "/webhooks/3/tokiiebgc4uld/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12826,7 +12795,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokoxznfic08cm/messages/@original",
+    "url": "/webhooks/3/tokcljtjv294l/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12863,7 +12832,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokj1y4yuopie/messages/@original",
+    "url": "/webhooks/3/tokoxznfic08cm/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12900,7 +12869,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokxkwb63d9yh/messages/@original",
+    "url": "/webhooks/3/tokj1y4yuopie/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12937,7 +12906,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokjgkroum3kz/messages/@original",
+    "url": "/webhooks/3/tokxkwb63d9yh/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -12974,7 +12943,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok3iy1ju6g1ad/messages/@original",
+    "url": "/webhooks/3/tokjgkroum3kz/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13011,7 +12980,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokpj1n72g48ek/messages/@original",
+    "url": "/webhooks/3/tok3iy1ju6g1ad/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13048,7 +13017,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokvl54b6lczd/messages/@original",
+    "url": "/webhooks/3/tokpj1n72g48ek/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13093,7 +13062,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokuaiy1kb0lr/messages/@original",
+    "url": "/webhooks/3/tokvl54b6lczd/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13130,7 +13099,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tok6c06jtkxk8p/messages/@original",
+    "url": "/webhooks/3/tokuaiy1kb0lr/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -13167,7 +13136,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/tokosdd0b2m32c/messages/@original",
+    "url": "/webhooks/3/tok6c06jtkxk8p/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15828,7 +15797,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/3/toklx5i85181as/messages/@original",
+    "url": "/webhooks/3/tok3uu39tgw6c7/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15865,7 +15834,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokce2g92fzh0e/messages/@original",
+    "url": "/webhooks/2/toklx5i85181as/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -15879,7 +15848,7 @@
         },
         {
          "type": 10,
-         "content": "🔥 **vortex esports** · `1794` · we won 4–1 · Friendly · 18h ago\n🔥 **PCS Flamengo** · `451577` · we lost 1–2 · Friendly · 19h ago\n🔥 **Virtual Baller** · `16828` · we won 3–0 · Friendly · 19h ago\n🔥 **LEGACY 1830** · `48699` · we won 1–0 · Friendly · 20h ago\n🔥 **SportingKnobs** · `4508` · we lost 0–3 · Friendly · 42h ago\n🔥 **ACS Moose** · `730` · we lost 0–2 · Friendly · 43h ago\n🔥 **DVLW1** · `17592` · we lost 2–3 · Friendly · 43h ago\n🔥 **Hull Tigers** · `83491` · we won 2–1 · Friendly · 44h ago\n🔥 **QM Esports** · `143145` · we won 3–0 · Friendly · 44h ago\n🔥 **train drivers** · `494163` · we won 5–0 · League · 4d ago\n🔥 **FC CHIMMIES** · `675823` · we won 3–0 · League · 4d ago\n🔥 **Amsterdam Kebab** · `1896875` · we won 3–0 · League · 4d ago\n🔥 **POLISH EAGLES** · `27337` · we won 3–0 · Friendly · 6d ago\n🔥 **Dutch Despair** · `18418` · we lost 0–1 · Friendly · 6d ago\n🔥 **Super South Es** · `2883` · we won 2–0 · Friendly · 6d ago\n🔥 **Pro Era FC** · `720510` · we lost 0–3 · Friendly · 6d ago\n🔥 **PassionMerchFC** · `395722` · we won 6–1 · League · 7d ago\n🔥 **McBooster FC** · `26138` · we won 1–0 · League · 7d ago\n🔥 **Zer0 T0lerance** · `496913` · we won 5–1 · League · 7d ago\n🔥 **RyanlovesDinos** · `1542592` · we won 7–1 · League · 7d ago\n🔥 **DutchDominaters** · `2217227` · we won 4–1 · League · 7d ago\n🔥 **Club card UTD** · `95557` · we lost 0–5 · League · 7d ago\n🔥 **FC  ayriiii** · `451472` · we lost 2–5 · League · 7d ago\n🔥 **LAUDA GAMING** · `296037` · we lost 0–6 · League · 7d ago\n🔥 **nonch trio** · `2202854` · we won 3–1 · League · 7d ago"
+         "content": "🔥 **vortex esports** · `1794` · we won 4–1 · Friendly · 40h ago\n🔥 **PCS Flamengo** · `451577` · we lost 1–2 · Friendly · 40h ago\n🔥 **Virtual Baller** · `16828` · we won 3–0 · Friendly · 41h ago\n🔥 **LEGACY 1830** · `48699` · we won 1–0 · Friendly · 41h ago\n🔥 **SportingKnobs** · `4508` · we lost 0–3 · Friendly · 3d ago\n🔥 **ACS Moose** · `730` · we lost 0–2 · Friendly · 3d ago\n🔥 **DVLW1** · `17592` · we lost 2–3 · Friendly · 3d ago\n🔥 **Hull Tigers** · `83491` · we won 2–1 · Friendly · 3d ago\n🔥 **QM Esports** · `143145` · we won 3–0 · Friendly · 3d ago\n🔥 **train drivers** · `494163` · we won 5–0 · League · 5d ago\n🔥 **FC CHIMMIES** · `675823` · we won 3–0 · League · 5d ago\n🔥 **Amsterdam Kebab** · `1896875` · we won 3–0 · League · 5d ago\n🔥 **POLISH EAGLES** · `27337` · we won 3–0 · Friendly · 7d ago\n🔥 **Dutch Despair** · `18418` · we lost 0–1 · Friendly · 7d ago\n🔥 **Super South Es** · `2883` · we won 2–0 · Friendly · 7d ago\n🔥 **Pro Era FC** · `720510` · we lost 0–3 · Friendly · 7d ago\n🔥 **PassionMerchFC** · `395722` · we won 6–1 · League · 8d ago\n🔥 **McBooster FC** · `26138` · we won 1–0 · League · 8d ago\n🔥 **Zer0 T0lerance** · `496913` · we won 5–1 · League · 8d ago\n🔥 **RyanlovesDinos** · `1542592` · we won 7–1 · League · 8d ago\n🔥 **DutchDominaters** · `2217227` · we won 4–1 · League · 8d ago\n🔥 **Club card UTD** · `95557` · we lost 0–5 · League · 8d ago\n🔥 **FC  ayriiii** · `451472` · we lost 2–5 · League · 8d ago\n🔥 **LAUDA GAMING** · `296037` · we lost 0–6 · League · 8d ago\n🔥 **nonch trio** · `2202854` · we won 3–1 · League · 8d ago"
         },
         {
          "type": 10,
@@ -15898,7 +15867,7 @@
             {
              "label": "vortex esports",
              "value": "1794",
-             "description": "1794 · we won 4–1 · Friendly · 18h ago",
+             "description": "1794 · we won 4–1 · Friendly · 40h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15906,7 +15875,7 @@
             {
              "label": "PCS Flamengo",
              "value": "451577",
-             "description": "451577 · we lost 1–2 · Friendly · 19h ago",
+             "description": "451577 · we lost 1–2 · Friendly · 40h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15914,7 +15883,7 @@
             {
              "label": "Virtual Baller",
              "value": "16828",
-             "description": "16828 · we won 3–0 · Friendly · 19h ago",
+             "description": "16828 · we won 3–0 · Friendly · 41h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15922,7 +15891,7 @@
             {
              "label": "LEGACY 1830",
              "value": "48699",
-             "description": "48699 · we won 1–0 · Friendly · 20h ago",
+             "description": "48699 · we won 1–0 · Friendly · 41h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15930,7 +15899,7 @@
             {
              "label": "SportingKnobs",
              "value": "4508",
-             "description": "4508 · we lost 0–3 · Friendly · 42h ago",
+             "description": "4508 · we lost 0–3 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15938,7 +15907,7 @@
             {
              "label": "ACS Moose",
              "value": "730",
-             "description": "730 · we lost 0–2 · Friendly · 43h ago",
+             "description": "730 · we lost 0–2 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15946,7 +15915,7 @@
             {
              "label": "DVLW1",
              "value": "17592",
-             "description": "17592 · we lost 2–3 · Friendly · 43h ago",
+             "description": "17592 · we lost 2–3 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15954,7 +15923,7 @@
             {
              "label": "Hull Tigers",
              "value": "83491",
-             "description": "83491 · we won 2–1 · Friendly · 44h ago",
+             "description": "83491 · we won 2–1 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15962,7 +15931,7 @@
             {
              "label": "QM Esports",
              "value": "143145",
-             "description": "143145 · we won 3–0 · Friendly · 44h ago",
+             "description": "143145 · we won 3–0 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15970,7 +15939,7 @@
             {
              "label": "train drivers",
              "value": "494163",
-             "description": "494163 · we won 5–0 · League · 4d ago",
+             "description": "494163 · we won 5–0 · League · 5d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15978,7 +15947,7 @@
             {
              "label": "FC CHIMMIES",
              "value": "675823",
-             "description": "675823 · we won 3–0 · League · 4d ago",
+             "description": "675823 · we won 3–0 · League · 5d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15986,7 +15955,7 @@
             {
              "label": "Amsterdam Kebab",
              "value": "1896875",
-             "description": "1896875 · we won 3–0 · League · 4d ago",
+             "description": "1896875 · we won 3–0 · League · 5d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -15994,7 +15963,7 @@
             {
              "label": "POLISH EAGLES",
              "value": "27337",
-             "description": "27337 · we won 3–0 · Friendly · 6d ago",
+             "description": "27337 · we won 3–0 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16002,7 +15971,7 @@
             {
              "label": "Dutch Despair",
              "value": "18418",
-             "description": "18418 · we lost 0–1 · Friendly · 6d ago",
+             "description": "18418 · we lost 0–1 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16010,7 +15979,7 @@
             {
              "label": "Super South Es",
              "value": "2883",
-             "description": "2883 · we won 2–0 · Friendly · 6d ago",
+             "description": "2883 · we won 2–0 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16018,7 +15987,7 @@
             {
              "label": "Pro Era FC",
              "value": "720510",
-             "description": "720510 · we lost 0–3 · Friendly · 6d ago",
+             "description": "720510 · we lost 0–3 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16026,7 +15995,7 @@
             {
              "label": "PassionMerchFC",
              "value": "395722",
-             "description": "395722 · we won 6–1 · League · 7d ago",
+             "description": "395722 · we won 6–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16034,7 +16003,7 @@
             {
              "label": "McBooster FC",
              "value": "26138",
-             "description": "26138 · we won 1–0 · League · 7d ago",
+             "description": "26138 · we won 1–0 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16042,7 +16011,7 @@
             {
              "label": "Zer0 T0lerance",
              "value": "496913",
-             "description": "496913 · we won 5–1 · League · 7d ago",
+             "description": "496913 · we won 5–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16050,7 +16019,7 @@
             {
              "label": "RyanlovesDinos",
              "value": "1542592",
-             "description": "1542592 · we won 7–1 · League · 7d ago",
+             "description": "1542592 · we won 7–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16058,7 +16027,7 @@
             {
              "label": "DutchDominaters",
              "value": "2217227",
-             "description": "2217227 · we won 4–1 · League · 7d ago",
+             "description": "2217227 · we won 4–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16066,7 +16035,7 @@
             {
              "label": "Club card UTD",
              "value": "95557",
-             "description": "95557 · we lost 0–5 · League · 7d ago",
+             "description": "95557 · we lost 0–5 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16074,7 +16043,7 @@
             {
              "label": "FC  ayriiii",
              "value": "451472",
-             "description": "451472 · we lost 2–5 · League · 7d ago",
+             "description": "451472 · we lost 2–5 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16082,7 +16051,7 @@
             {
              "label": "LAUDA GAMING",
              "value": "296037",
-             "description": "296037 · we lost 0–6 · League · 7d ago",
+             "description": "296037 · we lost 0–6 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16090,7 +16059,7 @@
             {
              "label": "nonch trio",
              "value": "2202854",
-             "description": "2202854 · we won 3–1 · League · 7d ago",
+             "description": "2202854 · we won 3–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16155,7 +16124,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokg2hxcbs86wl/messages/@original",
+    "url": "/webhooks/2/tokg2aeg9gb2n/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -16169,7 +16138,7 @@
         },
         {
          "type": 10,
-         "content": "✅ **vortex esports** · `1794` · we won 4–1 · Friendly · 18h ago\n🔥 **PCS Flamengo** · `451577` · we lost 1–2 · Friendly · 19h ago\n🔥 **Virtual Baller** · `16828` · we won 3–0 · Friendly · 19h ago\n🔥 **LEGACY 1830** · `48699` · we won 1–0 · Friendly · 20h ago\n🔥 **SportingKnobs** · `4508` · we lost 0–3 · Friendly · 42h ago\n🔥 **ACS Moose** · `730` · we lost 0–2 · Friendly · 43h ago\n🔥 **DVLW1** · `17592` · we lost 2–3 · Friendly · 43h ago\n🔥 **Hull Tigers** · `83491` · we won 2–1 · Friendly · 44h ago\n🔥 **QM Esports** · `143145` · we won 3–0 · Friendly · 44h ago\n🔥 **train drivers** · `494163` · we won 5–0 · League · 4d ago\n🔥 **FC CHIMMIES** · `675823` · we won 3–0 · League · 4d ago\n🔥 **Amsterdam Kebab** · `1896875` · we won 3–0 · League · 4d ago\n🔥 **POLISH EAGLES** · `27337` · we won 3–0 · Friendly · 6d ago\n🔥 **Dutch Despair** · `18418` · we lost 0–1 · Friendly · 6d ago\n🔥 **Super South Es** · `2883` · we won 2–0 · Friendly · 6d ago\n🔥 **Pro Era FC** · `720510` · we lost 0–3 · Friendly · 6d ago\n🔥 **PassionMerchFC** · `395722` · we won 6–1 · League · 7d ago\n🔥 **McBooster FC** · `26138` · we won 1–0 · League · 7d ago\n🔥 **Zer0 T0lerance** · `496913` · we won 5–1 · League · 7d ago\n🔥 **RyanlovesDinos** · `1542592` · we won 7–1 · League · 7d ago\n🔥 **DutchDominaters** · `2217227` · we won 4–1 · League · 7d ago\n🔥 **Club card UTD** · `95557` · we lost 0–5 · League · 7d ago\n🔥 **FC  ayriiii** · `451472` · we lost 2–5 · League · 7d ago\n🔥 **LAUDA GAMING** · `296037` · we lost 0–6 · League · 7d ago\n🔥 **nonch trio** · `2202854` · we won 3–1 · League · 7d ago"
+         "content": "✅ **vortex esports** · `1794` · we won 4–1 · Friendly · 40h ago\n🔥 **PCS Flamengo** · `451577` · we lost 1–2 · Friendly · 40h ago\n🔥 **Virtual Baller** · `16828` · we won 3–0 · Friendly · 41h ago\n🔥 **LEGACY 1830** · `48699` · we won 1–0 · Friendly · 41h ago\n🔥 **SportingKnobs** · `4508` · we lost 0–3 · Friendly · 3d ago\n🔥 **ACS Moose** · `730` · we lost 0–2 · Friendly · 3d ago\n🔥 **DVLW1** · `17592` · we lost 2–3 · Friendly · 3d ago\n🔥 **Hull Tigers** · `83491` · we won 2–1 · Friendly · 3d ago\n🔥 **QM Esports** · `143145` · we won 3–0 · Friendly · 3d ago\n🔥 **train drivers** · `494163` · we won 5–0 · League · 5d ago\n🔥 **FC CHIMMIES** · `675823` · we won 3–0 · League · 5d ago\n🔥 **Amsterdam Kebab** · `1896875` · we won 3–0 · League · 5d ago\n🔥 **POLISH EAGLES** · `27337` · we won 3–0 · Friendly · 7d ago\n🔥 **Dutch Despair** · `18418` · we lost 0–1 · Friendly · 7d ago\n🔥 **Super South Es** · `2883` · we won 2–0 · Friendly · 7d ago\n🔥 **Pro Era FC** · `720510` · we lost 0–3 · Friendly · 7d ago\n🔥 **PassionMerchFC** · `395722` · we won 6–1 · League · 8d ago\n🔥 **McBooster FC** · `26138` · we won 1–0 · League · 8d ago\n🔥 **Zer0 T0lerance** · `496913` · we won 5–1 · League · 8d ago\n🔥 **RyanlovesDinos** · `1542592` · we won 7–1 · League · 8d ago\n🔥 **DutchDominaters** · `2217227` · we won 4–1 · League · 8d ago\n🔥 **Club card UTD** · `95557` · we lost 0–5 · League · 8d ago\n🔥 **FC  ayriiii** · `451472` · we lost 2–5 · League · 8d ago\n🔥 **LAUDA GAMING** · `296037` · we lost 0–6 · League · 8d ago\n🔥 **nonch trio** · `2202854` · we won 3–1 · League · 8d ago"
         },
         {
          "type": 10,
@@ -16188,7 +16157,7 @@
             {
              "label": "vortex esports",
              "value": "1794",
-             "description": "1794 · we won 4–1 · Friendly · 18h ago",
+             "description": "1794 · we won 4–1 · Friendly · 40h ago",
              "emoji": {
               "name": "✅"
              }
@@ -16196,7 +16165,7 @@
             {
              "label": "PCS Flamengo",
              "value": "451577",
-             "description": "451577 · we lost 1–2 · Friendly · 19h ago",
+             "description": "451577 · we lost 1–2 · Friendly · 40h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16204,7 +16173,7 @@
             {
              "label": "Virtual Baller",
              "value": "16828",
-             "description": "16828 · we won 3–0 · Friendly · 19h ago",
+             "description": "16828 · we won 3–0 · Friendly · 41h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16212,7 +16181,7 @@
             {
              "label": "LEGACY 1830",
              "value": "48699",
-             "description": "48699 · we won 1–0 · Friendly · 20h ago",
+             "description": "48699 · we won 1–0 · Friendly · 41h ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16220,7 +16189,7 @@
             {
              "label": "SportingKnobs",
              "value": "4508",
-             "description": "4508 · we lost 0–3 · Friendly · 42h ago",
+             "description": "4508 · we lost 0–3 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16228,7 +16197,7 @@
             {
              "label": "ACS Moose",
              "value": "730",
-             "description": "730 · we lost 0–2 · Friendly · 43h ago",
+             "description": "730 · we lost 0–2 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16236,7 +16205,7 @@
             {
              "label": "DVLW1",
              "value": "17592",
-             "description": "17592 · we lost 2–3 · Friendly · 43h ago",
+             "description": "17592 · we lost 2–3 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16244,7 +16213,7 @@
             {
              "label": "Hull Tigers",
              "value": "83491",
-             "description": "83491 · we won 2–1 · Friendly · 44h ago",
+             "description": "83491 · we won 2–1 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16252,7 +16221,7 @@
             {
              "label": "QM Esports",
              "value": "143145",
-             "description": "143145 · we won 3–0 · Friendly · 44h ago",
+             "description": "143145 · we won 3–0 · Friendly · 3d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16260,7 +16229,7 @@
             {
              "label": "train drivers",
              "value": "494163",
-             "description": "494163 · we won 5–0 · League · 4d ago",
+             "description": "494163 · we won 5–0 · League · 5d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16268,7 +16237,7 @@
             {
              "label": "FC CHIMMIES",
              "value": "675823",
-             "description": "675823 · we won 3–0 · League · 4d ago",
+             "description": "675823 · we won 3–0 · League · 5d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16276,7 +16245,7 @@
             {
              "label": "Amsterdam Kebab",
              "value": "1896875",
-             "description": "1896875 · we won 3–0 · League · 4d ago",
+             "description": "1896875 · we won 3–0 · League · 5d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16284,7 +16253,7 @@
             {
              "label": "POLISH EAGLES",
              "value": "27337",
-             "description": "27337 · we won 3–0 · Friendly · 6d ago",
+             "description": "27337 · we won 3–0 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16292,7 +16261,7 @@
             {
              "label": "Dutch Despair",
              "value": "18418",
-             "description": "18418 · we lost 0–1 · Friendly · 6d ago",
+             "description": "18418 · we lost 0–1 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16300,7 +16269,7 @@
             {
              "label": "Super South Es",
              "value": "2883",
-             "description": "2883 · we won 2–0 · Friendly · 6d ago",
+             "description": "2883 · we won 2–0 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16308,7 +16277,7 @@
             {
              "label": "Pro Era FC",
              "value": "720510",
-             "description": "720510 · we lost 0–3 · Friendly · 6d ago",
+             "description": "720510 · we lost 0–3 · Friendly · 7d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16316,7 +16285,7 @@
             {
              "label": "PassionMerchFC",
              "value": "395722",
-             "description": "395722 · we won 6–1 · League · 7d ago",
+             "description": "395722 · we won 6–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16324,7 +16293,7 @@
             {
              "label": "McBooster FC",
              "value": "26138",
-             "description": "26138 · we won 1–0 · League · 7d ago",
+             "description": "26138 · we won 1–0 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16332,7 +16301,7 @@
             {
              "label": "Zer0 T0lerance",
              "value": "496913",
-             "description": "496913 · we won 5–1 · League · 7d ago",
+             "description": "496913 · we won 5–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16340,7 +16309,7 @@
             {
              "label": "RyanlovesDinos",
              "value": "1542592",
-             "description": "1542592 · we won 7–1 · League · 7d ago",
+             "description": "1542592 · we won 7–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16348,7 +16317,7 @@
             {
              "label": "DutchDominaters",
              "value": "2217227",
-             "description": "2217227 · we won 4–1 · League · 7d ago",
+             "description": "2217227 · we won 4–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16356,7 +16325,7 @@
             {
              "label": "Club card UTD",
              "value": "95557",
-             "description": "95557 · we lost 0–5 · League · 7d ago",
+             "description": "95557 · we lost 0–5 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16364,7 +16333,7 @@
             {
              "label": "FC  ayriiii",
              "value": "451472",
-             "description": "451472 · we lost 2–5 · League · 7d ago",
+             "description": "451472 · we lost 2–5 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16372,7 +16341,7 @@
             {
              "label": "LAUDA GAMING",
              "value": "296037",
-             "description": "296037 · we lost 0–6 · League · 7d ago",
+             "description": "296037 · we lost 0–6 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16380,7 +16349,7 @@
             {
              "label": "nonch trio",
              "value": "2202854",
-             "description": "2202854 · we won 3–1 · League · 7d ago",
+             "description": "2202854 · we won 3–1 · League · 8d ago",
              "emoji": {
               "name": "🔥"
              }
@@ -16414,7 +16383,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/2/tokrgyv131lklr/messages/@original",
+    "url": "/webhooks/2/tokg2hxcbs86wl/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -16585,7 +16554,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokj1do3dw09ob/messages/@original",
+    "url": "/webhooks/1/tok2ln8x8o8pm2/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -16622,7 +16591,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokjrrt8uoyjk/messages/@original",
+    "url": "/webhooks/1/tokj1do3dw09ob/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -16659,7 +16628,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokpnr936ovqwj/messages/@original",
+    "url": "/webhooks/1/tokjrrt8uoyjk/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -16696,7 +16665,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokxxdvdiipuym/messages/@original",
+    "url": "/webhooks/1/tokpnr936ovqwj/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -16733,7 +16702,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok61imqg9h90f/messages/@original",
+    "url": "/webhooks/1/tokxxdvdiipuym/messages/@original",
     "body": {
      "flags": 32768,
      "components": [
@@ -17209,11 +17178,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with stealing the penalty off the nominated taker."
+        "content": "Charged with playing striker like a sweeper."
        },
        {
         "type": 10,
-        "content": "**Sentence** 30 min · out <t:1795623638:R>"
+        "content": "**Sentence** 30 min · out <t:1795701391:R>"
        },
        {
         "type": 14,
@@ -17289,11 +17258,11 @@
        },
        {
         "type": 10,
-        "content": "Charged with stealing the penalty off the nominated taker."
+        "content": "Charged with playing striker like a sweeper."
        },
        {
         "type": 10,
-        "content": "**Released** on bail from Zub (owner) <t:1795621838:R>"
+        "content": "**Released** on bail from Zub (owner) <t:1795699591:R>"
        },
        {
         "type": 14,
@@ -17362,7 +17331,7 @@
        },
        {
         "type": 10,
-        "content": "`PHX-0004` <t:1795621838:d> · 30 min · stealing the penalty off the nominated taker · 💸 bailed\n`PHX-0003` <t:1795620837:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1795616837:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1795612837:d> · 5 min · SAMPLE · own goal"
+        "content": "`PHX-0004` <t:1795699591:d> · 30 min · playing striker like a sweeper · 💸 bailed\n`PHX-0003` <t:1795698591:d> · 5 min · SAMPLE · again\n`PHX-0002` <t:1795694591:d> · 5 min · SAMPLE · late\n`PHX-0001` <t:1795690591:d> · 5 min · SAMPLE · own goal"
        }
       ]
      }
@@ -17526,7 +17495,7 @@
        },
        {
         "type": 10,
-        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1795611037:R>"
+        "content": "🛠️ [SAMPLE · Best CAM build for FC 27 Pro Clubs](https://www.youtube.com/watch?v=sampleVid001)\n-# SAMPLE Channel · <t:1795688791:R>"
        }
       ]
      }
@@ -17570,7 +17539,7 @@
        },
        {
         "type": 10,
-        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1795528237:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1794541837:R>"
+        "content": "📐 [SAMPLE · How to defend a 4-2-3-1 in League](https://www.youtube.com/watch?v=sampleVid002)\n-# SAMPLE Channel · <t:1795605991:R>\n\n📐 [SAMPLE · A long title to test clamping: the complete guide to pressing triggers, line height and covering shadows in Pro Clubs](https://www.youtube.com/watch?v=sampleVid006)\n-# SAMPLE Channel · <t:1794619591:R>"
        }
       ]
      }
@@ -17614,7 +17583,7 @@
        },
        {
         "type": 10,
-        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1795369837:R>"
+        "content": "💡 [SAMPLE · Five finishing tips you probably skip](https://www.youtube.com/watch?v=sampleVid003)\n-# SAMPLE Channel · <t:1795447591:R>"
        }
       ]
      }
@@ -17658,7 +17627,7 @@
        },
        {
         "type": 10,
-        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1795153837:R>"
+        "content": "🔥 [SAMPLE · This patch changed the meta for wingers](https://www.youtube.com/watch?v=sampleVid004)\n-# SAMPLE Channel · <t:1795231591:R>"
        }
       ]
      }
@@ -17702,7 +17671,7 @@
        },
        {
         "type": 10,
-        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794901837:R>"
+        "content": "📰 [SAMPLE · FC 27 Clubs update notes in two minutes](https://www.youtube.com/watch?v=sampleVid005)\n-# SAMPLE Channel · <t:1794979591:R>"
        }
       ]
      }
@@ -18139,7 +18108,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 Which club did Zinedine Zidane leave to join Real Madrid in 2001?"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🧠 In which year was the first World Cup held?"
        },
        {
         "type": 12,
@@ -18154,7 +18123,7 @@
        },
        {
         "type": 10,
-        "content": "**A** · Barcelona\n**B** · Juventus\n**C** · Marseille\n**D** · Inter"
+        "content": "**A** · 1930\n**B** · 1934\n**C** · 1950\n**D** · 1924"
        },
        {
         "type": 10,
@@ -18214,22 +18183,22 @@
     "components": [
      {
       "type": 17,
-      "accent_color": 16743794,
+      "accent_color": 4972682,
       "components": [
        {
         "type": 12,
         "items": [
          {
           "media": {
-           "url": "http://localhost:4321/cards/banner-notice-error.png?v=21"
+           "url": "http://localhost:4321/cards/banner-notice-success.png?v=21"
           },
-          "description": "That did not work"
+          "description": "Done"
          }
         ]
        },
        {
         "type": 10,
-        "content": "**❌ Not this time – it was B · Juventus**\nA then-record transfer. You have 0 points."
+        "content": "**✅ Right! +10 points**\nUruguay hosted and won it. You have 10 points."
        }
       ]
      }
@@ -18384,7 +18353,7 @@
       "components": [
        {
         "type": 10,
-        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 1 player on the board"
+        "content": "-# PHOENIX FIRE · TRIVIA\n### 🏆 Trivia table\n-# 2 players on the board"
        },
        {
         "type": 12,
@@ -18399,7 +18368,7 @@
        },
        {
         "type": 10,
-        "content": "🥇 **Mike** · 120 pts · 9/12 right"
+        "content": "🥇 **Mike** · 120 pts · 9/12 right\n🥈 **Zub (owner)** · 10 pts · 1/1 right"
        }
       ]
      }
@@ -18426,7 +18395,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok5i5m8j7b8wt/messages/@original",
+    "url": "/webhooks/1/toktl642gyefg/messages/@original",
     "body": {
      "components": [
       {
@@ -18474,7 +18443,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokwl36t8822ct/messages/@original",
+    "url": "/webhooks/1/tok5i5m8j7b8wt/messages/@original",
     "body": {
      "components": [
       {
@@ -18522,7 +18491,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tok0k2sjj2ticdo/messages/@original",
+    "url": "/webhooks/1/tokwl36t8822ct/messages/@original",
     "body": {
      "components": [
       {
@@ -19130,7 +19099,7 @@
   "calls": [
    {
     "method": "PATCH",
-    "url": "/webhooks/1/tokmoglzd35pi8/messages/@original",
+    "url": "/webhooks/1/tok0olhpbj50f5c/messages/@original",
     "body": {
      "components": [
       {
@@ -19519,7 +19488,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1795621838:R> · only you can see this"
+        "content": "-# Updated <t:1795699591:R> · only you can see this"
        },
        {
         "type": 1,
@@ -19593,7 +19562,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1795621237:R>"
+          "content": "**Mike** says they play as **x_MrMike_x**\n-# asked <t:1795698991:R>"
          }
         ],
         "accessory": {
@@ -19877,7 +19846,7 @@
        },
        {
         "type": 10,
-        "content": "-# Updated <t:1795621838:R> · only you can see this"
+        "content": "-# Updated <t:1795699591:R> · only you can see this"
        },
        {
         "type": 1,
@@ -20275,7 +20244,7 @@
         "components": [
          {
           "type": 10,
-          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1795621838:R>"
+          "content": "**Sample title** · 👍 0\n-# from Zub (owner) <t:1795699591:R>"
          }
         ],
         "accessory": {

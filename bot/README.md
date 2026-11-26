@@ -81,7 +81,7 @@ Public IDs and keys are read from `bot/wrangler.toml`. Tokens are read from the 
 
 ## Emojis: copy, approve, import, usage (Fun app, flag `emoji`)
 
-Members upload (`/emoji suggest`) or copy from **any server** (right-click a message, Apps, **Request emoji**, or `/emoji copy`). Managers approve on the review card
+`/emoji suggest` takes either an `emoji` (picked with Discord's emoji button, or pasted) or an uploaded `file` (PNG, JPEG or GIF); members can also copy from **any server** (right-click a message, Apps, **Request emoji**). The picker only offers other servers' emojis to members with Nitro; without it they use the right-click menu. Managers approve on the review card
 or in the Control Center, and an approved emoji is added to the server (stickers are kept, not imported). If Discord refuses or no slot is free it stays waiting, with the reason.
 `/emoji stats` and the Control Center show free static and animated slots (they follow the Boost level, not the member count), request counts and the most and least used emojis of the last 30 days
 (emojis under 14 days old are left out of "least used").

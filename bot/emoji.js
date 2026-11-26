@@ -3,7 +3,7 @@
 //            URL into R2 (binding MEDIA, key emoji/…) and writes a library row (user, name, kind, status `pending`, size, format). The reply is a private receipt. ONE review card (name,
 //            kind, size, who) goes to the managers' channel (Organization config purpose `emoji_review`) with Approve and Reject buttons; none set = no card (managers use the Control Center).
 //   mine     the member's own suggestions with their status.   delete  the member withdraws a pending one (managers: any).   review  managers: what is waiting.
-//   copy     the same queue, from ANY server: right-click a message → Apps → Request emoji, or /emoji copy (the app is user-installable). Only people in our server.
+//   picker   suggest emoji:<picked from the emoji button> copies it into the same queue; so does right-click a message → Apps → Request emoji (the app is user-installable). Only people in our server.
 //   stats    managers: slots, request counts, most and least used (bot/emojiimport.js).
 // Approving an EMOJI imports it into our server (bot/emojiimport.js); if Discord refuses or no slot is free it stays waiting with the reason. Stickers are only kept (not imported yet).
 // Limits (Discord, checked against the API docs): custom emoji 256 KiB, JPEG, PNG or GIF (animated only as GIF); sticker 512 KiB, PNG, APNG or GIF (no JPEG, no Lottie, no WebP, no SVG).
@@ -243,7 +243,7 @@ export async function copyRequest(env, i, now = Date.now()) {
   const menu = i.data?.type === 3;
   const o = Object.fromEntries((i.data?.options?.[0]?.options ?? []).map((x) => [x.name, x.value]));
   const found = parseEmojis(menu ? i.data.resolved?.messages?.[i.data.target_id]?.content : o.emoji);
-  if (!found.length) return notice('No custom emojis found', menu ? 'That message has no custom server emojis in its text. Unicode emojis (😀) have no image to copy.' : 'Paste a custom emoji. Unicode emojis (😀) have no image to copy.');
+  if (!found.length) return notice('No custom emojis found', menu ? 'That message has no custom server emojis in its text. Unicode emojis (😀) have no image to copy.' : 'Pick a custom server emoji with the emoji button, or paste one. Standard emojis (😀) have no image to copy.');
   if (!(await isMember(env, i))) return notice('Phoenix members only', 'Join the Phoenix server first, then you can request emojis from anywhere.');
   const s = await slots(funEnv(env)).catch(() => ({ ok: false }));
   const have = new Set(s.ok ? s.emojis.map((e) => e.id) : []);
@@ -296,10 +296,15 @@ export async function emojiCommand(i, env, who, ctx, now = Date.now()) {
   if (!env.DB) return note('The member database is not connected');
   const sub = i.data?.options?.[0], o = Object.fromEntries((sub?.options ?? []).map((x) => [x.name, x.value]));
   if (sub?.name === 'suggest') {
-    const att = i.data?.resolved?.attachments?.[o.image];
-    return deferred(env, i, ctx, () => storeSuggestion(env, i, att, o, now));
+    const picked = String(o.emoji ?? '').trim();
+    if (picked && o.file) return note('One at a time', 'Send an emoji or a file, not both.');
+    if (picked) return o.type === 'sticker' ? note('That is an emoji', 'A picked emoji can only be requested as an emoji. To suggest a sticker, upload its image.') : deferred(env, i, ctx, () => copyRequest(env, i, now));
+    if (!o.file) return note('Add an emoji or a file', 'Fill in `emoji` using the emoji button, or attach an image in `file`.');
+    const att = i.data?.resolved?.attachments?.[o.file];
+    const file = String(att?.filename ?? '').replace(/\.[^.]*$/, '');
+    return deferred(env, i, ctx, () => storeSuggestion(env, i, att, { ...o, type: o.type ?? 'emoji', name: o.name ?? file }, now));
   }
-  if (i.data?.type === 3 || sub?.name === 'copy') return deferred(env, i, ctx, () => copyRequest(env, i, now));
+  if (i.data?.type === 3) return deferred(env, i, ctx, () => copyRequest(env, i, now));
   if (sub?.name === 'stats') {
     if (!can(who, 'emoji.review')) return note('Managers only');
     return reply(await statsPanel(env, now));
@@ -311,7 +316,7 @@ export async function emojiCommand(i, env, who, ctx, now = Date.now()) {
     const rows = (await env.DB.prepare("SELECT * FROM emoji_suggestions WHERE status = 'pending' ORDER BY id LIMIT 25").all()).results ?? [];
     return reply(message({ accent: 'red', ephemeral: true, mentions: { parse: [] }, blocks: [header({ eyebrow: `${orgName(env)} · Emoji and stickers`, title: 'Waiting for review', size: 3 }), text(rows.length ? rows.map((r) => `${line(r)} · <@${r.user_id}>`).join('\n') : 'Nothing is waiting.'), footer('Approve or reject on the cards in the review channel, or in the Control Center.')] }));
   }
-  return note('Pick suggest, copy, mine, delete, review or stats');
+  return note('Pick suggest, mine, delete, review or stats');
 }
 
 /** the Approve and Reject buttons on the review card (managers only) */

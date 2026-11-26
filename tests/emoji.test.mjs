@@ -52,7 +52,7 @@ const ia = (id, sub, options = [], attachment) => ({ member: { user: { id, usern
 const o = (obj) => Object.entries(obj).map(([name, value]) => ({ name, value }));
 const submit = async (id, who, attachment, extra = {}, e = env) => {
   calls.length = 0; const waits = [];
-  const r = await emojiCommand(ia(id, 'suggest', o({ image: 'a1', type: 'emoji', name: 'phoenix_flame', ...extra }), attachment), e, who, { waitUntil: (p) => waits.push(p) }, T);
+  const r = await emojiCommand(ia(id, 'suggest', o({ file: 'a1', type: 'emoji', name: 'phoenix_flame', ...extra }), attachment), e, who, { waitUntil: (p) => waits.push(p) }, T);
   await Promise.all(waits);
   return { r, patch: calls.find((c) => c.method === 'PATCH')?.body };
 };
@@ -181,7 +181,7 @@ t('the media storage guard skips emoji/ (the library is not disposable feed file
 
 // ---------- wiring ----------
 const em = COMMANDS.find((c) => c.name === 'emoji');
-t('/emoji has suggest (required attachment image, required type choice, required name), mine, delete, review; lives in the fun app', ['suggest', 'mine', 'delete', 'review'].every((n) => em.options.some((s) => s.name === n)) && em.options[0].options[0].type === 11 && em.options[0].options[0].required && em.options[0].options[1].choices.map((c) => c.value).join() === 'emoji,sticker' && APP_COMMANDS.fun.includes('emoji'));
+t('/emoji has suggest (emoji or image, both optional, then name and type), mine, delete, review, stats; lives in the fun app', ['suggest', 'mine', 'delete', 'review'].every((n) => em.options.some((s) => s.name === n)) && em.options[0].options.map((x) => x.name).join() === 'emoji,file,name,type' && em.options[0].options.every((x) => !x.required) && em.options[0].options[1].type === 11 && em.options[0].options[3].choices.map((c) => c.value).join() === 'emoji,sticker' && !em.options.some((s) => s.name === 'copy') && APP_COMMANDS.fun.includes('emoji'));
 t('emoji_review is a channel purpose with a description; permissions member/manager; the flag ships owner-only', CHANNEL_PURPOSES.includes('emoji_review') && !!CHANNEL_PURPOSE_INFO.emoji_review && PERMS['emoji.suggest'] === 'member' && PERMS['emoji.review'] === 'manager' && FEAT0.emoji === 'owner');
 t('the module reads its channel from config and names no channel, id or NOREX; limits come from the EMOJI_SUGGEST var, which bot.yml fills from config.json', /channelFor\(env, 'emoji_review'\)/.test(src) && !/\b\d{17,20}\b/.test(src) && !/norex(?!:emo)/i.test(src.replace(/norex:emo/g, '')) && JSON.parse(fs.readFileSync(new URL('../config.json', import.meta.url), 'utf8')).emojiSuggest.maxPending > 0 && /EMOJI_SUGGEST/.test(fs.readFileSync(new URL('../.github/workflows/bot.yml', import.meta.url), 'utf8')));
 t('the Discord limits are the real ones: emoji 256 KiB, sticker 512 KiB, no WebP or SVG accepted', KINDS.emoji.maxBytes === 262144 && KINDS.sticker.maxBytes === 524288 && !KINDS.emoji.mimes.includes('image/webp') && !KINDS.sticker.mimes.includes('image/svg+xml') && !KINDS.sticker.mimes.includes('image/jpeg'));
@@ -197,7 +197,7 @@ const send = async (payload) => { const body = JSON.stringify(payload), ts = Str
   const res = await worker.fetch(new Request('https://w.test/interactions', { method: 'POST', headers: { 'X-Signature-Ed25519': sig, 'X-Signature-Timestamp': ts }, body }), env, { waitUntil: (p) => waits.push(p) }); return { s: res.status, d: await res.json().catch(() => null) }; };
 await tt('the Worker routes /emoji suggest with a deferred private reply and stores the suggestion', async () => {
   reset();
-  const r = await send({ type: 2, member: { user: { id: '500', username: 'Ash' }, roles: [] }, channel_id: 'c1', token: 'tok', data: { name: 'emoji', options: [{ name: 'suggest', type: 1, options: o({ image: 'a1', type: 'emoji', name: 'worker_flame' }) }], resolved: { attachments: { a1: att() } } } });
+  const r = await send({ type: 2, member: { user: { id: '500', username: 'Ash' }, roles: [] }, channel_id: 'c1', token: 'tok', data: { name: 'emoji', options: [{ name: 'suggest', type: 1, options: o({ file: 'a1', type: 'emoji', name: 'worker_flame' }) }], resolved: { attachments: { a1: att() } } } });
   await Promise.all(waits);
   return r.s === 200 && r.d?.type === 5 && sqlite.prepare("SELECT COUNT(*) n FROM emoji_suggestions WHERE status = 'pending'").get().n === 1;
 });
@@ -266,5 +266,26 @@ await tt('stats: counts, slots and usage, for managers only', async () => {
   return d.counts.approved === 1 && d.server.used.static === 2 && d.server.limit === 50 && /Managers only/.test(txt(m)) && /Static \*\*2\/50\*\*/.test(txt(g)) && (await emojiRoute('/api/emoji/review/stats', 'GET', null, MEMBER, env, null, T)).status === 403 && (await emojiRoute('/api/emoji/review/stats', 'GET', null, MGR, env, null, T)).status === 200;
 });
 t('wiring: Request emoji is a user-installable message command in the fun app', (() => { const c = COMMANDS.find((x) => x.name === 'Request emoji'); return c.type === 3 && c.integration_types.join() === '0,1' && c.contexts.join() === '0,1,2' && APP_COMMANDS.fun.includes('Request emoji'); })());
+
+// ---------- suggest: an emoji from the picker, or a file ----------
+reset(); guild = { premium_tier: 0, features: [], emojis: [] }; served = png(128, 128);
+const suggest = async (opts, attachment) => {
+  calls.length = 0; const waits = [];
+  const r = await emojiCommand({ ...ia('500', 'suggest', o(opts), attachment), guild_id: 'g-em' }, env, MEMBER, { waitUntil: (p) => waits.push(p) }, T);
+  await Promise.all(waits);
+  return r.type === 5 ? txt(calls.find((c) => c.method === 'PATCH')?.body) : txt(r);
+};
+await tt('suggest emoji: what the picker sends (<:name:id>) is queued under its own name', async () => {
+  const out = await suggest({ emoji: '<:pickme:123456789012345690>' });
+  const row = sqlite.prepare('SELECT * FROM emoji_suggestions').get();
+  return /Sent to the managers/.test(out) && row.name === 'pickme' && row.kind === 'emoji' && row.source_id === '123456789012345690';
+});
+await tt('suggest: nothing, both, a standard emoji, or a picked "sticker" are refused', async () => /Add an emoji or a file/.test(await suggest({})) && /not both/.test(await suggest({ emoji: '<:a1:123456789012345691>', file: 'a1' }, att()))
+  && /No custom emojis/.test(await suggest({ emoji: '😀' })) && /only be requested as an emoji/.test(await suggest({ emoji: '<:a1:123456789012345691>', type: 'sticker' })) && count() === 1);
+await tt('suggest file: type and name are optional (emoji, named after the file)', async () => {
+  await suggest({ file: 'a1' }, att({ filename: 'blaze.png' }));
+  const row = sqlite.prepare('SELECT * FROM emoji_suggestions ORDER BY id DESC').get();
+  return count() === 2 && row.name === 'blaze' && row.kind === 'emoji' && row.source_id === null;
+});
 globalThis.fetch = real; console.log = reallog;
 done();
