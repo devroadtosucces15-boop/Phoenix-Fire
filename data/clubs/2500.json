@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-26T16:40:52.054Z",
+ "fetchedAt": "2026-11-26T16:50:41.888Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -2140,9 +2140,9 @@
   {
    "name": "-KRS-Tesoro-",
    "proPos": "25",
-   "gamesPlayed": "130",
-   "goals": "53",
-   "assists": "65",
+   "gamesPlayed": "131",
+   "goals": "55",
+   "assists": "66",
    "manOfTheMatch": "1",
    "ratingAve": "6.7",
    "prevGoals": "2",
@@ -2222,6 +2222,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-26T16:40:52.054Z"
+  "fetchedAt": "2026-11-26T16:50:41.888Z"
  }
 }
