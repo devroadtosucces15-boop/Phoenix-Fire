@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-26T18:30:45.912Z",
+ "fetchedAt": "2026-11-26T18:40:40.645Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2097,12 +2097,12 @@
   {
    "name": "zZ_zid",
    "proPos": "25",
-   "gamesPlayed": "315",
-   "goals": "303",
-   "assists": "324",
+   "gamesPlayed": "316",
+   "goals": "311",
+   "assists": "327",
    "manOfTheMatch": "31",
    "ratingAve": "7.2",
-   "prevGoals": "5",
+   "prevGoals": "8",
    "favoritePosition": "forward"
   },
   {
@@ -2410,6 +2410,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-26T18:30:45.912Z"
+  "fetchedAt": "2026-11-26T18:40:40.645Z"
  }
 }
