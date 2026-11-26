@@ -56,6 +56,7 @@ import { HIGHLIGHT_COMMANDS, highlightCommand } from './highlight.js';
 import { TESTVIEW_COMMANDS, TESTVIEW_ID, testviewCommand, testviewButton, testviewChoices } from './testview.js';
 import { ARCADE_COMMANDS, ARCADE_ID, arcadeCommand, arcadeButton } from './arcade.js';
 import { EMOJI_COMMANDS, EMOJI_ID, emojiCommand, emojiButton } from './emoji.js';
+import { emojiScan } from './emojiimport.js';
 import { GIF_COMMANDS, GIF_FLAG, gifCommand, gifTick } from './gif.js';
 import { BIRTHDAY_COMMANDS, birthdayCommand } from './birthday.js';
 import { weeklyDigest } from './points.js';
@@ -129,6 +130,7 @@ export default {
     if (flagOn(env, { role: 'owner' }, 'memberLive')) job('memberLiveCron', () => memberLiveCron(env).catch((e) => console.log('member live check failed', e.message))); // 🔴 members' own streams
     job('streamAlertsCron', () => streamAlertsCron(env).catch((e) => console.log('stream alerts failed', e.message))); // /streamalerts sources (flag streamAlerts checked inside)
     if (flagOn(env, { role: 'owner' }, 'watchlist')) job('watchlistCron', () => watchlistCron(env).catch((e) => console.log('watch list cron failed', e.message))); // creators' new videos, about hourly
+    if (flagOn(env, { role: 'owner' }, 'emoji')) job('emojiScan', () => emojiScan(funEnv).catch((e) => console.log('emoji scan failed', e.message))); // per-emoji usage from new messages and reactions
     if (flagOn(env, { role: 'owner' }, 'fun') || flagOn(env, { role: 'owner' }, 'birthday')) job('birthdayCheck', () => birthdayCheck(funEnv, postEmbed).catch((e) => console.log('birthday check failed', e.message))); // 🎂 one post a day
     if (flagOn(env, { role: 'owner' }, 'serverTools')) job('memberWatch', () => memberWatch(env).catch((e) => console.log('member watch failed', e.message))); // leave/join alerts + welcome posts
     if (flagOn(env, { role: 'owner' }, 'cardStudio')) job('generateCards', () => generateCards(env).catch((e) => console.log('card generation failed', e.message))); // Card Studio – approved requests → AI cards (retries included)

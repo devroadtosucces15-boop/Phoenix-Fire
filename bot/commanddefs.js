@@ -49,15 +49,19 @@ export const COMMANDS = [
     { type: STRING, name: 'output', description: 'The command, post, DM or button to preview', required: true, autocomplete: true },
     { type: STRING, name: 'variant', description: 'Which sample (win or loss, empty or full)', autocomplete: true },
     { type: STRING, name: 'as', description: 'See it as another role (default: you)', choices: ['guest', 'member', 'claimed', 'manager', 'owner'].map((v) => ({ name: v, value: v })) }] },
-  // PF-024 Item 22 – the emoji and sticker suggester (bot/emoji.js): members suggest, managers review; nothing is imported into the server yet. Limits live in config.json `emojiSuggest`.
-  { name: 'emoji', description: 'Suggest an emoji or sticker for the server (managers review it)', contexts: [0], options: [
-    { type: SUB, name: 'suggest', description: 'Send an image to the managers', options: [
-      { type: ATTACHMENT, name: 'image', description: 'PNG, JPEG or GIF (emoji up to 256 KB, sticker up to 512 KB)', required: true },
-      { type: STRING, name: 'type', description: 'Emoji or sticker', required: true, choices: [{ value: 'emoji', name: 'emoji' }, { value: 'sticker', name: 'sticker' }] },
-      { type: STRING, name: 'name', description: 'A short name: letters, digits, underscores (like phoenix_flame)', required: true, max_length: 40 }] },
+  // PF-024 Item 22 – the emoji and sticker suggester (bot/emoji.js): members suggest, managers review; an approved emoji is added to the server. Limits live in config.json `emojiSuggest`.
+  // User-installable (integration_types 0 + 1, contexts everywhere): members copy emojis from ANY server through Apps → Request emoji or /emoji suggest emoji:.
+  { name: 'Request emoji', type: 3, contexts: [0, 1, 2], integration_types: [0, 1] },
+  { name: 'emoji', description: 'Suggest or copy an emoji for the server (managers review it)', contexts: [0, 1, 2], integration_types: [0, 1], options: [
+    { type: SUB, name: 'suggest', description: 'Send an emoji (from the picker) or a file to the managers', options: [
+      { type: STRING, name: 'emoji', description: 'Pick from the emoji button, or paste (this or an image)', max_length: 400 },
+      { type: ATTACHMENT, name: 'file', description: 'Or upload a file: PNG, JPEG or GIF (emoji up to 256 KB, sticker up to 512 KB)' },
+      { type: STRING, name: 'name', description: 'A name like phoenix_flame (default: its own name or the file name)', max_length: 40 },
+      { type: STRING, name: 'type', description: 'For uploads: emoji (default) or sticker', choices: [{ value: 'emoji', name: 'emoji' }, { value: 'sticker', name: 'sticker' }] }] },
     { type: SUB, name: 'mine', description: 'Your suggestions and their status' },
     { type: SUB, name: 'delete', description: 'Withdraw a suggestion that is still waiting (managers can remove any)', options: [{ type: INTEGER, name: 'number', description: 'The number from /emoji mine', min_value: 1 }] },
-    { type: SUB, name: 'review', description: 'Managers: what is waiting for review' }] },
+    { type: SUB, name: 'review', description: 'Managers: what is waiting for review' },
+    { type: SUB, name: 'stats', description: 'Managers: free slots, request counts and which emojis are used (or not)' }] },
   // PF-024 Item 18 – the highlight clip upload (bot/highlight.js): stores a clip privately, nothing is posted or shared. Limits live in config.json `highlight`.
   { name: 'highlight', description: 'Upload a highlight clip for the club to keep (stored privately)', contexts: [0], options: [
     { type: SUB, name: 'upload', description: 'Store a clip (MP4, WebM or MOV)', options: [
@@ -454,7 +458,7 @@ export const APP_COMMANDS = {
   core: ['syncroles', 'aispike', 'panel', 'announce', 'trial', 'setup', 'purge', 'streamalerts', 'watchlive', 'exportcontent', 'profanitysetup', 'mascot', 'testview', 'corehelp'],
   stats: ['seasoncard', 'club', 'last', 'results', 'player', 'compare', 'leaderboard', 'history', 'insight', 'ask', 'me', 'profile', 'awards', 'points', 'motm', 'burner', 'rushladder', 'statshelp'],
   tools: ['intel', 'feedback', 'suggest', 'share', 'discoveries', 'watch', 'tag', 'remind', 'site', 'avatarcard', 'jail', 'wheel', 'trivia', 'navigator', 'counselor', 'wiki', 'Pin to bottom', 'unpin', 'Quote card', 'Translate message', 'translate', 'enhance', 'language', 'absence', 'highlight', 'birthday', 'toolshelp'],
-  fun: ['emoji', 'gif', 'arcade'],
+  fun: ['emoji', 'Request emoji', 'gif', 'arcade'],
   matchday: ['host', 'lineup', 'matchday', 'matchdayhelp'],
   rush: ['rush', 'lfg', 'queue', 'rushhelp'],
 };

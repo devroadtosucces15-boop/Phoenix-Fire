@@ -1,9 +1,9 @@
 // PF-024 Item 22 – the emoji and sticker suggester (bot/emoji.js): /emoji suggest | mine | delete | review, the manager card (Approve, Reject) and the Control Center review API.
 // Guardrails: Discord's size limits per kind (emoji 256 KiB, sticker 512 KiB) can only be tightened by config; format and pixel size are read from the image's own bytes (no SVG, WebP, JPEG sticker,
 // animated PNG emoji, non-square, tiny or huge images); names are cleaned to Discord's characters; per-member pending cap and duplicate names are enforced inside the INSERT; stored privately in R2 under emoji/,
-// reviewed by managers only, nothing is imported or shown publicly; Phoenix branding with no NOREX name/colour/crest; the review channel comes from Organization config; nothing is logged.
+// reviewed by managers only, nothing is shown publicly and only an approval adds an emoji to the server; Phoenix branding with no NOREX name/colour/crest; the review channel comes from Organization config; nothing is logged.
 import fs from 'node:fs';
-import { env, sqlite, R2 } from './mock.mjs';
+import { env, sqlite, R2, r2objects } from './mock.mjs';
 import worker from '../bot/worker.js';
 import { t, tt, done } from './lib.mjs';
 import { plainText } from '../bot/ui.js';
@@ -32,8 +32,13 @@ const SVG = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="64" heig
 const WEBP = Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(4), Buffer.from('WEBPVP8 '), Buffer.alloc(40)]);
 
 let served = png(128, 128);
+let guild = { premium_tier: 0, features: [], emojis: [] }, refuse = null;
+const uploads = [];
 globalThis.fetch = async (u, init = {}) => {
   u = String(u);
+  if (u === 'https://discord.com/api/v10/guilds/g-em') return Response.json(guild);
+  if (u.startsWith('https://discord.com/api/v10/guilds/g-em/members/')) return new Response('{}', { status: u.endsWith('/500') ? 200 : 404 });
+  if (u === 'https://discord.com/api/v10/guilds/g-em/emojis') { const b = JSON.parse(init.body); if (refuse) return Response.json(refuse, { status: 403 }); uploads.push(b); const e = { id: `99900000000000000${uploads.length}`, name: b.name, animated: /^data:image\/gif/.test(b.image) }; guild.emojis.push(e); return Response.json(e); }
   if (u.startsWith('https://discord.com/')) { calls.push({ u, method: init.method, body: init.body ? JSON.parse(init.body) : null }); return Response.json(init.method === 'POST' ? { id: `m${++nextId}` } : {}); }
   if (u.startsWith('https://cdn.discordapp.com/')) return new Response(served, { headers: { 'Content-Length': String(served.length) } });
   return real(u, init);
@@ -47,11 +52,12 @@ const ia = (id, sub, options = [], attachment) => ({ member: { user: { id, usern
 const o = (obj) => Object.entries(obj).map(([name, value]) => ({ name, value }));
 const submit = async (id, who, attachment, extra = {}, e = env) => {
   calls.length = 0; const waits = [];
-  const r = await emojiCommand(ia(id, 'suggest', o({ image: 'a1', type: 'emoji', name: 'phoenix_flame', ...extra }), attachment), e, who, { waitUntil: (p) => waits.push(p) }, T);
+  const r = await emojiCommand(ia(id, 'suggest', o({ file: 'a1', type: 'emoji', name: 'phoenix_flame', ...extra }), attachment), e, who, { waitUntil: (p) => waits.push(p) }, T);
   await Promise.all(waits);
   return { r, patch: calls.find((c) => c.method === 'PATCH')?.body };
 };
 const txt = (m) => plainText(m?.data ?? m ?? {});
+const R2objects = () => r2objects;
 const count = () => sqlite.prepare('SELECT COUNT(*) n FROM emoji_suggestions').get().n;
 
 // ---------- pure helpers ----------
@@ -169,13 +175,13 @@ t('Control Center permissions: the three review routes belong to the manager too
 
 // ---------- never published, never imported ----------
 const src = fs.readFileSync(new URL('../bot/emoji.js', import.meta.url), 'utf8');
-t('nothing is imported into the server and nothing is served publicly: no emoji or sticker create call, no public URL for the key', !/\/emojis|\/stickers|guilds\//.test(src) && !/MEDIA_URL|\.publicUrl/.test(src));
+t('no sticker is imported and nothing is served publicly: no sticker create call, no public URL for the key', !/\/stickers/.test(src) && !/MEDIA_URL|\.publicUrl/.test(src));
 const media = fs.readFileSync(new URL('../bot/media.js', import.meta.url), 'utf8');
 t('the media storage guard skips emoji/ (the library is not disposable feed files)', /startsWith\('emoji\/'\)/.test(media));
 
 // ---------- wiring ----------
 const em = COMMANDS.find((c) => c.name === 'emoji');
-t('/emoji has suggest (required attachment image, required type choice, required name), mine, delete, review; lives in the fun app', ['suggest', 'mine', 'delete', 'review'].every((n) => em.options.some((s) => s.name === n)) && em.options[0].options[0].type === 11 && em.options[0].options[0].required && em.options[0].options[1].choices.map((c) => c.value).join() === 'emoji,sticker' && APP_COMMANDS.fun.includes('emoji'));
+t('/emoji has suggest (emoji or image, both optional, then name and type), mine, delete, review, stats; lives in the fun app', ['suggest', 'mine', 'delete', 'review'].every((n) => em.options.some((s) => s.name === n)) && em.options[0].options.map((x) => x.name).join() === 'emoji,file,name,type' && em.options[0].options.every((x) => !x.required) && em.options[0].options[1].type === 11 && em.options[0].options[3].choices.map((c) => c.value).join() === 'emoji,sticker' && !em.options.some((s) => s.name === 'copy') && APP_COMMANDS.fun.includes('emoji'));
 t('emoji_review is a channel purpose with a description; permissions member/manager; the flag ships owner-only', CHANNEL_PURPOSES.includes('emoji_review') && !!CHANNEL_PURPOSE_INFO.emoji_review && PERMS['emoji.suggest'] === 'member' && PERMS['emoji.review'] === 'manager' && FEAT0.emoji === 'owner');
 t('the module reads its channel from config and names no channel, id or NOREX; limits come from the EMOJI_SUGGEST var, which bot.yml fills from config.json', /channelFor\(env, 'emoji_review'\)/.test(src) && !/\b\d{17,20}\b/.test(src) && !/norex(?!:emo)/i.test(src.replace(/norex:emo/g, '')) && JSON.parse(fs.readFileSync(new URL('../config.json', import.meta.url), 'utf8')).emojiSuggest.maxPending > 0 && /EMOJI_SUGGEST/.test(fs.readFileSync(new URL('../.github/workflows/bot.yml', import.meta.url), 'utf8')));
 t('the Discord limits are the real ones: emoji 256 KiB, sticker 512 KiB, no WebP or SVG accepted', KINDS.emoji.maxBytes === 262144 && KINDS.sticker.maxBytes === 524288 && !KINDS.emoji.mimes.includes('image/webp') && !KINDS.sticker.mimes.includes('image/svg+xml') && !KINDS.sticker.mimes.includes('image/jpeg'));
@@ -191,7 +197,7 @@ const send = async (payload) => { const body = JSON.stringify(payload), ts = Str
   const res = await worker.fetch(new Request('https://w.test/interactions', { method: 'POST', headers: { 'X-Signature-Ed25519': sig, 'X-Signature-Timestamp': ts }, body }), env, { waitUntil: (p) => waits.push(p) }); return { s: res.status, d: await res.json().catch(() => null) }; };
 await tt('the Worker routes /emoji suggest with a deferred private reply and stores the suggestion', async () => {
   reset();
-  const r = await send({ type: 2, member: { user: { id: '500', username: 'Ash' }, roles: [] }, channel_id: 'c1', token: 'tok', data: { name: 'emoji', options: [{ name: 'suggest', type: 1, options: o({ image: 'a1', type: 'emoji', name: 'worker_flame' }) }], resolved: { attachments: { a1: att() } } } });
+  const r = await send({ type: 2, member: { user: { id: '500', username: 'Ash' }, roles: [] }, channel_id: 'c1', token: 'tok', data: { name: 'emoji', options: [{ name: 'suggest', type: 1, options: o({ file: 'a1', type: 'emoji', name: 'worker_flame' }) }], resolved: { attachments: { a1: att() } } } });
   await Promise.all(waits);
   return r.s === 200 && r.d?.type === 5 && sqlite.prepare("SELECT COUNT(*) n FROM emoji_suggestions WHERE status = 'pending'").get().n === 1;
 });
@@ -199,6 +205,87 @@ await tt('the Worker routes the Approve button to the manager handler (a plain m
   const id = sqlite.prepare('SELECT id FROM emoji_suggestions').get().id;
   const r = await send({ type: 3, member: { user: { id: '500', username: 'Ash' }, roles: [] }, channel_id: 'c1', token: 'tok', message: { id: 'm1' }, data: { custom_id: `norex:emo:ok:${id}`, component_type: 2 } });
   return r.s === 200 && /Managers only/.test(JSON.stringify(r.d)) && sqlite.prepare('SELECT status FROM emoji_suggestions WHERE id = ?').get(id).status === 'pending';
+});
+
+// ---------- copy from another server, the importer, usage and stats ----------
+const { parseEmojis, slotLimit, countMessage, emojiScan, statsData } = await import('../bot/emojiimport.js');
+reset(); guild = { premium_tier: 0, features: [], emojis: [{ id: '555000000000000001', name: 'fire', animated: false }] }; uploads.length = 0;
+const E1 = '<:pog:123456789012345671>', E2 = '<a:dance:123456789012345672>';
+t('parse: static and animated, deduped, unicode ignored', parseEmojis(`${E1} 😀 ${E2} ${E1}`).map((e) => e.name + (e.animated ? '*' : '')).join() === 'pog,dance*');
+t('slots follow the Boost level, not the member count', slotLimit(0) === 50 && slotLimit(1) === 100 && slotLimit(2) === 150 && slotLimit(3) === 250 && slotLimit(0, ['MORE_EMOJI']) === 200);
+const copy = async (userId, data, guildId = 'elsewhere', who = { u: userId, role: 'member' }) => {
+  calls.length = 0; const waits = [];
+  const r = await emojiCommand({ guild_id: guildId, member: { user: { id: userId, username: `u${userId}` }, roles: [] }, token: 'tok', data }, env, who, { waitUntil: (p) => waits.push(p) }, T);
+  await Promise.all(waits);
+  return { r, text: r.type === 5 ? txt(calls.find((c) => c.method === 'PATCH')?.body) : txt(r) };
+};
+const menuData = (content) => ({ name: 'Request emoji', type: 3, target_id: 'm1', resolved: { messages: { m1: { content } } } });
+served = png(128, 90); // a copied emoji need not be square
+await tt('copy: the message menu from another server queues a Phoenix member’s request', async () => {
+  const x = await copy('500', menuData(`love ${E1}`));
+  const row = sqlite.prepare('SELECT * FROM emoji_suggestions').get();
+  return /Sent to the managers/.test(x.text) && row.status === 'pending' && row.source_id === '123456789012345671' && row.name === 'pog' && R2objects().has(row.key);
+});
+await tt('copy: someone who is not in our server is refused', async () => /Phoenix members only/.test((await copy('600', menuData(E2))).text) && count() === 1);
+await tt('copy: unicode only, and a repeat, add nothing', async () => /No custom emojis/.test((await copy('500', menuData('😀'))).text) && /already waiting/.test((await copy('500', menuData(E1))).text) && count() === 1);
+await tt('importer: Discord refuses → it stays waiting with the reason, and the card is left alone', async () => {
+  refuse = { code: 50013 };
+  const id = sqlite.prepare('SELECT id FROM emoji_suggestions').get().id;
+  const r = await emojiButton({ member: { user: { id: '900' } }, data: { custom_id: `norex:emo:ok:${id}` } }, env, MGR, T);
+  refuse = null;
+  return r.type === 4 && /Manage Expressions/.test(txt(r)) && sqlite.prepare('SELECT status FROM emoji_suggestions').get().status === 'pending' && uploads.length === 0;
+});
+await tt('importer: no free slot → stays waiting, nothing uploaded', async () => {
+  const keep = guild.emojis; guild.emojis = Array.from({ length: 50 }, (_, k) => ({ id: `7${k}`, name: `f${k}`, animated: false }));
+  const row = await decide(env, sqlite.prepare('SELECT id FROM emoji_suggestions').get().id, 'approve', '900', 'Coach', T);
+  guild.emojis = keep;
+  return /No free static slots/.test(row.importError) && row.status === 'pending' && uploads.length === 0;
+});
+await tt('importer: approval adds it to the server once and records the new id', async () => {
+  const id = sqlite.prepare('SELECT id FROM emoji_suggestions').get().id;
+  const row = await decide(env, id, 'approve', '900', 'Coach', T), again = await decide(env, id, 'approve', '900', 'Coach', T);
+  return row.status === 'approved' && row.emoji_id === '999000000000000001' && uploads.length === 1 && uploads[0].name === 'pog' && /^data:image\/png;base64,/.test(uploads[0].image) && again === null;
+});
+t('count: only our emojis, text uses and reaction counts', (() => { const c = countMessage({ content: '<:fire:555000000000000001> <:fire:555000000000000001> <:x:123456789012345999>', reactions: [{ emoji: { id: '555000000000000001' }, count: 3 }] }, new Set(['555000000000000001'])); return c.uses.size === 1 && c.uses.get('555000000000000001') === 2 && c.reacts.get('555000000000000001') === 3; })());
+let feed = [];
+const scanFetch = globalThis.fetch;
+globalThis.fetch = async (u, init) => (String(u).endsWith('/guilds/g-em/channels') ? Response.json([{ id: 'ch1', type: 0 }, { id: 'v1', type: 2 }]) : /\/channels\/ch1\/messages\?after=/.test(String(u)) ? Response.json(feed) : scanFetch(u, init));
+await tt('scan: the first sight of a channel counts nothing; later runs count members, skip bots, add up', async () => {
+  const first = await emojiScan(env, T);
+  const at = new Date(T).toISOString();
+  feed = [{ id: '9999999999999999990', timestamp: at, content: '<:fire:555000000000000001>', author: {} }, { id: '9999999999999999999', timestamp: at, content: '<:fire:555000000000000001>', author: { bot: true } }];
+  await emojiScan(env, T + 1);
+  feed = [{ id: '10000000000000000000', timestamp: at, content: '<:fire:555000000000000001>', author: {} }];
+  await emojiScan(env, T + 2);
+  return first.scanned === 0 && sqlite.prepare("SELECT uses FROM emoji_usage WHERE emoji_id = '555000000000000001'").get().uses === 2 && !sqlite.prepare("SELECT 1 FROM emoji_scan WHERE channel_id = 'v1'").get();
+});
+globalThis.fetch = scanFetch;
+await tt('stats: counts, slots and usage, for managers only', async () => {
+  const d = await statsData(env, T + 3);
+  const m = await emojiCommand(ia('500', 'stats'), env, MEMBER, null, T), g = await emojiCommand(ia('900', 'stats'), env, MGR, null, T);
+  return d.counts.approved === 1 && d.server.used.static === 2 && d.server.limit === 50 && /Managers only/.test(txt(m)) && /Static \*\*2\/50\*\*/.test(txt(g)) && (await emojiRoute('/api/emoji/review/stats', 'GET', null, MEMBER, env, null, T)).status === 403 && (await emojiRoute('/api/emoji/review/stats', 'GET', null, MGR, env, null, T)).status === 200;
+});
+t('wiring: Request emoji is a user-installable message command in the fun app', (() => { const c = COMMANDS.find((x) => x.name === 'Request emoji'); return c.type === 3 && c.integration_types.join() === '0,1' && c.contexts.join() === '0,1,2' && APP_COMMANDS.fun.includes('Request emoji'); })());
+
+// ---------- suggest: an emoji from the picker, or a file ----------
+reset(); guild = { premium_tier: 0, features: [], emojis: [] }; served = png(128, 128);
+const suggest = async (opts, attachment) => {
+  calls.length = 0; const waits = [];
+  const r = await emojiCommand({ ...ia('500', 'suggest', o(opts), attachment), guild_id: 'g-em' }, env, MEMBER, { waitUntil: (p) => waits.push(p) }, T);
+  await Promise.all(waits);
+  return r.type === 5 ? txt(calls.find((c) => c.method === 'PATCH')?.body) : txt(r);
+};
+await tt('suggest emoji: what the picker sends (<:name:id>) is queued under its own name', async () => {
+  const out = await suggest({ emoji: '<:pickme:123456789012345690>' });
+  const row = sqlite.prepare('SELECT * FROM emoji_suggestions').get();
+  return /Sent to the managers/.test(out) && row.name === 'pickme' && row.kind === 'emoji' && row.source_id === '123456789012345690';
+});
+await tt('suggest: nothing, both, a standard emoji, or a picked "sticker" are refused', async () => /Add an emoji or a file/.test(await suggest({})) && /not both/.test(await suggest({ emoji: '<:a1:123456789012345691>', file: 'a1' }, att()))
+  && /No custom emojis/.test(await suggest({ emoji: '😀' })) && /only be requested as an emoji/.test(await suggest({ emoji: '<:a1:123456789012345691>', type: 'sticker' })) && count() === 1);
+await tt('suggest file: type and name are optional (emoji, named after the file)', async () => {
+  await suggest({ file: 'a1' }, att({ filename: 'blaze.png' }));
+  const row = sqlite.prepare('SELECT * FROM emoji_suggestions ORDER BY id DESC').get();
+  return count() === 2 && row.name === 'blaze' && row.kind === 'emoji' && row.source_id === null;
 });
 globalThis.fetch = real; console.log = reallog;
 done();

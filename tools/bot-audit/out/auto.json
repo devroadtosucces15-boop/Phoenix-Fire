@@ -1,6 +1,274 @@
 {
  "items": [
   {
+   "id": "cron:*/10 * * * *:/users/@me/channels",
+   "name": "Cron */10 * * * *: POST /users/@me/channels",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "recipient_id": "111"
+    }
+   ]
+  },
+  {
+   "id": "cron:*/10 * * * *:/channels/DM-111/messages",
+   "name": "Cron */10 * * * *: POST /channels/DM-111/messages",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🏆 🏆 The week 47 awards are in – watch the reveal"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-dm-award.png?v=21"
+           },
+           "description": "Weekly awards"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1795699600:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#awards",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "cron:*/10 * * * *:/users/@me/channels",
+   "name": "Cron */10 * * * *: POST /users/@me/channels",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "recipient_id": "222"
+    }
+   ]
+  },
+  {
+   "id": "cron:*/10 * * * *:/channels/DM-222/messages",
+   "name": "Cron */10 * * * *: POST /channels/DM-222/messages",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🏆 🏆 The week 47 awards are in – watch the reveal"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-dm-award.png?v=21"
+           },
+           "description": "Weekly awards"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1795699600:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#awards",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "cron:*/10 * * * *:/users/@me/channels",
+   "name": "Cron */10 * * * *: POST /users/@me/channels",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "recipient_id": "333"
+    }
+   ]
+  },
+  {
+   "id": "cron:*/10 * * * *:/channels/DM-333/messages",
+   "name": "Cron */10 * * * *: POST /channels/DM-333/messages",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🏆 🏆 The week 47 awards are in – watch the reveal"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-dm-award.png?v=21"
+           },
+           "description": "Weekly awards"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1795699600:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#awards",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
+   "id": "cron:*/10 * * * *:/users/@me/channels",
+   "name": "Cron */10 * * * *: POST /users/@me/channels",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "recipient_id": "444"
+    }
+   ]
+  },
+  {
+   "id": "cron:*/10 * * * *:/channels/DM-444/messages",
+   "name": "Cron */10 * * * *: POST /channels/DM-444/messages",
+   "category": "automated",
+   "how": "real",
+   "trigger": "cron */10 * * * *",
+   "source": "bot/worker.js scheduled()",
+   "bodies": [
+    {
+     "flags": 32768,
+     "components": [
+      {
+       "type": 17,
+       "accent_color": 15716218,
+       "components": [
+        {
+         "type": 10,
+         "content": "-# PHOENIX FIRE · ALERT\n### 🏆 🏆 The week 47 awards are in – watch the reveal"
+        },
+        {
+         "type": 12,
+         "items": [
+          {
+           "media": {
+            "url": "http://localhost:4321/cards/banner-dm-award.png?v=21"
+           },
+           "description": "Weekly awards"
+          }
+         ]
+        },
+        {
+         "type": 10,
+         "content": "-# Sent <t:1795699600:R> · change DM settings: Squad Hub → 🔔 Alerts"
+        },
+        {
+         "type": 1,
+         "components": [
+          {
+           "type": 2,
+           "style": 5,
+           "url": "http://localhost:4321/members.html#awards",
+           "label": "Open on the site"
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "allowed_mentions": {
+      "parse": []
+     }
+    }
+   ]
+  },
+  {
    "id": "dm:notify:announce",
    "name": "DM · Announcements & rules",
    "category": "DM",
@@ -30,7 +298,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-announce.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-announce.png?v=21"
            },
            "description": "Announcement"
           }
@@ -42,7 +310,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -95,7 +363,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-claim.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-claim.png?v=21"
            },
            "description": "Claim decision"
           }
@@ -107,7 +375,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -160,7 +428,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-trial.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-trial.png?v=21"
            },
            "description": "Scouting tip"
           }
@@ -172,7 +440,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -225,7 +493,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-trialstage.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-trialstage.png?v=21"
            },
            "description": "Trial update"
           }
@@ -237,7 +505,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -290,7 +558,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-rush.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-rush.png?v=21"
            },
            "description": "Rush result"
           }
@@ -302,7 +570,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -355,7 +623,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-lfg.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-lfg.png?v=21"
            },
            "description": "Rush call"
           }
@@ -367,7 +635,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -420,7 +688,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-badge.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-badge.png?v=21"
            },
            "description": "Badge earned"
           }
@@ -432,7 +700,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -485,7 +753,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-request.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-request.png?v=21"
            },
            "description": "Request update"
           }
@@ -497,7 +765,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -550,7 +818,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-idea.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-idea.png?v=21"
            },
            "description": "Idea reply"
           }
@@ -562,7 +830,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -615,7 +883,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-event.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-event.png?v=21"
            },
            "description": "Session update"
           }
@@ -627,7 +895,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -680,7 +948,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-award.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-award.png?v=21"
            },
            "description": "Weekly awards"
           }
@@ -692,7 +960,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -745,7 +1013,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-feedback.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-feedback.png?v=21"
            },
            "description": "Feedback for you"
           }
@@ -757,7 +1025,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -810,7 +1078,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-predict.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-predict.png?v=21"
            },
            "description": "Prediction points"
           }
@@ -822,7 +1090,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -875,7 +1143,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-points.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-points.png?v=21"
            },
            "description": "Your points"
           }
@@ -887,7 +1155,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -940,7 +1208,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-game.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-game.png?v=21"
            },
            "description": "Game update"
           }
@@ -952,7 +1220,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1005,7 +1273,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-mention.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-mention.png?v=21"
            },
            "description": "You were mentioned"
           }
@@ -1017,7 +1285,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1070,7 +1338,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-message.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-message.png?v=21"
            },
            "description": "New message"
           }
@@ -1082,7 +1350,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1135,7 +1403,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-feed.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-feed.png?v=21"
            },
            "description": "Feed activity"
           }
@@ -1147,7 +1415,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1200,7 +1468,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-storage.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-storage.png?v=21"
            },
            "description": "Storage guard"
           }
@@ -1212,7 +1480,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1265,7 +1533,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-queue.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-queue.png?v=21"
            },
            "description": "Manager to-do"
           }
@@ -1277,7 +1545,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1330,7 +1598,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-moderation.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-moderation.png?v=21"
            },
            "description": "Manager warning"
           }
@@ -1342,7 +1610,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1395,7 +1663,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-play.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-play.png?v=21"
            },
            "description": "New play"
           }
@@ -1407,7 +1675,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1460,7 +1728,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-card.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-card.png?v=21"
            },
            "description": "Card decision"
           }
@@ -1472,7 +1740,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1525,7 +1793,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-wave.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-wave.png?v=21"
            },
            "description": "Wave"
           }
@@ -1537,7 +1805,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1590,7 +1858,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-remind.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-remind.png?v=21"
            },
            "description": "Reminder"
           }
@@ -1602,7 +1870,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1655,7 +1923,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-caution.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-caution.png?v=21"
            },
            "description": "Caution"
           }
@@ -1667,7 +1935,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1720,7 +1988,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-live.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-live.png?v=21"
            },
            "description": "We are live"
           }
@@ -1732,7 +2000,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1785,7 +2053,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-dm-test.png?v=20"
+            "url": "http://localhost:4321/cards/banner-dm-test.png?v=21"
            },
            "description": "Test alert"
           }
@@ -1797,7 +2065,7 @@
         },
         {
          "type": 10,
-         "content": "-# Sent <t:1795301451:R> · change DM settings: Squad Hub → 🔔 Alerts"
+         "content": "-# Sent <t:1795699601:R> · change DM settings: Squad Hub → 🔔 Alerts"
         },
         {
          "type": 1,
@@ -1850,7 +2118,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-post-live.png?v=20"
+            "url": "http://localhost:4321/cards/banner-post-live.png?v=21"
            },
            "description": "We are live"
           }
@@ -1925,7 +2193,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-post-memberlive.png?v=20"
+            "url": "http://localhost:4321/cards/banner-post-memberlive.png?v=21"
            },
            "description": "Member live"
           }
@@ -1994,7 +2262,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-health.png?v=20"
+            "url": "http://localhost:4321/cards/banner-health.png?v=21"
            },
            "description": "Bot status"
           }
@@ -2043,14 +2311,14 @@
        "components": [
         {
          "type": 10,
-         "content": "-# STAFF · UPTIME MONITOR\n### Phoenix bot: back to normal (was down since 2026-11-21 21:50 UTC)"
+         "content": "-# STAFF · UPTIME MONITOR\n### Phoenix bot: back to normal (was down since 2026-11-26 12:26 UTC)"
         },
         {
          "type": 12,
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-health.png?v=20"
+            "url": "http://localhost:4321/cards/banner-health.png?v=21"
            },
            "description": "Bot status"
           }
@@ -2092,14 +2360,14 @@
        "components": [
         {
          "type": 10,
-         "content": "-# BURNER TRACKER · LEAGUE\n## 🔥 Burner FC 3–1 Sample FC\n-# ✅ Win · <t:1795301450:f> · burner club report"
+         "content": "-# BURNER TRACKER · LEAGUE\n## 🔥 Burner FC 3–1 Sample FC\n-# ✅ Win · <t:1795699600:f> · burner club report"
         },
         {
          "type": 12,
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-post-burner.png?v=20"
+            "url": "http://localhost:4321/cards/banner-post-burner.png?v=21"
            },
            "description": "Burner report"
           }
@@ -2254,7 +2522,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-discovery.png?v=20"
+            "url": "http://localhost:4321/cards/banner-discovery.png?v=21"
            }
           }
          ]
@@ -2338,7 +2606,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-post-birthday.png?v=20"
+            "url": "http://localhost:4321/cards/banner-post-birthday.png?v=21"
            },
            "description": "Happy birthday"
           }
@@ -2406,7 +2674,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-post-welcome.png?v=20"
+            "url": "http://localhost:4321/cards/banner-post-welcome.png?v=21"
            },
            "description": "Welcome"
           }
@@ -2477,7 +2745,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-general.png?v=20"
+            "url": "http://localhost:4321/cards/banner-general.png?v=21"
            },
            "description": "Phoenix Fire"
           }
@@ -2590,7 +2858,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=20"
+            "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=21"
            },
            "description": "Available for Rush"
           }
@@ -2598,7 +2866,7 @@
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Mike is available for Rush\n-# Until <t:1795305050:t> · <t:1795305050:R>"
+         "content": "-# PHOENIX FIRE · RUSH\n## ⚡ Mike is available for Rush\n-# Until <t:1795703200:t> · <t:1795703200:R>"
         },
         {
          "type": 10,
@@ -2709,7 +2977,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=20"
+            "url": "http://localhost:4321/cards/banner-cmd-lfg-post.png?v=21"
            },
            "description": "Available for Rush"
           }
@@ -2776,7 +3044,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-recap.png?v=20"
+            "url": "http://localhost:4321/cards/banner-recap.png?v=21"
            },
            "description": "Session recap"
           }
@@ -2784,7 +3052,7 @@
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · SESSION RECAP\n## 2 won, 0 drawn, 1 lost\n-# <t:1795294250:f> to <t:1795299650:t> · 3 matches"
+         "content": "-# PHOENIX FIRE · SESSION RECAP\n## 2 won, 0 drawn, 1 lost\n-# <t:1795692400:f> to <t:1795697800:t> · 3 matches"
         },
         {
          "type": 10,
@@ -2902,18 +3170,18 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-matchnight.png?v=20"
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=21"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1795387850:F> · <t:1795387850:R> · 1 h 30 min"
+         "content": "-# PHOENIX FIRE · MATCH DAY · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1795786000:F> · <t:1795786000:R>"
         },
         {
          "type": 10,
-         "content": "📝 Be on 10 minutes early."
+         "content": "**👥 Players** 1/11\n**⏱️ Length** 1 h 30 min\n**📝 Notes** Be on 10 minutes early."
         },
         {
          "type": 14,
@@ -2922,19 +3190,27 @@
         },
         {
          "type": 10,
-         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+         "content": "**✅ In (1)**"
         },
         {
          "type": 10,
-         "content": "**In** Mike"
+         "content": "Mike `ST`"
         },
         {
          "type": 10,
-         "content": "**❔ Maybe (1)** Jez\n**❌ Out (1)** Kruger"
+         "content": "**❔ Maybe (1)**\nJez `CM`"
         },
         {
          "type": 10,
-         "content": "**🧩 Still needed** 10 more players · 1 GK · 1 ST"
+         "content": "**❌ Out (1)**\nKruger"
+        },
+        {
+         "type": 10,
+         "content": "⚠️ **Still needed:** 10 more players · 1 GK · 1 ST"
+        },
+        {
+         "type": 10,
+         "content": "🕐 Lineup window opens <t:1795782400:t> (<t:1795782400:R>) · check-in follows the lineup and closes <t:1795784200:t>"
         },
         {
          "type": 10,
@@ -3018,18 +3294,18 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-matchnight.png?v=20"
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=21"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · RUSH SESSION\n## ⚡ Rush night\n-# <t:1795387850:F> · <t:1795387850:R> · 1 h 30 min"
+         "content": "-# PHOENIX FIRE · MATCH DAY · RUSH SESSION\n## ⚡ Rush night\n-# <t:1795786000:F> · <t:1795786000:R>"
         },
         {
          "type": 10,
-         "content": "📝 Be on 10 minutes early."
+         "content": "**👥 Players** 1/11\n**⏱️ Length** 1 h 30 min\n**📝 Notes** Be on 10 minutes early."
         },
         {
          "type": 14,
@@ -3038,15 +3314,27 @@
         },
         {
          "type": 10,
-         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+         "content": "**✅ In (1)**"
         },
         {
          "type": 10,
-         "content": "**In** Mike"
+         "content": "Mike"
         },
         {
          "type": 10,
-         "content": "**🧩 Still needed** 10 more players · 1 GK · 2 ST"
+         "content": "**❔ Maybe (1)**\nJez"
+        },
+        {
+         "type": 10,
+         "content": "**❌ Out (1)**\nKruger"
+        },
+        {
+         "type": 10,
+         "content": "⚠️ **Still needed:** 10 more players · 1 GK · 2 ST"
+        },
+        {
+         "type": 10,
+         "content": "🕐 Lineup window opens <t:1795782400:t> (<t:1795782400:R>) · check-in follows the lineup and closes <t:1795784200:t>"
         },
         {
          "type": 10,
@@ -3129,18 +3417,18 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-eventcancelled.png?v=20"
+            "url": "http://localhost:4321/cards/banner-eventcancelled.png?v=21"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 🚫 Cancelled · League night\n-# <t:1795387850:F> · <t:1795387850:R> · 1 h 30 min"
+         "content": "-# PHOENIX FIRE · MATCH DAY · LEAGUE NIGHT\n## 🏆 🚫 Cancelled · League night\n-# <t:1795786000:F> · <t:1795786000:R>"
         },
         {
          "type": 10,
-         "content": "📝 Be on 10 minutes early."
+         "content": "**👥 Players** 1/11\n**⏱️ Length** 1 h 30 min\n**📝 Notes** Be on 10 minutes early."
         },
         {
          "type": 14,
@@ -3149,15 +3437,23 @@
         },
         {
          "type": 10,
-         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+         "content": "**✅ In (1)**"
         },
         {
          "type": 10,
-         "content": "**In** Mike"
+         "content": "Mike `ST`"
         },
         {
          "type": 10,
-         "content": "**🧩 Still needed** 10 more players · 1 GK · 1 ST"
+         "content": "**❔ Maybe (1)**\nJez `CM`"
+        },
+        {
+         "type": 10,
+         "content": "**❌ Out (1)**\nKruger"
+        },
+        {
+         "type": 10,
+         "content": "⚠️ **Still needed:** 10 more players · 1 GK · 1 ST"
         },
         {
          "type": 10,
@@ -3213,18 +3509,18 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-matchnight.png?v=20"
+            "url": "http://localhost:4321/cards/banner-matchnight.png?v=21"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1795387850:F> · <t:1795387850:R> · 1 h 30 min"
+         "content": "-# PHOENIX FIRE · MATCH DAY · LEAGUE NIGHT\n## 🏆 League night\n-# <t:1795786000:F> · <t:1795786000:R>"
         },
         {
          "type": 10,
-         "content": "📝 Be on 10 minutes early."
+         "content": "**👥 Players** 1/11\n**⏱️ Length** 1 h 30 min\n**📝 Notes** Be on 10 minutes early."
         },
         {
          "type": 14,
@@ -3233,7 +3529,7 @@
         },
         {
          "type": 10,
-         "content": "**Answers** ✅ 1 · ❔ 1 · ❌ 1"
+         "content": "**✅ In (1)**"
         },
         {
          "type": 12,
@@ -3248,7 +3544,19 @@
         },
         {
          "type": 10,
-         "content": "**🧩 Still needed** 10 more players · 1 GK · 1 ST"
+         "content": "**❔ Maybe (1)**\nJez `CM`"
+        },
+        {
+         "type": 10,
+         "content": "**❌ Out (1)**\nKruger"
+        },
+        {
+         "type": 10,
+         "content": "⚠️ **Still needed:** 10 more players · 1 GK · 1 ST"
+        },
+        {
+         "type": 10,
+         "content": "🕐 Lineup window opens <t:1795782400:t> (<t:1795782400:R>) · check-in follows the lineup and closes <t:1795784200:t>"
         },
         {
          "type": 10,
@@ -3330,14 +3638,14 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-checkin.png?v=20"
+            "url": "http://localhost:4321/cards/banner-checkin.png?v=21"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · CHECK-IN\n## ⏰ Check in now · League night\n-# <t:1795303250:F> · <t:1795303250:R>"
+         "content": "-# PHOENIX FIRE · CHECK-IN\n## ⏰ Starting soon · League night\n-# <t:1795701400:F> · <t:1795701400:R>"
         },
         {
          "type": 14,
@@ -3354,7 +3662,7 @@
         },
         {
          "type": 10,
-         "content": "-# **NOT CHECKED IN – NOT CONSIDERED UNTIL THEY DO**\n` 2` **Jez** · maybe"
+         "content": "-# **NOT CONFIRMED YET – CHECK-IN CLOSES 30 MINUTES BEFORE THE START**\n` 2` **Jez** · maybe"
         },
         {
          "type": 14,
@@ -3363,24 +3671,19 @@
         },
         {
          "type": 10,
+         "content": "🔒 Check-in window has passed without a lineup"
+        },
+        {
+         "type": 10,
          "content": "⏱️ **Be lined up 10 minutes before the start.** There is a grace period of 5 to 10 minutes. After that we start without you.\n👥 **6 real players are needed to start.** AI players do not count; playoffs and other tournaments need 8. Fewer than 6 by the start time and the session is cancelled or rescheduled."
         },
         {
          "type": 10,
-         "content": "-# Only players who check in are considered for the lineup"
+         "content": "-# Only players in the lineup who check in play"
         },
         {
          "type": 1,
          "components": [
-          {
-           "type": 2,
-           "style": 3,
-           "custom_id": "phoenix:ci:1",
-           "label": "Check in",
-           "emoji": {
-            "name": "✅"
-           }
-          },
           {
            "type": 2,
            "style": 5,
@@ -3424,7 +3727,7 @@
        "components": [
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · CHECK-IN\n## ⏰ Check in now · League night\n-# <t:1795303250:F> · <t:1795303250:R>"
+         "content": "-# PHOENIX FIRE · CHECK-IN\n## ⏰ Starting soon · League night\n-# <t:1795701400:F> · <t:1795701400:R>"
         },
         {
          "type": 14,
@@ -3453,24 +3756,19 @@
         },
         {
          "type": 10,
+         "content": "🔒 Check-in window has passed without a lineup"
+        },
+        {
+         "type": 10,
          "content": "⏱️ **Be lined up 10 minutes before the start.** There is a grace period of 5 to 10 minutes. After that we start without you.\n👥 **6 real players are needed to start.** AI players do not count; playoffs and other tournaments need 8. Fewer than 6 by the start time and the session is cancelled or rescheduled."
         },
         {
          "type": 10,
-         "content": "-# Only players who check in are considered for the lineup"
+         "content": "-# Only players in the lineup who check in play"
         },
         {
          "type": 1,
          "components": [
-          {
-           "type": 2,
-           "style": 3,
-           "custom_id": "phoenix:ci:1",
-           "label": "Check in",
-           "emoji": {
-            "name": "✅"
-           }
-          },
           {
            "type": 2,
            "style": 5,
@@ -3514,7 +3812,7 @@
        "components": [
         {
          "type": 10,
-         "content": "✅ You are checked in for **League night** · <t:1795303250:F> (<t:1795303250:R>). Be lined up 10 minutes before the start."
+         "content": "✅ You are checked in for **League night** · <t:1795701400:F> (<t:1795701400:R>). Be lined up 10 minutes before the start."
         }
        ]
       }
@@ -3554,14 +3852,14 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/lineup-4-3-3.png?v=20"
+            "url": "http://localhost:4321/cards/lineup-4-3-3.png?v=21"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · MATCH NIGHT\n## 🧩 Suggested lineup · 4-3-3\n-# League night · <t:1795387850:F> · <t:1795387850:R>"
+         "content": "-# PHOENIX FIRE · MATCH NIGHT\n## 🧩 Suggested lineup · 4-3-3\n-# League night · <t:1795786000:F> · <t:1795786000:R>"
         },
         {
          "type": 14,
@@ -3591,7 +3889,11 @@
         },
         {
          "type": 10,
-         "content": "📝 **This is a suggested lineup.** It was picked from the answers so far.\n⏰ **Check in 30 minutes before kick-off.** Anyone who has not checked in will not be considered."
+         "content": "📝 **This is a suggested lineup.** It was picked from the answers so far."
+        },
+        {
+         "type": 10,
+         "content": "🕐 Lineup window opens <t:1795782400:t> (<t:1795782400:R>) · check-in follows the lineup and closes <t:1795784200:t>\n-# Check-in is for the players in this lineup and closes 30 minutes before kick-off."
         },
         {
          "type": 10,
@@ -3650,14 +3952,14 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/lineup-4-3-3.png?v=20"
+            "url": "http://localhost:4321/cards/lineup-4-3-3.png?v=21"
            }
           }
          ]
         },
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · MATCH NIGHT\n## 🧩 Lineup · 4-3-3\n-# League night · <t:1795387850:F> · <t:1795387850:R>"
+         "content": "-# PHOENIX FIRE · MATCH NIGHT\n## 🧩 Lineup · 4-3-3\n-# League night · <t:1795786000:F> · <t:1795786000:R>"
         },
         {
          "type": 14,
@@ -3684,6 +3986,10 @@
          "type": 14,
          "divider": true,
          "spacing": 1
+        },
+        {
+         "type": 10,
+         "content": "🕐 Lineup window opens <t:1795782400:t> (<t:1795782400:R>) · check-in follows the lineup and closes <t:1795784200:t>\n-# Check-in is for the players in this lineup and closes 30 minutes before kick-off."
         },
         {
          "type": 10,
@@ -3740,14 +4046,14 @@
        "components": [
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · RUSH\n## 🔥 Rush queue\n-# Queue open since <t:1795300730:T> (<t:1795300730:R>)"
+         "content": "-# PHOENIX FIRE · RUSH\n## 🔥 Rush queue\n-# Queue open since <t:1795698880:T> (<t:1795698880:R>)"
         },
         {
          "type": 12,
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-rush.png?v=20"
+            "url": "http://localhost:4321/cards/banner-rush.png?v=21"
            },
            "description": "Rush"
           }
@@ -3760,7 +4066,7 @@
         },
         {
          "type": 10,
-         "content": "**SEARCHING NOW**  <@222>, <@333>\n-# In the queue: joined <t:1795300550:R> · Searching: since <t:1795301355:T> (<t:1795301355:R>)\n\n**NEXT**\n1. <@444> · needs 1 player · ~5 min\n-# In the queue: joined <t:1795300850:R> · Waiting: since <t:1795300850:T> (<t:1795300850:R>) · match failed 1×\n2. <@111>, <@555>, <@666> · ⏸ paused · ~10 min\n-# In the queue: joined <t:1795301150:R> · Waiting: since <t:1795301150:T> (<t:1795301150:R>)"
+         "content": "**SEARCHING NOW**  <@222>, <@333>\n-# In the queue: joined <t:1795698700:R> · Searching: since <t:1795699505:T> (<t:1795699505:R>)\n\n**NEXT**\n1. <@444> · needs 1 player · ~5 min\n-# In the queue: joined <t:1795699000:R> · Waiting: since <t:1795699000:T> (<t:1795699000:R>) · match failed 1×\n2. <@111>, <@555>, <@666> · ⏸ paused · ~10 min\n-# In the queue: joined <t:1795699300:R> · Waiting: since <t:1795699300:T> (<t:1795699300:R>)"
         },
         {
          "type": 14,
@@ -3905,7 +4211,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-rush.png?v=20"
+            "url": "http://localhost:4321/cards/banner-rush.png?v=21"
            },
            "description": "Rush"
           }
@@ -4063,7 +4369,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-rush.png?v=20"
+            "url": "http://localhost:4321/cards/banner-rush.png?v=21"
            },
            "description": "Rush"
           }
@@ -4221,7 +4527,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-rush.png?v=20"
+            "url": "http://localhost:4321/cards/banner-rush.png?v=21"
            },
            "description": "Rush"
           }
@@ -4299,14 +4605,14 @@
        "components": [
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · RUSH\n## 🙋 A Rush lobby needs 1 player\n-# Closes <t:1795305050:R>"
+         "content": "-# PHOENIX FIRE · RUSH\n## 🙋 A Rush lobby needs 1 player\n-# Closes <t:1795703200:R>"
         },
         {
          "type": 12,
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-rush.png?v=20"
+            "url": "http://localhost:4321/cards/banner-rush.png?v=21"
            },
            "description": "Rush"
           }
@@ -4385,14 +4691,14 @@
        "components": [
         {
          "type": 10,
-         "content": "-# PHOENIX FIRE · RUSH LEADERBOARD\n## #2 ▲1 · 60,950 VP\n-# Season 2 · Day 31/42 · photo <t:1795279850:R>"
+         "content": "-# PHOENIX FIRE · RUSH LEADERBOARD\n## #2 ▲1 · 60,950 VP\n-# Season 2 · Day 36/42 · photo <t:1795678000:R>"
         },
         {
          "type": 12,
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-rush.png?v=20"
+            "url": "http://localhost:4321/cards/banner-rush.png?v=21"
            },
            "description": "Rush"
           }
@@ -4425,7 +4731,7 @@
         },
         {
          "type": 10,
-         "content": "**Projected finish** ~103,296 VP at this pace (11 days left)"
+         "content": "**Projected finish** ~85,587 VP at this pace (6.4 days left)"
         },
         {
          "type": 14,
@@ -4434,7 +4740,7 @@
         },
         {
          "type": 10,
-         "content": "• Up 1 place since the last photo. 🔥\n• At the current pace we pass Sample United in about 27h. Keep the tempo.\n• To finish ahead of Sample United we need about 2,097 VP a day for the remaining 11 days."
+         "content": "• Up 1 place since the last photo. 🔥\n• At the current pace we pass Sample United in about 27h. Keep the tempo.\n• To finish ahead of Sample United we need about 2,237 VP a day for the remaining 6.4 days."
         },
         {
          "type": 10,
@@ -4497,7 +4803,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-season.png?v=20"
+            "url": "http://localhost:4321/cards/banner-season.png?v=21"
            },
            "description": "Season card"
           }
@@ -4578,7 +4884,7 @@
          "items": [
           {
            "media": {
-            "url": "https://static-cdn.jtvnw.net/previews-ttv/live_user_kingmitch93-1280x720.jpg?t=29921690"
+            "url": "https://static-cdn.jtvnw.net/previews-ttv/live_user_kingmitch93-1280x720.jpg?t=29928326"
            }
           }
          ]
@@ -4655,7 +4961,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-channel.png?v=20"
+            "url": "http://localhost:4321/cards/banner-channel.png?v=21"
            }
           }
          ]
@@ -4821,7 +5127,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-match.png?v=20"
+            "url": "http://localhost:4321/cards/banner-match.png?v=21"
            },
            "description": "Match centre"
           }
@@ -5004,7 +5310,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-match.png?v=20"
+            "url": "http://localhost:4321/cards/banner-match.png?v=21"
            },
            "description": "Match centre"
           }
@@ -5187,7 +5493,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-match.png?v=20"
+            "url": "http://localhost:4321/cards/banner-match.png?v=21"
            },
            "description": "Match centre"
           }
@@ -5392,7 +5698,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-match.png?v=20"
+            "url": "http://localhost:4321/cards/banner-match.png?v=21"
            },
            "description": "Match centre"
           }
@@ -5452,7 +5758,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-match.png?v=20"
+            "url": "http://localhost:4321/cards/banner-match.png?v=21"
            },
            "description": "Match centre"
           }
@@ -5512,7 +5818,7 @@
          "items": [
           {
            "media": {
-            "url": "http://localhost:4321/cards/banner-match.png?v=20"
+            "url": "http://localhost:4321/cards/banner-match.png?v=21"
            },
            "description": "Match centre"
           }

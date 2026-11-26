@@ -9,7 +9,7 @@ The map lives in `bot/commanddefs.js` (`APP_COMMANDS`); routing helpers are in `
 | `core`  | Member login (OAuth), role sync, result + notification posts, AutoMod, every cron/background post | `<PUBLIC_URL>/interactions/core` (or the old `<PUBLIC_URL>/`) |
 | `stats` | Club and player records | `<PUBLIC_URL>/interactions/stats` |
 | `tools` | Member and manager helpers (feedback, suggest, share, discoveries, tags, remind, site, avatar card, jail, wheel, trivia) | `<PUBLIC_URL>/interactions/tools` |
-| `fun`   | The Fun app. It maps **3 commands** now (`/emoji`, `/gif`, `/arcade`, moved from Matchday in CR-01); its older commands moved to Tools and Stats and `MOVED_FROM` points people there during the transition | `<PUBLIC_URL>/interactions/fun` |
+| `fun`   | The Fun app. It maps **4 commands** now (`/emoji`, the **Request emoji** message menu, `/gif`, `/arcade`; moved from Matchday in CR-01); its older commands moved to Tools and Stats and `MOVED_FROM` points people there during the transition | `<PUBLIC_URL>/interactions/fun` |
 | `matchday` | Live. Setting up and running one 11v11 match day: `/host`, `/lineup`, `/matchday`, `/absence` (away or playing-less notices to the managers), `/arcade` (two-player button games: noughts and crosses, connect four, rock paper scissors, penalty shootout; own score plus shared points), `/gif` (video to GIF through a GitHub Actions job), `/highlight` (store a highlight clip privately), `/emoji` (suggest an emoji or sticker; managers review), `/birthday` (save, show or hide your birthday), `/matchdayhelp` (see `PLANNING/BOT-SPLIT.md`) | `<PUBLIC_URL>/interactions/matchday` |
 | `rush` | Live. 5v5 Rush: `/rush`, `/lfg`, `/queue`, `/rushhelp` (member-logged games, LFG, the queue board) | `<PUBLIC_URL>/interactions/rush` |
 
@@ -78,3 +78,18 @@ node bot/register.mjs stats fun  # only those apps
 ```
 
 Public IDs and keys are read from `bot/wrangler.toml`. Tokens are read from the environment.
+
+## Emojis: copy, approve, import, usage (Fun app, flag `emoji`)
+
+`/emoji suggest` takes either an `emoji` (picked with Discord's emoji button, or pasted) or an uploaded `file` (PNG, JPEG or GIF); members can also copy from **any server** (right-click a message, Apps, **Request emoji**). The picker only offers other servers' emojis to members with Nitro; without it they use the right-click menu. Managers approve on the review card
+or in the Control Center, and an approved emoji is added to the server (stickers are kept, not imported). If Discord refuses or no slot is free it stays waiting, with the reason.
+`/emoji stats` and the Control Center show free static and animated slots (they follow the Boost level, not the member count), request counts and the most and least used emojis of the last 30 days
+(emojis under 14 days old are left out of "least used").
+
+Owner steps in the Discord Developer Portal, for the **Fun** app:
+1. **Installation**: tick *User Install* as well as *Guild Install*; members add the app from its install link to use it in other servers.
+2. In our server give the Fun bot **Manage Expressions**, plus **View Channels + Read Message History** on the channels to count.
+3. **Bot → Message Content Intent** on, or the usage scan only sees reactions.
+4. Set the `emoji_review` channel (Organization config) so new requests post a card with Approve and Reject buttons.
+
+Usage is a REST scan on the 10-minute cron (10 channels per run). The Worker has no Gateway: counting starts when the flag is on, and a reaction is seen only if it was there when the scan looked.
