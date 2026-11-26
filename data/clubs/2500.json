@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-26T00:20:41.078Z",
+ "fetchedAt": "2026-11-26T00:30:39.156Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -221,42 +221,6 @@
    "prevGoals7": "0",
    "prevGoals8": "0",
    "prevGoals9": "1",
-   "prevGoals10": "0",
-   "favoritePosition": "defender"
-  },
-  {
-   "name": "Jassan21",
-   "gamesPlayed": "3",
-   "winRate": "100",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "28",
-   "passSuccessRate": "90",
-   "ratingAve": "7.7",
-   "tacklesMade": "2",
-   "tackleSuccessRate": "66",
-   "proName": "J",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "183",
-   "proNationality": "18",
-   "proOverall": "82",
-   "proOverallStr": "82",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "defender"
   },
@@ -1269,42 +1233,6 @@
    "prevGoals10": "0"
   },
   {
-   "name": "Froezer",
-   "gamesPlayed": "0",
-   "favoritePosition": "",
-   "winRate": "0",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "0",
-   "passSuccessRate": "0",
-   "ratingAve": "0.0",
-   "tacklesMade": "0",
-   "tackleSuccessRate": "0",
-   "proName": "",
-   "proPos": "",
-   "proStyle": "",
-   "proHeight": "",
-   "proNationality": "",
-   "proOverall": "0",
-   "proOverallStr": "",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0"
-  },
-  {
    "name": "stramm-King0",
    "gamesPlayed": "0",
    "favoritePosition": "",
@@ -1777,7 +1705,7 @@
   "midfielder": 4,
   "goalkeeper": 3,
   "forward": 4,
-  "defender": 5
+  "defender": 4
  },
  "career": [
   {
@@ -1867,17 +1795,6 @@
    "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "Jassan21",
-   "proPos": "14",
-   "gamesPlayed": "10",
-   "goals": "11",
-   "assists": "15",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.4",
-   "prevGoals": "0",
-   "favoritePosition": "midfielder"
   },
   {
    "name": "R9finish",
@@ -2043,17 +1960,6 @@
    "ratingAve": "7.3",
    "prevGoals": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "Froezer",
-   "proPos": "25",
-   "gamesPlayed": "208",
-   "goals": "137",
-   "assists": "199",
-   "manOfTheMatch": "26",
-   "ratingAve": "8.2",
-   "prevGoals": "2",
-   "favoritePosition": "forward"
   },
   {
    "name": "stramm-King0",
@@ -2316,6 +2222,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-26T00:20:41.078Z"
+  "fetchedAt": "2026-11-26T00:30:39.156Z"
  }
 }
