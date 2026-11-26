@@ -1,0 +1,86 @@
+{
+ "slug": "fc27-title-update-v1-3-0",
+ "title": "EA SPORTS FC™ 27 | Title Update v1.3.0",
+ "url": "https://www.ea.com/games/ea-sports-fc/fc-27/news/fc27-title-update-v1-3-0",
+ "published": "2026-11-26T10:00:00.000Z",
+ "summary": "Find out the latest EA SPORTS FC™ 27 Update details in the Title Update v1.3.0 Notes.",
+ "clubs": true,
+ "sections": [
+  {
+   "id": "s0",
+   "title": "Overview",
+   "cat": "general",
+   "subs": [],
+   "summary": "EA SPORTS FC 27 version v1.3.0 is now live and includes the updates below.",
+   "keys": []
+  },
+  {
+   "id": "s1",
+   "title": "Gameplay",
+   "cat": "gameplay",
+   "subs": [],
+   "summary": "Made the following changes: Shorter players are not able to bump much taller opponents off the ball as easily as before. Well-timed challenges will remain effective when a taller player leaves the ball exposed. [PC, PS5, XBS X|S Only] Adjusted left-stick…",
+   "keys": []
+  },
+  {
+   "id": "s2",
+   "title": "Ultimate Team",
+   "cat": "fut",
+   "subs": [],
+   "summary": "Changes: Stay tuned for more info on further Ultimate Team updates kicking off in Season 3. Addressed the following issues: In certain situations, when entering a match in UT, only UI indicators could be seen on a black screen instead of the pitch.",
+   "keys": []
+  },
+  {
+   "id": "s3",
+   "title": "The Grounds",
+   "cat": "clubs",
+   "subs": [],
+   "summary": "Made the following changes: The Winter Theme will appear in The Grounds. This will be activated as part of a Chapter Update alongside the Title Update.",
+   "keys": [
+    "archetype",
+    "amps",
+    "rush"
+   ]
+  },
+  {
+   "id": "s4",
+   "title": "Career Mode",
+   "cat": "career",
+   "subs": [],
+   "summary": "Made the following changes: Balanced transfer interest thresholds in Manager Career to ensure signing players when managing lower-league clubs is more achievable while still maintaining transfer market authenticity. Added the wage column to the Contract…",
+   "keys": []
+  },
+  {
+   "id": "s5",
+   "title": "General, Audio, and Visual",
+   "cat": "general",
+   "subs": [],
+   "summary": "Made the following changes: Updated some kits, crests, overlays, hair, audio, commentary, cameras and camera angles, boots, headbands, stadiums, lighting, banners, flags, scarves, logos, text, gloves, player images, cinematics, tops & celebrations Addressed…",
+   "keys": []
+  }
+ ],
+ "hits": [
+  {
+   "id": "fc27-title-update-v1-3-0#3-archetype",
+   "kind": "archetype",
+   "label": "Archetypes",
+   "section": "The Grounds",
+   "quote": "When entering The Grounds, Archetype Level will be taken into consideration for The Grounds matchmaking."
+  },
+  {
+   "id": "fc27-title-update-v1-3-0#3-amps",
+   "kind": "amps",
+   "label": "Amps",
+   "section": "The Grounds",
+   "quote": "Amps will now impact Street Football 1v1, 2v2, 3v3 and in-world Rush matches."
+  },
+  {
+   "id": "fc27-title-update-v1-3-0#3-rush",
+   "kind": "rush",
+   "label": "Rush",
+   "section": "The Grounds",
+   "quote": "Amps will now impact Street Football 1v1, 2v2, 3v3 and in-world Rush matches."
+  }
+ ],
+ "fetched": "2026-11-26T15:02:09.177Z"
+}
