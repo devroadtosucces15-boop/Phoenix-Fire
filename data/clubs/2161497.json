@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-26T17:00:42.410Z",
+ "fetchedAt": "2026-11-26T17:10:42.418Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -742,17 +742,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "xEthxnH-_-",
-   "proPos": "25",
-   "gamesPlayed": "49",
-   "goals": "9",
-   "assists": "9",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.1",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "Cash711Money",
    "proPos": "25",
    "gamesPlayed": "4",
@@ -870,6 +859,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-26T17:00:42.410Z"
+  "fetchedAt": "2026-11-26T17:10:42.418Z"
  }
 }
