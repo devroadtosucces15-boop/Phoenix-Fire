@@ -11,7 +11,7 @@ on:
       game: { description: "which match (1 = latest)", required: false, default: "1" }
       extra: { description: "extra picture to draw (compare: names)", required: false }
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: read
