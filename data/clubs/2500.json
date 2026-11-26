@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-26T02:30:40.365Z",
+ "fetchedAt": "2026-11-26T02:40:51.233Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1854,12 +1854,12 @@
   {
    "name": "Ana Montana8022",
    "proPos": "25",
-   "gamesPlayed": "58",
-   "goals": "21",
-   "assists": "30",
+   "gamesPlayed": "59",
+   "goals": "23",
+   "assists": "34",
    "manOfTheMatch": "2",
-   "ratingAve": "7.1",
-   "prevGoals": "0",
+   "ratingAve": "7.2",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -1953,11 +1953,11 @@
   {
    "name": "iTry_Clutxh",
    "proPos": "5",
-   "gamesPlayed": "54",
+   "gamesPlayed": "55",
    "goals": "17",
    "assists": "13",
    "manOfTheMatch": "4",
-   "ratingAve": "7.3",
+   "ratingAve": "7.2",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
@@ -2222,6 +2222,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-26T02:30:40.365Z"
+  "fetchedAt": "2026-11-26T02:40:51.233Z"
  }
 }
