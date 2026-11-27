@@ -54,7 +54,7 @@ test('rollCallSvg renders matte-black + glowing gold + max-3 avatar overflow + >
   }));
   const svg = rollCallSvg({ formation: '3-5-2', slots, rsvps, avgOvr: 8.34, winForm: 74 });
   assert.ok(svg.includes('#0b0c0e'), 'matte black background');
-  assert.ok(svg.includes('wmBlur'), 'blurred icon watermark filter');
+  assert.ok(svg.includes('opacity="0.44"'), 'dimmed icon watermark inside circle');
   assert.ok(svg.includes('+2'), 'max-3 avatar overflow +2 circle for 5 LS players');
   assert.ok(svg.includes('+3 MORE SIGNED UP'), 'roster overflow bar for 15 players');
   assert.ok(!/norex/i.test(svg), 'zero NOREX branding');
