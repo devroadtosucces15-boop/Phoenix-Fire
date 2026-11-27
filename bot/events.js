@@ -217,7 +217,7 @@ function readEvent(body, existing) {
 const rsvpButtons = (env) => (flags(env).discordRsvp ?? 'off') !== 'off';
 // 4-Stage Pro Telemetry Roll Call post (/host & live refreshes) – timezone-neutral branding, external header + Squad Hub
 // accessory, Pro Telemetry vertical-pitch + roster PNG, 5-button Member Row + hairline divider + Manager Controls row.
-export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, mentions, who = false, faces = null, roster = null } = {}) {
+export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, mentions, who = false, faces = null, roster = null, banner = null } = {}) {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/'), unix = Math.floor(e.start / 1000);
   const formation = FORMATIONS[e.formation] ? e.formation : '3-5-2';
   const yes = rsvps.filter((r) => r.status === 'yes'), names = (st) => rsvps.filter((r) => r.status === st).map((r) => r.name);
@@ -226,26 +226,29 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const list = (arr) => (arr.length ? `${arr.slice(0, 25).join(', ')}${arr.length > 25 ? ' …' : ''}` : '–');
   const titleLine = `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : locked ? '🔒 SIGN-UPS CLOSED · ' : ''}${heading}${label(e)} · ${formation}`.slice(0, 200);
   const hubBtn = { type: 2, style: 5, label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` };
-  const headText = `-# ${orgName(env).toUpperCase()} · MATCHDAY\n## ${titleLine}\n-# <t:${unix}:F> · <t:${unix}:R> · Unlimited`;
+  const headText = banner
+    ? `-# 🕒 <t:${unix}:F> · <t:${unix}:R> · Unlimited`
+    : `-# ${orgName(env).toUpperCase()} · MATCHDAY\n## ${titleLine}\n-# <t:${unix}:F> · <t:${unix}:R> · Unlimited`;
   const hasButtons = rsvpButtons(env) && e.id != null;
   const icApp = env?.BOT_APP || (env?.DISCORD_BOT_TOKEN_MATCHDAY ? 'matchday' : 'core');
   const memberRow = hasButtons ? buttons([
     { label: 'In', style: 'ok', id: `pf:h:${e.id}:in`, emoji: ic('btn_in', icApp), disabled: done },
     { label: '', style: 'grey', id: `pf:h:${e.id}:maybe`, emoji: ic('btn_maybe', icApp), disabled: done },
-    { label: 'Out', style: 'no', id: `pf:h:${e.id}:no`, emoji: ic('btn_out', icApp), disabled: done },
+    { label: '', style: 'no', id: `pf:h:${e.id}:no`, emoji: ic('btn_out', icApp), disabled: done },
     { label: 'XI', style: 'brand', id: `pf:h:${e.id}:xi`, emoji: ic('btn_xi', icApp) },
-    { label: 'List', style: 'grey', id: `pf:h:${e.id}:roster`, emoji: ic('btn_roster', icApp) },
+    { label: '', style: 'grey', id: `pf:h:${e.id}:roster`, emoji: ic('btn_roster', icApp) },
   ]) : buttons([{ label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` }]);
   const managerRow = hasButtons ? buttons([
-    { label: locked ? 'Dugout' : 'Close', style: 'grey', id: `pf:h:${e.id}:close`, emoji: ic('btn_lineup', icApp), disabled: cancelled },
+    { label: locked ? 'Hub' : 'Lock', style: 'grey', id: `pf:h:${e.id}:close`, emoji: ic('btn_lineup', icApp), disabled: cancelled },
     { label: 'Edit', style: 'grey', id: `pf:h:${e.id}:override`, emoji: ic('btn_override', icApp), disabled: cancelled },
     { label: 'Time', style: 'grey', id: `pf:h:${e.id}:resched`, emoji: ic('btn_resched', icApp), disabled: cancelled },
-    { label: 'Cancel', style: 'no', id: `pf:h:${e.id}:cancel`, emoji: ic('btn_cancel', icApp), disabled: cancelled },
+    { label: 'End', style: 'no', id: `pf:h:${e.id}:cancel`, emoji: ic('btn_cancel', icApp), disabled: cancelled },
   ]) : null;
   return message({ ping, mentions, accent: cancelled ? 'steel' : locked ? 'loss' : 0xf59e0b, blocks: [
+    banner,
     side(headText, hubBtn),
     cancelled && (e.cancelReason ?? e.cancel_reason) ? text(`**Why** ${String(e.cancelReason ?? e.cancel_reason).slice(0, 300)}`) : null,
-    e.notes ? text(`📝 ${String(e.notes).slice(0, 1500)}`) : null,
+    !banner && e.notes ? text(`📝 ${String(e.notes).slice(0, 1500)}`) : null,
     roster ?? cards(bannerUrl(env, cancelled ? 'eventcancelled' : 'matchnight')),
     !roster ? facts([['Answers', `✅ ${yes.length} · ❔ ${names('maybe').length} · ❌ ${names('no').length}`]]) : null,
     !roster && faces ? yes.slice(0, FACE_ROWS).map((r) => side(`\`${String(rsvps.indexOf(r) + 1).padStart(2)}\` ✅ **${r.name}**${posOf(r) ? ` · ${posOf(r)}` : ''}`, thumb(faces.get(String(r.user_id))))) : null,
@@ -259,20 +262,28 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
 }
 // Six rows of faces keeps the post under Discord's 40-component limit with room for the buttons and /schedule's 2nd panel.
 const FACE_ROWS = 6;
-// eventMessage plus Pro Telemetry Roll Call PNG (falls back cleanly to rosterBlock / text when Images binding is off).
+// eventMessage plus separate Gold Crest Header Banner PNG + Pro Telemetry Roll Call PNG.
 export async function eventPost(env, e, rsvps = [], heading = '', opts = {}) {
   const formation = FORMATIONS[e.formation] ? e.formation : '3-5-2';
   const slots = normalizeFormationSlots(FORMATIONS[formation]);
   const enriched = rsvps.map((r) => ({ ...r, prefs: parsePref(r.pref_pos) }));
   const yesIds = rsvps.filter((r) => r.status === 'yes').map((r) => r.user_id);
   const solved = solveSuggestedXI(slots, enriched);
-  const drawn = await drawHostGraphic(env, 'rollcall', e.id, {
-    org: orgName(env), title: label(e), formation, slots, rsvps: enriched, closed: !!e.signup_closed_at, avgOvr: solved.avgOvr,
-  }, yesIds);
+  const [drawnBanner, drawn] = await Promise.all([
+    drawHostGraphic(env, 'banner', e.id, {
+      org: orgName(env), title: `${heading}${label(e)}`, formation, notes: e.notes || '',
+      stageLabel: e.status === 'cancelled' ? 'CANCELLED' : e.signup_closed_at ? 'SIGN-UPS CLOSED' : 'ROLL CALL',
+      stageColor: e.status === 'cancelled' || e.signup_closed_at ? '#f87171' : '#fbbf24',
+    }),
+    drawHostGraphic(env, 'rollcall', e.id, {
+      org: orgName(env), title: label(e), formation, slots, rsvps: enriched, closed: !!e.signup_closed_at, avgOvr: solved.avgOvr,
+    }, yesIds),
+  ]);
+  const banner = drawnBanner.url ? cards({ url: drawnBanner.url, alt: `${orgName(env)} · ${label(e)} · ${formation}` }) : null;
   const roster = drawn.url
     ? cards({ url: drawn.url, alt: `${label(e)} · ${formation} Roll Call (${yesIds.length} in)` })
     : await rosterBlock(env, e.id, rsvps, () => checkinsOf(env, e.id), { posOf: (r) => parsePref(r.pref_pos)[0] ?? '', title: 'Squad Roll Call', sub: label(e) });
-  return eventMessage(env, e, rsvps, heading, { ...opts, roster, faces: roster ? null : await facesOf(env, yesIds.slice(0, FACE_ROWS)) });
+  return eventMessage(env, e, rsvps, heading, { ...opts, banner, roster, faces: roster ? null : await facesOf(env, yesIds.slice(0, FACE_ROWS)) });
 }
 const checkinsOf = (env, id) => all(env, 'SELECT * FROM event_checkins WHERE event_id = ? ORDER BY at', id);
 // Everyone's answer, ordered by fair signed_in_at priority (falls back to first_at / at for pre-0082 rows).

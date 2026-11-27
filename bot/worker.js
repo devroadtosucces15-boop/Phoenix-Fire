@@ -116,7 +116,7 @@ export default {
     job('updateLive', () => updateLive(env).catch((e) => console.log('live check failed', e.message))); // P1.3 live banner
     job('checkUptime', () => checkUptime(env).catch((e) => console.log('uptime monitor failed', e.message))); // P11.2 24/7 monitor
     job('checkProfanity', () => checkProfanity(env).then(() => cleanBonus(env)).catch((e) => console.log('profanity check failed', e.message))); // P11.4
-    job('hostTelemetrySync', () => once(env, 'host-pro-telemetry-v7').then((go) => go ? refreshActiveEventPosts(env) : null).catch((e) => console.log('host sync failed', e.message)));
+    job('hostTelemetrySync', () => once(env, 'host-pro-telemetry-v8').then((go) => go ? refreshActiveEventPosts(env) : null).catch((e) => console.log('host sync failed', e.message)));
     job('eventReminders', () => eventReminders(env).then(() => closeDue(env)).then(() => hotwDue(env)).then(() => scoreDue(env)).then(() => notifyCron(env)).catch((e) => console.log('notify cron failed', e.message))); // P3.3 event reminders, P4.1 awards, P6.2 highlight of the week, P3.8 predictions, then P7.1 DMs + reminders
     job('mediaCron', () => mediaCron(env).catch((e) => console.log('media guard failed', e.message))); // P6.1b R2 storage guard (hourly)
     const site = (env.SITE_URL || '').replace(/\/?$/, '/');

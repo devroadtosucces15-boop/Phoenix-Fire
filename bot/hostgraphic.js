@@ -11,42 +11,44 @@
 import { facesOf } from './faces.js';
 import { crestData, imageData, sha } from './rosterpic.js';
 
-const W = 1040, BRAND_H = 66, BAR_H = 54, H = 786, FACE_BYTES = 200e3;
+const W = 1040, H = 720, BANNER_H = 128, FACE_BYTES = 200e3;
 const FONT = "Oswald, 'Segoe UI', Arial, Helvetica, sans-serif";
 
-function brandBannerSvg({ org = 'PHOENIX FIRE', title = 'LEAGUE SESSION', formation = '3-5-2', stageLabel = 'ROLL CALL', stageColor = '#fbbf24', crest = null }) {
+// Standalone Top Header Banner SVG (1040×128): circular gold-ringed crest on left,
+// PHOENIX FIRE · MATCHDAY gold pill + trophy + League Session + notes aligned on the right.
+export function headerBannerSvg({ org = 'PHOENIX FIRE', title = 'League session', formation = '3-5-2', notes = '', stageLabel = 'ROLL CALL', stageColor = '#fbbf24', crest = null } = {}) {
   const orgTxt = `${plain(org, 22).toUpperCase()} · MATCHDAY`;
   const titleTxt = `${plain(title, 26).toUpperCase()} · ${formation}`;
-  const pillW = Math.max(150, orgTxt.length * 8.2 + 24);
-  const stageW = Math.max(138, stageLabel.length * 9.2 + 28);
-  let d = `<linearGradient id="pfBrandBg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3a2705"/><stop offset="45%" stop-color="#191610"/><stop offset="100%" stop-color="#2c1e06"/></linearGradient>`;
-  d += `<linearGradient id="pfGoldBar" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#fde68a"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient>`;
-  d += `<clipPath id="pfCrestClip"><circle cx="44" cy="34" r="21"/></clipPath>`;
-  let b = `<rect x="0" y="0" width="${W}" height="${BRAND_H}" fill="url(#pfBrandBg)"/>`;
-  b += `<rect x="0" y="0" width="${W}" height="4" fill="url(#pfGoldBar)"/>`;
-  b += `<line x1="0" y1="${BRAND_H}" x2="${W}" y2="${BRAND_H}" stroke="#fbbf24" stroke-opacity="0.75" stroke-width="1.8"/>`;
-  // Gold circular crest emblem
-  b += `<circle cx="44" cy="34" r="24" fill="#120e07" stroke="#fbbf24" stroke-width="2.4"/>`;
-  b += `<circle cx="44" cy="34" r="21" fill="#1f1709" stroke="#fde68a" stroke-opacity="0.45" stroke-width="1"/>`;
+  const noteTxt = notes ? plain(notes, 54).toUpperCase() : 'UNLIMITED SIGN-UPS · PRO TELEMETRY';
+  const pillW = Math.max(158, orgTxt.length * 8.4 + 26);
+  const stageW = Math.max(146, stageLabel.length * 9.6 + 32);
+  let defs = `<linearGradient id="pfBanBg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3a2604"/><stop offset="42%" stop-color="#17140e"/><stop offset="100%" stop-color="#2b1d05"/></linearGradient>`;
+  defs += `<linearGradient id="pfBanGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#fde68a"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient>`;
+  defs += `<clipPath id="pfBanCrest"><circle cx="68" cy="64" r="39"/></clipPath>`;
+  let body = `<rect width="${W}" height="${BANNER_H}" rx="16" fill="url(#pfBanBg)"/>`;
+  body += `<rect x="0" y="0" width="${W}" height="5" fill="url(#pfBanGold)"/>`;
+  // Circular gold-ringed crest on the left
+  body += `<circle cx="68" cy="64" r="44" fill="#120d06" stroke="#fbbf24" stroke-width="3.2"/>`;
+  body += `<circle cx="68" cy="64" r="39.5" fill="#1e1609" stroke="#fde68a" stroke-opacity="0.55" stroke-width="1.2"/>`;
   if (crest) {
-    b += `<image href="${crest}" x="23" y="13" width="42" height="42" preserveAspectRatio="xMidYMid slice" clip-path="url(#pfCrestClip)"/>`;
+    body += `<image href="${crest}" x="29" y="25" width="78" height="78" preserveAspectRatio="xMidYMid slice" clip-path="url(#pfBanCrest)"/>`;
   } else {
-    b += `<text x="44" y="40" font-size="16" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">PF</text>`;
+    body += `<text x="68" y="74" font-size="28" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">PF</text>`;
   }
-  // Gold eyebrow banner pill: PHOENIX FIRE · MATCHDAY
-  b += `<rect x="80" y="9" width="${pillW}" height="20" rx="5" fill="#f59e0b" fill-opacity="0.18" stroke="#fbbf24" stroke-opacity="0.7" stroke-width="1"/>`;
-  b += `<text x="92" y="23" font-size="11.5" font-weight="800" letter-spacing="1.2" fill="#fde68a" font-family="${FONT}">${esc(orgTxt)}</text>`;
-  // Crisp vector Gold Trophy icon + League Session title
-  b += `<g transform="translate(80,35) scale(0.95)">
+  // Right of crest: yellow PHOENIX FIRE · MATCHDAY pill + trophy + League session + notes
+  body += `<rect x="132" y="18" width="${pillW}" height="24" rx="6" fill="#f59e0b" fill-opacity="0.2" stroke="#fbbf24" stroke-opacity="0.8" stroke-width="1.2"/>`;
+  body += `<text x="145" y="34.5" font-size="13" font-weight="800" letter-spacing="1.4" fill="#fde68a" font-family="${FONT}">${esc(orgTxt)}</text>`;
+  body += `<g transform="translate(132,50) scale(1.25)">
     <path d="M4 2h12v5a6 6 0 0 1-12 0V2z" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
     <path d="M4 4H1.5a2 2 0 0 0 0 4H4M16 4h2.5a2 2 0 0 1 0 4H16" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
     <path d="M10 13v4M6.5 17h7" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
   </g>`;
-  b += `<text x="106" y="54" font-size="22" font-weight="800" fill="#ffffff" font-family="${FONT}">${esc(titleTxt)}</text>`;
-  // Stage badge on right
-  b += `<rect x="${W - stageW - 18}" y="17" width="${stageW}" height="32" rx="8" fill="#14110a" stroke="${stageColor}" stroke-width="1.8"/>`;
-  b += `<text x="${W - stageW / 2 - 18}" y="38.5" font-size="14" font-weight="800" text-anchor="middle" letter-spacing="1" fill="${stageColor}" font-family="${FONT}">${esc(stageLabel)}</text>`;
-  return { defs: d, body: b };
+  body += `<text x="166" y="75" font-size="30" font-weight="800" fill="#ffffff" font-family="${FONT}">${esc(titleTxt)}</text>`;
+  body += `<text x="134" y="106" font-size="15" font-weight="700" letter-spacing="0.8" fill="#d4d4d8" font-family="${FONT}">${esc(noteTxt)}</text>`;
+  // Stage badge on far right
+  body += `<rect x="${W - stageW - 24}" y="42" width="${stageW}" height="44" rx="10" fill="#141008" stroke="${stageColor}" stroke-width="2.2"/>`;
+  body += `<text x="${W - stageW / 2 - 24}" y="70" font-size="17" font-weight="800" text-anchor="middle" letter-spacing="1.2" fill="${stageColor}" font-family="${FONT}">${esc(stageLabel)}</text>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${BANNER_H}" viewBox="0 0 ${W} ${BANNER_H}"><defs>${defs}</defs>${body}<rect x="2" y="2" width="${W - 4}" height="${BANNER_H - 4}" rx="15" fill="none" stroke="#fbbf24" stroke-width="3.5"/></svg>`;
 }
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const plain = (s, max = 16) => (String(s ?? '').replace(/[^\p{L}\p{N}\p{M} ._\-'|]/gu, '').replace(/\s+/g, ' ').trim() || '?').slice(0, max);
@@ -238,24 +240,16 @@ export function rollCallSvg(model, faces = new Map()) {
   mappedYes.sort((a, b) => (order[a.prim] ?? 99) - (order[b.prim] ?? 99) || (a.signed_in_at ?? a.at ?? 0) - (b.signed_in_at ?? b.at ?? 0));
   const covered = slots.filter((s) => (bySlot[s.id]?.primary.length ?? 0) > 0).length;
 
-  const banH = BRAND_H + BAR_H, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
+  const banH = 58, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
   const rx = pw, rw = W - pw;
-  const brand = brandBannerSvg({
-    org: model.org,
-    title: model.title || 'League session',
-    formation,
-    stageLabel: closed ? 'SIGN-UPS CLOSED' : 'ROLL CALL',
-    stageColor: closed ? '#f87171' : '#fbbf24',
-    crest: model.crest ?? null,
-  });
-  let defs = brand.defs;
-  let body = brand.body;
+  let defs = '';
+  let body = '';
   let clipN = 0;
 
-  // Telemetry Sub-Bar: ATT/MID/DEF/GK chips left + glowing gold counter + formation + X/11 FILLED right
-  const barY = BRAND_H;
-  body += `<rect x="0" y="${barY}" width="${W}" height="${BAR_H}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#f59e0b" stroke-opacity="0.6" stroke-width="1.5"/>`;
+  // Telemetry Top Bar: ATT/MID/DEF/GK chips left + glowing gold symbol counter + formation + X/11 FILLED right
+  const barY = 0;
+  body += `<rect x="0" y="0" width="${W}" height="${banH}" fill="#14161b"/>`;
+  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#fbbf24" stroke-opacity="0.65" stroke-width="1.6"/>`;
   const chips = [
     ['ATT', lineCnt.att, '#ef4444'],
     ['MID', lineCnt.mid, '#a855f7'],
@@ -371,11 +365,18 @@ export function rollCallSvg(model, faces = new Map()) {
     body += `<circle cx="${rx + 26}" cy="${ry + 16.5}" r="4" fill="${st.ring}"/>`;
     body += `<text x="${rx + 38}" y="${ry + 21.5}" font-size="15" font-weight="700" fill="#f3f4f6" font-family="${FONT}">${esc(plain(p.name, 14))}</text>`;
 
-    // 5-match W/D/L form dots
+    // Per-player Average Rating pill + rating-colored 5-match dots (green >=8.0, amber 7.0-7.9, red <7.0)
+    const avgVal = typeof p.avg === 'number' && p.avg > 0 ? p.avg : null;
+    if (avgVal != null) {
+      const ac = avgVal >= 8.0 ? '#4ade80' : avgVal >= 7.0 ? '#fbbf24' : '#f87171';
+      body += `<rect x="${rx + 152}" y="${ry + 6.5}" width="38" height="20" rx="5" fill="${ac}" fill-opacity="0.16" stroke="${ac}" stroke-opacity="0.6" stroke-width="1"/>`;
+      body += `<text x="${rx + 171}" y="${ry + 20.5}" font-size="12" font-weight="800" text-anchor="middle" fill="${ac}" font-family="${FONT}">${avgVal.toFixed(1)}</text>`;
+    }
     const form = Array.isArray(p.form) ? p.form.slice(-5) : [];
+    const dotX0 = avgVal != null ? rx + 198 : rx + 174;
     form.forEach((f, fi) => {
-      const fc = f === 'W' ? '#4ade80' : f === 'D' ? '#fbbf24' : '#f87171';
-      body += `<circle cx="${rx + 178 + fi * 10}" cy="${ry + 16.5}" r="3.2" fill="${fc}"/>`;
+      const fc = f === 'W' || f === 'G' ? '#4ade80' : f === 'D' || f === 'Y' ? '#fbbf24' : '#f87171';
+      body += `<circle cx="${dotX0 + fi * 9}" cy="${ry + 16.5}" r="3.1" fill="${fc}"/>`;
     });
 
     // Primary badge (with custom position icon) + Flex pills right-aligned
@@ -430,19 +431,10 @@ export function lineupStageSvg(model, faces = new Map()) {
   const isCall = mode === 'call';
   const isFinal = mode === 'final';
   const showChem = isFinal || mode === 'suggested';
-  const banH = BRAND_H + BAR_H, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
+  const banH = 58, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
   const rx = pw, rw = W - pw;
-  const stageTitle = isCheckin ? 'LOBBY CHECK-IN' : isCall ? 'PROVISIONAL XI' : mode === 'suggested' ? 'SUGGESTED XI' : 'OFFICIAL FINAL XI';
-  const brand = brandBannerSvg({
-    org: model.org,
-    title: model.title || 'League session',
-    formation,
-    stageLabel: stageTitle,
-    stageColor: isFinal ? '#4ade80' : '#fbbf24',
-    crest: model.crest ?? null,
-  });
-  let defs = brand.defs;
-  let body = brand.body;
+  let defs = '';
+  let body = '';
   let clipN = 0;
 
   const starters = slots.map((s) => ({ s, pick: assigned[s.id] })).filter((x) => x.pick);
@@ -451,10 +443,10 @@ export function lineupStageSvg(model, faces = new Map()) {
   const lateCnt = starters.filter((x) => stOf(x.pick.p.id) === 'late').length;
   const waitCnt = starters.length - readyCnt - lateCnt;
 
-  // Telemetry Sub-Bar
-  const barY = BRAND_H;
-  body += `<rect x="0" y="${barY}" width="${W}" height="${BAR_H}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#f59e0b" stroke-opacity="0.6" stroke-width="1.5"/>`;
+  // Telemetry Top Bar
+  const barY = 0;
+  body += `<rect x="0" y="0" width="${W}" height="${banH}" fill="#14161b"/>`;
+  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#fbbf24" stroke-opacity="0.65" stroke-width="1.6"/>`;
   if (isCheckin) {
     body += `<rect x="18" y="${barY + 13}" width="128" height="28" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#22c55e" stroke-width="1.2"/><text x="82" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">${readyCnt} IN LOBBY</text>`;
     body += `<rect x="156" y="${barY + 13}" width="96" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="204" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${lateCnt} LATE</text>`;
@@ -623,20 +615,27 @@ async function enrichRollCallForm(env, model) {
   const byKey = new Map();
   const byName = new Map();
   for (const m of matches) {
-    if (!['W', 'D', 'L'].includes(m.res) || !Array.isArray(m.ps)) continue;
+    if (!Array.isArray(m.ps)) continue;
     for (const p of m.ps) {
+      const rt = typeof p.r === 'number' && p.r > 0 ? p.r : null;
+      if (rt == null) continue;
       const k = String(p.k ?? '');
       const n = String(p.n ?? '').toLowerCase();
-      if (k) { const a = byKey.get(k) ?? []; if (a.length < 5) { a.push(m.res); byKey.set(k, a); } }
-      if (n) { const a = byName.get(n) ?? []; if (a.length < 5) { a.push(m.res); byName.set(n, a); } }
+      if (k) { const a = byKey.get(k) ?? []; if (a.length < 15) { a.push(rt); byKey.set(k, a); } }
+      if (n) { const a = byName.get(n) ?? []; if (a.length < 15) { a.push(rt); byName.set(n, a); } }
     }
   }
+  const toDots = (arr) => arr.slice(0, 5).map((rt) => (rt >= 8.0 ? 'G' : rt >= 7.0 ? 'Y' : 'R'));
   const rsvps = model.rsvps.map((r) => {
     const uid = String(r.user_id ?? r.id ?? '');
     const ck = claimMap.get(uid);
     const nm = String(r.name ?? '').toLowerCase();
-    const form = (ck && byKey.get(ck)) || byName.get(nm) || clubForm;
-    return { ...r, form };
+    const ratings = (ck && byKey.get(ck)) || byName.get(nm) || null;
+    if (ratings && ratings.length) {
+      const avg = Math.round((ratings.reduce((a, b) => a + b, 0) / ratings.length) * 10) / 10;
+      return { ...r, avg, form: toDots(ratings) };
+    }
+    return { ...r, avg: null, form: clubForm };
   });
   const winForm = model.winForm ?? (clubForm.length ? Math.round((clubForm.filter((x) => x === 'W').length / clubForm.length) * 100) : null);
   return { ...model, rsvps, winForm };
@@ -651,20 +650,20 @@ export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
     if (!base) return { error: 'PUBLIC_URL is not set.' };
     const ids = [...new Set(userIds.map(String))].slice(0, 24);
     const [faceUrls, crest, enrichedModel] = await Promise.all([
-      ids.length ? facesOf(env, ids) : Promise.resolve(new Map()),
-      crestData(env),
+      kind === 'banner' ? Promise.resolve(new Map()) : (ids.length ? facesOf(env, ids) : Promise.resolve(new Map())),
+      kind === 'banner' ? crestData(env) : Promise.resolve(null),
       kind === 'rollcall' ? enrichRollCallForm(env, model) : Promise.resolve(model),
     ]);
-    const hash = await sha(JSON.stringify(['v6', kind, enrichedModel, !!crest, ids.map((id) => faceUrls.get(id))]));
+    const hash = await sha(JSON.stringify(['v8', kind, enrichedModel, !!crest, ids.map((id) => faceUrls.get(id))]));
     const key = `ht/${eventId}-${kind}-${hash}.png`;
     if (env.MEDIA) {
       if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };
     } else if (await kv.get(`media:${key}`, 'arrayBuffer')) {
       return { url: `${base}/media/${key}`, key, cached: true };
     }
-    const faces = new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
+    const faces = kind === 'banner' ? new Map() : new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
     const fullModel = { ...enrichedModel, crest };
-    const svg = kind === 'rollcall' ? rollCallSvg(fullModel, faces) : lineupStageSvg(fullModel, faces);
+    const svg = kind === 'banner' ? headerBannerSvg(fullModel) : kind === 'rollcall' ? rollCallSvg(fullModel, faces) : lineupStageSvg(fullModel, faces);
     const { svgToPng } = await import('./svgpng.js');
     const png = await svgToPng(svg);
     if (!png || png.byteLength < 2000) return { error: 'Empty PNG returned.' };
