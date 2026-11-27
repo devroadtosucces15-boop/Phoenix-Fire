@@ -39,12 +39,13 @@ import { phaseOf, checkinOpen, inLineup, canPostLineup, hasLineupPosted, lineupO
 
 import { cleanPref, parsePref, savePref, prefTags } from './prefpos.js';
 import { rosterBlock, rosterOn, rosterModel, drawRoster } from './rosterpic.js';
+import { normalizeFormationSlots, solveSuggestedXI, drawHostGraphic } from './hostgraphic.js';
 const REMIND = ['dm', 'mention', 'off'];
 
 const MIN = 60e3, HOUR = 3600e3, DAY = 86400e3;
 // 3rd element (BE11) is a per-type calendar colour, on-theme with the crest red.
 export const EVENT_TYPES = {
-  league: ['🏆', 'League night', '#e8651a'], rush: ['⚡', 'Rush session', '#e08a1e'], playoffs: ['🥇', 'Playoffs', '#caa63b'],
+  league: ['🏆', 'League session', '#e8651a'], rush: ['⚡', 'Rush session', '#e08a1e'], playoffs: ['🥇', 'Playoffs', '#caa63b'],
   friendly: ['🤝', 'Friendly', '#3f8f5f'], trial: ['🧭', 'Trial session', '#3a7bd5'], training: ['🎯', 'Training', '#7a5fc9'],
 };
 const STATUSES = ['yes', 'maybe', 'no'];
@@ -207,65 +208,73 @@ function readEvent(body, existing) {
   }
   const start = zonedToUtc(body.date, body.time, tz);
   const remind = REMIND.includes(body.remind) ? body.remind : existing?.remind ?? 'dm';
-  return { e: { type, tz, duration, start, needs, remind, title: clean(body.title, 80) || null, notes: cleanText(body.notes, 1000) || null, public: body.public ? 1 : 0 } };
+  const formation = body.formation && FORMATIONS[body.formation] ? String(body.formation) : (existing?.formation && FORMATIONS[existing.formation] ? existing.formation : '3-5-2');
+  return { e: { type, tz, duration, start, needs, remind, formation, title: clean(body.title, 80) || null, notes: cleanText(body.notes, 1000) || null, public: body.public ? 1 : 0 } };
 }
 // P3.3 buttons + reminders ship behind the `discordRsvp` flag (the Discord post is shared, so any level but off shows the
 // buttons; eventButton then checks who may press them).
 const rsvpButtons = (env) => (flags(env).discordRsvp ?? 'off') !== 'off';
-// Discord message for an event: embed with a live timestamp, answers so far, positions still missing + ✅ ❔ ❌ buttons (P3.3).
-// The match-night post (design system, bot/ui.js) – shared by /schedule, /nextevent, /availability, the post a manager
-// sends from the Squad Hub, its live refresh and the 24 h / 2 h reminders. opts: ping (line above the panel), mentions,
-// who (list everyone's answer, for /availability).
+// 4-Stage Pro Telemetry Roll Call post (/host & live refreshes) – timezone-neutral branding, external header + Squad Hub
+// accessory, Pro Telemetry vertical-pitch + roster PNG, 5-button Member Row + hairline divider + Manager Controls row.
 export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, mentions, who = false, faces = null, roster = null } = {}) {
   const site = String(env.SITE_URL || '').replace(/\/?$/, '/'), unix = Math.floor(e.start / 1000);
-  const needs = typeof e.needs === 'string' ? parse(e.needs, {}) : e.needs ?? {};
+  const formation = FORMATIONS[e.formation] ? e.formation : '3-5-2';
   const yes = rsvps.filter((r) => r.status === 'yes'), names = (st) => rsvps.filter((r) => r.status === st).map((r) => r.name);
-  const posOf = (r) => parse(e.type === 'rush' ? r.rush_positions : r.positions, [])[0] ?? '';
-  const missing = Object.entries(needs).filter(([k]) => k !== 'players').map(([k, v]) => [k, v - yes.filter((r) => parse(e.type === 'rush' ? r.rush_positions : r.positions, [])[0] === k).length]).filter(([, left]) => left > 0);
-  const short = needs.players && yes.length < needs.players ? needs.players - yes.length : 0;
-  const cancelled = e.status === 'cancelled', done = cancelled || e.start + e.duration * MIN < Date.now();
-  const length = e.duration >= 60 ? `${Math.floor(e.duration / 60)} h${e.duration % 60 ? ` ${e.duration % 60} min` : ''}` : `${e.duration} min`;
-  // CR: what the player asked to play (small `ST` `CAM` boxes right after the name); with no ask, the usual position from the profile
-  const tagsOf = (r) => prefTags(parsePref(r.pref_pos)) || (posOf(r) ? `\`${posOf(r)}\`` : '');
-  const label2 = (r) => `${r.name}${tagsOf(r) ? ` ${tagsOf(r)}` : ''}`;
+  const posOf = (r) => parsePref(r.pref_pos)[0] ?? parse(e.type === 'rush' ? r.rush_positions : r.positions, [])[0] ?? '';
+  const cancelled = e.status === 'cancelled', locked = !!e.signup_closed_at, done = cancelled || locked;
   const list = (arr) => (arr.length ? `${arr.slice(0, 25).join(', ')}${arr.length > 25 ? ' …' : ''}` : '–');
-  const still = [short && `${short} more player${short > 1 ? 's' : ''}`, ...missing.map(([k, left]) => `${left} ${k}`)].filter(Boolean).join(' · ');
-  return message({ ping, mentions, accent: cancelled ? 'steel' : 'red', blocks: [
-    cards(bannerUrl(env, cancelled ? 'eventcancelled' : 'matchnight')),
-    // CR-07: the match-day layout of the owner's other bot – eyebrow, title, time, a facts row, then In / Maybe / Out and what is still needed.
-    header({ eyebrow: `${orgName(env).toUpperCase()} · Match day · ${EVENT_TYPES[e.type][1] ?? EVENT_TYPES[e.type][0]}`, title: `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : ''}${heading}${label(e)}`.slice(0, 200), sub: `<t:${unix}:F> · <t:${unix}:R>` }),
+  const titleLine = `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : locked ? '🔒 SIGN-UPS CLOSED · ' : ''}${heading}${label(e)} · ${formation}`.slice(0, 200);
+  const hubBtn = { type: 2, style: 5, label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` };
+  const headText = `-# ${orgName(env).toUpperCase()} · MATCHDAY\n## ${titleLine}\n-# <t:${unix}:F> · <t:${unix}:R> · Unlimited`;
+  const hasButtons = rsvpButtons(env) && e.id != null;
+  const memberRow = hasButtons ? buttons([
+    { label: 'I’m In ›', style: 'ok', id: `pf:h:${e.id}:in`, disabled: done },
+    { label: 'Maybe', style: 'grey', id: `pf:h:${e.id}:maybe`, disabled: done },
+    { label: 'Out', style: 'no', id: `pf:h:${e.id}:no`, disabled: done },
+    { label: 'Suggested XI ✦', style: 'brand', id: `pf:h:${e.id}:xi` },
+    { label: 'Roster ›', style: 'grey', id: `pf:h:${e.id}:roster` },
+  ]) : buttons([{ label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` }]);
+  const managerRow = hasButtons ? buttons([
+    { label: locked ? 'Dugout ›' : 'Close & Lineup ›', style: 'grey', id: `pf:h:${e.id}:close`, disabled: cancelled },
+    { label: 'Override ›', style: 'grey', id: `pf:h:${e.id}:override`, disabled: cancelled },
+    { label: 'Reschedule ›', style: 'grey', id: `pf:h:${e.id}:resched`, disabled: cancelled },
+    { label: 'Cancel', style: 'no', id: `pf:h:${e.id}:cancel`, disabled: cancelled },
+  ]) : null;
+  return message({ ping, mentions, accent: cancelled ? 'steel' : locked ? 'loss' : 'gold', blocks: [
+    side(headText, hubBtn),
     cancelled && (e.cancelReason ?? e.cancel_reason) ? text(`**Why** ${String(e.cancelReason ?? e.cancel_reason).slice(0, 300)}`) : null,
-    facts([['👥 Players', `${yes.length}${needs.players ? `/${needs.players}` : ''}`], ['⏱️ Length', length], ['📝 Notes', e.notes ? String(e.notes).slice(0, 300) : null]]),
-    sep(),
-    text(`**✅ In (${yes.length})**`),
-    // who's in: one row each with their face on the right (card if shipped, else Discord picture – bot/faces.js)
-    roster,   // the drawn roster (bot/rosterpic.js) stands in for the face rows and the name list
-    !roster && faces ? yes.slice(0, FACE_ROWS).map((r) => side(`\`${String(rsvps.indexOf(r) + 1).padStart(2)}\` ✅ **${r.name}**${tagsOf(r) ? `\n${tagsOf(r)}` : ''}`, thumb(faces.get(String(r.user_id))))) : null,
-    roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(yes.slice(FACE_ROWS).map(label2))}`) : !faces && yes.length ? text(list(rsvps.filter((r) => r.status === 'yes').map(label2))) : null,
-    !roster && !yes.length ? text('_nobody yet_') : null,
-    who || names('maybe').length ? text(`**❔ Maybe (${names('maybe').length})**\n${list(rsvps.filter((r) => r.status === 'maybe').map(label2))}`) : null,
-    who || names('no').length ? text(`**❌ Out (${names('no').length})**\n${list(names('no'))}`) : null,
-    still ? text(`⚠️ **Still needed:** ${still}`) : needs.players && yes.length >= needs.players && !cancelled ? text('✅ **Full squad.**') : null,
-    !cancelled && !done && timelineLine(e) ? text(timelineLine(e)) : null,
-    footer(done ? 'This event is closed' : 'Tap a button to answer · only you see the confirmation'),
-    buttons([
-      ...(done || !rsvpButtons(env) ? [] : [['yes', '✅', 'I’m in', 'ok'], ['maybe', '❔', 'Maybe', 'grey'], ['no', '❌', 'Can’t make it', 'no']].map(([st, emoji, lbl, style]) => ({ label: lbl, emoji, style, id: `norex:ev:${e.id}:${st}` }))),
-      { label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` },
-    ]),
+    e.notes ? text(`📝 ${String(e.notes).slice(0, 1500)}`) : null,
+    roster ?? cards(bannerUrl(env, cancelled ? 'eventcancelled' : 'matchnight')),
+    !roster ? facts([['Answers', `✅ ${yes.length} · ❔ ${names('maybe').length} · ❌ ${names('no').length}`]]) : null,
+    !roster && faces ? yes.slice(0, FACE_ROWS).map((r) => side(`\`${String(rsvps.indexOf(r) + 1).padStart(2)}\` ✅ **${r.name}**${posOf(r) ? ` · ${posOf(r)}` : ''}`, thumb(faces.get(String(r.user_id))))) : null,
+    roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(names('yes').slice(FACE_ROWS))}`) : !faces && yes.length ? facts([['In', list(names('yes'))]]) : null,
+    who && !roster ? facts([[`❔ Maybe (${names('maybe').length})`, list(names('maybe'))], [`❌ Out (${names('no').length})`, list(names('no'))]]) : null,
+    memberRow,
+    managerRow ? sep({ line: true }) : null,
+    managerRow ? text('-# **MANAGER CONTROLS**') : null,
+    managerRow,
   ] });
 }
 // Six rows of faces keeps the post under Discord's 40-component limit with room for the buttons and /schedule's 2nd panel.
 const FACE_ROWS = 6;
-// eventMessage plus everyone's face – what every caller uses unless it's building a post with no answers yet.
+// eventMessage plus Pro Telemetry Roll Call PNG (falls back cleanly to rosterBlock / text when Images binding is off).
 export async function eventPost(env, e, rsvps = [], heading = '', opts = {}) {
-  const yes = rsvps.filter((r) => r.status === 'yes').slice(0, FACE_ROWS).map((r) => r.user_id);
-  const posOf = (r) => parse(e.type === 'rush' ? r.rush_positions : r.positions, [])[0] ?? '';
-  const roster = await rosterBlock(env, e.id, rsvps, () => checkinsOf(env, e.id), { posOf, title: 'Who is playing', sub: label(e) });
-  return eventMessage(env, e, rsvps, heading, { ...opts, roster, faces: roster ? null : await facesOf(env, yes) });
+  const formation = FORMATIONS[e.formation] ? e.formation : '3-5-2';
+  const slots = normalizeFormationSlots(FORMATIONS[formation]);
+  const enriched = rsvps.map((r) => ({ ...r, prefs: parsePref(r.pref_pos) }));
+  const yesIds = rsvps.filter((r) => r.status === 'yes').map((r) => r.user_id);
+  const solved = solveSuggestedXI(slots, enriched);
+  const drawn = await drawHostGraphic(env, 'rollcall', e.id, {
+    formation, slots, rsvps: enriched, closed: !!e.signup_closed_at, avgOvr: solved.avgOvr,
+  }, yesIds);
+  const roster = drawn.url
+    ? cards({ url: drawn.url, alt: `${label(e)} · ${formation} Roll Call (${yesIds.length} in)` })
+    : await rosterBlock(env, e.id, rsvps, () => checkinsOf(env, e.id), { posOf: (r) => parsePref(r.pref_pos)[0] ?? '', title: 'Squad Roll Call', sub: label(e) });
+  return eventMessage(env, e, rsvps, heading, { ...opts, roster, faces: roster ? null : await facesOf(env, yesIds.slice(0, FACE_ROWS)) });
 }
 const checkinsOf = (env, id) => all(env, 'SELECT * FROM event_checkins WHERE event_id = ? ORDER BY at', id);
-// Everyone's answer, in the order they FIRST answered (r.at moves on every change, r.first_at does not).
-export const rsvpRows = (env, id) => all(env, 'SELECT r.status, r.name, r.user_id, r.first_at, r.at, r.pref_pos, p.positions, p.rush_positions FROM event_rsvps r LEFT JOIN profiles p ON p.user_id = r.user_id WHERE r.event_id = ? ORDER BY COALESCE(r.first_at, r.at), r.user_id', id);
+// Everyone's answer, ordered by fair signed_in_at priority (falls back to first_at / at for pre-0082 rows).
+export const rsvpRows = (env, id) => all(env, 'SELECT r.status, r.name, r.user_id, r.first_at, r.signed_in_at, r.at, r.pref_pos, p.positions, p.rush_positions FROM event_rsvps r LEFT JOIN profiles p ON p.user_id = r.user_id WHERE r.event_id = ? ORDER BY COALESCE(r.signed_in_at, r.first_at, r.at), r.user_id', id);
 // Keeps the Discord post's counts in step with the site. Never throws.
 export async function refreshEventPost(env, id) {
   try {
@@ -316,8 +325,8 @@ async function saveEvent(body, me, env, log) {
   const out = {};
   if (existing) {
     const moved = existing.start !== e.start;
-    await run(env, `UPDATE events SET type = ?, title = ?, start = ?, duration = ?, tz = ?, notes = ?, needs = ?, public = ?, remind = ?, edited_by = ?, edited_at = ?${moved ? ', remind24_at = NULL, remind2_at = NULL' : ''} WHERE id = ?`,
-      e.type, e.title, e.start, e.duration, e.tz, e.notes, JSON.stringify(e.needs), e.public, e.remind, me.n, Date.now(), existing.id);
+    await run(env, `UPDATE events SET type = ?, title = ?, start = ?, duration = ?, tz = ?, notes = ?, needs = ?, public = ?, remind = ?, formation = COALESCE(?, formation), edited_by = ?, edited_at = ?${moved ? ', remind24_at = NULL, remind2_at = NULL' : ''} WHERE id = ?`,
+      e.type, e.title, e.start, e.duration, e.tz, e.notes, JSON.stringify(e.needs), e.public, e.remind, e.formation, me.n, Date.now(), existing.id);
     if (moved) await run(env, 'DELETE FROM meta WHERE key IN (?, ?)', `remind24:${existing.id}`, `remind2:${existing.id}`); // a moved event is reminded afresh
     await refreshEventPost(env, existing.id);
     out.id = existing.id;
@@ -336,8 +345,8 @@ async function saveEvent(body, me, env, log) {
     for (let i = 0; i <= repeat; i++) {
       const date = new Date(Date.parse(body.date + 'T12:00:00Z') + i * 7 * DAY).toISOString().slice(0, 10);
       const start = i ? zonedToUtc(date, body.time, e.tz) : e.start;
-      const r = await run(env, 'INSERT INTO events (type, title, start, duration, tz, notes, needs, public, remind, series, by_id, by_name, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        e.type, e.title, start, e.duration, e.tz, e.notes, JSON.stringify(e.needs), e.public, e.remind, series, me.u, me.n, Date.now());
+      const r = await run(env, 'INSERT INTO events (type, title, start, duration, tz, notes, needs, public, remind, formation, manager_id, series, by_id, by_name, at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        e.type, e.title, start, e.duration, e.tz, e.notes, JSON.stringify(e.needs), e.public, e.remind, e.formation, me.u, series, me.u, me.n, Date.now());
       ids.push(r.meta.last_row_id);
     }
     out.id = ids[0]; out.created = ids.length;
@@ -370,22 +379,29 @@ async function saveEvent(body, me, env, log) {
 }
 
 // One member's answer to one or more events – used by the Squad Hub and the Discord buttons. → rows answered (or [] if none open).
-export async function answerEvents(env, me, ids, status, pref) {
-  const rows = ids.length ? await all(env, `SELECT id, start, duration, lineup FROM events WHERE id IN (${marks(ids.length)}) AND status = 'scheduled' AND start + duration * 60000 > ?`, ...ids, Date.now()) : [];
+export async function answerEvents(env, me, ids, status, pref, { override = false } = {}) {
+  const closedClause = override ? '' : ' AND signup_closed_at IS NULL';
+  const rows = ids.length ? await all(env, `SELECT id, start, duration, lineup FROM events WHERE id IN (${marks(ids.length)}) AND status = 'scheduled'${closedClause} AND start + duration * 60000 > ?`, ...ids, Date.now()) : [];
   if (!rows.length) return rows;
-  const before = new Map((await all(env, `SELECT event_id, status FROM event_rsvps WHERE user_id = ? AND event_id IN (${marks(rows.length)})`, me.u, ...rows.map((r) => r.id))).map((x) => [x.event_id, x.status]));
+  const beforeRows = await all(env, `SELECT event_id, status, signed_in_at, first_at FROM event_rsvps WHERE user_id = ? AND event_id IN (${marks(rows.length)})`, me.u, ...rows.map((r) => r.id));
+  const before = new Map(beforeRows.map((x) => [x.event_id, x]));
   const stmts = [], now = Date.now();
-  const note = (r, kind) => stmts.push(env.DB.prepare('INSERT INTO event_answer_log (event_id, user_id, name, kind, prev, at) VALUES (?, ?, ?, ?, ?, ?)').bind(r.id, me.u, me.n, kind, before.get(r.id) ?? null, now));
+  const note = (r, kind) => stmts.push(env.DB.prepare('INSERT INTO event_answer_log (event_id, user_id, name, kind, prev, at) VALUES (?, ?, ?, ?, ?, ?)').bind(r.id, me.u, me.n, kind, before.get(r.id)?.status ?? null, now));
   for (const r of rows) {
     if (status === 'clear') { stmts.push(env.DB.prepare('DELETE FROM event_rsvps WHERE event_id = ? AND user_id = ?').bind(r.id, me.u)); if (before.has(r.id)) note(r, 'clear'); continue; }
-    // first_at is set once, on the first answer, and never moves when the answer changes – it is the order people answered in.
-    stmts.push(env.DB.prepare(`INSERT INTO event_rsvps (event_id, user_id, status, name, avatar, at, first_at) VALUES (?, ?, ?, ?, ?, ?, ?)
-      ON CONFLICT (event_id, user_id) DO UPDATE SET status = excluded.status, name = excluded.name, avatar = excluded.avatar, at = excluded.at`).bind(r.id, me.u, status, me.n, me.a ?? null, now, now));
-    if (before.get(r.id) !== status) note(r, status);
+    const prev = before.get(r.id);
+    // Fair signed_in_at priority rule:
+    //   - Editing positions while ALREADY 'yes' preserves original signed_in_at!
+    //   - Switching from 'maybe' / 'no' / new -> 'yes' starts signed_in_at NOW (Maybe never steals priority).
+    //   - Switching to 'maybe' or 'no' clears signed_in_at to NULL.
+    const nextSignedInAt = status === 'yes' ? (prev?.status === 'yes' ? (prev.signed_in_at ?? prev.first_at ?? now) : now) : null;
+    stmts.push(env.DB.prepare(`INSERT INTO event_rsvps (event_id, user_id, status, name, avatar, at, first_at, signed_in_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT (event_id, user_id) DO UPDATE SET status = excluded.status, name = excluded.name, avatar = excluded.avatar, at = excluded.at, signed_in_at = excluded.signed_in_at`).bind(r.id, me.u, status, me.n, me.a ?? null, now, now, nextSignedInAt));
+    if (prev?.status !== status) note(r, status);
     // "Yes" to an event also counts as "I'm in" that day (attendance boards + streaks read day availability) – never overwrites a day answer.
     if (status === 'yes') stmts.push(env.DB.prepare('INSERT OR IGNORE INTO availability (date, user_id, status, name, avatar, at) VALUES (?, ?, ?, ?, ?, ?)').bind(new Date(r.start).toISOString().slice(0, 10), me.u, 'yes', me.n, me.a ?? null, now));
   }
-  // MB2: the preferred position rides along with a yes/maybe; "no" drops it. Omitted (undefined) leaves what they chose before.
+  // Up to 3 formation-exact positions (1 Primary + up to 2 Flex); "no" drops them. Omitted (undefined) keeps prior picks.
   for (const r of rows) {
     if (status === 'no') stmts.push(env.DB.prepare('UPDATE event_rsvps SET pref_pos = NULL WHERE event_id = ? AND user_id = ?').bind(r.id, me.u));
     else if (pref !== undefined && (status === 'yes' || status === 'maybe')) { const c = cleanPref(pref); stmts.push(env.DB.prepare('UPDATE event_rsvps SET pref_pos = ? WHERE event_id = ? AND user_id = ?').bind(c.length ? JSON.stringify(c) : null, r.id, me.u)); }
@@ -488,21 +504,115 @@ function reportEmbed(env, rep, origin, { ping, mentions } = {}) {
   ] });
 }
 
-// "I'm on" for one event – the site and the Discord Check in button both come here. Logged (event_answer_log) so the post can show when.
-export async function setCheckin(env, me, row, on, trial = null) {
+// "I'm on" for one event – supports 'ready' (In Lobby) and 'late' (Running Late) states for Pro Telemetry Check-In.
+export async function setCheckin(env, me, row, on, trial = null, state = 'ready') {
   const already = await one(env, 'SELECT 1 FROM event_checkins WHERE event_id = ? AND user_id = ?', row.id, me.u);
+  const cleanState = state === 'late' ? 'late' : 'ready';
   if (!on) {
     await run(env, 'DELETE FROM event_checkins WHERE event_id = ? AND user_id = ?', row.id, me.u);
     if (already) await run(env, "INSERT INTO event_answer_log (event_id, user_id, name, kind, at) VALUES (?, ?, ?, 'checkout', ?)", row.id, me.u, me.n, Date.now());
   } else {
-    await run(env, `INSERT INTO event_checkins (event_id, user_id, name, avatar, trial, at) VALUES (?, ?, ?, ?, ?, ?)
-      ON CONFLICT (event_id, user_id) DO UPDATE SET trial = excluded.trial, name = excluded.name, avatar = excluded.avatar`, row.id, me.u, me.n, me.a ?? null, trial, Date.now());
+    await run(env, `INSERT INTO event_checkins (event_id, user_id, name, avatar, trial, state, at) VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT (event_id, user_id) DO UPDATE SET trial = excluded.trial, state = excluded.state, name = excluded.name, avatar = excluded.avatar`, row.id, me.u, me.n, me.a ?? null, trial, cleanState, Date.now());
     if (!already) {
       await run(env, "INSERT INTO event_answer_log (event_id, user_id, name, kind, at) VALUES (?, ?, ?, 'checkin', ?)", row.id, me.u, me.n, Date.now());
       await awardRule(env, me.u, 'attendance.checkin', `Checked in · ${label(row)}`); // P11.3 – only the first check-in for this night
     }
   }
   await refreshCheckinPost(env, row.id);
+}
+
+// Stage 3 manual trigger: Manager opens Lobby Check-In immediately (also called by auto-15m cron if not opened yet).
+export async function openCheckinNow(env, eventId, me = null) {
+  const e = await one(env, 'SELECT * FROM events WHERE id = ?', Number(eventId) || 0);
+  if (!e || e.status !== 'scheduled') return null;
+  await run(env, 'UPDATE events SET checkin_opened_at = COALESCE(checkin_opened_at, ?), manager_id = COALESCE(manager_id, ?) WHERE id = ?', Date.now(), me?.u ?? null, e.id);
+  const answers = await rsvpRows(env, e.id);
+  const checkins = await checkinsOf(env, e.id);
+  const channel = await channelFor(env, 'checkin') || e.discord_channel;
+  if (!channel || !env.DISCORD_BOT_TOKEN) return null;
+  const tags = answers.filter((x) => x.status !== 'no').map((x) => x.user_id).slice(0, 50);
+  const msg = await checkinPost(env, e, answers, checkins, { soon: true, ping: `**⏰ Lobby Check-In is Open · ${label(e)}**\n${tags.map((id) => `<@${id}>`).join(' ')}`, mentions: { users: tags } });
+  const res = await safely(fetch(`https://discord.com/api/v10/channels/${channel}/messages`, {
+    method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg, 'event')),
+  }));
+  const posted = res?.ok ? await res.json().catch(() => null) : null;
+  if (posted?.id) await run(env, 'UPDATE events SET checkin_msg = ? WHERE id = ?', posted.id, e.id);
+  return posted;
+}
+
+// Stage 4 lock: publishes Official Confirmed Final XI (manual manager lock OR manager-verified Game-1 auto-fallback).
+export async function lockFinalLineup(env, eventId, me = null, loadSite = null, overrideLineup = null) {
+  const e = await one(env, 'SELECT * FROM events WHERE id = ?', Number(eventId) || 0);
+  if (!e || e.status !== 'scheduled') return null;
+  const formation = FORMATIONS[e.formation] ? e.formation : '3-5-2';
+  const lineup = overrideLineup ?? parse(e.lineup, {});
+  await run(env, "UPDATE events SET lineup_phase = 'final', lineup = ?, lineup_at = COALESCE(lineup_at, ?) WHERE id = ?", JSON.stringify(lineup), Date.now(), e.id);
+  const answers = await rsvpRows(env, e.id);
+  const ids = Object.keys(lineup);
+  const names = new Map(answers.map((r) => [r.user_id, r.name]));
+  const bench = answers.map((r, i) => ({ rank: i + 1, name: r.name, status: r.status, id: r.user_id })).filter((b) => b.status !== 'no' && !lineup[b.id]);
+  const msg = lineupEmbed(env, { ...e, formation, lineup_phase: 'final' }, lineup, names, { suggested: false, bench });
+  const channel = e.final_lineup_channel || await channelFor(env, 'lineup') || e.discord_channel;
+  if (channel && env.DISCORD_BOT_TOKEN) {
+    const res = await safely(fetch(`https://discord.com/api/v10/channels/${channel}/messages`, {
+      method: 'POST', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(autoBanner(env, msg, 'lineup')),
+    }));
+    const posted = res?.ok ? await res.json().catch(() => null) : null;
+    if (posted?.id) await run(env, 'UPDATE events SET final_lineup_msg = ?, final_lineup_channel = ? WHERE id = ?', posted.id, String(channel), e.id);
+    return posted;
+  }
+  return null;
+}
+
+// Manager-Verified Game-1 Auto-Fallback:
+// If a manager forgot to click Final Lineup and 1 match has already been played since kickoff, auto-post Final XI
+// from that match ONLY if the session's manager (manager_id / by_id) actually played in that match — preventing
+// cross-team pollution when multiple club squads (1st/2nd/3rd/VPG) play in parallel!
+export async function autoFinalLineupFallback(env, loadSite) {
+  if (!env.DB || !loadSite) return 0;
+  const now = Date.now();
+  const pending = await all(env, "SELECT * FROM events WHERE status = 'scheduled' AND COALESCE(lineup_phase, '') != 'final' AND start < ? AND start + duration * 60000 > ?", now - 10 * MIN, now);
+  if (!pending.length) return 0;
+  const club = await loadSite('club').catch(() => ({ matches: [] }));
+  const claims = await all(env, "SELECT user_id, player FROM claims WHERE status = 'approved'");
+  const playerByUid = new Map(claims.map((c) => [String(c.user_id), String(c.player)]));
+  const uidByPlayer = new Map(claims.map((c) => [String(c.player), String(c.user_id)]));
+  let posted = 0;
+  for (const e of pending) {
+    const mgrUid = String(e.manager_id || e.by_id || '');
+    const mgrPlayer = playerByUid.get(mgrUid);
+    if (!mgrPlayer) continue;
+    // Match must be played after session start AND explicitly include this session's manager!
+    const game = (club?.matches ?? []).find((m) => {
+      const ts = Number(m.t ?? m.ts ?? 0) * (Number(m.t ?? m.ts ?? 0) < 1e12 ? 1000 : 1);
+      if (ts < e.start - 15 * MIN || ts > e.start + e.duration * MIN) return false;
+      const roster = Array.isArray(m.p) ? m.p : (Array.isArray(m.players) ? m.players : []);
+      return roster.some((x) => String(x?.k ?? x?.player ?? x) === mgrPlayer);
+    });
+    if (!game) continue;
+    const roster = Array.isArray(game.p) ? game.p : (Array.isArray(game.players) ? game.players : []);
+    const formation = FORMATIONS[e.formation] ? e.formation : '3-5-2';
+    const slots = FORMATIONS[formation].map((x) => x[0]);
+    const derived = {};
+    roster.forEach((x, idx) => {
+      const uid = uidByPlayer.get(String(x?.k ?? x?.player ?? x));
+      if (uid && slots[idx]) derived[uid] = slots[idx];
+    });
+    const finalMap = Object.keys(derived).length ? derived : parse(e.lineup, {});
+    if (!Object.keys(finalMap).length) continue;
+    await lockFinalLineup(env, e.id, null, loadSite, finalMap);
+    posted++;
+  }
+  return posted;
+}
+
+// Refreshes all currently active scheduled Discord posts in place (e.g. your 3 already-scheduled games) without losing RSVPs.
+export async function refreshActiveEventPosts(env) {
+  const rows = await all(env, "SELECT id FROM events WHERE status = 'scheduled' AND discord_msg IS NOT NULL AND discord_channel IS NOT NULL AND start + duration * 60000 > ? ORDER BY start LIMIT 20", Date.now());
+  let refreshed = 0;
+  for (const r of rows) { await refreshEventPost(env, r.id); refreshed++; }
+  return { refreshed, ids: rows.map((r) => r.id) };
 }
 
 async function nightRoute(p, method, body, me, env, log, loadSite, url) {
@@ -602,6 +712,7 @@ const SHAPES = {
   '3-4-1-2': 'LCB CB RCB / LM LCM RCM RM / CAM / LS RS',
   '3-4-2-1': 'LCB CB RCB / LM LCM RCM RM / LF RF / ST',
   '3-5-2': 'LCB CB RCB / LM LDM RDM RM / CAM / LS RS',
+  '3-5-2 (CAM)': 'LCB CB RCB / LM LDM RDM RM / CAM / LS RS',
   '3-4-3': 'LCB CB RCB / LM LCM RCM RM / LW ST RW',
   '4-1-2-1-2': 'LB LCB RCB RB / CDM / LCM RCM / CAM / LS RS',
   '4-1-2-1-2 (2)': 'LB LCB RCB RB / CDM / LM RM / CAM / LS RS',
@@ -840,8 +951,9 @@ async function nudgeRoute(body, me, env, log) {
 // Events scheduled less than 2 h ahead only get the T-2h one. Each fires once (remind24_at / remind2_at).
 // 30 minutes before: everyone who said ✅ gets the site alert + Discord DM (their "Events" alert setting, DM + site by default) and is
 // tagged by name in the event's channel post. Once per event (meta `remind30:<id>`); owner/manager-only while `discordRsvp` is.
+// Dual Check-In Trigger: auto-opens Lobby Check-In 15 minutes before kickoff if a manager has not already opened it manually.
 export async function thirtyMinutes(env, now, everyone) {
-  const rows = await all(env, "SELECT * FROM events WHERE status = 'scheduled' AND start > ? AND start <= ? ORDER BY start LIMIT 5", now, now + 30 * 60e3);
+  const rows = await all(env, "SELECT * FROM events WHERE status = 'scheduled' AND checkin_opened_at IS NULL AND start > ? AND start <= ? ORDER BY start LIMIT 5", now, now + 15 * 60e3);
   let sent = 0;
   for (const e of rows) {
     const key = `remind30:${e.id}`;
@@ -970,6 +1082,10 @@ export async function eventsRoute(p, method, body, me, env, log, loadSite, url) 
   if (p === '/api/events/rsvp') return rsvp(body, me, env, log);
   if (p === '/api/events/nudge') return nudgeRoute(body, me, env, log); // BE4 – nudge a short position
   if (p === '/api/events/plays') return playsRoute(body, me, env, log); // board 08 – plays for tonight
+  if (p === '/api/events/refresh-active') {
+    if (!can(me, 'events.manage')) return fail('Managers only.', 403);
+    return json(await refreshActiveEventPosts(env));
+  }
   if (p === '/api/events/cancel') {
     if (!can(me, 'events.manage')) return fail('Managers only.', 403);
     const row = await one(env, "SELECT * FROM events WHERE id = ? AND status = 'scheduled'", Number(body.id) || 0);

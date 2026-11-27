@@ -76,7 +76,8 @@ import { message, notice, header, cards, facts, text, sep, side, thumb, label, f
 import { BANNER_SPEC, bannerForCommand, bannerForComponent } from './banners.js';
 import { it } from './icons.js';
 import { playerFaces } from './faces.js';
-import { zoneChoices } from './host.js';
+import { zoneChoices, formationChoices } from './host.js';
+import { HOST_FLOW_RE, hostFlowInteraction } from './hostflow.js';
 import { HELP_COMMANDS, HELP_BUTTON, helpCommand, helpButton } from './help.js';
 import { STREAM_COMMANDS, streamCommand, streamAlertsCron } from './streamalerts.js';
 import { STREAMWATCH_COMMANDS, watchCommand as watchLiveCommand } from './streamwatch.js';
@@ -182,7 +183,10 @@ export default {
     if (i.type === 4 && i.data?.name === 'setup' && flatOptions(i.data.options).find((o) => o.focused)?.name === 'purpose') return json({ type: 8, data: { choices: purposeChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
     if (i.type === 4 && i.data?.name === 'setup' && flatOptions(i.data.options).find((o) => o.focused)?.name === 'output') return json({ type: 8, data: { choices: outputChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
     if (i.type === 4 && i.data?.name === 'testview') return json({ type: 8, data: { choices: testviewChoices(i) } }); // PF-024 Item 25: the output and variant pickers
-    if (i.type === 4 && i.data?.name === 'host') return json({ type: 8, data: { choices: zoneChoices(flatOptions(i.data.options).find((o) => o.focused)?.value) } });
+    if (i.type === 4 && i.data?.name === 'host') {
+      const foc = flatOptions(i.data.options).find((o) => o.focused);
+      return json({ type: 8, data: { choices: foc?.name === 'formation' ? formationChoices(foc.value) : zoneChoices(foc?.value) } });
+    }
     if (i.type === 4 && /^tags?$/.test(i.data?.name) && env.DB) return json({ type: 8, data: { choices: await tagChoices(env, flatOptions(i.data.options).find((o) => o.focused)?.value).catch(() => []) } });
     if (i.type === 4) return json({ type: 8, data: { choices: await autocomplete(i, site, ctx) } });
     const who = discordUser(env, i);
@@ -310,7 +314,13 @@ export default {
     if (i.type === 3 && LFG_ID.test(i.data?.custom_id ?? '')) {
       try { return json(await lfgButton(i, env, await memberOf(i, who, env), who, Date.now(), ctx)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
-    if (i.type === 3 && /^norex:ev:\d+:\w+$/.test(i.data?.custom_id ?? '')) { // P3.3 ✅ ❔ ❌ on event posts
+    if (i.type === 3 && HOST_FLOW_RE.test(i.data?.custom_id ?? '')) { // 4-Stage Pro Telemetry Matchday buttons & selects
+      try {
+        const loadSite = (f) => load(site, f, ctx);
+        return json(await hostFlowInteraction(i, env, await memberOf(i, who, env), who, loadSite));
+      } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
+    }
+    if (i.type === 3 && /^norex:ev:\d+:\w+$/.test(i.data?.custom_id ?? '')) { // P3.3 ✅ ❔ ❌ on legacy event posts
       try { return json(await eventButton(i, env, who)); } catch (e) { return json(privateNote(`⚠️ ${e.message}`)); }
     }
     if (i.type === 3 && CHECKIN_RE.test(i.data?.custom_id ?? '')) { // ✅ Check in on the check-in post
