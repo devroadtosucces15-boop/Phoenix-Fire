@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-27T20:09:30.532Z",
+ "fetchedAt": "2026-11-27T20:20:00.780Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1874,9 +1874,9 @@
   {
    "name": "RealMinato7",
    "proPos": "25",
-   "gamesPlayed": "350",
+   "gamesPlayed": "351",
    "goals": "151",
-   "assists": "162",
+   "assists": "164",
    "manOfTheMatch": "29",
    "ratingAve": "7.0",
    "prevGoals": "0",
@@ -2116,12 +2116,12 @@
   {
    "name": "AliasX47",
    "proPos": "5",
-   "gamesPlayed": "407",
-   "goals": "480",
-   "assists": "272",
+   "gamesPlayed": "408",
+   "goals": "482",
+   "assists": "273",
    "manOfTheMatch": "47",
    "ratingAve": "7.7",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "defender"
   },
   {
@@ -2336,7 +2336,7 @@
   {
    "name": "Morpho Vs All",
    "proPos": "14",
-   "gamesPlayed": "413",
+   "gamesPlayed": "414",
    "goals": "203",
    "assists": "143",
    "manOfTheMatch": "55",
@@ -2363,6 +2363,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-27T20:09:30.532Z"
+  "fetchedAt": "2026-11-27T20:20:00.780Z"
  }
 }
