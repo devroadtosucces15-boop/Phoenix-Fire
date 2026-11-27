@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-27T20:44:06.293Z",
+ "fetchedAt": "2026-11-27T20:53:39.049Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -614,7 +614,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "123",
+   "gamesPlayed": "124",
    "goals": "13",
    "assists": "10",
    "manOfTheMatch": "3",
@@ -718,6 +718,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-27T20:44:06.293Z"
+  "fetchedAt": "2026-11-27T20:53:39.049Z"
  }
 }

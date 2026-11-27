@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-27T20:44:06.293Z",
+ "fetchedAt": "2026-11-27T20:53:39.049Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -1885,7 +1885,7 @@
   {
    "name": "Bantu Vikng",
    "proPos": "5",
-   "gamesPlayed": "50",
+   "gamesPlayed": "51",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
@@ -1907,7 +1907,7 @@
   {
    "name": "MV33xChris",
    "proPos": "5",
-   "gamesPlayed": "226",
+   "gamesPlayed": "227",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
@@ -1973,10 +1973,10 @@
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "158",
-   "goals": "92",
-   "assists": "65",
-   "manOfTheMatch": "26",
+   "gamesPlayed": "159",
+   "goals": "93",
+   "assists": "67",
+   "manOfTheMatch": "27",
    "ratingAve": "7.6",
    "prevGoals": "1",
    "favoritePosition": "forward"
@@ -1984,11 +1984,11 @@
   {
    "name": "Cash711Money",
    "proPos": "25",
-   "gamesPlayed": "8",
+   "gamesPlayed": "9",
    "goals": "0",
    "assists": "2",
    "manOfTheMatch": "0",
-   "ratingAve": "7.2",
+   "ratingAve": "7.3",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2028,7 +2028,7 @@
   {
    "name": "KOEN WIE",
    "proPos": "14",
-   "gamesPlayed": "123",
+   "gamesPlayed": "124",
    "goals": "13",
    "assists": "10",
    "manOfTheMatch": "3",
@@ -2105,12 +2105,12 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "204",
-   "goals": "234",
-   "assists": "106",
+   "gamesPlayed": "205",
+   "goals": "236",
+   "assists": "107",
    "manOfTheMatch": "9",
-   "ratingAve": "7.2",
-   "prevGoals": "1",
+   "ratingAve": "7.3",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2193,12 +2193,12 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "289",
+   "gamesPlayed": "290",
    "goals": "181",
-   "assists": "234",
+   "assists": "236",
    "manOfTheMatch": "12",
    "ratingAve": "7.1",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
@@ -2259,11 +2259,11 @@
   {
    "name": "Jaliens45",
    "proPos": "25",
-   "gamesPlayed": "92",
+   "gamesPlayed": "93",
    "goals": "18",
    "assists": "28",
    "manOfTheMatch": "6",
-   "ratingAve": "7.2",
+   "ratingAve": "7.1",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -2292,7 +2292,7 @@
   {
    "name": "Two_K_Two",
    "proPos": "5",
-   "gamesPlayed": "85",
+   "gamesPlayed": "86",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "2",
@@ -2314,12 +2314,12 @@
   {
    "name": "Superdaddysi",
    "proPos": "25",
-   "gamesPlayed": "71",
-   "goals": "43",
+   "gamesPlayed": "72",
+   "goals": "44",
    "assists": "44",
    "manOfTheMatch": "19",
    "ratingAve": "7.8",
-   "prevGoals": "0",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2363,6 +2363,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-27T20:44:06.293Z"
+  "fetchedAt": "2026-11-27T20:53:39.049Z"
  }
 }
