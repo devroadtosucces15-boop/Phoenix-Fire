@@ -38,6 +38,7 @@ import { once } from './once.js';
 import { phaseOf, checkinOpen, inLineup, canPostLineup, hasLineupPosted, lineupOf, unconfirmed, nudgeDue, timelineLine, whyNotOpen, checkinClosesAt, CHECKIN_CLOSE_MIN, CHECKIN_NUDGE_MIN } from './matchflow.js';
 
 import { cleanPref, parsePref, savePref, prefTags } from './prefpos.js';
+import { ic } from './icons.js';
 import { rosterBlock, rosterOn, rosterModel, drawRoster } from './rosterpic.js';
 import { normalizeFormationSlots, solveSuggestedXI, drawHostGraphic } from './hostgraphic.js';
 const REMIND = ['dm', 'mention', 'off'];
@@ -227,18 +228,21 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const hubBtn = { type: 2, style: 5, label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` };
   const headText = `-# ${orgName(env).toUpperCase()} · MATCHDAY\n## ${titleLine}\n-# <t:${unix}:F> · <t:${unix}:R> · Unlimited`;
   const hasButtons = rsvpButtons(env) && e.id != null;
+  const icApp = env?.BOT_APP || (env?.DISCORD_BOT_TOKEN_MATCHDAY ? 'matchday' : 'core');
   const memberRow = hasButtons ? buttons([
-    { label: 'I’m In ›', style: 'ok', id: `pf:h:${e.id}:in`, disabled: done },
-    { label: 'Maybe', style: 'grey', id: `pf:h:${e.id}:maybe`, disabled: done },
-    { label: 'Out', style: 'no', id: `pf:h:${e.id}:no`, disabled: done },
-    { label: 'Suggested XI ✦', style: 'brand', id: `pf:h:${e.id}:xi` },
-    { label: 'Roster ›', style: 'grey', id: `pf:h:${e.id}:roster` },
+    { label: 'I’m In ›', style: 'ok', id: `pf:h:${e.id}:in`, emoji: ic('btn_in', icApp), disabled: done },
+    { label: 'Maybe', style: 'grey', id: `pf:h:${e.id}:maybe`, emoji: ic('btn_maybe', icApp), disabled: done },
+    { label: 'Out', style: 'no', id: `pf:h:${e.id}:no`, emoji: ic('btn_out', icApp), disabled: done },
   ]) : buttons([{ label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` }]);
+  const viewRow = hasButtons ? buttons([
+    { label: 'Suggested XI', style: 'brand', id: `pf:h:${e.id}:xi`, emoji: ic('btn_xi', icApp) },
+    { label: 'Full Roster ›', style: 'grey', id: `pf:h:${e.id}:roster`, emoji: ic('btn_roster', icApp) },
+  ]) : null;
   const managerRow = hasButtons ? buttons([
-    { label: locked ? 'Dugout ›' : 'Close & Lineup ›', style: 'grey', id: `pf:h:${e.id}:close`, disabled: cancelled },
-    { label: 'Override ›', style: 'grey', id: `pf:h:${e.id}:override`, disabled: cancelled },
-    { label: 'Reschedule ›', style: 'grey', id: `pf:h:${e.id}:resched`, disabled: cancelled },
-    { label: 'Cancel', style: 'no', id: `pf:h:${e.id}:cancel`, disabled: cancelled },
+    { label: locked ? 'Dugout ›' : 'Lineup ›', style: 'grey', id: `pf:h:${e.id}:close`, emoji: ic('btn_lineup', icApp), disabled: cancelled },
+    { label: 'Override', style: 'grey', id: `pf:h:${e.id}:override`, emoji: ic('btn_override', icApp), disabled: cancelled },
+    { label: 'Reschedule', style: 'grey', id: `pf:h:${e.id}:resched`, emoji: ic('btn_resched', icApp), disabled: cancelled },
+    { label: 'Cancel', style: 'no', id: `pf:h:${e.id}:cancel`, emoji: ic('btn_cancel', icApp), disabled: cancelled },
   ]) : null;
   return message({ ping, mentions, accent: cancelled ? 'steel' : locked ? 'loss' : 'gold', blocks: [
     side(headText, hubBtn),
@@ -250,6 +254,7 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
     roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(names('yes').slice(FACE_ROWS))}`) : !faces && yes.length ? facts([['In', list(names('yes'))]]) : null,
     who && !roster ? facts([[`❔ Maybe (${names('maybe').length})`, list(names('maybe'))], [`❌ Out (${names('no').length})`, list(names('no'))]]) : null,
     memberRow,
+    viewRow,
     managerRow ? sep({ line: true }) : null,
     managerRow ? text('-# **MANAGER CONTROLS**') : null,
     managerRow,
@@ -265,7 +270,7 @@ export async function eventPost(env, e, rsvps = [], heading = '', opts = {}) {
   const yesIds = rsvps.filter((r) => r.status === 'yes').map((r) => r.user_id);
   const solved = solveSuggestedXI(slots, enriched);
   const drawn = await drawHostGraphic(env, 'rollcall', e.id, {
-    formation, slots, rsvps: enriched, closed: !!e.signup_closed_at, avgOvr: solved.avgOvr,
+    org: orgName(env), title: label(e), formation, slots, rsvps: enriched, closed: !!e.signup_closed_at, avgOvr: solved.avgOvr,
   }, yesIds);
   const roster = drawn.url
     ? cards({ url: drawn.url, alt: `${label(e)} · ${formation} Roll Call (${yesIds.length} in)` })

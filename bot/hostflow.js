@@ -8,6 +8,7 @@
 import { can, flagOn } from './roles.js';
 import { orgName } from './orgconfig.js';
 import { message, text, sep, footer, cards, button, buttons, reply, notice, EPHEMERAL, IS_V2 } from './ui.js';
+import { ic } from './icons.js';
 import { parsePref, cleanPref, PREF_MAX } from './prefpos.js';
 import { FORMATIONS, answerEvents, rsvpRows, refreshEventPost, refreshCheckinPost, setCheckin, openCheckinNow, lockFinalLineup } from './events.js';
 import { normalizeFormationSlots, solveSuggestedXI, drawHostGraphic } from './hostgraphic.js';
@@ -21,7 +22,7 @@ const parse = (s, fb) => { try { return s ? JSON.parse(s) ?? fb : fb; } catch { 
 const updateMsg = (data) => ({ type: 7, data });
 
 // Build the private 11-button formation-matched multi-position picker (5 + 5 + 1 + Save/Clear).
-export function positionPickerMessage(eventId, formation, draft = [], { targetId = null, targetName = null } = {}) {
+export function positionPickerMessage(eventId, formation, draft = [], { targetId = null, targetName = null, app = 'matchday' } = {}) {
   const raw = FORMATIONS[formation] ?? FORMATIONS['3-5-2'];
   const slots = normalizeFormationSlots(raw);
   const clean = cleanPref(draft, slots.map((s) => s.id));
@@ -34,19 +35,19 @@ export function positionPickerMessage(eventId, formation, draft = [], { targetId
     const style = idx === 0 ? 'ok' : idx > 0 ? 'brand' : 'grey';
     const suffix = idx === 0 ? ' ★' : idx > 0 ? ' ✓' : '';
     const next = idx >= 0 ? clean.filter((x) => x !== s.id) : (clean.length < PREF_MAX ? [...clean, s.id] : clean);
-    return button({ label: `${s.id}${suffix}`, id: `${prefix}:${s.id}:${next.join(',')}`, style });
+    return button({ label: `${s.id}${suffix}`, id: `${prefix}:${s.id}:${next.join(',')}`, style, emoji: ic(`pos_${s.cat}`, app) });
   };
 
   const rows = [];
   for (let k = 0; k < slots.length; k += 5) rows.push({ type: 1, components: slots.slice(k, k + 5).map(mkBtn) });
   // Action row (Save + Clear, plus Maybe/Out when Manager is overriding)
   const actions = [
-    button({ label: targetId ? '✓ Set In' : '✓ Save Positions', id: saveId, style: 'ok', disabled: clean.length === 0 }),
-    button({ label: 'Clear', id: clearId, style: 'grey', disabled: clean.length === 0 }),
+    button({ label: targetId ? 'Set In' : 'Save Positions', id: saveId, style: 'ok', emoji: ic('btn_in', app), disabled: clean.length === 0 }),
+    button({ label: 'Clear', id: clearId, style: 'grey', emoji: ic('btn_out', app), disabled: clean.length === 0 }),
   ];
   if (targetId) {
-    actions.push(button({ label: 'Maybe', id: `pf:h:${eventId}:ovst:${targetId}:maybe`, style: 'grey' }));
-    actions.push(button({ label: 'Out', id: `pf:h:${eventId}:ovst:${targetId}:no`, style: 'no' }));
+    actions.push(button({ label: 'Maybe', id: `pf:h:${eventId}:ovst:${targetId}:maybe`, style: 'grey', emoji: ic('btn_maybe', app) }));
+    actions.push(button({ label: 'Out', id: `pf:h:${eventId}:ovst:${targetId}:no`, style: 'no', emoji: ic('btn_out', app) }));
   }
   rows.push({ type: 1, components: actions });
 
