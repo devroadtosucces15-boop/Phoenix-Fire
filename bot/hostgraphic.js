@@ -11,8 +11,22 @@
 import { facesOf } from './faces.js';
 import { crestData, imageData, sha } from './rosterpic.js';
 
-const W = 1040, H = 720, BANNER_H = 128, FACE_BYTES = 200e3;
+const W = 940, H = 820, BANNER_H = 128, FACE_BYTES = 200e3;
 const FONT = "Oswald, 'Segoe UI', Arial, Helvetica, sans-serif";
+
+// Standalone Circular Gold-Ringed Crest Thumbnail (256×256 transparent PNG for Discord Section accessory).
+export function crestThumbSvg(crest = null) {
+  const S = 256, c = 128;
+  const defs = `<clipPath id="pfCt"><circle cx="${c}" cy="${c}" r="106"/></clipPath>`;
+  let body = `<circle cx="${c}" cy="${c}" r="120" fill="#120d06" stroke="#fbbf24" stroke-width="10"/>`;
+  body += `<circle cx="${c}" cy="${c}" r="108" fill="#1e1609" stroke="#fde68a" stroke-opacity="0.6" stroke-width="3"/>`;
+  if (crest) {
+    body += `<image href="${crest}" x="22" y="22" width="212" height="212" preserveAspectRatio="xMidYMid meet" clip-path="url(#pfCt)"/>`;
+  } else {
+    body += `<text x="${c}" y="152" font-size="82" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">PF</text>`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}"><defs>${defs}</defs>${body}</svg>`;
+}
 
 // Standalone Top Header Banner SVG (1040×128): circular gold-ringed crest on left,
 // PHOENIX FIRE · MATCHDAY gold pill + trophy + League Session + notes aligned on the right.
@@ -240,7 +254,7 @@ export function rollCallSvg(model, faces = new Map()) {
   mappedYes.sort((a, b) => (order[a.prim] ?? 99) - (order[b.prim] ?? 99) || (a.signed_in_at ?? a.at ?? 0) - (b.signed_in_at ?? b.at ?? 0));
   const covered = slots.filter((s) => (bySlot[s.id]?.primary.length ?? 0) > 0).length;
 
-  const banH = 58, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
+  const banH = 62, footH = 44, px = 0, py = banH, pw = 516, ph = H - banH - footH;
   const rx = pw, rw = W - pw;
   let defs = '';
   let body = '';
@@ -249,7 +263,7 @@ export function rollCallSvg(model, faces = new Map()) {
   // Telemetry Top Bar: ATT/MID/DEF/GK chips left + glowing gold symbol counter + formation + X/11 FILLED right
   const barY = 0;
   body += `<rect x="0" y="0" width="${W}" height="${banH}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#fbbf24" stroke-opacity="0.65" stroke-width="1.6"/>`;
+  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#fbbf24" stroke-opacity="0.7" stroke-width="1.8"/>`;
   const chips = [
     ['ATT', lineCnt.att, '#ef4444'],
     ['MID', lineCnt.mid, '#a855f7'],
@@ -257,37 +271,34 @@ export function rollCallSvg(model, faces = new Map()) {
     ['GK', lineCnt.gk, '#3b82f6'],
   ];
   chips.forEach(([lbl, n, col], i) => {
-    const cx = 18 + i * 96;
-    body += `<rect x="${cx}" y="${barY + 13}" width="84" height="28" rx="7" fill="#ffffff" fill-opacity="0.05" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>
-      <circle cx="${cx + 14}" cy="${barY + 27}" r="4.5" fill="${col}"/>
-      <text x="${cx + 26}" y="${barY + 32}" font-size="14" font-weight="700" fill="#e4e4e7" font-family="${FONT}">${lbl} ${n}</text>`;
+    const cx = 14 + i * 86;
+    body += `<rect x="${cx}" y="15" width="78" height="32" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.16" stroke-width="1.1"/>
+      <circle cx="${cx + 13}" cy="31" r="4.8" fill="${col}"/>
+      <text x="${cx + 24}" y="36.5" font-size="15" font-weight="700" fill="#e4e4e7" font-family="${FONT}">${lbl} ${n}</text>`;
   });
 
   // Glowing gold counter with crisp vector symbols (✓ green check, ? amber question, ✕ red cross) + formation + filled badge on right
-  body += `<rect x="572" y="${barY + 12}" width="194" height="30" rx="7" fill="#14161a" stroke="#fbbf24" stroke-opacity="0.85" stroke-width="1.5"/>`;
-  // Green checkmark + yes count
-  body += `<circle cx="593" cy="${barY + 27}" r="8.5" fill="#22c55e" fill-opacity="0.22" stroke="#4ade80" stroke-width="1.2"/>`;
-  body += `<path d="M589.2 ${barY + 27.3}l2.6 2.6 5.2-5.4" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
-  body += `<text x="607" y="${barY + 32}" font-size="15" font-weight="800" fill="#4ade80" font-family="${FONT}">${yes.length}</text>`;
-  body += `<circle cx="635" cy="${barY + 27}" r="1.8" fill="#52525b"/>`;
-  // Amber question mark + maybe count
-  body += `<circle cx="652" cy="${barY + 27}" r="8.5" fill="#f59e0b" fill-opacity="0.22" stroke="#fbbf24" stroke-width="1.2"/>`;
-  body += `<text x="652" y="${barY + 31.5}" font-size="12.5" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">?</text>`;
-  body += `<text x="666" y="${barY + 32}" font-size="15" font-weight="800" fill="#fbbf24" font-family="${FONT}">${maybe.length}</text>`;
-  body += `<circle cx="695" cy="${barY + 27}" r="1.8" fill="#52525b"/>`;
-  // Red X + out count
-  body += `<circle cx="712" cy="${barY + 27}" r="8.5" fill="#ef4444" fill-opacity="0.22" stroke="#f87171" stroke-width="1.2"/>`;
-  body += `<path d="M708.8 ${barY + 23.8}l6.4 6.4M715.2 ${barY + 23.8}l-6.4 6.4" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round"/>`;
-  body += `<text x="726" y="${barY + 32}" font-size="15" font-weight="800" fill="#f87171" font-family="${FONT}">${out.length}</text>`;
-  body += `<rect x="778" y="${barY + 12}" width="112" height="30" rx="7" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.2"/>
-    <text x="834" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
+  body += `<rect x="498" y="14" width="192" height="34" rx="8" fill="#14161a" stroke="#fbbf24" stroke-opacity="0.9" stroke-width="1.6"/>`;
+  body += `<circle cx="519" cy="31" r="9.5" fill="#22c55e" fill-opacity="0.22" stroke="#4ade80" stroke-width="1.3"/>`;
+  body += `<path d="M514.8 31.3l2.9 2.9 5.6-5.8" fill="none" stroke="#4ade80" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  body += `<text x="534" y="36.5" font-size="16" font-weight="800" fill="#4ade80" font-family="${FONT}">${yes.length}</text>`;
+  body += `<circle cx="561" cy="31" r="2" fill="#52525b"/>`;
+  body += `<circle cx="578" cy="31" r="9.5" fill="#f59e0b" fill-opacity="0.22" stroke="#fbbf24" stroke-width="1.3"/>`;
+  body += `<text x="578" y="36" font-size="13.5" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">?</text>`;
+  body += `<text x="593" y="36.5" font-size="16" font-weight="800" fill="#fbbf24" font-family="${FONT}">${maybe.length}</text>`;
+  body += `<circle cx="621" cy="31" r="2" fill="#52525b"/>`;
+  body += `<circle cx="638" cy="31" r="9.5" fill="#ef4444" fill-opacity="0.22" stroke="#f87171" stroke-width="1.3"/>`;
+  body += `<path d="M634.5 27.5l7 7M641.5 27.5l-7 7" fill="none" stroke="#f87171" stroke-width="2.2" stroke-linecap="round"/>`;
+  body += `<text x="653" y="36.5" font-size="16" font-weight="800" fill="#f87171" font-family="${FONT}">${out.length}</text>`;
+  body += `<rect x="700" y="14" width="110" height="34" rx="8" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1.2"/>
+    <text x="755" y="36.5" font-size="15" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
   const fillBg = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
-  const fillOp = closed ? '0.24' : covered === slots.length ? '0.2' : '0.06';
+  const fillOp = closed ? '0.24' : covered === slots.length ? '0.2' : '0.07';
   const fillStroke = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
-  const fillStrOp = closed || covered === slots.length ? '1' : '0.22';
+  const fillStrOp = closed || covered === slots.length ? '1' : '0.24';
   const fillTxt = closed ? 'CLOSED' : `${covered}/${slots.length} FILLED`;
-  body += `<rect x="900" y="${barY + 12}" width="122" height="30" rx="7" fill="${fillBg}" fill-opacity="${fillOp}" stroke="${fillStroke}" stroke-opacity="${fillStrOp}" stroke-width="1.2"/>
-    <text x="961" y="${barY + 32}" font-size="13.5" font-weight="700" text-anchor="middle" fill="${closed ? '#fca5a5' : covered === slots.length ? '#86efac' : '#e5e7eb'}" font-family="${FONT}">${fillTxt}</text>`;
+  body += `<rect x="818" y="14" width="108" height="34" rx="8" fill="${fillBg}" fill-opacity="${fillOp}" stroke="${fillStroke}" stroke-opacity="${fillStrOp}" stroke-width="1.2"/>
+    <text x="872" y="36.5" font-size="14" font-weight="800" text-anchor="middle" fill="${closed ? '#fca5a5' : covered === slots.length ? '#86efac' : '#e5e7eb'}" font-family="${FONT}">${fillTxt}</text>`;
 
   // Left Vertical Pitch
   body += pitchBaseSvg(px, py, pw, ph);
@@ -299,13 +310,13 @@ export function rollCallSvg(model, faces = new Map()) {
     const cy = Math.round(py + (s.y / 100) * ph);
     const st = CAT_STYLE[s.cat] ?? CAT_STYLE.def;
     const d = bySlot[s.id] ?? { primary: [], flex: [] };
-    const r = 24;
+    const r = 26;
     const cid = `nc${clipN++}`;
     defs += `<clipPath id="${cid}"><circle cx="${cx}" cy="${cy}" r="${r - 1}"/></clipPath>`;
     // Circle + faded custom watermark icon (clip-path on outer <g> so transform doesn't shift clip coords)
-    body += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${st.bg}" stroke="${st.ring}" stroke-width="2.6"/>`;
-    body += `<g clip-path="url(#${cid})"><g opacity="0.34" transform="translate(${cx - 21},${cy - 21}) scale(1.75)">${emblemPath(s.id, s.cat, st.fill)}</g></g>`;
-    body += `<text x="${cx}" y="${cy + 5}" font-size="${s.id.length > 3 ? 11.5 : 13}" font-weight="800" text-anchor="middle" fill="#ffffff" font-family="${FONT}">${esc(s.id)}</text>`;
+    body += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${st.bg}" stroke="${st.ring}" stroke-width="2.8"/>`;
+    body += `<g clip-path="url(#${cid})"><g opacity="0.34" transform="translate(${cx - 23},${cy - 23}) scale(1.92)">${emblemPath(s.id, s.cat, st.fill)}</g></g>`;
+    body += `<text x="${cx}" y="${cy + 5.5}" font-size="${s.id.length > 3 ? 12.5 : 14.5}" font-weight="800" text-anchor="middle" fill="#ffffff" font-family="${FONT}">${esc(s.id)}</text>`;
 
     // Side-by-side avatar pill (max 3 + +N 4th circle)
     let belowY = cy + r + 10;
@@ -357,43 +368,43 @@ export function rollCallSvg(model, faces = new Map()) {
   const maxRows = 12;
   const shownPlayers = mappedYes.slice(0, maxRows);
   const hiddenCount = mappedYes.length - shownPlayers.length;
-  const rowH = 38;
+  const rowH = 44;
   shownPlayers.forEach((p, i) => {
     const ry = banH + 46 + i * rowH;
     const st = CAT_STYLE[p.cat] ?? CAT_STYLE.def;
-    body += `<rect x="${rx + 14}" y="${ry}" width="${rw - 28}" height="33" rx="6" fill="#ffffff" fill-opacity="0.03"/>`;
-    body += `<circle cx="${rx + 26}" cy="${ry + 16.5}" r="4" fill="${st.ring}"/>`;
-    body += `<text x="${rx + 38}" y="${ry + 21.5}" font-size="15" font-weight="700" fill="#f3f4f6" font-family="${FONT}">${esc(plain(p.name, 14))}</text>`;
+    body += `<rect x="${rx + 12}" y="${ry}" width="${rw - 24}" height="38" rx="7" fill="#ffffff" fill-opacity="0.035"/>`;
+    body += `<circle cx="${rx + 24}" cy="${ry + 19}" r="4.5" fill="${st.ring}"/>`;
+    body += `<text x="${rx + 36}" y="${ry + 24.5}" font-size="16.5" font-weight="700" fill="#f3f4f6" font-family="${FONT}">${esc(plain(p.name, 13))}</text>`;
 
     // Per-player Average Rating pill + rating-colored 5-match dots (green >=8.0, amber 7.0-7.9, red <7.0)
     const avgVal = typeof p.avg === 'number' && p.avg > 0 ? p.avg : null;
     if (avgVal != null) {
       const ac = avgVal >= 8.0 ? '#4ade80' : avgVal >= 7.0 ? '#fbbf24' : '#f87171';
-      body += `<rect x="${rx + 152}" y="${ry + 6.5}" width="38" height="20" rx="5" fill="${ac}" fill-opacity="0.16" stroke="${ac}" stroke-opacity="0.6" stroke-width="1"/>`;
-      body += `<text x="${rx + 171}" y="${ry + 20.5}" font-size="12" font-weight="800" text-anchor="middle" fill="${ac}" font-family="${FONT}">${avgVal.toFixed(1)}</text>`;
+      body += `<rect x="${rx + 150}" y="${ry + 7.5}" width="42" height="23" rx="5" fill="${ac}" fill-opacity="0.18" stroke="${ac}" stroke-opacity="0.65" stroke-width="1.1"/>`;
+      body += `<text x="${rx + 171}" y="${ry + 23.5}" font-size="13.5" font-weight="800" text-anchor="middle" fill="${ac}" font-family="${FONT}">${avgVal.toFixed(1)}</text>`;
     }
     const form = Array.isArray(p.form) ? p.form.slice(-5) : [];
-    const dotX0 = avgVal != null ? rx + 198 : rx + 174;
+    const dotX0 = avgVal != null ? rx + 200 : rx + 168;
     form.forEach((f, fi) => {
       const fc = f === 'W' || f === 'G' ? '#4ade80' : f === 'D' || f === 'Y' ? '#fbbf24' : '#f87171';
-      body += `<circle cx="${dotX0 + fi * 9}" cy="${ry + 16.5}" r="3.1" fill="${fc}"/>`;
+      body += `<circle cx="${dotX0 + fi * 9.5}" cy="${ry + 19}" r="3.5" fill="${fc}"/>`;
     });
 
     // Primary badge (with custom position icon) + Flex pills right-aligned
-    let tagX = W - 20;
+    let tagX = W - 16;
     const flex = p.mapped.slice(1, 3).reverse();
     for (const fl of flex) {
-      const fw = Math.max(38, fl.length * 8 + 14);
+      const fw = Math.max(38, fl.length * 8.2 + 14);
       tagX -= fw;
-      body += `<rect x="${tagX}" y="${ry + 6}" width="${fw}" height="21" rx="4" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>`;
-      body += `<text x="${tagX + fw / 2}" y="${ry + 20.5}" font-size="11.5" font-weight="700" text-anchor="middle" fill="#a1a1aa" font-family="${FONT}">${esc(fl)}</text>`;
+      body += `<rect x="${tagX}" y="${ry + 7.5}" width="${fw}" height="23" rx="5" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>`;
+      body += `<text x="${tagX + fw / 2}" y="${ry + 23}" font-size="12" font-weight="700" text-anchor="middle" fill="#a1a1aa" font-family="${FONT}">${esc(fl)}</text>`;
       tagX -= 5;
     }
-    const pwBadge = Math.max(58, p.prim.length * 9 + 30);
+    const pwBadge = Math.max(60, p.prim.length * 9.5 + 30);
     tagX -= pwBadge;
-    body += `<rect x="${tagX}" y="${ry + 5}" width="${pwBadge}" height="23" rx="5" fill="${st.badgeBg}" fill-opacity="0.26" stroke="${st.ring}" stroke-width="1.2"/>`;
-    body += miniIconGroup(tagX + 4, ry + 8.5, 16, p.prim, p.cat);
-    body += `<text x="${tagX + 25}" y="${ry + 21}" font-size="12.5" font-weight="800" fill="${st.text}" font-family="${FONT}">${esc(p.prim)}</text>`;
+    body += `<rect x="${tagX}" y="${ry + 6.5}" width="${pwBadge}" height="25" rx="6" fill="${st.badgeBg}" fill-opacity="0.26" stroke="${st.ring}" stroke-width="1.3"/>`;
+    body += miniIconGroup(tagX + 5, ry + 11, 16, p.prim, p.cat);
+    body += `<text x="${tagX + 26}" y="${ry + 23.5}" font-size="13.5" font-weight="800" fill="${st.text}" font-family="${FONT}">${esc(p.prim)}</text>`;
   });
 
   if (hiddenCount > 0) {
@@ -431,7 +442,7 @@ export function lineupStageSvg(model, faces = new Map()) {
   const isCall = mode === 'call';
   const isFinal = mode === 'final';
   const showChem = isFinal || mode === 'suggested';
-  const banH = 58, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
+  const banH = 62, footH = 44, px = 0, py = banH, pw = 516, ph = H - banH - footH;
   const rx = pw, rw = W - pw;
   let defs = '';
   let body = '';
@@ -446,24 +457,24 @@ export function lineupStageSvg(model, faces = new Map()) {
   // Telemetry Top Bar
   const barY = 0;
   body += `<rect x="0" y="0" width="${W}" height="${banH}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#fbbf24" stroke-opacity="0.65" stroke-width="1.6"/>`;
+  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#fbbf24" stroke-opacity="0.7" stroke-width="1.8"/>`;
   if (isCheckin) {
-    body += `<rect x="18" y="${barY + 13}" width="128" height="28" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#22c55e" stroke-width="1.2"/><text x="82" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">${readyCnt} IN LOBBY</text>`;
-    body += `<rect x="156" y="${barY + 13}" width="96" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="204" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${lateCnt} LATE</text>`;
-    body += `<rect x="262" y="${barY + 13}" width="118" height="28" rx="7" fill="#71717a" fill-opacity="0.2" stroke="#52525b" stroke-width="1.2"/><text x="321" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#a1a1aa" font-family="${FONT}">${waitCnt} WAITING</text>`;
+    body += `<rect x="14" y="15" width="124" height="32" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#22c55e" stroke-width="1.2"/><text x="76" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">${readyCnt} IN LOBBY</text>`;
+    body += `<rect x="146" y="15" width="92" height="32" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="192" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${lateCnt} LATE</text>`;
+    body += `<rect x="246" y="15" width="112" height="32" rx="7" fill="#71717a" fill-opacity="0.2" stroke="#52525b" stroke-width="1.2"/><text x="302" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#a1a1aa" font-family="${FONT}">${waitCnt} WAITING</text>`;
   } else if (isCall) {
-    body += `<rect x="18" y="${barY + 13}" width="150" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="93" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${starters.length} CALLED UP</text>`;
-    body += `<rect x="178" y="${barY + 13}" width="130" height="28" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="243" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${bench.length} STANDBY</text>`;
+    body += `<rect x="14" y="15" width="144" height="32" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="86" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${starters.length} CALLED UP</text>`;
+    body += `<rect x="166" y="15" width="124" height="32" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="228" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${bench.length} STANDBY</text>`;
   } else {
-    body += `<rect x="18" y="${barY + 13}" width="138" height="28" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#4ade80" stroke-width="1.2"/><text x="87" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">AVG OVR ${avgOvr ?? '—'}</text>`;
-    body += `<rect x="166" y="${barY + 13}" width="104" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="218" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">CHEM ${chemScore}</text>`;
-    if (winForm != null) body += `<rect x="280" y="${barY + 13}" width="110" height="28" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="335" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${winForm}% FORM</text>`;
+    body += `<rect x="14" y="15" width="134" height="32" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#4ade80" stroke-width="1.2"/><text x="81" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">AVG OVR ${avgOvr ?? '—'}</text>`;
+    body += `<rect x="156" y="15" width="100" height="32" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="206" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">CHEM ${chemScore}</text>`;
+    if (winForm != null) body += `<rect x="264" y="15" width="106" height="32" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="317" y="36.5" font-size="14.5" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${winForm}% FORM</text>`;
   }
 
-  body += `<rect x="760" y="${barY + 12}" width="120" height="30" rx="7" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.2"/><text x="820" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
+  body += `<rect x="668" y="14" width="118" height="34" rx="8" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1.2"/><text x="727" y="36.5" font-size="15" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
   const stageBadge = isCheckin ? `${readyCnt}/${starters.length} READY` : isCall ? 'PROVISIONAL' : mode === 'suggested' ? 'SUGGESTED XI' : 'FINAL XI';
   const sbCol = isFinal ? '#4ade80' : isCall ? '#fcd34d' : '#fde68a';
-  body += `<rect x="890" y="${barY + 12}" width="132" height="30" rx="7" fill="#f59e0b" fill-opacity="0.14" stroke="${sbCol}" stroke-width="1.2"/><text x="956" y="${barY + 32}" font-size="13.5" font-weight="800" text-anchor="middle" fill="${sbCol}" font-family="${FONT}">${stageBadge}</text>`;
+  body += `<rect x="794" y="14" width="132" height="34" rx="8" fill="#f59e0b" fill-opacity="0.14" stroke="${sbCol}" stroke-width="1.3"/><text x="860" y="36.5" font-size="14" font-weight="800" text-anchor="middle" fill="${sbCol}" font-family="${FONT}">${stageBadge}</text>`;
 
   // Left Pitch + Chemistry Link Lines
   body += pitchBaseSvg(px, py, pw, ph);
@@ -649,21 +660,22 @@ export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
     const base = String(env.PUBLIC_URL || '').replace(/\/?$/, '');
     if (!base) return { error: 'PUBLIC_URL is not set.' };
     const ids = [...new Set(userIds.map(String))].slice(0, 24);
+    const isSimple = kind === 'banner' || kind === 'crest';
     const [faceUrls, crest, enrichedModel] = await Promise.all([
-      kind === 'banner' ? Promise.resolve(new Map()) : (ids.length ? facesOf(env, ids) : Promise.resolve(new Map())),
-      kind === 'banner' ? crestData(env) : Promise.resolve(null),
+      isSimple ? Promise.resolve(new Map()) : (ids.length ? facesOf(env, ids) : Promise.resolve(new Map())),
+      isSimple ? crestData(env) : Promise.resolve(null),
       kind === 'rollcall' ? enrichRollCallForm(env, model) : Promise.resolve(model),
     ]);
-    const hash = await sha(JSON.stringify(['v8', kind, enrichedModel, !!crest, ids.map((id) => faceUrls.get(id))]));
+    const hash = await sha(JSON.stringify(['v9', kind, enrichedModel, !!crest, ids.map((id) => faceUrls.get(id))]));
     const key = `ht/${eventId}-${kind}-${hash}.png`;
     if (env.MEDIA) {
       if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };
     } else if (await kv.get(`media:${key}`, 'arrayBuffer')) {
       return { url: `${base}/media/${key}`, key, cached: true };
     }
-    const faces = kind === 'banner' ? new Map() : new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
+    const faces = isSimple ? new Map() : new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
     const fullModel = { ...enrichedModel, crest };
-    const svg = kind === 'banner' ? headerBannerSvg(fullModel) : kind === 'rollcall' ? rollCallSvg(fullModel, faces) : lineupStageSvg(fullModel, faces);
+    const svg = kind === 'crest' ? crestThumbSvg(crest) : kind === 'banner' ? headerBannerSvg(fullModel) : kind === 'rollcall' ? rollCallSvg(fullModel, faces) : lineupStageSvg(fullModel, faces);
     const { svgToPng } = await import('./svgpng.js');
     const png = await svgToPng(svg);
     if (!png || png.byteLength < 2000) return { error: 'Empty PNG returned.' };
