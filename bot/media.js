@@ -28,6 +28,7 @@ export const TYPES = {
   'video/mp4': ['video', 'mp4'], 'video/webm': ['video', 'webm'], 'video/quicktime': ['video', 'mov'],
 };
 const KEY = /^(?:[iv]|card)\/[0-9a-f]{32}\.(jpg|png|webp|gif|mp4|webm|mov)$/;
+const GENERATED_KEY = /^(?:ht|r|q)\/[a-zA-Z0-9_-]{3,90}\.png$/;
 
 const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers: { 'Content-Type': 'application/json' } });
 const fail = (msg, status = 400) => json({ error: msg }, status);
@@ -203,7 +204,7 @@ export async function mediaRoute(p, method, body, me, env, log) {
 // GET /media/<key> – straight from R2. Types come from our whitelist and nosniff + a sandbox CSP stop a file being
 // run as a page if someone opens it directly. Video players get byte ranges.
 export async function serveMedia(request, env, key) {
-  if (!env.MEDIA || !KEY.test(key) || !['GET', 'HEAD'].includes(request.method)) return new Response('Not found', { status: 404 });
+  if (!env.MEDIA || !(KEY.test(key) || GENERATED_KEY.test(key)) || !['GET', 'HEAD'].includes(request.method)) return new Response('Not found', { status: 404 });
   const ranged = request.headers.has('Range');
   const obj = await env.MEDIA.get(key, { range: ranged ? request.headers : undefined, onlyIf: request.headers });
   if (!obj) return new Response('This clip has expired.', { status: 404, headers: { 'Cache-Control': 'public, max-age=300' } });
@@ -255,7 +256,7 @@ export async function mediaCron(env, now = Date.now()) {
   if (bytes > GUARD_HIGH) {
     for (const o of objects.sort((a, b) => a.at - b.at)) {
       if (bytes <= GUARD_LOW) break;
-      if (o.key.startsWith('hl/') || o.key.startsWith('emoji/') || o.key.startsWith('gif/') || o.key.startsWith('gifin/') || o.key.startsWith('play/') || o.key.startsWith('card/') || o.key.startsWith('cardphoto/') || o.key.startsWith('cardresult/')) continue; // BE1 playbook documents aren't disposable like feed photos/clips
+      if (o.key.startsWith('hl/') || o.key.startsWith('emoji/') || o.key.startsWith('gif/') || o.key.startsWith('gifin/') || o.key.startsWith('play/') || o.key.startsWith('card/') || o.key.startsWith('cardphoto/') || o.key.startsWith('cardresult/') || o.key.startsWith('ht/') || o.key.startsWith('r/') || o.key.startsWith('q/')) continue; // BE1 playbook documents aren't disposable like feed photos/clips
       dropped.push(o.key); bytes -= o.size;
     }
     if (dropped.length) {

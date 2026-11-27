@@ -52,6 +52,11 @@ jobs:
           DISCORD_BOT_TOKEN_MATCHDAY: ${{ secrets.DISCORD_BOT_TOKEN_MATCHDAY }}
           DISCORD_BOT_TOKEN_RUSH: ${{ secrets.DISCORD_BOT_TOKEN_RUSH }}
 
+      - name: Install bot dependencies
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        working-directory: bot
+        run: npm install --no-audit --no-fund
+
       - name: Deploy to Cloudflare Workers
         if: env.CLOUDFLARE_API_TOKEN != ''
         working-directory: bot
