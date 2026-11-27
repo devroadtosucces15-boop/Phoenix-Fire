@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-27T19:21:55.469Z",
+ "fetchedAt": "2026-11-27T19:30:39.398Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -115,42 +115,6 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "midfielder"
-  },
-  {
-   "name": "OH-912",
-   "gamesPlayed": "19",
-   "winRate": "78",
-   "goals": "10",
-   "assists": "13",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "47",
-   "passesMade": "256",
-   "passSuccessRate": "81",
-   "ratingAve": "7.5",
-   "tacklesMade": "21",
-   "tackleSuccessRate": "42",
-   "proName": "O H",
-   "proPos": "25",
-   "proStyle": "0",
-   "proHeight": "170",
-   "proNationality": "42",
-   "proOverall": "81",
-   "proOverallStr": "81",
-   "manOfTheMatch": "1",
-   "redCards": "0",
-   "prevGoals": "1",
-   "prevGoals1": "1",
-   "prevGoals2": "1",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "2",
-   "prevGoals7": "0",
-   "prevGoals8": "2",
-   "prevGoals9": "0",
-   "prevGoals10": "1",
-   "favoritePosition": "forward"
   },
   {
    "name": "Bantu Vikng",
@@ -1848,7 +1812,7 @@
  "positionCount": {
   "midfielder": 7,
   "goalkeeper": 3,
-  "forward": 14,
+  "forward": 13,
   "defender": 7
  },
  "career": [
@@ -1873,17 +1837,6 @@
    "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "defender"
-  },
-  {
-   "name": "OH-912",
-   "proPos": "25",
-   "gamesPlayed": "37",
-   "goals": "18",
-   "assists": "19",
-   "manOfTheMatch": "1",
-   "ratingAve": "7.5",
-   "prevGoals": "1",
-   "favoritePosition": "forward"
   },
   {
    "name": "Blue14army",
@@ -1920,14 +1873,14 @@
   },
   {
    "name": "RealMinato7",
-   "proPos": "5",
-   "gamesPlayed": "347",
+   "proPos": "25",
+   "gamesPlayed": "348",
    "goals": "150",
    "assists": "162",
    "manOfTheMatch": "29",
    "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "defender"
+   "favoritePosition": "forward"
   },
   {
    "name": "Bantu Vikng",
@@ -2162,14 +2115,14 @@
   },
   {
    "name": "AliasX47",
-   "proPos": "14",
-   "gamesPlayed": "404",
+   "proPos": "5",
+   "gamesPlayed": "405",
    "goals": "480",
    "assists": "271",
    "manOfTheMatch": "47",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "defender"
   },
   {
    "name": "Zorg7",
@@ -2229,12 +2182,12 @@
   {
    "name": "Usman4518",
    "proPos": "14",
-   "gamesPlayed": "294",
+   "gamesPlayed": "295",
    "goals": "214",
    "assists": "240",
    "manOfTheMatch": "48",
    "ratingAve": "7.5",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   },
   {
@@ -2306,7 +2259,7 @@
   {
    "name": "Jaliens45",
    "proPos": "5",
-   "gamesPlayed": "88",
+   "gamesPlayed": "89",
    "goals": "18",
    "assists": "28",
    "manOfTheMatch": "6",
@@ -2383,12 +2336,12 @@
   {
    "name": "Morpho Vs All",
    "proPos": "14",
-   "gamesPlayed": "410",
+   "gamesPlayed": "411",
    "goals": "203",
    "assists": "143",
    "manOfTheMatch": "55",
    "ratingAve": "7.4",
-   "prevGoals": "1",
+   "prevGoals": "0",
    "favoritePosition": "midfielder"
   }
  ],
@@ -2410,6 +2363,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-27T19:21:55.469Z"
+  "fetchedAt": "2026-11-27T19:30:39.398Z"
  }
 }
