@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-27T19:40:41.133Z",
+ "fetchedAt": "2026-11-27T19:48:42.939Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -223,42 +223,6 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "forward"
-  },
-  {
-   "name": "Bantu Vikng",
-   "gamesPlayed": "3",
-   "winRate": "33",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "38",
-   "passSuccessRate": "79",
-   "ratingAve": "7.1",
-   "tacklesMade": "4",
-   "tackleSuccessRate": "80",
-   "proName": "Vikng",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "167",
-   "proNationality": "14",
-   "proOverall": "82",
-   "proOverallStr": "82",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
   },
   {
    "name": "Der_Synnlos",
@@ -586,7 +550,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 5,
+  "midfielder": 4,
   "goalkeeper": 0,
   "forward": 7,
   "defender": 1
@@ -635,17 +599,6 @@
    "ratingAve": "7.6",
    "prevGoals": "1",
    "favoritePosition": "forward"
-  },
-  {
-   "name": "Bantu Vikng",
-   "proPos": "5",
-   "gamesPlayed": "46",
-   "goals": "2",
-   "assists": "2",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.0",
-   "prevGoals": "0",
-   "favoritePosition": "defender"
   },
   {
    "name": "Der_Synnlos",
@@ -765,6 +718,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-27T19:40:41.133Z"
+  "fetchedAt": "2026-11-27T19:48:42.939Z"
  }
 }
