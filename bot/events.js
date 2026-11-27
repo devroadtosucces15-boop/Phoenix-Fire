@@ -279,14 +279,20 @@ export const rsvpRows = (env, id) => all(env, 'SELECT r.status, r.name, r.user_i
 export async function refreshEventPost(env, id) {
   try {
     const e = await one(env, 'SELECT * FROM events WHERE id = ?', id);
-    if (!e?.discord_msg || !e.discord_channel || !env.DISCORD_BOT_TOKEN) return;
+    const tokens = [...new Set([env.DISCORD_BOT_TOKEN_MATCHDAY, env.DISCORD_BOT_TOKEN].filter(Boolean))];
+    if (!e?.discord_msg || !e.discord_channel || !tokens.length) return;
     const msg = await eventPost(env, e, await rsvpRows(env, id), e.series ? 'Weekly · ' : '');
-    const patch = (body) => fetch(`https://discord.com/api/v10/channels/${e.discord_channel}/messages/${e.discord_msg}`, {
-      method: 'PATCH', headers: { Authorization: `Bot ${env.DISCORD_BOT_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-    });
-    // posts made before the design system can't always switch layout → keep them up to date in the old embed style
-    const r = await patch({ components: msg.components, flags: msg.flags });
-    if (!r.ok) await patch(toLegacy(msg));
+    for (const tok of tokens) {
+      const patch = (body) => fetch(`https://discord.com/api/v10/channels/${e.discord_channel}/messages/${e.discord_msg}`, {
+        method: 'PATCH', headers: { Authorization: `Bot ${tok}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+      });
+      const r = await patch({ components: msg.components, flags: msg.flags });
+      if (r.ok) return;
+      if (r.status !== 403 && r.status !== 404) {
+        const leg = await patch(toLegacy(msg));
+        if (leg.ok) return;
+      }
+    }
   } catch (err) { console.log('event post refresh failed', err.message); }
 }
 // People to tell about a change: everyone who said yes or maybe.
