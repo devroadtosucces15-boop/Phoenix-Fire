@@ -233,10 +233,12 @@ export function rollCallSvg(model, faces = new Map()) {
     </text>`;
   body += `<rect x="778" y="14" width="112" height="30" rx="7" fill="#23262e" stroke="#3f434e" stroke-width="1.2"/>
     <text x="834" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
-  const fillBg = closed ? 'rgba(239,68,68,0.24)' : covered === slots.length ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.06)';
-  const fillStroke = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : 'rgba(255,255,255,0.18)';
+  const fillBg = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
+  const fillOp = closed ? '0.24' : covered === slots.length ? '0.2' : '0.06';
+  const fillStroke = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
+  const fillStrOp = closed || covered === slots.length ? '1' : '0.18';
   const fillTxt = closed ? 'CLOSED' : `${covered}/${slots.length} FILLED`;
-  body += `<rect x="900" y="14" width="122" height="30" rx="7" fill="${fillBg}" stroke="${fillStroke}" stroke-width="1.2"/>
+  body += `<rect x="900" y="14" width="122" height="30" rx="7" fill="${fillBg}" fill-opacity="${fillOp}" stroke="${fillStroke}" stroke-opacity="${fillStrOp}" stroke-width="1.2"/>
     <text x="961" y="34" font-size="13.5" font-weight="700" text-anchor="middle" fill="${closed ? '#fca5a5' : covered === slots.length ? '#86efac' : '#e5e7eb'}" font-family="${FONT}">${fillTxt}</text>`;
 
   // Left Vertical Pitch
@@ -491,10 +493,10 @@ export function lineupStageSvg(model, faces = new Map()) {
 
     if (isCheckin) {
       const ci = stOf(p.id);
-      const cbg = ci === 'ready' ? 'rgba(34,197,94,0.2)' : ci === 'late' ? 'rgba(245,158,11,0.2)' : 'rgba(113,113,122,0.22)';
+      const cbg = ci === 'ready' ? '#22c55e' : ci === 'late' ? '#f59e0b' : '#71717a';
       const cst = ci === 'ready' ? '#22c55e' : ci === 'late' ? '#f59e0b' : '#52525b';
       const ctx = ci === 'ready' ? 'IN LOBBY' : ci === 'late' ? 'LATE' : 'WAITING';
-      body += `<rect x="${W - 104}" y="${ry + 7}" width="84" height="22" rx="5" fill="${cbg}" stroke="${cst}" stroke-width="1.1"/><text x="${W - 62}" y="${ry + 22}" font-size="11.5" font-weight="800" text-anchor="middle" fill="${ci === 'ready' ? '#86efac' : ci === 'late' ? '#fcd34d' : '#a1a1aa'}" font-family="${FONT}">${ctx}</text>`;
+      body += `<rect x="${W - 104}" y="${ry + 7}" width="84" height="22" rx="5" fill="${cbg}" fill-opacity="0.2" stroke="${cst}" stroke-width="1.1"/><text x="${W - 62}" y="${ry + 22}" font-size="11.5" font-weight="800" text-anchor="middle" fill="${ci === 'ready' ? '#86efac' : ci === 'late' ? '#fcd34d' : '#a1a1aa'}" font-family="${FONT}">${ctx}</text>`;
     } else if (isCall) {
       body += `<rect x="${W - 108}" y="${ry + 7}" width="88" height="22" rx="5" fill="#f59e0b" fill-opacity="0.18" stroke="#f59e0b" stroke-width="1.1"/><text x="${W - 64}" y="${ry + 22}" font-size="11.5" font-weight="800" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">CALLED UP</text>`;
     } else {
@@ -524,24 +526,27 @@ export function lineupStageSvg(model, faces = new Map()) {
 
 const faceData = (url) => (url ? imageData(/^https:\/\/cdn\.discordapp\.com\//.test(url) && !url.includes('?') ? `${url}?size=128` : url, FACE_BYTES) : null);
 
-// Renders any Pro Telemetry graphic via Cloudflare env.IMAGES → R2 env.MEDIA with content-hash caching. Never throws.
+// Renders any Pro Telemetry graphic via @resvg/resvg-wasm → R2 env.MEDIA with content-hash caching. Never throws.
 export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
   try {
-    if (!env?.IMAGES?.input || !env?.MEDIA) return { error: 'Images/MEDIA bindings unavailable.' };
+    if (!env?.MEDIA) return { error: 'MEDIA binding unavailable.' };
     const base = String(env.PUBLIC_URL || '').replace(/\/?$/, '');
     if (!base) return { error: 'PUBLIC_URL is not set.' };
     const ids = [...new Set(userIds.map(String))].slice(0, 24);
     const faceUrls = ids.length ? await facesOf(env, ids) : new Map();
-    const hash = await sha(JSON.stringify([kind, model, ids.map((id) => faceUrls.get(id))]));
+    const hash = await sha(JSON.stringify(['v3', kind, model, ids.map((id) => faceUrls.get(id))]));
     const key = `ht/${eventId}-${kind}-${hash}.png`;
     if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };
     const faces = new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
     const svg = kind === 'rollcall' ? rollCallSvg(model, faces) : lineupStageSvg(model, faces);
-    const out = await env.IMAGES.input(new Blob([svg], { type: 'image/svg+xml' }).stream()).output({ format: 'image/png' });
-    const png = await out.response().arrayBuffer();
-    if (png.byteLength < 2000) return { error: 'Empty PNG returned.' };
+    const { svgToPng } = await import('./svgpng.js');
+    const png = await svgToPng(svg);
+    if (!png || png.byteLength < 2000) return { error: 'Empty PNG returned.' };
     await env.MEDIA.put(key, png, { httpMetadata: { contentType: 'image/png', cacheControl: 'public, max-age=31536000, immutable' } });
     env.MEDIA.list?.({ prefix: `ht/${eventId}-${kind}-`, limit: 40 }).then((l) => l.objects.filter((o) => o.key !== key).forEach((o) => env.MEDIA.delete(o.key).catch(() => {}))).catch(() => {});
     return { url: `${base}/media/${key}`, key, cached: false };
-  } catch (err) { return { error: String(err?.message ?? err).slice(0, 200) }; }
+  } catch (err) {
+    console.log('drawHostGraphic failed:', err?.message ?? err);
+    return { error: String(err?.message ?? err).slice(0, 200) };
+  }
 }

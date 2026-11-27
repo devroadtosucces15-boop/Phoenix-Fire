@@ -99,3 +99,8 @@ queue = "phoenix-jobs"
 
 [[queues.consumers]]
 queue = "phoenix-jobs"
+
+[[rules]]
+type = "Data"
+globs = ["**/*.ttf"]
+fallthrough = true
