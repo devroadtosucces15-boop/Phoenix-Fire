@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-27T19:14:45.322Z",
+ "fetchedAt": "2026-11-27T19:18:03.886Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -765,42 +765,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Usman4518",
-   "gamesPlayed": "10",
-   "winRate": "100",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "2",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "147",
-   "passSuccessRate": "90",
-   "ratingAve": "7.4",
-   "tacklesMade": "9",
-   "tackleSuccessRate": "56",
-   "proName": "Lil Uzi",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "179",
-   "proNationality": "0",
-   "proOverall": "87",
-   "proOverallStr": "87",
-   "manOfTheMatch": "1",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
    "name": "Andywcx",
    "gamesPlayed": "21",
    "winRate": "95",
@@ -1414,7 +1378,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 6,
+  "midfielder": 5,
   "goalkeeper": 4,
   "forward": 12,
   "defender": 11
@@ -1663,17 +1627,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Usman4518",
-   "proPos": "14",
-   "gamesPlayed": "294",
-   "goals": "214",
-   "assists": "240",
-   "manOfTheMatch": "48",
-   "ratingAve": "7.5",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
-  },
-  {
    "name": "Andywcx",
    "proPos": "25",
    "gamesPlayed": "125",
@@ -1846,6 +1799,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 4,
-  "fetchedAt": "2026-11-27T19:14:45.322Z"
+  "fetchedAt": "2026-11-27T19:18:03.886Z"
  }
 }
