@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-27T19:56:43.873Z",
+ "fetchedAt": "2026-11-27T20:06:40.002Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1716,11 +1716,11 @@
   {
    "name": "Bantu Vikng",
    "proPos": "5",
-   "gamesPlayed": "47",
+   "gamesPlayed": "48",
    "goals": "2",
    "assists": "2",
    "manOfTheMatch": "0",
-   "ratingAve": "7.0",
+   "ratingAve": "6.9",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
@@ -1738,11 +1738,11 @@
   {
    "name": "Cash711Money",
    "proPos": "25",
-   "gamesPlayed": "5",
+   "gamesPlayed": "6",
    "goals": "0",
    "assists": "0",
    "manOfTheMatch": "0",
-   "ratingAve": "6.9",
+   "ratingAve": "7.0",
    "prevGoals": "0",
    "favoritePosition": "forward"
   },
@@ -1903,7 +1903,7 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "286",
+   "gamesPlayed": "287",
    "goals": "180",
    "assists": "232",
    "manOfTheMatch": "11",
@@ -2024,7 +2024,7 @@
   {
    "name": "Glekke-93",
    "proPos": "0",
-   "gamesPlayed": "111",
+   "gamesPlayed": "112",
    "goals": "93",
    "assists": "45",
    "manOfTheMatch": "21",
@@ -2128,6 +2128,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-27T19:56:43.873Z"
+  "fetchedAt": "2026-11-27T20:06:40.002Z"
  }
 }
