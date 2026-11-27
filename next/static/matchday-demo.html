@@ -283,8 +283,14 @@
     min-height: 405px;
   }
   @media (max-width: 560px) {
-    .graphic-body { grid-template-columns: 1fr; }
-    .pitch { height: 340px; border-right: none; border-bottom: 1px solid rgba(232,101,26,0.28); }
+    .graphic-body { grid-template-columns: 1.25fr 1fr; min-height: 290px; }
+    .pos-circle { width: 24px; height: 24px; font-size: 7px; }
+    .av { width: 13px; height: 13px; font-size: 7px; }
+    .p-name { font-size: 8.5px; }
+    .t-prim { font-size: 7px; padding: 1px 3px; }
+    .t-flex { font-size: 6.5px; padding: 0.5px 2.5px; }
+    .roster { padding: 5px 5px; }
+    .roster-foot { font-size: 7.5px; }
   }
 
   /* Vertical Pitch */
@@ -493,8 +499,8 @@
     .bot-avatar { width: 32px; height: 32px; }
     .v2-section-row, .card-top { flex-wrap: wrap; }
     .graphic-banner { flex-wrap: wrap; gap: 6px; padding: 8px; }
-    .graphic-body { grid-template-columns: 1fr; min-height: auto; }
-    .pitch { height: 380px; border-right: none; border-bottom: 1px solid rgba(245,158,11,0.42); }
+    .graphic-body { grid-template-columns: 1.25fr 1fr; min-height: 290px; }
+    .pitch { border-right: 1px solid rgba(245,158,11,0.42); border-bottom: none; }
     .btn-row.grid5 { grid-template-columns: repeat(3, 1fr); }
     .d-btn { height: 36px; font-size: 12px; padding: 0 9px; }
     .pro-strip { flex-direction: column; align-items: flex-start; gap: 3px; }
