@@ -9,10 +9,45 @@
 //                                all-time stat lines, and AVG OVR / CHEM / FORM header.
 //   5. Suggested XI (private)  – auto-picked Best XI from live sign-ups using all-time stats + chemistry links.
 import { facesOf } from './faces.js';
-import { imageData, sha } from './rosterpic.js';
+import { crestData, imageData, sha } from './rosterpic.js';
 
-const W = 1040, H = 720, FACE_BYTES = 200e3;
+const W = 1040, BRAND_H = 66, BAR_H = 54, H = 786, FACE_BYTES = 200e3;
 const FONT = "Oswald, 'Segoe UI', Arial, Helvetica, sans-serif";
+
+function brandBannerSvg({ org = 'PHOENIX FIRE', title = 'LEAGUE SESSION', formation = '3-5-2', stageLabel = 'ROLL CALL', stageColor = '#fbbf24', crest = null }) {
+  const orgTxt = `${plain(org, 22).toUpperCase()} · MATCHDAY`;
+  const titleTxt = `${plain(title, 26).toUpperCase()} · ${formation}`;
+  const pillW = Math.max(150, orgTxt.length * 8.2 + 24);
+  const stageW = Math.max(138, stageLabel.length * 9.2 + 28);
+  let d = `<linearGradient id="pfBrandBg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#3a2705"/><stop offset="45%" stop-color="#191610"/><stop offset="100%" stop-color="#2c1e06"/></linearGradient>`;
+  d += `<linearGradient id="pfGoldBar" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f59e0b"/><stop offset="50%" stop-color="#fde68a"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient>`;
+  d += `<clipPath id="pfCrestClip"><circle cx="44" cy="34" r="21"/></clipPath>`;
+  let b = `<rect x="0" y="0" width="${W}" height="${BRAND_H}" fill="url(#pfBrandBg)"/>`;
+  b += `<rect x="0" y="0" width="${W}" height="4" fill="url(#pfGoldBar)"/>`;
+  b += `<line x1="0" y1="${BRAND_H}" x2="${W}" y2="${BRAND_H}" stroke="#fbbf24" stroke-opacity="0.75" stroke-width="1.8"/>`;
+  // Gold circular crest emblem
+  b += `<circle cx="44" cy="34" r="24" fill="#120e07" stroke="#fbbf24" stroke-width="2.4"/>`;
+  b += `<circle cx="44" cy="34" r="21" fill="#1f1709" stroke="#fde68a" stroke-opacity="0.45" stroke-width="1"/>`;
+  if (crest) {
+    b += `<image href="${crest}" x="23" y="13" width="42" height="42" preserveAspectRatio="xMidYMid slice" clip-path="url(#pfCrestClip)"/>`;
+  } else {
+    b += `<text x="44" y="40" font-size="16" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">PF</text>`;
+  }
+  // Gold eyebrow banner pill: PHOENIX FIRE · MATCHDAY
+  b += `<rect x="80" y="9" width="${pillW}" height="20" rx="5" fill="#f59e0b" fill-opacity="0.18" stroke="#fbbf24" stroke-opacity="0.7" stroke-width="1"/>`;
+  b += `<text x="92" y="23" font-size="11.5" font-weight="800" letter-spacing="1.2" fill="#fde68a" font-family="${FONT}">${esc(orgTxt)}</text>`;
+  // Crisp vector Gold Trophy icon + League Session title
+  b += `<g transform="translate(80,35) scale(0.95)">
+    <path d="M4 2h12v5a6 6 0 0 1-12 0V2z" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+    <path d="M4 4H1.5a2 2 0 0 0 0 4H4M16 4h2.5a2 2 0 0 1 0 4H16" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M10 13v4M6.5 17h7" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+  </g>`;
+  b += `<text x="106" y="54" font-size="22" font-weight="800" fill="#ffffff" font-family="${FONT}">${esc(titleTxt)}</text>`;
+  // Stage badge on right
+  b += `<rect x="${W - stageW - 18}" y="17" width="${stageW}" height="32" rx="8" fill="#14110a" stroke="${stageColor}" stroke-width="1.8"/>`;
+  b += `<text x="${W - stageW / 2 - 18}" y="38.5" font-size="14" font-weight="800" text-anchor="middle" letter-spacing="1" fill="${stageColor}" font-family="${FONT}">${esc(stageLabel)}</text>`;
+  return { defs: d, body: b };
+}
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const plain = (s, max = 16) => (String(s ?? '').replace(/[^\p{L}\p{N}\p{M} ._\-'|]/gu, '').replace(/\s+/g, ' ').trim() || '?').slice(0, max);
 const initialOf = (s) => (plain(s, 30).match(/[\p{L}\p{N}]/gu) ?? ['?'])[0].toUpperCase();
@@ -203,16 +238,24 @@ export function rollCallSvg(model, faces = new Map()) {
   mappedYes.sort((a, b) => (order[a.prim] ?? 99) - (order[b.prim] ?? 99) || (a.signed_in_at ?? a.at ?? 0) - (b.signed_in_at ?? b.at ?? 0));
   const covered = slots.filter((s) => (bySlot[s.id]?.primary.length ?? 0) > 0).length;
 
-  const banH = 58, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
+  const banH = BRAND_H + BAR_H, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
   const rx = pw, rw = W - pw;
-  let defs = `
-    `;
-  let body = '';
+  const brand = brandBannerSvg({
+    org: model.org,
+    title: model.title || 'League session',
+    formation,
+    stageLabel: closed ? 'SIGN-UPS CLOSED' : 'ROLL CALL',
+    stageColor: closed ? '#f87171' : '#fbbf24',
+    crest: model.crest ?? null,
+  });
+  let defs = brand.defs;
+  let body = brand.body;
   let clipN = 0;
 
-  // Top Banner Bar: ATT/MID/DEF/GK chips left + glowing gold counter + formation + X/11 FILLED right
-  body += `<rect x="0" y="0" width="${W}" height="${banH}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#f59e0b" stroke-opacity="0.55" stroke-width="1.5"/>`;
+  // Telemetry Sub-Bar: ATT/MID/DEF/GK chips left + glowing gold counter + formation + X/11 FILLED right
+  const barY = BRAND_H;
+  body += `<rect x="0" y="${barY}" width="${W}" height="${BAR_H}" fill="#14161b"/>`;
+  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#f59e0b" stroke-opacity="0.6" stroke-width="1.5"/>`;
   const chips = [
     ['ATT', lineCnt.att, '#ef4444'],
     ['MID', lineCnt.mid, '#a855f7'],
@@ -221,25 +264,25 @@ export function rollCallSvg(model, faces = new Map()) {
   ];
   chips.forEach(([lbl, n, col], i) => {
     const cx = 18 + i * 96;
-    body += `<rect x="${cx}" y="15" width="84" height="28" rx="7" fill="#ffffff" fill-opacity="0.05" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1"/>
-      <circle cx="${cx + 14}" cy="29" r="4.5" fill="${col}"/>
-      <text x="${cx + 26}" y="34" font-size="14" font-weight="700" fill="#e4e4e7" font-family="${FONT}">${lbl} ${n}</text>`;
+    body += `<rect x="${cx}" y="${barY + 13}" width="84" height="28" rx="7" fill="#ffffff" fill-opacity="0.05" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1"/>
+      <circle cx="${cx + 14}" cy="${barY + 27}" r="4.5" fill="${col}"/>
+      <text x="${cx + 26}" y="${barY + 32}" font-size="14" font-weight="700" fill="#e4e4e7" font-family="${FONT}">${lbl} ${n}</text>`;
   });
 
   // Glowing gold counter + formation + filled badge on right
-  body += `<rect x="572" y="14" width="194" height="30" rx="7" fill="#14161a" stroke="#f59e0b" stroke-opacity="0.75" stroke-width="1.4"/>
-    <text x="669" y="34" font-size="15" font-weight="700" text-anchor="middle" font-family="${FONT}">
+  body += `<rect x="572" y="${barY + 12}" width="194" height="30" rx="7" fill="#14161a" stroke="#fbbf24" stroke-opacity="0.85" stroke-width="1.5"/>
+    <text x="669" y="${barY + 32}" font-size="15" font-weight="700" text-anchor="middle" font-family="${FONT}">
       <tspan fill="#4ade80">IN ${yes.length}</tspan><tspan fill="#52525b">  ·  </tspan><tspan fill="#fbbf24">M ${maybe.length}</tspan><tspan fill="#52525b">  ·  </tspan><tspan fill="#f87171">OUT ${out.length}</tspan>
     </text>`;
-  body += `<rect x="778" y="14" width="112" height="30" rx="7" fill="#23262e" stroke="#3f434e" stroke-width="1.2"/>
-    <text x="834" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
+  body += `<rect x="778" y="${barY + 12}" width="112" height="30" rx="7" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.2"/>
+    <text x="834" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
   const fillBg = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
   const fillOp = closed ? '0.24' : covered === slots.length ? '0.2' : '0.06';
   const fillStroke = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
-  const fillStrOp = closed || covered === slots.length ? '1' : '0.18';
+  const fillStrOp = closed || covered === slots.length ? '1' : '0.22';
   const fillTxt = closed ? 'CLOSED' : `${covered}/${slots.length} FILLED`;
-  body += `<rect x="900" y="14" width="122" height="30" rx="7" fill="${fillBg}" fill-opacity="${fillOp}" stroke="${fillStroke}" stroke-opacity="${fillStrOp}" stroke-width="1.2"/>
-    <text x="961" y="34" font-size="13.5" font-weight="700" text-anchor="middle" fill="${closed ? '#fca5a5' : covered === slots.length ? '#86efac' : '#e5e7eb'}" font-family="${FONT}">${fillTxt}</text>`;
+  body += `<rect x="900" y="${barY + 12}" width="122" height="30" rx="7" fill="${fillBg}" fill-opacity="${fillOp}" stroke="${fillStroke}" stroke-opacity="${fillStrOp}" stroke-width="1.2"/>
+    <text x="961" y="${barY + 32}" font-size="13.5" font-weight="700" text-anchor="middle" fill="${closed ? '#fca5a5' : covered === slots.length ? '#86efac' : '#e5e7eb'}" font-family="${FONT}">${fillTxt}</text>`;
 
   // Left Vertical Pitch
   body += pitchBaseSvg(px, py, pw, ph);
@@ -254,9 +297,9 @@ export function rollCallSvg(model, faces = new Map()) {
     const r = 24;
     const cid = `nc${clipN++}`;
     defs += `<clipPath id="${cid}"><circle cx="${cx}" cy="${cy}" r="${r - 1}"/></clipPath>`;
-    // Circle + blurred watermark icon
+    // Circle + faded custom watermark icon (clip-path on outer <g> so transform doesn't shift clip coords)
     body += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${st.bg}" stroke="${st.ring}" stroke-width="2.6"/>`;
-    body += `<g clip-path="url(#${cid})" opacity="0.44" transform="translate(${cx - 22},${cy - 22}) scale(1.85)">${emblemPath(s.id, s.cat, st.fill)}</g>`;
+    body += `<g clip-path="url(#${cid})"><g opacity="0.34" transform="translate(${cx - 21},${cy - 21}) scale(1.75)">${emblemPath(s.id, s.cat, st.fill)}</g></g>`;
     body += `<text x="${cx}" y="${cy + 5}" font-size="${s.id.length > 3 ? 11.5 : 13}" font-weight="800" text-anchor="middle" fill="#ffffff" font-family="${FONT}">${esc(s.id)}</text>`;
 
     // Side-by-side avatar pill (max 3 + +N 4th circle)
@@ -362,7 +405,7 @@ export function rollCallSvg(model, faces = new Map()) {
   body += `<text x="20" y="${H - 14}" font-size="14" font-weight="700" fill="#fbbf24" font-family="${FONT}">${esc(teleText)}</text>`;
   body += `<text x="${W - 20}" y="${H - 14}" font-size="13" font-weight="600" text-anchor="end" fill="#a1a1aa" font-family="${FONT}">Chem Links Active in Suggested XI</text>`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${defs}</defs><rect width="${W}" height="${H}" rx="16" fill="#0b0c0e"/>${body}<rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="15" fill="none" stroke="#f59e0b" stroke-opacity="0.7" stroke-width="2.5"/></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${defs}</defs><rect width="${W}" height="${H}" rx="16" fill="#0b0c0e"/>${body}<rect x="2" y="2" width="${W - 4}" height="${H - 4}" rx="15" fill="none" stroke="#fbbf24" stroke-width="3.5"/><rect x="6" y="6" width="${W - 12}" height="${H - 12}" rx="12" fill="none" stroke="#f59e0b" stroke-opacity="0.28" stroke-width="1"/></svg>`;
 }
 
 // ---------- Stages 2, 3, 4 & Private Suggested XI SVG ----------
@@ -376,10 +419,19 @@ export function lineupStageSvg(model, faces = new Map()) {
   const isCall = mode === 'call';
   const isFinal = mode === 'final';
   const showChem = isFinal || mode === 'suggested';
-  const banH = 58, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
+  const banH = BRAND_H + BAR_H, footH = 40, px = 0, py = banH, pw = 592, ph = H - banH - footH;
   const rx = pw, rw = W - pw;
-  let defs = ``;
-  let body = '';
+  const stageTitle = isCheckin ? 'LOBBY CHECK-IN' : isCall ? 'PROVISIONAL XI' : mode === 'suggested' ? 'SUGGESTED XI' : 'OFFICIAL FINAL XI';
+  const brand = brandBannerSvg({
+    org: model.org,
+    title: model.title || 'League session',
+    formation,
+    stageLabel: stageTitle,
+    stageColor: isFinal ? '#4ade80' : '#fbbf24',
+    crest: model.crest ?? null,
+  });
+  let defs = brand.defs;
+  let body = brand.body;
   let clipN = 0;
 
   const starters = slots.map((s) => ({ s, pick: assigned[s.id] })).filter((x) => x.pick);
@@ -388,26 +440,27 @@ export function lineupStageSvg(model, faces = new Map()) {
   const lateCnt = starters.filter((x) => stOf(x.pick.p.id) === 'late').length;
   const waitCnt = starters.length - readyCnt - lateCnt;
 
-  // Top Banner Bar
-  body += `<rect x="0" y="0" width="${W}" height="${banH}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#f59e0b" stroke-opacity="0.55" stroke-width="1.5"/>`;
+  // Telemetry Sub-Bar
+  const barY = BRAND_H;
+  body += `<rect x="0" y="${barY}" width="${W}" height="${BAR_H}" fill="#14161b"/>`;
+  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#f59e0b" stroke-opacity="0.6" stroke-width="1.5"/>`;
   if (isCheckin) {
-    body += `<rect x="18" y="15" width="128" height="28" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#22c55e" stroke-width="1.2"/><text x="82" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">${readyCnt} IN LOBBY</text>`;
-    body += `<rect x="156" y="15" width="96" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="204" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${lateCnt} LATE</text>`;
-    body += `<rect x="262" y="15" width="118" height="28" rx="7" fill="#71717a" fill-opacity="0.2" stroke="#52525b" stroke-width="1.2"/><text x="321" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#a1a1aa" font-family="${FONT}">${waitCnt} WAITING</text>`;
+    body += `<rect x="18" y="${barY + 13}" width="128" height="28" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#22c55e" stroke-width="1.2"/><text x="82" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">${readyCnt} IN LOBBY</text>`;
+    body += `<rect x="156" y="${barY + 13}" width="96" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="204" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${lateCnt} LATE</text>`;
+    body += `<rect x="262" y="${barY + 13}" width="118" height="28" rx="7" fill="#71717a" fill-opacity="0.2" stroke="#52525b" stroke-width="1.2"/><text x="321" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#a1a1aa" font-family="${FONT}">${waitCnt} WAITING</text>`;
   } else if (isCall) {
-    body += `<rect x="18" y="15" width="150" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="93" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${starters.length} CALLED UP</text>`;
-    body += `<rect x="178" y="15" width="130" height="28" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="243" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${bench.length} STANDBY</text>`;
+    body += `<rect x="18" y="${barY + 13}" width="150" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="93" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">${starters.length} CALLED UP</text>`;
+    body += `<rect x="178" y="${barY + 13}" width="130" height="28" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="243" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${bench.length} STANDBY</text>`;
   } else {
-    body += `<rect x="18" y="15" width="138" height="28" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#4ade80" stroke-width="1.2"/><text x="87" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">AVG OVR ${avgOvr ?? '—'}</text>`;
-    body += `<rect x="166" y="15" width="104" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="218" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">CHEM ${chemScore}</text>`;
-    if (winForm != null) body += `<rect x="280" y="15" width="110" height="28" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="335" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${winForm}% FORM</text>`;
+    body += `<rect x="18" y="${barY + 13}" width="138" height="28" rx="7" fill="#22c55e" fill-opacity="0.16" stroke="#4ade80" stroke-width="1.2"/><text x="87" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#86efac" font-family="${FONT}">AVG OVR ${avgOvr ?? '—'}</text>`;
+    body += `<rect x="166" y="${barY + 13}" width="104" height="28" rx="7" fill="#f59e0b" fill-opacity="0.16" stroke="#f59e0b" stroke-width="1.2"/><text x="218" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">CHEM ${chemScore}</text>`;
+    if (winForm != null) body += `<rect x="280" y="${barY + 13}" width="110" height="28" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/><text x="335" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#e4e4e7" font-family="${FONT}">${winForm}% FORM</text>`;
   }
 
-  body += `<rect x="760" y="14" width="120" height="30" rx="7" fill="#23262e" stroke="#3f434e" stroke-width="1.2"/><text x="820" y="34" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
+  body += `<rect x="760" y="${barY + 12}" width="120" height="30" rx="7" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.2"/><text x="820" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
   const stageBadge = isCheckin ? `${readyCnt}/${starters.length} READY` : isCall ? 'PROVISIONAL' : mode === 'suggested' ? 'SUGGESTED XI' : 'FINAL XI';
   const sbCol = isFinal ? '#4ade80' : isCall ? '#fcd34d' : '#fde68a';
-  body += `<rect x="890" y="14" width="132" height="30" rx="7" fill="#f59e0b" fill-opacity="0.14" stroke="${sbCol}" stroke-width="1.2"/><text x="956" y="34" font-size="13.5" font-weight="800" text-anchor="middle" fill="${sbCol}" font-family="${FONT}">${stageBadge}</text>`;
+  body += `<rect x="890" y="${barY + 12}" width="132" height="30" rx="7" fill="#f59e0b" fill-opacity="0.14" stroke="${sbCol}" stroke-width="1.2"/><text x="956" y="${barY + 32}" font-size="13.5" font-weight="800" text-anchor="middle" fill="${sbCol}" font-family="${FONT}">${stageBadge}</text>`;
 
   // Left Pitch + Chemistry Link Lines
   body += pitchBaseSvg(px, py, pw, ph);
@@ -521,7 +574,7 @@ export function lineupStageSvg(model, faces = new Map()) {
     : 'CONFIRMED XI: Green links = High Duo Chem · Gold = Solid Chem · Auto-fallback verified by manager';
   body += `<text x="20" y="${H - 14}" font-size="13.5" font-weight="700" fill="${isFinal ? '#4ade80' : '#fbbf24'}" font-family="${FONT}">${esc(stripTxt)}</text>`;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${defs}</defs><rect width="${W}" height="${H}" rx="16" fill="#0b0c0e"/>${body}<rect x="1.5" y="1.5" width="${W - 3}" height="${H - 3}" rx="15" fill="none" stroke="#f59e0b" stroke-opacity="0.7" stroke-width="2.5"/></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${defs}</defs><rect width="${W}" height="${H}" rx="16" fill="#0b0c0e"/>${body}<rect x="2" y="2" width="${W - 4}" height="${H - 4}" rx="15" fill="none" stroke="#fbbf24" stroke-width="3.5"/><rect x="6" y="6" width="${W - 12}" height="${H - 12}" rx="12" fill="none" stroke="#f59e0b" stroke-opacity="0.28" stroke-width="1"/></svg>`;
 }
 
 const faceData = (url) => (url ? imageData(/^https:\/\/cdn\.discordapp\.com\//.test(url) && !url.includes('?') ? `${url}?size=128` : url, FACE_BYTES) : null);
@@ -534,8 +587,8 @@ export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
     const base = String(env.PUBLIC_URL || '').replace(/\/?$/, '');
     if (!base) return { error: 'PUBLIC_URL is not set.' };
     const ids = [...new Set(userIds.map(String))].slice(0, 24);
-    const faceUrls = ids.length ? await facesOf(env, ids) : new Map();
-    const hash = await sha(JSON.stringify(['v4', kind, model, ids.map((id) => faceUrls.get(id))]));
+    const [faceUrls, crest] = await Promise.all([ids.length ? facesOf(env, ids) : Promise.resolve(new Map()), crestData(env)]);
+    const hash = await sha(JSON.stringify(['v5', kind, model, !!crest, ids.map((id) => faceUrls.get(id))]));
     const key = `ht/${eventId}-${kind}-${hash}.png`;
     if (env.MEDIA) {
       if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };
@@ -543,7 +596,8 @@ export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
       return { url: `${base}/media/${key}`, key, cached: true };
     }
     const faces = new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
-    const svg = kind === 'rollcall' ? rollCallSvg(model, faces) : lineupStageSvg(model, faces);
+    const fullModel = { ...model, crest };
+    const svg = kind === 'rollcall' ? rollCallSvg(fullModel, faces) : lineupStageSvg(fullModel, faces);
     const { svgToPng } = await import('./svgpng.js');
     const png = await svgToPng(svg);
     if (!png || png.byteLength < 2000) return { error: 'Empty PNG returned.' };

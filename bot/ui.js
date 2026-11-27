@@ -63,7 +63,7 @@ export const facts = (pairs) => text(pairs.filter(([, v]) => v != null && v !== 
 const STYLE = { grey: 2, ok: 3, no: 4, brand: 1 };
 export function button({ label: l, id, url, style = 'grey', emoji, disabled }) {
   const b = url ? { type: 2, style: 5, url, label: clip(l, 80) } : { type: 2, style: STYLE[style] ?? 2, custom_id: id, label: l ? clip(l, 80) : undefined };
-  if (emoji) b.emoji = { name: emoji };
+  if (emoji) b.emoji = typeof emoji === 'string' ? { name: emoji } : emoji;
   if (disabled) b.disabled = true;
   return b;
 }
