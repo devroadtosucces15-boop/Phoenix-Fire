@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-27T19:00:42.193Z",
+ "fetchedAt": "2026-11-27T19:10:42.700Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2382,14 +2382,14 @@
   },
   {
    "name": "Morpho Vs All",
-   "proPos": "25",
-   "gamesPlayed": "409",
-   "goals": "202",
-   "assists": "142",
+   "proPos": "14",
+   "gamesPlayed": "410",
+   "goals": "203",
+   "assists": "143",
    "manOfTheMatch": "55",
    "ratingAve": "7.4",
-   "prevGoals": "2",
-   "favoritePosition": "forward"
+   "prevGoals": "1",
+   "favoritePosition": "midfielder"
   }
  ],
  "leaderboard": {
@@ -2410,6 +2410,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-27T19:00:42.193Z"
+  "fetchedAt": "2026-11-27T19:10:42.700Z"
  }
 }
