@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-27T20:53:39.049Z",
+ "fetchedAt": "2026-11-27T22:46:25.096Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -1738,12 +1738,12 @@
   {
    "name": "Cash711Money",
    "proPos": "25",
-   "gamesPlayed": "9",
-   "goals": "0",
+   "gamesPlayed": "10",
+   "goals": "1",
    "assists": "2",
    "manOfTheMatch": "0",
-   "ratingAve": "7.3",
-   "prevGoals": "0",
+   "ratingAve": "7.4",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -1903,9 +1903,9 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "290",
-   "goals": "181",
-   "assists": "236",
+   "gamesPlayed": "294",
+   "goals": "182",
+   "assists": "242",
    "manOfTheMatch": "12",
    "ratingAve": "7.1",
    "prevGoals": "0",
@@ -1990,14 +1990,14 @@
   },
   {
    "name": "ManiManolo88",
-   "proPos": "25",
-   "gamesPlayed": "30",
+   "proPos": "14",
+   "gamesPlayed": "34",
    "goals": "6",
    "assists": "4",
    "manOfTheMatch": "4",
    "ratingAve": "7.4",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "Loove__Princess",
@@ -2024,7 +2024,7 @@
   {
    "name": "Glekke-93",
    "proPos": "0",
-   "gamesPlayed": "115",
+   "gamesPlayed": "119",
    "goals": "93",
    "assists": "45",
    "manOfTheMatch": "21",
@@ -2128,6 +2128,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-27T20:53:39.049Z"
+  "fetchedAt": "2026-11-27T22:46:25.096Z"
  }
 }
