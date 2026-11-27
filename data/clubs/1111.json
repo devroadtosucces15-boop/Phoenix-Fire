@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-27T15:00:41.144Z",
+ "fetchedAt": "2026-11-27T15:10:42.337Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -2305,14 +2305,14 @@
   },
   {
    "name": "Jaliens45",
-   "proPos": "14",
-   "gamesPlayed": "86",
+   "proPos": "5",
+   "gamesPlayed": "87",
    "goals": "18",
    "assists": "28",
-   "manOfTheMatch": "5",
+   "manOfTheMatch": "6",
    "ratingAve": "7.2",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
+   "prevGoals": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "x_MrMike_x",
@@ -2410,6 +2410,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-27T15:00:41.144Z"
+  "fetchedAt": "2026-11-27T15:10:42.337Z"
  }
 }
