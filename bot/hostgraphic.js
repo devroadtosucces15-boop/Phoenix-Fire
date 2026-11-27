@@ -269,11 +269,22 @@ export function rollCallSvg(model, faces = new Map()) {
       <text x="${cx + 26}" y="${barY + 32}" font-size="14" font-weight="700" fill="#e4e4e7" font-family="${FONT}">${lbl} ${n}</text>`;
   });
 
-  // Glowing gold counter + formation + filled badge on right
-  body += `<rect x="572" y="${barY + 12}" width="194" height="30" rx="7" fill="#14161a" stroke="#fbbf24" stroke-opacity="0.85" stroke-width="1.5"/>
-    <text x="669" y="${barY + 32}" font-size="15" font-weight="700" text-anchor="middle" font-family="${FONT}">
-      <tspan fill="#4ade80">IN ${yes.length}</tspan><tspan fill="#52525b">  ·  </tspan><tspan fill="#fbbf24">M ${maybe.length}</tspan><tspan fill="#52525b">  ·  </tspan><tspan fill="#f87171">OUT ${out.length}</tspan>
-    </text>`;
+  // Glowing gold counter with crisp vector symbols (✓ green check, ? amber question, ✕ red cross) + formation + filled badge on right
+  body += `<rect x="572" y="${barY + 12}" width="194" height="30" rx="7" fill="#14161a" stroke="#fbbf24" stroke-opacity="0.85" stroke-width="1.5"/>`;
+  // Green checkmark + yes count
+  body += `<circle cx="593" cy="${barY + 27}" r="8.5" fill="#22c55e" fill-opacity="0.22" stroke="#4ade80" stroke-width="1.2"/>`;
+  body += `<path d="M589.2 ${barY + 27.3}l2.6 2.6 5.2-5.4" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  body += `<text x="607" y="${barY + 32}" font-size="15" font-weight="800" fill="#4ade80" font-family="${FONT}">${yes.length}</text>`;
+  body += `<circle cx="635" cy="${barY + 27}" r="1.8" fill="#52525b"/>`;
+  // Amber question mark + maybe count
+  body += `<circle cx="652" cy="${barY + 27}" r="8.5" fill="#f59e0b" fill-opacity="0.22" stroke="#fbbf24" stroke-width="1.2"/>`;
+  body += `<text x="652" y="${barY + 31.5}" font-size="12.5" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">?</text>`;
+  body += `<text x="666" y="${barY + 32}" font-size="15" font-weight="800" fill="#fbbf24" font-family="${FONT}">${maybe.length}</text>`;
+  body += `<circle cx="695" cy="${barY + 27}" r="1.8" fill="#52525b"/>`;
+  // Red X + out count
+  body += `<circle cx="712" cy="${barY + 27}" r="8.5" fill="#ef4444" fill-opacity="0.22" stroke="#f87171" stroke-width="1.2"/>`;
+  body += `<path d="M708.8 ${barY + 23.8}l6.4 6.4M715.2 ${barY + 23.8}l-6.4 6.4" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round"/>`;
+  body += `<text x="726" y="${barY + 32}" font-size="15" font-weight="800" fill="#f87171" font-family="${FONT}">${out.length}</text>`;
   body += `<rect x="778" y="${barY + 12}" width="112" height="30" rx="7" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.2"/>
     <text x="834" y="${barY + 32}" font-size="14" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
   const fillBg = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
@@ -579,6 +590,58 @@ export function lineupStageSvg(model, faces = new Map()) {
 
 const faceData = (url) => (url ? imageData(/^https:\/\/cdn\.discordapp\.com\//.test(url) && !url.includes('?') ? `${url}?size=128` : url, FACE_BYTES) : null);
 
+let clubMemo = null;
+async function loadClubMatches(env) {
+  const site = String(env?.SITE_URL || '').replace(/\/?$/, '/');
+  if (!site) return [];
+  if (clubMemo?.site === site && Date.now() - clubMemo.at < 10 * 60e3) return clubMemo.matches;
+  try {
+    const r = await fetch(`${site}api/club.json`, { signal: AbortSignal.timeout(3000) });
+    const d = r.ok ? await r.json().catch(() => null) : null;
+    const matches = Array.isArray(d?.matches) ? d.matches : [];
+    clubMemo = { site, at: Date.now(), matches };
+    return matches;
+  } catch { return clubMemo?.matches ?? []; }
+}
+
+async function enrichRollCallForm(env, model) {
+  if (!Array.isArray(model?.rsvps) || !model.rsvps.length) return model;
+  if (model.rsvps.some((r) => Array.isArray(r.form) && r.form.length)) return model;
+  const matches = await loadClubMatches(env);
+  if (!matches.length) return model;
+  const clubForm = matches.map((m) => m.res).filter((x) => ['W', 'D', 'L'].includes(x)).slice(0, 5);
+  const claimMap = new Map();
+  if (env?.DB) {
+    try {
+      const ids = [...new Set(model.rsvps.map((r) => String(r.user_id ?? r.id ?? '')).filter(Boolean))];
+      if (ids.length) {
+        const rows = (await env.DB.prepare(`SELECT user_id, player FROM claims WHERE status = 'approved' AND user_id IN (${ids.map(() => '?').join(',')})`).bind(...ids).all()).results ?? [];
+        for (const c of rows) claimMap.set(String(c.user_id), String(c.player));
+      }
+    } catch { /* ignore */ }
+  }
+  const byKey = new Map();
+  const byName = new Map();
+  for (const m of matches) {
+    if (!['W', 'D', 'L'].includes(m.res) || !Array.isArray(m.ps)) continue;
+    for (const p of m.ps) {
+      const k = String(p.k ?? '');
+      const n = String(p.n ?? '').toLowerCase();
+      if (k) { const a = byKey.get(k) ?? []; if (a.length < 5) { a.push(m.res); byKey.set(k, a); } }
+      if (n) { const a = byName.get(n) ?? []; if (a.length < 5) { a.push(m.res); byName.set(n, a); } }
+    }
+  }
+  const rsvps = model.rsvps.map((r) => {
+    const uid = String(r.user_id ?? r.id ?? '');
+    const ck = claimMap.get(uid);
+    const nm = String(r.name ?? '').toLowerCase();
+    const form = (ck && byKey.get(ck)) || byName.get(nm) || clubForm;
+    return { ...r, form };
+  });
+  const winForm = model.winForm ?? (clubForm.length ? Math.round((clubForm.filter((x) => x === 'W').length / clubForm.length) * 100) : null);
+  return { ...model, rsvps, winForm };
+}
+
 // Renders any Pro Telemetry graphic via @resvg/resvg-wasm → R2 env.MEDIA (or KV fallback when R2 is off). Never throws.
 export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
   try {
@@ -587,8 +650,12 @@ export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
     const base = String(env.PUBLIC_URL || '').replace(/\/?$/, '');
     if (!base) return { error: 'PUBLIC_URL is not set.' };
     const ids = [...new Set(userIds.map(String))].slice(0, 24);
-    const [faceUrls, crest] = await Promise.all([ids.length ? facesOf(env, ids) : Promise.resolve(new Map()), crestData(env)]);
-    const hash = await sha(JSON.stringify(['v5', kind, model, !!crest, ids.map((id) => faceUrls.get(id))]));
+    const [faceUrls, crest, enrichedModel] = await Promise.all([
+      ids.length ? facesOf(env, ids) : Promise.resolve(new Map()),
+      crestData(env),
+      kind === 'rollcall' ? enrichRollCallForm(env, model) : Promise.resolve(model),
+    ]);
+    const hash = await sha(JSON.stringify(['v6', kind, enrichedModel, !!crest, ids.map((id) => faceUrls.get(id))]));
     const key = `ht/${eventId}-${kind}-${hash}.png`;
     if (env.MEDIA) {
       if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };
@@ -596,7 +663,7 @@ export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
       return { url: `${base}/media/${key}`, key, cached: true };
     }
     const faces = new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
-    const fullModel = { ...model, crest };
+    const fullModel = { ...enrichedModel, crest };
     const svg = kind === 'rollcall' ? rollCallSvg(fullModel, faces) : lineupStageSvg(fullModel, faces);
     const { svgToPng } = await import('./svgpng.js');
     const png = await svgToPng(svg);

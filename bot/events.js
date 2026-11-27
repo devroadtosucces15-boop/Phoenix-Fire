@@ -230,18 +230,16 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const hasButtons = rsvpButtons(env) && e.id != null;
   const icApp = env?.BOT_APP || (env?.DISCORD_BOT_TOKEN_MATCHDAY ? 'matchday' : 'core');
   const memberRow = hasButtons ? buttons([
-    { label: 'I’m In ›', style: 'ok', id: `pf:h:${e.id}:in`, emoji: ic('btn_in', icApp), disabled: done },
-    { label: 'Maybe', style: 'grey', id: `pf:h:${e.id}:maybe`, emoji: ic('btn_maybe', icApp), disabled: done },
+    { label: 'In', style: 'ok', id: `pf:h:${e.id}:in`, emoji: ic('btn_in', icApp), disabled: done },
+    { label: '', style: 'grey', id: `pf:h:${e.id}:maybe`, emoji: ic('btn_maybe', icApp), disabled: done },
     { label: 'Out', style: 'no', id: `pf:h:${e.id}:no`, emoji: ic('btn_out', icApp), disabled: done },
+    { label: 'XI', style: 'brand', id: `pf:h:${e.id}:xi`, emoji: ic('btn_xi', icApp) },
+    { label: 'List', style: 'grey', id: `pf:h:${e.id}:roster`, emoji: ic('btn_roster', icApp) },
   ]) : buttons([{ label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` }]);
-  const viewRow = hasButtons ? buttons([
-    { label: 'Suggested XI', style: 'brand', id: `pf:h:${e.id}:xi`, emoji: ic('btn_xi', icApp) },
-    { label: 'Full Roster ›', style: 'grey', id: `pf:h:${e.id}:roster`, emoji: ic('btn_roster', icApp) },
-  ]) : null;
   const managerRow = hasButtons ? buttons([
-    { label: locked ? 'Dugout ›' : 'Lineup ›', style: 'grey', id: `pf:h:${e.id}:close`, emoji: ic('btn_lineup', icApp), disabled: cancelled },
-    { label: 'Override', style: 'grey', id: `pf:h:${e.id}:override`, emoji: ic('btn_override', icApp), disabled: cancelled },
-    { label: 'Reschedule', style: 'grey', id: `pf:h:${e.id}:resched`, emoji: ic('btn_resched', icApp), disabled: cancelled },
+    { label: locked ? 'Dugout' : 'Close', style: 'grey', id: `pf:h:${e.id}:close`, emoji: ic('btn_lineup', icApp), disabled: cancelled },
+    { label: 'Edit', style: 'grey', id: `pf:h:${e.id}:override`, emoji: ic('btn_override', icApp), disabled: cancelled },
+    { label: 'Time', style: 'grey', id: `pf:h:${e.id}:resched`, emoji: ic('btn_resched', icApp), disabled: cancelled },
     { label: 'Cancel', style: 'no', id: `pf:h:${e.id}:cancel`, emoji: ic('btn_cancel', icApp), disabled: cancelled },
   ]) : null;
   return message({ ping, mentions, accent: cancelled ? 'steel' : locked ? 'loss' : 0xf59e0b, blocks: [
@@ -254,7 +252,6 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
     roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(names('yes').slice(FACE_ROWS))}`) : !faces && yes.length ? facts([['In', list(names('yes'))]]) : null,
     who && !roster ? facts([[`❔ Maybe (${names('maybe').length})`, list(names('maybe'))], [`❌ Out (${names('no').length})`, list(names('no'))]]) : null,
     memberRow,
-    viewRow,
     managerRow ? sep({ line: true }) : null,
     managerRow ? text('-# **MANAGER CONTROLS**') : null,
     managerRow,
