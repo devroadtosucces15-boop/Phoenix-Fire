@@ -12,6 +12,8 @@ import { SAMPLES } from './testview.gen.js';
 import { loadControls, decide, normalizeRules, postChannels } from './controls.js';
 import { outputChoices } from './controlcenter.js';
 import { orgName } from './orgconfig.js';
+import { eventMessage, lineupEmbed, checkinMessage } from './events.js';
+import { positionPickerMessage, rescheduleMessage } from './hostflow.js';
 
 export const TESTVIEW_COMMANDS = new Set(['testview']);
 export const TESTVIEW_ID = /^norex:tv:/;
@@ -119,11 +121,50 @@ const lintLines = (lint) => {
 };
 
 /** the whole reply for one output (a Components V2 ephemeral message) */
+
+// Live Pro Telemetry Matchday previews for /testview (read-only, zero side effects).
+function telemetryVariantsFor(key, env = {}) {
+  const eEnv = { ...env, SITE_URL: env?.SITE_URL || 'https://devroadtosucces15-boop.github.io/Phoenix-Fire/', FEATURES: JSON.stringify({ discordRsvp: 'members' }) };
+  const start = Date.now() + 7200e3;
+  const rsvps = [
+    { user_id: '1', name: 'Mateo', status: 'yes', pref_pos: '["LS","RS","CAM"]', signed_in_at: start - 3600e3 },
+    { user_id: '2', name: 'Diego', status: 'yes', pref_pos: '["LS","RS"]', signed_in_at: start - 3200e3 },
+    { user_id: '3', name: 'Carlos', status: 'yes', pref_pos: '["CAM","LM"]', signed_in_at: start - 2800e3 },
+    { user_id: '4', name: 'Julian', status: 'yes', pref_pos: '["GK"]', signed_in_at: start - 2000e3 },
+    { user_id: '5', name: 'Alex', status: 'maybe', pref_pos: null },
+    { user_id: '6', name: 'Jay', status: 'no', pref_pos: null },
+  ];
+  const baseEv = { id: 99, type: 'league', start, duration: 240, formation: '3-5-2 (CAM)', status: 'scheduled' };
+  const lineup = { '1': 'LS', '2': 'RS', '3': 'CAM', '4': 'GK' };
+  const names = new Map(rsvps.map((r) => [r.user_id, r.name]));
+  if (key === 'slash:/host') {
+    return [
+      { label: 'Pro Telemetry · Roll Call (3-5-2 CAM)', kind: 'message', lint: [], body: eventMessage(eEnv, baseEv, rsvps) },
+      { label: 'Pro Telemetry · Sign-Ups Closed', kind: 'message', lint: [], body: eventMessage(eEnv, { ...baseEv, signup_closed_at: Date.now() }, rsvps) },
+      { label: 'Pro Telemetry · Position Picker (3-5-2 CAM)', kind: 'message', lint: [], body: positionPickerMessage(99, '3-5-2 (CAM)', ['LS', 'CAM']) },
+      { label: 'Pro Telemetry · Incremental Reschedule', kind: 'message', lint: [], body: rescheduleMessage(99, start) },
+    ];
+  }
+  if (key === 'slash:/lineup') {
+    return [
+      { label: 'Pro Telemetry · Provisional Lineup Call', kind: 'message', lint: [], body: lineupEmbed(eEnv, baseEv, lineup, names, { suggested: true, bench: [{ rank: 5, name: 'Alex', status: 'maybe' }] }) },
+      { label: 'Pro Telemetry · Official Final XI', kind: 'message', lint: [], body: lineupEmbed(eEnv, baseEv, lineup, names, { suggested: false, bench: [] }) },
+    ];
+  }
+  if (key === 'slash:/matchday') {
+    return [
+      { label: 'Pro Telemetry · Lobby Check-In', kind: 'message', lint: [], body: checkinMessage(eEnv, baseEv, rsvps, [{ user_id: '1', name: 'Mateo', state: 'ready' }, { user_id: '3', name: 'Carlos', state: 'late' }], { soon: true }) },
+    ];
+  }
+  return [];
+}
+
 export async function renderTestview(env, item, { variant = 0, role = 'manager', userId = '', roleIds = [], channelId = '' } = {}) {
   const sb = sandboxEnv(env), safe = sb.env;
   const control = (await loadControls(safe).catch(() => new Map())).get(item.key) ?? null;
   const ctx = { userId, roleIds, level: role, channelId };
-  const sample = SAMPLES[item.key];
+  const extraVars = telemetryVariantsFor(item.key, env);
+  const sample = extraVars.length ? { ...(SAMPLES[item.key] ?? {}), variants: [...extraVars, ...(SAMPLES[item.key]?.variants ?? [])] } : SAMPLES[item.key];
   const { lines, blocked } = await rulesFor(safe, item, control, ctx);
   const v = sample?.variants?.[Math.min(Math.max(Number(variant) || 0, 0), (sample?.variants?.length ?? 1) - 1)];
   const sim = `${KIND_LABEL[item.kind] ?? item.kind} · ${label(item.name)}${v ? ` · sample “${v.label}”` : ''} · as ${ROLE_LABEL[role] ?? role}`;
@@ -150,8 +191,8 @@ export async function renderTestview(env, item, { variant = 0, role = 'manager',
 export function testviewChoices(i) {
   const opts = i.data?.options ?? [], focused = opts.find((o) => o.focused);
   if (focused?.name === 'variant') {
-    const key = opts.find((o) => o.name === 'output')?.value, s = SAMPLES[key];
-    return (s?.variants ?? []).map((v, k) => ({ name: clip(`${k + 1}. ${v.label}`, 100), value: String(k) }));
+    const key = opts.find((o) => o.name === 'output')?.value, extra = telemetryVariantsFor(key), allVars = [...extra, ...(SAMPLES[key]?.variants ?? [])];
+    return allVars.map((v, k) => ({ name: clip(`${k + 1}. ${v.label}`, 100), value: String(k) }));
   }
   return outputChoices(focused?.value);
 }
