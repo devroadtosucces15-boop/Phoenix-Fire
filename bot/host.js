@@ -3,11 +3,17 @@
 // and faces – so a /host event is exactly a Hub event. The time is read in the host's own time zone and shown to
 // everyone else in theirs (Discord timestamps).
 //   when: "tonight 9pm", "tomorrow 20:30", "fri 8:30pm", "oct 14 9pm", "2026-10-14 21:00", "in 2h"
-import { validZone, zonedToUtc, eventsRoute } from './events.js';
+import { validZone, zonedToUtc, eventsRoute, FORMATIONS } from './events.js';
 import { parseDuration } from './servertools.js';
 import { pingRoleFor } from './orgconfig.js';
 import { reply, pictureNote } from './ui.js';
 import { lineupOpensAt, checkinClosesAt } from './matchflow.js';
+
+export const formationChoices = (q) => {
+  const s = String(q ?? '').toLowerCase().trim();
+  const keys = Object.keys(FORMATIONS);
+  return keys.filter((k) => k.toLowerCase().includes(s)).slice(0, 25).map((k) => ({ name: k, value: k }));
+};
 
 // Time-zone suggestions for the autocomplete (any valid IANA zone is accepted when typed in full).
 export const ZONES = ['America/New_York', 'America/Chicago', 'America/Denver', 'America/Phoenix', 'America/Los_Angeles', 'America/Anchorage', 'Pacific/Honolulu',
@@ -90,12 +96,13 @@ export function parseWhen(input, tz, now = Date.now()) {
 const TYPES = { 'league:session': ['league', null], 'rush:session': ['rush', null], 'league:friendly': ['friendly', 'League friendly'], 'rush:friendly': ['friendly', 'Rush friendly'] };
 export function hostBody(o, tz, when) {
   const [type, title] = TYPES[`${o.mode}:${o.kind}`] ?? TYPES['league:session'];
-  const rush = o.mode === 'rush';
+  const formation = o.formation && FORMATIONS[o.formation] ? o.formation : '3-5-2';
   return {
     type, title: title && (o.opponent ? `${title} vs ${String(o.opponent).trim()}` : title),
     date: when.date, time: when.time, tz,
-    duration: o.length ?? (rush ? 90 : 120),
-    needs: { players: o.players ?? (rush ? 5 : 11) },
+    duration: 240, // open-ended session window (no short max-time cap)
+    formation,
+    needs: {}, // unlimited sign-ups — no hard player cap
     notes: o.notes ?? '', notify: true, repeat: o.weekly ? 3 : 0,
   };
 }

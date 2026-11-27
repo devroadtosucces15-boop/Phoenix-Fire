@@ -3,19 +3,20 @@
 // array, best first. It is a preference, never a promise. The lineup recommender reads it through expandPref().
 import { reply, notice } from './ui.js';
 
-// The positions a player can ask for, in the order the dropdown shows them (front to back). Several can be chosen: they are shown as small tags
-// after the name on the sign-up post, best first, so whoever builds the lineup can see who can play where.
 export const PREF_POSITIONS = ['ST', 'CAM', 'LW', 'RW', 'LM', 'RM', 'CM', 'LCM', 'RCM', 'CDM', 'CB', 'LB', 'RB', 'LFB', 'RFB', 'GK'];
-export const PREF_MAX = 6;
+export const PREF_MAX = 3;
 // Older answers were saved as the eight groups below; they are still read (and mapped to the new names) so nobody loses what they picked.
 const LEGACY = { 'LB/RB': ['LB', 'RB'], 'LW/RW': ['LW', 'RW'] };
-// Individual lineup positions behind each choice, for the recommender (profiles and formation slots use LB, RB, CM …).
-export const PREF_EXPAND = { LFB: ['LB'], RFB: ['RB'], LCM: ['CM'], RCM: ['CM'] };
+export const PREF_EXPAND = LEGACY;
+export const ALL_SLOTS = new Set([
+  ...PREF_POSITIONS, 'LCB', 'RCB', 'LWB', 'RWB', 'LDM', 'RDM', 'LCDM', 'RCDM', 'LAM', 'RAM', 'LF', 'RF', 'CF', 'LS', 'RS', 'LST', 'RST',
+]);
 
-// Anything → a clean list (valid positions only, unique, order kept, at most PREF_MAX). null input = no preference given.
-export function cleanPref(list) {
+// Anything → a clean list (valid positions or formation slots, unique, order kept, at most PREF_MAX).
+export function cleanPref(list, allowed = null) {
   if (!Array.isArray(list)) return [];
-  const out = list.map((x) => String(x).toUpperCase().trim()).flatMap((x) => LEGACY[x] ?? [x]).filter((x) => PREF_POSITIONS.includes(x));
+  const ok = allowed ? new Set(allowed.map((x) => String(x).toUpperCase().trim())) : ALL_SLOTS;
+  const out = list.map((x) => String(x).toUpperCase().trim()).flatMap((x) => LEGACY[x] ?? [x]).filter((x) => ok.has(x));
   return [...new Set(out)].slice(0, PREF_MAX);
 }
 export const expandPref = (list) => cleanPref(list).flatMap((g) => PREF_EXPAND[g] ?? [g]);
