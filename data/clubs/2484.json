@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-27T19:30:39.398Z",
+ "fetchedAt": "2026-11-27T19:40:41.133Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -403,6 +403,42 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "defender"
+  },
+  {
+   "name": "KOEN WIE",
+   "gamesPlayed": "25",
+   "winRate": "72",
+   "goals": "0",
+   "assists": "0",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "0",
+   "passesMade": "288",
+   "passSuccessRate": "84",
+   "ratingAve": "6.9",
+   "tacklesMade": "21",
+   "tackleSuccessRate": "38",
+   "proName": "Wie",
+   "proPos": "14",
+   "proStyle": "0",
+   "proHeight": "183",
+   "proNationality": "34",
+   "proOverall": "80",
+   "proOverallStr": "80",
+   "manOfTheMatch": "1",
+   "redCards": "0",
+   "prevGoals": "0",
+   "prevGoals1": "0",
+   "prevGoals2": "0",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "0",
+   "prevGoals7": "0",
+   "prevGoals8": "0",
+   "prevGoals9": "0",
+   "prevGoals10": "0",
+   "favoritePosition": "midfielder"
   },
   {
    "name": "KolletRivera",
@@ -1378,7 +1414,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 4,
+  "midfielder": 5,
   "goalkeeper": 4,
   "forward": 11,
   "defender": 12
@@ -1526,6 +1562,17 @@
    "ratingAve": "6.9",
    "prevGoals": "0",
    "favoritePosition": "midfielder"
+  },
+  {
+   "name": "KOEN WIE",
+   "proPos": "5",
+   "gamesPlayed": "119",
+   "goals": "13",
+   "assists": "10",
+   "manOfTheMatch": "3",
+   "ratingAve": "7.1",
+   "prevGoals": "0",
+   "favoritePosition": "defender"
   },
   {
    "name": "KolletRivera",
@@ -1799,6 +1846,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 4,
-  "fetchedAt": "2026-11-27T19:30:39.398Z"
+  "fetchedAt": "2026-11-27T19:40:41.133Z"
  }
 }
