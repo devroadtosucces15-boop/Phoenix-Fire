@@ -204,7 +204,24 @@ export async function mediaRoute(p, method, body, me, env, log) {
 // GET /media/<key> – straight from R2. Types come from our whitelist and nosniff + a sandbox CSP stop a file being
 // run as a page if someone opens it directly. Video players get byte ranges.
 export async function serveMedia(request, env, key) {
-  if (!env.MEDIA || !(KEY.test(key) || GENERATED_KEY.test(key)) || !['GET', 'HEAD'].includes(request.method)) return new Response('Not found', { status: 404 });
+  const isGen = GENERATED_KEY.test(key);
+  if (!(KEY.test(key) || isGen) || !['GET', 'HEAD'].includes(request.method)) return new Response('Not found', { status: 404 });
+  if (!env.MEDIA) {
+    const kv = env?.PHOENIX_KV ?? env?.NOREX_KV ?? null;
+    if (!isGen || !kv) return new Response('Not found', { status: 404 });
+    const buf = await kv.get(`media:${key}`, 'arrayBuffer');
+    if (!buf) return new Response('Not found', { status: 404, headers: { 'Cache-Control': 'public, max-age=60' } });
+    return new Response(request.method === 'HEAD' ? null : buf, {
+      headers: {
+        'Content-Type': 'image/png',
+        'Content-Length': String(buf.byteLength),
+        'X-Content-Type-Options': 'nosniff',
+        'Cross-Origin-Resource-Policy': 'cross-origin',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    });
+  }
   const ranged = request.headers.has('Range');
   const obj = await env.MEDIA.get(key, { range: ranged ? request.headers : undefined, onlyIf: request.headers });
   if (!obj) return new Response('This clip has expired.', { status: 404, headers: { 'Cache-Control': 'public, max-age=300' } });

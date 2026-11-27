@@ -526,24 +526,33 @@ export function lineupStageSvg(model, faces = new Map()) {
 
 const faceData = (url) => (url ? imageData(/^https:\/\/cdn\.discordapp\.com\//.test(url) && !url.includes('?') ? `${url}?size=128` : url, FACE_BYTES) : null);
 
-// Renders any Pro Telemetry graphic via @resvg/resvg-wasm → R2 env.MEDIA with content-hash caching. Never throws.
+// Renders any Pro Telemetry graphic via @resvg/resvg-wasm → R2 env.MEDIA (or KV fallback when R2 is off). Never throws.
 export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
   try {
-    if (!env?.MEDIA) return { error: 'MEDIA binding unavailable.' };
+    const kv = env?.PHOENIX_KV ?? env?.NOREX_KV ?? null;
+    if (!env?.MEDIA && !kv) return { error: 'MEDIA and KV bindings unavailable.' };
     const base = String(env.PUBLIC_URL || '').replace(/\/?$/, '');
     if (!base) return { error: 'PUBLIC_URL is not set.' };
     const ids = [...new Set(userIds.map(String))].slice(0, 24);
     const faceUrls = ids.length ? await facesOf(env, ids) : new Map();
-    const hash = await sha(JSON.stringify(['v3', kind, model, ids.map((id) => faceUrls.get(id))]));
+    const hash = await sha(JSON.stringify(['v4', kind, model, ids.map((id) => faceUrls.get(id))]));
     const key = `ht/${eventId}-${kind}-${hash}.png`;
-    if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };
+    if (env.MEDIA) {
+      if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };
+    } else if (await kv.get(`media:${key}`, 'arrayBuffer')) {
+      return { url: `${base}/media/${key}`, key, cached: true };
+    }
     const faces = new Map((await Promise.all(ids.map(async (id) => [id, await faceData(faceUrls.get(id))]))).filter(([, d]) => d));
     const svg = kind === 'rollcall' ? rollCallSvg(model, faces) : lineupStageSvg(model, faces);
     const { svgToPng } = await import('./svgpng.js');
     const png = await svgToPng(svg);
     if (!png || png.byteLength < 2000) return { error: 'Empty PNG returned.' };
-    await env.MEDIA.put(key, png, { httpMetadata: { contentType: 'image/png', cacheControl: 'public, max-age=31536000, immutable' } });
-    env.MEDIA.list?.({ prefix: `ht/${eventId}-${kind}-`, limit: 40 }).then((l) => l.objects.filter((o) => o.key !== key).forEach((o) => env.MEDIA.delete(o.key).catch(() => {}))).catch(() => {});
+    if (env.MEDIA) {
+      await env.MEDIA.put(key, png, { httpMetadata: { contentType: 'image/png', cacheControl: 'public, max-age=31536000, immutable' } });
+      env.MEDIA.list?.({ prefix: `ht/${eventId}-${kind}-`, limit: 40 }).then((l) => l.objects.filter((o) => o.key !== key).forEach((o) => env.MEDIA.delete(o.key).catch(() => {}))).catch(() => {});
+    } else {
+      await kv.put(`media:${key}`, png.buffer.slice(png.byteOffset, png.byteOffset + png.byteLength), { expirationTtl: 30 * 86400 });
+    }
     return { url: `${base}/media/${key}`, key, cached: false };
   } catch (err) {
     console.log('drawHostGraphic failed:', err?.message ?? err);
