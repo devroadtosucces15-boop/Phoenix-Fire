@@ -10,7 +10,7 @@ import { orgName } from './orgconfig.js';
 import { message, text, sep, footer, cards, button, buttons, reply, notice, EPHEMERAL, IS_V2 } from './ui.js';
 import { ic } from './icons.js';
 import { parsePref, cleanPref, PREF_MAX } from './prefpos.js';
-import { FORMATIONS, answerEvents, rsvpRows, refreshEventPost, refreshCheckinPost, setCheckin, openCheckinNow, lockFinalLineup } from './events.js';
+import { FORMATIONS, answerEvents, rsvpRows, refreshEventPost, refreshCheckinPost, setCheckin, openCheckinNow, lockFinalLineup, publishLineupCall } from './events.js';
 import { normalizeFormationSlots, solveSuggestedXI, drawHostGraphic } from './hostgraphic.js';
 
 export const HOST_FLOW_RE = /^pf:h:\d+:/;
@@ -71,7 +71,7 @@ export function positionPickerMessage(eventId, formation, draft = [], { targetId
 }
 
 // Build incremental Date (-1d/+1d) + Time (-1h/-15m/+15m/+1h) Reschedule message.
-export function rescheduleMessage(eventId, draftTs) {
+export function rescheduleMessage(eventId, draftTs, app = 'matchday') {
   const unix = Math.floor(draftTs / 1000);
   return {
     flags: IS_V2 | EPHEMERAL,
@@ -92,7 +92,7 @@ export function rescheduleMessage(eventId, draftTs) {
           button({ label: '+1 hr', id: `pf:h:${eventId}:rs:${draftTs + 3600e3}`, style: 'grey' }),
         ] },
         { type: 1, components: [
-          button({ label: '✓ Save New Time', id: `pf:h:${eventId}:rssave:${draftTs}`, style: 'ok' }),
+          button({ label: 'Save New Time', id: `pf:h:${eventId}:rssave:${draftTs}`, style: 'ok', emoji: ic('btn_in', app) }),
         ] },
       ],
     }],
@@ -191,21 +191,22 @@ export async function hostFlowInteraction(i, env, me, who, loadSite) {
     const solved = solveSuggestedXI(slots, enriched, stats);
     const captainId = Object.values(solved.assigned).sort((a, b) => b.p.ovr - a.p.ovr)[0]?.p?.id ?? null;
     const pic = await drawHostGraphic(env, 'suggested', e.id, {
-      mode: 'suggested', formation, slots, assigned: solved.assigned, bench: solved.bench,
+      mode: 'suggested', org: orgName(env), title: e.notes?.slice(0, 26) || 'Suggested XI', formation, slots, assigned: solved.assigned, bench: solved.bench,
       avgOvr: solved.avgOvr, chemScore: 92, captainId,
     }, yesIds);
     const dugoutUrl = `${site}staff-dugout.html?event=${e.id}&formation=${encodeURIComponent(formation)}`;
+    const icApp = env?.BOT_APP || 'matchday';
     const extra = [
       pic.url ? cards({ url: pic.url, alt: `Suggested XI (${formation})` }) : null,
       solved.reasons.length ? text(`**Why This Lineup**\n${solved.reasons.slice(0, 6).map((x) => `• ${x}`).join('\n')}`) : null,
       solved.bench.length ? text(`**Bench (${solved.bench.length}):** ${solved.bench.slice(0, 12).map((b) => `${b.name} (${b.ovr.toFixed(1)} · ${b.mapped[0]})`).join(', ')}`) : null,
       isManager ? buttons([
-        { label: 'Lock & Load Suggested XI ›', id: `pf:h:${e.id}:close`, style: 'brand' },
-        { label: 'Choose Manually in Dugout', url: dugoutUrl },
+        { label: 'Publish Suggested XI', id: `pf:h:${e.id}:pubxi`, style: 'brand', emoji: ic('btn_xi', icApp) },
+        { label: 'Open Match Dugout', url: dugoutUrl },
       ]) : null,
-      footer(isManager ? 'Manager view · Dugout controls enabled' : 'Member preview · Read-only'),
+      footer(isManager ? 'Manager view · Dugout & 1-tap publish enabled' : 'Member preview · Read-only'),
     ].filter(Boolean);
-    return reply(message({ accent: 'gold', ephemeral: true, blocks: [text(`### ✨ Suggested XI · ${formation}${solved.avgOvr ? ` · AVG ${solved.avgOvr}` : ''}`), ...extra] }));
+    return reply(message({ accent: 0xf59e0b, ephemeral: true, blocks: [text(`### ✨ Suggested XI · ${formation}${solved.avgOvr ? ` · AVG ${solved.avgOvr}` : ''}`), ...extra] }));
   }
 
   // --- Everyone: Private Full Roster (chronological by signed_in_at priority) ---
@@ -221,7 +222,7 @@ export async function hostFlowInteraction(i, env, me, who, loadSite) {
       return `\`#${String(idx + 1).padStart(2)}\` <t:${ts}:t> **${r.name}** — ${posTxt}`;
     });
     return reply(message({
-      accent: 'gold', ephemeral: true,
+      accent: 0xf59e0b, ephemeral: true,
       blocks: [
         text(`### 📋 Full Roster · Sign-Up Priority (${yes.length} IN)`),
         text(lines.length ? lines.join('\n') : '_Nobody signed up yet._'),
@@ -257,16 +258,30 @@ export async function hostFlowInteraction(i, env, me, who, loadSite) {
   // ---------- Manager-only controls below ----------
   if (!isManager) return reply(notice('🔒 Managers only', 'Only managers and above can use Manager Controls.'));
 
-  // Close & Lineup: locks sign-ups in place, updates public post to SIGN-UPS CLOSED with disabled buttons, sends private Dugout link
+  // Close & Lineup: locks sign-ups in place, updates public post to SIGN-UPS CLOSED with disabled buttons, offers 1-tap Publish Suggested XI OR Match Dugout
   if (action === 'close') {
     await run(env, 'UPDATE events SET signup_closed_at = ?, manager_id = COALESCE(manager_id, ?) WHERE id = ?', Date.now(), me.u, e.id);
     await refreshEventPost(env, e.id, loadSite);
     const dugoutUrl = `${site}staff-dugout.html?event=${e.id}&formation=${encodeURIComponent(formation)}`;
+    const icApp = env?.BOT_APP || 'matchday';
     return reply(notice(
       '🔒 Sign-Ups Locked',
-      'The public Roll Call now shows **SIGN-UPS CLOSED** with disabled buttons. Open the Match Dugout to publish your Lineup Call — publishing there links straight into Lobby Check-In.',
-      { accent: 'win', extra: [buttons([{ label: `Open Match Dugout (${formation})`, url: dugoutUrl }])] }
+      'The public Roll Call now shows **SIGN-UPS CLOSED** with disabled buttons. Publish the **Provisional Lineup Call** right now in 1 tap, or open **Match Dugout** to customize starters manually.',
+      {
+        accent: 0xf59e0b,
+        extra: [buttons([
+          { label: 'Publish Suggested XI', id: `pf:h:${e.id}:pubxi`, style: 'brand', emoji: ic('btn_xi', icApp) },
+          { label: `Open Match Dugout (${formation})`, url: dugoutUrl },
+        ])],
+      }
     ));
+  }
+
+  // 1-Tap Publish Stage 2 Provisional Lineup Call straight to Discord
+  if (action === 'pubxi') {
+    const res = await publishLineupCall(env, e.id, me, loadSite);
+    if (!res?.posted) return reply(notice('Could not post lineup', 'Check that a lineup or signup channel is configured in Organization settings.', { accent: 'loss' }));
+    return reply(notice('📣 Provisional Lineup Call Published', `Posted to <#${res.channel}> with the Pro Telemetry Starting XI graphic and Check-In controls.`, { accent: 'win' }));
   }
 
   // Override: Step 1 -> Discord native User Select Menu (type: 5) for ANY member in the server

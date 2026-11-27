@@ -244,7 +244,7 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
     { label: 'Reschedule', style: 'grey', id: `pf:h:${e.id}:resched`, emoji: ic('btn_resched', icApp), disabled: cancelled },
     { label: 'Cancel', style: 'no', id: `pf:h:${e.id}:cancel`, emoji: ic('btn_cancel', icApp), disabled: cancelled },
   ]) : null;
-  return message({ ping, mentions, accent: cancelled ? 'steel' : locked ? 'loss' : 'gold', blocks: [
+  return message({ ping, mentions, accent: cancelled ? 'steel' : locked ? 'loss' : 0xf59e0b, blocks: [
     side(headText, hubBtn),
     cancelled && (e.cancelReason ?? e.cancel_reason) ? text(`**Why** ${String(e.cancelReason ?? e.cancel_reason).slice(0, 300)}`) : null,
     e.notes ? text(`📝 ${String(e.notes).slice(0, 1500)}`) : null,
@@ -531,6 +531,63 @@ export async function setCheckin(env, me, row, on, trial = null, state = 'ready'
     }
   }
   await refreshCheckinPost(env, row.id);
+}
+
+// Stage 2: Publishes the Provisional Lineup Call card (with real Pro Telemetry PNG) directly to Discord.
+export async function publishLineupCall(env, eventId, me = null, loadSite = null) {
+  const e = await one(env, 'SELECT * FROM events WHERE id = ?', Number(eventId) || 0);
+  if (!e || e.status !== 'scheduled') return null;
+  const formation = FORMATIONS[e.formation] ? e.formation : '3-5-2';
+  const slots = normalizeFormationSlots(FORMATIONS[formation]);
+  const answers = await rsvpRows(env, e.id);
+  const enriched = answers.map((r) => ({ ...r, prefs: parsePref(r.pref_pos) }));
+  const yesIds = answers.filter((r) => r.status === 'yes').map((r) => r.user_id);
+  const solved = solveSuggestedXI(slots, enriched);
+  const lineupMap = {};
+  for (const [slotId, pick] of Object.entries(solved.assigned)) {
+    if (pick?.p?.id) lineupMap[String(pick.p.id)] = slotId;
+  }
+  await run(env, "UPDATE events SET signup_closed_at = COALESCE(signup_closed_at, ?), lineup_phase = 'call', lineup = ?, lineup_at = ?, manager_id = COALESCE(manager_id, ?) WHERE id = ?",
+    Date.now(), JSON.stringify(lineupMap), Date.now(), me?.u ?? null, e.id);
+  const captainId = Object.values(solved.assigned).sort((a, b) => b.p.ovr - a.p.ovr)[0]?.p?.id ?? null;
+  const drawn = await drawHostGraphic(env, 'call', e.id, {
+    mode: 'call', org: orgName(env), title: label(e), formation, slots, assigned: solved.assigned, bench: solved.bench,
+    avgOvr: solved.avgOvr, chemScore: 92, captainId,
+  }, yesIds);
+  const site = String(env.SITE_URL || '').replace(/\/?$/, '/');
+  const unix = Math.floor(e.start / 1000);
+  const icApp = env?.BOT_APP || (env?.DISCORD_BOT_TOKEN_MATCHDAY ? 'matchday' : 'core');
+  const starterTags = Object.keys(lineupMap).map((id) => `<@${id}>`);
+  const msg = message({
+    accent: 0xf59e0b,
+    ping: starterTags.length ? `**📣 Provisional Lineup Call · ${label(e)} (${formation})**\n${starterTags.join(' ')}` : undefined,
+    mentions: { users: Object.keys(lineupMap) },
+    blocks: [
+      side(`-# ${orgName(env).toUpperCase()} · PROVISIONAL LINEUP CALL\n## 🏆 ${label(e)} · ${formation}\n-# Kickoff <t:${unix}:F> · <t:${unix}:R>`, { type: 2, style: 5, label: 'Match Dugout', url: `${site}staff-dugout.html?event=${e.id}&formation=${encodeURIComponent(formation)}` }),
+      drawn.url ? cards({ url: drawn.url, alt: `${label(e)} · ${formation} Provisional Lineup Call` }) : null,
+      solved.bench.length ? text(`**Standby Bench (${solved.bench.length}):** ${solved.bench.slice(0, 12).map((b) => b.name).join(', ')}`) : null,
+      buttons([
+        { label: 'Open Check-In Now', style: 'ok', id: `pf:h:${e.id}:ci:open`, emoji: ic('btn_in', icApp) },
+        { label: 'Lock Final XI', style: 'brand', id: `pf:h:${e.id}:ci:final`, emoji: ic('btn_lineup', icApp) },
+      ]),
+      footer('Called-up starters & standby bench: Check-In opens manually or automatically 15m before kickoff.'),
+    ],
+  });
+  const channel = await channelFor(env, 'lineup') || e.discord_channel;
+  const tokens = [...new Set([env.DISCORD_BOT_TOKEN_MATCHDAY, env.DISCORD_BOT_TOKEN].filter(Boolean))];
+  if (!channel || !tokens.length) return null;
+  for (const tok of tokens) {
+    const res = await safely(fetch(`https://discord.com/api/v10/channels/${channel}/messages`, {
+      method: 'POST', headers: { Authorization: `Bot ${tok}`, 'Content-Type': 'application/json' }, body: JSON.stringify(msg),
+    }));
+    if (res?.ok) {
+      const posted = await res.json().catch(() => null);
+      if (posted?.id) await run(env, 'UPDATE events SET lineup_msg = ?, lineup_channel = ? WHERE id = ?', posted.id, String(channel), e.id);
+      await refreshEventPost(env, e.id);
+      return { posted, channel };
+    }
+  }
+  return null;
 }
 
 // Stage 3 manual trigger: Manager opens Lobby Check-In immediately (also called by auto-15m cron if not opened yet).
