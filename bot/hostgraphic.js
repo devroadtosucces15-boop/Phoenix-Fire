@@ -227,12 +227,18 @@ function pitchBaseSvg(px, py, pw, ph) {
 }
 
 // ---------- Stage 1: Roll Call (/host) Pro Telemetry SVG ----------
+// Phone-first card (v10). Discord shows the picture about 285pt wide on a phone, so it is drawn on a 480-unit canvas
+// (half the old 940) and exported at RC_SCALE× for sharpness: every label lands at 7–11pt on screen instead of ~5pt.
+// Layout: stage header + 11-segment slot meter · pitch (left) and squad list (right) · Maybe / Out footer.
+// One border weight (1.5), one corner radius family (14 outer / 10 panels / 6 chips), 12-unit gutters throughout.
+export const RC_W = 480, RC_H = 560, RC_SCALE = 2.25;
 export function rollCallSvg(model, faces = new Map()) {
   const { formation = '3-5-2', slots = [], rsvps = [], closed = false, avgOvr = null, winForm = null } = model;
   const yes = rsvps.filter((r) => r.status === 'yes');
   const maybe = rsvps.filter((r) => r.status === 'maybe');
   const out = rsvps.filter((r) => r.status === 'no');
-  const totalReplied = yes.length + maybe.length + out.length;
+  const replied = yes.length + maybe.length + out.length;
+  const W0 = RC_W, H0 = RC_H, G = 12;
 
   const bySlot = Object.fromEntries(slots.map((s) => [s.id, { primary: [], flex: [] }]));
   const lineCnt = { att: 0, mid: 0, def: 0, gk: 0 };
@@ -243,192 +249,180 @@ export function rollCallSvg(model, faces = new Map()) {
     if (bySlot[prim]) bySlot[prim].primary.push(r);
     mapped.slice(1).forEach((f) => { if (bySlot[f]) bySlot[f].flex.push(r); });
     const cat = slotCategory(prim);
-    if (cat === 'att') lineCnt.att++;
-    else if (cat === 'gk') lineCnt.gk++;
-    else if (cat === 'def') lineCnt.def++;
-    else lineCnt.mid++;
+    lineCnt[cat === 'att' ? 'att' : cat === 'gk' ? 'gk' : cat === 'def' ? 'def' : 'mid']++;
     return { ...r, mapped, prim, cat };
   });
-
   const order = Object.fromEntries(slots.map((s, i) => [s.id, i]));
   mappedYes.sort((a, b) => (order[a.prim] ?? 99) - (order[b.prim] ?? 99) || (a.signed_in_at ?? a.at ?? 0) - (b.signed_in_at ?? b.at ?? 0));
   const covered = slots.filter((s) => (bySlot[s.id]?.primary.length ?? 0) > 0).length;
+  const full = slots.length > 0 && covered === slots.length;
 
-  const banH = 62, footH = 44, px = 0, py = banH, pw = 516, ph = H - banH - footH;
-  const rx = pw, rw = W - pw;
-  let defs = '';
+  let defs = `<linearGradient id="rcGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f59e0b" stop-opacity="0"/><stop offset=".5" stop-color="#fde68a"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></linearGradient>`;
   let body = '';
   let clipN = 0;
+  const T = (x, y, size, fill, str, extra = '') => `<text x="${x}" y="${y}" font-size="${size}" fill="${fill}" font-family="${FONT}"${/font-weight/.test(extra) ? "" : " font-weight=\"700\""}${extra}>${str}</text>`;
 
-  // Telemetry Top Bar: ATT/MID/DEF/GK chips left + glowing gold symbol counter + formation + X/11 FILLED right
-  const barY = 0;
-  body += `<rect x="0" y="0" width="${W}" height="${banH}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${banH}" x2="${W}" y2="${banH}" stroke="#fbbf24" stroke-opacity="0.7" stroke-width="1.8"/>`;
-  const chips = [
-    ['ATT', lineCnt.att, '#ef4444'],
-    ['MID', lineCnt.mid, '#a855f7'],
-    ['DEF', lineCnt.def, '#22c55e'],
-    ['GK', lineCnt.gk, '#3b82f6'],
-  ];
-  chips.forEach(([lbl, n, col], i) => {
-    const cx = 14 + i * 86;
-    body += `<rect x="${cx}" y="15" width="78" height="32" rx="7" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.16" stroke-width="1.1"/>
-      <circle cx="${cx + 13}" cy="31" r="4.8" fill="${col}"/>
-      <text x="${cx + 24}" y="36.5" font-size="15" font-weight="700" fill="#e4e4e7" font-family="${FONT}">${lbl} ${n}</text>`;
-  });
-
-  // Glowing gold counter with crisp vector symbols (✓ green check, ? amber question, ✕ red cross) + formation + filled badge on right
-  body += `<rect x="498" y="14" width="192" height="34" rx="8" fill="#14161a" stroke="#fbbf24" stroke-opacity="0.9" stroke-width="1.6"/>`;
-  body += `<circle cx="519" cy="31" r="9.5" fill="#22c55e" fill-opacity="0.22" stroke="#4ade80" stroke-width="1.3"/>`;
-  body += `<path d="M514.8 31.3l2.9 2.9 5.6-5.8" fill="none" stroke="#4ade80" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`;
-  body += `<text x="534" y="36.5" font-size="16" font-weight="800" fill="#4ade80" font-family="${FONT}">${yes.length}</text>`;
-  body += `<circle cx="561" cy="31" r="2" fill="#52525b"/>`;
-  body += `<circle cx="578" cy="31" r="9.5" fill="#f59e0b" fill-opacity="0.22" stroke="#fbbf24" stroke-width="1.3"/>`;
-  body += `<text x="578" y="36" font-size="13.5" font-weight="800" text-anchor="middle" fill="#fbbf24" font-family="${FONT}">?</text>`;
-  body += `<text x="593" y="36.5" font-size="16" font-weight="800" fill="#fbbf24" font-family="${FONT}">${maybe.length}</text>`;
-  body += `<circle cx="621" cy="31" r="2" fill="#52525b"/>`;
-  body += `<circle cx="638" cy="31" r="9.5" fill="#ef4444" fill-opacity="0.22" stroke="#f87171" stroke-width="1.3"/>`;
-  body += `<path d="M634.5 27.5l7 7M641.5 27.5l-7 7" fill="none" stroke="#f87171" stroke-width="2.2" stroke-linecap="round"/>`;
-  body += `<text x="653" y="36.5" font-size="16" font-weight="800" fill="#f87171" font-family="${FONT}">${out.length}</text>`;
-  body += `<rect x="700" y="14" width="110" height="34" rx="8" fill="#23262e" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1.2"/>
-    <text x="755" y="36.5" font-size="15" font-weight="700" text-anchor="middle" fill="#f4f4f5" font-family="${FONT}">${esc(formation)}</text>`;
-  const fillBg = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
-  const fillOp = closed ? '0.24' : covered === slots.length ? '0.2' : '0.07';
-  const fillStroke = closed ? '#ef4444' : covered === slots.length ? '#22c55e' : '#ffffff';
-  const fillStrOp = closed || covered === slots.length ? '1' : '0.24';
-  const fillTxt = closed ? 'CLOSED' : `${covered}/${slots.length} FILLED`;
-  body += `<rect x="818" y="14" width="108" height="34" rx="8" fill="${fillBg}" fill-opacity="${fillOp}" stroke="${fillStroke}" stroke-opacity="${fillStrOp}" stroke-width="1.2"/>
-    <text x="872" y="36.5" font-size="14" font-weight="800" text-anchor="middle" fill="${closed ? '#fca5a5' : covered === slots.length ? '#86efac' : '#e5e7eb'}" font-family="${FONT}">${fillTxt}</text>`;
-
-  // Left Vertical Pitch
-  body += pitchBaseSvg(px, py, pw, ph);
-  body += `<line x1="${pw}" y1="${banH}" x2="${pw}" y2="${H - footH}" stroke="#f59e0b" stroke-opacity="0.45" stroke-width="1.5"/>`;
-
-  // Position Nodes (solid circles + blurred custom icon watermark + overlapping max-3 avatar pill + flex tag)
-  for (const s of slots) {
-    const cx = Math.round(px + (s.x / 100) * pw);
-    const cy = Math.round(py + (s.y / 100) * ph);
+  // ── Header (0–64): stage pill · formation · avg / filled chips, then the slot meter ──
+  const headH = 64;
+  body += `<rect x="0" y="0" width="${W0}" height="${headH}" fill="#121419"/>`;
+  const stageTxt = closed ? 'SIGN-UPS CLOSED' : 'ROLL CALL';
+  const stageCol = closed ? '#f87171' : '#fbbf24';
+  const stageW = stageTxt.length * 6.6 + 30;
+  body += `<rect x="${G}" y="14" width="${stageW}" height="24" rx="12" fill="${stageCol}" fill-opacity="0.12" stroke="${stageCol}" stroke-opacity="0.7" stroke-width="1.5"/>`;
+  body += `<circle cx="${G + 13}" cy="26" r="3.6" fill="${stageCol}"/><circle cx="${G + 13}" cy="26" r="6.5" fill="none" stroke="${stageCol}" stroke-opacity="0.35" stroke-width="1.5"/>`;
+  body += T(G + 23, 30.5, 12, stageCol, esc(stageTxt), ' letter-spacing="1"');
+  body += T(G + stageW + 10, 32, 19, '#ffffff', esc(formation));
+  // right side chips: AVG (if known) and X/11
+  const chip = (xr, label, col, bg) => {
+    const w = label.length * 6.4 + 18;
+    return { w, svg: `<rect x="${xr - w}" y="14" width="${w}" height="24" rx="6" fill="${bg}" fill-opacity="0.14" stroke="${col}" stroke-opacity="0.6" stroke-width="1.5"/>${T(xr - w / 2, 30.5, 12, col, esc(label), ' text-anchor="middle" letter-spacing="0.6"')}` };
+  };
+  const fillChip = chip(W0 - G, closed ? 'LOCKED' : `${covered}/${slots.length} FILLED`, full ? '#4ade80' : closed ? '#f87171' : '#e5e7eb', full ? '#22c55e' : closed ? '#ef4444' : '#ffffff');
+  body += fillChip.svg;
+  if (avgOvr) {
+    const ac = avgOvr >= 8 ? '#4ade80' : avgOvr >= 7 ? '#fbbf24' : '#f87171';
+    body += chip(W0 - G - fillChip.w - 6, `XI AVG ${Number(avgOvr).toFixed(1)}`, ac, ac).svg;
+  }
+  // slot meter: one segment per formation slot, coloured by line when someone picked it as primary
+  const segGap = 3, segW = (W0 - G * 2 - segGap * (slots.length - 1)) / Math.max(1, slots.length);
+  slots.forEach((s, i) => {
+    const on = (bySlot[s.id]?.primary.length ?? 0) > 0;
     const st = CAT_STYLE[s.cat] ?? CAT_STYLE.def;
-    const d = bySlot[s.id] ?? { primary: [], flex: [] };
-    const r = 26;
-    const cid = `nc${clipN++}`;
-    defs += `<clipPath id="${cid}"><circle cx="${cx}" cy="${cy}" r="${r - 1}"/></clipPath>`;
-    // Circle + faded custom watermark icon (clip-path on outer <g> so transform doesn't shift clip coords)
-    body += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${st.bg}" stroke="${st.ring}" stroke-width="2.8"/>`;
-    body += `<g clip-path="url(#${cid})"><g opacity="0.34" transform="translate(${cx - 23},${cy - 23}) scale(1.92)">${emblemPath(s.id, s.cat, st.fill)}</g></g>`;
-    body += `<text x="${cx}" y="${cy + 5.5}" font-size="${s.id.length > 3 ? 12.5 : 14.5}" font-weight="800" text-anchor="middle" fill="#ffffff" font-family="${FONT}">${esc(s.id)}</text>`;
+    body += `<rect x="${(G + i * (segW + segGap)).toFixed(1)}" y="48" width="${segW.toFixed(1)}" height="5" rx="2.5" fill="${on ? st.ring : '#ffffff'}" fill-opacity="${on ? 1 : 0.1}"/>`;
+  });
+  body += `<rect x="0" y="${headH - 1}" width="${W0}" height="1" fill="url(#rcGold)" opacity="0.8"/>`;
 
-    // Side-by-side avatar pill (max 3 + +N 4th circle)
-    let belowY = cy + r + 10;
-    if (d.primary.length > 0) {
-      const shown = d.primary.slice(0, 3);
-      const extra = d.primary.length - shown.length;
-      const totalDots = shown.length + (extra > 0 ? 1 : 0);
-      const pillW = totalDots * 22 + 16;
-      const pillX = cx - pillW / 2;
-      body += `<rect x="${pillX}" y="${cy + r - 6}" width="${pillW}" height="28" rx="14" fill="#0a0705" fill-opacity="0.9" stroke="#ffffff" stroke-opacity="0.22" stroke-width="1.2"/>`;
-      shown.forEach((p, idx) => {
-        const ax = pillX + 19 + idx * 22;
-        const ay = cy + r + 8;
+  // ── Body: pitch panel (left) + squad panel (right) ──
+  const footH = 58, bodyY = headH + G, bodyH = H0 - headH - footH - G * 2;
+  const pw = 262, px = G, py = bodyY, ph = bodyH;
+  const rx0 = px + pw + G, rw = W0 - rx0 - G;
+  defs += `<clipPath id="rcPitch"><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="10"/></clipPath>`;
+  let pitch = '';
+  const stripes = 10, sh = ph / stripes;
+  for (let i = 0; i < stripes; i++) pitch += `<rect x="${px}" y="${(py + i * sh).toFixed(1)}" width="${pw}" height="${(sh + 0.5).toFixed(1)}" fill="${i % 2 ? '#0f301b' : '#0c2915'}"/>`;
+  const m = 10, ix = px + m, iy = py + m, iw = pw - m * 2, ih = ph - m * 2, pcx = px + pw / 2, pcy = py + ph / 2;
+  const ln = 'fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="1.5"';
+  pitch += `<rect x="${ix}" y="${iy}" width="${iw}" height="${ih}" rx="3" ${ln}/><line x1="${ix}" y1="${pcy}" x2="${ix + iw}" y2="${pcy}" ${ln}/>`;
+  pitch += `<circle cx="${pcx}" cy="${pcy}" r="34" ${ln}/><circle cx="${pcx}" cy="${pcy}" r="2.5" fill="#ffffff" fill-opacity="0.2"/>`;
+  pitch += `<rect x="${pcx - 62}" y="${iy}" width="124" height="44" ${ln}/><rect x="${pcx - 62}" y="${iy + ih - 44}" width="124" height="44" ${ln}/>`;
+  pitch += `<rect x="${pcx - 28}" y="${iy + ih - 16}" width="56" height="16" ${ln}/>`;
+  body += `<g clip-path="url(#rcPitch)">${pitch}</g><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="10" fill="none" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1.5"/>`;
+
+  // position nodes: ring + dimmed emblem watermark + code. Each node then gets one tag: the primary sign-ups' faces,
+  // a FLEX chip (open but someone can cover it) or OPEN. Tags are placed below the node, else above, else made smaller,
+  // so in every formation no tag lands on another node or tag.
+  const R = 17, outTop = py + 40, outBot = py + ph - 96;
+  const nodes = slots.map((s) => ({
+    s, st: CAT_STYLE[s.cat] ?? CAT_STYLE.def, d: bySlot[s.id] ?? { primary: [], flex: [] },
+    cx: Math.round(px + pw * (0.07 + ((s.x - 10) / 80) * 0.86)),
+    cy: Math.round(s.id === 'GK' ? py + ph - 46 : outTop + ((s.y - 10) / 60) * (outBot - outTop)),
+  }));
+  for (const n of nodes) {
+    const { s, st, cx, cy } = n, has = n.d.primary.length > 0, cid = `rn${clipN++}`;
+    defs += `<clipPath id="${cid}"><circle cx="${cx}" cy="${cy}" r="${R - 1}"/></clipPath>`;
+    if (has) body += `<circle cx="${cx}" cy="${cy}" r="${R + 4}" fill="${st.ring}" fill-opacity="0.18"/>`;
+    body += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="${st.bg}" stroke="${st.ring}" stroke-width="${has ? 2.2 : 1.5}"${has ? '' : ' stroke-dasharray="3 2.5"'}/>`;
+    body += `<g clip-path="url(#${cid})"><g opacity="0.34" transform="translate(${cx - 15},${cy - 15}) scale(1.25)">${emblemPath(s.id, s.cat, st.fill)}</g></g>`;
+    body += T(cx, cy + 4.2, s.id.length > 3 ? 10 : 11.5, '#ffffff', esc(s.id), ' text-anchor="middle" font-weight="800"');
+  }
+  const placed = [];
+  const hits = (a, b) => a.x < b.x + b.w + 2 && b.x < a.x + a.w + 2 && a.y < b.y + b.h + 2 && b.y < a.y + a.h + 2;
+  const clear = (box, self) => box.x >= px + 3 && box.x + box.w <= px + pw - 3 && box.y >= py + 3 && box.y + box.h <= py + ph - 3
+    && !nodes.some((o) => o !== self && hits(box, { x: o.cx - R - 4, y: o.cy - R - 4, w: 2 * R + 8, h: 2 * R + 8 }))
+    && !placed.some((p) => hits(box, p));
+  const spot = (n, w, h) => {
+    for (const y of [n.cy + R + 3, n.cy - R - 3 - h]) {
+      const box = { x: n.cx - w / 2, y, w, h };
+      if (clear(box, n)) return box;
+    }
+    return null;
+  };
+  const AR = 8, STEP = 13;
+  for (const n of nodes) {
+    const { cx, d } = n;
+    if (d.primary.length) {
+      let box = null, k = Math.min(3, d.primary.length);
+      for (; k >= 1; k--) {
+        const items = k + (d.primary.length > k ? 1 : 0);
+        box = spot(n, (items - 1) * STEP + AR * 2 + 6, AR * 2 + 4);
+        if (box) break;
+      }
+      if (!box) { k = 1; box = { x: cx - (d.primary.length > 1 ? 16.5 : 11), y: n.cy + R + 3, w: d.primary.length > 1 ? 33 : 22, h: AR * 2 + 4 }; }
+      placed.push(box);
+      const shown = d.primary.slice(0, k), extra = d.primary.length - shown.length;
+      body += `<rect x="${box.x}" y="${box.y}" width="${box.w}" height="${box.h}" rx="${box.h / 2}" fill="#0a0705" fill-opacity="0.88" stroke="#ffffff" stroke-opacity="0.16" stroke-width="1"/>`;
+      shown.forEach((p, i) => {
+        const ax = box.x + 3 + AR + i * STEP, ay = box.y + 2 + AR;
         const uri = faces.get(String(p.user_id ?? p.id));
         if (uri) {
-          const aid = `av${clipN++}`;
-          defs += `<clipPath id="${aid}"><circle cx="${ax}" cy="${ay}" r="11"/></clipPath>`;
-          body += `<image href="${uri}" x="${ax - 11}" y="${ay - 11}" width="22" height="22" preserveAspectRatio="xMidYMid slice" clip-path="url(#${aid})"/>`;
-          body += `<circle cx="${ax}" cy="${ay}" r="11" fill="none" stroke="#0a0705" stroke-width="1.8"/>`;
+          const aid = `ra${clipN++}`;
+          defs += `<clipPath id="${aid}"><circle cx="${ax}" cy="${ay}" r="${AR}"/></clipPath>`;
+          body += `<image href="${uri}" x="${ax - AR}" y="${ay - AR}" width="${AR * 2}" height="${AR * 2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#${aid})"/>`;
         } else {
-          body += `<circle cx="${ax}" cy="${ay}" r="11" fill="${avColor(p.user_id ?? p.id)}" stroke="#0a0705" stroke-width="1.8"/>`;
-          body += `<text x="${ax}" y="${ay + 4}" font-size="11" font-weight="800" text-anchor="middle" fill="#ffffff" font-family="${FONT}">${esc(initialOf(p.name))}</text>`;
+          body += `<circle cx="${ax}" cy="${ay}" r="${AR}" fill="${avColor(p.user_id ?? p.id)}"/>`;
+          body += T(ax, ay + 3.3, 9, '#ffffff', esc(initialOf(p.name)), ' text-anchor="middle" font-weight="800"');
         }
+        body += `<circle cx="${ax}" cy="${ay}" r="${AR}" fill="none" stroke="#0a0705" stroke-width="1.5"/>`;
       });
       if (extra > 0) {
-        const ax = pillX + 19 + shown.length * 22;
-        const ay = cy + r + 8;
-        body += `<circle cx="${ax}" cy="${ay}" r="11.5" fill="#1f2937" stroke="#f59e0b" stroke-width="1.5"/>`;
-        body += `<text x="${ax}" y="${ay + 4}" font-size="10" font-weight="800" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">+${extra}</text>`;
+        const ax = box.x + 3 + AR + shown.length * STEP, ay = box.y + 2 + AR;
+        body += `<circle cx="${ax}" cy="${ay}" r="${AR}" fill="#1f2937" stroke="#f59e0b" stroke-width="1.2"/>`;
+        body += T(ax, ay + 3, 8.5, '#fcd34d', `+${extra}`, ' text-anchor="middle" font-weight="800"');
       }
-      belowY = cy + r + 28;
-    }
-
-    if (d.flex.length > 0) {
-      body += `<rect x="${cx - 28}" y="${belowY - 2}" width="56" height="17" rx="5" fill="#140e06" fill-opacity="0.88" stroke="#f59e0b" stroke-opacity="0.5" stroke-width="1"/>`;
-      body += `<text x="${cx}" y="${belowY + 10}" font-size="10.5" font-weight="700" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">+${d.flex.length} flex</text>`;
-    } else if (d.primary.length === 0) {
-      body += `<rect x="${cx - 24}" y="${belowY - 8}" width="48" height="17" rx="5" fill="#300a0a" fill-opacity="0.9" stroke="#ef4444" stroke-opacity="0.55" stroke-width="1"/>`;
-      body += `<text x="${cx}" y="${belowY + 4}" font-size="10" font-weight="800" text-anchor="middle" fill="#fca5a5" font-family="${FONT}">OPEN</text>`;
+    } else {
+      const flex = d.flex.length > 0;
+      const col = flex ? '#fcd34d' : '#fca5a5', bd = flex ? '#f59e0b' : '#ef4444', bg = flex ? '#1c1405' : '#2a0b0b';
+      let lbl = flex ? `FLEX ${d.flex.length}` : 'OPEN', box = spot(n, lbl.length * 6 + 12, 16);
+      if (!box) { lbl = flex ? `+${d.flex.length}` : '—'; box = spot(n, lbl.length * 6 + 12, 16) ?? { x: cx - (lbl.length * 6 + 12) / 2, y: n.cy + R + 3, w: lbl.length * 6 + 12, h: 16 }; }
+      placed.push(box);
+      body += `<rect x="${box.x}" y="${box.y}" width="${box.w}" height="16" rx="5" fill="${bg}" fill-opacity="0.92" stroke="${bd}" stroke-opacity="0.6" stroke-width="1"/>`;
+      body += T(box.x + box.w / 2, box.y + 11.6, 9.5, col, lbl, ' text-anchor="middle" font-weight="800" letter-spacing="0.6"');
     }
   }
 
-  // Right Roster Panel (1 row per player, max 12 rows + overflow bar, form dots + custom position icons)
-  body += `<rect x="${rx}" y="${banH}" width="${rw}" height="${ph}" fill="#111317"/>`;
-  body += `<text x="${rx + 18}" y="${banH + 26}" font-size="13" font-weight="700" letter-spacing="1.2" fill="#949ba4" font-family="${FONT}">SQUAD · PRIMARY + FLEX</text>`;
-  body += `<text x="${W - 18}" y="${banH + 26}" font-size="13" font-weight="700" text-anchor="end" fill="#949ba4" font-family="${FONT}">${totalReplied} REPLIED</text>`;
-  body += `<line x1="${rx + 16}" y1="${banH + 36}" x2="${W - 16}" y2="${banH + 36}" stroke="#ffffff" stroke-opacity="0.08" stroke-width="1"/>`;
+  // squad panel: title + line counts, one row per player (line bar · name · rating · position badge)
+  body += `<rect x="${rx0}" y="${py}" width="${rw}" height="${ph}" rx="10" fill="#111317" stroke="#ffffff" stroke-opacity="0.07" stroke-width="1.5"/>`;
+  body += T(rx0 + 12, py + 22, 12, '#e5e7eb', 'SQUAD', ' letter-spacing="1.2"');
+  body += T(rx0 + rw - 12, py + 22, 12, '#4ade80', `${yes.length} IN`, ' text-anchor="end" letter-spacing="0.8"');
+  body += `<rect x="${rx0 + 12}" y="${py + 32}" width="${rw - 24}" height="1" fill="#ffffff" fill-opacity="0.08"/>`;
 
-  const maxRows = 12;
-  const shownPlayers = mappedYes.slice(0, maxRows);
-  const hiddenCount = mappedYes.length - shownPlayers.length;
-  const rowH = 44;
+  const rowH = 32, rowsTop = py + 40, room = Math.floor((ph - 46) / rowH);
+  const maxRows = mappedYes.length > room ? room - 1 : room;
+  const shownPlayers = mappedYes.slice(0, maxRows), hidden = mappedYes.length - shownPlayers.length;
   shownPlayers.forEach((p, i) => {
-    const ry = banH + 46 + i * rowH;
-    const st = CAT_STYLE[p.cat] ?? CAT_STYLE.def;
-    body += `<rect x="${rx + 12}" y="${ry}" width="${rw - 24}" height="38" rx="7" fill="#ffffff" fill-opacity="0.035"/>`;
-    body += `<circle cx="${rx + 24}" cy="${ry + 19}" r="4.5" fill="${st.ring}"/>`;
-    body += `<text x="${rx + 36}" y="${ry + 24.5}" font-size="16.5" font-weight="700" fill="#f3f4f6" font-family="${FONT}">${esc(plain(p.name, 13))}</text>`;
-
-    // Per-player Average Rating pill + rating-colored 5-match dots (green >=8.0, amber 7.0-7.9, red <7.0)
-    const avgVal = typeof p.avg === 'number' && p.avg > 0 ? p.avg : null;
-    if (avgVal != null) {
-      const ac = avgVal >= 8.0 ? '#4ade80' : avgVal >= 7.0 ? '#fbbf24' : '#f87171';
-      body += `<rect x="${rx + 150}" y="${ry + 7.5}" width="42" height="23" rx="5" fill="${ac}" fill-opacity="0.18" stroke="${ac}" stroke-opacity="0.65" stroke-width="1.1"/>`;
-      body += `<text x="${rx + 171}" y="${ry + 23.5}" font-size="13.5" font-weight="800" text-anchor="middle" fill="${ac}" font-family="${FONT}">${avgVal.toFixed(1)}</text>`;
+    const ry = rowsTop + i * rowH, st = CAT_STYLE[p.cat] ?? CAT_STYLE.def;
+    body += `<rect x="${rx0 + 8}" y="${ry}" width="${rw - 16}" height="${rowH - 4}" rx="6" fill="#ffffff" fill-opacity="${i % 2 ? 0.025 : 0.05}"/>`;
+    body += `<rect x="${rx0 + 8}" y="${ry + 6}" width="3" height="${rowH - 16}" rx="1.5" fill="${st.ring}"/>`;
+    body += T(rx0 + 18, ry + 19, 14, '#f3f4f6', esc(plain(p.name, 12)));
+    const bw = Math.max(40, p.prim.length * 7 + 24), bx = rx0 + rw - 12 - bw;
+    body += `<rect x="${bx}" y="${ry + 5}" width="${bw}" height="18" rx="5" fill="${st.badgeBg}" fill-opacity="0.22" stroke="${st.ring}" stroke-opacity="0.85" stroke-width="1"/>`;
+    body += miniIconGroup(bx + 3.5, ry + 8, 12, p.prim, p.cat);
+    body += T(bx + 19, ry + 18, 10.5, st.text, esc(p.prim), ' font-weight="800"');
+    const avg = typeof p.avg === 'number' && p.avg > 0 ? p.avg : null;
+    if (avg != null) {
+      const ac = avg >= 8 ? '#4ade80' : avg >= 7 ? '#fbbf24' : '#f87171';
+      body += `<rect x="${bx - 34}" y="${ry + 5}" width="30" height="18" rx="5" fill="${ac}" fill-opacity="0.14"/>`;
+      body += T(bx - 19, ry + 18, 10.5, ac, avg.toFixed(1), ' text-anchor="middle" font-weight="800"');
     }
-    const form = Array.isArray(p.form) ? p.form.slice(-5) : [];
-    const dotX0 = avgVal != null ? rx + 200 : rx + 168;
-    form.forEach((f, fi) => {
-      const fc = f === 'W' || f === 'G' ? '#4ade80' : f === 'D' || f === 'Y' ? '#fbbf24' : '#f87171';
-      body += `<circle cx="${dotX0 + fi * 9.5}" cy="${ry + 19}" r="3.5" fill="${fc}"/>`;
-    });
-
-    // Primary badge (with custom position icon) + Flex pills right-aligned
-    let tagX = W - 16;
-    const flex = p.mapped.slice(1, 3).reverse();
-    for (const fl of flex) {
-      const fw = Math.max(38, fl.length * 8.2 + 14);
-      tagX -= fw;
-      body += `<rect x="${tagX}" y="${ry + 7.5}" width="${fw}" height="23" rx="5" fill="#ffffff" fill-opacity="0.06" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1"/>`;
-      body += `<text x="${tagX + fw / 2}" y="${ry + 23}" font-size="12" font-weight="700" text-anchor="middle" fill="#a1a1aa" font-family="${FONT}">${esc(fl)}</text>`;
-      tagX -= 5;
-    }
-    const pwBadge = Math.max(60, p.prim.length * 9.5 + 30);
-    tagX -= pwBadge;
-    body += `<rect x="${tagX}" y="${ry + 6.5}" width="${pwBadge}" height="25" rx="6" fill="${st.badgeBg}" fill-opacity="0.26" stroke="${st.ring}" stroke-width="1.3"/>`;
-    body += miniIconGroup(tagX + 5, ry + 11, 16, p.prim, p.cat);
-    body += `<text x="${tagX + 26}" y="${ry + 23.5}" font-size="13.5" font-weight="800" fill="${st.text}" font-family="${FONT}">${esc(p.prim)}</text>`;
   });
-
-  if (hiddenCount > 0) {
-    const oy = banH + 46 + maxRows * rowH;
-    body += `<rect x="${rx + 14}" y="${oy}" width="${rw - 28}" height="28" rx="6" fill="#f59e0b" fill-opacity="0.14" stroke="#f59e0b" stroke-opacity="0.55" stroke-dasharray="4 3" stroke-width="1.2"/>`;
-    body += `<text x="${rx + rw / 2}" y="${oy + 19}" font-size="13" font-weight="800" text-anchor="middle" fill="#fcd34d" font-family="${FONT}">+${hiddenCount} MORE SIGNED UP · TAP ROSTER FOR FULL LIST</text>`;
+  if (hidden > 0) {
+    const oy = rowsTop + maxRows * rowH;
+    body += `<rect x="${rx0 + 8}" y="${oy}" width="${rw - 16}" height="${rowH - 4}" rx="6" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-opacity="0.5" stroke-dasharray="4 3" stroke-width="1"/>`;
+    body += T(rx0 + rw / 2, oy + 18, 11, '#fcd34d', `+${hidden} MORE SIGNED UP`, ' text-anchor="middle" font-weight="800" letter-spacing="0.6"');
   }
+  if (!yes.length) body += T(rx0 + rw / 2, py + ph / 2, 13, '#6b7280', 'NO SIGN-UPS YET', ' text-anchor="middle" letter-spacing="1"');
 
-  // Maybe / Out footer inside roster panel
-  const fy = H - footH - 58;
-  body += `<line x1="${rx + 16}" y1="${fy}" x2="${W - 16}" y2="${fy}" stroke="#ffffff" stroke-opacity="0.09" stroke-width="1"/>`;
-  const mNames = maybe.slice(0, 6).map((x) => plain(x.name, 12)).join(', ') + (maybe.length > 6 ? ` +${maybe.length - 6}` : '');
-  const oNames = out.slice(0, 6).map((x) => plain(x.name, 12)).join(', ') + (out.length > 6 ? ` +${out.length - 6}` : '');
-  body += `<text x="${rx + 18}" y="${fy + 21}" font-size="13" fill="#9ca3af" font-family="${FONT}"><tspan fill="#fbbf24" font-weight="700">Maybe (${maybe.length}): </tspan>${esc(mNames || 'None')}</text>`;
-  body += `<text x="${rx + 18}" y="${fy + 42}" font-size="13" fill="#9ca3af" font-family="${FONT}"><tspan fill="#f87171" font-weight="700">Out (${out.length}): </tspan>${esc(oNames || 'None')}</text>`;
+  // ── Footer: Maybe / Out names + replied and form ──
+  const fy = H0 - footH;
+  body += `<rect x="0" y="${fy}" width="${W0}" height="${footH}" fill="#121419"/><rect x="0" y="${fy}" width="${W0}" height="1" fill="url(#rcGold)" opacity="0.5"/>`;
+  const namesOf = (arr, max = 5) => (arr.length ? arr.slice(0, max).map((x) => plain(x.name, 11)).join(', ') + (arr.length > max ? ` +${arr.length - max}` : '') : 'None');
+  const tail = [`${replied} REPLIED`, winForm != null ? `FORM ${winForm}%` : null].filter(Boolean).join('  ·  ');
+  body += T(G, fy + 23, 12, '#9ca3af', `<tspan fill="#fbbf24">MAYBE ${maybe.length}</tspan>   ${esc(namesOf(maybe, 4))}`);
+  body += T(G, fy + 44, 12, '#9ca3af', `<tspan fill="#f87171">OUT ${out.length}</tspan>   ${esc(namesOf(out, 6))}`);
+  body += T(W0 - G, fy + 23, 11, '#6b7280', esc(tail), ' text-anchor="end" letter-spacing="0.6"');
 
-  // Bottom Pro Telemetry Strip
-  body += `<rect x="0" y="${H - footH}" width="${W}" height="${footH}" fill="#14161b"/>`;
-  body += `<line x1="0" y1="${H - footH}" x2="${W}" y2="${H - footH}" stroke="#f59e0b" stroke-opacity="0.38" stroke-width="1.2"/>`;
-  const teleText = `PRO TELEMETRY · ${avgOvr ? `Projected XI Avg ${avgOvr}` : `${yes.length} Players Ready`}${winForm != null ? ` · ${winForm}% Recent Win Form` : ''}`;
-  body += `<text x="20" y="${H - 14}" font-size="14" font-weight="700" fill="#fbbf24" font-family="${FONT}">${esc(teleText)}</text>`;
-  body += `<text x="${W - 20}" y="${H - 14}" font-size="13" font-weight="600" text-anchor="end" fill="#a1a1aa" font-family="${FONT}">Chem Links Active in Suggested XI</text>`;
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${defs}</defs><rect width="${W}" height="${H}" rx="16" fill="#0b0c0e"/>${body}<rect x="2" y="2" width="${W - 4}" height="${H - 4}" rx="15" fill="none" stroke="#fbbf24" stroke-width="3.5"/><rect x="6" y="6" width="${W - 12}" height="${H - 12}" rx="12" fill="none" stroke="#f59e0b" stroke-opacity="0.28" stroke-width="1"/></svg>`;
+  const S = RC_SCALE;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W0 * S}" height="${H0 * S}" viewBox="0 0 ${W0} ${H0}"><defs>${defs}</defs><rect width="${W0}" height="${H0}" rx="14" fill="#0b0c0e"/>${body}<rect x="0.75" y="0.75" width="${W0 - 1.5}" height="${H0 - 1.5}" rx="13.5" fill="none" stroke="#fbbf24" stroke-opacity="0.75" stroke-width="1.5"/></svg>`;
 }
 
 // ---------- Stages 2, 3, 4 & Private Suggested XI SVG ----------
@@ -666,7 +660,7 @@ export async function drawHostGraphic(env, kind, eventId, model, userIds = []) {
       isSimple ? crestData(env) : Promise.resolve(null),
       kind === 'rollcall' ? enrichRollCallForm(env, model) : Promise.resolve(model),
     ]);
-    const hash = await sha(JSON.stringify(['v9', kind, enrichedModel, !!crest, ids.map((id) => faceUrls.get(id))]));
+    const hash = await sha(JSON.stringify(['v10', kind, enrichedModel, !!crest, ids.map((id) => faceUrls.get(id))]));
     const key = `ht/${eventId}-${kind}-${hash}.png`;
     if (env.MEDIA) {
       if (await env.MEDIA.head?.(key) ?? await env.MEDIA.get(key)) return { url: `${base}/media/${key}`, key, cached: true };

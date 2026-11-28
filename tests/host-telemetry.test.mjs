@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { GLYPHS } from '../bot/iconset.mjs';
 import { FORMATIONS, eventMessage } from '../bot/events.js';
 import { hostBody, formationChoices } from '../bot/host.js';
 import { normalizeFormationSlots, solveSuggestedXI, rollCallSvg, lineupStageSvg } from '../bot/hostgraphic.js';
@@ -56,7 +57,8 @@ test('rollCallSvg renders matte-black + glowing gold + max-3 avatar overflow + >
   assert.ok(svg.includes('#0b0c0e'), 'matte black background');
   assert.ok(svg.includes('opacity="0.34"'), 'dimmed icon watermark inside circle');
   assert.ok(svg.includes('+2'), 'max-3 avatar overflow +2 circle for 5 LS players');
-  assert.ok(svg.includes('+3 MORE SIGNED UP'), 'roster overflow bar for 15 players');
+  assert.ok(svg.includes('+5 MORE SIGNED UP'), 'roster overflow bar for 15 players (10 rows + overflow row)');
+  assert.ok(/^<svg[^>]+width="1080" height="1260" viewBox="0 0 480 560"/.test(svg), 'phone-first 480-unit canvas exported at 2.25x');
   assert.ok(!/norex/i.test(svg), 'zero NOREX branding');
 });
 
@@ -90,6 +92,11 @@ test('eventMessage builds Pro Telemetry Roll Call with Squad Hub accessory and M
   assert.ok(s.includes('pf:h:9:override'), 'override button present');
   assert.ok(s.includes('pf:h:9:xi'), 'Suggested XI button present');
   assert.ok(s.includes('pf:h:9:roster'), 'Roster button present');
+  const rows = msg.components.at(-1).components.filter((c) => c.type === 1).map((r) => r.components.length);
+  assert.deepEqual(rows, [3, 3, 4], 'answers · views · manager rows, sized to fill a phone-width panel');
+  assert.ok(s.includes('In · 0') && s.includes('Maybe · 0') && s.includes('Out · 0'), 'live counts in the answer labels');
+  assert.ok(!/"description"/.test(s), 'no alt text, so Discord draws no ALT badge on the picture');
+  for (const n of ['md_in', 'md_maybe', 'md_out', 'md_xi', 'md_squad', 'md_hub', 'md_lock', 'md_edit', 'md_time', 'md_end']) assert.ok(GLYPHS[n], `${n} icon exists`);
 });
 
 console.log(`All ${passed} tests passed.`);

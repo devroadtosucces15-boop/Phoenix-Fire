@@ -33,6 +33,17 @@ export const GLYPHS = {
   btn_lineup: [`${tile('#3b2809', '#f59e0b')}<rect x="7" y="11" width="10" height="7" rx="2" ${st('#fbbf24', 2)}/><path d="M9 11V8.5a3 3 0 0 1 6 0V11" ${st('#fbbf24', 2)}/>`, '🔒'],
   btn_override: [`${tile('#232732', '#f59e0b')}<path d="M7 9h10M14 6l3 3-3 3M17 15H7M10 12l-3 3 3 3" ${st('#fcd34d', 2)}/>`, '🔁'],
   btn_resched: [`${tile('#232732', '#64748b')}<circle cx="12" cy="12" r="6.5" ${st('#e2e8f0', 1.9)}/><path d="M12 8.5V12l2.5 1.8" ${st('#fbbf24', 2)}/>`, '🕒'],
+  // Matchday post v10: bare line glyphs (no tile) so they sit cleanly on Discord's grey/green buttons, one stroke weight.
+  md_in: [`<path d="M5.2 12.6l4.4 4.4 9.2-9.6" ${st('#ffffff', 3)}/>`, '✅'],
+  md_maybe: [`<circle cx="12" cy="12" r="8.6" ${st('#fbbf24', 2.2)}/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.6 2.2c-.8.4-1.2 1-1.2 1.9" ${st('#fbbf24', 2.2)}/><circle cx="12" cy="16.6" r="1.25" fill="#fbbf24"/>`, '❔'],
+  md_out: [`<path d="M7 7l10 10M17 7L7 17" ${st('#f87171', 2.8)}/>`, '✖️'],
+  md_xi: [`<path d="M12 3.2l2.2 6.6 6.6 2.2-6.6 2.2-2.2 6.6-2.2-6.6-6.6-2.2 6.6-2.2z" fill="#fbbf24"/><circle cx="19" cy="5" r="1.4" fill="#fde68a"/>`, '✦'],
+  md_squad: [`<circle cx="9" cy="8.5" r="3" ${st('#e2e8f0', 2)}/><path d="M3.8 18.6c.6-3 2.7-4.6 5.2-4.6s4.6 1.6 5.2 4.6" ${st('#e2e8f0', 2)}/><path d="M15.4 6.2a2.8 2.8 0 0 1 0 5.2M17.4 14.4c1.4.7 2.4 2 2.8 4.2" ${st('#94a3b8', 2)}/>`, '👥'],
+  md_hub: [`<path d="M4.5 11.2L12 5l7.5 6.2M6.8 9.6V19h10.4V9.6" ${st('#fbbf24', 2.1)}/><path d="M10.2 19v-4.6h3.6V19" ${st('#fbbf24', 2.1)}/>`, '🏠'],
+  md_lock: [`<rect x="5.6" y="10.6" width="12.8" height="9" rx="2.2" ${st('#fbbf24', 2.1)}/><path d="M8.6 10.6V8a3.4 3.4 0 0 1 6.8 0v2.6" ${st('#fbbf24', 2.1)}/><circle cx="12" cy="15.1" r="1.3" fill="#fbbf24"/>`, '🔒'],
+  md_edit: [`<path d="M14.6 5.6l3.8 3.8L9 18.8l-4.6.8.8-4.6z" ${st('#e2e8f0', 2)}/><path d="M12.8 7.4l3.8 3.8" ${st('#fbbf24', 2)}/>`, '✏️'],
+  md_time: [`<circle cx="12" cy="12.8" r="7.2" ${st('#e2e8f0', 2)}/><path d="M12 9v4l2.6 1.8M9.6 3.6h4.8" ${st('#fbbf24', 2.1)}/>`, '🕒'],
+  md_end: [`<rect x="6.4" y="6.4" width="11.2" height="11.2" rx="2.6" fill="#ffffff"/>`, '⏹️'],
   btn_cancel: [`${tile('#3a1613', '#ef4444')}<circle cx="12" cy="12" r="6.5" ${st('#f87171', 2)}/><path d="M8.5 8.5l7 7" ${st('#f87171', 2)}/>`, '🚫'],
 };
 export const NAMES = Object.keys(GLYPHS);
