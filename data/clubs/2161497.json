@@ -1,7 +1,7 @@
 {
  "id": "2161497",
  "tier": "home",
- "fetchedAt": "2026-11-27T22:46:25.096Z",
+ "fetchedAt": "2026-11-28T04:37:42.111Z",
  "info": {
   "name": "Phoenix FIIIre",
   "clubId": 2161497,
@@ -613,14 +613,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "25",
-   "gamesPlayed": "128",
+   "proPos": "14",
+   "gamesPlayed": "138",
    "goals": "13",
    "assists": "10",
    "manOfTheMatch": "3",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "JBaIIard",
@@ -691,7 +691,7 @@
   {
    "name": "ManiManolo88",
    "proPos": "14",
-   "gamesPlayed": "34",
+   "gamesPlayed": "37",
    "goals": "6",
    "assists": "4",
    "manOfTheMatch": "4",
@@ -718,6 +718,6 @@
   "promotions": 3,
   "relegations": 1,
   "rep": 0,
-  "fetchedAt": "2026-11-27T22:46:25.096Z"
+  "fetchedAt": "2026-11-28T04:37:42.111Z"
  }
 }

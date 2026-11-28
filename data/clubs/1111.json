@@ -1,7 +1,7 @@
 {
  "id": "1111",
  "tier": "home",
- "fetchedAt": "2026-11-27T22:46:25.096Z",
+ "fetchedAt": "2026-11-28T04:37:42.111Z",
  "info": {
   "name": "Phoenix Fire",
   "clubId": 1111,
@@ -115,6 +115,42 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "midfielder"
+  },
+  {
+   "name": "OH-912",
+   "gamesPlayed": "19",
+   "winRate": "78",
+   "goals": "10",
+   "assists": "13",
+   "cleanSheetsDef": "0",
+   "cleanSheetsGK": "0",
+   "shotSuccessRate": "47",
+   "passesMade": "256",
+   "passSuccessRate": "81",
+   "ratingAve": "7.5",
+   "tacklesMade": "21",
+   "tackleSuccessRate": "42",
+   "proName": "O H",
+   "proPos": "25",
+   "proStyle": "0",
+   "proHeight": "170",
+   "proNationality": "42",
+   "proOverall": "81",
+   "proOverallStr": "81",
+   "manOfTheMatch": "1",
+   "redCards": "0",
+   "prevGoals": "1",
+   "prevGoals1": "1",
+   "prevGoals2": "1",
+   "prevGoals3": "0",
+   "prevGoals4": "0",
+   "prevGoals5": "0",
+   "prevGoals6": "2",
+   "prevGoals7": "0",
+   "prevGoals8": "2",
+   "prevGoals9": "0",
+   "prevGoals10": "1",
+   "favoritePosition": "forward"
   },
   {
    "name": "Bantu Vikng",
@@ -1089,42 +1125,6 @@
    "favoritePosition": "defender"
   },
   {
-   "name": "Pain11x",
-   "gamesPlayed": "2",
-   "winRate": "100",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "1",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "21",
-   "passSuccessRate": "87",
-   "ratingAve": "7.3",
-   "tacklesMade": "2",
-   "tackleSuccessRate": "100",
-   "proName": "NXT",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "182",
-   "proNationality": "97",
-   "proOverall": "80",
-   "proOverallStr": "80",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
-  },
-  {
    "name": "Superdaddysi",
    "gamesPlayed": "8",
    "winRate": "62",
@@ -1810,22 +1810,22 @@
   }
  ],
  "positionCount": {
-  "midfielder": 7,
+  "midfielder": 6,
   "goalkeeper": 3,
-  "forward": 13,
+  "forward": 14,
   "defender": 7
  },
  "career": [
   {
    "name": "kingmitch93",
-   "proPos": "14",
-   "gamesPlayed": "204",
-   "goals": "31",
-   "assists": "71",
-   "manOfTheMatch": "23",
+   "proPos": "25",
+   "gamesPlayed": "211",
+   "goals": "34",
+   "assists": "74",
+   "manOfTheMatch": "25",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "rubNiyo",
@@ -1837,6 +1837,17 @@
    "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "defender"
+  },
+  {
+   "name": "OH-912",
+   "proPos": "25",
+   "gamesPlayed": "37",
+   "goals": "18",
+   "assists": "19",
+   "manOfTheMatch": "1",
+   "ratingAve": "7.5",
+   "prevGoals": "1",
+   "favoritePosition": "forward"
   },
   {
    "name": "Blue14army",
@@ -1862,25 +1873,25 @@
   },
   {
    "name": "GOODIEx10",
-   "proPos": "5",
-   "gamesPlayed": "16",
-   "goals": "9",
-   "assists": "8",
-   "manOfTheMatch": "2",
-   "ratingAve": "7.6",
-   "prevGoals": "1",
-   "favoritePosition": "defender"
+   "proPos": "25",
+   "gamesPlayed": "22",
+   "goals": "29",
+   "assists": "12",
+   "manOfTheMatch": "4",
+   "ratingAve": "8.0",
+   "prevGoals": "5",
+   "favoritePosition": "forward"
   },
   {
    "name": "RealMinato7",
-   "proPos": "25",
-   "gamesPlayed": "351",
-   "goals": "151",
+   "proPos": "5",
+   "gamesPlayed": "358",
+   "goals": "153",
    "assists": "164",
    "manOfTheMatch": "29",
    "ratingAve": "7.0",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "defender"
   },
   {
    "name": "Bantu Vikng",
@@ -1907,11 +1918,11 @@
   {
    "name": "MV33xChris",
    "proPos": "5",
-   "gamesPlayed": "231",
+   "gamesPlayed": "241",
    "goals": "165",
    "assists": "118",
    "manOfTheMatch": "39",
-   "ratingAve": "7.7",
+   "ratingAve": "7.6",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
@@ -1961,24 +1972,24 @@
   },
   {
    "name": "xEthxnH-_-",
-   "proPos": "25",
-   "gamesPlayed": "49",
-   "goals": "9",
-   "assists": "9",
-   "manOfTheMatch": "0",
-   "ratingAve": "7.1",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
+   "proPos": "5",
+   "gamesPlayed": "55",
+   "goals": "16",
+   "assists": "32",
+   "manOfTheMatch": "4",
+   "ratingAve": "7.3",
+   "prevGoals": "2",
+   "favoritePosition": "defender"
   },
   {
    "name": "Dimantu_",
    "proPos": "25",
-   "gamesPlayed": "163",
-   "goals": "95",
-   "assists": "69",
-   "manOfTheMatch": "27",
+   "gamesPlayed": "173",
+   "goals": "105",
+   "assists": "76",
+   "manOfTheMatch": "28",
    "ratingAve": "7.6",
-   "prevGoals": "0",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -2027,14 +2038,14 @@
   },
   {
    "name": "KOEN WIE",
-   "proPos": "25",
-   "gamesPlayed": "128",
+   "proPos": "14",
+   "gamesPlayed": "138",
    "goals": "13",
    "assists": "10",
    "manOfTheMatch": "3",
    "ratingAve": "7.1",
    "prevGoals": "0",
-   "favoritePosition": "forward"
+   "favoritePosition": "midfielder"
   },
   {
    "name": "GoldenFrize",
@@ -2105,10 +2116,10 @@
   {
    "name": "Lucus1997",
    "proPos": "25",
-   "gamesPlayed": "209",
-   "goals": "243",
+   "gamesPlayed": "211",
+   "goals": "246",
    "assists": "114",
-   "manOfTheMatch": "11",
+   "manOfTheMatch": "12",
    "ratingAve": "7.3",
    "prevGoals": "3",
    "favoritePosition": "forward"
@@ -2149,11 +2160,11 @@
   {
    "name": "Peru-Chocolate",
    "proPos": "5",
-   "gamesPlayed": "259",
+   "gamesPlayed": "269",
    "goals": "36",
    "assists": "31",
    "manOfTheMatch": "45",
-   "ratingAve": "7.8",
+   "ratingAve": "7.7",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
@@ -2193,9 +2204,9 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "294",
-   "goals": "182",
-   "assists": "242",
+   "gamesPlayed": "304",
+   "goals": "186",
+   "assists": "252",
    "manOfTheMatch": "12",
    "ratingAve": "7.1",
    "prevGoals": "0",
@@ -2225,14 +2236,14 @@
   },
   {
    "name": "SamESKO4",
-   "proPos": "14",
-   "gamesPlayed": "144",
-   "goals": "148",
-   "assists": "136",
-   "manOfTheMatch": "35",
+   "proPos": "25",
+   "gamesPlayed": "152",
+   "goals": "159",
+   "assists": "146",
+   "manOfTheMatch": "37",
    "ratingAve": "8.1",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
+   "prevGoals": "0",
+   "favoritePosition": "forward"
   },
   {
    "name": "oxMEMxo",
@@ -2292,7 +2303,7 @@
   {
    "name": "Two_K_Two",
    "proPos": "5",
-   "gamesPlayed": "90",
+   "gamesPlayed": "92",
    "goals": "8",
    "assists": "9",
    "manOfTheMatch": "2",
@@ -2301,25 +2312,14 @@
    "favoritePosition": "defender"
   },
   {
-   "name": "Pain11x",
-   "proPos": "25",
-   "gamesPlayed": "42",
-   "goals": "3",
-   "assists": "9",
-   "manOfTheMatch": "1",
-   "ratingAve": "7.2",
-   "prevGoals": "0",
-   "favoritePosition": "forward"
-  },
-  {
    "name": "Superdaddysi",
    "proPos": "25",
-   "gamesPlayed": "76",
-   "goals": "49",
+   "gamesPlayed": "79",
+   "goals": "50",
    "assists": "45",
    "manOfTheMatch": "20",
    "ratingAve": "7.9",
-   "prevGoals": "3",
+   "prevGoals": "1",
    "favoritePosition": "forward"
   },
   {
@@ -2336,9 +2336,9 @@
   {
    "name": "Morpho Vs All",
    "proPos": "14",
-   "gamesPlayed": "420",
-   "goals": "207",
-   "assists": "159",
+   "gamesPlayed": "423",
+   "goals": "209",
+   "assists": "167",
    "manOfTheMatch": "55",
    "ratingAve": "7.4",
    "prevGoals": "0",
@@ -2363,6 +2363,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 2,
-  "fetchedAt": "2026-11-27T22:46:25.096Z"
+  "fetchedAt": "2026-11-28T04:37:42.111Z"
  }
 }

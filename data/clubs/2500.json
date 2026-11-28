@@ -1,7 +1,7 @@
 {
  "id": "2500",
  "tier": "home",
- "fetchedAt": "2026-11-27T22:46:25.096Z",
+ "fetchedAt": "2026-11-28T04:37:42.111Z",
  "info": {
   "name": "Phoenix FIIre",
   "clubId": 2500,
@@ -403,42 +403,6 @@
    "prevGoals9": "0",
    "prevGoals10": "0",
    "favoritePosition": "forward"
-  },
-  {
-   "name": "SamESKO4",
-   "gamesPlayed": "11",
-   "winRate": "100",
-   "goals": "12",
-   "assists": "9",
-   "cleanSheetsDef": "0",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "48",
-   "passesMade": "156",
-   "passSuccessRate": "81",
-   "ratingAve": "8.4",
-   "tacklesMade": "12",
-   "tackleSuccessRate": "14",
-   "proName": "",
-   "proPos": "14",
-   "proStyle": "0",
-   "proHeight": "162",
-   "proNationality": "163",
-   "proOverall": "86",
-   "proOverallStr": "86",
-   "manOfTheMatch": "2",
-   "redCards": "0",
-   "prevGoals": "1",
-   "prevGoals1": "1",
-   "prevGoals2": "1",
-   "prevGoals3": "1",
-   "prevGoals4": "0",
-   "prevGoals5": "2",
-   "prevGoals6": "2",
-   "prevGoals7": "2",
-   "prevGoals8": "3",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "midfielder"
   },
   {
    "name": "MS-05-05",
@@ -1630,7 +1594,7 @@
   }
  ],
  "positionCount": {
-  "midfielder": 4,
+  "midfielder": 3,
   "goalkeeper": 3,
   "forward": 4,
   "defender": 2
@@ -1638,14 +1602,14 @@
  "career": [
   {
    "name": "kingmitch93",
-   "proPos": "14",
-   "gamesPlayed": "204",
-   "goals": "31",
-   "assists": "71",
-   "manOfTheMatch": "23",
+   "proPos": "25",
+   "gamesPlayed": "211",
+   "goals": "34",
+   "assists": "74",
+   "manOfTheMatch": "25",
    "ratingAve": "7.7",
    "prevGoals": "0",
-   "favoritePosition": "midfielder"
+   "favoritePosition": "forward"
   },
   {
    "name": "SirLogma",
@@ -1760,11 +1724,11 @@
   {
    "name": "Hargravee123",
    "proPos": "5",
-   "gamesPlayed": "39",
+   "gamesPlayed": "47",
    "goals": "1",
    "assists": "3",
-   "manOfTheMatch": "2",
-   "ratingAve": "7.5",
+   "manOfTheMatch": "3",
+   "ratingAve": "7.4",
    "prevGoals": "0",
    "favoritePosition": "defender"
   },
@@ -1848,7 +1812,7 @@
   {
    "name": "YAMI-_-77",
    "proPos": "14",
-   "gamesPlayed": "293",
+   "gamesPlayed": "297",
    "goals": "128",
    "assists": "93",
    "manOfTheMatch": "38",
@@ -1870,12 +1834,12 @@
   {
    "name": "iTry_Clutxh",
    "proPos": "25",
-   "gamesPlayed": "56",
-   "goals": "18",
-   "assists": "13",
-   "manOfTheMatch": "4",
-   "ratingAve": "7.2",
-   "prevGoals": "1",
+   "gamesPlayed": "62",
+   "goals": "27",
+   "assists": "18",
+   "manOfTheMatch": "5",
+   "ratingAve": "7.3",
+   "prevGoals": "2",
    "favoritePosition": "forward"
   },
   {
@@ -1903,9 +1867,9 @@
   {
    "name": "HristoNL",
    "proPos": "14",
-   "gamesPlayed": "294",
-   "goals": "182",
-   "assists": "242",
+   "gamesPlayed": "304",
+   "goals": "186",
+   "assists": "252",
    "manOfTheMatch": "12",
    "ratingAve": "7.1",
    "prevGoals": "0",
@@ -1932,17 +1896,6 @@
    "ratingAve": "7.1",
    "prevGoals": "0",
    "favoritePosition": "forward"
-  },
-  {
-   "name": "SamESKO4",
-   "proPos": "14",
-   "gamesPlayed": "144",
-   "goals": "148",
-   "assists": "136",
-   "manOfTheMatch": "35",
-   "ratingAve": "8.1",
-   "prevGoals": "1",
-   "favoritePosition": "midfielder"
   },
   {
    "name": "MS-05-05",
@@ -1991,7 +1944,7 @@
   {
    "name": "ManiManolo88",
    "proPos": "14",
-   "gamesPlayed": "34",
+   "gamesPlayed": "37",
    "goals": "6",
    "assists": "4",
    "manOfTheMatch": "4",
@@ -2024,11 +1977,11 @@
   {
    "name": "Glekke-93",
    "proPos": "0",
-   "gamesPlayed": "119",
+   "gamesPlayed": "129",
    "goals": "93",
    "assists": "45",
    "manOfTheMatch": "21",
-   "ratingAve": "7.3",
+   "ratingAve": "7.2",
    "prevGoals": "0",
    "favoritePosition": "goalkeeper"
   },
@@ -2128,6 +2081,6 @@
   "promotions": 3,
   "relegations": 0,
   "rep": 1,
-  "fetchedAt": "2026-11-27T22:46:25.096Z"
+  "fetchedAt": "2026-11-28T04:37:42.111Z"
  }
 }
