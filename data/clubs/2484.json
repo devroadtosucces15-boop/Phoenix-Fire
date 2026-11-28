@@ -1,7 +1,7 @@
 {
  "id": "2484",
  "tier": "home",
- "fetchedAt": "2026-11-28T04:37:42.111Z",
+ "fetchedAt": "2026-11-28T13:40:16.036Z",
  "info": {
   "name": "Phoenix Fire XI",
   "clubId": 2484,
@@ -37,7 +37,7 @@
  "overall": {
   "clubId": "2484",
   "bestDivision": "1",
-  "bestFinishGroup": "2",
+  "bestFinishGroup": "3",
   "finishesInDivision1Group1": "0",
   "finishesInDivision2Group1": "0",
   "finishesInDivision3Group1": "0",
@@ -1125,42 +1125,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Damlaaa61",
-   "gamesPlayed": "16",
-   "winRate": "87",
-   "goals": "0",
-   "assists": "0",
-   "cleanSheetsDef": "6",
-   "cleanSheetsGK": "0",
-   "shotSuccessRate": "0",
-   "passesMade": "118",
-   "passSuccessRate": "83",
-   "ratingAve": "7.3",
-   "tacklesMade": "15",
-   "tackleSuccessRate": "62",
-   "proName": "D. Damla",
-   "proPos": "5",
-   "proStyle": "0",
-   "proHeight": "192",
-   "proNationality": "34",
-   "proOverall": "84",
-   "proOverallStr": "84",
-   "manOfTheMatch": "0",
-   "redCards": "0",
-   "prevGoals": "0",
-   "prevGoals1": "0",
-   "prevGoals2": "0",
-   "prevGoals3": "0",
-   "prevGoals4": "0",
-   "prevGoals5": "0",
-   "prevGoals6": "0",
-   "prevGoals7": "0",
-   "prevGoals8": "0",
-   "prevGoals9": "0",
-   "prevGoals10": "0",
-   "favoritePosition": "defender"
-  },
-  {
    "name": "Bergkamp6317",
    "gamesPlayed": "59",
    "winRate": "88",
@@ -1561,7 +1525,7 @@
   "midfielder": 5,
   "goalkeeper": 5,
   "forward": 15,
-  "defender": 13
+  "defender": 12
  },
  "career": [
   {
@@ -1917,17 +1881,6 @@
    "favoritePosition": "forward"
   },
   {
-   "name": "Damlaaa61",
-   "proPos": "5",
-   "gamesPlayed": "218",
-   "goals": "47",
-   "assists": "46",
-   "manOfTheMatch": "40",
-   "ratingAve": "7.5",
-   "prevGoals": "0",
-   "favoritePosition": "defender"
-  },
-  {
    "name": "Bergkamp6317",
    "proPos": "5",
    "gamesPlayed": "126",
@@ -2034,6 +1987,6 @@
   "promotions": 5,
   "relegations": 0,
   "rep": 4,
-  "fetchedAt": "2026-11-28T04:37:42.111Z"
+  "fetchedAt": "2026-11-28T13:40:16.036Z"
  }
 }
