@@ -40,9 +40,11 @@
   // iOS can leave the fixed tab bar floating mid-screen after a long scroll (#40): once scrolling settles, measure where it sits
   // against the visual viewport and nudge it back to the bottom edge when it has drifted
   const tb = d.querySelector('.tabbar');
-  if (tb && vv) { let st = 0; const heal = () => { if (typing || H.classList.contains('kb-open')) return; const was = H.style.getPropertyValue('--tbfix'); H.style.removeProperty('--tbfix');
-      const r = tb.getBoundingClientRect(); if (!r.height || getComputedStyle(tb).display === 'none') return; const drift = (vv.offsetTop + vv.height) - r.bottom - 12;
-      if (Math.abs(drift) > 24 && vv.scale < 1.05) H.style.setProperty('--tbfix', Math.round(drift) + 'px'); else if (was) H.style.removeProperty('--tbfix'); };
+  // It measures the bar's layout position (offsetTop), never getBoundingClientRect: that includes transforms, so while the bar was sliding away
+  // or hidden (dock.js tabHide) it read "far below the screen", saved that as a correction and the bar came back in the wrong place.
+  if (tb && vv) { let st = 0; const heal = () => { if (typing || H.classList.contains('kb-open') || !tb.offsetHeight || getComputedStyle(tb).display === 'none') return;
+      const was = H.style.getPropertyValue('--tbfix'), drift = (vv.offsetTop + vv.height) - (tb.offsetTop + tb.offsetHeight) - 12;
+      if (Math.abs(drift) > 24 && vv.scale < 1.05) { const v = Math.round(drift) + 'px'; if (v !== was) H.style.setProperty('--tbfix', v); } else if (was) H.style.removeProperty('--tbfix'); };
     const later = () => { clearTimeout(st); st = setTimeout(heal, 180); }; addEventListener('scroll', later, { passive: true }); vv.addEventListener('resize', later); addEventListener('orientationchange', later); addEventListener('pageshow', later); }
   // block double-tap zoom and pinch in the installed app (the browser keeps them for normal tabs' accessibility)
   if (standalone) { d.addEventListener('gesturestart', (e) => e.preventDefault()); d.addEventListener('dblclick', (e) => { if (!e.target.closest('input,textarea')) e.preventDefault(); }, { passive: false }); }
