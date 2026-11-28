@@ -224,36 +224,49 @@ export function eventMessage(env, e, rsvps = [], heading = '', { ping = null, me
   const posOf = (r) => parsePref(r.pref_pos)[0] ?? parse(e.type === 'rush' ? r.rush_positions : r.positions, [])[0] ?? '';
   const cancelled = e.status === 'cancelled', locked = !!e.signup_closed_at, done = cancelled || locked;
   const list = (arr) => (arr.length ? `${arr.slice(0, 25).join(', ')}${arr.length > 25 ? ' …' : ''}` : '–');
-  const titleLine = `${EVENT_TYPES[e.type][0]} ${cancelled ? '🚫 Cancelled · ' : locked ? '🔒 SIGN-UPS CLOSED · ' : ''}${heading}${label(e)} · ${formation}`.slice(0, 200);
-  const hubBtn = { type: 2, style: 5, label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` };
-  const noteLine = e.notes ? `\n📝 ${String(e.notes).slice(0, 300)}` : '';
-  const headText = `-# ${orgName(env).toUpperCase()} · MATCHDAY\n## ${titleLine}\n-# 🕒 <t:${unix}:F> · <t:${unix}:R> · Unlimited${noteLine}`;
+  const hubUrl = `${site}members.html#schedule-${e.id ?? ''}`;
+  const hubBtn = { type: 2, style: 5, label: 'Squad Hub', url: hubUrl };
+  // Header reads like a card: one-line eyebrow, title, full date on its own line, then one quiet detail line with the stage.
+  // The formation lives in the detail line (the picture repeats it), notes sit in a quote bar so they read as a callout.
+  const stage = cancelled ? '🚫 **Cancelled**' : locked ? '🔒 **Sign-ups closed**' : 'Roll call open';
+  const title = `${EVENT_TYPES[e.type][0]} ${heading}${label(e)}`.slice(0, 120);
+  const detail = [`Kick-off <t:${unix}:R>`, formation, stage].join(' · ');
+  const note = e.notes ? `\n> **${String(e.notes).replace(/\s+/g, ' ').slice(0, 200)}**` : '';
+  const headText = `-# ${orgName(env).toUpperCase()} · MATCHDAY\n## ${title}\n**<t:${unix}:F>**\n-# ${detail}${note}`;
   const hasButtons = rsvpButtons(env) && e.id != null;
   const icApp = env?.BOT_APP || (env?.DISCORD_BOT_TOKEN_MATCHDAY ? 'matchday' : 'core');
-  const memberRow = hasButtons ? buttons([
-    { label: 'In', style: 'ok', id: `pf:h:${e.id}:in`, emoji: ic('btn_in', icApp), disabled: done },
-    { label: '', style: 'grey', id: `pf:h:${e.id}:maybe`, emoji: ic('btn_maybe', icApp), disabled: done },
-    { label: '', style: 'no', id: `pf:h:${e.id}:no`, emoji: ic('btn_out', icApp), disabled: done },
-    { label: 'XI', style: 'brand', id: `pf:h:${e.id}:xi`, emoji: ic('btn_xi', icApp) },
-    { label: '', style: 'grey', id: `pf:h:${e.id}:roster`, emoji: ic('btn_roster', icApp) },
-  ]) : buttons([{ label: 'Squad Hub', url: `${site}members.html#schedule-${e.id ?? ''}` }]);
+  // Three rows sized for a phone: 3 answers (live counts in the labels), 3 views, 4 manager tools. Discord can't stretch
+  // buttons, so the labels are chosen to make each row about as wide as the panel. One colour per row at most:
+  // green for the main answer, red only for End; everything else grey so the picture stays the focus.
+  const count = (st) => rsvps.filter((r) => r.status === st).length;
+  const answerRow = hasButtons ? buttons([
+    { label: `In · ${yes.length}`, style: 'ok', id: `pf:h:${e.id}:in`, emoji: ic('md_in', icApp), disabled: done },
+    { label: `Maybe · ${count('maybe')}`, style: 'grey', id: `pf:h:${e.id}:maybe`, emoji: ic('md_maybe', icApp), disabled: done },
+    { label: `Out · ${count('no')}`, style: 'grey', id: `pf:h:${e.id}:no`, emoji: ic('md_out', icApp), disabled: done },
+  ]) : null;
+  const viewRow = buttons([
+    hasButtons ? { label: 'Best XI', style: 'grey', id: `pf:h:${e.id}:xi`, emoji: ic('md_xi', icApp) } : null,
+    hasButtons ? { label: 'Squad', style: 'grey', id: `pf:h:${e.id}:roster`, emoji: ic('md_squad', icApp) } : null,
+    { label: hasButtons ? 'Hub' : 'Squad Hub', url: hubUrl, emoji: ic('md_hub', icApp) },
+  ]);
   const managerRow = hasButtons ? buttons([
-    { label: locked ? 'Hub' : 'Lock', style: 'grey', id: `pf:h:${e.id}:close`, emoji: ic('btn_lineup', icApp), disabled: cancelled },
-    { label: 'Edit', style: 'grey', id: `pf:h:${e.id}:override`, emoji: ic('btn_override', icApp), disabled: cancelled },
-    { label: 'Time', style: 'grey', id: `pf:h:${e.id}:resched`, emoji: ic('btn_resched', icApp), disabled: cancelled },
-    { label: 'End', style: 'no', id: `pf:h:${e.id}:cancel`, emoji: ic('btn_cancel', icApp), disabled: cancelled },
+    { label: locked ? 'Lineup' : 'Lock', style: 'grey', id: `pf:h:${e.id}:close`, emoji: ic(locked ? 'md_xi' : 'md_lock', icApp), disabled: cancelled },
+    { label: 'Edit', style: 'grey', id: `pf:h:${e.id}:override`, emoji: ic('md_edit', icApp), disabled: cancelled },
+    { label: 'Time', style: 'grey', id: `pf:h:${e.id}:resched`, emoji: ic('md_time', icApp), disabled: cancelled },
+    { label: 'End', style: 'no', id: `pf:h:${e.id}:cancel`, emoji: ic('md_end', icApp), disabled: cancelled },
   ]) : null;
   return message({ ping, mentions, accent: cancelled ? 'steel' : locked ? 'loss' : 0xf59e0b, blocks: [
     side(headText, crestUrl ? thumb(crestUrl) : hubBtn),
     cancelled && (e.cancelReason ?? e.cancel_reason) ? text(`**Why** ${String(e.cancelReason ?? e.cancel_reason).slice(0, 300)}`) : null,
-    sep({ big: false, line: false }),
+    sep({ big: false, line: true }),
     roster ?? cards(bannerUrl(env, cancelled ? 'eventcancelled' : 'matchnight')),
     !roster ? facts([['Answers', `✅ ${yes.length} · ❔ ${names('maybe').length} · ❌ ${names('no').length}`]]) : null,
     !roster && faces ? yes.slice(0, FACE_ROWS).map((r) => side(`\`${String(rsvps.indexOf(r) + 1).padStart(2)}\` ✅ **${r.name}**${posOf(r) ? ` · ${posOf(r)}` : ''}`, thumb(faces.get(String(r.user_id))))) : null,
     roster ? null : faces && yes.length > FACE_ROWS ? text(`+ ${list(names('yes').slice(FACE_ROWS))}`) : !faces && yes.length ? facts([['In', list(names('yes'))]]) : null,
     who && !roster ? facts([[`❔ Maybe (${names('maybe').length})`, list(names('maybe'))], [`❌ Out (${names('no').length})`, list(names('no'))]]) : null,
-    sep({ big: true, line: false }),
-    memberRow,
+    sep({ big: false, line: false }),
+    answerRow,
+    viewRow,
     managerRow ? sep({ big: true, line: true }) : null,
     managerRow ? text('-# **MANAGER CONTROLS**') : null,
     managerRow,
@@ -275,8 +288,9 @@ export async function eventPost(env, e, rsvps = [], heading = '', opts = {}) {
     }, yesIds),
   ]);
   const crestUrl = drawnCrest.url || null;
+  // No alt text: Discord overlays an "ALT" badge on the picture's corner; the header and button labels carry the same facts.
   const roster = drawn.url
-    ? cards({ url: drawn.url, alt: `${label(e)} · ${formation} Roll Call (${yesIds.length} in)` })
+    ? cards(drawn.url)
     : await rosterBlock(env, e.id, rsvps, () => checkinsOf(env, e.id), { posOf: (r) => parsePref(r.pref_pos)[0] ?? '', title: 'Squad Roll Call', sub: label(e) });
   return eventMessage(env, e, rsvps, heading, { ...opts, crestUrl, roster, faces: roster ? null : await facesOf(env, yesIds.slice(0, FACE_ROWS)) });
 }
@@ -773,7 +787,9 @@ const HAND = {
   '4-4-2': [['GK', 50, 90], ['LB', 14, 70], ['LCB', 37, 75], ['RCB', 63, 75], ['RB', 86, 70], ['LM', 14, 44], ['LCM', 38, 50], ['RCM', 62, 50], ['RM', 86, 44], ['LS', 38, 18], ['RS', 62, 18]],
   '4-2-3-1': [['GK', 50, 90], ['LB', 14, 70], ['LCB', 37, 75], ['RCB', 63, 75], ['RB', 86, 70], ['LDM', 38, 57], ['RDM', 62, 57], ['LAM', 20, 34], ['CAM', 50, 37], ['RAM', 80, 34], ['ST', 50, 14]],
   '4-1-2-1-2': [['GK', 50, 90], ['LB', 14, 70], ['LCB', 37, 75], ['RCB', 63, 75], ['RB', 86, 70], ['CDM', 50, 60], ['LCM', 30, 47], ['RCM', 70, 47], ['CAM', 50, 34], ['LS', 38, 16], ['RS', 62, 16]],
-  '3-5-2': [['GK', 50, 90], ['LCB', 27, 74], ['CB', 50, 77], ['RCB', 73, 74], ['LWB', 11, 50], ['LCM', 34, 50], ['CDM', 50, 58], ['RCM', 66, 50], ['RWB', 89, 50], ['LS', 38, 17], ['RS', 62, 17]],
+  // The club plays 3-5-2 with a CAM (LM LDM RDM RM / CAM, same as the site and the club tactics plan): '3-5-2' comes from SHAPES.
+  // The old hand-placed wing-back + CDM version stays available under its own name.
+  '3-5-2 (CDM)': [['GK', 50, 90], ['LCB', 27, 74], ['CB', 50, 77], ['RCB', 73, 74], ['LWB', 11, 50], ['LCM', 34, 50], ['CDM', 50, 58], ['RCM', 66, 50], ['RWB', 89, 50], ['LS', 38, 17], ['RS', 62, 17]],
   '5-3-2': [['GK', 50, 90], ['LWB', 10, 64], ['LCB', 30, 74], ['CB', 50, 77], ['RCB', 70, 74], ['RWB', 90, 64], ['LCM', 30, 48], ['CM', 50, 52], ['RCM', 70, 48], ['LS', 38, 18], ['RS', 62, 18]],
 };
 // zn10: every FC 27 tactic-builder shape (29, same list as next/data/formations.json), back line first, rows split by ' / '.
