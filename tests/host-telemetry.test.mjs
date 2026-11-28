@@ -14,7 +14,8 @@ test('FORMATIONS includes all 30 shapes including both 3-5-2 (CDM) and 3-5-2 (CA
   assert.ok(FORMATIONS['3-5-2'], '3-5-2 exists');
   assert.ok(FORMATIONS['3-5-2 (CAM)'], '3-5-2 (CAM) exists');
   assert.ok(Object.keys(FORMATIONS).length >= 30, `expected >= 30 formations, got ${Object.keys(FORMATIONS).length}`);
-  assert.ok(FORMATIONS['3-5-2'].some(([s]) => s === 'CDM'), '3-5-2 has CDM');
+  assert.deepEqual(FORMATIONS['3-5-2'].map(([s]) => s).sort(), ['CAM', 'CB', 'GK', 'LCB', 'LDM', 'LM', 'LS', 'RCB', 'RDM', 'RM', 'RS'], 'club 3-5-2 is LM LDM RDM RM / CAM');
+assert.ok(FORMATIONS['3-5-2 (CDM)'].some(([s]) => s === 'CDM'), 'old wing-back 3-5-2 (CDM) still exists');
   assert.ok(FORMATIONS['3-5-2 (CAM)'].some(([s]) => s === 'CAM'), '3-5-2 (CAM) has CAM');
   assert.ok(formationChoices('3-5-2').length >= 2, 'formationChoices returns both 3-5-2 variants');
 });
@@ -32,7 +33,7 @@ test('cleanPref supports up to 3 formation-exact positions (1 Primary + 2 Flex)'
 });
 
 test('3-pass Suggested XI solver performs 1-step flex shift to fill uncovered slot', () => {
-  const slots = normalizeFormationSlots(FORMATIONS['3-5-2']);
+  const slots = normalizeFormationSlots(FORMATIONS['3-5-2 (CDM)']);
   const rsvps = [
     { user_id: '1', name: 'Mateo', status: 'yes', prefs: ['LS', 'RS'] },
     { user_id: '2', name: 'Diego', status: 'yes', prefs: ['LS', 'RS'] },
@@ -43,6 +44,9 @@ test('3-pass Suggested XI solver performs 1-step flex shift to fill uncovered sl
   assert.equal(res.assigned.LS.p.name, 'Mateo');
   assert.equal(res.assigned.RS.p.name, 'Diego');
   assert.equal(res.assigned.RWB.p.name, 'Eli');
+  // club 3-5-2 (CAM): a wing-back pick lands on the matching wide midfield slot
+  const cam = solveSuggestedXI(normalizeFormationSlots(FORMATIONS['3-5-2']), rsvps, stats);
+  assert.equal(cam.assigned.RM.p.name, 'Eli');
 });
 
 test('rollCallSvg renders matte-black + glowing gold + max-3 avatar overflow + >12 roster overflow', () => {
