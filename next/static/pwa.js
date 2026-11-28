@@ -79,13 +79,25 @@
     H.style.setProperty('--gx', gx.toFixed(2)); H.style.setProperty('--gy', gy.toFixed(2)); if (Math.abs(tx - gx) + Math.abs(ty - gy) > .02) raf = requestAnimationFrame(step); }
   const start = () => { if (on || !wanted() || !granted || d.hidden) return; on = true; base0 = null; H.classList.add('gyro-on'); addEventListener('deviceorientation', onOri); };
   const stop = () => { if (!on) return; on = false; removeEventListener('deviceorientation', onOri); H.classList.remove('gyro-on'); H.style.removeProperty('--gx'); H.style.removeProperty('--gy'); };
+  // One shared ask, so a tap on the page and a tap on the Motion switch never open two prompts. A grant is remembered on this device
+  // (phoenix.gyro) so the next launch can resume on the member's first tap.
+  let asking = null;
+  const ask = () => (asking ||= DeviceOrientationEvent.requestPermission().then((r) => { asking = null; if (r === 'granted') { granted = true; ls.set('phoenix.gyro', '1'); } return r === 'granted'; }, () => { asking = null; return false; }));
   async function enable() {
     if (!canGyro) return false;
-    try { if (!granted) { const r = await DeviceOrientationEvent.requestPermission(); if (r !== 'granted') throw new Error('denied'); granted = true; } start(); return true; }
+    try { if (!granted && !(await ask())) throw new Error('denied'); start(); return true; }
     catch { window.NorexMotion?.toast('Phone tilt needs motion access. You can allow it in your browser settings.', { kind: 'err' }); return false; }
   }
-  // Android needs no prompt. iOS: if access was already given on this phone the silent ask resolves; otherwise it waits for a tap in the sheet
-  if (canGyro) { if (askable) { try { DeviceOrientationEvent.requestPermission().then((r) => { if (r === 'granted') { granted = true; start(); } }, () => {}); } catch {} } else start(); }
+  // Android needs no prompt. iOS: if access was already given in this session the silent ask resolves. iOS forgets it when the app closes and
+  // only takes a new ask from a tap, so a member who allowed it before gets it back on the first tap anywhere (no trip to the sheet).
+  // Members who never allowed it see no surprise prompt; they still use the switch in Motion & effects.
+  if (canGyro) { if (askable) {
+    try { ask().then((ok) => ok && start()); } catch {}
+    if (ls.get('phoenix.gyro') === '1' && !granted) { const resume = () => { if (granted || !wanted()) return; d.removeEventListener('click', resume, true); d.removeEventListener('touchend', resume, true); ask().then((ok) => ok && start()); };
+      d.addEventListener('click', resume, true); d.addEventListener('touchend', resume, true); }
+  } else start(); }
+  // keep this site's saved choices (localStorage, caches) when the phone runs low on space; asked only from the installed app, where it is granted without a prompt
+  if (standalone) { try { navigator.storage?.persisted?.().then((p) => { if (!p) return navigator.storage.persist().then((ok) => ls.set('phoenix.persist', ok ? '1' : '0')); }).catch(() => {}); } catch {} }
   d.addEventListener('visibilitychange', () => (d.hidden ? stop() : start()));
   addEventListener('norex:motion', () => (wanted() ? start() : stop()));
   const gyro = { enable, stop, get on() { return on; }, can: canGyro, get needsAsk() { return canGyro && !granted; } };
