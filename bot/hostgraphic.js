@@ -120,7 +120,7 @@ export function mapSlotToFormation(pos, slots) {
     LB: ['LWB', 'LCB', 'LM'], RB: ['RWB', 'RCB', 'RM'],
     CDM: ['LDM', 'RDM', 'CM', 'LCM', 'RCM', 'CB'], LDM: ['CDM', 'LCM', 'CM'], RDM: ['CDM', 'RCM', 'CM'],
     LCDM: ['LDM', 'CDM', 'LCM'], RCDM: ['RDM', 'CDM', 'RCM'],
-    CM: ['LCM', 'RCM', 'CDM', 'CAM'], LCM: ['CM', 'CDM', 'CAM', 'LM'], RCM: ['CM', 'CDM', 'CAM', 'RM'],
+    CM: ['LCM', 'RCM', 'CDM', 'LDM', 'RDM', 'CAM'], LCM: ['CM', 'LDM', 'CDM', 'CAM', 'LM'], RCM: ['CM', 'RDM', 'CDM', 'CAM', 'RM'],
     CB: ['LCB', 'RCB', 'CDM'], LCB: ['CB', 'LB', 'LWB'], RCB: ['CB', 'RB', 'RWB'],
     LW: ['LM', 'LF', 'LS', 'ST'], RW: ['RM', 'RF', 'RS', 'ST'],
   };

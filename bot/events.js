@@ -787,7 +787,9 @@ const HAND = {
   '4-4-2': [['GK', 50, 90], ['LB', 14, 70], ['LCB', 37, 75], ['RCB', 63, 75], ['RB', 86, 70], ['LM', 14, 44], ['LCM', 38, 50], ['RCM', 62, 50], ['RM', 86, 44], ['LS', 38, 18], ['RS', 62, 18]],
   '4-2-3-1': [['GK', 50, 90], ['LB', 14, 70], ['LCB', 37, 75], ['RCB', 63, 75], ['RB', 86, 70], ['LDM', 38, 57], ['RDM', 62, 57], ['LAM', 20, 34], ['CAM', 50, 37], ['RAM', 80, 34], ['ST', 50, 14]],
   '4-1-2-1-2': [['GK', 50, 90], ['LB', 14, 70], ['LCB', 37, 75], ['RCB', 63, 75], ['RB', 86, 70], ['CDM', 50, 60], ['LCM', 30, 47], ['RCM', 70, 47], ['CAM', 50, 34], ['LS', 38, 16], ['RS', 62, 16]],
-  '3-5-2': [['GK', 50, 90], ['LCB', 27, 74], ['CB', 50, 77], ['RCB', 73, 74], ['LWB', 11, 50], ['LCM', 34, 50], ['CDM', 50, 58], ['RCM', 66, 50], ['RWB', 89, 50], ['LS', 38, 17], ['RS', 62, 17]],
+  // The club plays 3-5-2 with a CAM (LM LDM RDM RM / CAM, same as the site and the club tactics plan): '3-5-2' comes from SHAPES.
+  // The old hand-placed wing-back + CDM version stays available under its own name.
+  '3-5-2 (CDM)': [['GK', 50, 90], ['LCB', 27, 74], ['CB', 50, 77], ['RCB', 73, 74], ['LWB', 11, 50], ['LCM', 34, 50], ['CDM', 50, 58], ['RCM', 66, 50], ['RWB', 89, 50], ['LS', 38, 17], ['RS', 62, 17]],
   '5-3-2': [['GK', 50, 90], ['LWB', 10, 64], ['LCB', 30, 74], ['CB', 50, 77], ['RCB', 70, 74], ['RWB', 90, 64], ['LCM', 30, 48], ['CM', 50, 52], ['RCM', 70, 48], ['LS', 38, 18], ['RS', 62, 18]],
 };
 // zn10: every FC 27 tactic-builder shape (29, same list as next/data/formations.json), back line first, rows split by ' / '.
